@@ -29,21 +29,6 @@ Pull various metrics and reporting data using this function.
 
 ## Total chats
 
-Shows how many chats occurred during the specified period.
-
-#### Optional arguments
-
-| Argument | Description |
-|---------|--------------------|
-| `date_from` | `YYYY-MM-DD`, defaults to `the beginning of time` |
-| `date_to` | `YYYY-MM-DD`, defaults to `today` |
-| `timezone` | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix) |
-| `group` | id of the group, not set by default, returns statistics for the specified group |
-| `agent` | agent's login, not set by default, return statistics for the specified agent |
-| `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
-
-
 > Path
 
 ```
@@ -100,9 +85,7 @@ group_by=hour" \
 }
 ```
 
-## Chat engagement
-
-This report shows you where do you get your chats, i.e. from automatic invitations, manual invitations or visitors starting chats themselves.
+Shows how many chats occurred during the specified period.
 
 #### Optional arguments
 
@@ -116,6 +99,7 @@ This report shows you where do you get your chats, i.e. from automatic invitatio
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
 | `tag` | return statistics for the specified tag |
 
+## Chat engagement
 
 > Path
 
@@ -152,6 +136,20 @@ group_by=hour" \
   }
 }
 ```
+
+This report shows you where do you get your chats, i.e. from automatic invitations, manual invitations or visitors starting chats themselves.
+
+#### Optional arguments
+
+| Argument | Description |
+|---------|--------------------|
+| `date_from` | `YYYY-MM-DD`, defaults to `the beginning of time` |
+| `date_to` | `YYYY-MM-DD`, defaults to `today` |
+| `timezone` | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix) |
+| `group` | id of the group, not set by default, returns statistics for the specified group |
+| `agent` | agent's login, not set by default, return statistics for the specified agent |
+| `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
+| `tag` | return statistics for the specified tag |
 
 ## Chat ratings report
 
