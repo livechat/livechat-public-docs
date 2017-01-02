@@ -6,9 +6,18 @@ Agent App Extensions are web applications loaded inside the LiveChat Agent App. 
 
 <img src="../__images/agent-app-extension.png" width="500" style="margin-top: 20px;"/>
 
+## Use cases
+
+There are number of ways you can utilise the extension:
+
+* query external services with vistior email or LiveChat group ID (CRM, marketing automation, etc.),
+* display static content, e.g. knowledge base articles, conversation prompts or context information,
+* query [LiveChat REST API](/rest-api) to do basically anything with the visitor, agent or chat.
+
+
 ## Before you start
 
-This guide describes the flow of development. Once your extension is ready to deploy let us know and we'll guide you to the production.
+This guide describes the flow of development. Once your extension is ready to deploy <a href="#" onclick="LC_API.open_chat_window();return false;">let us know</a> and we'll guide you to the production.
 
 ## Layout & Styling
 
