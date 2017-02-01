@@ -9,4 +9,4 @@ This tutorial will help you build very own integration and get it listed on our 
 *   [Let us know](#publish) that you have created an integration.
 
 
-<aside class="notice">You need an active LiveChat account. If you don't have one, <a href="www.livechatinc.com/signup">sign up now</a>.</aside>
+<aside class="notice">You need an active LiveChat account. If you don't have one, <a href="https://www.livechatinc.com/signup/">sign up now</a>.</aside>
