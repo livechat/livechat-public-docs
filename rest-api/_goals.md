@@ -131,7 +131,7 @@ curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
 ```
 
 
-`GOAL_ID` is obtained from the [goals list](#get-goals).
+`GOAL_ID` is obtained from the [goals list](#list-all-goals).
 
 #### Required parameters
 
@@ -263,7 +263,7 @@ curl "https://api.livechatinc.com/goals/2231" \
 
 Updates the specified goal by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
 
-`GOAL_ID` is obtained from the [goals list](#get-goals).
+`GOAL_ID` is obtained from the [goals list](#list-all-goals).
 
 #### Optional parameters
 
