@@ -156,7 +156,7 @@ curl "https://api.livechatinc.com/tickets/5FUED" \
 
 > Example response
 
-> *Return format is the same as the single ticket item in [tickets list](#get-tickets).*
+> *Return format is the same as the single ticket item in [tickets list](#get-list-of-tickets).*
 
 Returns single ticket item for the given `TICKET_ID`.
 
