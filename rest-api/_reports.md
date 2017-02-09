@@ -654,6 +654,62 @@ The following parameters are returned for each date:
 *   `count` – the number of chat responses during the specified period.
 *   `seconds` – average response time.
 
+## Number of simultaneous chats
+
+> Path
+
+```
+GET https://api.livechatinc.com/reports/chats/agents_occupancy
+```
+
+> Example request
+
+```shell
+curl "https://api.livechatinc.com/reports/chats/agents_occupancy?\
+weekday=mon" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+> Example response
+
+```json-doc
+{
+    "2015-03-16 00:00": 0,
+    "2015-03-16 01:00": 0,
+    "2015-03-16 02:00": 0,
+    "2015-03-16 03:00": 0,
+    "2015-03-16 04:00": 0,
+    "2015-03-16 05:00": 0,
+    "2015-03-16 06:00": 0,
+    "2015-03-16 07:00": 0,
+    "2015-03-16 08:00": 0,
+    "2015-03-16 09:00": 13,
+    "2015-03-16 10:00": 17,
+    "2015-03-16 11:00": 20,
+    "2015-03-16 12:00": 20,
+    "2015-03-16 13:00": 16,
+    "2015-03-16 14:00": 16,
+    "...": "...",
+    "2015-03-23 00:00": 0,
+    "2015-03-23 01:00": 0,
+    "2015-03-23 02:00": 0,
+    "2015-03-23 03:00": 0,
+    "2015-03-23 04:00": 0,
+    ...
+    "2015-04-06 23:00": 0
+}
+```
+
+This request shows the maximum number of concurrent chats that have happened at the same hour on a particular day.
+
+#### Required arguments
+
+| Argument | Description |
+|---------|--------------------
+| `weekday` | you can select the day by changing the weekday parameter to one of the following values: `mon` for Monday, `tue` for Tuesday, `wed` for Wednesday, `thu` for Thursday, `fri` for Friday, `sat` for saturday and `sun` for Sunday |
+
+
 ## Goals
 
 > Path
@@ -1164,58 +1220,3 @@ Shows the ratio of good to bad ratings for each operator.
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `tag` | return statistics for the specified tag |
-
-## Number of simultaneous chats
-
-> Path
-
-```
-GET https://api.livechatinc.com/reports/chats/agents_occupancy
-```
-
-> Example request
-
-```shell
-curl "https://api.livechatinc.com/reports/chats/agents_occupancy?\
-weekday=mon" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
-  -H X-API-Version:2
-```
-
-> Example response
-
-```json-doc
-{
-    "2015-03-16 00:00": 0,
-    "2015-03-16 01:00": 0,
-    "2015-03-16 02:00": 0,
-    "2015-03-16 03:00": 0,
-    "2015-03-16 04:00": 0,
-    "2015-03-16 05:00": 0,
-    "2015-03-16 06:00": 0,
-    "2015-03-16 07:00": 0,
-    "2015-03-16 08:00": 0,
-    "2015-03-16 09:00": 13,
-    "2015-03-16 10:00": 17,
-    "2015-03-16 11:00": 20,
-    "2015-03-16 12:00": 20,
-    "2015-03-16 13:00": 16,
-    "2015-03-16 14:00": 16,
-    "...": "...",
-    "2015-03-23 00:00": 0,
-    "2015-03-23 01:00": 0,
-    "2015-03-23 02:00": 0,
-    "2015-03-23 03:00": 0,
-    "2015-03-23 04:00": 0,
-    ...
-    "2015-04-06 23:00": 0
-}
-```
-
-This request shows the maximum number of concurrent chats that have happened at the same hour on a particular day.
-
-#### Required arguments
-
-| Argument | Description |
-|---------|--------------------|
-| `weekday` | you can select the day by changing the weekday parameter to one of the following values: `mon` for Monday, `tue` for Tuesday, `wed` for Wednesday, `thu` for Thursday, `fri` for Friday, `sat` for saturday and `sun` for Sunday |
