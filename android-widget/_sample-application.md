@@ -1,8 +1,8 @@
 ## Sample application
 
-[Our sample app](https://developers.livechatinc.com/files/mobile-widgets/LiveChatWindowExample.apk) will display a “Chat with us!” button in the ActionBar. Once clicked, a chat with your support team will be opened in the app.
+[Our sample app](https://github.com/livechat/chat-window-android/releases/download/v1.2.1/LiveChatWindowExample.apk) will display a “Chat with us!” button in the ActionBar. Once clicked, a chat with your support team will be opened in the app.
 
-Feel free to download the source code of this application: [Android Studio](https://developers.livechatinc.com/files/mobile-widgets/LiveChatWindowExampleAndroidStudio.zip) or [Eclipse](/files/mobile-widgets/LiveChatWindowExampleEclipse.zip).
+Feel free to download the [source code of this application](https://github.com/livechat/chat-window-android/tree/master/LiveChatWidgetExample).
 
 <img src="https://developers.livechatinc.com/wp-content/uploads/2014/06/android-sample-app1.jpg" class="inline" title="In app widget example" alt="In app widget example" width="200" />
 <img src="https://developers.livechatinc.com/wp-content/uploads/2014/06/android-sample-app2.jpg" class="inline" title="In app widget example" alt="In app widget example" width="200" />
@@ -13,7 +13,7 @@ Let’s get started!
 
 ## How to include it in your project
 
-Import [LiveChatWindow.jar](https://github.com/livechat/chat-window-android/releases/download/v1.1.0/LiveChatWindow.jar) library to your project:
+Import [LiveChatWindow.jar](https://github.com/livechat/chat-window-android/releases/download/v1.2.1/LiveChatWindow.jar) library to your project:
 
 *   In **Eclipse**: put the jar file into the “libs” folder, right-click it in “Package Explorer”, select “Build Path” and “Add to Build Path”.
 *   In **Android Studio**: put the jar file into the “libs” folder, select “File”/”Project Structure…”, pick your application module and choose “Dependencies” tab. Click on the green plus icon, select “File dependency” and choose the jar file from the list.
@@ -66,7 +66,7 @@ Finally, add the following code to your application, in a place where you want t
 
 <div class="clear"></div>
 
-It’s also possibile to automagically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and add the following lines to the previous code:
+It’s also possibile to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and add the following lines to the previous code:
 
 ```java
     intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_NAME, "your_name");
@@ -87,36 +87,16 @@ In order to open chat window in new Fragment, you need to add the following code
 
 <div class="clear"></div>
 
-Method `ChatWindowFragment.newInstance()` returns chat window Fragment. If your app is using the Support Library for compatibility on versions as low as Android 2.1, you need to use the following code instead:
-
-```java
-    getSupportFragmentManager() 
-       .beginTransaction() 
-       .replace(R.id.frame_layout, ChatWindowSupportFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment") 
-       .addToBackStack("chat_fragment") 
-       .commit();
-```
+Method `ChatWindowFragment.newInstance()` returns chat window Fragment.
 
 <div class="clear"></div>
 
-It’s also possible to automagically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in web application and use different `newInstance()` method:
+It’s also possible to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in web application and use different `newInstance()` method:
 
 ```java
     getFragmentManager() 
        .beginTransaction() 
        .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment") 
-       .addToBackStack("chat_fragment") 
-       .commit();
-```
-
-<div class="clear"></div>
-
-For app with Support Library, `newInstance()` method looks like that:
-
-```java
-    getSupportFragmentManager() 
-       .beginTransaction() 
-       .replace(R.id.frame_layout, ChatWindowSupportFragment.newInstance("your_license_number", "your_group_id", “visitor_name”, “visitor_email”), "chat_fragment") 
        .addToBackStack("chat_fragment") 
        .commit();
 ```
