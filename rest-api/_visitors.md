@@ -33,96 +33,81 @@ group[]=0" \
 ```json-doc
 [
   {
-    "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.14 (KHTML, like Gecko) Version/6.0.1 Safari/536.26.14",
-    "chat_id": "MH0H3V3XO3",
-    "chat_start_time": "2013-01-31 15:51:03",
-    "city": "Greenville",
-    "country": "United States",
-    "host": "152.27.26.254",
-    "id": "S1355415390.49b8940793",
-    "ip": "152.27.26.254",
-    "language": "en",
-    "last_visit": "2013-01-31 15:43:05",
-    "latitude": "35.6127",
-    "longitude": "-77.3663",
-    "operators": [
-      {
-        "id": "john.doe@mycompany.com",
-        "display_name": "John Doe"
-      }
-    ],
-    "page_current": "http://www.mycompany.com/products/shoes",
-    "page_entered": "2013-01-31 15:49:17",
-    "page_time": "2013-01-31 15:49:17",
-    "prechat_survey": [
-      {
-        "key": "Name:",
-        "value": "Mark"
-      },
-      {
-        "key": "E-mail:",
-        "value": "mark.johnson@example.com"
-      }
-    ],
-    "queue_start_time": "",
-    "referrer": "",
-    "region": "North Carolina",
-    "state": "chatting",
-    "timezone": "America/New_York",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
+    "chat": {
+      // (...)
+    },
+    "chat_id": "DL1G0UED4H",
+    "chat_start_time": "2017-02-16 12:54:26",
+    "chat_start_time_ts": 1487246066,
+    "chats": 1,
     "custom_variables": [
       {
         "key": "empty_cart",
         "value": "true"
       }
     ],
-    "chats": 27,
-    "group": 0,
-    "greetings_accepted": 9,
-    "greetings_all": 13,
-    "greetings_refused": 4,
-    "visits": 16,
-    "page_views": 59
-  },
-  {
-    "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.101 Safari/537.11",
-    "chat_id": "",
-    "chat_start_time": "",
-    "city": "Courbevoie",
-    "country": "France",
-    "host": "def92-2-87-91-13-226.dsl.sta.abo.bbox.fr",
-    "id": "S1359643767.a7904dd2f2",
-    "ip": "87.91.13.226",
+    "city": "Greenville",
+    "country": "United States",
+    "country_code": "US",
+    "greetings_accepted": 1,
+    "greetings_all": 2,
+    "greetings_refused": 1,
+    "group": 102,
+    "host": "very-hosty.sl.us",
+    "id": "S148dea44981.d9443253fef2",
+    "invitation": "",
+    "ip": "8.8.8.8",
     "language": "en",
-    "last_visit": "2013-01-31 15:49:27",
-    "latitude": "48.897",
-    "longitude": "2.2564",
+    "last_visit": "2017-02-16 12:36:21",
+    "last_visit_ts": 1487244981,
+    "latitude": "35.6127",
+    "longitude": "-77.3663",
+    "name": "Visitor",
     "operators": [
-      {
-        "id": "",
-        "display_name": ""
-      }
+      // (...)
     ],
-    "page_current": "http://www.mycompany.com/",
-    "page_entered": "2013-01-31 15:49:27",
-    "page_time": "2013-01-31 15:49:27",
-    "prechat_survey": [],
-    "queue_start_time": "",
-    "referrer": "",
-    "region": "Ile-de-France",
-    "state": "online",
-    "timezone": "Europe/Paris",
-    "chats": 0,
-    "group": 0,
-    "greetings_accepted": 0,
-    "greetings_all": 0,
-    "greetings_refused": 0,
-    "visits": 1,
-    "page_views": 1
+    "page_address": "https://docs.livechatinc.com/js-api/#on-chat-window-minimized",
+    "page_current": "https://docs.livechatinc.com/js-api/#on-chat-window-minimized",
+    "page_entered": "2017-02-16 12:36:21",
+    "page_entered_ts": 1487244981,
+    "page_time": "2017-02-16 12:39:12",
+    "page_time_ts": 1487245152,
+    "page_title": "LiveChat – Chat Window API (JS)",
+    "page_views": 16,
+    "prechat_survey": [
+      // (...)
+    ],
+    "queue_start_time": 46843480,
+    "referrer": "https://www.livechatinc.com/",
+    "region": "North Carolina",
+    "state": "chatting",
+    "timezone": "America/New_York",
+    "visit_path": [
+      {
+        "invitation": "Time on site: 30 sec",
+        "page": "https://developers.livechatinc.com/",
+        "time": "2017-02-16 12:36:21",
+        "time_ref": 1487244981,
+        "time_ts": 1487244981,
+        "title": "LiveChat Developers - REST API & Integrations"
+      },
+      {
+        "invitation": "",
+        "page": "https://docs.livechatinc.com/",
+        "time": "2017-02-16 12:38:33",
+        "time_ref": 1487245113,
+        "time_ts": 1487245113,
+        "title": "LiveChat Docs"
+      },
+      // (...)
+    ],
+    "visits": 3
   },
-  (...)
+  // (...)
 ]
-    
 ```
+   
 
 Returns list of the visitors available on pages with tracking code installed.
 
