@@ -30,8 +30,6 @@ group[]=0" \
 
 > Example response
 
-> Example response
-
 ```json-doc
 [
   {
@@ -43,6 +41,12 @@ group[]=0" \
     "chat_start_time": "2017-02-16 12:54:26",
     "chat_start_time_ts": 1487246066,
     "chats": 1,
+    "custom_variables": [
+      {
+        "key": "empty_cart",
+        "value": "true"
+      }
+    ],
     "city": "Greenville",
     "country": "United States",
     "country_code": "US",
@@ -102,6 +106,7 @@ group[]=0" \
   },
   // (...)
 ]
+```
    
 
 Returns list of the visitors available on pages with tracking code installed.
