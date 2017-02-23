@@ -1,6 +1,6 @@
 # Agents
 
-Use this integration to manage your agents. This function can also be used to get information regarding your agents.
+Use this API method **manage** your Agents and to **get information** about their activities. Learn more about [Agents](https://www.livechatinc.com/kb/livechat-roles-owner-administrators-and-agents/).
 
 ## Available paths
 
