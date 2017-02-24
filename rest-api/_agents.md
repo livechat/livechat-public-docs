@@ -1,6 +1,6 @@
 # Agents
 
-Use this API method **manage** your Agents and to **get information** about their activities. Learn more about [Agents](https://www.livechatinc.com/kb/livechat-roles-owner-administrators-and-agents/).
+Use this API method to **manage** your [Agents](https://www.livechatinc.com/kb/livechat-roles-owner-administrators-and-agents/) and to **get information** about their activities.
 
 ## Available paths
 
