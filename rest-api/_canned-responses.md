@@ -1,7 +1,6 @@
-
 # Canned responses
 
-This function allows you to get a full list of your canned responses and change them.
+Use this method to **get a full list** of your [Canned responses](https://www.livechatinc.com/kb/canned-responses/) and to **modify it**.
 
 ## Available paths
 
