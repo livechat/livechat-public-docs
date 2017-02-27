@@ -1,6 +1,6 @@
 # Reports
 
-Pull various metrics and reporting data using this function.
+This method allows you to **access** and **extract** all the [Reports](https://www.livechatinc.com/kb/reporting-options-available-in-livechat/) data available in LiveChat.
 
 ## Available paths
 
