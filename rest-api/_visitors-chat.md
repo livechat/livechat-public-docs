@@ -1,10 +1,10 @@
-# Visitors chat
+# Visitor’s chat
 
-Chats API lets you conduct a chat with a support agent from the visitor's perspective.
+This method allows you to **perform a chat** via your LiveChat as a visitor.
 
-For example, you can build your own chat widget that can be installed in your mobile app (in case our [mobile app widget](https://developers.livechatinc.com/mobile/) is not sufficient for your needs).
+You can use this to **create your own chat widget** and, for example, place it within your mobile application.
 
-If you're looking for API docs for archived chats and left messages, please visit [Archives](#archives) section.
+When it comes to mobile widgets, you can use **ready-made** ones for [iOS](https://docs.livechatinc.com/ios-widget/) and [Android](https://docs.livechatinc.com/android-widget/).
 
 ## Available paths
 
