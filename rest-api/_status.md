@@ -1,6 +1,6 @@
 # Status
 
-This function will allow you to know the current status of your live chat.
+You can use this method to check whether your LiveChat is **online** or **offline**.
 
 ## Available paths
 
