@@ -1,6 +1,6 @@
 # Groups
 
-Manage your groups and group-related data using this function.
+Use this method to get [Agent Groups](https://www.livechatinc.com/features/team-management/#Groups) data and also to **create new** and **modify existing** Groups.
 
 ## Available paths
 
