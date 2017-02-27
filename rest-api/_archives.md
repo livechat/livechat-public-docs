@@ -1,6 +1,6 @@
 # Archives
 
-Get finished chats and left messages by using the "type" parameter of this function. Additionally, you can also use it to send chat transcripts.
+This method allows you to look up **past chats** and [after-hours messages](https://www.livechatinc.com/features/engaging-customers/#After-hours-form). It also allows you to send [chat transcripts](https://www.livechatinc.com/kb/how-to-get-chat-transcripts/) via email.
 
 ## Available paths
 
