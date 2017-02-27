@@ -8,7 +8,7 @@
 				<div class="docs-cover-subtitle">Reference for all LiveChat APIs</div>
 			</a>
 			<div class="docs-cover-intro">
-				<h2>Interact with LiveChat eco-system</h2>
+				<h2>Interact<br/>with LiveChat<br/>ecosystem</h2>
 				<p>Create fully customized Reports, handle Agents data or manage Archives. LiveChat REST API allows you to interact with data in many ways.</p>
 				<a href="/rest-api/" class="cta orange">See full reference</a>
 			</div>
