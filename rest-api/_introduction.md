@@ -1,8 +1,8 @@
-# Introduction
+#Introduction
 
-Welcome to the LiveChat API documentation! Our API provides flexible tools that can be used in the creation of new, outstanding projects. Each time we see creative development by skilled engineers we smile a bit more!
+Welcome to the LiveChat API documentation! Our API provides flexible tools you can use to create new, outstanding projects. We smile a bit more each time we see creative development by skilled engineers!
 
-Please note that this documentation refers to the latest, API 2.0 version. If you are looking for the previous version, you might want to check the deprecated [API 1.0 documentation](http://www.livechatinc.com/api/v1/).
+Please note that this documentation refers to the **latest API version: 2.0**. If you are looking for the previous version, you might want to check the deprecated [API 1.0 documentation].
 
 ## Basic API usage
 
