@@ -1,6 +1,6 @@
 # Goals
 
-Pull information regarding your goals and manage them using this function.
+This method allows you to **get information** about your [Goals](https://www.livechatinc.com/kb/goals-set-up-and-use/) and to **modify** them.
 
 ## Available paths
 
