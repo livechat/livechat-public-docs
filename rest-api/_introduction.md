@@ -1,4 +1,4 @@
-# Introduction
+#Introduction
 
 Welcome to the LiveChat API documentation! Our API provides flexible tools you can use to create new, outstanding projects. We smile a bit more each time we see creative development by skilled engineers!
 

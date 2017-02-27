@@ -1,6 +1,6 @@
-# Greetings
+#Greetings
 
-You can use this function to manage your greetings and greeting-related data.
+You can use this method to create new and modify existing [Greetings](https://www.livechatinc.com/kb/why-should-i-set-up-chat-greetings/). It can be also used to **look up Greetings data**.
 
 ## Available paths
 

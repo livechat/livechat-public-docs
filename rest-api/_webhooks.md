@@ -1,8 +1,8 @@
 # Webhooks
 
-Webhooks give a variety of ways to integrate LiveChat with external services.
+This method will help you build your own LiveChat integrations by **creating** and **managing webhooks**. 
 
-Visit our thorough tutorial on how to [start using webhooks](//developers.livechatinc.com/build-an-integration/#!webhooks). It includes a number of use-cases that webhooks can be used in.
+Check out out [webhooks tutorial](https://docs.livechatinc.com/build-integration/#!webhooks) for more information and on how to get started and a few use-cases.
 
 ## Available paths
 
