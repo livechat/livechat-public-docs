@@ -1,6 +1,6 @@
 # Visitors
 
-Use this function to get visitor-related information.
+You can use this method to get information about real-time [Visitors](https://www.livechatinc.com/features/visitors-tracking/) on your website. You can also use it to **display additional information** about the visitors in the LiveChat app.
 
 ## Available paths
 
