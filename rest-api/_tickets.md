@@ -1,6 +1,6 @@
 # Tickets
 
-Get all tickets and manage them using this set of API methods.
+Use this method to **get information** about a specific or all [Ticket](https://www.livechatinc.com/kb/support-tickets-in-livechat/) cases. You also use it to **create new** Tickets or **update tags** for existing Tickets.
 
 ## Available paths
 
