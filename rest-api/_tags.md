@@ -1,6 +1,6 @@
 # Tags
 
-Manage your tags.
+Using this method, you will be able to **create** and **delete** [Tags](https://www.livechatinc.com/kb/tagging-chats-and-tickets/) in LiveChat. You can also use it to **learn more** about the performance of all your Tags.
 
 ## Available paths
 
