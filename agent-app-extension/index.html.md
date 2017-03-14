@@ -7,6 +7,7 @@ themeColor: green
 
 includes:
   - introduction
+  - authorization
   - js-api
   
 ---
