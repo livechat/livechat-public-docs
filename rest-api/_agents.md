@@ -110,7 +110,7 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
 |---------|----------------------------|
 | `login` | the agent's e-mail address |
 | `name` | the agent's name |
-| `login_status` | possible values: `accepting chats`, `not accepting chats`, `offline` |
+| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for agent right after login |
 | `permission` | possible values: `owner`, `administrator`, `normal` |
 | `daily_summary` | whether or not the agent receive daily summary |
 | `job_title` | defaults to: `Support Agent` |
@@ -118,7 +118,7 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
 | `notifications` | whether or not the specific notification is enabled |
 | `max_chats_count` | limit of the concurrent chats |
 | `groups[]` | list of groups the agent is a member of |
-| `status` | possible values: `accepting chats`, `not accepting chats`, `offline` |
+| `status` | possible values: `accepting chats`, `not accepting chats`, `offline`; current status of an agent |
 | `last_logout` | timestamp of the agent's last logout |
 | `api_key` | the agent's API key (note: agents can access their own API keys only) |
 
@@ -210,7 +210,7 @@ Creates a new agent in your license.
 | Property | Description |
 |----------|----------------------------|
 | `job_title` | defaults to: `Support Agent` |
-| `login_status` | possible values: `accepting chats` (default), `not accepting chats` |
+| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for agent right after login |
 | `password` | the minimum length is 5 (if not provided, an email with the activation link will be sent) |
 | `permission` | `administrator`, `normal` (default) |
 | `groups[]` | list of group IDs |
@@ -313,7 +313,7 @@ Updates the specified agent by setting the values of the parameters passed. Any 
 |----------|----------------------------|
 | `job_title` | |
 | `name` | | 
-| `login_status` | `accepting chats` (default), `not accepting chats` |
+| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for agent right after login |
 | `password` | the password you want to change | This can be either your own password or the password of another agent | It has to be at least 5 characters long |
 | `current_password` | when changing the password for yourself or for another agent, you need to provide your current password |
 | `permission` | `administrator`, `normal` (default) |
