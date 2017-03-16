@@ -25,8 +25,8 @@
 					<dd>See how to use JS API to listen for Agent App events.</dd>
 				</dl>
 				<dl class="docs-sections green">
-					<dt><a href="https://developers.livechatinc.com/blog/agent-app-extension/" target="_blank">Gomix implementation</a></dt>
-					<dd>Learn how you can use Gomix service to build your first integration in less than 20 minutes.</dd>
+					<dt><a href="https://developers.livechatinc.com/blog/agent-app-extension/" target="_blank">Glitch implementation</a></dt>
+					<dd>Learn how you can use Glitch service to build your first integration in less than 20 minutes.</dd>
 					<dt><a href="https://developers.livechatinc.com/projects/developers-program/agent-app-extension/" target="_blank">Project page</a></dt>
 					<dd>Learn more on the project and leave your feedback.</dd>
 				</dl>
