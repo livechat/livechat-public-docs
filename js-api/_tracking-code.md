@@ -35,6 +35,21 @@ window.__lc.group = 1;
 window.__lc.chat_between_groups = false;
 
 /**
+ * By default, our tracking code strores LiveChat related data
+ * in the Google Analytics gaq - traditional asynchronous
+ * code for Google Analytics. 
+ *
+ * If you are using a different type of Google Analytics,
+ * you can decide which one LiveChat should track.
+ *
+ * The available options are:
+ * ga – Universal Analytics;
+ * gtm – Google Tag Manager;
+ * gaq – traditional asynchronous code for Google Analytics.
+ */
+window.__lc.ga_version = ga;
+
+/**
  * Visitor's data. If your visitor is already logged in
  * to your system, you can pass his name and e-mail to LiveChat apps.
  * Agents will see the information on the "Visitors" list
