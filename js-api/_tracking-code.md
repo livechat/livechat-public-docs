@@ -47,7 +47,7 @@ window.__lc.chat_between_groups = false;
  * gtm – Google Tag Manager;
  * gaq – traditional asynchronous code for Google Analytics.
  */
-window.__lc.ga_version = "ga";
+window.__lc.ga_version = 'ga';
 
 /**
  * Visitor's data. If your visitor is already logged in
