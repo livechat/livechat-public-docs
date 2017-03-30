@@ -56,7 +56,8 @@ Events `customer_profile` and `customer_profile_hidden` return object width addi
   "chat": {
     "id": "NY0U96PIT4",
     "groupID": "42"
-  }
+  },
+  "source": "chats"
 }
 ```
 
@@ -66,6 +67,7 @@ Events `customer_profile` and `customer_profile_hidden` return object width addi
 | `name` | Visitor name (if provided) |
 | `email` | Visitor email (if provided) |
 | `chat` | Object with two properties: `id` (unique chat id) and `groupID` (unique group id) |
+| `source` | String representing the source of an event. Possible values: `chats`, `visitors`, `archives`. |
 
 ### Customer profile hidden
 
