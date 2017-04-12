@@ -7,11 +7,14 @@
 
 ### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
+
+Install it with the following command:
 
 ```bash
 $ gem install cocoapods
 ```
+<div class="clear"></div>
 
 To integrate LiveChat into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -21,9 +24,10 @@ platform :ios, '9.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'LiveChat', '~> 2.0'
+    pod 'LiveChat', '~> 2.0'
 end
 ```
+<div class="clear"></div>
 
 Then, run the following command:
 
@@ -69,6 +73,7 @@ You can provide customer name or email if they are known, so customer will not n
 LiveChat.name = "iOS Widget Example"
 LiveChat.email = "example@livechatinc.com"
 ```
+<div class="clear"></div>
 
 If you want to associate some additional info with your customer, you can set Custom Variables:
 
@@ -78,34 +83,34 @@ LiveChat.setVariable(withKey:"Variable name", value:"Some value")
 
 ### Notifying user about agent response
 
-You can notifiy your user about agent response if chat was minimized by the user. To handle incoming messages your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
-
 ```swift
 class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveChatDelegate protocol
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-LiveChat.licenseId = "YOUR_LICENSE_ID"
-LiveChat.delegate = self // Set self as delegate
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        LiveChat.licenseId = "YOUR_LICENSE_ID"
+        LiveChat.delegate = self // Set self as delegate
 
-return true
-}
+        return true
+    }
 
-func received(message: LiveChatMessage) {
-print("Received message: \(message.text)")
-// Handle message here
-}
+    func received(message: LiveChatMessage) {
+        print("Received message: \(message.text)")
+        // Handle message here
+    }
 }
 ```
+
+You can notifiy your user about agent response if chat was minimized by the user. To handle incoming messages your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
 
 ### Handling URL
 
-By default, all links in chat messages are opened in Safari browser. To change this behavior you can use the `LiveChatDelegate` to handle URL's yourself.
-
 ```swift
 func handle(URL: URL) {
-print("URL is \(URL.absoluteString)")
-// Handle URL here
+    print("URL is \(URL.absoluteString)")
+    // Handle URL here
 }
 ```
+
+By default, all links in chat messages are opened in Safari browser. To change this behavior you can use the `LiveChatDelegate` to handle URL's yourself.
 
 ## Example Apps
 
