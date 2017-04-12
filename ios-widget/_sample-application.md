@@ -82,17 +82,17 @@ You can notifiy your user about agent response if chat was minimized by the user
 
 ```swift
 class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveChatDelegate protocol
-func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-LiveChat.licenseId = "YOUR_LICENSE_ID"
-LiveChat.delegate = self // Set self as delegate
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        LiveChat.licenseId = "YOUR_LICENSE_ID"
+        LiveChat.delegate = self // Set self as delegate
 
-return true
-}
+        return true
+    }
 
-func received(message: LiveChatMessage) {
-print("Received message: \(message.text)")
-// Handle message here
-}
+    func received(message: LiveChatMessage) {
+        print("Received message: \(message.text)")
+        // Handle message here
+    }
 }
 ```
 
@@ -102,8 +102,8 @@ By default, all links in chat messages are opened in Safari browser. To change t
 
 ```swift
 func handle(URL: URL) {
-print("URL is \(URL.absoluteString)")
-// Handle URL here
+    print("URL is \(URL.absoluteString)")
+    // Handle URL here
 }
 ```
 
