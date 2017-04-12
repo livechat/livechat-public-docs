@@ -1,287 +1,120 @@
-# Sample application
+## Requirements
 
-Our sample app will display a “Chat with us!” button on an iOS device. Once clicked, a chat with your support team will be opened in the app.
+- iOS 9.0+
+- Xcode 8.0+
 
-Feel free to download the [source code of this application](https://github.com/livechat/chat-window-ios/archive/master.zip) (an Xcode project).
+## Installation
 
-<img src="https://developers.livechatinc.com/wp-content/uploads/2013/11/sample-app1.jpg" class="inline" title="In-app widget example for iOS" alt="In-app widget example for iOS" width="200"/>
-<img src="https://developers.livechatinc.com/wp-content/uploads/2013/11/sample-app2.jpg" class="inline" title="In-app widget example for iOS" alt="In-app widget example for iOS" width="200"/>
+### CocoaPods
 
-Possible use-cases include: adding a chat button to your “Contact us” screen or displaying a chat button all the time, within the app. Read more about [providing in-app support](https://www.livechatinc.com/blog/2013/10/new-approach-to-in-app-support/) in mobile applications.
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
 
-Let’s get started!
-
-## Chat view
-
-Create a new project with ‘Empty Application’ template. Add a new class that will display the chat window.
-
-```swift
-// LCChatViewController.h
-#import <UIKit/UIKit.h>
-
-@interface LCCChatViewController : UIViewController<UIWebViewDelegate>
-
-@property (strong, nonatomic) UIWebView *chatView;
-@property (strong, nonatomic) UIActivityIndicatorView *indicator; 
-- (id)initWithChatUrl:(NSString*)url;
-
-@end
+```bash
+$ gem install cocoapods
 ```
-<div class="clear"></div>
 
-`LCCChatViewController` derives from `UIViewController`. It has two controls: `chatView` that will display chat window, and `indicator` which is a loader animation displayed until the chat window is loaded.
+To integrate LiveChat into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
-Also the `initWithChatUrl`: initialiser is defined to pass the chat window URL. The class implements `UIWebViewDelegate` protocol.
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
+use_frameworks!
 
+target '<Your Target Name>' do
+pod 'LiveChat', '~> 2.0'
+end
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+### Manual Installation
+
+You can integrate LiveChat into your project manually without using a dependency manager. 
+
+#### Swift
+
+Just drag all files from the `LiveChat/Classes` directory into your project.
+
+#### Objective-C
+
+Drag all files from the `LiveChat/Classes` directory into your project. When adding first `*.swift` file to Objective-C project, Xcode will ask you to create a Bridging Header. It is not necessary for LiveChat to work, so you can decline unless you plan to call Swift code from Objective-C. More information about bridging headers and Swift and Objective-C interoperability can be found [here](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html). You need to put following import statement: `#import "<Your Project Name>-Swift.h"` at the top of your .m file.
+
+Also, for Objective-C projects, you need to set the **Embedded Content Contains Swift Code** flag in your project to `Yes` (found under **Build Options** in the **Build Settings** tab). 
+
+## Usage
+
+### Initalization
 
 ```swift
-// LCChatViewController.m
-#import "LCCChatViewController.h"
+import LiveChat
 
-@interface LCCChatViewController ()
+LiveChat.licenseId = "YOUR_LICENSE_ID"
+```
 
-@property (nonatomic, copy) NSString *chatUrl; 
+### Presenting Chat Widget
 
-@end
+```swift
+LiveChat.presentChat()
+```
 
-@implementation LCCChatViewController
+### Setting Custom Variables
 
-- (id)initWithChatUrl:(NSString *)url
-{
-    self = [super init];
-    if (self) {
-        [self setChatUrl:url];
-    }
-    return self;
+You can provide customer name or email if they are known, so customer will not need to fill pre-chat survey:
+
+```swift
+LiveChat.name = "iOS Widget Example"
+LiveChat.email = "example@livechatinc.com"
+```
+
+If you want to associate some additional info with your customer, you can set Custom Variables:
+
+```swift
+LiveChat.setVariable(withKey:"Variable name", value:"Some value")
+```
+
+### Notifying user about agent response
+
+You can notifiy your user about agent response if chat was minimized by the user. To handle incoming messages your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
+
+```swift
+class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveChatDelegate protocol
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+LiveChat.licenseId = "YOUR_LICENSE_ID"
+LiveChat.delegate = self // Set self as delegate
+
+return true
 }
-```
-<div class="clear"></div>
 
-`LCCChatViewController` defines private property `chatUrl` that is set in `initWithChatUrl`:
-
-```swift
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self setTitle:@"Chat"];
-
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-
-    self.chatView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
-    [self.chatView setDelegate:self];
-    [self.chatView setAlpha:0.0];
-￼￼    [self.view addSubview:self.chatView];
-
-    self.indicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
-    [self.indicator setColor:[UIColor blackColor]];
-    [self.indicator startAnimating];
-    [self.view addSubview:self.indicator];
-
-    NSURL *url = [NSURL URLWithString:self.chatUrl];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-    [self.chatView loadRequest:request];
+func received(message: LiveChatMessage) {
+print("Received message: \(message.text)")
+// Handle message here
 }
-```
-
-<div class="clear"></div>
-
-In the `viewDidLoad` method, `chatView` and `indicator` are set up and added as subviews. `setAlpha`: message hides `chatView` until it is loaded. Then the `loadRequest`: message starts loading the chat window.
-
-```swift
-- (void)webViewDidFinishLoad:(UIWebView *)webView 
-{
-    void (^showChatView)(void) = ^(void) { 
-        [self.chatView setAlpha:1.0]; 
-        [self.indicator setAlpha:0.0]; 
-    }; 
-
-    void (^stopIndicator)(BOOL) = ^(BOOL finished) { 
-        [self.indicator stopAnimating]; 
-    }; 
-
-    [UIView animateWithDuration:1.0 
-                          delay:1.0 
-                        options:UIViewAnimationOptionCurveEaseInOut 
-                     animations:showChatView 
-                     completion:stopIndicator];
-} 
-@end
-```
-<div class="clear"></div>
-
-`webViewDidFinishLoad:webView` is called when chat window is loaded. Then an animation is played to hide the `indicator` and display the `chatView`. The animation starts with 1 second delay, to give the `chatView` a little more time to render chat window properly.
-
-## Chat URL request
-
-As the chat view controller is ready, add a new class that will obtain required chat URL address.
-
-```swift
-// LCCHomeViewController.h 
-#import <UIKit/UIKit.h>
-#import "LCCChatViewController.h"
-
-@interface LCCHomeViewController : UIViewController 
-
-@property(nonatomic, strong) LCCChatViewController *chatViewController; 
-
-@end
-```
-
-<div class="clear"></div>
-
-`LCCHomeViewController` derives from `UIViewController` and has `chatViewController` property to display the chat window (deﬁned in `LCCChatViewController.h`).
-
-```swift
-// LCCHomeViewController.m 
-#import "LCCHomeViewController.h" 
-#import <MapKit/MKMapView.h>
-
-#define LC_URL        "https://cdn.livechatinc.com/app/mobile/urls.json"
-#define LC_LICENSE    "3498581"
-#define LC_CHAT_GROUP "0"
-
-@interface LCCHomeViewController () 
-@property (nonatomic, strong) NSString *chatURL; 
-
-- (void) requestUrls; 
-- (NSString*) prepareUrl:(NSString *)url; 
-- (void) startChat:(UIButton*)button; 
-
-@end
-```
-
-<div class="clear"></div>
-
-`MKMapView.h` is imported from MapKit framework to create sample map view. MapKit framework should be added to the project.
-
-Constant `LC_URL` contains the address where the chat and status URLs can be obtained from. `LC_LICENCE` and `LC_CHAT_GROUP` symbols will replace templates in chat and status URLs. 
-
-Please replace value of `LC_LICENCE` with your `licence id`. You will find your ​[**license ID**](https://my.livechatinc.com/settings/code) in the LiveChat tracking code snippet.
-
-`LCCHomeViewController` defines `chatURL` private property that stores the address of the chat window and three private methods.
-
-```swift
-@implementation LCCHomeViewController 
-
-- (void)viewDidLoad 
-{ 
-    [super viewDidLoad]; 
-
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    MKMapView *mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
-    [self.view addSubview:mapView];
-
-    UIBarButtonItem *chatButton = [[UIBarButtonItem alloc] 
-                                    initWithTitle:@"Chat with us!" 
-                                    style:UIBarButtonItemStyleBordered 
-                                    target:self 
-                                    action:@selector(startChat:)];
-    [self.navigationItem setRightBarButtonItem:chatButton]; 
-
-    [self requestUrl]; 
 }
 ```
 
-<div class="clear"></div>
+### Handling URL
 
-In the `viewDidLoad` method, `mapView` is added to the view and `chatButton` is set up. When the button is tapped, it will start the chat by calling the `startChat`: method. When the button is ready, `requestUrl` method is called.
+By default, all links in chat messages are opened in Safari browser. To change this behavior you can use the `LiveChatDelegate` to handle URL's yourself.
 
 ```swift
-- (void)requestUrl
-{
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURL *url = [NSURL URLWithString:@LC_URL];
-    [[session dataTaskWithURL:url
-            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                if (!error) {
-                    NSError *jsonError;
-                    NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:data
-                                                                         options:NSJSONReadingAllowFragments
-                                                                           error:&jsonError];
-
-                    if ([JSON isKindOfClass:[NSDictionary class]] && [JSON valueForKey:@"chat_url"] != nil) {
-                        self.chatURL = [self prepareUrl:JSON[@"chat_url"]];
-                    } else if (jsonError) {
-                        NSLog(@"%@", jsonError);
-                    }
-                } else {
-                    NSLog(@"%@", error);
-                }
-            }] resume];
+func handle(URL: URL) {
+print("URL is \(URL.absoluteString)")
+// Handle URL here
 }
 ```
 
-<div class="clear"></div>
+## Example Apps
 
-Method `requestUrls` performs a request to `LC_URL` and defines two blocks: `successHandler` and `failureHandler`. `successHandler` extracts `chatURL` from `JSON` response using the `prepareUrl`: method.
+Example apps can be found in the `Examples` folder. Samples for both Swift and Objective-C are provided.
 
-```swift
-- (NSString *)prepareUrl:(NSString *)url 
-{ 
-    NSMutableString *string = [NSMutableString stringWithFormat:@"https://%@", url]; 
+## Getting help
 
-    [string replaceOccurrencesOfString:@"{%license%}" 
-                            withString:@LC_LICENSE 
-                              options:NSLiteralSearch 
-                                range:NSMakeRange(0, [string length])]; 
+Any questions? [Chat with Us!](https://secure-lc.livechatinc.com/licence/8413431/open_chat.cgi)
 
-    [string replaceOccurrencesOfString:@"{%group%}" 
-                            withString:@LC_CHAT_GROUP 
-                              options:NSLiteralSearch 
-                                range:NSMakeRange(0, [string length])]; 
+## License
 
-    return string; 
-}
-```
-
-<div class="clear"></div>
-
-Method `prepareUrl:` adds http:// at the begging of the ULR and replaces {%license%} and {%group%} templates with `LC_LICENCE` and `LC_CHAT_GROUP`.
-
-```swift
-- (void)startChat:(UIButton*)button { 
-
-    if (!self.chatViewController) { 
-        self.chatViewController = [[LCCChatViewController alloc] initWithChatUrl:self.chatURL]; 
-        [self setShouldPerformRequest:NO]; 
-    } 
-
-    [self.navigationController pushViewController:self.chatViewController animated:YES]; 
-} 
-@end
-```
-
-<div class="clear"></div>
-
-When `chatButton` is tapped, the chat view is pushed to the screen. If it is happening for the first time, `chatViewController` is created.
-
-## AppDelegate
-
-Class `LCCAppDelegate` is generated automatically with a new project.
-
-```swift
-// LCCAppDelegate.m 
-#import "LCCAppDelegate.h" 
-#import "LCCHomeViewController.h" 
-
-@implementation LCCAppDelegate 
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary 
-*)launchOptions 
-{ 
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]]; 
-
-    LCCHomeViewController *viewController = [[LCCHomeViewController alloc] init]; 
-    UINavigationController *navController = [[UINavigationController alloc] 
-                                                    initWithRootViewController:viewController]; 
-    [self.window setRootViewController:navController]; 
-
-    self.window.backgroundColor = [UIColor whiteColor]; 
-    [self.window makeKeyAndVisible]; 
-    return YES; 
-}
-```
-
-In `application:didFinishLaunchingWithOptions`, create an instance of UINavigationController initialized with `viewController` (`LCCHomeViewController` instance) and set it as window’s main view controller.
+LiveChat for iOS is available under the MIT license. See the LICENSE file for more info.
