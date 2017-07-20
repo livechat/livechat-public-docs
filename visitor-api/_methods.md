@@ -1,4 +1,4 @@
-# Methods
+## Methods
 
 ### init
 ```js
@@ -10,7 +10,7 @@ const visitorApi = init({
 })
 ```
 
-params:
+Parameters:
 
 | param   | type   | description              |
 | ------- | ------ | ------------------------ |
@@ -31,20 +31,21 @@ visitorApi.sendMessage({
     })
 ```
 
-params:
+Parameters:
 
 | param    | type   | description          |
 | -------- | ------ | -------------------- |
 | text     | string | Visitor message text |
 | customId | string | Message custom Id    |
 
-errors:
+Errors:
 
-| type       | reason               |
-| ---------- | -------------------- |
-| connection | "Connection timeout" |
+| type             | reason                               |
+| ---------------- | ------------------------------------ |
+| connection       | "Request failed"                     |
+| missing argument | "Missing text or customId parameter" |
 
-### sendFile
+### sendFile - not implemented yet
 ```js
 visitorApi.sendFile({
     file: FileObject,
@@ -58,7 +59,7 @@ visitorApi.sendFile({
     })
 ```
 
-params:
+Parameters:
 
 | param      | type   | description    |
 | ---------- | ------ | -------------- |
@@ -67,7 +68,7 @@ params:
 
 Feature description: https://www.livechatinc.com/features/chat-tools/#File-sharing
 
-### rateChat
+### rateChat - not implemented yet
 ```js
 visitorApi.rateChat({
     rate: "good",
@@ -75,7 +76,7 @@ visitorApi.rateChat({
 })
 ```
 
-params:
+Parameters:
 
 | param   | type                      | description                  |
 | ------- | ------------------------- | ---------------------------- |
@@ -84,14 +85,14 @@ params:
 
 Feature description: https://www.livechatinc.com/features/getting-feedback/#Chat-ratings
 
-### markMessageAsSeen
+### markMessageAsSeen - not implemented yet
 ```js
 visitorApi.markMessageAsSeen({
     messageId: "123123123",
 })
 ```
 
-params:
+Parameters:
 
 | param     | type   | description                        |
 | --------- | ------ | ---------------------------------- |
@@ -99,14 +100,14 @@ params:
 
 Feature description: https://www.livechatinc.com/features/chat-tools/#Delivery-status
 
-### setSneakPeek
+### setSneakPeek - not implemented yet
 ```js
 visitorApi.setSneakPeek({
     message: "Hello, I woul",
 })
 ```
 
-params:
+Parameters:
 
 | param   | type   | description                |
 | ------- | ------ | -------------------------- |
@@ -116,14 +117,14 @@ Note: Sneak peek won't be sent every time you call a function. It will be thrott
 
 Feature description: https://www.livechatinc.com/features/chat-tools/#Message-sneak-peak
 
-### forwardChatTranscript
+### forwardChatTranscript - not implemented yet
 ```js
 visitorApi.forwardChatTranscript({
     email: "test@livechatinc.com",
 })
 ```
 
-params:
+Parameters:
 
 | param | type   | description                                                                |
 | ----- | ------ | -------------------------------------------------------------------------- |
@@ -131,30 +132,47 @@ params:
 
 Feature description: https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features
 
-### sendTicketForm
+### sendTicketForm - not implemented yet
 ```js
 visitorApi.sendTicketForm(form)
 ```
 
 Feature description: https://www.livechatinc.com/features/engaging-customers/#Ticket-form
 
-### sendPrechatForm
+### sendPrechatForm - not implemented yet
 ```js
 visitorApi.sendPrechatForm(form)
 ```
 
-### sendPostchatForm
+### sendPostchatForm - not implemented yet
 ```js
 visitorApi.sendPostchatForm(form)
 ```
 
 Feature description: https://www.livechatinc.com/features/getting-feedback/#Post-chat-surveys
 
-### setVisitorData
+### getVisitorData - not implemented yet
+
+```js
+
+const visitorData = visitorApi.getVisitorData()
+```
+
+returned value: 
+
+| param            | type   | description                                                 |
+| ---------------- | ------ | ----------------------------------------------------------- |
+| name             | string | Visitor's name                                              |
+| email            | string | Visitor's email address                                     |
+| url              | string | Visitor's currently visiting website URL                    |
+| customProperties | object | Visitor's additional data object (custom properties)        |
+
+### setVisitorData - not implemented yet
 ```js
 visitorApi.setVisitorData({
     name: "Wynton Marsalis",
     email: "test@livechatinc.com",
+    url: 'http://example.org/pricing'
     customProperties: [
         "Account Id": "AB2341CWD",
         "Login": "w_marsalis",
@@ -162,13 +180,19 @@ visitorApi.setVisitorData({
 })
 ```
 
-
-params:
+Parameters:
 
 | param            | type   | description                                                 |
 | ---------------- | ------ | ----------------------------------------------------------- |
 | name             | string | Visitor's name                                              |
 | email            | string | Visitor's email address                                     |
+| url              | string | Visitor's currently visiting website URL                    |
 | customProperties | object | Visitor's additional data object (custom properties)        |
+
+errors:
+
+| type             | reason                                         |
+| ---------------- | ---------------------------------------------- |
+| missing argument | "Missing name, email, url or customProperties" |
 
 Feature description: https://www.livechatinc.com/features/chat-tools/#Visitor-information
