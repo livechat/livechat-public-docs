@@ -7,6 +7,15 @@ themeColor: green
 
 includes:
   - introduction
+  - installation
+  - usage
+  - configuration
+  - chatwindowview
+  - navigation
+  - filesharing
+  - chatwindoweventslistener
+  - alternativeusage
   - sample-application
+  - translation
   
 ---
