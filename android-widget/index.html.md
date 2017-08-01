@@ -14,7 +14,6 @@ includes:
   - navigation
   - filesharing
   - chatwindoweventslistener
-  - exampleusage
   - alternativeusage
   - sample-application
   - translation

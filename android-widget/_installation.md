@@ -8,7 +8,7 @@ To get the project into your build, do the following:
 
 Add it to your root build.gradle at the end of ```repositories```:
 
-```java
+```js
 allprojects {
      repositories {
          ...
@@ -21,7 +21,7 @@ allprojects {
 
 To add the dependency, use the following code:
 
-```java
+```js
 dependencies {
     compile 'com.github.livechat:chat-window-android:v2.0.0'
 }

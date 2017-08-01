@@ -2,8 +2,7 @@
 
 The configuration is very simple - just use **ChatWindowConfiguration.java** constructor. Note that the licence number is mandatory.
 
-
-```java
+```js
 configuration = new ChatWindowConfiguration(
 	"your_licence_number", 
 	"group_id", 

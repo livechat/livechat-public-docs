@@ -13,7 +13,7 @@ There are two recommended ways to use the **ChatWindow**:
 
 All you need to do is to create, attach and initialize the chat window. For example:
 
-```java
+```js
 public void startFullScreenChat() {
     if (fullScreenChatWindow == null) {
         fullScreenChatWindow = ChatWindowView.createAndAttachChatWindowInstance(getActivity());
@@ -46,7 +46,7 @@ ChatWindowView chatWindowView = new ChatWindowView(MainActivity.this);
 
 and then initializing the **ChatWindow** with the full screen window approach:
 
-```java
+```js
 public void startEmmbeddedChat(View view) {
     if (!emmbeddedChatWindow.isInitialized()) {
         emmbeddedChatWindow.setUpWindow(configuration);

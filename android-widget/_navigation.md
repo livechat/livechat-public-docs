@@ -4,7 +4,7 @@ Depending on your use case you may want to hide the **ChatWindow** if a user hit
 You can use our ```onBackPressed()``` function which hides the view if it's visible and returns ```true```.
 Add the following to your activity/fragment:
 
-```java
+```js
 @Override
 public boolean onBackPressed() {
     return fullScreenChatWindow != null && fullScreenChatWindow.onBackPressed();
