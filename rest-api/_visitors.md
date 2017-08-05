@@ -163,7 +163,7 @@ fields[0][value]=36"
 curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
   -H X-API-Version:2 \
   -H Content-type:application/json \
-  -d "{
+  -d '{
         "license_id":12345,
         "token":"26132406c42c96ba61ed42689b70f719",
         "id":"my-app",
@@ -173,7 +173,7 @@ curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
             "value":36
           }
         ]
-      }"
+      }'
 ```
 
 > Example response

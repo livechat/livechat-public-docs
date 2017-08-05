@@ -48,7 +48,7 @@ This function creates new chat for a visitor and returns unique session ID, whic
 
 | Property | Description |
 |---------|--------------------|
-| `visitor_id` | unique ID of the visitor. It should be generated randomly on your side. If you already have an ID of your user in your database, it can be used as the `visitor_id` |
+| `visitor_id` | unique ID of the visitor. It should be generated randomly on your side. If you already have an ID of your user in your database, it can be used as the `visitor_id`. Its maximum length is 1024 characters |
 | `licence_id` | your LiveChat account number. You can obtain it from your [LiveChat's installation code](https://my.livechatinc.com/settings/code) (the `__lc.license` param value) |
 | `welcome_message` | short welcome message displayed at the beginning of the chat. Its maximum length is 1024 characters |
 
