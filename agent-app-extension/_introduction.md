@@ -8,9 +8,9 @@ Agent App Extensions are web applications loaded inside the LiveChat Agent App. 
 
 ## Use cases
 
-There are number of ways you can utilise the extension:
+There are number of ways you can utilize the extension:
 
-* query external services with vistior email or LiveChat group ID (CRM, marketing automation, etc.),
+* query external services with visitor email or LiveChat group ID (CRM, marketing automation, etc.),
 * display static content, e.g. knowledge base articles, conversation prompts or context information,
 * query [LiveChat REST API](/rest-api) to do basically anything with the visitor, agent or chat.
 
@@ -25,7 +25,7 @@ We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS styles
 
 ## Example extensions
 
-We've prepared two example repositories for your convenience. Both examples show how to receive data from [Events](#events) and display them within the sidebar. 
+We've prepared two example repositories for your convenience. Both examples show how to receive data from [Events](#events) and display them within the sidebar.
 
 <img class="framed" src="../__images/agent-app-sample-extension.png" width="500" />
 
@@ -84,7 +84,7 @@ If you want to build your own environment, be sure to include both the [LiveChat
 
 ### Extension hosting
 
-You can either host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack) you'll get the setup out of-the-box. 
+You can either host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack) you'll get the setup out of-the-box.
 
 ## Turn on the extension
 
@@ -101,7 +101,7 @@ App.collections.Integrations.add({
 
 > <img src="../__images/agent-app-extension.gif" width="400" />
 
-To activate the extension, login to the [Agent App](https://my.livechatinc.com/) and simply paste this snippet within developers console in your browser of choice. The `id` has to be `sandbox`, but you can go with `url` of your own environment. 
+To activate the extension, login to the [Agent App](https://my.livechatinc.com/) and simply paste this snippet within developers console in your browser of choice. The `id` has to be `sandbox`, but you can go with `url` of your own environment.
 
 <aside class="notice">Keep in mind that a random URL won't work! For the extension to load completely, the Init method needs to be fired. </aside>
 
