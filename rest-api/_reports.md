@@ -97,7 +97,7 @@ Shows how many chats occurred during the specified period.
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Chat engagement
 
@@ -149,7 +149,7 @@ This report shows you where do you get your chats, i.e. from automatic invitatio
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Chat ratings report
 
@@ -219,7 +219,7 @@ Shows how many chats were rated and how they have been rated during specified pe
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 
 ## Chat Ranking
@@ -276,7 +276,7 @@ Shows the ratio of good to bad ratings for each operator.
 | `date_from` | `YYYY-MM-DD`, defaults to `the beginning of time` |
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Queued visitors
 
@@ -525,7 +525,7 @@ Shows how much time the agent (or group) spent on chatting during specified peri
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, returns statistics for the specified agent |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 
 ## Chats first response time
@@ -584,7 +584,7 @@ The average amount of time it takes for agents to respond to a new chat over a s
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
@@ -647,7 +647,7 @@ The average amount of time it takes for agents to respond to a new message in a 
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
@@ -753,7 +753,7 @@ Shows the number of reached goals.
 | `goal` | id of the goal, not set by default |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Greetings
 
@@ -810,7 +810,7 @@ Returns the “greetings to chats to goals” conversion rates report.
 | `goal` | id of the goal, not set by default |
 | `greeting` | `id` of the greeting, not set by default, returns statistics for the specified greeting |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## New tickets
 
@@ -859,7 +859,7 @@ Shows the number of the tickets created during the specified period.
 | `timezone` | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix) |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Tickets first response time
 
@@ -912,7 +912,7 @@ Shows the time of the first response to tickets that were responded to for the f
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
@@ -966,7 +966,7 @@ Shows the number of the tickets solved during the specified period.
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 
 ## Tickets resolution time
@@ -1020,7 +1020,7 @@ Shows the resolution time of the tickets that were solved during the specified p
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 Two parameters are returned:
 
@@ -1079,7 +1079,7 @@ Shows the distribution of tickets between various channels.
 | `timezone` | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix) |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
@@ -1163,7 +1163,7 @@ Shows tickets have been rated during specified period.
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Ticket Ranking
 
@@ -1219,4 +1219,4 @@ Shows the ratio of good to bad ratings for each operator.
 | `date_from` | `YYYY-MM-DD`, defaults to `the beginning of time` |
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
