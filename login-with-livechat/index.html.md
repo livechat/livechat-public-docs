@@ -3,7 +3,7 @@ title: Login with LiveChat
 
 menuTitle: Login with <u>LiveChat</u>
 
-themeColor: orange
+themeColor: fuchsia
 
 includes:
   - introduction
