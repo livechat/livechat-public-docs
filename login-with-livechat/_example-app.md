@@ -14,7 +14,7 @@
 <script src="//cdn.livechatinc.com/accounts/accounts-sdk.min.js"></script>
 <script>
 AccountsSDK.init({
-  clientId: '<your_client_id>',
+  client_id: '<your_client_id>',
   onIdentityFetched: function(error, data) {
     if (data) {
       document.getElementById('license').innerText = data.license;
