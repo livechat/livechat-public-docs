@@ -1,6 +1,6 @@
 #Greetings
 
-You can use this method to create new and modify existing [Greetings](https://www.livechatinc.com/kb/why-should-i-set-up-chat-greetings/). It can be also used to **look up Greetings data**.
+You can use this method to create new and modify the existing [Greetings](https://www.livechatinc.com/kb/why-should-i-set-up-chat-greetings/). It can be also used to **look up Greetings data**.
 
 ## Available paths
 
@@ -16,7 +16,7 @@ You can use this method to create new and modify existing [Greetings](https://ww
 ```
 GET -H X-API-Version:2 https://api.livechatinc.com/greetings
 ```
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings\
@@ -25,7 +25,7 @@ curl "https://api.livechatinc.com/greetings\
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 [
@@ -84,7 +84,7 @@ Returns the list of all greetings.
 GET -H X-API-Version:2 https://api.livechatinc.com/greetings/<GREETING_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings/2411" \
@@ -92,7 +92,7 @@ curl "https://api.livechatinc.com/greetings/2411" \
   -H X-API-Version:2
 ```
 
-> Example result
+> Sample result
 
 ```json-doc
 {
@@ -119,8 +119,8 @@ Returns the specified greeting.
 
 #### Additional info:
 
-*   `active` – Tells you whether the greeting is enabled or not
-*   `rules` – Gives you an array with all the rules for the specified greeting.
+*   `active` – Indicates whether the greeting is enabled or not
+*   `rules` – Returns an array with all the rules for the specified greeting
 
 ## Create a new greeting
 
@@ -136,18 +136,18 @@ Use this function to create a new greeting.
 
 | Property | Description |
 |---------|--------------------|
-| `name` | greeting name displayed in LiveChat settings (not visible to your website visitors) |
+| `name` | greeting name displayed in the LiveChat settings (not visible to your website's visitors) |
 | `rules` | an array of conditions that must be met for the greeting to be displayed. Greeting rules are [documented below](#greeting-rules) |
 
 #### Optional properties
 
 | Property | Description |
 |---------|--------------------|
-| `group` | creates a greeting displayed in particular group only. Defaults to `0` |
+| `group` | creates a greeting displayed in a particular group only. Defaults to `0` |
 
 ## Greeting rules
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings" \
@@ -162,7 +162,7 @@ rules[1][value]=2&\
 rules[1][operator]=greater_or_equal"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/greetings" \
@@ -186,7 +186,7 @@ curl "https://api.livechatinc.com/greetings" \
       }'
 ```
 
-> Example result
+> Sample result
 
 ```json-doc
 {
@@ -231,26 +231,26 @@ Each greeting rule can contain an `operator`. Here's a list of possible operator
 
 The default value for `operator` is `equals`.
 
-And here's a list of greeting rules you can use:
+And here's a list of the greeting rules that you can use:
 
 | Rule | Description |
 |---------|--------------------|
-| `visit_time_site` | After visitor spent a certain amount of time on site |
-| `visit_time_page` | After visitor spent a certain amount of time on page |
-| `url_current` | For visitors on specific pages |
-| `url_visited` | When visitor visited specific pages |
-| `pages_view_number` | For visitors who have seen the page for a number of times |
-| `url_referrer` | When the visitor arrived from a referring page |
-| `geolocation` | For visitors from specific countries or cities |
-| `visits_number` | For returning visitors |
-| `search_keyword` | When visitor looked up a search keyword |
+| `visit_time_site` | After a visitor has spent a certain amount of time on the site |
+| `visit_time_page` | After a visitor has spent a certain amount of time on a page |
+| `url_current` | For the visitors on specific pages |
+| `url_visited` | When a visitor has visited specific pages |
+| `pages_view_number` | For the visitors who have seen a page for a number of times |
+| `url_referrer` | When the visitor has arrived from a referring page |
+| `geolocation` | For the visitors from specific countries or cities |
+| `visits_number` | For the returning visitors |
+| `search_keyword` | When a visitor has searched for a specific keyword |
 | `custom_variable` | The greeting will be sent when the specified variable is met [documented below](#custom-variable) |
-| `url_funnel` | Visitors who visit the specified sequence of websites will receive the greeting [documented below](#url-funnel) |
+| `url_funnel` | The visitors who visit the specified sequence of websites will receive the greeting [documented below](#url-funnel) |
 
 
 ### Custom variable
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings\
@@ -264,7 +264,7 @@ rules[0][variable_value]=var_value&\
 rules[0][operator]=contains"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```
 curl "https://api.livechatinc.com/greetings\
@@ -285,7 +285,7 @@ curl "https://api.livechatinc.com/greetings\
       }'
 ```
 
-> Example result
+> Sample result
 
 ```json-doc
 {
@@ -317,7 +317,7 @@ The greeting will be sent when the specified variable is met.
 
 ### URL Funnel
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings" \
@@ -331,7 +331,7 @@ rules[0][urls][1][url]=cart&\
 rules[0][urls][1][operator]=contains"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/greetings" \
@@ -358,7 +358,7 @@ curl "https://api.livechatinc.com/greetings" \
       }'
 ```
 
-> Example result
+> Sample result
 
 ```json-doc
 {
@@ -389,13 +389,13 @@ curl "https://api.livechatinc.com/greetings" \
 }
 ```
 
-Visitors who visit the specified sequence of websites will receive the greeting.
+The visitors who have visited the specified sequence of pages will receive the greeting.
 
-<aside class="notice">When using the `url_funnel` greeting rule, you need to provide the `urls` variable. It is an array of objects with the required `url` parameter and optional `operator` parameter (defaults to: `equals`).</aside>
+<aside class="notice">When using the `url_funnel` greeting rule, you need to provide the `urls` variable. It is an array of objects with the required `url` parameter and the optional `operator` parameter (defaults to: `equals`).</aside>
 
-## Greetings with mutliple rules
+## Greetings with multiple rules
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings" \
@@ -412,7 +412,7 @@ rules[2][value]=shoes&\
 rules[2][operator]=contains"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/greetings" \
@@ -440,7 +440,7 @@ curl "https://api.livechatinc.com/greetings" \
       }'
 ```
 
-> Example result
+> Sample result
 
 ```json-doc
 {
@@ -488,11 +488,11 @@ You can create a greeting that will have more than one rule.
 PUT -H X-API-Version:2 -d "..." "https://api.livechatinc.com/greetings/<GREETING_ID>"
 ```
 
-You can change the previously created greetings using this request. `GREETING_ID` is obtained from the [all greetings](#get-greetings) list.
+You can change the previously created greetings using this request. The `GREETING_ID` is obtained from the list of [all greetings](#get-greetings).
 
 ### Update greeting name or message
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings/2491" \
@@ -506,7 +506,7 @@ Use this request to change the name or message of a greeting.
 
 ### Activate and deactivate greetings
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings/2491" \
@@ -519,7 +519,7 @@ Activate or deactivate a greeting using this request.
 
 ### Change greetings rules
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings/2491"\
@@ -530,7 +530,7 @@ rules[0][variable_name]=athletic_shoes&\
 rules[0][variable_value]=true" 
 ```
 
-> Example result
+> Sample result
 
 ```json-doc
 {
@@ -564,7 +564,7 @@ Change the rules of your greetings with this request.
 DELETE https://api.livechatinc.com/greetings/<GREETING_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/greetings/2491" \
@@ -573,7 +573,7 @@ curl "https://api.livechatinc.com/greetings/2491" \
   -X DELETE
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -581,4 +581,4 @@ curl "https://api.livechatinc.com/greetings/2491" \
 }
 ```
 
-Removes an greeting.
+Removes a greeting.

@@ -1,6 +1,6 @@
 # Tickets
 
-Use this method to **get information** about a specific or all [Ticket](https://www.livechatinc.com/kb/support-tickets-in-livechat/) cases. You also use it to **create new** Tickets or **update tags** for existing Tickets.
+Use this method to **get information** about a specific case or all [Ticket](https://www.livechatinc.com/kb/support-tickets-in-livechat/) of them. You also use it to **create new** Tickets or **update tags** for the existing Tickets.
 
 ## Available paths
 
@@ -19,7 +19,7 @@ Use this method to **get information** about a specific or all [Ticket](https://
 GET https://api.livechatinc.com/tickets
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/tickets?\
@@ -29,7 +29,7 @@ status=open" \
   -H X-API-Version:2 
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -113,30 +113,30 @@ Returns all tickets.
 
 | Parameter | Description |
 |---------|--------------------|
-| `date_from` | `YYYY-MM-DD`. Returns tickets with any of its activities matching the date. Defaults to `the beginning of time` |
-| `date_to` | `YYYY-MM-DD`. Returns tickets with any of its activities matching the date. Defaults to `today` |
+| `date_from` | `YYYY-MM-DD`. Returns the tickets with any of their activities matching the date. Defaults to `the beginning of time` |
+| `date_to` | `YYYY-MM-DD`. Returns the tickets with any of their activities matching the date. Defaults to `today` |
 | `page` | page number, defaults to 1 |
-| `assigned` | if `0`, returns only unassigned tickets. If `1`, returns only tickets assigned to any agent |
-| `order` | orders tickets by date of last ticket modification. Possible values: `desc`, `asc`. Defaults to `desc` |
+| `assigned` | if `0`, returns only the unassigned tickets. If `1`, returns only the tickets assigned to any agent |
+| `order` | orders the tickets by date of the last ticket modification. Possible values: `desc`, `asc`. Defaults to `desc` |
 | `status` | not set by default. Possible values: `open`, `pending`, `solved` or `spam` |
-| `assignee` | return tickets assigned to given agent's login |
-| `query` | return tickets containing the query |
-| `requester[mail]` | return tickets assigned to given requester |
-| `group` | return tickets for given group |
-| `source` | return tickets for given source. Possible values: `lc2` (created from archives), `mail`, `facebook`, `agent-app-manual` (created manually), `chat-window` (created from ticket form) |
-| `tag` | return statistics for the specified tag |
-| `tagged` | `1/0`. If 1 is passed, returns tickets having any tag. If 0 passed, returns tickets without any tag |
+| `assignee` | return the tickets assigned to the given agent's login |
+| `query` | return the tickets containing the query |
+| `requester[mail]` | returns the tickets assigned to the given requester |
+| `group` | returns the tickets for the given group |
+| `source` | returns the tickets for the given source. Possible values: `lc2` (created from archives), `mail`, `facebook`, `agent-app-manual` (created manually), `chat-window` (created from ticket form) |
+| `tag` | returns the statistics for the specified tag |
+| `tagged` | `1/0`. If 1 is passed, returns the tickets with any tag. If 0 passed, returns the tickets with no tags |
 
 
 #### Additional info:
 
-Results are divided into pages, each containing 25 tickets.
+The results are divided into pages, each containing 25 tickets.
 
-`total` tells you the total number of tickets.  
-`pages` tells you the total number of pages.
+`total` indicates the total number of tickets.  
+`pages` indicstes the total number of pages.
 
 To access next pages of the results, use `?page=<PAGE>` parameter.  
-Please note that first page's number is `1`, not `0`.
+Please note that the first page's number is `1`, not `0`.
 
 ## Get single ticket
 
@@ -146,7 +146,7 @@ Please note that first page's number is `1`, not `0`.
 GET https://api.livechatinc.com/tickets/<TICKET_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/tickets/5FUED" \
@@ -154,11 +154,11 @@ curl "https://api.livechatinc.com/tickets/5FUED" \
   -H X-API-Version:2 
 ```
 
-> Example response
+> Sample response
 
-> *Return format is the same as the single ticket item in [tickets list](#get-list-of-tickets).*
+> *The return format is the same as the single ticket item in [tickets list](#get-list-of-tickets).*
 
-Returns single ticket item for the given `TICKET_ID`.
+Returns a single ticket item for the given `TICKET_ID`.
 
 ## Create a ticket
 
@@ -168,7 +168,7 @@ Returns single ticket item for the given `TICKET_ID`.
 POST https://api.livechatinc.com/tickets
 ```
 
-> Example request
+> Sample request
 
 ```
 curl "https://api.livechatinc.com/tickets" \
@@ -180,7 +180,7 @@ curl "https://api.livechatinc.com/tickets" \
   requester[name]=Mary+Brown"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/tickets" \
@@ -198,10 +198,10 @@ curl "https://api.livechatinc.com/tickets" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
-Return format is the same as the single ticket item in [tickets list](#get-tickets).
+The return format is the same as the single ticket item in [tickets list](#get-tickets).
 
 ```
 
@@ -233,7 +233,7 @@ Creates a new ticket.
 ```
 PUT https://api.livechatinc.com/tickets/<TICKET_ID>/tags
 ```
-
+Sample
 > Example request
 
 ```shell
@@ -246,7 +246,7 @@ tag[]=support&\
 tag[]=feedback" 
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```
 curl "https://api.livechatinc.com/tickets/5FUED/tags" \
@@ -258,7 +258,7 @@ curl "https://api.livechatinc.com/tickets/5FUED/tags" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {

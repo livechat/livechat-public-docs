@@ -1,6 +1,6 @@
 # Archives
 
-This method allows you to look up **past chats** and [after-hours messages](https://www.livechatinc.com/features/engaging-customers/#After-hours-form). It also allows you to send [chat transcripts](https://www.livechatinc.com/kb/how-to-get-chat-transcripts/) via email.
+This method allows you to look up the **past chats** and [after-hours messages](https://www.livechatinc.com/features/engaging-customers/#After-hours-form). It also allows you to send [chat transcripts](https://www.livechatinc.com/kb/how-to-get-chat-transcripts/) via email.
 
 ## Available paths
 
@@ -19,7 +19,7 @@ This method allows you to look up **past chats** and [after-hours messages](http
 GET https://api.livechatinc.com/chats
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/chats?\
@@ -29,7 +29,7 @@ curl "https://api.livechatinc.com/chats?\
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -244,12 +244,12 @@ Returns all ended chats.
 | `pages` | tells you the total number of pages
 | `city`, `region`, `country` | geolocation filters have been working for chats since May 11, 2015
 
-Results are divided into pages, each containing 25 chats. To access next pages of the results, use `?page=<PAGE>` parameter. Please note that first page's number is `1`, not `0`.
+The results are divided into pages, each containing 25 chats. To access next pages of the results, use `?page=<PAGE>` parameter. Please note that first page's number is `1`, not `0`.
 
 
 ## Get single chat
 
-Returns single chat item for the given `CHAT_ID`.
+Returns a single chat item for the given `CHAT_ID`.
 
 > Path
 
@@ -257,7 +257,7 @@ Returns single chat item for the given `CHAT_ID`.
 GET https://api.livechatinc.com/chats/<CHAT_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5" \
@@ -265,9 +265,9 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
-> *Return format is the same as the single chat item in [get list of chats](#get-list-of-chats).*
+> *The return format is the same as the single chat item in [get list of chats](#get-list-of-chats).*
 
 ## Send chat transcript to e-mail
 
@@ -277,7 +277,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5" \
 POST https://api.livechatinc.com/chats/<CHAT_ID>/send_transcript
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
@@ -286,7 +286,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
   -d "to=john.doe@mycompany.com"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
@@ -298,7 +298,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
       }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -321,7 +321,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
 PUT https://api.livechatinc.com/chats/<CHAT_ID>/tags
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
@@ -333,7 +333,7 @@ tag[]=support&\
 tag[]=feedback"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
@@ -348,7 +348,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
       }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -488,7 +488,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
 }
 ```
 
-Method updates tags assigned to a chat.
+This method updates the tags assigned to a chat.
 
 #### Required parameter
 

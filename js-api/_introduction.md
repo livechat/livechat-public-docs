@@ -1,11 +1,11 @@
 # Introduction
 
-Use the chat window API to manipulate the chat widget displayed on your website. Some popular use–cases are:
+The chat window API allows you to manipulate the chat widget displayed on your website. Some common use–cases are:
 
 *   maximizing the chat window after a given time,
 *   hiding the window during the weekends.
 
-You can also get some basic visitor’s statistics. For instance, chat window API will tell you how many chats the visitor had in the past.
+You can also get some basic visitor’s statistics. For instance, the chat window API will tell you how many chats the visitor had in the past.
 
 ## Support for AJAX–based and Flash-based websites
 
@@ -13,7 +13,7 @@ LiveChat has a built–in support for AJAX-based and Flash-based websites that d
 
 ## Support for the JavaScript API in chat window installed in native mobile apps
 
-When you install the chat window in a [native mobile app](https://developers.livechatinc.com/mobile/), you can still interact with the JavaScript API using `LC_API` object.
+When you install the chat window in a [native mobile app](https://developers.livechatinc.com/mobile/), you can still interact with the JavaScript API using the `LC_API` object.
 
 ## Using chat window API
 
@@ -24,4 +24,4 @@ LC_API.on_after_load = function() {
 };
 ```
 
-Use the `LC_API` global variable to invoke any API method. Use the `on_after_load` callback to make sure `LC_API` is already loaded.
+Use the `LC_API` global variable to execute any API method. Use the `on_after_load` callback to make sure `LC_API` is already loaded.

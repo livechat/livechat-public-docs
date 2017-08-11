@@ -35,7 +35,7 @@ This method allows you to **access** and **extract** all the [Reports](https://w
 GET https://api.livechatinc.com/reports/chats/total_chats
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/total_chats?\
@@ -47,7 +47,7 @@ group_by=hour" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -97,7 +97,7 @@ Shows how many chats occurred during the specified period.
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Chat engagement
 
@@ -107,7 +107,7 @@ Shows how many chats occurred during the specified period.
 GET https://api.livechatinc.com/reports/chats/engagement
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/engagement?\
@@ -120,7 +120,7 @@ group_by=hour" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -137,7 +137,7 @@ group_by=hour" \
 }
 ```
 
-This report shows you where do you get your chats, i.e. from automatic invitations, manual invitations or visitors starting chats themselves.
+This report shows you where you get your chats from. They can come from i.e. automatic invitations, manual invitations or the visitors can start the chats by themselves.
 
 #### Optional arguments
 
@@ -149,7 +149,7 @@ This report shows you where do you get your chats, i.e. from automatic invitatio
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Chat ratings report
 
@@ -159,7 +159,7 @@ This report shows you where do you get your chats, i.e. from automatic invitatio
 GET https://api.livechatinc.com/reports/chats/ratings
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/ratings?\
@@ -171,7 +171,7 @@ group_by=month" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -207,7 +207,7 @@ group_by=month" \
 }
 ```
 
-Shows how many chats were rated and how they have been rated during specified period.
+Shows how many chats have been rated and how they have been rated during a specified period.
 
 #### Optional arguments
 
@@ -219,7 +219,7 @@ Shows how many chats were rated and how they have been rated during specified pe
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 
 ## Chat Ranking
@@ -230,7 +230,7 @@ Shows how many chats were rated and how they have been rated during specified pe
 GET https://api.livechatinc.com/reports/chats/ratings/ranking
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/ratings/ranking" \
@@ -238,7 +238,7 @@ curl "https://api.livechatinc.com/reports/chats/ratings/ranking" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -276,7 +276,7 @@ Shows the ratio of good to bad ratings for each operator.
 | `date_from` | `YYYY-MM-DD`, defaults to `the beginning of time` |
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Queued visitors
 
@@ -286,7 +286,7 @@ Shows the ratio of good to bad ratings for each operator.
 GET https://api.livechatinc.com/reports/chats/queued_visitors
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/queued_visitors?\
@@ -296,7 +296,7 @@ group=2" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -325,7 +325,7 @@ group=2" \
 }
 ```
 
-Shows how many visitors were waiting in the queue, how many abandoned the queue or proceeded to chats.
+Shows how many visitors waited in the queue and how many abandoned the queue or proceeded to chats.
 
 #### Optional arguments
 
@@ -346,7 +346,7 @@ Shows how many visitors were waiting in the queue, how many abandoned the queue 
 GET https://api.livechatinc.com/reports/chats/queued_visitors/waiting_times
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/queued_visitors/waiting_times?\
@@ -356,7 +356,7 @@ group=2" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -401,7 +401,7 @@ group=2" \
 }
 ```
 
-Shows Minimum, Average and Maximum waiting time.
+Shows the Minimum, Average and Maximum waiting time.
 
 #### Optional arguments
 
@@ -421,7 +421,7 @@ Shows Minimum, Average and Maximum waiting time.
 GET https://api.livechatinc.com/reports/availability
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/availability?\
@@ -433,7 +433,7 @@ group_by=day"\
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -458,7 +458,7 @@ group_by=day"\
 }
 ```
 
-Shows how much the agent (or group or whole account) was available for chatting during specified period. When querying for one day results are shown in minutes per every hour, otherwise in hours for each day.
+Shows how long an agent (or a group or the whole account) was available for chatting during a specified period. When querying for one day, the results are shown in minutes per every hour, otherwise in hours for each day.
 
 #### Optional arguments
 
@@ -479,7 +479,7 @@ Shows how much the agent (or group or whole account) was available for chatting 
 GET https://api.livechatinc.com/reports/chats/chatting_time
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/chatting_time?\
@@ -490,7 +490,7 @@ group=1" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -515,7 +515,7 @@ group=1" \
 }
 ```
 
-Shows how much time the agent (or group) spent on chatting during specified period. When querying for one day results are shown in minutes per every hour, otherwise in hours for each day.
+Shows how much time an agent (or a group) spent on chatting during a specified period. When querying for one day, the results are shown in minutes per every hour, otherwise in hours for each day.
 
 #### Optional arguments
 
@@ -525,7 +525,7 @@ Shows how much time the agent (or group) spent on chatting during specified peri
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, returns statistics for the specified agent |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 
 ## Chats first response time
@@ -536,7 +536,7 @@ Shows how much time the agent (or group) spent on chatting during specified peri
 GET https://api.livechatinc.com/reports/chats/first_response_time
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/first_response_time?\
@@ -547,7 +547,7 @@ agent=john.doe@mycompany.com" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -573,7 +573,7 @@ agent=john.doe@mycompany.com" \
 }
 ```
 
-The average amount of time it takes for agents to respond to a new chat over a specified period of time.
+The average amount of time it takes the agents to respond to a new chat over a specified period of time.
 
 #### Optional arguments
 
@@ -584,12 +584,12 @@ The average amount of time it takes for agents to respond to a new chat over a s
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
 *   `count` – the number of chat first responses during the specified period.
-*   `seconds` – average first response time.
+*   `seconds` – the average first response time.
 
 ## Chats response time
 
@@ -599,7 +599,7 @@ The following parameters are returned for each date:
 GET https://api.livechatinc.com/reports/chats/response_time
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/response_time?\
@@ -610,7 +610,7 @@ agent=john.doe@mycompany.com" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -636,7 +636,7 @@ agent=john.doe@mycompany.com" \
 }
 ```
 
-The average amount of time it takes for agents to respond to a new message in a chat during a specified period.
+The average amount of time it takes the agents to respond to a new message in a chat during a specified period.
 
 #### Optional arguments
 
@@ -647,12 +647,12 @@ The average amount of time it takes for agents to respond to a new message in a 
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
 *   `count` – the number of chat responses during the specified period.
-*   `seconds` – average response time.
+*   `seconds` – the average response time
 
 ## Number of simultaneous chats
 
@@ -662,7 +662,7 @@ The following parameters are returned for each date:
 GET https://api.livechatinc.com/reports/chats/agents_occupancy
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/agents_occupancy?\
@@ -671,7 +671,7 @@ weekday=mon" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -701,7 +701,7 @@ weekday=mon" \
 }
 ```
 
-This request shows the maximum number of concurrent chats that have happened at the same hour on a particular day.
+This request shows the maximum number of concurrent chats that happened at the same hour on a particular day.
 
 #### Required arguments
 
@@ -718,7 +718,7 @@ This request shows the maximum number of concurrent chats that have happened at 
 GET https://api.livechatinc.com/reports/chats/goals
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/goals?\
@@ -728,7 +728,7 @@ goal=71&group_by=month" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -753,7 +753,7 @@ Shows the number of reached goals.
 | `goal` | id of the goal, not set by default |
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Greetings
 
@@ -763,7 +763,7 @@ Shows the number of reached goals.
 GET https://api.livechatinc.com/reports/chats/greetings
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/chats/greetings?\
@@ -774,7 +774,7 @@ group_by=month" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -810,7 +810,7 @@ Returns the “greetings to chats to goals” conversion rates report.
 | `goal` | id of the goal, not set by default |
 | `greeting` | `id` of the greeting, not set by default, returns statistics for the specified greeting |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## New tickets
 
@@ -820,7 +820,7 @@ Returns the “greetings to chats to goals” conversion rates report.
 GET https://api.livechatinc.com/reports/tickets/new_tickets
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/new_tickets?\
@@ -831,7 +831,7 @@ group_by=hour" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -859,7 +859,7 @@ Shows the number of the tickets created during the specified period.
 | `timezone` | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix) |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Tickets first response time
 
@@ -869,7 +869,7 @@ Shows the number of the tickets created during the specified period.
 GET https://api.livechatinc.com/reports/tickets/first_response_time
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/first_response_time?\
@@ -880,7 +880,7 @@ agent=john.doe@mycompany.com" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -900,7 +900,7 @@ agent=john.doe@mycompany.com" \
 }
 ```
 
-Shows the time of the first response to tickets that were responded to for the first time during the specified period.
+Shows the time of the first response to the tickets that were responded to for the first time during the specified period.
 
 #### Optional arguments
 
@@ -912,7 +912,7 @@ Shows the time of the first response to tickets that were responded to for the f
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
@@ -927,7 +927,7 @@ The following parameters are returned for each date:
 GET https://api.livechatinc.com/reports/tickets/solved_tickets
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/solved_tickets?\
@@ -937,7 +937,7 @@ date_to=2014-01-20" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -966,7 +966,7 @@ Shows the number of the tickets solved during the specified period.
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 
 ## Tickets resolution time
@@ -977,7 +977,7 @@ Shows the number of the tickets solved during the specified period.
 GET https://api.livechatinc.com/reports/tickets/resolution_time
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/resolution_time?\
@@ -987,7 +987,7 @@ date_to=2014-01-20" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -1020,12 +1020,12 @@ Shows the resolution time of the tickets that were solved during the specified p
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 Two parameters are returned:
 
 *   `count` – the number of tickets that were responded to for the first time that day.
-*   `hours` – average first response time of the tickets. For example, `"hours": 0.83` means an average first response time of 49mins 48sec.
+*   `hours` – the average first response time of the tickets. For example, `"hours": 0.83` means an average first response time of 49mins 48sec.
 
 ## Ticket sources
 
@@ -1035,7 +1035,7 @@ Two parameters are returned:
 GET https://api.livechatinc.com/reports/tickets/ticket_sources
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/ticket_sources?\
@@ -1045,7 +1045,7 @@ date_to=2014-01-20" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -1068,7 +1068,7 @@ date_to=2014-01-20" \
 }
 ```
 
-Shows the distribution of tickets between various channels.
+Shows the distribution of the tickets between various channels.
 
 #### Optional arguments
 
@@ -1079,7 +1079,7 @@ Shows the distribution of tickets between various channels.
 | `timezone` | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix) |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 The following parameters are returned for each date:
 
@@ -1095,7 +1095,7 @@ The following parameters are returned for each date:
 GET https://api.livechatinc.com/reports/tickets/ratings
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/ratings?\
@@ -1107,7 +1107,7 @@ group_by=month" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -1151,7 +1151,7 @@ group_by=month" \
 }
 ```
 
-Shows tickets have been rated during specified period.
+Shows the tickets that were rated during the specified period.
 
 #### Optional arguments
 
@@ -1163,7 +1163,7 @@ Shows tickets have been rated during specified period.
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
 
 ## Ticket Ranking
 
@@ -1173,7 +1173,7 @@ Shows tickets have been rated during specified period.
 GET https://api.livechatinc.com/reports/tickets/ratings/ranking
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/reports/tickets/ratings/ranking" \
@@ -1181,7 +1181,7 @@ curl "https://api.livechatinc.com/reports/tickets/ratings/ranking" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -1219,4 +1219,4 @@ Shows the ratio of good to bad ratings for each operator.
 | `date_from` | `YYYY-MM-DD`, defaults to `the beginning of time` |
 | `date_to` | `YYYY-MM-DD`, defaults to `today` |
 | `group` | id of the group, not set by default, returns statistics for the specified group |
-| `tag` | return statistics for the specified tag |
+| `tag[]` | return statistics for the specified tag |
