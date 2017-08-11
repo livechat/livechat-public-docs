@@ -18,7 +18,7 @@ Use this API method to **manage** your [Agents](https://www.livechatinc.com/kb/l
 GET https://api.livechatinc.com/agents
 ```
 
->Example request
+>Sample request
 
 ```shell
 curl "https://api.livechatinc.com/agents" \
@@ -26,7 +26,7 @@ curl "https://api.livechatinc.com/agents" \
   -H X-API-Version:2
 ```
 
->Example response
+>Sample response
 
 ```json-doc
 [
@@ -43,7 +43,7 @@ curl "https://api.livechatinc.com/agents" \
 
 Returns all LiveChat agents list. Optional parameters:
 
-*   `status` - returns agents with one of the following statuses: `accepting chats`, `not accepting chats` or `offline`.
+*   `status` - returns the agents with one of the following statuses: `accepting chats`, `not accepting chats` or `offline`.
 
 Additional info:
 
@@ -53,7 +53,7 @@ Additional info:
 
 ## Get a single agent details
 
-Return complete details of the agent for the given `LOGIN`.
+Returns complete details of the agent for the given `LOGIN`.
 
 >Path
 
@@ -61,7 +61,7 @@ Return complete details of the agent for the given `LOGIN`.
 GET https://api.livechatinc.com/agents/<LOGIN>
 ```
 
->Example request
+>Sample request
 
 ```shell
 curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
@@ -69,7 +69,7 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
   -H X-API-Version:2
 ```
 
->Example response
+>Sample response
 
 ```json-doc
 {
@@ -110,9 +110,9 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
 |---------|----------------------------|
 | `login` | the agent's e-mail address |
 | `name` | the agent's name |
-| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for agent right after login |
+| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for an agent right after the login |
 | `permission` | possible values: `owner`, `administrator`, `normal` |
-| `daily_summary` | whether or not the agent receive daily summary |
+| `daily_summary` | whether or not the agent receives a daily summary |
 | `job_title` | defaults to: `Support Agent` |
 | `avatar` | path to the image on Amazon s3 |
 | `notifications` | whether or not the specific notification is enabled |
@@ -132,7 +132,7 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
 POST https://api.livechatinc.com/agents
 ```
 
->Example request
+>Sample request
 
 ```shell
 curl "https://api.livechatinc.com/agents" \
@@ -145,7 +145,7 @@ groups[]=1&\
 groups[]=2&\"
 ```
 
->Example JSON request
+>Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/agents" \
@@ -160,7 +160,7 @@ curl "https://api.livechatinc.com/agents" \
      }'
 ```
 
->Example response
+>Sample response
 
 ```json-doc
 {
@@ -201,7 +201,7 @@ Creates a new agent in your license.
 
 | Property | Description |
 |----------|----------------------------|
-| `login` | must be correct e-mail address |
+| `login` | must be a correct e-mail address |
 | `name` | string |
 
 
@@ -210,11 +210,11 @@ Creates a new agent in your license.
 | Property | Description |
 |----------|----------------------------|
 | `job_title` | defaults to: `Support Agent` |
-| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for agent right after login |
+| `login_status` | possible values: `accepting chats`, `not accepting chats`; defines the default status for an agent right after the login |
 | `password` | the minimum length is 5 (if not provided, an email with the activation link will be sent) |
 | `permission` | `administrator`, `normal` (default) |
 | `groups[]` | list of group IDs |
-| `notifications` | object (required keys: `new_visitor`, `incoming_chat`, `returning_visitor`, `queued_visitor`, `visitor_is_typing`, `new_goal`, allowed values: `0` or `1`) |
+| `notifications` | object (required keys: `new_visitor`, `incoming_chat`, `returning_visitor`, `queued_visitor`, `visitor_is_typing`, `new_goal`, accepted values: `0` or `1`) |
 | `daily_summary` | `0` or `1` (default) |
 | `max_chats_count` | defaults to `6` |
 
@@ -227,7 +227,7 @@ Creates a new agent in your license.
 PUT https://api.livechatinc.com/agents/<LOGIN>
 ```
 
-> Example request
+>Sample request
 
 ```shell
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
@@ -238,7 +238,7 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
 max_chats_count=2"
 ```
 
->Example JSON request
+>Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
@@ -252,7 +252,7 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
      }'
 ```
 
->Example response
+>Sample response
 
 ```json-doc
 {
@@ -322,9 +322,9 @@ Updates the specified agent by setting the values of the parameters passed. Any 
 | `notifications` | object (allowed keys: `new_visitor`, `returning_visitor`, `queued_visitor`, `visitor_is_typing`, allowed values: `0` or `1`) |
 | `daily_summary` | `0` or `1` |
 | `max_chats_count` | |
-| `work_scheduler` | available only for enterprise plan | Object with allowed keys: days of the week, e |g | `monday` | For each day of the week valid keys are `start`, `end` or `enabled` | It is possible to pass all work scheduler keys at once | `start` and `end` should be passed is 24h-hour clock format | `enable` allowed values are `1` or `0`|
+| `work_scheduler` | available only for enterprise plan | Object with allowed keys: days of the week, e |g | `monday` | For each day of the week the valid keys are `start`, `end` or `enabled` | It is possible to pass all work scheduler keys at once | `start` and `end` should be passed in the 24h-hour clock format | `enable` accepted values are `1` or `0`|
 
-Properties agent can edit on his own profile, without being an administrator:
+The properties which an agent can edit in their own profile, without being an administrator:
 
 *   `password`
 *   `name`
@@ -337,7 +337,7 @@ Properties agent can edit on his own profile, without being an administrator:
 
 ## Reset an API key
 
-Reset API key for the agent with given `LOGIN`.
+Resets the API key for an agent with a given `LOGIN`.
 
 > Path
 
@@ -345,7 +345,7 @@ Reset API key for the agent with given `LOGIN`.
 POST https://api.livechatinc.com/agents/<LOGIN>/reset_api_key
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com/reset_api_key" \
@@ -354,21 +354,21 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com/reset_api_key" 
   -X POST
 ```
 
-> Example response
+> Sample response
 
-> *Return format is the same as in [update an agent](#update-an-agent) method.*
+> *The return format is the same as in the [update an agent](#update-an-agent) method.*
 
 
 ## Remove an agent
 
-Removes an agent. Archived chats will not be removed, but all statistics will be lost. Agent will be notified by e-mail that the account has been deleted.
+Removes an agent. Archived chats will not be removed, but all statistics will be lost. The agent will be notified by e-mail that the account has been deleted.
 
 > Path
 
 ```
 DELETE https://api.livechatinc.com/agents/<LOGIN>
 ```
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
@@ -377,7 +377,7 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
   -X DELETE
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {

@@ -17,7 +17,7 @@ Using this method, you will be able to **create** and **delete** [Tags](https://
 GET https://api.livechatinc.com/tags
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/tags\
@@ -26,7 +26,7 @@ curl "https://api.livechatinc.com/tags\
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 [
@@ -71,7 +71,7 @@ Returns tags from all groups.
 POST https://api.livechatinc.com/tags
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/tags" \
@@ -82,7 +82,7 @@ author=john.doe@mycompany.com&\
 group=1"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/tags" \
@@ -96,7 +96,7 @@ curl "https://api.livechatinc.com/tags" \
       }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -112,7 +112,7 @@ curl "https://api.livechatinc.com/tags" \
 }
 ```
 
-Add new tag. Permitted for owner and admins only.
+Adds a new tag. Note that only the owner and the admins are authorized to use this.
 
 #### Required parameters
 
@@ -130,7 +130,7 @@ Add new tag. Permitted for owner and admins only.
 [DELETE]   /tags/<TAG>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/tags/support" \
@@ -139,7 +139,7 @@ curl "https://api.livechatinc.com/tags/support" \
   -d "group=1"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/tags/support" \
@@ -159,13 +159,13 @@ curl "https://api.livechatinc.com/tags/support" \
 }
 ```
 
-Deletes a tag from the chosen group. Agents will no longer be able to tag chats and tickets using this tag. 
+Deletes a tag from the chosen group. The agents will no longer be able to tag chats and tickets using this tag. 
 
-<aside class="notice">Deleting a tag will not remove tags from archived chats and tickets.</aside>
+<aside class="notice">Deleting a tag will not remove it from the archived chats and tickets.</aside>
 
 #### Required properties
 
 | Property | Description |
 |---------|--------------------|
 | `tag` | tag name |
-| `group` | id of the group that tag is assigned to |
+| `group` | id of the group that the tag is assigned to |

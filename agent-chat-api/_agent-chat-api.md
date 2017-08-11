@@ -4,20 +4,20 @@
 ## Introduction
 ### Connection
 
-Connection is established with Socket.io.
+The connection is established with Socket.io.
 
 {{{ui-copy-input}{Connection endpoint}{https://api.livechatinc.com/}{Copy URL}}}
 
 
 ### Events order
-Chat messages are not guaranteed to be sorted by server. Client should sort them by `order` parameter. Do not use `timestamp` to sort messages because two events can have the same timestamp.
+Chat messages are not guaranteed to be sorted by server. The client should sort them by the `order` parameter. Do not use `timestamp` to sort messages because two events can have the same timestamp.
 
 ## Objects
 Objects are standardized data formats that are used in API requests and responses.
 
-You don't need to wonder if you should use `chat_id` or `chatID` parameter in your API call. Instead, just look up the `Chat` object structure to know how to use it in the request or when parsing the response.
+You don't need to wonder if you should use `chat_id` or `chatID` parameter in your API call. Instead, just check out the `Chat` object structure to learn how to use it in the request or when parsing the response.
 
-Objects can include other objects. For example, `Chat` object may return `users` array which is a list of `User` objects.
+Objects can include other objects. For example, the `Chat` object can return a `users` array which is a list of the `User` objects.
 ### Chat
 ```json-doc
 {
@@ -276,7 +276,7 @@ Optional properties:
 
 ### Authorization
 
->Example request payload
+>Sample request payload
 
 ```json-doc
 {
@@ -336,7 +336,7 @@ Returns current agent's initial state.
 
 ### Get archives
 
->Example request payload - searching chat archives
+>Sample request payload - searching chat archives
 
 ```json-doc
 {
@@ -366,7 +366,7 @@ Returns current agent's initial state.
 }
 ```
 
-Returns active threads that current agent has access to. If the agent is a supervisor in some threads, those threads will be returned as well.
+Returns active threads that the current agent has access to. If the agent is a supervisor in some threads, those threads will be returned as well.
 
 | Action | Request object | Required | Type | Notes |
 |--------|----------------|----------|------|-------|
@@ -380,7 +380,7 @@ Returns active threads that current agent has access to. If the agent is a super
 
 
 ### Get chat threads
->Example request payload
+>Sample request payload
 
 ```json-doc
 {
@@ -389,7 +389,7 @@ Returns active threads that current agent has access to. If the agent is a super
 }
 ```
 
->Example response payloads Success
+>Sample response payloads Success
 
 ```json-doc
 {
@@ -412,7 +412,7 @@ Returns active threads that current agent has access to. If the agent is a super
 }
 ```
 
-Returns threads that current agent has access to for given chat.
+Returns threads that the current agent has access to for a given chat.
 
 | Action | Request object | Required | Type | Notes |
 |--------|----------------|----------|------|-------|
@@ -423,7 +423,7 @@ Returns threads that current agent has access to for given chat.
 
 ### Supervise chat
 
->Example request payload
+>Sample request payload
 
 ```json-doc
 {
@@ -432,7 +432,7 @@ Returns threads that current agent has access to for given chat.
 }
 ```
 
->Example response payloads Success
+>Sample response payloads Success
 
 ```json-doc
 {
@@ -462,7 +462,7 @@ Adds a supervisor to chat. The supervisor can only send messages to other agents
 
 ### Start chat
 
->Example request payload
+>Sample request payload
 
 ```json-doc
 {
@@ -508,7 +508,7 @@ Starts a chat.
 
 ### Join chat
 
->Example request payload
+>Sample request payload
 
 ```json-doc
 {
@@ -517,7 +517,7 @@ Starts a chat.
 }
 ```
 
->Example response payloads success
+>Sample response payloads success
 
 ```json-doc
 {
@@ -556,7 +556,7 @@ Removes users from chat. If no user is specified, removes current user.
 | | `customer_ids` | No |
 | | `agent_ids` | No |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -565,7 +565,7 @@ Removes users from chat. If no user is specified, removes current user.
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success
 No payload.
 
@@ -589,7 +589,7 @@ No payload.
 | | `message.recipients` | No | `all` (default), `agents` |
 | | `custom_id` | No | Event custom id |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -602,7 +602,7 @@ No payload.
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success
 ```json-doc
 {
@@ -630,7 +630,7 @@ No payload.
 | | `chat_id` | Yes | Id of the chat that the message belongs to |
 | | `event_id` | Yes | Seen event id |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -638,7 +638,7 @@ No payload.
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success
 No payload.
 
@@ -659,14 +659,14 @@ No payload.
 | `send_typing_indicator` |||
 | | `chat.id` | Yes | Id of the chat that we want to send the typing indicator to |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success
 No payload.
 
@@ -689,7 +689,7 @@ Bans the customer for a specific period. It immediately disconnects all customer
 | | `customer_id` | Yes |
 | | `ban.days` | Yes |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -700,7 +700,7 @@ Bans the customer for a specific period. It immediately disconnects all customer
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success  
 No payload.
 
@@ -722,14 +722,14 @@ Unbans the customer.
 | `unban_customer` |||
 | | `customer_id` | Yes |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success  
 No payload.
 
@@ -752,14 +752,14 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 | | `chat_id` | Yes ||
 | | `thread_id` | ? | TODO (v2) |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success  
 No payload.
 
@@ -782,14 +782,14 @@ Updates agent properties.
 | | `agent_id` | No | Current agent is used by default |
 | | `routing_status` | No | Possible values: `accepting_chats`, `not_accepting_chats` |
 
-##### Example request payload
+##### Sample request payload
 ```json-doc
 {
   "routing_status": "accepting_chats"
 }
 ```
 
-##### Example response payloads
+##### Sample response payloads
 ###### Success  
 No payload.
 
@@ -813,7 +813,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 | `incoming_thread` |
 |  | `thread` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "thread": {
@@ -837,7 +837,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 | `chat_users_updated` |
 |  | `updated_users` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -872,7 +872,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `chat_id` |
 |  | `event` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "85f3bfc9-06c1-434e-958b-2a5239b07de8",
@@ -891,7 +891,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `event_id` |
 |  | `user_id` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -908,7 +908,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `chat_id` |
 |  | `typing_indicator` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "85f3bfc9-06c1-434e-958b-2a5239b07de8",
@@ -926,7 +926,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `chat_id` |
 |  | `sneak_peek` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "85f3bfc9-06c1-434e-958b-2a5239b07de8",
@@ -944,7 +944,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `customer_id` |
 |  | `ban.days` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -961,7 +961,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 | `customer_unbanned` |
 |  | `customer_id` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
@@ -977,7 +977,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `thread_id` |
 |  | `user_id` (optional) |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -994,7 +994,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `chat_id` |
 |  | `customer` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -1012,7 +1012,7 @@ Server => Client methods are used for keeping application state up-to-date. They
 |  | `agent_id` |
 |  | `routing_status` |
 
-##### Example response payload
+##### Sample response payload
 ```json-doc
 {
   "agent_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",

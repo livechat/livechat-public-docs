@@ -1,6 +1,6 @@
 # Groups
 
-Use this method to get [Agent Groups](https://www.livechatinc.com/features/team-management/#Groups) data and also to **create new** and **modify existing** Groups.
+Use this method to get [Agent Groups](https://www.livechatinc.com/features/team-management/#Groups) data and also to **create new** and **modify the existing** Groups.
 
 ## Available paths
 
@@ -17,7 +17,7 @@ Use this method to get [Agent Groups](https://www.livechatinc.com/features/team-
 GET https://api.livechatinc.com/groups
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/groups" \
@@ -25,7 +25,7 @@ curl "https://api.livechatinc.com/groups" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 [
@@ -66,8 +66,8 @@ Returns all created groups.
 
 #### Additional info:
 
-* `language` tells you the chat window language for the particular group.  
-* `agents` list contains all members of the particular group. Group with id _0_ doesn't return agents list because it always contains all agents from the license and it cannot be modified.
+* `language` specifies the chat window language for the particular group.  
+* `agents` list contains all members of the particular group. The group with id _0_ doesn't return the agents list because it always contains all agents from the license and it cannot be modified.
 
 ## Get a single group details
 
@@ -77,7 +77,7 @@ Returns all created groups.
 GET https://api.livechatinc.com/groups/<GROUP_ID>
 ```
 
-> Example request
+> Sample request
 
 ```
 curl "https://api.livechatinc.com/groups/2" \
@@ -85,7 +85,7 @@ curl "https://api.livechatinc.com/groups/2" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -115,10 +115,10 @@ Returns group details for the given `GROUP_ID`.
 
 #### Additional info:
 
-`status` can take the following values:
+The `status` can take the following values:
 
-*   `accepting chats` – when at least one agent from the group is logged in and in `accepting chats` status.
-*   `not accepting chats` – when at least one agent from the group is logged in but in `not accepting chats` status.
+*   `accepting chats` – when at least one agent from the group is logged in and has the `accepting chats` status.
+*   `not accepting chats` – when at least one agent from the group is logged in but has the `not accepting chats` status.
 *   `offline` – when all agents from the group are offline.
 
 ## Create a new group
@@ -129,7 +129,7 @@ Returns group details for the given `GROUP_ID`.
 POST https://api.livechatinc.com/groups
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/groups" \
@@ -140,7 +140,7 @@ agents[0]=jenny.doe@mycompany.com&\
 agents[1]=john.doe@mycompany.com"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/groups" \
@@ -154,7 +154,7 @@ curl "https://api.livechatinc.com/groups" \
       }'  
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -194,7 +194,7 @@ Creates a new group in your license.
 PUT https://api.livechatinc.com/groups/<GROUP_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/groups/3" \
@@ -206,7 +206,7 @@ agents[0]=john.doe@mycompany.com&\
 agents[1]=jane.doe@mycompany.com"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/groups/3" \
@@ -220,7 +220,7 @@ curl "https://api.livechatinc.com/groups/3" \
       }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -255,7 +255,7 @@ Updates the specified group by setting the values of the parameters passed. Any 
 DELETE https://api.livechatinc.com/groups/<GROUP_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/groups/4" \
@@ -264,7 +264,7 @@ curl "https://api.livechatinc.com/groups/4" \
   -X DELETE
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {

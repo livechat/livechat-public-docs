@@ -17,13 +17,13 @@ There are number of ways you can utilise the extension:
 
 ## Before you start
 
-This guide describes the flow of development. Once your extension is ready to deploy <a href="#" onclick="LC_API.open_chat_window();return false;">let us know</a> and we'll guide you to the production.
+This guide describes the development process. Once your extension is ready to deploy, <a href="#" onclick="LC_API.open_chat_window();return false;">let us know</a> and we'll guide you to the production.
 
 ## Layout & Styling
 
 We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the extension interface.
 
-## Example extensions
+## Sample extensions
 
 We've prepared two example repositories for your convenience. Both examples show how to receive data from [Events](#events) and display them within the sidebar. 
 
@@ -67,13 +67,13 @@ A basic static application example served from [Webpack Server](https://webpack.
 
 <a class="button green" href="https://github.com/livechat/agent-app-sample-extension-webpack" target="_blank"><span>GitHub Repository</span></a>
 
-> The content of extension should be available at [https://localhost:3333](https://localhost:3333).
+> The content of the extension should be available at [https://localhost:3333](https://localhost:3333).
 
 > You can now [turn on the extension](#turn-on-the-extension).
 
 ### Core functionality
 
-> Place this tag within `<head></head>` section:
+> Place this tag within the `<head></head>` section:
 
 ```html
 <link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.0.css">
@@ -84,11 +84,11 @@ If you want to build your own environment, be sure to include both the [LiveChat
 
 ### Extension hosting
 
-You can either host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack) you'll get the setup out of-the-box. 
+You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack), you'll get the setup out of-the-box. 
 
 ## Turn on the extension
 
-> Paste following snippet inside the developers console:
+> Paste the following snippet inside the developers console:
 
 ```js
 App.collections.Integrations.add({
@@ -101,8 +101,8 @@ App.collections.Integrations.add({
 
 > <img src="../__images/agent-app-extension.gif" width="400" />
 
-To activate the extension, login to the [Agent App](https://my.livechatinc.com/) and simply paste this snippet within developers console in your browser of choice. The `id` has to be `sandbox`, but you can go with `url` of your own environment. 
+To activate the extension, login to the [Agent App](https://my.livechatinc.com/) and simply paste this snippet within the developers console in the browser of your choice. The `id` has to be `sandbox`, but you can go with `url` of your own environment. 
 
 <aside class="notice">Keep in mind that a random URL won't work! For the extension to load completely, the Init method needs to be fired. </aside>
 
-Your extension should be ready to use. In the upper right corner of Agent App appear a button labelled "Sandbox App".
+Your extension should be ready to use. In the upper right corner of Agent App you will see a button labelled "Sandbox App".

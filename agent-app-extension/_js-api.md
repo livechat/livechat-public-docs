@@ -38,15 +38,15 @@ LiveChat.on("<event_name>", function( data ) {
 | Event name | Triggers when |
 |------------|-------------|
 | `customer_profile` | the agent opens a customer profile within **Chats**, **Archives** or **Visitors** sections |
-| `customer_profile_hidden` | opened customer profile is removed from the Customers list |
+| `customer_profile_hidden` | the opened customer profile is removed from the Customers list |
 | `authorize` | the extension has been successfully authorized |
 | `authorize_error` | the extension has not been successfully authorized |
 
-Events `customer_profile` and `customer_profile_hidden` return object width additional properties.
+Events `customer_profile` and `customer_profile_hidden` return an object width additional properties.
 
 ### Customer profile displayed
 
-> Example `data` object for `customer_profile` event
+> Sample `data` object for `customer_profile` event
 
 ```json-doc
 {
@@ -71,7 +71,7 @@ Events `customer_profile` and `customer_profile_hidden` return object width addi
 
 ### Customer profile hidden
 
-> Example `data` object for `customer_profile_hidden` event
+> Sample `data` object for `customer_profile_hidden` event
 
 ```json-doc
 {
