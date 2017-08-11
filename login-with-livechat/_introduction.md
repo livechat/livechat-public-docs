@@ -1,8 +1,8 @@
 # Introduction
 
-## "Login with LiveChat" flow
+## User flow
 
-"Login with LiveChat" flow is the easiest way to get access to basic information about LiveChat users. It allows you to quickly build an app that manages different parts of LiveChat account.
+"Login with LiveChat" flow is the easiest way to get access to basic information about LiveChat users. It allows you to quickly build an app that can access different parts of LiveChat account.
 
 <img src="../__images/login-with-livechat-demo.gif" width="600" style="margin-top: 20px; border: 1px solid #ddd;"/>
 
