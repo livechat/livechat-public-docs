@@ -6,7 +6,7 @@ includes:
   - rest-api
   - js-api
   - agent-app-extension
-  - login-with-livechat
+  - sign-in-with-livechat
   - webhook-integration
   - mobile-widgets
 ---
