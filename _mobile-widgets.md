@@ -9,7 +9,7 @@
 				</a>
 				<div class="docs-cover-intro">
 					<h2>Embed Chat Widget inside your iOS app</h2>
-					<p>Check out a sample app that will display a “Chat with us!” button on an iOS device.</p>
+					<p>Check out a sample app that will display a chat button on an iOS device.</p>
 					<a href="/ios-widget/" class="cta light-blue">See full reference</a>
 				</div>
 			</div>
@@ -23,7 +23,7 @@
 				</a>
 				<div class="docs-cover-intro">
 					<h2>Embed Chat Widget in your Android app</h2>
-					<p>Check out a sample app that will display a “Chat with us!” button on an Android device.</p>
+					<p>Check out a sample app that will display a chat button on an Android device.</p>
 					<a href="/android-widget/" class="cta light-green">See full reference</a>
 				</div>
 			</div>

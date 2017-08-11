@@ -17,7 +17,7 @@ You can use this method to check whether your LiveChat is **online** or **offlin
 GET https://api.livechatinc.com/status
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/status/1" \
@@ -25,7 +25,7 @@ curl "https://api.livechatinc.com/status/1" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -33,7 +33,7 @@ curl "https://api.livechatinc.com/status/1" \
 }
 ```
 
-Returns current LiveChat status. Available return values: `online`, `offline`.
+Returns the current LiveChat status. Available return values: `online`, `offline`.
 
 #### Optional parameters
 

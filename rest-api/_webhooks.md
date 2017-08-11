@@ -2,7 +2,7 @@
 
 This method will help you build your own LiveChat integrations by **creating** and **managing webhooks**. 
 
-Check out out [webhooks tutorial](https://docs.livechatinc.com/build-integration/#!webhooks) for more information and on how to get started and a few use-cases.
+Check out our [webhooks tutorial](https://docs.livechatinc.com/build-integration/#!webhooks) for more information, use cases and to learn how to get started.
 
 ## Available paths
 
@@ -20,7 +20,7 @@ Check out out [webhooks tutorial](https://docs.livechatinc.com/build-integration
 GET https://api.livechatinc.com/webhooks
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/webhooks" \
@@ -28,7 +28,7 @@ curl "https://api.livechatinc.com/webhooks" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -44,7 +44,7 @@ curl "https://api.livechatinc.com/webhooks" \
 }
 ```
 
-Returns list of webhooks that have been created in LiveChat account.
+Returns a list of webhooks that have been created in a LiveChat account.
 
 ## Create a new webhook
 
@@ -54,7 +54,7 @@ Returns list of webhooks that have been created in LiveChat account.
 POST https://api.livechatinc.com/webhooks
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/webhooks" \
@@ -66,7 +66,7 @@ data_types[]=visitor&\
 url=http://my-company.com/parse_webhook.php
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -120,7 +120,7 @@ Creates a new webhook.
 DELETE https://api.livechatinc.com/webhooks/<ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/webhooks/39612eee5(...)" \
@@ -129,7 +129,7 @@ curl "https://api.livechatinc.com/webhooks/39612eee5(...)" \
   -X DELETE
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -137,4 +137,4 @@ curl "https://api.livechatinc.com/webhooks/39612eee5(...)" \
 }
 ```
 
-Deletes webhook with given `ID`.
+Deletes a webhook with the given `ID`.

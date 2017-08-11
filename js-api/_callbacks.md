@@ -1,6 +1,6 @@
 # Callbacks
 
-Callbacks let you bind a custom JavaScript function to an event. For example, your function can be invoked every time the chat window is opened.
+Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time the chat window is opened.
 
 ## On before load
 
@@ -12,7 +12,7 @@ LC_API.on_before_load = function()
 };
 ```
 
-Callback function invoked when `LC_API` object is loaded and ready to use, before the chat window is rendered (not supported with the pop-up chat window). You may want to use this callback to perform some operations with the chat window before it's displayed to the visitor. See the example code for [hide_chat_window](#hide-chat-window) function.
+Callback function executed when `LC_API` object is loaded and ready to use, before the chat window has been rendered (not supported with the pop-up chat window). You may want to use this callback to perform some operations with the chat window before it's displayed to the visitor. See the sample code for the [hide_chat_window](#hide-chat-window) function.
 
 
 ## On after load
@@ -25,7 +25,7 @@ LC_API.on_after_load = function()
 };
 ```
 
-Callback function invoked when `LC_API` object is loaded and ready to use, right after the chat window is rendered (not supported with the pop-up chat window).
+Callback function executed when `LC_API` object is loaded and ready to use, right after the chat window has been rendered (not supported with the pop-up chat window).
 
 ## On chat window opened
 
@@ -37,7 +37,7 @@ LC_API.on_chat_window_opened = function()
 };
 ```
 
-Callback function invoked when the chat window is opened.
+Callback function executed when the chat window is opened.
 
 ## On chat window minimized
 
@@ -49,7 +49,7 @@ LC_API.on_chat_window_minimized = function()
 };
 ```
 
-Callback function invoked when the chat window is minimized (not supported with the pop-up chat window).
+Callback function executed when the chat window is minimized (not supported with the pop-up chat window).
 
 ## On chat window hidden
 
@@ -61,7 +61,7 @@ LC_API.on_chat_window_hidden = function()
 };
 ```
 
-Callback function invoked when the chat window is hidden (not supported with the pop-up chat window).
+Callback function executed when the chat window is hidden (not supported with the pop-up chat window).
 
 ## On chat state changed
 
@@ -73,11 +73,11 @@ LC_API.on_chat_state_changed = function(data)
 };
 ```
 
-Callback function invoked when the chat state is changed. It accepts one argument which contains an object with `state` property. Possible values:
+Callback function executed when the chat state is changed. It accepts one argument which contains an object with the `state` property. Possible values:
 
 *   `offline` – chat agents are not available to chat.
-*   `online_for_chat` – chat agents are available to chat. Visitor entering the chat will be connected to the agent immediately.
-*   `online_for_queue` – chat agents are available to chat. Visitor entering the chat will be put in a chat queue and will need to wait for the available agent.
+*   `online_for_chat` – chat agents are available to chat. A visitor entering the chat will be connected to an agent immediately.
+*   `online_for_queue` – chat agents are available to chat. A visitor entering the chat will be put in the chat queue and will need to wait for an available agent.
 
 ## On chat started
 
@@ -89,7 +89,7 @@ LC_API.on_chat_started = function(data)
 };
 ```
 
-Callback function invoked when the chat is started. The only argument, `data`, contains additional information regarding the chat:
+Callback function executed when the chat is started. The only argument, `data`, contains additional information about the chat:
 
 *   `data.agent_name` – the name of the agent that handles the chat.
 
@@ -104,7 +104,7 @@ LC_API.on_chat_ended = function()
 };
 ```
 
-Callback function invoked when the chat is ended.
+Callback function executed when the chat is ended.
 
 ## On message
 
@@ -116,18 +116,18 @@ LC_API.on_message = function(data)
 };
 ```
 
-Callback function invoked when the message was sent or received. The only argument, `data`, contains additional information regarding the message:
+Callback function executed when the message has been sent or received. The only argument, `data`, contains additional information about the message:
 
-*   `data.text` – the content of message
+*   `data.text` – the content of the message
 *   `data.user_type` – visitor or agent
 *   `data.timestamp` – unix timestamp created at the time the message arrives.
 
-If message was sent by agent (data.user_type is 'agent'), data contains additional information:
+If the message has been sent by agent (data.user_type is 'agent'), the data contains additional information:
 
 *   `data.agent_name` – the name of the agent that sent the message
 *   `data.agent_login` – the login of the agent that sent the message
 
-If message was sent by visitor (data.user_type is 'visitor'), data contains additional information:
+If the message has been sent by visitor (data.user_type is 'visitor'), the data contains additional information:
 
 *   `data.visitor_name` – the name of the visitor that sent the message
 
@@ -141,15 +141,15 @@ alert('Ticket '+ data.ticket_id + ' created by ' + data.visitor_name + ', subjec
 };
 ```
 
-Callback function invoked when the ticket form was filled in by the visitor. The only argument, `data`, contains additional information:
+Callback function executed when the ticket form has been filled in by the visitor. The only argument, `data`, contains additional information:
 
-*   `data.ticket_id` – id of created ticket, received from api
+*   `data.ticket_id` – ID of the created ticket, received from the API
 *   `data.text` – the ticket message
 *   `data.visitor_name` – the name of the visitor that created the message
 *   `data.visitor_email` – the name of the visitor that created the message
-*   `data.form_data` – all information provided by visitor in ticket form.
+*   `data.form_data` – all information provided by the visitor in the ticket form.
 
-If ticket form contains subject field and it was filled in by the visitor, data contains additional information:
+If the ticket form contains the subject field and it has been filled in by the visitor, the data contains additional information:
 
 *   `data.ticket_subject` – the subject of the ticket
 
@@ -168,7 +168,7 @@ LC_API.on_prechat_survey_submitted = function(data)
 
 ```
 
-Callback function invoked when the pre-chat survey was submitted by visitor. The only argument, `data`, contains property `data.form_data` with all information provided by visitor.
+Callback function executed when the pre-chat survey has been submitted by visitor. The only argument, `data`, contains the `data.form_data` property with all information provided by the visitor.
 
 ## On post-chat survey submitted
 
@@ -183,7 +183,7 @@ LC_API.on_postchat_survey_submitted = function(data)
 };
 
 ```
-Callback function invoked when the post-chat survey was submitted by visitor. The only argument, `data`, contains property `data.form_data` with all information provided by visitor.
+Callback function executed when the post-chat survey has been submitted by visitor. The only argument, `data`, contains the `data.form_data` property with all information provided by the visitor.
 
 ## On chat rated
 
@@ -195,7 +195,7 @@ LC_API.on_rating_submitted = function(data) {
 
 ```
 
-Callback function invoked when the chat rating is submitted. The only argument, `data`, can have three values `good`, `bad` or `none`.
+Callback function executed when the chat rating is submitted. The only argument, `data`, can have three values: `good`, `bad` or `none`.
 
 ## On chat rating comment submitted
 
@@ -207,4 +207,4 @@ LC_API.on_rating_comment_submitted = function(data) {
 
 ```
 
-Callback function invoked when the chat rating comment is submitted. The only argument, `data`, contains message entered by visitor.
+Callback function executed when a chat rating comment is submitted. The only argument, `data`, contains the  message entered by the visitor.

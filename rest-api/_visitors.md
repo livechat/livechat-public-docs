@@ -1,6 +1,6 @@
 # Visitors
 
-You can use this method to get information about real-time [Visitors](https://www.livechatinc.com/features/visitors-tracking/) on your website. You can also use it to **display additional information** about the visitors in the LiveChat app.
+You can use this method to get information about the real-time [Visitors](https://www.livechatinc.com/features/visitors-tracking/) on your website. You can also use it to **display additional information** about the visitors in the LiveChat app.
 
 ## Available paths
 
@@ -18,7 +18,7 @@ You can use this method to get information about real-time [Visitors](https://ww
 GET https://api.livechatinc.com/visitors
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/visitors?
@@ -28,7 +28,7 @@ group[]=0" \
   -H X-API-Version:2 -g
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 [
@@ -109,7 +109,7 @@ group[]=0" \
 ```
    
 
-Returns list of the visitors available on pages with tracking code installed.
+Returns a list of the visitors on the pages with the tracking code installed.
 
 #### Optional parameters
 
@@ -121,7 +121,7 @@ Returns list of the visitors available on pages with tracking code installed.
 
 #### Additional info:
 
-Possible `state` values returned without any filter are:
+The possible `state` values returned without any filter are:
 
 *   `browsing`
 *   `chatting`
@@ -131,7 +131,7 @@ Possible `state` values returned without any filter are:
 *   `refused invitation`
 *   `chat closed`
 
-Possible `state` filter values are `chatting` and `queued`.
+The possible `state` filter values are `chatting` and `queued`.
 
 `prechat_survey` parameter will be available only if the visitor is currently chatting.
 
@@ -145,7 +145,7 @@ Possible `state` filter values are `chatting` and `queued`.
 POST https://api.livechatinc.com/visitors/<VISITOR_ID>/details
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
@@ -157,7 +157,7 @@ fields[0][name]=Age&\
 fields[0][value]=36"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
@@ -176,7 +176,7 @@ curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
       }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -184,13 +184,13 @@ curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
 }
 ```
 
-Displays additional information about the visitor in LiveChat apps.
+Displays additional information about a visitor in LiveChat apps.
 
-For example, if you have your own database with additional details about your users, you can look up this database based on your visitor’s e-mail address, and display the information from your database for the agent during the chat.
+For example, if you have your own database with some additional details about your users, you can query this database based on your visitor’s e-mail address, and display the data from your database for an agent during the chat.
 
 <img src="https://www.livechatinc.com/wp-content/uploads/2013/02/visitor-details1.png" width="300" style="margin:30px 0"/>
 
-**Note:** this method can only be used along with the [Webhooks](/build-an-integration#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See an example integration in [Webhooks documentation](/build-an-integration#webhooks).
+**Note:** this method can only be used along with the [Webhooks](/build-an-integration#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See a sample integration in [Webhooks documentation](/build-an-integration#webhooks).
 
 #### Required properties
 
