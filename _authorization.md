@@ -16,6 +16,18 @@
 	</div>
 	<div class="content-column">
 		<div class="docs-covers">
+			<dl class="docs-sections blue">
+				<dt><a href="/authorization#sign-in-with-livechat">Sign in with LiveChat</a></dt>
+				<dd>The easiest way to access any LiveChat account data.</dd>
+				<dt><a href="/authorization#public-web-apps">Public web apps</a></dt>
+				<dd>Build a JavaScript app that is available to all LiveChat customers.</dd>
+			</dl>
+			<dl class="docs-sections blue">
+				<dt><a href="/authorization#public-server-side-apps">Public server-side apps</a></dt>
+				<dd>Build a backend app available to all LiveChat customers.</dd>
+				<dt><a href="/authorization#private-server-side-apps">Private server-side apps</a></dt>
+				<dd>Build a backend app installed on a single Livechat account.</dd>
+			</dl>
 		</div>
 		</div>
 	</div>

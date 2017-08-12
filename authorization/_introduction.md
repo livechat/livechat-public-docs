@@ -27,8 +27,8 @@ When a user allows the access, your app will receive an `access_token` that will
 There are a few scenarios in which you can acquire an `access_token`:
 
 * [Sign in with LiveChat](#sign-in-with-livechat) – the easiest way to get access to any LiveChat account.
-* [Public web apps](#public-web-apps) – JavaScript apps available for all LiveChat customers.
-* [Public server-side apps](#public-server-side-apps) – backend apps available for all LiveChat customers.
+* [Public web apps](#public-web-apps) – JavaScript apps available to all LiveChat customers.
+* [Public server-side apps](#public-server-side-apps) – backend apps available to all LiveChat customers.
 * [Private server-side apps](#private-server-side-apps) – backend apps installed on a single LiveChat account.
 
 ## Sign in with LiveChat
