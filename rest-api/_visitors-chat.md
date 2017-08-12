@@ -4,7 +4,7 @@ This method allows you to **perform a chat** via your LiveChat as a visitor.
 
 You can use this to **create your own chat widget** and, for example, place it within your mobile application.
 
-When it comes to mobile widgets, you can use **ready-made** ones for [iOS](https://docs.livechatinc.com/ios-widget/) and [Android](https://docs.livechatinc.com/android-widget/).
+When it comes to mobile widgets, you can use the **ready-made** ones for [iOS](https://docs.livechatinc.com/ios-widget/) and [Android](https://docs.livechatinc.com/android-widget/).
 
 ## Available paths
 
@@ -24,7 +24,7 @@ When it comes to mobile widgets, you can use **ready-made** ones for [iOS](https
 POST /visitors/<VISITOR_ID>/chat/start
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/visitors/5863759023/chat/start" \
@@ -33,7 +33,7 @@ curl "https://api.livechatinc.com/visitors/5863759023/chat/start" \
 welcome_message=Hi"
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -42,13 +42,13 @@ welcome_message=Hi"
 }
 ```
 
-This function creates new chat for a visitor and returns unique session ID, which is required to send, receive or close a given chat.
+This function creates new chat for a visitor and returns a unique session ID, which is required to send, receive or close a given chat.
 
 #### Required properties
 
 | Property | Description |
 |---------|--------------------|
-| `visitor_id` | unique ID of the visitor. It should be generated randomly on your side. If you already have an ID of your user in your database, it can be used as the `visitor_id`. Its maximum length is 1024 characters |
+| `visitor_id` | unique id of the visitor. It should be generated randomly on your side. If you already have an ID of your user in your database, it can be used as the `visitor_id`. Its maximum length is 1024 characters |
 | `licence_id` | your LiveChat account number. You can obtain it from your [LiveChat's installation code](https://my.livechatinc.com/settings/code) (the `__lc.license` param value) |
 | `welcome_message` | short welcome message displayed at the beginning of the chat. Its maximum length is 1024 characters |
 
@@ -68,7 +68,7 @@ This function creates new chat for a visitor and returns unique session ID, whic
 GET https://api.livechatinc.com/visitors/<VISITOR_ID>/chat/get_pending_messages
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/visitors/5863759023/chat/get_pending_messages?\
@@ -77,7 +77,7 @@ secured_session_id=26132406c42c96ba61ed42689b70f719" \
 -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -109,20 +109,20 @@ secured_session_id=26132406c42c96ba61ed42689b70f719" \
 
 Returns messages and events in a pending chat.
 
-<aside class="notice">In order to persist the chat session, you must send that request every few seconds. Otherwise, the chat will be closed after ~30 seconds.</aside>
+<aside class="notice">In order to keep the chat session, you must send that request every couple of seconds. Otherwise, the chat will be closed after ~30 seconds.</aside>
 
 #### Required properties
 
 | Property | Description |
 |---------|--------------------|
 | `licence_id` | your LiveChat account number. You can obtain it from your [LiveChat's installation code](https://my.livechatinc.com/settings/code) (the `__lc.license` param value) |
-| `secured_session_id` | secret session ID received from the `start` method |
+| `secured_session_id` | secret session id received from the `start` method |
 
 #### Optional properties
 
 | Property | Description |
 |---------|--------------------|
-| `last_message_id` | the ID of the last received message. You don't have to request the entire chat every time. You can simply start from a particular message ID | 
+| `last_message_id` | the id of the last received message. You don't have to request the entire chat every time. You can simply start from a particular message ID | 
 
 ## Send message
 
@@ -132,7 +132,7 @@ Returns messages and events in a pending chat.
 POST https://api.livechatinc.com/visitors/<VISITOR_ID>/chat/send_message
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/visitors/5863759023/chat/send_message" \
@@ -142,7 +142,7 @@ secured_session_id=26132406c42c96ba61ed42689b70f719&\
 message=Hello!"
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -169,7 +169,7 @@ Sends a new message as the visitor.
 POST https://api.livechatinc.com/visitors/<VISITOR_ID>/chat/close
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/visitors/5863759023/chat/close" \
@@ -178,7 +178,7 @@ curl "https://api.livechatinc.com/visitors/5863759023/chat/close" \
 secured_session_id=26132406c42c96ba61ed42689b70f719&"
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {

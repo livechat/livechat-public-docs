@@ -9,7 +9,7 @@
 				</a>
 				<div class="docs-cover-intro">
 					<h2>Build an integration based on webhooks</h2>
-					<p>Embed a web application inside our Agent App. It can be a simple knowledge base or advanced CRM integration module. </p>
+					<p>Learn how to build your own integration using LiveChat webhooks. </p>
 					<a href="/build-integration/" class="cta violet">See full reference</a>
 				</div>
 			</div>

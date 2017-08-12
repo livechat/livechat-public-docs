@@ -18,7 +18,7 @@ This method allows you to **get information** about your [Goals](https://www.liv
 GET https://api.livechatinc.com/goals
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/goals" \
@@ -26,7 +26,7 @@ curl "https://api.livechatinc.com/goals" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 [
@@ -43,7 +43,7 @@ curl "https://api.livechatinc.com/goals" \
 ]
 ```
 
-Returns all currently set goals. Parameter `active` tells you if the particular goal is enabled or not.
+Returns all currently set goals. The `active` parameter indicates whether a goal is enabled or not.
 
 ## Get a single goal details
 
@@ -53,7 +53,7 @@ Returns all currently set goals. Parameter `active` tells you if the particular 
 GET https://api.livechatinc.com/goals/<GOAL_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/goals/1181" \
@@ -61,7 +61,7 @@ curl "https://api.livechatinc.com/goals/1181" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -74,7 +74,7 @@ curl "https://api.livechatinc.com/goals/1181" \
 }
 ```
 
-Returns goal details for the given `GOAL_ID`.
+Returns the goal details for the given `GOAL_ID`.
 
 #### Attributes
 
@@ -87,13 +87,13 @@ Returns goal details for the given `GOAL_ID`.
 
 #### Additional info
 
-Attribute `type` can take the following values:
+The `type` attribute can take the following values:
 
 *   `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`.
 *   `url` – with two additional parameters: `url` and `match_type` with possible values: `substring` (default), `exact`.
-*   `api` – without any additional parameters.
+*   `api` – with no additional parameters.
 
-## Mark goal as successful
+## Mark a goal as successful
 
 > Path
 
@@ -101,7 +101,7 @@ Attribute `type` can take the following values:
 POST https://api.livechatinc.com/goals/<GOAL_ID>/mark_as_successful
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
@@ -110,7 +110,7 @@ curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
   -d "visitor_id=S1281361958.2238ee3bd3"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
@@ -122,7 +122,7 @@ curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -131,15 +131,15 @@ curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
 ```
 
 
-`GOAL_ID` is obtained from the [goals list](#list-all-goals).
+The `GOAL_ID` is obtained from the [goals list](#list-all-goals).
 
 #### Required parameters
 
 | Parameter | Description |
 |---------|--------------------|
-| `visitor_id` | obtained using JavaScript API: [LC_API.get_visitor_id()](//developers.livechatinc.com/javascript-api#get-visitor-id) |
+| `visitor_id` | obtained using the JavaScript API: [LC_API.get_visitor_id()](//developers.livechatinc.com/javascript-api#get-visitor-id) |
 
-Optionally you can store additional information regarding the goal. They can be only retrieved using the API.
+Optionally you can store additional information about the goal. They can be only retrieved using the API.
 
 #### Optional parameters
 
@@ -158,7 +158,7 @@ Optionally you can store additional information regarding the goal. They can be 
 POST https://api.livechatinc.com/goals
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/goals" \
@@ -170,7 +170,7 @@ curl "https://api.livechatinc.com/goals" \
   match_type=exact"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/goals" \
@@ -185,7 +185,7 @@ curl "https://api.livechatinc.com/goals" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -198,7 +198,7 @@ curl "https://api.livechatinc.com/goals" \
 }
 ```
 
-Creates new goal.
+Creates a new goal.
 
 #### Required parameters
 
@@ -209,13 +209,13 @@ Creates new goal.
 
 #### Additional info
 
-`type` can take the following values:
+The `type` can take the following values:
 
 *   `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`. Both are required.
 *   `url` – with two additional parameters: `url` (required) and `match_type` (optional) with possible values: `substring` (default), `exact`.
-*   `api` – without any additional parameters.
+*   `api` – with no additional parameters.
 
-`active` parameter tells you if the goal is active or not.
+The `active` parameter indicates whether the goal is active or not.
 
 ## Update a goal
 
@@ -225,7 +225,7 @@ Creates new goal.
 PUT https://api.livechatinc.com/goals/<GOAL_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/goals/2231" \
@@ -235,7 +235,7 @@ curl "https://api.livechatinc.com/goals/2231" \
   active=0"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/goals/2231" \
@@ -248,7 +248,7 @@ curl "https://api.livechatinc.com/goals/2231" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -263,7 +263,7 @@ curl "https://api.livechatinc.com/goals/2231" \
 
 Updates the specified goal by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
 
-`GOAL_ID` is obtained from the [goals list](#list-all-goals).
+The `GOAL_ID` is obtained from the [goals list](#list-all-goals).
 
 #### Optional parameters
 
@@ -274,13 +274,13 @@ Updates the specified goal by setting the values of the parameters passed. Any p
 
 #### Additional info
 
-`type` can take the following values:
+The `type` can take the following values:
 
 *   `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`. Both are required.
 *   `url` – with two additional parameters: `url` (required) and `match_type` (optional) with possible values: `substring` (default), `exact`.
-*   `api` – without any additional parameters.
+*   `api` – with no additional parameters.
 
-`active` parameter tells you if the goal is active or not.
+The `active` parameter indicates whether the goal is active or not.
 
 ## Remove a goal
 
@@ -290,7 +290,7 @@ Updates the specified goal by setting the values of the parameters passed. Any p
 DELETE https://api.livechatinc.com/goals/<GOAL_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/goals/2231" \
@@ -299,7 +299,7 @@ curl "https://api.livechatinc.com/goals/2231" \
   -X DELETE
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {

@@ -5,6 +5,8 @@
 
 ## Installation
 
+You integrate LiveChat into your project manually or with a dependency manager.
+
 ### CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
@@ -45,7 +47,7 @@ Just drag all files from the `LiveChat/Classes` directory into your project.
 
 #### Objective-C
 
-Drag all files from the `LiveChat/Classes` directory into your project. When adding first `*.swift` file to Objective-C project, Xcode will ask you to create a Bridging Header. It is not necessary for LiveChat to work, so you can decline unless you plan to call Swift code from Objective-C. More information about bridging headers and Swift and Objective-C interoperability can be found [here](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html). You need to put following import statement: `#import "<Your Project Name>-Swift.h"` at the top of your .m file.
+Drag all files from the `LiveChat/Classes` directory into your project. When adding thefirst `*.swift` file to Objective-C project, Xcode will ask you to create a Bridging Header. It is not necessary for LiveChat to work, so you can decline unless you plan to call Swift code from Objective-C. More information about bridging headers and Swift and Objective-C interoperability can be found [here](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html). You need to put the following import statement: `#import "<Your Project Name>-Swift.h"` at the top of your .m file.
 
 Also, for Objective-C projects, you need to set the **Embedded Content Contains Swift Code** flag in your project to `Yes` (found under **Build Options** in the **Build Settings** tab). 
 
@@ -67,7 +69,7 @@ LiveChat.presentChat()
 
 ### Setting Custom Variables
 
-You can provide customer name or email if they are known, so customer will not need to fill pre-chat survey:
+You can provide customer name or email if they are known, so a customer will not need to fill out the pre-chat survey:
 
 ```swift
 LiveChat.name = "iOS Widget Example"
@@ -75,13 +77,13 @@ LiveChat.email = "example@livechatinc.com"
 ```
 <div class="clear"></div>
 
-If you want to associate some additional info with your customer, you can set Custom Variables:
+If you want to associate some additional info with your customer, you can set up Custom Variables:
 
 ```swift
 LiveChat.setVariable(withKey:"Variable name", value:"Some value")
 ```
 
-### Notifying user about agent response
+### Notifying the user about the agent's response
 
 ```swift
 class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveChatDelegate protocol
@@ -99,7 +101,7 @@ class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveC
 }
 ```
 
-You can notifiy your user about agent response if chat was minimized by the user. To handle incoming messages your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
+You can notifiy your user about the agent's response if the chat has been minimized by the user. To handle the incoming messages, your class must implement the `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
 
 ### Handling URL
 
@@ -110,19 +112,19 @@ func handle(URL: URL) {
 }
 ```
 
-By default, all links in chat messages are opened in Safari browser. To change this behavior you can use the `LiveChatDelegate` to handle URL's yourself.
+By default, all links in the chat messages are opened in Safari browser. To change this behavior you can use `LiveChatDelegate` to handle the URLs yourself.
 
-### Sending Photos from device library
+### Sending Photos from the device library
 
-If you have file sharing enabled for visitors, you should provide usage description by including `NSPhotoLibraryUsageDescription` (`Privacy - Photo Library Usage Description`) key in your `Info.plist` file to avoid crash on iOS 10 or higher.
+If you have file sharing enabled for the visitors, you should provide the usage description by including the `NSPhotoLibraryUsageDescription` (`Privacy - Photo Library Usage Description`) key in your `Info.plist` file to avoid crash on iOS 10 or higher.
 
-## Example Apps
+## Sample Apps
 
-Example apps can be found in the `Examples` folder. Samples for both Swift and Objective-C are provided.
+Sample apps for both Swift and Objective-C can be found in the `Examples` folder.
 
 ## Getting help
 
-Any questions? [Chat with Us!](https://secure-lc.livechatinc.com/licence/8413431/open_chat.cgi)
+If you have any questions or want to provide feedback, [chat with us!](https://secure-lc.livechatinc.com/licence/8413431/open_chat.cgi)
 
 ## License
 

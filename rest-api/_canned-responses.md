@@ -1,6 +1,6 @@
 # Canned responses
 
-Use this method to **get a full list** of your [Canned responses](https://www.livechatinc.com/kb/canned-responses/) and to **modify it**.
+Use this method to **get a full list** of your [Canned responses](https://www.livechatinc.com/kb/canned-responses/) and to **modify them**.
 
 ## Available paths
 
@@ -17,7 +17,7 @@ Use this method to **get a full list** of your [Canned responses](https://www.li
 GET https://api.livechatinc.com/canned_responses
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/canned_responses?group=1" \
@@ -25,7 +25,7 @@ curl "https://api.livechatinc.com/canned_responses?group=1" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 [
@@ -59,19 +59,19 @@ curl "https://api.livechatinc.com/canned_responses?group=1" \
 ]
 ```
 
-Returns list of all currently set canned responses.
+Returns the list of all currently set canned responses.
 
 #### Optional parameters
 
 | Parameter | Description |
 |---------|--------------------|
 | `group` | defaults to `0` |
-| `modification_date`, `modification_by` | appear if the canned response was modified |
+| `modification_date`, `modification_by` | appear if the canned response has been modified |
 
 
-## Get single canned response
+## Get a single canned response
 
-`CANNED_RESPONSE_ID` is obtained from the [list all canned responses](#list-all-canned-responses).
+`CANNED_RESPONSE_ID` is obtained from the [list of all canned responses](#list-all-canned-responses).
 
 > Path
 
@@ -79,7 +79,7 @@ Returns list of all currently set canned responses.
 GET https://api.livechatinc.com/canned_responses/<CANNED_RESPONSE_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/canned_responses/3151" \
@@ -87,7 +87,7 @@ curl "https://api.livechatinc.com/canned_responses/3151" \
   -H X-API-Version:2
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -123,7 +123,7 @@ curl "https://api.livechatinc.com/canned_responses/3151" \
 POST https://api.livechatinc.com/canned_responses
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/canned_responses" \
@@ -134,7 +134,7 @@ tags[]=bye&\
 tags[]=cu"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```shell
 curl "https://api.livechatinc.com/canned_responses" \
@@ -147,7 +147,7 @@ curl "https://api.livechatinc.com/canned_responses" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
@@ -186,7 +186,7 @@ Creates a new canned response.
 PUT https://api.livechatinc.com/canned_responses/<CANNED_RESPONSE_ID>
 ```
 
-> Example request
+> Sample request
 
 ```shell
 curl "https://api.livechatinc.com/canned_responses/3181" \
@@ -195,7 +195,7 @@ curl "https://api.livechatinc.com/canned_responses/3181" \
   -X PUT -d "tags[]=bye"
 ```
 
-> Example JSON request
+> Sample JSON request
 
 ```
 curl "https://api.livechatinc.com/canned_responses" \
@@ -208,7 +208,7 @@ curl "https://api.livechatinc.com/canned_responses" \
      }'
 ```
 
-> Example response
+> Sample response
 
 ```json-doc
 {
