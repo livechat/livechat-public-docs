@@ -1,8 +1,8 @@
-## Callbacks
+# Callbacks
 
 Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time agent's message has been received.
 
-### new_message
+## new_message
 
 Callback function executed when a new message arrives.
 
@@ -11,7 +11,7 @@ visitorApi.on('new_message', (newMessage) => {
     console.log(newMessage)
 })
 ```
-##### Payload:
+#### Payload:
 
 | param      | type    | description                   |
 | ---------- | ------- | ----------------------------- |
@@ -21,7 +21,7 @@ visitorApi.on('new_message', (newMessage) => {
 | text       | string  | Message text                  |
 | chatId     | string  | Message chat ID               |
 
-### visitor_banned - not implemented yet
+## visitor_banned - not implemented yet
 
 Callback function executed when a [visitor is banned](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features).
 
@@ -32,7 +32,7 @@ visitorApi.on('visitor_banned', (data) => {
 ```
 
 
-### chat_started
+## chat_started
 
 Callback function executed when a chat is started.
 
@@ -41,13 +41,13 @@ visitorApi.on('chat_started', (chatData) => {
     console.log(chatData)
 })
 ```
-##### Payload:
+#### Payload:
 
 | param  | type    | description |
 | ------ | ------- | ----------- |
 | chatId | string  | New chat ID |
 
-### chat_ended
+## chat_ended
 
 Callback function executed when a chat is ended. This callback is called without any additional data.
 
@@ -58,7 +58,7 @@ visitorApi.on('chat_ended', (chatData) => {
 ```
 
 
-### status_changed
+## status_changed
 
 Callback function executed when the chat status is changed.
 
@@ -68,13 +68,13 @@ visitorApi.on('status_changed', (statusData) => {
 })
 ```
 
-##### Payload:
+#### Payload:
 
 | param  | type                  | description                      |
 | ------ | --------------------- | -------------------------------- |
 | status | "online" \| "offline" | Current chat availability status |
 
-### visitor_queued - not implemented yet
+## visitor_queued - not implemented yet
 
 Callback function executed when a visitor is queued.
 
@@ -84,7 +84,7 @@ visitorApi.on('visitor_queued', (queueData) => {
 })
 ```
 
-### connection_status_changed
+## connection_status_changed
 
 Callback function executed when the connection status changes.
 
@@ -94,13 +94,13 @@ visitorApi.on('connection_status_changed', (statusData) => {
 })
 ```
 
-##### Payload:
+#### Payload:
 
 | param  | type                          | description               |
 | ------ | ----------------------------- | ------------------------- |
 | statys | "connected" \| "disconnected" | Current connection status |
 
-### new_file - not implemented yet
+## new_file - not implemented yet
 
 Callback function executed when a [file is shared](https://www.livechatinc.com/features/chat-tools/#File-sharing).
 
@@ -110,7 +110,7 @@ visitorApi.on('new_file', (newFile) => {
 })
 ```
 
-### agent_changed
+## agent_changed
 
 Callback function executed when an agent takes over the chat.
 
@@ -120,7 +120,7 @@ visitorApi.on('agent_changed', (newAgent) => {
 })
 ```
 
-##### Payload:
+#### Payload:
 
 | param     | type    | description                                     |
 | --------- | ------- | ----------------------------------------------- |
@@ -129,7 +129,7 @@ visitorApi.on('agent_changed', (newAgent) => {
 | avatarUrl | string  | Agent's avatar - path to the image on Amazon s3 |
 | jobTitle  | string  | Agent's job title                               |
 
-### typing_indicator - not implemented yet
+## typing_indicator - not implemented yet
 
 Callback function executed when the typing indicator appears.
 
@@ -139,7 +139,7 @@ visitorApi.on('typing_indicator', (typingData) => {
 })
 ```
 
-### message_seen - not implemented yet
+## message_seen - not implemented yet
 
 Callback function executed when a message is marked as Seen.
 
