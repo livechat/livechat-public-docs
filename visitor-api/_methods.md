@@ -1,6 +1,6 @@
-## Methods
+# Methods
 
-### init
+## init
 
 Initializes the chat window.
 
@@ -13,14 +13,14 @@ const visitorApi = init({
 })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param   | type   | description              |
 | ------- | ------ | ------------------------ |
 | license | number | LiveChat license number  |
 | group   | number | Group number (default: 0) |
 
-### sendMessage
+## sendMessage
 
 Sends a message.
 
@@ -37,21 +37,21 @@ visitorApi.sendMessage({
     })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param    | type   | description          |
 | -------- | ------ | -------------------- |
 | text     | string | Visitor message text |
 | customId | string | Message custom id    |
 
-##### Errors:
+#### Errors:
 
 | type             | reason                               |
 | ---------------- | ------------------------------------ |
 | connection       | "Request failed"                     |
 | missing argument | "Missing text or customId parameter" |
 
-### sendFile - not implemented yet
+## sendFile - not implemented yet
 
 Enables [file sharing](https://www.livechatinc.com/features/chat-tools/#File-sharing) through the chat window.
 
@@ -68,7 +68,7 @@ visitorApi.sendFile({
     })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param      | type   | description    |
 | ---------- | ------ | -------------- |
@@ -76,7 +76,7 @@ visitorApi.sendFile({
 | customId   | string | custom file id |
 
 
-### rateChat - not implemented yet
+## rateChat - not implemented yet
 
 Enables [chat ratings](https://www.livechatinc.com/features/getting-feedback/#Chat-ratings).
 
@@ -87,7 +87,7 @@ visitorApi.rateChat({
 })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param   | type                      | description                  |
 | ------- | ------------------------- | ---------------------------- |
@@ -96,7 +96,7 @@ visitorApi.rateChat({
 
 
 
-### markMessageAsSeen - not implemented yet
+## markMessageAsSeen - not implemented yet
 
 Marks a message as Seen.
 
@@ -108,7 +108,7 @@ visitorApi.markMessageAsSeen({
 })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param     | type   | description                        |
 | --------- | ------ | ---------------------------------- |
@@ -116,7 +116,7 @@ visitorApi.markMessageAsSeen({
 
 
 
-### setSneakPeek - not implemented yet
+## setSneakPeek - not implemented yet
 
 Enables [sneak peeks](https://www.livechatinc.com/features/chat-tools/#Message-sneak-peak) to see what the visitor is typing in before they actually send the message.
 
@@ -126,7 +126,7 @@ visitorApi.setSneakPeek({
 })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param   | type   | description                |
 | ------- | ------ | -------------------------- |
@@ -135,7 +135,7 @@ visitorApi.setSneakPeek({
 **Note:** Sneak peek won't be sent every time you call a function. It will be throttled (i.e. sent not earlier than 300ms after the last sneak peek request).
 
 
-### forwardChatTranscript - not implemented yet
+## forwardChatTranscript - not implemented yet
 
 Sends [chat transcripts](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features) to the specified email address when the chat is ended.
 
@@ -145,14 +145,14 @@ visitorApi.forwardChatTranscript({
 })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param | type   | description                                                                |
 | ----- | ------ | -------------------------------------------------------------------------- |
 | email | string | Email that will automatically receive a transcript when a chat is finished |
 
 
-### sendTicketForm - not implemented yet
+## sendTicketForm - not implemented yet
 
 Gathers the [data](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) collected from a customer.
 
@@ -161,7 +161,7 @@ visitorApi.sendTicketForm(form)
 ```
 
 
-### sendPrechatForm - not implemented yet
+## sendPrechatForm - not implemented yet
 
 Collects the pre-chat form information (it will be visible during the chat and in the archives).
 
@@ -169,7 +169,7 @@ Collects the pre-chat form information (it will be visible during the chat and i
 visitorApi.sendPrechatForm(form)
 ```
 
-### sendPostchatForm - not implemented yet
+## sendPostchatForm - not implemented yet
 
 Collects the [post-chat form](https://www.livechatinc.com/features/getting-feedback/#Post-chat-surveys) information (it will be visible in the archives).
 
@@ -178,7 +178,7 @@ visitorApi.sendPostchatForm(form)
 ```
 
 
-### getVisitorData - not implemented yet
+## getVisitorData - not implemented yet
 
 Collects the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
 
@@ -187,7 +187,7 @@ Collects the [visitor information](https://www.livechatinc.com/features/chat-too
 const visitorData = visitorApi.getVisitorData()
 ```
 
-##### Returned value: 
+#### Returned value: 
 
 | param            | type   | description                                                               |
 | ---------------- | ------ | ------------------------------------------------------------------------- |
@@ -197,7 +197,7 @@ const visitorData = visitorApi.getVisitorData()
 | pageTitle        | string | Visitor's currently visiting website title                                |
 | customProperties | object | Visitor's additional data object (custom properties) |
 
-### setVisitorData
+## setVisitorData
 ```js
 visitorApi.setVisitorData({
     name: "Wynton Marsalis",
@@ -207,7 +207,7 @@ visitorApi.setVisitorData({
 })
 ```
 
-##### Parameters:
+#### Parameters:
 
 | param            | type   | description                                                               |
 | ---------------- | ------ | ------------------------------------------------------------------------- |
@@ -216,7 +216,7 @@ visitorApi.setVisitorData({
 | url              | string | Visitor's currently visiting website URL                                  |
 | customProperties | object | Not implemented yet: Visitor's additional data object (custom properties) |
 
-##### Errors:
+#### Errors:
 
 | type             | reason                                         |
 | ---------------- | ---------------------------------------------- |
