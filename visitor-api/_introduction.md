@@ -1,10 +1,10 @@
-## Introduction
+# Introduction
 
 LiveChat Visitor JS API allows you to perform a chat via LiveChat as a visitor using JavaScript. 
 
 You can use this to create your own chat widget.
 
-### Is it for me?
+## Is it for me?
 
 If you need to customize the LiveChat widget, using LiveChat Visitor JS API is one of the options to do this.
 
@@ -16,12 +16,12 @@ Keep in mind, however, that interacting with this API requires **significant dev
 
 However, if you  need a fully custom solution and you feel brave, dive into LiveChat Visitor JS API: we provide [methods](#methods) and [callbacks](#callbacks) for deep integration with the LiveChat environment.
 
-### About LiveChat Visitor JS API
+## About LiveChat Visitor JS API
 
 LiveChat Visitor JS API is promise-based; all asynchronous methods return a promise. To get a promise fulfillment result, subscribe your handler to the promise's `then` method. Check out [this article](https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise) to learn more about promises.
 
 **Important!** Some methods and callbacks are not implemented yet. 
 
-### Examples
+## Examples
 
 - [Example chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
