@@ -3,7 +3,7 @@ title: LiveChat Visitor API
 
 menuTitle: <u>Visitor API</u>
 
-themeColor: green
+themeColor: eucalyptus
 
 includes:
   - introduction

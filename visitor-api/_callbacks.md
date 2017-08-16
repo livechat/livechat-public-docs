@@ -1,25 +1,29 @@
-## Callbacks
+# Callbacks
 
-Callbacks let you bind a custom JavaScript function to an event. For example, your function can be invoked every time agent's message was received.
+Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time agent's message has been received.
 
-### new_message
+## new_message
+
+Callback function executed when a new message arrives.
 
 ```js
 visitorApi.on('new_message', (newMessage) => {
     console.log(newMessage)
 })
 ```
-Payload:
+#### Payload:
 
 | param      | type    | description                   |
 | ---------- | ------- | ----------------------------- |
-| messageId  | string  | Message Id                    |
-| authorId   | string  | Message author Id             |
+| messageId  | string  | Message ID                   |
+| authorId   | string  | Message author ID             |
 | timestamp  | number  | Timestamp added by server     |
 | text       | string  | Message text                  |
-| chatId     | string  | Message chat id               |
+| chatId     | string  | Message chat ID               |
 
-### visitor_banned - not implemented yet
+## visitor_banned - not implemented yet
+
+Callback function executed when a [visitor is banned](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features).
 
 ```js
 visitorApi.on('visitor_banned', (data) => {
@@ -27,22 +31,25 @@ visitorApi.on('visitor_banned', (data) => {
 })
 ```
 
-Feature description: [Visitor banning](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features)
 
-### chat_started
+## chat_started
+
+Callback function executed when a chat is started.
 
 ```js
 visitorApi.on('chat_started', (chatData) => {
     console.log(chatData)
 })
 ```
-Payload:
+#### Payload:
 
 | param  | type    | description |
 | ------ | ------- | ----------- |
-| chatId | string  | New chat id |
+| chatId | string  | New chat ID |
 
-### chat_ended
+## chat_ended
+
+Callback function executed when a chat is ended. This callback is called without any additional data.
 
 ```js
 visitorApi.on('chat_ended', (chatData) => {
@@ -50,9 +57,26 @@ visitorApi.on('chat_ended', (chatData) => {
 })
 ```
 
-Callback is called wihout any additional data.
 
-### visitor_queued - not implemented yet
+## status_changed
+
+Callback function executed when the chat status is changed.
+
+```js
+visitorApi.on('status_changed', (statusData) => {
+    console.log(queueData)
+})
+```
+
+#### Payload:
+
+| param  | type                  | description                      |
+| ------ | --------------------- | -------------------------------- |
+| status | "online" \| "offline" | Current chat availability status |
+
+## visitor_queued - not implemented yet
+
+Callback function executed when a visitor is queued.
 
 ```js
 visitorApi.on('visitor_queued', (queueData) => {
@@ -60,7 +84,25 @@ visitorApi.on('visitor_queued', (queueData) => {
 })
 ```
 
-### new_file - not implemented yet
+## connection_status_changed
+
+Callback function executed when the connection status changes.
+
+```js
+visitorApi.on('connection_status_changed', (statusData) => {
+    console.log(statusData)
+})
+```
+
+#### Payload:
+
+| param  | type                          | description               |
+| ------ | ----------------------------- | ------------------------- |
+| statys | "connected" \| "disconnected" | Current connection status |
+
+## new_file - not implemented yet
+
+Callback function executed when a [file is shared](https://www.livechatinc.com/features/chat-tools/#File-sharing).
 
 ```js
 visitorApi.on('new_file', (newFile) => {
@@ -68,9 +110,9 @@ visitorApi.on('new_file', (newFile) => {
 })
 ```
 
-Feature description: [File sharing](https://www.livechatinc.com/features/chat-tools/#File-sharing)
+## agent_changed
 
-### agent_changed
+Callback function executed when an agent takes over the chat.
 
 ```js
 visitorApi.on('agent_changed', (newAgent) => {
@@ -78,16 +120,18 @@ visitorApi.on('agent_changed', (newAgent) => {
 })
 ```
 
-Payload:
+#### Payload:
 
 | param     | type    | description                                     |
 | --------- | ------- | ----------------------------------------------- |
 | name      | string  | Agent's name                                    |
-| id        | string  | Agent's Id                                      |
+| id        | string  | Agent's ID                                      |
 | avatarUrl | string  | Agent's avatar - path to the image on Amazon s3 |
 | jobTitle  | string  | Agent's job title                               |
 
-### typing_indicator - not implemented yet
+## typing_indicator - not implemented yet
+
+Callback function executed when the typing indicator appears.
 
 ```js
 visitorApi.on('typing_indicator', (typingData) => {
@@ -95,12 +139,14 @@ visitorApi.on('typing_indicator', (typingData) => {
 })
 ```
 
-### message_seen - not implemented yet
+## message_seen - not implemented yet
+
+Callback function executed when a message is marked as Seen.
+
+Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
 ```js
 visitorApi.on('message_seen', (messageData) => {
     console.log(messageData)
 })
 ```
-
-Feature description: [Delivery status](https://www.livechatinc.com/features/chat-tools/#Delivery-status)

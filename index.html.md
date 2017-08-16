@@ -4,10 +4,11 @@ title: LiveChat Docs
 
 includes:
   - authorization
+  - sign-in-with-livechat
   - rest-api
   - js-api
-  - agent-app-extension
-  - sign-in-with-livechat
+  - visitor-api
   - webhook-integration
+  - agent-app-extension
   - mobile-widgets
 ---

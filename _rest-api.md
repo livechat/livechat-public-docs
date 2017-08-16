@@ -1,4 +1,4 @@
-<section class="docs-full-desc light">
+<section class="docs-full-desc">
 	<div class="content">
 	<div class="content-column">
 		<div class="docs-covers">
