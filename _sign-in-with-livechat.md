@@ -17,8 +17,10 @@
 		<div class="content-column">
 			<div class="docs-covers">
 				<dl class="docs-sections fuchsia">
-					<dt><a href="/sign-in-with-livechat/#first-steps">First steps</a></dt>
+					<dt><a href="/sign-in-with-livechat/#user-flow">User flow</a></dt>
 					<dd>Learn how "Sign in with LiveChat" user flow works.</dd>
+					<dt><a href="/sign-in-with-livechat/#setup">Setup</a></dt>
+					<dd>Start using JavaScript SDK in few minutes.</dd>
 					<dt><a href="/sign-in-with-livechat/#sdk-documentation">SDK documentation</a></dt>
 					<dd>Read JavaScript SDK documentation.</dd>
 					<dt><a href="/sign-in-with-livechat/#example-app">Example app</a></dt>

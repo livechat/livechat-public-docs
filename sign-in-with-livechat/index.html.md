@@ -7,6 +7,7 @@ themeColor: fuchsia
 
 includes:
   - introduction
+  - setup
   - sdk-documentation
   - example-app
 
