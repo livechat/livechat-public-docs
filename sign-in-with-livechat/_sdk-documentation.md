@@ -16,6 +16,24 @@ Initiates the SDK. Accepts an object with the following properties:
 ### **AccountsSDK.openPopup()**
 Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in with LiveChat" button. See the example of custom button in <a href="#prepare-button-container">Prepare button container</a> section.
 
+### **AccountsSDK.signOut(callback)**
+> Example `AccountsSDK.signOut` method usage:
+
+```js
+function signMeOut(e) {
+  e.preventDefault();
+
+  AccountsSDK.signOut(function() {
+    console.log('User signed out');
+  });
+}
+```
+```html
+<a href="" onclick="signMeOut(event)">Sign out</a>
+```
+
+Signs the user out and invokes `callback` function (with no arguments) when it's done.
+
 ### **AccountsSDK.displayButtons()**
 Renders "Sign in with LiveChat" buttons once again in the DOM. Helpful when you reload the app's state and DOM is cleared. This method is automatically invoked by the `init` method.
 
