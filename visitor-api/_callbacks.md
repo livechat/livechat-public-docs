@@ -64,7 +64,7 @@ Callback function executed when the chat status is changed.
 
 ```js
 visitorApi.on('status_changed', (statusData) => {
-    console.log(queueData)
+    console.log(statusData)
 })
 ```
 
@@ -74,7 +74,7 @@ visitorApi.on('status_changed', (statusData) => {
 | ------ | --------------------- | -------------------------------- |
 | status | "online" \| "offline" | Current chat availability status |
 
-## visitor_queued - not implemented yet
+### visitor_queued
 
 Callback function executed when a visitor is queued.
 
@@ -84,7 +84,14 @@ visitorApi.on('visitor_queued', (queueData) => {
 })
 ```
 
-## connection_status_changed
+##### Payload:
+
+| param         | type   | description                       |
+| ------------- | ------ | --------------------------------- |
+| numberInQueue | number | Visitor's order number in queue   |
+| waitingTime   | number | Estimated waiting time in seconds |
+
+### connection_status_changed
 
 Callback function executed when the connection status changes.
 
@@ -98,9 +105,9 @@ visitorApi.on('connection_status_changed', (statusData) => {
 
 | param  | type                          | description               |
 | ------ | ----------------------------- | ------------------------- |
-| statys | "connected" \| "disconnected" | Current connection status |
+| status | "connected" \| "disconnected" | Current connection status |
 
-## new_file - not implemented yet
+### new_file
 
 Callback function executed when a [file is shared](https://www.livechatinc.com/features/chat-tools/#File-sharing).
 
@@ -110,7 +117,18 @@ visitorApi.on('new_file', (newFile) => {
 })
 ```
 
-## agent_changed
+##### Payload:
+
+| param       | type   | description                           |
+| ----------- | ------ | ------------------------------------- |
+| id          | string | File ID                               |
+| authorId    | string | File author ID                        |
+| timestamp   | number | Timestamp added by server             |
+| url         | string | File url                              |
+| contentType | string | File content type (i.e. 'text/plain') |
+| size        | number | File size                             |
+
+### agent_changed
 
 Callback function executed when an agent takes over the chat.
 
@@ -129,7 +147,7 @@ visitorApi.on('agent_changed', (newAgent) => {
 | avatarUrl | string  | Agent's avatar - path to the image on Amazon s3 |
 | jobTitle  | string  | Agent's job title                               |
 
-## typing_indicator - not implemented yet
+### typing_indicator
 
 Callback function executed when the typing indicator appears.
 
@@ -139,7 +157,14 @@ visitorApi.on('typing_indicator', (typingData) => {
 })
 ```
 
-## message_seen - not implemented yet
+##### Payload:
+
+| param    | type    | description                       |
+| -------- | ------- | --------------------------------- |
+| authorId | string  | Author ID of the writer           |
+| isTyping | boolean | Author is typing / stopped typing |
+
+### message_seen - not implemented yet
 
 Callback function executed when a message is marked as Seen.
 
