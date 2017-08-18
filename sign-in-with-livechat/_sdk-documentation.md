@@ -3,7 +3,18 @@
 ## Methods
 
 ### **AccountsSDK.init({ ... })**
-Initiates the SDK. Accepts an object with the following properties:
+> Example `init()` method usage
+
+```js
+var instance = AccountsSDK.init({
+  client_id: '<your_client_id>',
+  onIdentityFetched: (error, data) => {
+    // ...
+  }
+});
+```
+
+Initiates the SDK and returns AccountsSDK object instance. Accepts an object with the following properties:
 
 * **client_id** – obtainted from [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
 
@@ -13,17 +24,33 @@ Initiates the SDK. Accepts an object with the following properties:
 
 * **onIdentityFetched(error, data)** – callback invoked when user's identity is fetched. Callback will include either `error` or `data` object depending on current user authorization status.<br>You will find detailed documentation in <a href="#response-format">Response format</a> section.
 
-### **AccountsSDK.openPopup()**
-Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in with LiveChat" button. See the example of custom button in <a href="#prepare-button-container">Prepare button container</a> section.
+<aside class="notice"><code>AccountsSDK</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
 
-### **AccountsSDK.signOut(callback)**
-> Example `AccountsSDK.signOut` method usage:
+### **instance.openPopup()**
+> Example `openPopup()` method usage:
 
 ```js
+// javascript
+var instance = AccountsSDK.init({ ... });
+```
+```html
+<!-- html -->
+<a href="" onclick="instance.openPopup()">Sign in with LiveChat</a>
+```
+
+Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in with LiveChat" button. See the example of custom button in <a href="#prepare-button-container">Prepare button container</a> section.
+
+### **instance.signOut(callback)**
+> Example `signOut()` method usage:
+
+```js
+// javascript
+var instance = AccountsSDK.init({ ... });
+
 function signMeOut(e) {
   e.preventDefault();
 
-  AccountsSDK.signOut(function() {
+  instance.signOut(function() {
     console.log('User signed out');
   });
 }
@@ -34,7 +61,19 @@ function signMeOut(e) {
 
 Signs the user out and invokes `callback` function (with no arguments) when it's done.
 
-### **AccountsSDK.displayButtons()**
+### **instance.displayButtons()**
+> Example `displayButtons()` method usage:
+
+```js
+var instance = AccountsSDK.init({ ... });
+
+// some DOM changes which cause buttons to disappear from DOM
+// (...)
+
+// inject buttons once again
+instance.displayButtons();
+```
+
 Renders "Sign in with LiveChat" buttons once again in the DOM. Helpful when you reload the app's state and DOM is cleared. This method is automatically invoked by the `init` method.
 
 

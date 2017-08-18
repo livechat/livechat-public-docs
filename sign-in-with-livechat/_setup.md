@@ -19,20 +19,25 @@ Create a simple HTML page and include the following library.
 
 > Custom "Sign in with LiveChat" button
 
+```js
+// javascript
+var instance = AccountsSDK.init({ ... });
+```
 ```html
-<a href="" onclick="AccountsSDK.openPopup()">Sign in with LiveChat</a>
+<!-- html -->
+<a href="" onclick="instance.openPopup()">Sign in with LiveChat</a>
 ```
 
 Insert HTML code to prepare the container for "Sign in with LiveChat" button. Its `class` attribute must have value of `livechat-login-button`. The button will be automatically inserted into the container.
 
-If you prefer to design your own button, you can do that, too. Just bind the `AccountsSDK.openPopup()` method to the `onclick` attribute for your link or button.
+If you prefer to design your own button, you can do that, too. Just bind the `openPopup()` method of `AccountsSDK` instance to the `onclick` attribute for your link or button.
 
 
 ## Initialize the SDK
 
-```js
+```html
 <script>
-AccountsSDK.init({
+var instance = AccountsSDK.init({
   client_id: '<your_client_id>',
   onIdentityFetched: (error, data) => {
     if (data) {
