@@ -16,7 +16,7 @@ import Livechat2VisitorSDK from "@livechat/livechat-visitor-sdk";
 
 #### Using script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.0.13/dist/livechat-visitor-sdk.min.js"></script>`
+`<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.0.15/dist/livechat-visitor-sdk.min.js"></script>`
 
 If you just want to look around and play with the SDK, check out our [sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
 
