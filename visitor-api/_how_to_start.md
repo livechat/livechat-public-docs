@@ -4,7 +4,7 @@
 
 You can use LiveChat Visitor JS API in two different ways:
 
-1. Using npm
+#### Using npm
 
 `npm install @livechat/livechat-visitor-api`
 
@@ -14,7 +14,7 @@ Now, you can import API in your code:
 import Livechat2VisitorApi from "@livechat/livechat-visitor-api";
 ```
 
-2. Using `<script>` tag UMD module hosted on unpkg's CDN
+#### Using <script> tag - UMD module hosted on unpkg's CDN
 
 `<script src="https://unpkg.com/@livechat/livechat-visitor-api@0.0.13/dist/livechat-visitor-api.min.js"></script>`
 
