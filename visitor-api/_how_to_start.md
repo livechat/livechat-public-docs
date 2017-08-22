@@ -14,7 +14,7 @@ Now, you can import API in your code:
 import Livechat2VisitorApi from "@livechat/livechat-visitor-api";
 ```
 
-#### Using <script> tag - UMD module hosted on unpkg's CDN
+#### Using script tag - UMD module hosted on unpkg's CDN
 
 `<script src="https://unpkg.com/@livechat/livechat-visitor-api@0.0.13/dist/livechat-visitor-api.min.js"></script>`
 
