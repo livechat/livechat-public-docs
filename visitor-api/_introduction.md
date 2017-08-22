@@ -24,4 +24,4 @@ LiveChat Visitor JS API is promise-based; all asynchronous methods return a prom
 
 ## Examples
 
-- [Example chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
+- [A sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
