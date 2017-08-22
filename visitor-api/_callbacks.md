@@ -7,7 +7,7 @@ Callbacks let you bind a custom JavaScript function to an event. For example, yo
 Callback function executed when a new message arrives.
 
 ```js
-visitorApi.on('new_message', (newMessage) => {
+visitorSdk.on('new_message', (newMessage) => {
     console.log(newMessage)
 })
 ```
@@ -26,7 +26,7 @@ visitorApi.on('new_message', (newMessage) => {
 Callback function executed when a [visitor is banned](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features).
 
 ```js
-visitorApi.on('visitor_banned', (data) => {
+visitorSdk.on('visitor_banned', (data) => {
     console.log(data)
 })
 ```
@@ -37,7 +37,7 @@ visitorApi.on('visitor_banned', (data) => {
 Callback function executed when a chat is started.
 
 ```js
-visitorApi.on('chat_started', (chatData) => {
+visitorSdk.on('chat_started', (chatData) => {
     console.log(chatData)
 })
 ```
@@ -52,7 +52,7 @@ visitorApi.on('chat_started', (chatData) => {
 Callback function executed when a chat is ended. This callback is called without any additional data.
 
 ```js
-visitorApi.on('chat_ended', (chatData) => {
+visitorSdk.on('chat_ended', (chatData) => {
     console.log('Chat is closed');
 })
 ```
@@ -63,7 +63,7 @@ visitorApi.on('chat_ended', (chatData) => {
 Callback function executed when the chat status is changed.
 
 ```js
-visitorApi.on('status_changed', (statusData) => {
+visitorSdk.on('status_changed', (statusData) => {
     console.log(statusData)
 })
 ```
@@ -79,7 +79,7 @@ visitorApi.on('status_changed', (statusData) => {
 Callback function executed when a visitor is queued.
 
 ```js
-visitorApi.on('visitor_queued', (queueData) => {
+visitorSdk.on('visitor_queued', (queueData) => {
     console.log(queueData)
 })
 ```
@@ -96,7 +96,7 @@ visitorApi.on('visitor_queued', (queueData) => {
 Callback function executed when the connection status changes.
 
 ```js
-visitorApi.on('connection_status_changed', (statusData) => {
+visitorSdk.on('connection_status_changed', (statusData) => {
     console.log(statusData)
 })
 ```
@@ -112,7 +112,7 @@ visitorApi.on('connection_status_changed', (statusData) => {
 Callback function executed when a [file is shared](https://www.livechatinc.com/features/chat-tools/#File-sharing).
 
 ```js
-visitorApi.on('new_file', (newFile) => {
+visitorSdk.on('new_file', (newFile) => {
     console.log(newFile)
 })
 ```
@@ -133,7 +133,7 @@ visitorApi.on('new_file', (newFile) => {
 Callback function executed when an agent takes over the chat.
 
 ```js
-visitorApi.on('agent_changed', (newAgent) => {
+visitorSdk.on('agent_changed', (newAgent) => {
     console.log(newAgent)
 })
 ```
@@ -152,7 +152,7 @@ visitorApi.on('agent_changed', (newAgent) => {
 Callback function executed when the typing indicator appears.
 
 ```js
-visitorApi.on('typing_indicator', (typingData) => {
+visitorSdk.on('typing_indicator', (typingData) => {
     console.log(typingData)
 })
 ```
@@ -171,7 +171,7 @@ Callback function executed when a message is marked as Seen.
 Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
 ```js
-visitorApi.on('message_seen', (messageData) => {
+visitorSdk.on('message_seen', (messageData) => {
     console.log(messageData)
 })
 ```
