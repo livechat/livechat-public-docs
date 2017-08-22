@@ -1,7 +1,7 @@
 ---
-title: LiveChat Visitor API
+title: LiveChat Visitor SDK
 
-menuTitle: <u>Visitor API</u>
+menuTitle: <u>Visitor SDK</u>
 
 themeColor: eucalyptus
 
