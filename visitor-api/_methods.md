@@ -5,9 +5,9 @@
 Initializes the chat window.
 
 ```js
-import { init } from "@livechat/livechat-visitor-api";
+import { init } from "@livechat/livechat-visitor-sdk";
 
-const visitorApi = init({
+const visitorSDK = init({
     license: 123,
     group: 0,
 })
@@ -25,7 +25,7 @@ const visitorApi = init({
 Sends a message.
 
 ```js
-visitorApi.sendMessage({
+visitorSDK.sendMessage({
     text: "Hello",
     customId: 123423215
 })
@@ -56,7 +56,7 @@ visitorApi.sendMessage({
 Enables [file sharing](https://www.livechatinc.com/features/chat-tools/#File-sharing) through the chat window.
 
 ```js
-visitorApi.sendFile({
+visitorSDK.sendFile({
     file: FileObject,
     customId: 123423215
 })
@@ -81,7 +81,7 @@ visitorApi.sendFile({
 Enables [chat ratings](https://www.livechatinc.com/features/getting-feedback/#Chat-ratings).
 
 ```js
-visitorApi.rateChat({
+visitorSDK.rateChat({
     rate: "good",
     comment: "Agent helped me a lot!"
 })
@@ -103,7 +103,7 @@ Marks a message as Seen.
 Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
 ```js
-visitorApi.markMessageAsSeen({
+visitorSDK.markMessageAsSeen({
     messageId: "123123123",
 })
 ```
@@ -121,7 +121,7 @@ visitorApi.markMessageAsSeen({
 Enables [sneak peeks](https://www.livechatinc.com/features/chat-tools/#Message-sneak-peak) to see what the visitor is typing in before they actually send the message.
 
 ```js
-visitorApi.setSneakPeek({
+visitorSDK.setSneakPeek({
     message: "Hello, I woul",
 })
 ```
@@ -140,7 +140,7 @@ visitorApi.setSneakPeek({
 Sends [chat transcripts](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features) to the specified email address when the chat is ended.
 
 ```js
-visitorApi.forwardChatTranscript({
+visitorSDK.forwardChatTranscript({
     email: "test@livechatinc.com",
 })
 ```
@@ -157,7 +157,7 @@ visitorApi.forwardChatTranscript({
 Gathers the [data](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) collected from a customer.
 
 ```js
-visitorApi.sendTicketForm(form)
+visitorSDK.sendTicketForm(form)
 ```
 
 
@@ -166,7 +166,7 @@ visitorApi.sendTicketForm(form)
 Collects the pre-chat form information (it will be visible during the chat and in the archives).
 
 ```js
-visitorApi.sendPrechatForm(form)
+visitorSDK.sendPrechatForm(form)
 ```
 
 ## sendPostchatForm - not implemented yet
@@ -174,7 +174,7 @@ visitorApi.sendPrechatForm(form)
 Collects the [post-chat form](https://www.livechatinc.com/features/getting-feedback/#Post-chat-surveys) information (it will be visible in the archives).
 
 ```js
-visitorApi.sendPostchatForm(form)
+visitorSDK.sendPostchatForm(form)
 ```
 
 
@@ -184,7 +184,7 @@ Collects the [visitor information](https://www.livechatinc.com/features/chat-too
 
 ```js
 
-const visitorData = visitorApi.getVisitorData()
+const visitorData = visitorSDK.getVisitorData()
 ```
 
 #### Returned value: 
@@ -199,7 +199,7 @@ const visitorData = visitorApi.getVisitorData()
 
 ## setVisitorData
 ```js
-visitorApi.setVisitorData({
+visitorSDK.setVisitorData({
     name: "Wynton Marsalis",
     email: "test@livechatinc.com",
     pageUrl: 'http://example.org/pricing',
