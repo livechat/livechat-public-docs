@@ -1,12 +1,12 @@
 # Introduction
 
-LiveChat Visitor JS API allows you to perform a chat via LiveChat as a visitor using JavaScript. 
+LiveChat Visitor JS SDK allows you to perform a chat via LiveChat as a visitor using JavaScript. 
 
 You can use this to create your own chat widget.
 
 ## Is it for me?
 
-If you need to customize the LiveChat widget, using LiveChat Visitor JS API is one of the options to do this.
+If you need to customize the LiveChat widget, using LiveChat Visitor JS SDK is one of the options to do this.
 
 Keep in mind, however, that interacting with this API requires **significant development skills**. 
 
@@ -14,11 +14,11 @@ Keep in mind, however, that interacting with this API requires **significant dev
 
 * If you want to integrate the chat widget with your application, you can use the the existing [JS API](https://docs.livechatinc.com/js-api/).
 
-However, if you  need a fully custom solution and you feel brave, dive into LiveChat Visitor JS API: we provide [methods](#methods) and [callbacks](#callbacks) for deep integration with the LiveChat environment.
+However, if you  need a fully custom solution and you feel brave, dive into LiveChat Visitor JS SDK: we provide [methods](#methods) and [callbacks](#callbacks) for deep integration with the LiveChat environment.
 
-## About LiveChat Visitor JS API
+## About LiveChat Visitor JS SDK
 
-LiveChat Visitor JS API is promise-based; all asynchronous methods return a promise. To get a promise fulfillment result, subscribe your handler to the promise's `then` method. Check out [this article](https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise) to learn more about promises.
+LiveChat Visitor JS SDK is promise-based; all asynchronous methods return a promise. To get a promise fulfillment result, subscribe your handler to the promise's `then` method. Check out [this article](https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise) to learn more about promises.
 
 **Important!** Some methods and callbacks are not implemented yet. 
 
