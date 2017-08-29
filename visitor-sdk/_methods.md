@@ -5,9 +5,9 @@
 Initializes the chat window.
 
 ```js
-import { init } from "@livechat/livechat-visitor-sdk";
+import LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
 
-const visitorSDK = init({
+const visitorSDK = LivechatVisitorSDK.init({
     license: 123,
     group: 0,
 })
@@ -27,7 +27,7 @@ Sends a message.
 ```js
 visitorSDK.sendMessage({
     text: "Hello",
-    customId: 123423215
+    customId: "123423215"
 })
     .then((response) => {
         console.log(response)
@@ -58,7 +58,7 @@ Enables [file sharing](https://www.livechatinc.com/features/chat-tools/#File-sha
 ```js
 visitorSDK.sendFile({
     file: FileObject,
-    customId: 123423215
+    customId: "123423215"
 })
     .then((response) => {
         console.log(response.status)
@@ -76,7 +76,7 @@ visitorSDK.sendFile({
 | customId   | string | custom file id |
 
 
-## rateChat - not implemented yet
+## rateChat
 
 Enables [chat ratings](https://www.livechatinc.com/features/getting-feedback/#Chat-ratings).
 
@@ -94,7 +94,20 @@ visitorSDK.rateChat({
 | rate    | "good" \| "bad" \| "none" | Rate type                    |
 | comment | string                    | Rate comment text (optional) |
 
+#### Response:
 
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors: 
+
+| type               | reason                                                |
+| ------------------ | ----------------------------------------------------- |
+| "missing argument" | Missing rate parameter                                |
+| "wrong argument"   | Rate argument should be equal "good", "bad" or "none" |
+| "connection"       | Request failed                                        |
+| "connection"       | Rate Comment request failed                           |
 
 ## markMessageAsSeen - not implemented yet
 
