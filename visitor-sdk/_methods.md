@@ -76,7 +76,7 @@ visitorSDK.sendFile({
 | customId   | string | custom file id |
 
 
-## rateChat - not implemented yet
+## rateChat
 
 Enables [chat ratings](https://www.livechatinc.com/features/getting-feedback/#Chat-ratings).
 
@@ -94,7 +94,20 @@ visitorSDK.rateChat({
 | rate    | "good" \| "bad" \| "none" | Rate type                    |
 | comment | string                    | Rate comment text (optional) |
 
+#### Response:
 
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors: 
+
+| type               | reason                                                |
+| ------------------ | ----------------------------------------------------- |
+| "missing argument" | Missing rate parameter                                |
+| "wrong argument"   | Rate argument should be equal "good", "bad" or "none" |
+| "connection"       | Request failed                                        |
+| "connection"       | Rate Comment request failed                           |
 
 ## markMessageAsSeen - not implemented yet
 
