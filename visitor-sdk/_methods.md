@@ -85,6 +85,12 @@ visitorSDK.rateChat({
     rate: "good",
     comment: "Agent helped me a lot!"
 })
+    .then((response) => {
+        console.log(response)
+    })
+    .catch((error) => {
+        console.log(error)
+    })
 ```
 
 #### Parameters:
@@ -129,13 +135,13 @@ visitorSDK.markMessageAsSeen({
 
 
 
-## setSneakPeek - not implemented yet
+## setSneakPeek
 
 Enables [sneak peeks](https://www.livechatinc.com/features/chat-tools/#Message-sneak-peak) to see what the visitor is typing in before they actually send the message.
 
 ```js
 visitorSDK.setSneakPeek({
-    message: "Hello, I woul",
+    text: "Hello, I woul",
 })
 ```
 
