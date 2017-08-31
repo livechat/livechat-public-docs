@@ -18,7 +18,7 @@ The most popular tool used by developers is [REST API](/rest-api). Calling API m
 You will learn how to acquire the `access_token` in the sections below.
 
 # Authorization flows
-All apps integrated with LiveChat must be first created in [LiveChat Developers Console](/console). When a user starts using your app, they will see what parts of his account your app will have access to:
+All apps integrated with LiveChat must be first created in [LiveChat Developers Console](https://developers.livechatinc.com/console). When a user starts using your app, they will see what parts of his account your app will have access to:
 
 <img src="../__images/authorization/grant-access.png" style="border: 1px solid #ddd" />
 
@@ -45,7 +45,7 @@ Read more how to implement this flow in a dedicated ["Sign in with LiveChat"](/s
 
 ## Public web apps
 
-Public web apps are JavaScript applications that can access any LiveChat customer account. Examples of public web apps are [LiveChat's Agent App](https://my.livechatinc.com/) and [Developers Console](/console).
+Public web apps are JavaScript applications that can access any LiveChat customer account. Examples of public web apps are [LiveChat's Agent App](https://my.livechatinc.com/) and [Developers Console](https://developers.livechatinc.com/console).
 
 To set up your own public app, you must define the URL of the app and the list of scopes – parts of LiveChat account your app will have access to. LiveChat customer who enters your app URL is be asked to enter their login and password and grant access for your app.
 
@@ -54,7 +54,7 @@ Then, the user is redirected to your app with `access_token` included in the URL
 <img src="../__images/authorization/public-web-app.png" style="border: 1px solid #ddd" />
 
 ### 1. Create the app
-Go to [Developers Console](/console) to create a new public web app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
+Go to [Developers Console](https://developers.livechatinc.com/console) to create a new public web app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
 
 ### 2. Redirect to LiveChat OAuth Server
 
@@ -75,7 +75,7 @@ When a user runs your app, you should redirect their browser to the following UR
 with the following URL params:
 
 * **response_type=token**
-* **client_id** – you received it when you created the app in [Developers Console](/console).
+* **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
 * **redirect_uri** – URL of your web application that LiveChat OAuth Server will redirect the user back after successful authorization. It must be one of the URLs that you entered when creating the app in the previous step.
 * **state** – you can provide here any value that might be useful to your application. It is strongly recommended to include an anti-forgery token here mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).
 
@@ -106,7 +106,7 @@ Private web apps are JavaScript applications that are available only to agents f
 
 Private web apps work the very same way like [public web apps](#public-web-apps). Please refer to that documentation to understand how it works.
 
-To start building a private web app, set it up [LiveChat Developers Console](/console).
+To start building a private web app, set it up [LiveChat Developers Console](https://developers.livechatinc.com/console).
 
 ## Public server-side apps
 Public server-side apps are applications that have access to user's data for unlimited time.
@@ -118,7 +118,7 @@ Your application exchanges the authorization code for an `access_token` and `ref
 <img src="../__images/authorization/public-backend-app.png" style="border: 1px solid #ddd" />
 
 ### 1. Create the app
-Go to [Developers Console](/console) to create a new public server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
+Go to [Developers Console](https://developers.livechatinc.com/console) to create a new public server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
 
 ### 2. Redirect o LiveChat OAuth Server
 
@@ -137,7 +137,7 @@ Start with redirecting your user to the following address: `https://accounts.liv
 Required URL parameters:
 
 * **response_type=code**
-* **client_id** – you received it when you created the app in [Developers Console](/console).
+* **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
 * **redirect_uri** – URL of your web application that LiveChat OAuth Server will redirect the user back after successful authorization. It must be one of the URLs that you entered when creating the app in the previous step.
 
 Optional URL parameters:
@@ -180,8 +180,8 @@ Required parameters:
 
 * **grant_type=authorization_code**
 * **code** – the authorization code returned from the initial request.
-* **client_id** – you received it when you created the app in [Developers Console](/console).
-* **client_secret** - you received it when you created the app in [Developers Console](/console).
+* **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
+* **client_secret** - you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
 * **redirect_uri** – URL of your web application that LiveChat OAuth Server will redirect the user back after successful authorization. It must be one of the URLs that you entered when creating the app in the previous step.
 
 > Example response:
@@ -224,8 +224,8 @@ Required parameters:
 
 * **grant_type=refresh_token**
 * **refresh_token** – value of refresh token you received in the previous step.
-* **client_id** – you received it when you created the app in [Developers Console](/console).
-* **client_secret** - you received it when you created the app in [Developers Console](/console).
+* **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
+* **client_secret** - you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
 
 > Example response:
 
@@ -294,7 +294,7 @@ The response will include the following params in JSON format:
 * **access_token** – token you can use to call [REST API](/rest-api) methods on behalf of the user.
 * **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details).
 * **refresh_token** – token that can be used to generate new access tokens.
-* **client_id** – you received it when you created the app in [Developers Console](/console).
+* **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
 * **scope** – comma-separated list of permissions that `access_token` has access to.
 * **token_type=Bearer**
 * **entity_id** – LiveChat's user login.
