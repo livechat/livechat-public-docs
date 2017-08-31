@@ -8,8 +8,8 @@ However, there is no one-and-only way of building an app. LiveChat platform supp
 
 ```shell
 curl "https://api.livechatinc.com/agents" \
-  -H "X-API-Version: 2" \
-  -H "Authorization: Bearer <access_token>"
+  -H "Authorization: Bearer <access_token>" \
+  -H "X-API-Version: 2"
 ```
 
 <br>
