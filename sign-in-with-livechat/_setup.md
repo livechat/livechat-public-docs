@@ -1,15 +1,18 @@
 # Setup
 
-## Create new app
-Create new "Sign in with LiveChat" app in <a href="https://developers.livechatinc.com/console/">Developers Console</a>. You will receive a new `client_id` that we will use in the next steps.
+## 1. Create new app
+Create new "LiveChat OAuth 2.0 Client" app in <a href="https://developers.livechatinc.com/console/">Developers Console</a>. You will receive a new `client_id` that we will use in the next steps.
 
-## Include SDK library
+Please note that **Redirect URI** field must match the URL of the website with "Sign in with LiveChat" button installed. The button will not work on any other URL addresses.
+
+
+## 2. Include SDK library
 ```html
 <script src="//cdn.livechatinc.com/accounts/accounts-sdk.min.js"></script>
 ```
-Create a simple HTML page and include the following library.
+Create a simple HTML page and include the following JavaScript library.
 
-## Prepare button container
+## 3. Prepare button container
 
 > Native "Sign in with LiveChat" button
 
@@ -30,10 +33,10 @@ var instance = AccountsSDK.init({ ... });
 
 Insert HTML code to prepare the container for "Sign in with LiveChat" button. Its `class` attribute must have value of `livechat-login-button`. The button will be automatically inserted into the container.
 
-If you prefer to design your own button, you can do that, too. Just bind the `openPopup()` method of `AccountsSDK` instance to the `onclick` attribute for your link or button.
+If you prefer to design your own button, you can do that, too. Just bind the [`openPopup()`](#instance-openpopup) method of `AccountsSDK` instance to the `onclick` attribute for your link or button.
 
 
-## Initialize the SDK
+## 4. Initialize the SDK
 
 ```html
 <script>
