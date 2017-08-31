@@ -54,7 +54,7 @@ Then, the user is redirected to your app with `access_token` included in the URL
 <img src="../__images/authorization/public-web-app.png" style="border: 1px solid #ddd" />
 
 ### 1. Create the app
-Go to [Developers Console](https://developers.livechatinc.com/console) to create a new public web app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
+Go to [Developers Console](https://developers.livechatinc.com/console) and create a new "LiveChat OAuth 2.0 Client" app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
 
 ### 2. Redirect to LiveChat OAuth Server
 
@@ -118,7 +118,7 @@ Your application exchanges the authorization code for an `access_token` and `ref
 <img src="../__images/authorization/public-backend-app.png" style="border: 1px solid #ddd" />
 
 ### 1. Create the app
-Go to [Developers Console](https://developers.livechatinc.com/console) to create a new public server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
+Go to [Developers Console](https://developers.livechatinc.com/console) to create a new server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
 
 ### 2. Redirect o LiveChat OAuth Server
 
@@ -156,7 +156,7 @@ https://my-application.com/
 
 When the user approves the access request, they are redirected back to your app. The URL will include `code` param which should be used to acquire `access_token` and `refresh_token`.
 
-If the user does not approve the request, LiveChat OAuth Server will not redirect user to your application.
+If the user does not approve the request, LiveChat OAuth Server will not redirect the user to your application.
 
 ### 4. Exchange code for access token and refresh token
 
