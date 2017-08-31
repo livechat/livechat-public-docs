@@ -100,6 +100,83 @@ After successful authorization, the user is redirected back to your app. The URL
 
 Your application should remember `access_token` in localStorage or a cookie until it expires. Caching the token prevents you from redirecting the user to LiveChat OAuth Server every time he visits your app.
 
+### Example app
+
+> This example private web application fetches LiveChat agents list and logs it in the console.
+
+> `index.html` file:
+
+```html
+<!DOCTYPE html>
+<html>
+<body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+function getHashParam(key) {
+  var params = location.hash.substring(1).split('&');
+  var value = params.find(function(item) {
+		return item.split('=')[0] === key;
+	});
+  return value ? value.split('=')[1] : '';
+}
+
+var clientId = '<client_id>';
+var redirectUri = 'http://localhost/test.html';
+var accessToken = getHashParam('access_token');
+
+if (accessToken) {
+  $.ajax({
+    url: './get_agents.php',
+    dataType: 'json',
+    data: {
+      access_token: accessToken
+    },
+    success: (agents) => {
+      console.log(agents);
+    }
+  });
+} else {
+	location.href = 'https://accounts.livechatinc.com/' +
+      '?response_type=token' +
+      '&client_id=' + clientId +
+      '&redirect_uri=' + redirectUri;
+}
+</script>
+</body>
+</html>
+```
+
+> `get_agents.php` file:
+
+```php
+<?php
+$accessToken = $_GET['access_token'];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.livechatinc.com/agents');
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	'Content-Type: application/json',
+	'X-API-Version: 2',
+	'Authorization: Bearer ' . $accessToken
+));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+$result = curl_exec($ch);
+curl_close($ch);
+
+echo $result;
+```
+
+
+This example app fetches [Agents list](/rest-api#list-all-agents) and returns it in the browser's console.
+
+You should update `clientId` and `redirectUri` params from the example to match actual values. You can set up these params when creating the app in [LiveChat Developers Console](https://developers.livechatinc.com/console). Your app must also have access to **read agents list** scopes. Scopes are also configured in the Developers Console.
+
+Please note that the actual REST API request is performed by the backend script (in this case, PHP) because LiveChat REST API does not allow cross-domain requests.
+
+
 ## Private web apps
 
 Private web apps are JavaScript applications that are available only to agents from a single LiveChat account. If you want to build an internal app for your chat agents only, this is a good way to go.
