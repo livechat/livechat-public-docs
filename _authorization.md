@@ -25,9 +25,9 @@
 				<dd>Build a JavaScript app available to agents from single LiveChat account.</dd>
 			</dl>
 			<dl class="docs-sections blue">
-				<dt><a href="/authorization#public-server-side-apps">Public server-side apps</a></dt>
+				<dt><a href="/authorization#public-server-side-apps-coming-soon">Public server-side apps (coming&nbsp;soon)</a></dt>
 				<dd>Build a backend app available to all LiveChat customers.</dd>
-				<dt><a href="/authorization#private-server-side-apps">Private server-side apps</a></dt>
+				<dt><a href="/authorization#private-server-side-apps-coming-soon">Private server-side apps (coming&nbsp;soon)</a></dt>
 				<dd>Build a backend app installed on a single Livechat account.</dd>
 			</dl>
 		</div>
