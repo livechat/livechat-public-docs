@@ -1,6 +1,6 @@
 #Introduction
 
-Welcome to the LiveChat API documentation! 
+Welcome to the LiveChat API documentation!
 
 Our API provides a set of flexible tools which you can use to create new outstanding projects. We smile a bit more each time we see skilled developers unleash their creativity!
 
@@ -25,15 +25,37 @@ The next segment of the URI path depends on the type of your request. For exampl
 
 ## Authentication
 
->For example, if your login is **john.doe@mycompany.com**, your API key is **c14b85863755158d7aa5cc4ba17f61cb** and you want to invoke the **agents** API method, your request will look like this:
+Two common authentication methods are supported: **OAuth 2.0** and **API key**.
+
+### OAuth 2.0
+
+> Example REST API call using OAuth 2.0 `access_token`:
+
+```shell
+  curl "https://api.livechatinc.com/agents" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "X-API-Version: 2"
+```
+
+OAuth 2.0 authentication is the recommended way of authenticating to LiveChat API.
+
+It is the most secure way of making API calls. With this flow, you will get access only to some parts of LiveChat account, such as reading agents list. This is more secure than [API key flow](#api-key) which has always access to all LiveChat account data.
+
+To start using OAuth 2.0, please read a dedicated [Authorization](/authorization) guide.
+
+### API key
+
+> If your login is **john.doe@mycompany.com**, your API key is **c14b85863755158d7aa5cc4ba17f61cb** and you want to invoke the **agents** API method, your request will look like this:
 
 ```shell
   curl "https://api.livechatinc.com/agents" \
   -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
-  -H X-API-Version:2
+  -H "X-API-Version: 2"
 ```
 
-You have to use your login and `API_KEY` for each method call. You'll find it in [your LiveChat profile](https://my.livechatinc.com/agents/api-key).
+If you want to build a private app that will run on your own server, you can skip the OAuth 2.0 flow and use the API key. Please note this flow of making API calls is less secure because the API key gives access to all LiveChat account data.
+
+With this authorization method, you will need to include your LiveChat login and `API_KEY` for each method call. You'll find the API key in [your LiveChat profile](https://my.livechatinc.com/agents/api-key).
 
 Authentication to the API occurs via [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication). Provide your `login` as the basic auth username and the `API_KEY` as the password. You must authenticate for all requests.
 

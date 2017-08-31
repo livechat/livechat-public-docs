@@ -3,6 +3,7 @@
 title: LiveChat Docs
 
 includes:
+  - authorization
   - rest-api
   - js-api
   - visitor-sdk
