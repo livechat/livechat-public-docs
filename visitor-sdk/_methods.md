@@ -154,7 +154,7 @@ visitorSDK.setSneakPeek({
 **Note:** Sneak peek won't be sent every time you call a function. It will be throttled (i.e. sent not earlier than 300ms after the last sneak peek request).
 
 
-## forwardChatTranscript - not implemented yet
+## forwardChatTranscript
 
 Sends [chat transcripts](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features) to the specified email address when the chat is ended.
 
@@ -162,6 +162,12 @@ Sends [chat transcripts](https://www.livechatinc.com/features/chat-tools/#Chat-t
 visitorSDK.forwardChatTranscript({
     email: "test@livechatinc.com",
 })
+    .then((response) => {
+        console.log(response)
+    })
+    .catch((error) => {
+        console.log(error)
+    })
 ```
 
 #### Parameters:
@@ -169,6 +175,20 @@ visitorSDK.forwardChatTranscript({
 | param | type   | description                                                                |
 | ----- | ------ | -------------------------------------------------------------------------- |
 | email | string | Email that will automatically receive a transcript when a chat is finished |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors: 
+
+| type               | reason                                 |
+| ------------------ | -------------------------------------- |
+| "state"            | There is no chat to forward transcript |
+| "missing argument" | Missing email parameter                |
+| "connection"       | Request failed                         |
 
 
 ## sendTicketForm - not implemented yet
