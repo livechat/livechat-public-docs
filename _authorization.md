@@ -20,7 +20,9 @@
 				<dt><a href="/authorization#sign-in-with-livechat">Sign in with LiveChat</a></dt>
 				<dd>The easiest way to access any LiveChat account data.</dd>
 				<dt><a href="/authorization#public-web-apps">Public web apps</a></dt>
-				<dd>Build a JavaScript app that is available to all LiveChat customers.</dd>
+				<dd>Build a JavaScript app available to all LiveChat customers.</dd>
+				<dt><a href="/authorization#private-web-apps">Private web apps</a></dt>
+				<dd>Build a JavaScript app available to agents from single LiveChat account.</dd>
 			</dl>
 			<dl class="docs-sections blue">
 				<dt><a href="/authorization#public-server-side-apps">Public server-side apps</a></dt>
