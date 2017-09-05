@@ -83,6 +83,14 @@ If you want to associate some additional info with your customer, you can set up
 LiveChat.setVariable(withKey:"Variable name", value:"Some value")
 ```
 
+### Assign chat to specific group
+
+You can route your customers to specific group of agents by providing groupId. More information can be found here: https://www.livechatinc.com/kb/dividing-live-chat-by-group/.
+
+```swift
+LiveChat.groupId = "7"
+```
+
 ### Notifying the user about the agent's response
 
 ```swift
