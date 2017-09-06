@@ -51,6 +51,36 @@ visitorSDK.sendMessage({
 | connection       | "Request failed"                     |
 | missing argument | "Missing text or customId parameter" |
 
+## closeChat
+
+Closes the chat.
+
+```js
+visitorSDK.closeChat()
+    .then(() => {
+        console.log("Chat is closed")
+    })
+    .catch((error) => {
+        console.log(error)
+    })
+```
+
+This method has no parameters.
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors: 
+
+| type               | reason                    |
+| ------------------ | ------------------------- |
+| "state"            | There is no chat to close |
+| "connection"       | Request failed            |
+
+
 ## sendFile - not implemented yet
 
 Enables [file sharing](https://www.livechatinc.com/features/chat-tools/#File-sharing) through the chat window.
