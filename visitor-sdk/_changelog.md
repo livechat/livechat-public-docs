@@ -1,5 +1,6 @@
 # Changelog
 
+* v0.0.22 - 07.09.2017 - Support for non-browser environments
 * v0.0.21 - 06.09.2017 - Added closeChat method
 * v0.0.20 - 05.09.2017 - Fix npm package - add all dependencies
 * v0.0.19 - 31.08.2017 - Added forwardChatTranscript method
