@@ -2,6 +2,21 @@
 
 Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time agent's message has been received.
 
+## visitor_data
+
+Callback function executed when server returns visitor's data
+
+```js
+visitorSDK.on('visitor_data', (visitorData) => {
+    console.log(visitorData)
+})
+```
+#### Payload:
+
+| param | type    | description |
+| ----- | ------- | ----------- |
+| id    | string  | Vistior ID  |
+
 ## new_message
 
 Callback function executed when a new message arrives.
@@ -15,7 +30,7 @@ visitorSDK.on('new_message', (newMessage) => {
 
 | param      | type    | description                   |
 | ---------- | ------- | ----------------------------- |
-| messageId  | string  | Message ID                   |
+| id         | string  | Message ID                    |
 | authorId   | string  | Message author ID             |
 | timestamp  | number  | Timestamp added by server     |
 | text       | string  | Message text                  |
