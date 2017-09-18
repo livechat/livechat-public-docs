@@ -10,5 +10,6 @@ includes:
   - how_to_start
   - methods
   - callbacks
+  - changelog
   
 ----
