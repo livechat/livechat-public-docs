@@ -4,7 +4,7 @@
 
 There is currently a limit of 25 refresh tokens per client per user. When limit is reached, the oldest token is automaticaly revoked (with rabbitmq publishing). 
 
-Another limitation is 3 redirects in 30 seconds to Livechat OAuth 2.0 server per client per user. When limit is reached, server redirects to error page with `too_many_redirects` error detail (https://github.com/livechat/livechat-docs/blob/master/livechat3/sso-api/errors.md#authorization-exception-details).
+Another limitation is 3 redirects in 30 seconds to Livechat OAuth 2.0 server per client per user. When limit is reached, server redirects to error page with `too_many_redirects` error detail.
 
 ## Redirect URI considerations
 
@@ -12,13 +12,13 @@ Client configuration allows adding many redirect URIs. The redirect URIs are sep
 
 URI is composed of several parts:
 
-* scheme (http://, https://) - is required and must match exactly
-* host (google.pl, localhost:3000, ...) - hostname or ip and optional port, is required and must match exactly
-* path (/info, /test, ...) - is optional, client redirect URI path must be a substring of authorization request redirect path, path traversals are forbidden
-* query (?size=20, ...) - is forbidden
-* fragment (#paragraph) - is forbidden
+* scheme (`http://`, `https://`) - is required and must match exactly,
+* host (`google.pl`, `localhost:3000`, ...) - hostname or ip and optional port, is required and must match exactly,
+* path (`/info`, `/test`, ...) - is optional, client redirect URI path must be a substring of authorization request redirect path, path traversals are forbidden,
+* query (`?size=20`, ...) - is forbidden,
+* fragment (`#paragraph`) - is forbidden.
 
-Examples:
+**Examples:**
 
 | client redirect configuration      | authorization redirect URI            | is valid|
 | ---------------------------------- |:--------------------------------------| --------|

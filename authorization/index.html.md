@@ -8,5 +8,6 @@ themeColor: blue
 includes:
   - introduction
   - authorization-flows
+  - notes
 
 ---
