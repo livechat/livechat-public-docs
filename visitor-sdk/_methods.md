@@ -292,3 +292,16 @@ visitorSDK.setVisitorData({
 | missing argument | "Missing name, email, url or customProperties" |
 
 
+## disconnect
+
+Disconnect Vistior SDK. Visitor won't be tracked, you won't be notified about agent's availability status change. You will be automatically connected again after using sendMessage or setVisitorData methods. 
+
+```js
+visitorSDK.disconnect()
+```
+
+#### Errors:
+
+| type    | reason                                        |
+| ------- | --------------------------------------------- |
+| state   | "You can't disconnect during the chat"        |
