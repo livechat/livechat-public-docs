@@ -1,5 +1,7 @@
 # Introduction
 
+<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.0.css">
+
 > Place this tag within `<head></head>` section:
 
 ```html
