@@ -1,6 +1,12 @@
 # Authorization
 
-If you need to somehow authorize the user of your extension, you can follow the following flow.
+If you want to interact with agents data, you have two options. 
+
+## Sign in with LiveChat button (recommended)
+
+This way you can leverage safe OAuth2.0 authorization flow. Head to [Sign in with LiveChat](/sign-in-with-livechat) docs for more information.
+
+## Basic authorization flow
 
 > <b>1.</b> First, the extension content is requested by the Agent App. A basic HTTPS GET request is sent.
 
