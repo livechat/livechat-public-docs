@@ -1,5 +1,6 @@
 # Changelog
 
+* v0.0.26 - 13.10.2017 - Added getTicketForm and sendTicketForm methods, fixed error handling, setVistiorData method renamed to setVisitorData
 * v0.0.25 - 03.10.2017 - Added disconnect method
 * v0.0.24 - 12.09.2017 - Added iOS React Native sample app to Examples
 * v0.0.23 - 11.09.2017 - Added visitorData callback
