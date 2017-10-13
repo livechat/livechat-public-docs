@@ -220,16 +220,6 @@ visitorSDK.forwardChatTranscript({
 | "missing argument" | Missing email parameter                |
 | "connection"       | Request failed                         |
 
-
-## sendTicketForm - not implemented yet
-
-Gathers the [data](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) collected from a customer.
-
-```js
-visitorSDK.sendTicketForm(form)
-```
-
-
 ## sendPrechatForm - not implemented yet
 
 Collects the pre-chat form information (it will be visible during the chat and in the archives).
@@ -291,6 +281,80 @@ visitorSDK.setVisitorData({
 | ---------------- | ---------------------------------------------- |
 | missing argument | "Missing name, email, url or customProperties" |
 
+## getTicketForm
+
+Get [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) fields configured in chat window settings section in agent app.
+
+```js
+visitorSDK.getTicketForm()
+    .then((data) => {
+        console.log('Ticket form data', data)
+    })
+    .catch((error) => {
+        console.log('error')
+    })
+
+```
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type    | description                                                        |
+| ------ | ------- | ------------------------------------------------------------------ |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                    | description              |
+| -------- | --------------------------------------- | ------------------------ |
+| type     | "name" / "subject" / "email" / "header" | Type of the field        |
+| required | boolean                                 | Is field required?       |
+| label    | string                                  | Field's label            |
+| value    | string                                  | Optional - field's value |
+
+## sendTicketForm
+
+Send [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) filled in by visitor. Ticket form should be rendered using fields fetched by getTicketForm method. 
+
+```js
+visitorSDK.sendTicketForm({
+    name: 'John',
+    email: 'john@example.org',
+    subject: 'App support',
+    message: 'I have a problem with your app'
+})
+    .then(() => {
+        console.log('Ticket sent')
+    })
+    .catch((error) => {
+        console.log('error')
+    })
+
+```
+
+#### Parameters
+
+| param   | type   | description             |
+| ------- | ------ | ----------------------- |
+| name    | string | Vistior's name          |
+| email   | string | Visitor's email address |
+| subject | string | Ticket subject          |
+| message | string | Visitor's message       |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type             | reason            |
+| ---------------- | ----------------- |
+| connection       | "Request failed"  |
+| missing argument | "Missing email"   |
+| missing argument | "Missing message" |
 
 ## disconnect
 
