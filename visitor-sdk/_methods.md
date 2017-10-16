@@ -237,13 +237,16 @@ visitorSDK.sendPostchatForm(form)
 ```
 
 
-## getVisitorData - not implemented yet
+## getVisitorData
 
 Collects the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
 
 ```js
 
 const visitorData = visitorSDK.getVisitorData()
+    .then((visitorData) => {
+        console.log(visitorData)
+    })
 ```
 
 #### Returned value: 
@@ -257,23 +260,30 @@ const visitorData = visitorSDK.getVisitorData()
 | customProperties | object | Visitor's additional data object (custom properties) |
 
 ## setVisitorData
+
+Set the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
+
 ```js
 visitorSDK.setVisitorData({
     name: "Wynton Marsalis",
     email: "test@livechatinc.com",
     pageUrl: 'http://example.org/pricing',
-    pageTitle: 'Pricing'
+    pageTitle: 'Pricing',
+    customProperties: {
+        login: 'wyntonmarsalis',
+        customerId: '18260556127834'
+    }
 })
 ```
 
 #### Parameters:
 
-| param            | type   | description                                                               |
-| ---------------- | ------ | ------------------------------------------------------------------------- |
-| name             | string | Visitor's name                                                            |
-| email            | string | Visitor's email address                                                   |
-| url              | string | Visitor's currently visiting website URL                                  |
-| customProperties | object | Not implemented yet: Visitor's additional data object (custom properties) |
+| param            | type   | description                                          |
+| ---------------- | ------ | ---------------------------------------------------- |
+| name             | string | Visitor's name                                       |
+| email            | string | Visitor's email address                              |
+| url              | string | Visitor's currently visiting website URL             |
+| customProperties | object | Visitor's additional data object (custom properties) |
 
 #### Errors:
 
