@@ -10,5 +10,6 @@ includes:
   - advanced-use
   - authorization
   - js-api
+  - troubleshooting
   
 ---

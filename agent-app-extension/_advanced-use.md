@@ -1,26 +1,5 @@
 # Advanced use
 
-## Developing your own extension
-
-> Place this tag within the `<head></head>` section:
-
-```html
-<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.0.css">
-<script src="//cdn.livechatinc.com/boilerplate/1.0.js"></script>
-```
-
-If you want to build your own environment, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Extension API](#javascript-api):
-
-
-## Layout & Styling
-
-We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the extension interface.
-
-
-## Hosting the extension
-
-You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack), you'll get the setup out of-the-box.
-
 ## Sample extensions
 
 We've prepared two example repositories for your convenience. Both examples show how to receive data from [Events](#events) and display them within the sidebar.
@@ -68,3 +47,32 @@ A basic static application example served from [Webpack Server](https://webpack.
 > The content of the extension should be available at [https://localhost:3333](https://localhost:3333).
 
 > You can now [turn on the extension](#turn-on-the-extension).
+
+## Hosting the extension
+
+You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack), you'll get the setup out of-the-box.
+
+## Developing your own extension
+
+If you want to build your own environment, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Extension API](#javascript-api):
+
+> Place this tag within the `<head></head>` section:
+
+```html
+<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.0.css">
+<script src="//cdn.livechatinc.com/boilerplate/1.0.js"></script>
+```
+
+After your extension content is loaded, fire the `LiveChat.init()` method. It will let the Agent App know when to hide the spinning loader.
+
+> Fire `LiveChat.init()` method after body is loaded (e.g. using jQuery):
+
+```js
+$(document).ready(function () {
+    LiveChat.init();
+});
+```
+
+## Layout & Styling
+
+We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the extension interface.
