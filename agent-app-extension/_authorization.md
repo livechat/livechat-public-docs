@@ -10,7 +10,7 @@ This way you can leverage safe OAuth2.0 authorization flow. Head to [Sign in wit
 
 > <b>1.</b> First, the extension content is requested by the Agent App. A basic HTTPS GET request is sent.
 
-> <b>2.</b> Within the body of your extension, you should call the `LiveChat.init();` method once the extension is loaded. This will tell the Agent App to start the initialization.
+> <b>2.</b> Within the body of your extension, you should call the `LiveChat.init();` method once the extension is loaded. This will tell the Agent App to start the initialization and hide the spinning loader.
 
 > <b>3.</b> In return, the Agent App sends a HTTPS POST request to `https://your_ext_url/authorize/`. Note that this path is non-configurable. Within the body of the post, you'll find two keys:
 
