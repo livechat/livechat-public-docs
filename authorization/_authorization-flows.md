@@ -10,7 +10,7 @@ There are a few scenarios in which you can acquire an `access_token`:
 * [Sign in with LiveChat](#sign-in-with-livechat) – the easiest way to get access to any LiveChat account.
 * [Public web apps](#public-web-apps) – JavaScript apps available to all LiveChat customers.
 * [Private web apps](#private-web-apps) – JavaScript apps available to agents from single LiveChat account.
-* [Public server-side apps (coming soon)](#public-server-side-apps) – backend apps available to all LiveChat customers.
+* [Public server-side apps](#public-server-side-apps) – backend apps available to all LiveChat customers.
 * [Private server-side apps (coming soon)](#private-server-side-apps) – backend apps installed on a single LiveChat account.
 
 ## Sign in with LiveChat
@@ -166,7 +166,7 @@ Private web apps work the very same way like [public web apps](#public-web-apps)
 
 To start building a private web app, set it up [LiveChat Developers Console](https://developers.livechatinc.com/console).
 
-## Public server-side apps (coming soon)
+## Public server-side apps
 Public server-side apps are applications that have access to user's data for unlimited time.
 
 When your application wants to acquire the `access_token`, you must redirect the user to LiveChat OAuth Server only once. After successful authorization, the user is redirected back to your app along with a single-use authorization code.
