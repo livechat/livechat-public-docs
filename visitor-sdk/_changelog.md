@@ -1,4 +1,4 @@
-# Changelog - test sync - test55612
+# Changelog - test sync - test556121
 
 * v0.27.0 - 16.10.2017 - Added getVisitorData method, possibility to set customProperties in setVisitorData method
 * v0.0.26 - 13.10.2017 - Added getTicketForm and sendTicketForm methods, fixed error handling, setVistiorData method renamed to setVisitorData
