@@ -6,7 +6,6 @@ Use this method to **get information** about a specific case or all [Ticket](htt
 
 | Methods      | Path      |
 |--------------|-----------|
-| `GET` | `/tickets/chats/total_chats` |
 | `GET` | `/tickets/<TICKET_ID>` |
 | `POST` | `/tickets` |
 | `PUT` | `/tickets/<TICKET_ID>/tags` |
