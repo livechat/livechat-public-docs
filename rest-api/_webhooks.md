@@ -100,7 +100,7 @@ Creates a new webhook.
 |---------|--------------------|
 | `chat_started` | when the chat is started |
 | `chat_ended` | when the chat is ended |
-| `visior_queued` | when the visitor enters the queue before a chat |
+| `visitor_queued` | when the visitor enters the queue before a chat |
 | `ticket_created` | when a new ticket is created |
 
 `data_type` is an array that includes one or more of the following values):
