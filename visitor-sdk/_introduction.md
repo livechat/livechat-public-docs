@@ -26,3 +26,8 @@ LiveChat Visitor JS SDK is promise-based; all asynchronous methods return a prom
 
 - [A sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
 - [A sample iOS React Native implementation](https://github.com/livechat/chat-window-react-native-example)
+
+## Resources
+
+- [LiveChat Visitor SDK tutorial - blog post](https://developers.livechatinc.com/blog/livechat-visitor-sdk/)
+- [npm package](https://www.npmjs.com/package/@livechat/livechat-visitor-sdk)
