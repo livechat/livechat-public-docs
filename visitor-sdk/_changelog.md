@@ -2,6 +2,11 @@
 
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be notified about changes in Visitor SDK.
 
+#### [v0.28.1] - 30.10.2017
+
+##### Fixed
+- Fixed npm build
+
 #### [v0.28.0] - 30.10.2017
 
 ##### Added
