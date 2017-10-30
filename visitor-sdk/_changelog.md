@@ -2,6 +2,14 @@
 
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be notified about changes in Visitor SDK.
 
+#### [v0.28.0] - 30.10.2017
+
+##### Added
+- Added destroy method
+
+##### Changed
+- Added customId parameter to new_message callback's data
+
 #### [v0.27.1] - 30.10.2017
 
 ##### Fixed
@@ -40,7 +48,7 @@ Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be not
 #### [v0.0.23] - 11.09.2017
 
 ##### Added
-- Added visitorData callback
+- Added visitor_data callback
 
 #### [v0.0.22] - 07.09.2017
 
