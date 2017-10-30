@@ -368,7 +368,7 @@ visitorSDK.sendTicketForm({
 
 ## disconnect
 
-Disconnect Visitor SDK. Visitor won't be tracked, you won't be notified about agent's availability status change. You will be automatically connected again after using sendMessage or setVisitorData methods. 
+Disconnect Visitor SDK. A visitor won't be tracked, and you won't be notified about agent's availability status. You will be automatically connected again after using sendMessage or setVisitorData methods. 
 
 ```js
 visitorSDK.disconnect()
