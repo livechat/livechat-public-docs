@@ -28,13 +28,14 @@ visitorSDK.on('new_message', (newMessage) => {
 ```
 #### Payload:
 
-| param      | type    | description                   |
-| ---------- | ------- | ----------------------------- |
-| id         | string  | Message ID                    |
-| authorId   | string  | Message author ID             |
-| timestamp  | number  | Timestamp added by server     |
-| text       | string  | Message text                  |
-| chatId     | string  | Message chat ID               |
+| param        | type    | description                                     |
+| ------------ | ------- | ----------------------------------------------- |
+| id           | string  | Message ID                                      |
+| authorId     | string  | Message author ID                               |
+| timestamp    | number  | Timestamp added by server                       |
+| text         | string  | Message text                                    |
+| chatId       | string  | Message chat ID                                 |
+| customId     | string  | Message custom ID (for visitor's messages only) |
 
 ## visitor_banned - not implemented yet
 
