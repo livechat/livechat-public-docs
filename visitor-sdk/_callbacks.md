@@ -4,7 +4,7 @@ Callbacks let you bind a custom JavaScript function to an event. For example, yo
 
 ## visitor_data
 
-Callback function executed when server returns visitor's data
+Callback function executed when server returns visitor's data.
 
 ```js
 visitorSDK.on('visitor_data', (visitorData) => {
@@ -15,7 +15,7 @@ visitorSDK.on('visitor_data', (visitorData) => {
 
 | param | type    | description |
 | ----- | ------- | ----------- |
-| id    | string  | Vistior ID  |
+| id    | string  | Visitor ID  |
 
 ## new_message
 
@@ -182,7 +182,7 @@ visitorSDK.on('typing_indicator', (typingData) => {
 
 ## message_seen - not implemented yet
 
-Callback function executed when a message is marked as Seen.
+Callback function executed when a message is marked as seen.
 
 Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
