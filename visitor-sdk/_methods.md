@@ -282,7 +282,8 @@ visitorSDK.setVisitorData({
 | ---------------- | ------ | ---------------------------------------------------- |
 | name             | string | Visitor's name                                       |
 | email            | string | Visitor's email address                              |
-| url              | string | Visitor's currently visiting website URL             |
+| pageUrl          | string | Visitor's currently visiting website URL             |
+| pageTitle        | string | Visitor's currently visiting website title           |
 | customProperties | object | Visitor's additional data object (custom properties) |
 
 #### Errors:
