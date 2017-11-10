@@ -1,12 +1,16 @@
 # Authorization
 
-If you want to interact with agents data, you have two options. 
+If you want to interact with agents data, you have two options.
 
 ## Sign in with LiveChat button (recommended)
 
 This way you can leverage safe OAuth2.0 authorization flow. Head to [Sign in with LiveChat](/sign-in-with-livechat) docs for more information.
 
-## Basic authorization flow
+<aside class="notice">When using this authorization method, remember to add <code>authorization: false</code> flag in <code>LiveChat.init()</code> call to notify LiveChat you handle authorization on your own. <a href="#developing-your-own-extension">See the code example</a>.
+<br /><br />
+If you do not pass this flag, agent app extension loading spinner will be displayed forever.</aside>
+
+## Basic authorization flow (deprecated)
 
 > <b>1.</b> First, the extension content is requested by the Agent App. A basic HTTPS GET request is sent.
 

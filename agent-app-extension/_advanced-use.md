@@ -50,17 +50,17 @@ A basic static application example served from [Webpack Server](https://webpack.
 
 ## Hosting the extension
 
-You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack), you'll get the setup out of-the-box.
+You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack-js), you'll get the setup out of-the-box.
 
 ## Developing your own extension
 
-If you want to build your own environment, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Extension API](#javascript-api):
+If you want to build your own extension, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Extension API](#javascript-api):
 
 > Place this tag within the `<head></head>` section:
 
 ```html
-<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.0.css">
-<script src="//cdn.livechatinc.com/boilerplate/1.0.js"></script>
+<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.1.css">
+<script src="//cdn.livechatinc.com/boilerplate/1.1.js"></script>
 ```
 
 After your extension content is loaded, fire the `LiveChat.init()` method. It will let the Agent App know when to hide the spinning loader.
@@ -68,8 +68,16 @@ After your extension content is loaded, fire the `LiveChat.init()` method. It wi
 > Fire `LiveChat.init()` method after body is loaded (e.g. using jQuery):
 
 ```js
+// If you authorize using "Basic authorization flow":
 $(document).ready(function () {
     LiveChat.init();
+});
+
+// If you authorize using "Sign in with LiveChat":
+$(document).ready(function () {
+    LiveChat.init({
+      authorize: false
+    });
 });
 ```
 

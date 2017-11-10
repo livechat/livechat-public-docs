@@ -1,13 +1,21 @@
 # JavaScript API
 
-To use the JavaScript API you have to attach the [core functionality](#core-functionality) script.
+To use the JavaScript API you have to attach the [core functionality](#developing-your-own-extension) script.
 
 ## Initialize the communication
 ```js
+// If you authorize using "Basic authorization flow":
 LiveChat.init();
+
+// If you authorize using "Sign in with LiveChat":
+LiveChat.init({
+  authorize: false
+});
 ```
 
 Let the Agent App know the extension is ready. Once called, the Agent App removes the loader screen from the extension and sends a request to `https://your_extension_url/authorize/`. This mechanism allows you to introduce an authorization flow for your service.
+
+<aside class="notice"><strong>Note:</strong> When using <a href="#sign-in-with-livechat-button-recommended">Sign in with LiveChat</a> authorization method, you should add <code>authorization: false</code> flag to <code>LiveChat.init()</code> call. It will notify LiveChat you handle authorization on your own.</aside>
 
 ## Get the ID of the session
 
@@ -25,7 +33,7 @@ Deletes the ID of the previous session and calls of a new one.
 LiveChat.refreshSessionId();
 ```
 
-## Events 
+## Events
 
 Events allow you react to the actions in the Agent App. Use this method as a listener for certain events.
 
