@@ -349,8 +349,8 @@ This data type includes ticket details.
     "id": 1,
     "modification_date": 1494230856,
     "tags": [
-        "help",
-        "else"
+        "shortcut1",
+        "shortcut2"
     ],
     "text": "Can I help you with anything else?"
 }
