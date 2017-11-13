@@ -88,7 +88,7 @@ Creates a new webhook.
 
 | Property | Description |
 |---------|--------------------|
-| `event_type` | must be one of `chat_started`, `chat_ended`, `visitor_queued` or `ticket_created` |
+| `event_type` | must be one of `chat_started`, `chat_ended`, `chat_changed`, `visitor_queued`, `ticket_created` or `canned_response_changed` |
 | `data_types` | determines what information the webhook will contain |
 | `url` | the URL address the webhook will be sent to |
 
@@ -100,17 +100,20 @@ Creates a new webhook.
 |---------|--------------------|
 | `chat_started` | when the chat is started |
 | `chat_ended` | when the chat is ended |
+| `chat_changed` | when the chat is tagged |
 | `visior_queued` | when the visitor enters the queue before a chat |
 | `ticket_created` | when a new ticket is created |
+| `canned_response_changed` | when a canned response is created, modified or deleted |
 
 `data_type` is an array that includes one or more of the following values):
 
 | Property | Description |
 |---------|--------------------|
-| `chat` | only supported in `chat_started` and `chat_ended` event types |
-| `visitor` | only supported in `chat_started`, `chat_ended` and `visitor_queued` event types | 
+| `chat` | only supported in `chat_started`, `chat_changed` and `chat_ended` event types |
+| `visitor` | only supported in `chat_started`, `chat_ended`, `chat_changed` and `visitor_queued` event types | 
 | `pre_chat_survey` | only supported in `chat_started` and `chat_ended` event types |
 | `ticket` | only supported in `ticket_created` event type |
+| `canned_response` | only supported in `canned_response_changed` event type |
 
 ## Delete a webhook
 
