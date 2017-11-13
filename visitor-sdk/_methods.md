@@ -220,16 +220,6 @@ visitorSDK.forwardChatTranscript({
 | "missing argument" | Missing email parameter                |
 | "connection"       | Request failed                         |
 
-
-## sendTicketForm - not implemented yet
-
-Gathers the [data](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) collected from a customer.
-
-```js
-visitorSDK.sendTicketForm(form)
-```
-
-
 ## sendPrechatForm - not implemented yet
 
 Collects the pre-chat form information (it will be visible during the chat and in the archives).
@@ -247,13 +237,16 @@ visitorSDK.sendPostchatForm(form)
 ```
 
 
-## getVisitorData - not implemented yet
+## getVisitorData
 
 Collects the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
 
 ```js
 
 const visitorData = visitorSDK.getVisitorData()
+    .then((visitorData) => {
+        console.log(visitorData)
+    })
 ```
 
 #### Returned value: 
@@ -267,23 +260,31 @@ const visitorData = visitorSDK.getVisitorData()
 | customProperties | object | Visitor's additional data object (custom properties) |
 
 ## setVisitorData
+
+Set the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
+
 ```js
 visitorSDK.setVisitorData({
     name: "Wynton Marsalis",
     email: "test@livechatinc.com",
     pageUrl: 'http://example.org/pricing',
-    pageTitle: 'Pricing'
+    pageTitle: 'Pricing',
+    customProperties: {
+        login: 'wyntonmarsalis',
+        customerId: '18260556127834'
+    }
 })
 ```
 
 #### Parameters:
 
-| param            | type   | description                                                               |
-| ---------------- | ------ | ------------------------------------------------------------------------- |
-| name             | string | Visitor's name                                                            |
-| email            | string | Visitor's email address                                                   |
-| url              | string | Visitor's currently visiting website URL                                  |
-| customProperties | object | Not implemented yet: Visitor's additional data object (custom properties) |
+| param            | type   | description                                          |
+| ---------------- | ------ | ---------------------------------------------------- |
+| name             | string | Visitor's name                                       |
+| email            | string | Visitor's email address                              |
+| pageUrl          | string | Visitor's currently visiting website URL             |
+| pageTitle        | string | Visitor's currently visiting website title           |
+| customProperties | object | Visitor's additional data object (custom properties) |
 
 #### Errors:
 
@@ -291,4 +292,99 @@ visitorSDK.setVisitorData({
 | ---------------- | ---------------------------------------------- |
 | missing argument | "Missing name, email, url or customProperties" |
 
+## getTicketForm
 
+Get [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) fields configured in chat window settings section in agent app.
+
+```js
+visitorSDK.getTicketForm()
+    .then((data) => {
+        console.log('Ticket form data', data)
+    })
+    .catch((error) => {
+        console.log('error')
+    })
+
+```
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type    | description                                                        |
+| ------ | ------- | ------------------------------------------------------------------ |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                    | description              |
+| -------- | --------------------------------------- | ------------------------ |
+| type     | "name" / "subject" / "email" / "header" | Type of the field        |
+| required | boolean                                 | Is field required?       |
+| label    | string                                  | Field's label            |
+| value    | string                                  | Optional - field's value |
+
+## sendTicketForm
+
+Send [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) filled in by visitor. Ticket form should be rendered using fields fetched by getTicketForm method. 
+
+```js
+visitorSDK.sendTicketForm({
+    name: 'John',
+    email: 'john@example.org',
+    subject: 'App support',
+    message: 'I have a problem with your app'
+})
+    .then(() => {
+        console.log('Ticket sent')
+    })
+    .catch((error) => {
+        console.log('error')
+    })
+
+```
+
+#### Parameters
+
+| param   | type   | description             |
+| ------- | ------ | ----------------------- |
+| name    | string | Vistior's name          |
+| email   | string | Visitor's email address |
+| subject | string | Ticket subject          |
+| message | string | Visitor's message       |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type             | reason            |
+| ---------------- | ----------------- |
+| connection       | "Request failed"  |
+| missing argument | "Missing email"   |
+| missing argument | "Missing message" |
+
+## disconnect
+
+Disconnect Visitor SDK. A visitor won't be tracked, and you won't be notified about agent's availability status. You will be automatically connected again after using sendMessage or setVisitorData methods. 
+
+```js
+visitorSDK.disconnect()
+```
+
+#### Errors:
+
+| type    | reason                                        |
+| ------- | --------------------------------------------- |
+| state   | "You can't disconnect during the chat"        |
+
+## destroy
+
+Disconnect Visitor SDK and unsubscribe from all callbacks.
+
+```js
+visitorSDK.destroy()
+```

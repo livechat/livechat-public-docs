@@ -6,103 +6,21 @@ Agent App Extensions are web applications loaded inside the LiveChat Agent App. 
 
 <img src="../__images/agent-app-extension.png" width="500" style="margin-top: 20px;"/>
 
-## Use cases
+## Sample use cases
 
 There are number of ways you can utilize the extension:
 
+* embed and display static content, e.g. knowledge base articles, conversation prompts or context information,
+* embed your service or web app as a part of agents' workspace,
 * query external services with visitor email or LiveChat group ID (CRM, marketing automation, etc.),
-* display static content, e.g. knowledge base articles, conversation prompts or context information,
 * query [LiveChat REST API](/rest-api) to do basically anything with the visitor, agent or chat.
 
+## Getting started in 5 minutes
 
-## Before you start
-
-This guide describes the development process. Once your extension is ready to deploy, <a href="#" onclick="LC_API.open_chat_window();return false;">let us know</a> and we'll guide you to the production.
-
-## Layout & Styling
-
-We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the extension interface.
-
-## Sample extensions
-
-We've prepared two example repositories for your convenience. Both examples show how to receive data from [Events](#events) and display them within the sidebar.
-
-<img class="framed" src="../__images/agent-app-sample-extension.png" width="500" />
-
-You can take it from there and use the visitor's email to query your own service or provide contextual help for the agent based on visitor details.
-
-### PHP & Silex
-
-> Set up the environment
-
-```shell
-git clone https://github.com/livechat/agent-app-sample-extension.git
-cd agent-app-sample-extension
-composer install
-```
-
-> Configure your local web server to serve content over HTTPS and [turn on the extension](#turn-on-the-extension).
-
-A basic backend application example written with the use of [Silex](http://silex.sensiolabs.org/).
-
-<a class="button green" href="https://github.com/livechat/agent-app-sample-extension" target="_blank"><span>GitHub Repository</span></a>
-
-### Webpack (JS)
-
-> Set up the environment
-
-```shell
-git clone https://github.com/livechat/agent-app-sample-extension-webpack.git
-cd agent-app-sample-extension-webpack
-npm install
-```
-
-> Run the webpack server
-
-```
-npm start
-```
-
-A basic static application example served from [Webpack Server](https://webpack.github.io/).
-
-<a class="button green" href="https://github.com/livechat/agent-app-sample-extension-webpack" target="_blank"><span>GitHub Repository</span></a>
-
-> The content of the extension should be available at [https://localhost:3333](https://localhost:3333).
-
-> You can now [turn on the extension](#turn-on-the-extension).
-
-### Core functionality
-
-> Place this tag within the `<head></head>` section:
-
-```html
-<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.0.css">
-<script src="//cdn.livechatinc.com/boilerplate/1.0.js"></script>
-```
-
-If you want to build your own environment, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Extension API](#javascript-api).
-
-### Extension hosting
-
-You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack), you'll get the setup out of-the-box.
-
-## Turn on the extension
-
-> Paste the following snippet inside the developers console:
-
-```js
-App.collections.Integrations.add({
-  id: 'sandbox',
-  url: 'https://localhost:3333'
-})
-```
-
-> A green **Sandbox App** button should appear:
-
-> <img src="../__images/agent-app-extension.gif" width="400" />
-
-To activate the extension, login to the [Agent App](https://my.livechatinc.com/) and simply paste this snippet within the developers console in the browser of your choice. The `id` has to be `sandbox`, but you can go with `url` of your own environment.
-
-<aside class="notice">Keep in mind that a random URL won't work! For the extension to load completely, the Init method needs to be fired. </aside>
-
-Your extension should be ready to use. In the upper right corner of Agent App you will see a button labelled "Sandbox App".
+1. Go to the <a href="https://developers.livechatinc.com/console/apps">LiveChat Developers Console</a>.
+2. Create a new app and follow the app wizard.
+3. Set up app name, descriptions and icon in **Display** settings.
+4. Configure Agent App Extension in the **Features** tab. If you don't have a working app at hand, feel free to start with the sample ones:
+  * [iFrame loader](https://glitch.com/edit/#!/livechat-load-iframe?path=README.md:1:0), so you can embed any website,
+  * [Visitor preview widget](https://glitch.com/edit/#!/livechat-sample-agent-app), which displays currently selected visitor data.
+5. Go to **Distribution** settings and install the app at your license. You'll see it in the LiveChat Agent App.

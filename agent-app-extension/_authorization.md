@@ -1,10 +1,20 @@
 # Authorization
 
-If you need to somehow authorize the user of your extension, you can follow the following flow.
+If you want to interact with agents data, you have two options.
+
+## Sign in with LiveChat button (recommended)
+
+This way you can leverage safe OAuth2.0 authorization flow. Head to [Sign in with LiveChat](/sign-in-with-livechat) docs for more information.
+
+<aside class="notice">When using this authorization method, remember to add <code>authorization: false</code> flag in <code>LiveChat.init()</code> call to notify LiveChat you handle authorization on your own. <a href="#developing-your-own-extension">See the code example</a>.
+<br /><br />
+If you do not pass this flag, agent app extension loading spinner will be displayed forever.</aside>
+
+## Basic authorization flow (deprecated)
 
 > <b>1.</b> First, the extension content is requested by the Agent App. A basic HTTPS GET request is sent.
 
-> <b>2.</b> Within the body of your extension, you should call the `LiveChat.init();` method once the extension is loaded. This will tell the Agent App to start the initialization.
+> <b>2.</b> Within the body of your extension, you should call the `LiveChat.init();` method once the extension is loaded. This will tell the Agent App to start the initialization and hide the spinning loader.
 
 > <b>3.</b> In return, the Agent App sends a HTTPS POST request to `https://your_ext_url/authorize/`. Note that this path is non-configurable. Within the body of the post, you'll find two keys:
 

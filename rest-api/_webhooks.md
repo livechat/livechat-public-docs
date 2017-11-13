@@ -101,7 +101,7 @@ Creates a new webhook.
 | `chat_started` | when the chat is started |
 | `chat_ended` | when the chat is ended |
 | `chat_changed` | when the chat is tagged |
-| `visior_queued` | when the visitor enters the queue before a chat |
+| `visitor_queued` | when the visitor enters the queue before a chat |
 | `ticket_created` | when a new ticket is created |
 | `canned_response_changed` | when a canned response is created, modified or deleted |
 
