@@ -190,6 +190,7 @@ For example, when the chat starts, you may want to know the exact chat start tim
 | `chat_ended` | `chat`, `visitor`, `pre_chat_survey` |
 | `chat_changed` | `chat`, `visitor` |
 | `ticket_created` | `ticket` |
+| `canned_response_changed` | `canned_response` |
 
 
 ### Data type: chat
@@ -339,3 +340,20 @@ Include this data type if you need to know the exact results of the pre-chat sur
 ```
 
 This data type includes ticket details.
+
+### Data type: canned_response_changed
+
+```json-doc
+"canned_response":{
+    "group": 0,
+    "id": 1,
+    "modification_date": 1494230856,
+    "tags": [
+        "help",
+        "else"
+    ],
+    "text": "Can I help you with anything else?"
+}
+```
+
+This data type includes canned response details.
