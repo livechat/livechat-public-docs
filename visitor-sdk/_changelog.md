@@ -2,6 +2,14 @@
 
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be notified about changes in Visitor SDK.
 
+#### [v0.28.2] - 22.11.2017
+
+##### Fixed
+- Fixed iOS Safari support
+
+##### Changed
+- New reject type for setVisitorData method: "connection"
+
 #### [v0.28.1] - 30.10.2017
 
 ##### Fixed
