@@ -291,6 +291,7 @@ visitorSDK.setVisitorData({
 | type             | reason                                         |
 | ---------------- | ---------------------------------------------- |
 | missing argument | "Missing name, email, url or customProperties" |
+| connection       | "Request failed"                               |
 
 ## getTicketForm
 
