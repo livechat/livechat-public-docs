@@ -1,6 +1,6 @@
 # Changelog
 
-Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
+Subscribe to [LiveChat Developers Newsletter](https://developers.livechatinc.com/newsletter/) to be
 notified about changes in Visitor SDK.
 
 #### [v0.28.4] - 27.11.2017
