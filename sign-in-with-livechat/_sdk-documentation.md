@@ -3,11 +3,12 @@
 ## Methods
 
 ### **AccountsSDK.init({ ... })**
+
 > Example `init()` method usage
 
 ```js
 var instance = AccountsSDK.init({
-  client_id: '<your_client_id>',
+  client_id: "<your_client_id>",
   onIdentityFetched: (error, data) => {
     // ...
   }
@@ -16,23 +17,23 @@ var instance = AccountsSDK.init({
 
 Initiates the SDK and returns AccountsSDK object instance. Accepts an object with the following properties:
 
-* **client_id** – obtainted from [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
+* **client_id** – obtained from [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
 
-<!--
-* **response_type** – Defines the type of response that you will receive in `onIdentityFetched` callback. Two options are supported:<br><br>**token** (default) – response will include `access_token` that can be immediately used for calling REST API methods. Best suitable for client-side apps.<br><br>**code** – response will include `code` that can be exchanged for `access_token` and `refresh_token`. Best suitable for backend apps that authorize the user only once and refresh `access_token` themselves from now on.<br><br>Read more about client-side and backend apps in <a href="https://developers.google.com/identity/protocols/OAuth2#webserver">Google OAuth tutorial</a>.
--->
+* **response_type** – (optional, defaults to `token`) Defines the type of response that you will receive in `onIdentityFetched` callback. Two options are supported:<br><br>**token** (default) – response will include `access_token` that can be immediately used for calling REST API methods. Best suitable for client-side apps.<br><br>**code** – response will include `code` that can be exchanged for `access_token` and `refresh_token`. Best suitable for backend apps that authorize the user only once and will refresh `access_token` themselves from now on.<br><br>Read more about client-side and backend apps in <a href="https://developers.google.com/identity/protocols/OAuth2#webserver">Google OAuth tutorial</a>.
 
 * **onIdentityFetched(error, data)** – callback invoked when user's identity is fetched. Callback will include either `error` or `data` object depending on current user authorization status.<br>You will find detailed documentation in <a href="#response-format">Response format</a> section.
 
 <aside class="notice"><code>AccountsSDK</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
 
 ### **instance.openPopup()**
+
 > Example `openPopup()` method usage:
 
 ```js
 // javascript
 var instance = AccountsSDK.init({ ... });
 ```
+
 ```html
 <!-- html -->
 <a href="" onclick="instance.openPopup()">Sign in with LiveChat</a>
@@ -41,6 +42,7 @@ var instance = AccountsSDK.init({ ... });
 Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in with LiveChat" button. See the example of custom button in <a href="#prepare-button-container">Prepare button container</a> section.
 
 ### **instance.signOut(callback)**
+
 > Example `signOut()` method usage:
 
 ```js
@@ -55,6 +57,7 @@ function signMeOut(e) {
   });
 }
 ```
+
 ```html
 <a href="" onclick="signMeOut(event)">Sign out</a>
 ```
@@ -62,6 +65,7 @@ function signMeOut(e) {
 Signs the user out and invokes `callback` function (with no arguments) when it's done.
 
 ### **instance.displayButtons()**
+
 > Example `displayButtons()` method usage:
 
 ```js
@@ -76,35 +80,32 @@ instance.displayButtons();
 
 Renders "Sign in with LiveChat" buttons once again in the DOM. Helpful when you reload the app's state and DOM is cleared. This method is automatically invoked by the `init` method.
 
-
 ## Response format
+
 `onIdentityFetched` callback is the heart of this SDK. It will be fired when user's authorization status is fetched. This is where you pass authorization `access_token` to your app to build what you need.
 
 ### Success
-If the user passes through "Sign in with LiveChat" flow, `error` param will be null and `data` param will include authorization data:
 
-<!--, depending on `response_code` param value.-->
+If the user passes through "Sign in with LiveChat" flow, `error` param will be null and `data` param will include authorization data, depending on `response_code` param value.
 
-<!--If `response_code` was set to **access_token**:-->
+If `response_code` was set to **access_token**:
 
 * **access_token** – used for authorization in [REST API](/rest-api) calls,
-* **scopes** – array of scopes that ``access_token`` has access to,
-* **expires_in** – number of seconds from now that ``access_token`` will be valid,
-* **entity_id** – LiveChat's user email,
+* **scopes** – array of scopes that `access_token` has access to,
+* **expires_in** – number of seconds from now that `access_token` will be valid,
+* **entity_id** – LiveChat user email,
 * **license** – LiveChat license number,
 * **client_id** – `client_id` that you passed in the `init` method.
 
-<!--
 <br>
 If `response_code` was set to **code**:
 
 * **code** – must be exchanged to `access_token` and `refresh_token`,
-* **scopes** – array of scopes that ``access_token`` generated by this code will have access to,
-* **expires_in** – number of seconds from now that ``code`` will be valid,
-* **entity_id** – LiveChat's user email,
+* **scopes** – array of scopes that `access_token` generated by this code will have access to,
+* **expires_in** – number of seconds from now that `code` will be valid,
+* **entity_id** – LiveChat user email,
 * **license** – LiveChat license number,
 * **client_id** – `client_id` that you passed in the `init` method.
--->
 
 ### Error
 
@@ -119,11 +120,13 @@ If the user is not logged in to LiveChat, `data` param will be `null` and `error
   * `access_denied` – identity is known, but access is denied because of business reasons. For example identity can be banned or has wrong unsupported account version.<br><br>
 
 #### Authorization errors
+
 * **oauth_exception** – error type. Possible values:<br><br>
+
   * `invalid_request` – request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once or is otherwise malformed. Examples: wrong HTTP method, invalid HTTP body encoding.<br><br>
   * `unauthorized_client` – client is not authorized to request a token using this method. Examples: missing `client_id` param, incorrect `client_id` value, `refresh_token` not found, invalid `client_secret`, invalid `redirect_uri`.<br><br>
   * `access_denied` – resource owner or authorization server denied the request. For example, requested scope includes a scope not originally granted by the resource owner.<br><br>
-  * `unsupported_response_type` – authorization server does not support obtaining a token using this method. For example, `response_type` is not `token`.<br><br>
+  * `unsupported_response_type` – authorization server does not support obtaining a token using this method. For example, `response_type` is not `token` or `code`.<br><br>
   * `invalid_scope` – requested scope is invalid, insufficient, unknown or malformed. Examples: scope not found, scope name not found.<br><br>
   * `server_error` – authorization server encountered an unexpected condition that prevented it from fulfilling the request. For example, server is not responding.<br><br>
   * `temporarily_unavailable` – authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.<br><br>
