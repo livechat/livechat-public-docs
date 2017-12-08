@@ -15,13 +15,13 @@ var instance = AccountsSDK.init({
 });
 ```
 
-Initiates the SDK and returns AccountsSDK object instance. Accepts an object with the following properties:
+This method initiates the SDK and returns the AccountsSDK object instance. It accepts an object with the following properties:
 
-* **client_id** – obtained from [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
+* **client_id** – obtained from the [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
 
-* **response_type** – (optional, defaults to `token`) Defines the type of response that you will receive in `onIdentityFetched` callback. Two options are supported:<br><br>**token** (default) – response will include `access_token` that can be immediately used for calling REST API methods. Best suitable for client-side apps.<br><br>**code** – response will include `code` that can be exchanged for `access_token` and `refresh_token`. Best suitable for backend apps that authorize the user only once and will refresh `access_token` themselves from now on.<br><br>Read more about client-side and backend apps in <a href="https://developers.google.com/identity/protocols/OAuth2#webserver">Google OAuth tutorial</a>.
+* **response_type** – (optional, defaults to `token`) Defines the type of the response that you will receive in `onIdentityFetched` callback. Two options are supported:<br><br>**token** (default) – the response will include `access_token` that can be immediately used for calling REST API methods. Best suitable for client-side apps.<br><br>**code** – the response will include `code` that can be exchanged for `access_token` and `refresh_token`. Best suitable for backend apps that authorize a user only once and refresh the `access_token` themselves from that moment.<br><br>Read more about client-side and backend apps in <a href="https://developers.google.com/identity/protocols/OAuth2#webserver">Google OAuth tutorial</a>.
 
-* **onIdentityFetched(error, data)** – callback invoked when user's identity is fetched. Callback will include either `error` or `data` object depending on current user authorization status.<br>You will find detailed documentation in <a href="#response-format">Response format</a> section.
+* **onIdentityFetched(error, data)** – the callback executed when user's identity is fetched. The callback will include either `error` or `data` object depending on the current user authorization status.<br>You will find the detailed documentation in <a href="#response-format">Response format</a> section.
 
 <aside class="notice"><code>AccountsSDK</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
 
@@ -43,7 +43,7 @@ Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in w
 
 ### **instance.signOut(callback)**
 
-> Example `signOut()` method usage:
+> Sample `signOut()` method usage:
 
 ```js
 // javascript
@@ -62,11 +62,11 @@ function signMeOut(e) {
 <a href="" onclick="signMeOut(event)">Sign out</a>
 ```
 
-Signs the user out and invokes `callback` function (with no arguments) when it's done.
+It signs the user out and executes the `callback` function (with no arguments) when it's done.
 
 ### **instance.displayButtons()**
 
-> Example `displayButtons()` method usage:
+> Sample `displayButtons()` method usage:
 
 ```js
 var instance = AccountsSDK.init({ ... });
@@ -78,7 +78,7 @@ var instance = AccountsSDK.init({ ... });
 instance.displayButtons();
 ```
 
-Renders "Sign in with LiveChat" buttons once again in the DOM. Helpful when you reload the app's state and DOM is cleared. This method is automatically invoked by the `init` method.
+It re-renders the "Sign in with LiveChat" buttons in the DOM. It's helpful when you reload the app's state and the DOM is cleared. This method is automatically executed by the `init` method.
 
 ## Response format
 
