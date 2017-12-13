@@ -7,7 +7,8 @@ themeColor: purple
 
 includes:
   - introduction
-  - usage
+  - user-guide
+  - direct-charges
   - ledger
   - subscription
 ---

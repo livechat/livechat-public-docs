@@ -1,5 +1,7 @@
 # Subscription
 
+<aside class="warning">Note: The subscription API is not public yet (even in the closed beta).</aside>
+
 The Subscription API handles subscription management.
 
 ## Subscription object
@@ -23,9 +25,9 @@ This is the structure of a single subscription object:
 
 ## Scopes
 
-Scopes is a list of permissions your app will get. To learn more about scopes, go to [Authorization docs](https://docs.livechatinc.com/authorization/).
+To get access to Subscriptions API, you must ask the user for a `subscription_manage` scope. During the BETA period of this API, this scope can be requested only by the apps that are manually configured by LiveChat team.
 
-* `subscription_manage` - required for all endpoints
+Chat with us to get access to the `subscription_manage` scope.
 
 ## Endpoints
 
@@ -33,10 +35,5 @@ All endpoints return a direct charge object.
 
 These endpoints can only be used in the application where the charge has been created:
 
-* `GET /v1/subscription` - returns subscription object
-* `PUT /v1/subscription` - updates subscription, if license has an account in recurly, recurly subscription is updated or created if missing, required fields `plan`, `seats`, optional field `months`
-
-| Endpoint               | Description                                                                                                                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `GET /v1/subscription` | returns subscription object                                                                                                                                                          |
-| `PUT /v1/subscription` | updates the subscription. If a license has a Recurly account, its Recurly subscription is updated (if exists) or created. Required fields: `plan`, `seats`. Optional field: `months` |
+* `GET /v1/subscription` - returns the subscription object
+* `PUT /v1/subscription` - updates the subscription. If a license has a Recurly account, its Recurly subscription is updated or created (if missing). Required fields: `plan`, `seats`. Optional field: `months`
