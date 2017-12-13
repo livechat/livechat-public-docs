@@ -1,6 +1,6 @@
 # Introduction
 
-<aside class="warning">Note: This feature is currently in the <b>closed beta</b> stage. Please contact us via chat if you want to try it out.</aside>
+<aside class="warning">Note: This feature is currently in the <b>closed beta</b> stage. Please <a href="#" onclick="LC_API.open_chat_window();return false;">contact us via chat</a> if you want to try it out.</aside>
 
 The LiveChat Billing API allows you to manage payments for your apps in the LiveChat Marketplace.
 
