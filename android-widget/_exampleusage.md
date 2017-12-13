@@ -17,7 +17,7 @@ Finally, add the following code to your application, in the place where you want
 ```java
     Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
     intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_GROUP_ID, "your_group_id");
-    intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_LICENSE_NUMBER, "your_license_number");
+    intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_LICENCE_NUMBER, "your_license_number");
     context.startActivity(intent);
 ```
 
