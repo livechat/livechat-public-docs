@@ -24,18 +24,9 @@ This is the structure of a single Ledger entry object:
 
 ## Scopes
 
-Scopes is a list of permissions your app will get. To learn more about scopes, go to [Authorization docs](https://docs.livechatinc.com/authorization/).
-
-### Possible scopes:
-
-* `billing_manage` - for creating charges for your own client
-* `billing_admin` - for creating charges for other clients. It can also adjust the `commission_percent`
-
-**Note:** `value` is an integer defined in cents.
+Ledger API requires `ledger_read` scope for all endpoints. If you want to use this API, you must create an app in Developers Console and check the “ledger_read” scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with “ledger_read” scope.
 
 ## Endpoints
 
-| Endpoint                           | Description                                                                                                                                              |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /v1/ledger`                   | returns the current ledger. It lists up to 20 entries, use `?page=X` for pagination. Required format: `{result: [LEDGER ENTRY 1, LEDGER ENTRY 2, ...]}`, |
-| `PUT /v1/direct_charge/:ID/accept` | returns the current ledger balance in cents. Format: `{"balance": 10}`                                                                                   |
+* `GET /v1/ledger` - returns the current ledger. It lists up to 20 entries, use `?page=X` for pagination. Required format: `{result: [LEDGER ENTRY 1, LEDGER ENTRY 2, ...]}`,
+* `PUT /v1/direct_charge/:ID/accept` - returns the current ledger balance in cents. Format: `{"balance": 10}`

@@ -4,17 +4,7 @@
 
 The Billing API is based on the [LiveChat OAuth](https://docs.livechatinc.com/authorization/) authorization flow. All endpoints require access tokens, and some endpoints are limited by scope or client ID.
 
-The Billing API itself is also a Livechat OAuth application registered with the following client IDs:
-
-### LiveChat
-
-* `labs` - 0c23eb669259d865755d222b586a587e - API - `billing.labs.livecahtinc.com`
-* `staging` - coming soon
-* `production` - coming soon
-
-## 2. APIs
-
-This is an overview of all the APIs available within the Billing API. Click the names for more details.
+## 2. APIS
 
 ### 2.1. [Direct Charges](#direct-charges)
 
@@ -28,7 +18,7 @@ The Direct Charges API allows you to collect one-time fees.
 
 ### 2.2. [Ledger](#ledger)
 
-The Ledger API is designed for sellers to manage the financial activity and balance.
+The Ledger API lets you manage the financial activity and balance. In other words, it will show you the purchase history and your earnings.
 
 #### Use cases:
 
@@ -37,9 +27,9 @@ The Ledger API is designed for sellers to manage the financial activity and bala
 
 ### 2.3. [Subscription](#subscription)
 
-The Subscription API handles subscription management.
+The Subscription API handles recurrent payments. For example, you can offer an app that costs $10 per month.
 
 #### Use cases:
 
-* Obtaining the subscriptions
+* Viewing the subscriptions
 * Updating the subscriptions
