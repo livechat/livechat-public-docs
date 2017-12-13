@@ -4,6 +4,7 @@ title: LiveChat Docs
 
 includes:
   - authorization
+  - billing-api
   - rest-api
   - js-api
   - visitor-sdk
