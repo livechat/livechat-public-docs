@@ -1,5 +1,7 @@
 # Subscription
 
+<aside class="warning">Note: The subscription API is not public yet (even in the closed beta).</aside>
+
 The Subscription API handles subscription management.
 
 ## Subscription object

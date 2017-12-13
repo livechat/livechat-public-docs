@@ -18,12 +18,14 @@
 	<div class="content-column">
 		<div class="docs-covers">
 			<dl class="docs-sections purple">
+				<dt><a href="/billing-api#user-guide">User guide</a></dt>
+				<dd>See how to set up payments in your LiveChat app.</dd>
+				<dt><a href="/billing-api#direct-charges">Direct Charges API</a></dt>
+				<dd>The Ledger API handles the financial activity and balance.</dd>
+				<dt><a href="/billing-api#subscription">Subscription API (coming soon)</a></dt>
+				<dd>With Subscription API you can easily manage subscriptions.</dd>
 				<dt><a href="/billing-api#ledger">Ledger API</a></dt>
 				<dd>The Ledger API handles the financial activity and balance.</dd>
-				<dt><a href="/billing-api#subscription">Subscription API</a></dt>
-				<dd>With Subscription API you can easily manage subscriptions.</dd>
-				<dt><a href="/billing-api#usage">User guide</a></dt>
-				<dd>See how to use Billing API in your LiveChat app. </dd>
 			</dl>
 		</div>
 		</div>
