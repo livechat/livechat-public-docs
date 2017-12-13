@@ -2,7 +2,7 @@
 	<div class="content">
 	<div class="content-column">
 		<div class="docs-covers">
-			<a href="/authorization" class="docs-cover purple" data-color="#e43768">
+			<a href="/billing-api" class="docs-cover purple" data-color="#e43768">
 				<div class="docs-cover-header">LiveChat Docs</div>
 				<div class="docs-cover-title"><span class="docs-cover-underline">Billing API</span></div>
 				<div class="docs-cover-subtitle">Set up payment methods for your app</div>
