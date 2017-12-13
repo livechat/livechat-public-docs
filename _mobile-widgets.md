@@ -1,4 +1,4 @@
-<section class="docs-full-desc">
+<section class="docs-full-desc light" id="mobile-widgets">
 	<div class="content">
 		<div class="content-column">
 			<div class="docs-covers">
@@ -10,7 +10,7 @@
 				<div class="docs-cover-intro">
 					<h2>Embed Chat Widget inside your iOS app</h2>
 					<p>Check out a sample app that will display a chat button on an iOS device.</p>
-					<a href="/ios-widget/" class="cta light-blue">See full reference</a>
+					<a href="/ios-widget/" class="cta lightBlue">See full reference</a>
 				</div>
 			</div>
 		</div>
