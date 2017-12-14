@@ -1,8 +1,6 @@
 # Subscription
 
-<aside class="warning">Note: The subscription API is not public yet (even in the closed beta).</aside>
-
-The Subscription API handles subscription management.
+The Subscription API handles subscription management. This API is **not yet ready** and will be available soon.
 
 ## Subscription object
 
@@ -25,15 +23,15 @@ This is the structure of a single subscription object:
 
 ## Scopes
 
-To get access to Subscriptions API, you must ask the user for a `subscription_manage` scope. During the BETA period of this API, this scope can be requested only by the apps that are manually configured by LiveChat team.
-
-Chat with us to get access to the `subscription_manage` scope.
+Direct Charges API requires `subscription_manage` scope for all endpoints.
 
 ## Endpoints
 
 All endpoints return a direct charge object.
 
 These endpoints can only be used in the application where the charge has been created:
+
+Base URL: `https://billing.livechatinc.com`
 
 * `GET /v1/subscription` - returns the subscription object
 * `PUT /v1/subscription` - updates the subscription. If a license has a Recurly account, its Recurly subscription is updated or created (if missing). Required fields: `plan`, `seats`. Optional field: `months`

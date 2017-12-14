@@ -7,6 +7,7 @@ themeColor: purple
 
 includes:
   - introduction
+  - getting-started
   - user-guide
   - direct-charges
   - ledger

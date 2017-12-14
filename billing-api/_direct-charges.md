@@ -20,21 +20,22 @@ There are six possible direct charge statuses:
 There are three possible direct charge flows:
 
 * `pending` -> `accepted` -> `processed` -> `failed`
-
 * `pending` -> `accepted` -> `processed` -> `success`
-
 * `pending` -> `declined`
 
 ## Usage
 
-* Create a charge for a user and redirect them to the confirmation URL.
-* After the charge has been confirmed or declined, you will be able to use the return URL check the charge status.
-* If the status is `accepted`, activate the charge (see Endpoints section for details).
-* Your payment gateway will automatically change the charge status to `success` or `failed`.
+* Create a charge for a user (`POST /v1/direct_charge`) and redirect them to the `confirmation_url`.
+* After the user confirms or declines the charge, they will be redirected to `return_url` with charge `id` passed as a URL param.
+* Based on `id`, you can check charge status (`GET /v1/direct_charge/:ID`). If it is `accepted`, you must activate the charge (`PUT /v1/direct_charge/:ID/activate`).
+* After a while, our payment gateway will try to charge the user and it will automatically change the charge status to `success` or `failed`.
 
 ## Direct charge object
 
-This is the structure of a single direct charge object:
+Here's the structure of a single direct charge object.
+
+Parameters description:
+
 
 ```json
 {
@@ -67,11 +68,13 @@ This is the structure of a single direct charge object:
 
 ## Scopes
 
-To manage payments, you must ask the user for a `billing_manage` scope. During the BETA period of this API, this scope can be requested only by the apps that are manually configured by LiveChat team.
+Direct Charges API requires `billing_manage` scope for all endpoints.
 
-Chat with us to get access to the `billing_manage` scope.
+If you want to use this API, you must create an app in Developers Console and check **"offer in-app payments"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `billing_manage` scope.
 
 ## Endpoints
+
+Base URL: `https://billing.livechatinc.com`
 
 * `POST /v1/direct_charge` - creates a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional field: `test`
 * `GET /v1/direct_charge/:ID` - gets the existing charge
