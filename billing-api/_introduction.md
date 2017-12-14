@@ -1,7 +1,5 @@
 # Introduction
 
-<aside class="warning">Note: This feature is currently in the <b>closed beta</b> stage. Please <a href="#" onclick="LC_API.open_chat_window();return false;">contact us via chat</a> if you want to try it out.</aside>
-
 The LiveChat Billing API allows you to charge for your apps in the LiveChat Marketplace. Therefore, you can offer paid applications to over 22,000 LiveChat customers.
 
 The Billing API is a collective name for a subset of smaller APIs used for specific purposes (see the [APIs section](#2-apis) below for details).
