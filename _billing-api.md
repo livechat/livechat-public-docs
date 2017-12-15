@@ -6,7 +6,7 @@
 				<div class="docs-cover-header">LiveChat Docs</div>
 				<div class="docs-cover-title"><span class="docs-cover-underline">Billing API</span></div>
 				<div class="docs-cover-subtitle">Set up payment methods for your app</div>
-				<h5 class="docs-cover-beta purple">BETA</h5>
+				<h5 class="docs-cover-beta purple">NEW</h5>
 			</a>
 			<div class="docs-cover-intro">
 				<h2>Set up payments <br/>for your apps</h2>
