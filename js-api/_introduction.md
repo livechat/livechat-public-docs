@@ -17,9 +17,9 @@ When you install the chat window in a [native mobile app](https://developers.liv
 
 ## Support for React-based single-page apps
 
-LiveChat has dedicated module to integrate with React-based single-page apps.
-There is special component that makes integration very easy. 
-All you have to do is to import LiveChat component and put it in your render method:
+LiveChat has a dedicated module to integrate with React-based single-page apps.
+There is special component that makes the integration very easy. 
+All you have to do is to import the LiveChat component and put it in your render method:
 ```javascript
 import LiveChat from 'react-livechat'
 
