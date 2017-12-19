@@ -1,0 +1,26 @@
+{{ $currentPage := . }}
+
+{{ $currentSection := where (where .Site.Pages "Section" .Section) "Params.section_home" true }}
+{{ $currentSection := index $currentSection 0 }}
+{{ $currentSectionParams := $currentSection.Params }}
+
+{{ if eq $currentSectionParams.type "guide-and-reference" }}
+  <div class="subnav">
+    {{ $currentUrl := index ( split $currentPage.URL "/" ) 3}}
+    <a class="subnav__link {{if eq $currentUrl "" }} subnav__link--active{{end}}" href="{{$currentSection.URL}}">Guide</a>
+    <a class="subnav__link {{if eq $currentUrl "api-reference" }} subnav__link--active{{end}}" href="{{$currentSection.URL}}api-reference/v{{$currentSectionParams.latest_version}}">API Reference</a>
+  </div>
+{{ end }}
+
+{{ if (eq $currentPage.Params.type "api-reference") }}
+  <div class="version">
+    <label class="version__label" for="version">Version:</label>
+    <select id="version" class="version__select" onchange="window.location.href=this.value">
+      {{ range where (where .Site.Pages "Section" .Section) "Params.type" "api-reference" }}
+        {{ $menuUrl := index ( split .URL "/" ) 4}}
+        {{ $currentUrl := index ( split $currentPage.URL "/" ) 4}}
+        <option class="version__option" value="{{ .URL }}" {{if eq $currentUrl $menuUrl }} selected{{end}}>{{ .Params.version }}</option>
+      {{ end }}
+    </select>
+  </div>
+{{ end }}
