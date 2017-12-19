@@ -36,6 +36,7 @@ Here's the structure of a single direct charge object.
 
 Parameters description:
 
+
 ```json
 {
   "id": "5deab95d-c0c9-4397-9593-436f533e83e5",

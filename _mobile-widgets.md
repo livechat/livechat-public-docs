@@ -2,7 +2,7 @@
 	<div class="content">
 		<div class="content-column">
 			<div class="docs-covers">
-				<a href="react-native-livechat" target="_blank" class="docs-cover vividBlue" data-color="#60E1E0">
+				<a href="/react-native-livechat" target="_blank" class="docs-cover vividBlue" data-color="#60E1E0">
 					<div class="docs-cover-header">LiveChat Docs</div>
 					<div class="docs-cover-title">Widget for <span class="docs-cover-underline">React Native</span></div>
 					<div class="docs-cover-subtitle">Embed Chat Widget in your React Native project</div>
@@ -10,7 +10,7 @@
 				<div class="docs-cover-intro">
 					<h2>Embed Chat Widget in React Native app</h2>
 					<p>Check out a sample app that will display a chat button on an iOS device.</p>
-					<a href="react-native-livechat" class="cta vividBlue">See the repository <i class="material-icons">open_in_new</i></a>
+					<a href="/react-native-livechat" class="cta vividBlue">See full reference</a>
 				</div>
 			</div>
 		</div>

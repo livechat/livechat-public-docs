@@ -11,5 +11,6 @@ includes:
   - agent-app-extension
   - sign-in-with-livechat
   - webhook-integration
+  - agent-app-extension
   - mobile-widgets
 ---
