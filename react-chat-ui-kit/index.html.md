@@ -16,6 +16,7 @@
 
         main {
             position: relative!important;
+            padding-left: 0!important;
         }
 
         .react-codemirror2::before {
@@ -69,6 +70,10 @@
             background: rgba(97, 218, 251, 0.3)!important;
         }
 
+        #app p {
+            padding: 0 40px;
+        }
+
         main>section::before {
             content: '';
             display: block;
@@ -82,17 +87,38 @@
             height: 100%;
         }
 
-        article p,
-        article ul,
-        article ol,
-        article h1,
-        article h2,
-        article h3,
-        article h4,
-        article h5,
-        article pre,
-        article table {
-            max-width: calc(50% - 40px)!important;
+        main a:hover {
+            color: #5ca8f5!important;
+        }
+
+        main h1,
+        main h2,
+        main h3,
+        main h4,
+        main h5,
+        main h6,
+        main p,
+        main table,
+        main aside,
+        main dl,
+        main header {
+            margin-right: 50%!important;
+            padding: 0 40px!important;
+        }
+
+        main ul,
+        main ol {
+            margin-right: 48%!important;
+            padding: 0 0 0 65px!important;
+        }
+
+        main p+pre {
+            margin-right: 50%!important;
+            padding: 20px 40px!important;
+        }
+
+        main header+div+div {
+            padding: 0 40px!important;
         }
 
         main article pre.CodeMirror-line {
@@ -107,6 +133,62 @@
             margin-top: 3em!important;
         }
 
+        h1#introduction {
+            margin-top: 0!important;
+        }
+
+        main h1,
+        h1 a {
+            font-size: 32px!important;
+            padding-top: 0.5em!important;
+            padding-bottom: 0.5em!important;
+            border-bottom: 1px solid #e3eaed!important;
+            margin-bottom: 21px!important;
+            letter-spacing: -0.3px!important;
+            font-weight: bold!important;
+        }
+
+        main h2,
+        header h3,
+        header h3 a {
+            font-size: 24px!important;
+            margin-top: 3em!important;
+            margin-bottom: 0.7em!important;
+            border-bottom: 1px solid #e3eaed!important;
+            padding-bottom: 0.7em!important;
+            padding-top: 1em!important;
+        }
+
+        main header h2,
+        main header h3 {
+            padding: 0!important;
+        }
+
+        main h3 {
+            font-size: 16px!important;
+            margin-top: 2.5em!important;
+            padding-top: 0.5em!important;
+            margin-bottom: 0.8em!important;
+        }
+
+        main h1 a,
+        main h2 a,
+        main h3 a,
+        header h2,
+        header h3 {
+            border-bottom: 0!important;
+        }
+
+        main h1 a:hover,
+        main h1 a:active,
+        main h2 a:hover,
+        main h2 a:active,
+        main h3 a:hover,
+        main h3 a:active {
+            text-decoration: none!important;
+            color: inherit!important;
+        }
+
         h1,
         h2,
         h3,
@@ -114,16 +196,49 @@
         h5,
         h6 {
             font-weight: bold!important;
+            width: 100%!important;
         }
 
-        h1 a {
-            font-size: 28px!important;
-            font-weight: bold!important;
+        main aside {
+            padding: 20px 40px!important;
+            margin-top: 1.5em;
+            margin-bottom: 1.5em;
+            background: #c0e0ff;
+            line-height: 1.6;
+            position: relative;
         }
 
-        h1 a:hover,
-        h1 a:active {
-            text-decoration: none!important;
+        main table {
+            display: block;
+            margin-top: 1.5em!important;
+            margin-bottom: 1em!important;
+            overflow: auto!important;
+            background: #f3f7f9!important;
+            padding-top: 1em!important;
+            padding-bottom: 1em!important;
+            padding-left: 40px!important;
+        }
+
+        main table th {
+            padding: 5px 10px!important;
+            border-bottom: 1px solid #e3eaed!important;
+            vertical-align: bottom!important;
+        }
+
+        main table td {
+            padding: 10px!important;
+            text-align: left!important;
+            vertical-align: top!important;
+            line-height: 1.6!important;
+        }
+
+        main table p {
+            padding: 0!important;
+            width: 100%!important;
+        }
+
+        main code {
+            font-size: 12px!important;
         }
 
         img {
@@ -134,6 +249,6 @@
 
 <body>
     <div id="app"></div>
-<script type="text/javascript" src="build/bundle.7b5156c7.min.js"></script></body>
+<script type="text/javascript" src="build/bundle.cd91eedb.js"></script></body>
 
 </html>
