@@ -249,6 +249,6 @@
 
 <body>
     <div id="app"></div>
-<script type="text/javascript" src="build/bundle.cd91eedb.js"></script></body>
+<script type="text/javascript" src="https://cdn.livechatinc.com/ui-kit/build/bundle.cd91eedb.js"></script></body>
 
 </html>
