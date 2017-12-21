@@ -134,6 +134,6 @@
 
 <body>
     <div id="app"></div>
-<script type="text/javascript" src="build/bundle.7b5156c7.js"></script></body>
+<script type="text/javascript" src="build/bundle.7b5156c7.min.js"></script></body>
 
 </html>
