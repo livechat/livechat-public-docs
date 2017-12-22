@@ -1,14 +1,17 @@
 import WebFont from "webfontloader";
 import 'bootstrap/js/src/scrollspy';
 
-var hamburgers = [].slice.call(document.querySelectorAll(".Nav__open"));
+import particleCover from './particleCover.js'
+
+
+var hamburgers = [].slice.call(document.querySelectorAll(".docs__sidebar-button"));
 if (hamburgers.length > 0) {
   hamburgers.forEach(function(hamburger) {
     hamburger.addEventListener(
       "click",
       function() {
-        this.classList.toggle("Nav__open--active");
-        this.previousElementSibling.classList.toggle("Nav__menu--active");
+        this.classList.toggle("docs__sidebar-button--hidden");
+        document.querySelector(".docs__sidebar").classList.toggle("docs__sidebar--hidden");
       },
       false
     );
@@ -103,3 +106,25 @@ function scrollSpy() {
 if (document.querySelector(".docs__sidebar")) 
   window.addEventListener("load", scrollSpy);
 
+
+
+  window.onload = function() {
+    function initCovers() {
+  
+      var covers = document.getElementsByClassName("docs-cover");
+  
+      if(covers.length > 0) {
+        for (var i = 0, len = covers.length; i < len; i++) {
+          var color = covers[i].getAttribute('data-color');
+          console.log(color)
+          
+          covers[i].id = 'docs-cover-' + i;
+          console.log(color)
+          particleCover('docs-cover-' + i, color);
+        }
+      }
+    }
+  
+    initCovers();
+  
+  };

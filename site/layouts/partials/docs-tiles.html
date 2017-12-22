@@ -1,25 +1,42 @@
-{{ $len := sub (len $.Site.Sections) 1 }}
 
-{{ $rowLen := 3 }}
-{{ range $section, $page := $.Site.Sections }}
-    
-    {{if eq (mod $section $rowLen) 0 }}
+{{ $list := where .content.Site.Sections "Params.type" .type}}
+
+{{ $len := sub (len $list) 1 }}
+{{ $rowLength := int .rowLength }}
+
+{{ $content := .content }}
+{{ .content.Scratch.Set "tileSize" 4 }}
+
+{{ if eq $rowLength 2 }}
+{{ .content.Scratch.Set "tileSize" 6 }}
+{{ else if eq $rowLength 3 }}
+{{ .content.Scratch.Set "tileSize" 4 }}
+{{ else if eq $rowLength 4 }}
+{{ .content.Scratch.Set "tileSize" 3 }}
+{{ end }}
+
+{{ range $section, $page := $list }}
+
+
+    {{if eq (mod $section $rowLength) 0 }}
         {{if not (eq $section 0) }}
         </div>
         {{end}}
     {{end}}
 
-    {{if eq (mod $section $rowLen) 0 }}
+    {{if eq (mod $section $rowLength) 0 }}
         <div class="tile is-ancestor">
     {{end}}
 
     {{if .Params }}
-    <div class="tile is-4 is-parent">
-        <a class="tile is-link is-child box content" href="{{.Permalink}}"  style="background-color: {{ .Params.color }}">
+    <div class="tile is-{{ $content.Scratch.Get "tileSize" }} is-parent">
+        <a class="tile is-link is-child box content docs-cover" href="{{.Permalink}}" data-color="{{.Params.color}}">
             <h6 class="type">
                 {{ partial "pretty-type" . }}
-            <h3>{{.Title}}</h3>
-            <p>{{.Params.desc}}</p>
+                {{ $tmp := (print "<u style=\"border-color: " .Params.color ";\">" )}}
+            <h3 class="tile__title">{{replace .Params.menuTitle "<u>" $tmp | safeHTML }}</h3>
+            <p class="tile__tagline" style="color: {{.Params.color}} ">{{.Params.tagline | safeHTML }}</p>
+            <!-- <p class="tile__desc">{{.Params.desc}}</p> -->
         </a>
     </div>
     {{end}}
