@@ -1,7 +1,24 @@
 # Changelog
 
-Subscribe to [LiveChat Developers Newsletter](https://developers.livechatinc.com/newsletter/) to be
+Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
+
+#### [v0.29.2] - 28.12.2017
+
+##### Fixed
+
+* Docs fix - correct date in changelog
+
+#### [v0.29.0] - 28.12.2017
+
+##### Added
+
+* Added chat_rated callback
+* Added [URL rules](https://www.livechatinc.com/kb/setting-up-url-rules-for-groups/) support
+
+##### Fixed
+
+* sendMessage parameter "customId" now parsed to string by default
 
 #### [v0.28.4] - 27.11.2017
 
