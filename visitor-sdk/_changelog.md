@@ -3,6 +3,12 @@
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.30.0] - 3.01.2018
+
+##### Added
+
+* Support [Data Centers in Europe](https://www.livechatinc.com/features/security/data-center-in-europe/)
+
 #### [v0.29.2] - 28.12.2017
 
 ##### Fixed
