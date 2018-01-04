@@ -18,7 +18,9 @@ All LiveChat API requests start with `https://api.livechatinc.com/`.
 
 {{{ui-copy-input}{Connection endpoint}{https://api.livechatinc.com/}{Copy URL}}}
 
-The next segment of the URI path depends on the type of your request. For example, use: `https://api.livechatinc.com/agents` to get or modify the agents data.
+<aside class="notice">Please note that all LiveChat API requests must use `HTTPS` protocol.</aside>
+
+The next segment of the URL path depends on the type of your request. For example, use: `https://api.livechatinc.com/agents` to get or modify the agents data.
 
 <aside class="notice">All requests must have `X-API-VERSION` header set to the number of the version that you'd like to use. The most recent version is 2.</aside>
 
