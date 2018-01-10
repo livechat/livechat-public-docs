@@ -102,10 +102,10 @@ visitorSDK
 
 #### Parameters:
 
-| param      | type     | description                                                                |
-| ---------- | -------- | -------------------------------------------------------------------------- |
-| file       | blob     | File to upload                                                             |
-| onProgress | function | Callback function - will receive a progress value - number between 0 and 1 |
+| param      | type     | description                                                                    |
+| ---------- | -------- | ------------------------------------------------------------------------------ |
+| file       | blob     | File to upload                                                                 |
+| onProgress | function | Callback function. It will receive a progress value (a number between 0 and 1) |
 
 #### Errors:
 
