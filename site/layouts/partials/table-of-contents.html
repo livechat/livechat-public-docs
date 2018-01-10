@@ -1,0 +1,51 @@
+<!-- ignore empty links with + -->
+{{ $headers := findRE "<h[1-3].*?>(.|\n])+?</h[1-3]>" .Content }}
+
+<!-- at least one header to link to -->
+{{ $has_headers := ge (len $headers) 1 }}
+{{ if $has_headers }}
+  <ul class="docs__toc__ul docs__toc__ul--l0">
+    {{ range $i, $header := $headers }}
+      {{ $headerLevel := index (findRE "[1-3]" . 1) 0 }}
+      {{ $headerLevel := len (seq $headerLevel) }}
+      
+      {{ $anchorID := findRE "id=\"(.*?)\".*?" (safeHTML .) }}
+      {{ $anchorID := safeHTML (index $anchorID 0) }}
+      {{ $anchorID := strings.TrimPrefix "id=\"" $anchorID }}
+      {{ $anchorID := strings.TrimSuffix "\"" $anchorID }}      
+
+      {{ if ne $i 0 }}
+        {{ $prevHeaderLevel := index (findRE "[1-3]" (index $headers (sub $i 1)) 1) 0 }}
+        {{ $prevHeaderLevel := len (seq $prevHeaderLevel) }}
+          {{ if gt $headerLevel $prevHeaderLevel }}
+            {{ range seq (sub $headerLevel $prevHeaderLevel) }}
+            <ul class="docs__toc__ul docs__toc__ul--l{{$headerLevel}} nav">
+            {{end}}
+          {{end}}
+          {{ if lt $headerLevel $prevHeaderLevel }}
+            {{ range seq (sub $prevHeaderLevel $headerLevel) }}
+              </li></ul></li>
+            {{end}}
+          {{end}}
+          {{ if eq $headerLevel $prevHeaderLevel }}
+            </li>
+          {{end}}
+          <li class="docs__toc__li">
+            <a class="nav-link" href="#{{ $anchorID }}">{{ $header | plainify | htmlEscape }}</a>
+          {{ if eq $i (sub (len $headers) 1) }}
+            {{ range seq (sub $prevHeaderLevel $headerLevel) }}
+              </li></ul></li>
+            {{end}}
+          {{end}}
+      {{else}}
+      <li class="docs__toc__li">
+        <a class="nav-link"  href="#{{ $anchorID }}">{{ $header | plainify | htmlEscape }}</a>
+      {{end}}
+    {{end}}
+    {{ $firstHeaderLevel := len (seq (index (findRE "[1-3]" (index $headers 0) 1) 0)) }}
+    {{ $lastHeaderLevel := len (seq (index (findRE "[1-3]" (index $headers (sub (len $headers) 1)) 1) 0)) }}
+    {{ range seq (sub $lastHeaderLevel $firstHeaderLevel) }}
+      </li></ul></li>
+    {{end}}
+  </ul>
+{{end}}
