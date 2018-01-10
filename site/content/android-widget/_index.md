@@ -2,7 +2,7 @@
 title: "Android Widget"
 menuTitle: "Mobile Widget<br/><u>for Android App</u>"
 tagline: "Embed Chat Widget in your Android app"
-desc: "Load a web page or an application right inside the chat.io Agent App."
+desc: "Offer live chat support in your Android App by embedding Android Chat Widget."
 color: "#46b776"
 type: "mobile-widget"
 ---

@@ -1,16 +1,15 @@
-## chat.io for developers
-
+# LiveChat Docs
 Hello 👋!
 
-This is a source repository for [chat.io/docs](https://www.chat.io/docs/). It's a Hugo + Webpack powered static generated website. If you found something that's unclear or needs a fix, feel free to send us a PR!
+The source (markdown & assets) for all of the APIs documentations. Rendered here: https://docs.livechatinc.com/
 
-### Contact us anytime
+## If you're new to LiveChat
+[LiveChat](https://www.livechatinc.com/) is an online customer service software with live support, help desk software and web analytics capabilities. It's used by more than 20,000 companies all over the world. You can find more information here: [LiveChat for Developers](https://developers.livechatinc.com/).
 
-We're always willing to improve our docs and services. Let's chat about your use case, business needs or technical issues at [chat.io/docs](https://www.chat.io/docs/).
+## Support & Feedback
+Please let us know if you have any thoughts on making this collection complete. We are eager to make the documentations better and better! Drop us a line at developers@livechatinc.com or submit a pull request.
 
-### Don't know chat.io yet?
-
-chat.io is a multichannel messaging platform for customer service and online sales. See how can it level up your business! See chat.io [features](https://www.chat.io/feature).
+:rocket:
 
 ## Development
 
