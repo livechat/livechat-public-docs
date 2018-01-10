@@ -3,6 +3,12 @@
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.31.0] - 9.01.2018
+
+##### Added
+
+* Added sendFile method
+
 #### [v0.30.0] - 3.01.2018
 
 ##### Added

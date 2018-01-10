@@ -82,7 +82,7 @@ This method has no parameters.
 | "state"      | There is no chat to close |
 | "connection" | Request failed            |
 
-## sendFile - not implemented yet
+## sendFile
 
 Enables [file sharing](https://www.livechatinc.com/features/chat-tools/#File-sharing) through the chat window.
 
@@ -102,10 +102,30 @@ visitorSDK
 
 #### Parameters:
 
-| param    | type   | description    |
-| -------- | ------ | -------------- |
-| file     | file   | File to upload |
-| customId | string | custom file id |
+| param      | type     | description                                                                |
+| ---------- | -------- | -------------------------------------------------------------------------- |
+| file       | blob     | File to upload                                                             |
+| onProgress | function | Callback function - will receive a progress value - number between 0 and 1 |
+
+#### Errors:
+
+| type             | reason                           |
+| ---------------- | -------------------------------- |
+| connection       | "Request failed"                 |
+| missing argument | "Missing file"                   |
+| wrong argument   | "Cannot upload a file over 10MB" |
+
+#### Response:
+
+| param       | type   | description                                       |
+| ----------- | ------ | ------------------------------------------------- |
+| id          | string | File id                                           |
+| timestamp   | string | File timestamp                                    |
+| url         | string | File URL address                                  |
+| contentType | string | File content type                                 |
+| size        | number | File size in bytes                                |
+| width       | number | Image width (for image content types) - optional  |
+| height      | number | Image height (for image content types) - optional |
 
 ## rateChat
 
