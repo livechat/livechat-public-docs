@@ -6,7 +6,7 @@ weight: 30
 
 This method allows you to look up the **past chats** and [after-hours messages](https://www.livechatinc.com/features/engaging-customers/#After-hours-form). It also allows you to send [chat transcripts](https://www.livechatinc.com/kb/how-to-get-chat-transcripts/) via email.
 
-## Available paths {#archives-available-paths}
+## Available paths
 
 | Methods       | Path      |
 |--------------|-----------|
@@ -110,7 +110,10 @@ curl "https://api.livechatinc.com/chats?\
          "goals":[
             {
                "id":71,
-               "name":"goal_name",
+               "name":"sales_tracker_name",
+               "type":"sales_tracker",
+               "date":"Wed, 01/23/13 11:40:53 am",
+               "timestamp":1358937653,
                "order":{
                   "id":"ABC",
                   "description":"product one",
@@ -121,10 +124,14 @@ curl "https://api.livechatinc.com/chats?\
             {
                "id":72,
                "name":"goal_name",
+               "date":"Wed, 01/23/13 11:40:53 am",
+               "timestamp":1358937653,
                "order":{
-
+                  "id":"",
+                  "description":"",
+                  "price":"0",
+                  "currency":""
                }
-            }
          ],
          "queue":{
             "duration":20
@@ -223,6 +230,8 @@ Returns all ended chats.
 | `group` | return chats for given group id |
 | `goal` | return chats for given goal id |
 | `has_goal` | `1/0`. If 1 is passed, returns chats having any goal |
+| `goal` | return chats for given sales tracker id |
+| `has_goal` | `1/0`. If 1 is passed, returns chats having any tracked sale |
 | `queued` | `1/0`. If 1 is passed, returns chats started from queue |
 | `rate` | filter chats considering its rating status. Available values: `rated`, `not_rated`, `rated_good`, `rated_bad` |
 | `include_pending` | `1/0`. Whether to include chats that haven't yet ended. Pending chats can be recognized by `pending: true` attribute | They may appear with some delay because of caching reasons |
@@ -237,7 +246,7 @@ Returns all ended chats.
 
 | Parameter | Description |
 |---------|----------------------------|
-| `goal` | parameter will appear only if a goal for a particular chat has been reached
+| `goal` | parameter will appear only if a goal has been reached or there was tracked sale for a particular chat
 | `referrer` | parameter will appear only if referrer url exists
 | `custom_variables` | parameter will be available only if the custom variables are defined in the tracking code
 | `integration_variables` | parameter will appear only if a visitor logs in with Facebook

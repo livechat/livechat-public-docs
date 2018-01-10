@@ -2,7 +2,7 @@
 weight: 10
 ---
 
-# Introduction
+#Introduction
 
 Welcome to the LiveChat API documentation!
 
@@ -20,9 +20,9 @@ curl -u LOGIN:API_KEY -H X-API-Version:VERSION URL
 
 All LiveChat API requests start with `https://api.livechatinc.com/`.
 
-{{{ui-copy-input}{Connection endpoint}{https://api.livechatinc.com/}{Copy URL}}}
+<aside class="notice">Please note that all LiveChat API requests must use `HTTPS` protocol.</aside>
 
-The next segment of the URI path depends on the type of your request. For example, use: `https://api.livechatinc.com/agents` to get or modify the agents data.
+The next segment of the URL path depends on the type of your request. For example, use: `https://api.livechatinc.com/agents` to get or modify the agents data.
 
 <aside class="notice">All requests must have `X-API-VERSION` header set to the number of the version that you'd like to use. The most recent version is 2.</aside>
 
@@ -69,7 +69,7 @@ All API requests must be made over HTTPS.
 
 >Sample agents list returned in the **JSON format**
 
-```json
+```json-doc
 [
   {
     "name": "John Doe",
@@ -96,7 +96,7 @@ All requests made with HTTP GET are [JSONP](http://en.wikipedia.org/wiki/JSONP)-
 
 >Sample **JSONP response**
 
-```json
+```json-doc
 [
   {
     "name": "John Doe",

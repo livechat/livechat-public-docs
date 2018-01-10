@@ -18,4 +18,4 @@ A sample LiveChat [Agent App Extension](https://docs.livechatinc.com/agent-app-e
 
 It's available on GitHub: [https://github.com/livechat/billing-demo-agent-app-extension](https://github.com/livechat/billing-demo-agent-app-extension)
 
-<img class="framed" src="../__images/billing-demo-in-app-payment.png" width="500" />
+<img class="framed" src="../assets/images/billing-demo-in-app-payment.png" width="500" />

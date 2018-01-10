@@ -2,20 +2,27 @@
 weight: 10
 ---
 
-# Getting started
+# Introduction
 
-## Example apps
+The LiveChat Billing API allows you to charge for your apps in the LiveChat Marketplace. Therefore, you can offer paid applications to over 22,000 LiveChat customers.
 
-### Billing Demo app
+The Billing API is a collective name for a subset of smaller APIs used for specific purposes (see the [APIs section](#2-apis) below for details).
 
-A sample front-end app that implements Billing API to offer in-app payments.
+## Overview
 
-It's available on GitHub: [https://github.com/livechat/billing-demo](https://github.com/livechat/billing-demo)
+### Payment types
 
-### Agent App Extension
+The Billing API supports the following payment types:
 
-A sample LiveChat [Agent App Extension](https://docs.livechatinc.com/agent-app-extension) that offers in-app payment using Billing API.
+* direct charges (one-time charges)
+* subscriptions (coming soon)
+* per-usage payments (coming soon)
 
-It's available on GitHub: [https://github.com/livechat/billing-demo-agent-app-extension](https://github.com/livechat/billing-demo-agent-app-extension)
+### Additional options
 
-<img class="framed" src="../assets/images/billing-demo-in-app-payment.png" width="500" />
+It also handles a set of features to facilitate the payment and accounting processes:
+
+* credit card processing
+* invoices - coming soon
+
+<aside class="note">The customers can use their existing credit card from their LiveChat account; there’s no need to re-renter the card details.</aside>

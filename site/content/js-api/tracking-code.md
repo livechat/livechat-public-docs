@@ -49,6 +49,7 @@ window.__lc.chat_between_groups = false;
  * The available options are:
  * ga – Universal Analytics;
  * gtm – Google Tag Manager;
+ * gtag – Global Site Tag (gtag.js);
  * gaq – traditional asynchronous code for Google Analytics.
  */
 window.__lc.ga_version = 'ga';
