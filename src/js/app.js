@@ -112,20 +112,16 @@ if (document.querySelector(".docs__sidebar"))
     function initCovers() {
   
       var covers = document.getElementsByClassName("docs-cover");
-      console.log(covers)
   
       if(covers.length > 0) {
         for (var i = 0, len = covers.length; i < len; i++) {
           var color = covers[i].getAttribute('data-color');
-          console.log(color)
-          
           covers[i].id = 'docs-cover-' + i;
-          console.log(color)
           particleCover('docs-cover-' + i, color);
         }
       }
     }
   
-    // initCovers();
+    initCovers();
   
   };
