@@ -1,3 +1,7 @@
+---
+weight: 30
+---
+
 # Buttons
 
 > Example usage

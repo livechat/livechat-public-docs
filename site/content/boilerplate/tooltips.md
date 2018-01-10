@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # Tooltips
 
 Use tooltips to explain particular elements of interface or to provide additional context or details. You can also create a neat onboarding experience using tooltips as a guide elements. 

@@ -1,8 +1,12 @@
+---
+weight: 80
+---
+
 # Groups
 
 Use this method to get [Agent Groups](https://www.livechatinc.com/features/team-management/#Groups) data and also to **create new** and **modify the existing** Groups.
 
-## Available paths
+## Available paths {#groups-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -27,7 +31,7 @@ curl "https://api.livechatinc.com/groups" \
 
 > Sample response
 
-```json-doc
+```json
 [
   {
     "id": 0,
@@ -87,7 +91,7 @@ curl "https://api.livechatinc.com/groups/2" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 2,
   "name": "Sales",
@@ -156,7 +160,7 @@ curl "https://api.livechatinc.com/groups" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 4,
   "name": "Human Resources",
@@ -222,7 +226,7 @@ curl "https://api.livechatinc.com/groups/3" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 3,
   "name": "Quality Assurance",
@@ -266,7 +270,7 @@ curl "https://api.livechatinc.com/groups/4" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "result": "group removed successfully"
 }

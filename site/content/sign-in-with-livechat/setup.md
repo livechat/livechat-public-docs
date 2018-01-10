@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # Setup
 
 ## 1. Create new app

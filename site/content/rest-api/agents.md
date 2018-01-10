@@ -1,8 +1,12 @@
+---
+weight: 20
+---
+
 # Agents
 
 Use this API method to **manage** your [Agents](https://www.livechatinc.com/kb/livechat-roles-owner-administrators-and-agents/) and to **get information** about their activities.
 
-## Available paths
+## Available paths {#agents-available-paths}
 
 | Methods       | Path      |
 |--------------|-----------|
@@ -28,7 +32,7 @@ curl "https://api.livechatinc.com/agents" \
 
 >Sample response
 
-```json-doc
+```json
 [
   {
     "name": "John Doe",
@@ -71,7 +75,7 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
 
 >Sample response
 
-```json-doc
+```json
 {
   "login": "john.doe@mycompany.com",
   "name": "John Doe",
@@ -162,7 +166,7 @@ curl "https://api.livechatinc.com/agents" \
 
 >Sample response
 
-```json-doc
+```json
 {
   "login": "jenny.doe@mycompany.com",
   "name": "Jenny Doe",
@@ -254,7 +258,7 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
 
 >Sample response
 
-```json-doc
+```json
 {
   "login": "jenny.doe@mycompany.com",
   "name": "Jenny Doe",
@@ -379,7 +383,7 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "result": "jenny.doe@mycompany.com removed successfully"
 }

@@ -5,10 +5,5 @@ tagline: "Build secure LiveChat apps"
 desc: "Use OAuth 2.0 to securely access LiveChat user's data."
 color: "#03a9f4"
 type: "guide"
-
-includes:
-  - introduction
-  - notes
-  - authorization-flows
-
+weight: 10
 ---

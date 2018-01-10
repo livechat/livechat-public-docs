@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Introduction
 
 <link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.1.css">

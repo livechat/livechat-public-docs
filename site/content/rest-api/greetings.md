@@ -1,8 +1,12 @@
-#Greetings
+---
+weight: 70
+---
+
+# Greetings
 
 You can use this method to create new and modify the existing [Greetings](https://www.livechatinc.com/kb/why-should-i-set-up-chat-greetings/). It can be also used to **look up Greetings data**.
 
-## Available paths
+## Available paths {#greetings-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -27,7 +31,7 @@ curl "https://api.livechatinc.com/greetings\
 
 > Sample response
 
-```json-doc
+```json
 [
   {
     "id": 2291,
@@ -94,7 +98,7 @@ curl "https://api.livechatinc.com/greetings/2411" \
 
 > Sample result
 
-```json-doc
+```json
 {
   "id": 2411,
   "active": true,
@@ -188,7 +192,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 > Sample result
 
-```json-doc
+```json
 {
   "id": 2451,
   "active": true,
@@ -287,7 +291,7 @@ curl "https://api.livechatinc.com/greetings\
 
 > Sample result
 
-```json-doc
+```json
 {
   "id": 2431,
   "active": true,
@@ -360,7 +364,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 > Sample result
 
-```json-doc
+```json
 {
   "id": 2441,
   "active": true,
@@ -442,7 +446,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 > Sample result
 
-```json-doc
+```json
 {
   "id": 2471,
   "active": true,
@@ -532,7 +536,7 @@ rules[0][variable_value]=true"
 
 > Sample result
 
-```json-doc
+```json
 {
   "id": 2491,
   "active": false,
@@ -575,7 +579,7 @@ curl "https://api.livechatinc.com/greetings/2491" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "ok": true
 }

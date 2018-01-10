@@ -1,3 +1,7 @@
+---
+weight: 40
+---
+
 # Direct charges
 
 The Direct Charges API is a tool to collect one-time fees (also called "direct charges").
@@ -65,13 +69,13 @@ Parameters description:
 * `price` - an integer defined in cents. Example: to charge $99, set the `price` to 9900
 * `commission_percent` - a percentage fee deducted by LiveChat from the application price
 
-## Scopes
+## Scopes {#direct-charges-scopes}
 
 Direct Charges API requires `billing_manage` scope for all endpoints.
 
 If you want to use this API, you must create an app in Developers Console and check **"offer in-app payments"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `billing_manage` scope.
 
-## Endpoints
+## Endpoints {#direct-charges-endpoints}
 
 Base URL: `https://billing.livechatinc.com`
 

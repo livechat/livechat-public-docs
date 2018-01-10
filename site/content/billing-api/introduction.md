@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Introduction
 
 The LiveChat Billing API allows you to charge for your apps in the LiveChat Marketplace. Therefore, you can offer paid applications to over 22,000 LiveChat customers.

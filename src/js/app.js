@@ -112,6 +112,7 @@ if (document.querySelector(".docs__sidebar"))
     function initCovers() {
   
       var covers = document.getElementsByClassName("docs-cover");
+      console.log(covers)
   
       if(covers.length > 0) {
         for (var i = 0, len = covers.length; i < len; i++) {
@@ -125,6 +126,6 @@ if (document.querySelector(".docs__sidebar"))
       }
     }
   
-    initCovers();
+    // initCovers();
   
   };

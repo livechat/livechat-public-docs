@@ -1,11 +1,16 @@
+---
+weight: 20
+---
+
+
+# User guide
+
+You integrate LiveChat into your project manually or with a dependency manager.
+
 ## Requirements
 
 - iOS 9.0+
 - Xcode 8.0+
-
-## Installation
-
-You integrate LiveChat into your project manually or with a dependency manager.
 
 ### CocoaPods
 

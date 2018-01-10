@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Introduction
 
 The chat window API allows you to manipulate the chat widget displayed on your website. Some common use–cases are:

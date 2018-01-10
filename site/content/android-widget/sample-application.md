@@ -1,3 +1,7 @@
+---
+weight: 40
+---
+
 # Sample application
 
 This sample app will display a chat trigger button. Once clicked, a chat window with your support team will be opened in the app. 

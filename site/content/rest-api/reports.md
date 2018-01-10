@@ -1,8 +1,12 @@
+---
+weight: 90
+---
+
 # Reports
 
 This method allows you to **access** and **extract** all the [Reports](https://www.livechatinc.com/kb/reporting-options-available-in-livechat/) data available in LiveChat.
 
-## Available paths
+## Available paths {#reports-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -49,7 +53,7 @@ group_by=hour" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "00:00": {
     "chats": 18
@@ -122,7 +126,7 @@ group_by=hour" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2013-01-28":{
     "chats_from_auto_invite":1,
@@ -173,7 +177,7 @@ group_by=month" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2012-01": {
     "begin": "2012-01-29",
@@ -240,7 +244,7 @@ curl "https://api.livechatinc.com/reports/chats/ratings/ranking" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "ranking": [
     {
@@ -298,7 +302,7 @@ group=2" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2013-01-29": {
     "queued": {
@@ -358,7 +362,7 @@ group=2" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2013-01-29":{
     "queued":{
@@ -435,7 +439,7 @@ group_by=day"\
 
 > Sample response
 
-```json-doc
+```json
 {
   "2013-01-25": {
     "hours": 0
@@ -492,7 +496,7 @@ group=1" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2013-01-25": {
     "hours": 8.17
@@ -549,7 +553,7 @@ agent=john.doe@mycompany.com" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01-10": {
     "first_response_time": {
@@ -612,7 +616,7 @@ agent=john.doe@mycompany.com" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01-10": {
     "avg_response_time": {
@@ -673,7 +677,7 @@ weekday=mon" \
 
 > Sample response
 
-```json-doc
+```json
 {
     "2015-03-16 00:00": 0,
     "2015-03-16 01:00": 0,
@@ -730,7 +734,7 @@ goal=71&group_by=month" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2013-01": {
     "begin": "2013-01-01",
@@ -776,7 +780,7 @@ group_by=month" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01": {
     "begin": "2014-01-13",
@@ -833,7 +837,7 @@ group_by=hour" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "00:00": {
     "new_tickets": 5
@@ -882,7 +886,7 @@ agent=john.doe@mycompany.com" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01-10": {
     "count": 5,
@@ -939,7 +943,7 @@ date_to=2014-01-20" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01-10": {
     "solved_tickets": 4
@@ -989,7 +993,7 @@ date_to=2014-01-20" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01-10": {
     "count": 3,
@@ -1047,7 +1051,7 @@ date_to=2014-01-20" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2014-01-10": {
     "tickets_from_chat_window": 4,
@@ -1109,7 +1113,7 @@ group_by=month" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "2012-01": {
     "begin": "2012-01-29",
@@ -1183,7 +1187,7 @@ curl "https://api.livechatinc.com/reports/tickets/ratings/ranking" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "ranking": [
     {

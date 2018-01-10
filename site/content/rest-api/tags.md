@@ -1,8 +1,12 @@
+---
+weight: 110
+---
+
 # Tags
 
 Using this method, you will be able to **create** and **delete** [Tags](https://www.livechatinc.com/kb/tagging-chats-and-tickets/) in LiveChat. You can also use it to **learn more** about the performance of all your Tags.
 
-## Available paths
+## Available paths {#tags-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -28,7 +32,7 @@ curl "https://api.livechatinc.com/tags\
 
 > Sample response
 
-```json-doc
+```json
 [
   {
     "name": "sales",
@@ -98,7 +102,7 @@ curl "https://api.livechatinc.com/tags" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "name": "support",
   "author":"john.doe@mycompany.com",
@@ -153,7 +157,7 @@ curl "https://api.livechatinc.com/tags/support" \
 
 > Example response
 
-```json-doc
+```json
 {
   "ok": true
 }

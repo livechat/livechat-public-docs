@@ -1,8 +1,12 @@
-# Example usage
+---
+weight: 50
+---
+
+# Sample usage
 
 There are two ways to open the chat window – by using an Activity or a Fragment.
 
-### Activity
+## Activity
 
 In order to open a chat window in a new Activity, you need to declare **ChatWindowActivity** in your manifest. Add the following line to **AndroidManifest.xml**, between `<application></application>` tags:
 
@@ -30,7 +34,7 @@ It’s also possibile to automatically login to the chat window by providing vis
     intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_EMAIL, "your_email");
 ```
 
-### Fragment
+## Fragment
 
 In order to open chat window in a new Fragment, you need to add the following code to your application, in the place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat licence number and a group ID:
 

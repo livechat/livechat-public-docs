@@ -4,7 +4,7 @@ weight: 20
 
 # Advanced use
 
-## Sample extensions
+## Sample widgets
 
 We've prepared two example repositories for your convenience. Both examples show how to receive data from [Events](#events) and display them within the sidebar.
 
@@ -52,13 +52,13 @@ A basic static application example served from [Webpack Server](https://webpack.
 
 > You can now [turn on the extension](#turn-on-the-extension).
 
-## Hosting the extension
+## Hosting the widget
 
-You can host your extension locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your extension to an SSL-enabled host. If you go for the [Webpack Example](#webpack-js), you'll get the setup out of-the-box.
+You can host your widget locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. You can use a self-signed certificate for `localhost` or upload your widget to an SSL-enabled host. If you go for the [Webpack Example](#webpack-js), you'll get the setup out of-the-box.
 
-## Developing your own extension
+## Developing your own widget
 
-If you want to build your own extension, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Extension API](#javascript-api):
+If you want to build your own widget, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Widget API](#javascript-api):
 
 > Place this tag within the `<head></head>` section:
 
@@ -67,7 +67,7 @@ If you want to build your own extension, be sure to include both the [LiveChat B
 <script src="//cdn.livechatinc.com/boilerplate/1.1.js"></script>
 ```
 
-After your extension content is loaded, fire the `LiveChat.init()` method. It will let the Agent App know when to hide the spinning loader.
+After your widget content is loaded, fire the `LiveChat.init()` method. It will let the Agent App know when to hide the spinning loader.
 
 > Fire `LiveChat.init()` method after body is loaded (e.g. using jQuery):
 
@@ -87,4 +87,4 @@ $(document).ready(function () {
 
 ## Layout and Styling
 
-We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the extension interface.
+We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the widget interface.

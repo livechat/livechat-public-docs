@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # Webhooks
 
 You can configure LiveChat to be immediately notified about particular events. Such a notification is called a **webhook** – it’s just a simple HTTP request that LiveChat sends to your server when a particular event occurs. Check the basic auth example on the right.
@@ -139,7 +143,7 @@ Upload an example script (displayed in the right column) to your web server and 
 
 > Example webhook
 
-```json-doc
+```json
 {
   "event_type": "chat_started",
   "token": "27f41c8da685c81a890f9e5f8ce48387",
@@ -165,7 +169,7 @@ Note: `chat_changed` event type is sent only when the tag list for a particular 
 
 > Example webhook including visitor information
 
-```json-doc
+```json
 {
   "event_type": "chat_started",
   "token": "27f41c8da685c81a890f9e5f8ce48387",
@@ -195,7 +199,7 @@ For example, when the chat starts, you may want to know the exact chat start tim
 
 ### Data type: chat
 
-```json-doc
+```json
 {
   "chat":{
     "id":"MH022RD0K5",
@@ -236,7 +240,7 @@ Include this data type if you need to know chat start and end time or the full c
 
 ### Data type: visitor
 
-```json-doc
+```json
 "visitor": {
 	"id": "S126126161.O136OJPO1",
 	"name": "Mary Brown",
@@ -254,7 +258,7 @@ This data type includes visitor’s name and e-mail address.
 
 ### Data type: pre_chat_survey
 
-```json-doc
+```json
 "pre_chat_survey": [
 {
   "id": "135963440121804757",
@@ -294,7 +298,7 @@ Include this data type if you need to know the exact results of the pre-chat sur
 
 ### Data type: ticket
 
-```json-doc
+```json
 "ticket":{
   "assignee":{
     "id":"agent.gregory@email.com",
@@ -343,7 +347,7 @@ This data type includes ticket details.
 
 ### Data type: canned_response_changed
 
-```json-doc
+```json
 "canned_response":{
     "group": 0,
     "id": 1,

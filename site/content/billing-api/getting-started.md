@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # Getting started
 
 ## Example app

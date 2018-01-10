@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Introduction
 
 LiveChat uses [OAuth 2.0](https://oauth.net/2/) protocol for **authentication** and **authorization** for all of its services. Before you continue, make sure you understand the following difference:

@@ -1,8 +1,12 @@
+---
+weight: 120
+---
+
 # Tickets
 
 Use this method to **get information** about a specific case or all [Ticket](https://www.livechatinc.com/kb/support-tickets-in-livechat/) of them. You also use it to **create new** Tickets or **update tags** for the existing Tickets.
 
-## Available paths
+## Available paths {#tickets-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -30,7 +34,7 @@ status=open" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "pages": 1,
   "total": 15,
@@ -199,7 +203,7 @@ curl "https://api.livechatinc.com/tickets" \
 
 > Sample response
 
-```json-doc
+```json
 The return format is the same as the single ticket item in [tickets list](#get-tickets).
 
 ```
@@ -259,7 +263,7 @@ curl "https://api.livechatinc.com/tickets/5FUED/tags" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "pages": 1,
   "total": 15,

@@ -1,8 +1,12 @@
+---
+weight: 50
+---
+
 # Canned responses
 
 Use this method to **get a full list** of your [Canned responses](https://www.livechatinc.com/kb/canned-responses/) and to **modify them**.
 
-## Available paths
+## Available paths {#canned-responses-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -27,7 +31,7 @@ curl "https://api.livechatinc.com/canned_responses?group=1" \
 
 > Sample response
 
-```json-doc
+```json
 [
   {
     "id": 3151,
@@ -89,7 +93,7 @@ curl "https://api.livechatinc.com/canned_responses/3151" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 3151,
   "group": 1,
@@ -149,7 +153,7 @@ curl "https://api.livechatinc.com/canned_responses" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 3181,
   "group": 0,
@@ -210,7 +214,7 @@ curl "https://api.livechatinc.com/canned_responses" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 3181,
   "group": 0,
@@ -254,7 +258,7 @@ curl "https://api.livechatinc.com/canned_responses/3181" \
 
 > Example response
 
-```json-doc
+```json
 {
   "result": "Canned response removed successfully"
 }

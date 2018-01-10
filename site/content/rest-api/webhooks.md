@@ -1,10 +1,14 @@
+---
+weight: 140
+---
+
 # Webhooks
 
 This method will help you build your own LiveChat integrations by **creating** and **managing webhooks**. 
 
 Check out our [webhooks tutorial](https://docs.livechatinc.com/build-integration/#!webhooks) for more information, use cases and to learn how to get started.
 
-## Available paths
+## Available paths {#webhooks-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -30,7 +34,7 @@ curl "https://api.livechatinc.com/webhooks" \
 
 > Sample response
 
-```json-doc
+```json
 {
     "events": [{
         "licence": 12345,
@@ -68,7 +72,7 @@ url=http://my-company.com/parse_webhook.php
 
 > Sample response
 
-```json-doc
+```json
 {
     "events": [{
         "licence": 12345,
@@ -134,7 +138,7 @@ curl "https://api.livechatinc.com/webhooks/39612eee5(...)" \
 
 > Sample response
 
-```json-doc
+```json
 {
     "result":"Push notification removed successfully"
 }

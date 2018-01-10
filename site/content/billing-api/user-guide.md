@@ -1,3 +1,7 @@
+---
+weight: 30
+---
+
 # User guide
 
 ## 1. Authorization

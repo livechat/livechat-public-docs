@@ -1,3 +1,7 @@
+---
+weight: 50
+---
+
 # Ledger
 
 The Ledger API handles the financial activity and balance.
@@ -12,7 +16,7 @@ The Ledger API handles the financial activity and balance.
 
 This is the structure of a single Ledger entry object:
 
-```
+```json
 {
 	"id":"50af517e-c5aa-4af3-93c2-e60d612c43eb",
 	"name":"app1",
@@ -22,13 +26,13 @@ This is the structure of a single Ledger entry object:
 }
 ```
 
-## Scopes
+## Scopes {#ledger-scopes}
 
 Ledger API requires `ledger_read` scope for all endpoints.
 
 If you want to use this API, you must create an app in Developers Console and check **"read developer’s financial activity and balance"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `ledger_read` scope.
 
-## Endpoints
+## Endpoints {#ledger-endpoints}
 
 Base URL: `https://billing.livechatinc.com`
 

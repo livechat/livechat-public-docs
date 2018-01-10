@@ -1,8 +1,12 @@
+---
+weight: 100
+---
+
 # Status
 
 You can use this method to check whether your LiveChat is **online** or **offline**.
 
-## Available paths
+## Available paths {#status-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -27,7 +31,7 @@ curl "https://api.livechatinc.com/status/1" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "status":"online"
 }

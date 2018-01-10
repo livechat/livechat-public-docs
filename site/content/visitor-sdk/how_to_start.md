@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # How to start
 
 ## Install Visitor JS SDK

@@ -1,3 +1,7 @@
+---
+weight: 40
+---
+
 # Visitor’s chat
 
 This method allows you to **perform a chat** via your LiveChat as a visitor.
@@ -6,7 +10,7 @@ You can use this to **create your own chat widget** and, for example, place it w
 
 When it comes to mobile widgets, you can use the **ready-made** ones for [iOS](https://docs.livechatinc.com/ios-widget/) and [Android](https://docs.livechatinc.com/android-widget/).
 
-## Available paths
+## Available paths {#visitors-chat-available-paths}
 
 | Methods       | Path      |
 |--------------|-----------|
@@ -35,7 +39,7 @@ welcome_message=Hi"
 
 > Sample response
 
-```json-doc
+```json
 {
   "secured_session_id":"CS1432649054.444adb0d90",
   "banned":false
@@ -79,7 +83,7 @@ secured_session_id=26132406c42c96ba61ed42689b70f719" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "events":[
     {
@@ -144,7 +148,7 @@ message=Hello!"
 
 > Sample response
 
-```json-doc
+```json
 {
   "success": true
 } 
@@ -180,7 +184,7 @@ secured_session_id=26132406c42c96ba61ed42689b70f719&"
 
 > Sample response
 
-```json-doc
+```json
 {
   "success": true
 }

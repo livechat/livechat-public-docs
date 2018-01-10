@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # Methods
 
 ## Set custom variables

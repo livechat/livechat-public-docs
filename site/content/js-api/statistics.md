@@ -1,3 +1,7 @@
+---
+weight: 40
+---
+
 # Statistics
 
 ## Get last visit timestamp

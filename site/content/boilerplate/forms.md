@@ -1,3 +1,7 @@
+---
+weight: 40
+---
+
 # Forms
 
 Form is probably the most basic way of interacting with a user. Make sure it is accessible and self-explanatory. It also helps to break huge forms into separate pieces. Provide validation feedback with predefined `--error` classes.

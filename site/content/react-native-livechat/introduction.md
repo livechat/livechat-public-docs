@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Introduction
 
 Easily embed LiveChat chat widget with React Native component. Works for **both iOS and Android** apps.

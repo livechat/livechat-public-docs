@@ -1,3 +1,7 @@
+---
+weight: 30
+---
+
 # Callbacks
 
 Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time the chat window is opened.

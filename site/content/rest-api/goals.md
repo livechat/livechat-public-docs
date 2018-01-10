@@ -1,8 +1,12 @@
+---
+weight: 60
+---
+
 # Goals
 
 This method allows you to **get information** about your [Goals](https://www.livechatinc.com/kb/goals-set-up-and-use/) and to **modify** them.
 
-## Available paths
+## Available paths {#goals-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -28,7 +32,7 @@ curl "https://api.livechatinc.com/goals" \
 
 > Sample response
 
-```json-doc
+```json
 [
   {
     "id": 1041,
@@ -63,7 +67,7 @@ curl "https://api.livechatinc.com/goals/1181" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 1181,
   "name": "nike shoes variable",
@@ -124,7 +128,7 @@ curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "result": "goal marked as successful"
 }
@@ -187,7 +191,7 @@ curl "https://api.livechatinc.com/goals" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 2231,
   "name": "new goal",
@@ -250,7 +254,7 @@ curl "https://api.livechatinc.com/goals/2231" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "id": 2231,
   "name": "new goal paused",
@@ -301,7 +305,7 @@ curl "https://api.livechatinc.com/goals/2231" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "result": "goal removed successfully"
 }

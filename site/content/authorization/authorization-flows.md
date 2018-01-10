@@ -1,7 +1,11 @@
+---
+weight: 20
+---
+
 # Authorization flows
 All apps integrated with LiveChat must be first created in [LiveChat Developers Console](https://developers.livechatinc.com/console). When a user starts using your app, they will see what parts of his account your app will have access to:
 
-<img src="../__images/authorization/grant-access.png" style="border: 1px solid #ddd" />
+<img src="../assets/images/authorization/grant-access.png" style="border: 1px solid #ddd" />
 
 When a user allows the access, your app will receive an `access_token` that will let you access their account.
 
@@ -16,7 +20,7 @@ There are a few scenarios in which you can acquire an `access_token`:
 ## Sign in with LiveChat
 "Sign in with LiveChat" button is the easiest way to collect `access_token` from a LiveChat user.
 
-<img src="../__images/authorization/sign-in-with-livechat.png" style="border: 1px solid #ddd" />
+<img src="../assets/images/authorization/sign-in-with-livechat.png" style="border: 1px solid #ddd" />
 
 In this scenario, LiveChat user enters your website with a "Sign in with LiveChat" button installed. After clicking the button, they enter LiveChat login and password in a pop-up window and grant access to some parts of their account.
 
@@ -32,7 +36,7 @@ To set up your own public app, you must define the URL of the app and the list o
 
 Then, the user is redirected to your app with `access_token` included in the URL.
 
-<img src="../__images/authorization/public-web-app.png" style="border: 1px solid #ddd" />
+<img src="../assets/images/authorization/public-web-app.png" style="border: 1px solid #ddd" />
 
 ### 1. Create the app
 Go to [Developers Console](https://developers.livechatinc.com/console) and create a new "LiveChat OAuth 2.0 Client" app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
@@ -173,7 +177,7 @@ When your application wants to acquire the `access_token`, you must redirect the
 
 Your application exchanges the authorization code for an `access_token` and `refresh_token`. From now now, you can generate new `access_tokens` indefinitely without any action required from the user.
 
-<img src="../__images/authorization/public-backend-app.png" style="border: 1px solid #ddd" />
+<img src="../assets/images/authorization/public-backend-app.png" style="border: 1px solid #ddd" />
 
 ### 1. Create the app
 Go to [Developers Console](https://developers.livechatinc.com/console) to create a new server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
@@ -361,6 +365,6 @@ The response will include the following params in JSON format:
 ## Private server-side apps (coming soon)
 Private apps can be used only on accounts chosen by the developer.
 
-<img src="../__images/authorization/private-backend-app.png" style="border: 1px solid #ddd" />
+<img src="../assets/images/authorization/private-backend-app.png" style="border: 1px solid #ddd" />
 
 This authorization flow is not yet available.

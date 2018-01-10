@@ -1,3 +1,7 @@
+---
+weight: 60
+---
+
 # Loaders
 
 Use loaders in variety of sizes to entertain user while loading the content.

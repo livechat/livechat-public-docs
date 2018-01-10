@@ -1,4 +1,9 @@
+---
+weight: 40
+---
+
 # Example app
+
 ```html
 <!DOCTYPE html>
 <html>

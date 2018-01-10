@@ -1,8 +1,12 @@
+---
+weight: 30
+---
+
 # Archives
 
 This method allows you to look up the **past chats** and [after-hours messages](https://www.livechatinc.com/features/engaging-customers/#After-hours-form). It also allows you to send [chat transcripts](https://www.livechatinc.com/kb/how-to-get-chat-transcripts/) via email.
 
-## Available paths
+## Available paths {#archives-available-paths}
 
 | Methods       | Path      |
 |--------------|-----------|
@@ -31,7 +35,7 @@ curl "https://api.livechatinc.com/chats?\
 
 > Sample response
 
-```json-doc
+```json
 {
    "chats":[
       {
@@ -300,7 +304,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "result": "E-mail has been sent to john.doe@mycompany.com."
 }
@@ -350,7 +354,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
 
 > Sample response
 
-```json-doc
+```json
 {
    "chats":[
       {

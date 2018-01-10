@@ -1,3 +1,7 @@
+---
+weight: 60
+---
+
 # Subscription
 
 The Subscription API handles subscription management. This API is **not yet ready** and will be available soon.
@@ -6,7 +10,7 @@ The Subscription API handles subscription management. This API is **not yet read
 
 This is the structure of a single subscription object:
 
-```
+```json
 {
 	"automatic_upselling": false,
 	"ends_at": "2017-11-28T23:59:59Z",
@@ -21,11 +25,11 @@ This is the structure of a single subscription object:
 }
 ```
 
-## Scopes
+## Scopes {#subscription-scopes}
 
 Direct Charges API requires `subscription_manage` scope for all endpoints.
 
-## Endpoints
+## Endpoints {#subscription-endpoints}
 
 All endpoints return a direct charge object.
 

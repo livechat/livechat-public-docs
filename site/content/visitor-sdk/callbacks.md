@@ -1,3 +1,7 @@
+---
+weight: 40
+---
+
 # Callbacks
 
 Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time agent's message has been received.

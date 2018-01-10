@@ -1,3 +1,7 @@
+---
+weight: 50
+---
+
 # Changelog
 
 Subscribe to [LiveChat Developers Newsletter](https://developers.livechatinc.com/newsletter/) to be

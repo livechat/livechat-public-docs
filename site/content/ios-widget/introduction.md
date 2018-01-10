@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Introduction
 
 The LiveChat Widget for iOS allows the app users to contact the chat agents directly from a mobile application. The widget is very easy for developers to integrate into their existing iOS apps. 

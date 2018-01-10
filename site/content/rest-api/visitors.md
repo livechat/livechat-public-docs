@@ -1,8 +1,12 @@
+---
+weight: 130
+---
+
 # Visitors
 
 You can use this method to get information about the real-time [Visitors](https://www.livechatinc.com/features/visitors-tracking/) on your website. You can also use it to **display additional information** about the visitors in the LiveChat app.
 
-## Available paths
+## Available paths {#visitors-available-paths}
 
 | Methods      | Path      |
 |--------------|-----------|
@@ -30,7 +34,7 @@ group[]=0" \
 
 > Sample response
 
-```json-doc
+```json
 [
   {
     "browser": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
@@ -178,7 +182,7 @@ curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
 
 > Sample response
 
-```json-doc
+```json
 {
   "result": "Visitor details added"
 }
