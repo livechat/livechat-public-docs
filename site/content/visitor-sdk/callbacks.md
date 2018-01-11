@@ -194,7 +194,6 @@ Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/f
 ```js
 visitorSDK.on('message_seen', messageData => {
   console.log(messageData)
-<<<<<<< HEAD:visitor-sdk/_callbacks.md
 })
 ```
 
@@ -208,28 +207,9 @@ visitorSDK.on('chat_rated', data => {
 })
 ```
 
-=======
-})
-```
-
-## chat_rated
-
-Callback function executed when the chat is [rated or commented](<(https://www.livechatinc.com/features/getting-feedback/#Chat-ratings)>) by visitor.
-
-```js
-visitorSDK.on('chat_rated', data => {
-  console.log(messageData)
-})
-```
-
->>>>>>> hugo-netlify:site/content/visitor-sdk/callbacks.md
 #### Payload:
 
 | param   | type                    | description       |
 | ------- | ----------------------- | ----------------- |
 | rate    | "good" \ "bad" \ "none" | Rate type         |
-<<<<<<< HEAD:visitor-sdk/_callbacks.md
 | comment | string                  | Rate comment text |
-=======
-| comment | string                  | Rate comment text |
->>>>>>> hugo-netlify:site/content/visitor-sdk/callbacks.md

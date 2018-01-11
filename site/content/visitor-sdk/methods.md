@@ -112,7 +112,6 @@ visitorSDK
 | onProgress | function | Callback function. It will receive a progress value (a number between 0 and 1) |
 
 #### Errors:
-<<<<<<< HEAD:visitor-sdk/_methods.md
 
 | type             | reason                           |
 | ---------------- | -------------------------------- |
@@ -120,15 +119,6 @@ visitorSDK
 | missing argument | "Missing file"                   |
 | wrong argument   | "Cannot upload a file over 10MB" |
 
-=======
-
-| type             | reason                           |
-| ---------------- | -------------------------------- |
-| connection       | "Request failed"                 |
-| missing argument | "Missing file"                   |
-| wrong argument   | "Cannot upload a file over 10MB" |
-
->>>>>>> hugo-netlify:site/content/visitor-sdk/methods.md
 #### Response:
 
 | param       | type   | description                                       |
