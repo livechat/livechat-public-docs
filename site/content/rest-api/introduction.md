@@ -69,7 +69,7 @@ All API requests must be made over HTTPS.
 
 >Sample agents list returned in the **JSON format**
 
-```json-doc
+```json
 [
   {
     "name": "John Doe",
@@ -96,7 +96,7 @@ All requests made with HTTP GET are [JSONP](http://en.wikipedia.org/wiki/JSONP)-
 
 >Sample **JSONP response**
 
-```json-doc
+```json
 [
   {
     "name": "John Doe",
