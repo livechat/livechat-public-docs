@@ -2,7 +2,7 @@
 weight: 10
 ---
 
-#Introduction
+# Introduction
 
 Welcome to the LiveChat API documentation!
 
