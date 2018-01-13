@@ -4,7 +4,7 @@ weight: 60
 
 # Subscription
 
-The Subscription API handles subscription management. This API is **not yet ready** and will be available soon.
+The Subscription API handles recurrent payments. Once the payment is set up, the customer will be charged every month.
 
 ## Subscription object
 
@@ -12,16 +12,16 @@ This is the structure of a single subscription object:
 
 ```json
 {
-	"automatic_upselling": false,
-	"ends_at": "2017-11-28T23:59:59Z",
-	"in_trial": false,
-	"months": 1,
-	"origin": "recurly",
-	"pay_per_chat": false,
-	"plan": "team",
-	"recurrent_payment": true,
-	"seats": 3,
-	"subscriber": true
+  "automatic_upselling": false,
+  "ends_at": "2017-11-28T23:59:59Z",
+  "in_trial": false,
+  "months": 1,
+  "origin": "recurly",
+  "pay_per_chat": false,
+  "plan": "team",
+  "recurrent_payment": true,
+  "seats": 3,
+  "subscriber": true
 }
 ```
 
