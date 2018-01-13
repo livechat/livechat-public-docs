@@ -15,7 +15,7 @@ The Billing API is a collective name for a subset of smaller APIs used for speci
 The Billing API supports the following payment types:
 
 * direct charges (one-time charges)
-* subscriptions (coming soon)
+* subscriptions
 * per-usage payments (coming soon)
 
 ### Additional options
