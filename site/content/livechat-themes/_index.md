@@ -1,8 +1,8 @@
 ---
-title: "LiveChat Themes"
-desc: "Build a custom LiveChat theme."
-tagline: "Build a custom LiveChat theme."
+title: "Chat Widget Themes"
+desc: "Build a custom chat widget theme."
+tagline: "Build a custom chat widget theme."
 color: "#FFA962"
 type: "widget"
-menuTitle: LiveChat<br/><u>Themes</u>
+menuTitle: Chat Widget<br/><u>Themes</u>
 ---
