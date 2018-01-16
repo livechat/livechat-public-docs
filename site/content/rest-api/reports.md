@@ -2,7 +2,7 @@
 weight: 90
 ---
 
-# Reports
+# Reports 
 
 This method allows you to **access** and **extract** all the [Reports](https://www.livechatinc.com/kb/reporting-options-available-in-livechat/) data available in LiveChat.
 
@@ -759,7 +759,7 @@ Shows the number of reached goals.
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
 | `tag[]` | return statistics for the specified tag |
 
-## Greetings
+## Greetings {#reports-greetings}
 
 > Path
 
