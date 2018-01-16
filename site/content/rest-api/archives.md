@@ -230,8 +230,8 @@ Returns all ended chats.
 | `group` | return chats for given group id |
 | `goal` | return chats for given goal id |
 | `has_goal` | `1/0`. If 1 is passed, returns chats having any goal |
-| `goal` | return chats for given sales tracker id |
-| `has_goal` | `1/0`. If 1 is passed, returns chats having any tracked sale |
+| `sale` | return chats for given sales tracker id |
+| `has_sale` | `1/0`. If 1 is passed, returns chats having any tracked sale |
 | `queued` | `1/0`. If 1 is passed, returns chats started from queue |
 | `rate` | filter chats considering its rating status. Available values: `rated`, `not_rated`, `rated_good`, `rated_bad` |
 | `include_pending` | `1/0`. Whether to include chats that haven't yet ended. Pending chats can be recognized by `pending: true` attribute | They may appear with some delay because of caching reasons |
