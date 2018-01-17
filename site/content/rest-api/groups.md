@@ -36,7 +36,8 @@ curl "https://api.livechatinc.com/groups" \
   {
     "id": 0,
     "name": "All operators",
-    "language": "en"
+    "language": "en",
+    "status": "accepting chats"
   },
   {
     "id": 1,
@@ -44,7 +45,8 @@ curl "https://api.livechatinc.com/groups" \
     "language": "en",
     "agents": [
       "jane.doe@mycompany.com"
-    ]
+    ],
+    "status": "offline"
   },
   {
     "id": 2,
@@ -53,7 +55,8 @@ curl "https://api.livechatinc.com/groups" \
     "agents": [
       "john.doe@mycompany.com",
       "jenny.doe@mycompany.com"
-    ]
+    ],
+    "status": "not accepting chats"
   },
   {
     "id": 3,
@@ -61,7 +64,8 @@ curl "https://api.livechatinc.com/groups" \
     "language": "en",
     "agents": [
       "john.doe@mycompany.com"
-    ]
+    ],
+    "status": "accepting chats"
   }
 ]
 ```
