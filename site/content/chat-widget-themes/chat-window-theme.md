@@ -6,7 +6,7 @@ The styles are injected to `#livechat-full` and `#livechat-compact-container`.
 
 Additionally, you can apply styles to these containers themselves to change their size or position:
 
-```
+```css
 #livechat-full {
     width: 500px;
     height: 890px;
@@ -46,7 +46,7 @@ You can use them to style the chat window depending on the chat state. For examp
 
 There is no support for media-queries in the custom CSS, but you can decide which styles will work only on mobile devices. To do this, wrap the mobile-only styles in `@livechat-mobile`. For example, to give the `#wrapper` a red border on desktop and green border on mobile, do this:
 
-```
+```css
 #wrapper {
     border: 1px solid red;
     box-shadow: 1px 1px 1px #000;
@@ -76,7 +76,7 @@ You can use `%color%` variable in your custom CSS. It will pick up the selected 
 
 The icons in the chat window are actually a font, so you can easily change their color:
 
-```
+```css
 .icon-close {
     color: red;
 }
