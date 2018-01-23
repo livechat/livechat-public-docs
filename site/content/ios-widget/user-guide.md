@@ -12,39 +12,29 @@ You integrate LiveChat into your project manually or with a dependency manager.
 - iOS 9.0+
 - Xcode 8.0+
 
+## Installation
+
+### Carthage
+
+If you use [Carthage](https://github.com/Carthage/Carthage) to manage your dependencies, simply add 'livechat/chat-window-ios' to your `Cartfile`.
+
+```
+github "livechat/chat-window-ios" ~> 2.0.10
+```
+
+Make sure you have added `LiveChat.framework` to the "_Linked Frameworks and Libraries_" section of your target, and have include it in your Carthage framework copying build phase.
+
 ### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
-
-Install it with the following command:
+If you use [CocoaPods](http://cocoapods.org) to manage your dependencies, simply add LiveChat to your `Podfile`.
 
 ```bash
-$ gem install cocoapods
-```
-<div class="clear"></div>
-
-To integrate LiveChat into your Xcode project using CocoaPods, specify it in your `Podfile`:
-
-```ruby
-source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
-use_frameworks!
-
-target '<Your Target Name>' do
-    pod 'LiveChat', '~> 2.0'
-end
-```
-<div class="clear"></div>
-
-Then, run the following command:
-
-```bash
-$ pod install
+pod 'LiveChat', '~> 2.0.10'
 ```
 
 ### Manual Installation
 
-You can integrate LiveChat into your project manually without using a dependency manager. 
+You can integrate iOS chat widget into your project manually without using a dependency manager.
 
 #### Swift
 
@@ -52,9 +42,9 @@ Just drag all files from the `LiveChat/Classes` directory into your project.
 
 #### Objective-C
 
-Drag all files from the `LiveChat/Classes` directory into your project. When adding thefirst `*.swift` file to Objective-C project, Xcode will ask you to create a Bridging Header. It is not necessary for LiveChat to work, so you can decline unless you plan to call Swift code from Objective-C. More information about bridging headers and Swift and Objective-C interoperability can be found [here](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html). You need to put the following import statement: `#import "<Your Project Name>-Swift.h"` at the top of your .m file.
+Drag all files from the `LiveChat/Classes` directory into your project. When adding first `*.swift` file to Objective-C project, Xcode will ask you to create a Bridging Header. It is not necessary for chat widget to work, so you can decline unless you plan to call Swift code from Objective-C. More information about bridging headers and Swift and Objective-C interoperability can be found [here](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html). You need to put the following import statement: `#import "<Your Project Name>-Swift.h"` at the top of your .m file.
 
-Also, for Objective-C projects, you need to set the **Embedded Content Contains Swift Code** flag in your project to `Yes` (found under **Build Options** in the **Build Settings** tab). 
+Also, for Objective-C projects, you need to set the **Embedded Content Contains Swift Code** flag in your project to `Yes` (found under **Build Options** in the **Build Settings** tab).
 
 ## Usage
 
@@ -114,7 +104,7 @@ class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveC
 }
 ```
 
-You can notifiy your user about the agent's response if the chat has been minimized by the user. To handle the incoming messages, your class must implement the `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
+You can notifiy your user about agent response if chat was minimized by the user. To handle the incoming messages, your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
 
 ### Handling URL
 
@@ -125,15 +115,15 @@ func handle(URL: URL) {
 }
 ```
 
-By default, all links in the chat messages are opened in Safari browser. To change this behavior you can use `LiveChatDelegate` to handle the URLs yourself.
+By default, all links in chat messages are opened in Safari browser. To change this behavior you can use the `LiveChatDelegate` to handle URL's yourself.
 
-### Sending Photos from the device library
+### Sending files from device library
 
-If you have file sharing enabled for the visitors, you should provide the usage description by including the `NSPhotoLibraryUsageDescription` (`Privacy - Photo Library Usage Description`) key in your `Info.plist` file to avoid crash on iOS 10 or higher.
+If you have file sharing enabled for the visitors, you should provide usage description by including `NSPhotoLibraryUsageDescription` (`Privacy - Photo Library Usage Description`), `NSCameraUsageDescription` (`Privacy - Camera Usage Description`) and `NSMicrophoneUsageDescription` (`Privacy - Microphone Usage Description`) keys in your `Info.plist` file to avoid crash on iOS 10 or higher. You can check `Info.plist` files in example projects.
 
 ## Sample Apps
 
-Sample apps for both Swift and Objective-C can be found in the `Examples` folder.
+Sample apps can be found in the `Examples` folder. Samples for both Swift and Objective-C are provided.
 
 ## Getting help
 
@@ -141,4 +131,4 @@ If you have any questions or want to provide feedback, [chat with us!](https://s
 
 ## License
 
-LiveChat for iOS is available under the MIT license. See the LICENSE file for more info.
+iOS chat widget is available under the MIT license. See the LICENSE file for more info.
