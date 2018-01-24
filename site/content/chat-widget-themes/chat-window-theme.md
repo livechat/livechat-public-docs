@@ -145,3 +145,6 @@ Test your theme for all window types.
 
 We recommend that you test your theme in the most popular browsers (the latest versions of Chome, Firefox, Safari and IE) for maximum compatibility.
 
+## Sample themes
+
+We have created a set of sample skins to demonstrate the structure of a custom theme. They can be found on GitHub [here](https://github.com/livechat/chat-widget-themes).
