@@ -3,6 +3,12 @@
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.31.2] - 30.01.2018
+
+##### Fixed
+
+* Fix group init parameter
+
 #### [v0.31.1] - 25.01.2018
 
 ##### Fixed
