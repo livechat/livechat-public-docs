@@ -1,11 +1,32 @@
 ---
-weight: 50
----
+
+## -weight: 50
+
+-
 
 # Changelog
 
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
+
+#### [v0.31.3] - 31.01.2018
+
+##### Fixed
+
+* Fix fielsharing bug - use correct chat id after starting a new chat again
+
+#### [v0.31.2] - 30.01.2018
+
+##### Fixed
+
+* Fix group init parameter
+
+#### [v0.31.1] - 25.01.2018
+
+##### Fixed
+
+* sendFile method - correct server address
+* fix URL rules - correct URL detection
 
 #### [v0.31.0] - 9.01.2018
 
