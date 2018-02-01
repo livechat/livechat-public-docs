@@ -60,31 +60,28 @@ You can host your widget locally or on a dedicated server. The hosted content ha
 
 If you want to build your own widget, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Widget API](#javascript-api):
 
-> Place this tag within the `<head></head>` section:
+> Our widget SDK package is hosted on NPM. You can get it with following command:
 
-```html
-<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.1.css">
-<script src="//cdn.livechatinc.com/boilerplate/1.1.js"></script>
+```
+npm install --save @livechat/agent-app-widget-sdk
 ```
 
 After your widget content is loaded, fire the `LiveChat.init()` method. It will let the Agent App know when to hide the spinning loader.
 
-> Fire `LiveChat.init()` method after body is loaded (e.g. using jQuery):
+> Fire `LiveChat.init()`
 
 ```js
-// If you authorize using "Basic authorization flow":
-$(document).ready(function () {
-    LiveChat.init();
-});
+import LiveChat from '@livechat/agent-app-widget-sdk';
 
-// If you authorize using "Sign in with LiveChat":
-$(document).ready(function () {
-    LiveChat.init({
-      authorize: false
-    });
-});
+LiveChat.init();
 ```
 
 ## Layout and Styling
 
 We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the widget interface.
+
+> Place this tag within the `<head></head>` section:
+
+```html
+<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.1.css">
+```

@@ -8,13 +8,8 @@ To use the JavaScript API you have to attach the [core functionality](#developin
 
 ## Initialize the communication
 ```js
-// If you authorize using "Basic authorization flow":
+// Additionaly, you have to authorize using "Sign in with LiveChat":
 LiveChat.init();
-
-// If you authorize using "Sign in with LiveChat":
-LiveChat.init({
-  authorize: false
-});
 ```
 
 Let the Agent App know the extension is ready. Once called, the Agent App removes the loader screen from the extension and sends a request to `https://your_extension_url/authorize/`. This mechanism allows you to introduce an authorization flow for your service.
@@ -37,6 +32,14 @@ Deletes the ID of the previous session and calls of a new one.
 LiveChat.refreshSessionId();
 ```
 
+## Put message
+
+It appends given message at the end of current conversation input window or into ticket window. Agent has to confirm sending this message.
+
+```js
+LiveChat.putMessage(message);
+```
+
 ## Events
 
 Events allow you react to the actions in the Agent App. Use this method as a listener for certain events.
@@ -51,8 +54,7 @@ LiveChat.on("<event_name>", function( data ) {
 |------------|-------------|
 | `customer_profile` | the agent opens a customer profile within **Chats**, **Archives** or **Visitors** sections |
 | `customer_profile_hidden` | the opened customer profile is removed from the Customers list |
-| `authorize` | the extension has been successfully authorized |
-| `authorize_error` | the extension has not been successfully authorized |
+
 
 Events `customer_profile` and `customer_profile_hidden` return an object width additional properties.
 
@@ -69,7 +71,17 @@ Events `customer_profile` and `customer_profile_hidden` return an object width a
     "id": "NY0U96PIT4",
     "groupID": "42"
   },
-  "source": "chats"
+  "source": "chats",
+  "geolocation": {
+    "city": "Wroclaw"
+    "country": "Poland"
+    "country_code": "PL"
+    "latitude": "51.1093"
+    "longitude": "17.0248"
+    "region": "Dolnoslaskie"
+    "timezone": "Europe/Warsaw"
+    "zipcode": ""
+  }
 }
 ```
 
