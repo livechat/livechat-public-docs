@@ -8,13 +8,8 @@ To use the JavaScript API you have to attach the [core functionality](#developin
 
 ## Initialize the communication
 ```js
-// If you authorize using "Basic authorization flow":
+// Additionaly, you have to authorize using "Sign in with LiveChat":
 LiveChat.init();
-
-// If you authorize using "Sign in with LiveChat":
-LiveChat.init({
-  authorize: false
-});
 ```
 
 Let the Agent App know the extension is ready. Once called, the Agent App removes the loader screen from the extension and sends a request to `https://your_extension_url/authorize/`. This mechanism allows you to introduce an authorization flow for your service.
@@ -59,8 +54,7 @@ LiveChat.on("<event_name>", function( data ) {
 |------------|-------------|
 | `customer_profile` | the agent opens a customer profile within **Chats**, **Archives** or **Visitors** sections |
 | `customer_profile_hidden` | the opened customer profile is removed from the Customers list |
-| `authorize` | the extension has been successfully authorized |
-| `authorize_error` | the extension has not been successfully authorized |
+
 
 Events `customer_profile` and `customer_profile_hidden` return an object width additional properties.
 
