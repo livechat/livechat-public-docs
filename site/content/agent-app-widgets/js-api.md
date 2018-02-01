@@ -37,6 +37,14 @@ Deletes the ID of the previous session and calls of a new one.
 LiveChat.refreshSessionId();
 ```
 
+## Put message
+
+It appends given message at the end of current conversation input window or into ticket window. Agent has to confirm sending this message.
+
+```js
+LiveChat.putMessage(message);
+```
+
 ## Events
 
 Events allow you react to the actions in the Agent App. Use this method as a listener for certain events.
@@ -69,7 +77,17 @@ Events `customer_profile` and `customer_profile_hidden` return an object width a
     "id": "NY0U96PIT4",
     "groupID": "42"
   },
-  "source": "chats"
+  "source": "chats",
+  "geolocation": {
+    "city": "Wroclaw"
+    "country": "Poland"
+    "country_code": "PL"
+    "latitude": "51.1093"
+    "longitude": "17.0248"
+    "region": "Dolnoslaskie"
+    "timezone": "Europe/Warsaw"
+    "zipcode": ""
+  }
 }
 ```
 
