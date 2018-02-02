@@ -29,9 +29,9 @@ The Ledger API lets you manage the financial activity and balance. In other word
 * Checking the balance
 * Checking the billing history
 
-### 2.3. [Subscription](#subscription)
+### 2.3. [Recurrent Charges](#recurrent-charges)
 
-The Subscription API handles recurrent payments. For example, you can offer an app that costs $10 per month.
+The Recurrent Charges API handles periodic payments. For example, you can offer an app that costs $10 per month.
 
 #### Use cases:
 

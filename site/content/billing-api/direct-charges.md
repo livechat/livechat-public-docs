@@ -38,9 +38,6 @@ There are three possible direct charge flows:
 
 Here's the structure of a single direct charge object.
 
-Parameters description:
-
-
 ```json
 {
   "id": "5deab95d-c0c9-4397-9593-436f533e83e5",
@@ -67,6 +64,8 @@ Parameters description:
 }
 ```
 
+Parameters description:
+
 * `price` - an integer defined in cents. Example: to charge $99, set the `price` to 9900
 * `commission_percent` - a percentage fee deducted by LiveChat from the application price
 
@@ -80,7 +79,7 @@ If you want to use this API, you must create an app in Developers Console and ch
 
 Base URL: `https://billing.livechatinc.com`
 
-* `POST /v1/direct_charge` - creates a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional field: `test`
-* `GET /v1/direct_charge/:ID` - gets the existing charge
-* `GET /v1/direct_charge` - creates a paginated charges list (20 items per page) ordered by creation date. Optional fields: `page`, `status` (for filtering by status, returns `{"result:[OBJECT_1, ... , OBJECT_N]"}`)
-* `PUT /v1/direct_charge/:ID/activate` - activates the charge (the payment gateway starts processing it)
+* `POST /v1/direct_charge` - create a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional field: `test`
+* `GET /v1/direct_charge/:ID` - get the existing charge
+* `GET /v1/direct_charge` - create a paginated charges list (20 items per page) ordered by creation date. Optional fields: `page`, `status` (for filtering by status, returns `{"result:[OBJECT_1, ... , OBJECT_N]"}`)
+* `PUT /v1/direct_charge/:ID/activate` - activate the charge (the payment gateway starts processing it)
