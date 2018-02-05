@@ -4,9 +4,9 @@ weight: 20
 
 # How to start
 
-## Install Visitor JS SDK
+## Install Visitor SDK
 
-You can use LiveChat Visitor JS API in two different ways:
+You can use LiveChat Visitor SDK in two different ways:
 
 #### Using npm
 
@@ -18,7 +18,7 @@ Now, you can import SDK in your code:
 
 #### Using script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.31.0/dist/livechat-visitor-sdk.min.js"></script>`
+`<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.31.3/dist/livechat-visitor-sdk.min.js"></script>`
 
 If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
