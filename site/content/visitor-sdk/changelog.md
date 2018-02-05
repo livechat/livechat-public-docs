@@ -24,7 +24,7 @@ notified about changes in Visitor SDK.
 ##### Fixed
 
 * sendFile method - correct server address
-* fix URL rules - correct URL detection
+* fix URL rules - correct visitor's current URL detection
 
 #### [v0.31.0] - 9.01.2018
 
