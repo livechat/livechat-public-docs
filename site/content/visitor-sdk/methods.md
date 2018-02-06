@@ -316,7 +316,7 @@ visitorSDK.setVisitorData({
 
 ## getTicketForm
 
-Get [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) fields configured in chat window settings section in agent app.
+Get [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) fields configured in [chat window settings section](https://my.livechatinc.com/settings/ticket-form) in agent app.
 
 ```js
 visitorSDK

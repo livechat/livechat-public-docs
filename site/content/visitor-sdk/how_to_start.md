@@ -4,9 +4,9 @@ weight: 20
 
 # How to start
 
-## Install Visitor JS SDK
+## Install Visitor SDK
 
-You can use LiveChat Visitor JS API in two different ways:
+You can use LiveChat Visitor SDK in two different ways:
 
 #### Using npm
 

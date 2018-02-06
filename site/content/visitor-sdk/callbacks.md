@@ -74,7 +74,7 @@ visitorSDK.on('chat_started', chatData => {
 Callback function executed when a chat is ended. This callback is called without any additional data.
 
 ```js
-visitorSDK.on('chat_ended', chatData => {
+visitorSDK.on('chat_ended', () => {
   console.log('Chat is closed')
 })
 ```
