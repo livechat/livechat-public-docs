@@ -38,5 +38,5 @@ Chat Widget Visitor SDK is promise-based; all asynchronous methods return a prom
 
 ## Resources
 
-* [LiveChat Visitor SDK tutorial - blog post](https://developers.livechatinc.com/blog/livechat-visitor-sdk/)
+* [Chat Widget Visitor SDK tutorial - blog post](https://developers.livechatinc.com/blog/livechat-visitor-sdk/)
 * [npm package](https://www.npmjs.com/package/@livechat/livechat-visitor-sdk)

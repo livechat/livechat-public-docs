@@ -6,7 +6,7 @@ weight: 20
 
 ## Install Visitor SDK
 
-You can use LiveChat Visitor SDK in two different ways:
+You can use Chat Widget Visitor SDK in two different ways:
 
 #### Using npm
 
