@@ -53,7 +53,7 @@ LiveChat.on("<event_name>", function( data ) {
 | Event name | Triggers when |
 |------------|-------------|
 | `customer_profile` | the agent opens a customer profile within **Chats**, **Archives** or **Visitors** sections |
-| `customer_profile_hidden` | the opened customer profile is removed from the Customers list |
+| `customer_profile_hidden` | the opened customer profile belongs to the visitor that left the **Visitors** list |
 
 
 Events `customer_profile` and `customer_profile_hidden` return an object width additional properties.
