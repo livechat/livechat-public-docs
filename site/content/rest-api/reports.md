@@ -714,7 +714,7 @@ This request shows the maximum number of concurrent chats that happened at the s
 | `weekday` | you can select the day by changing the weekday parameter to one of the following values: `mon` for Monday, `tue` for Tuesday, `wed` for Wednesday, `thu` for Thursday, `fri` for Friday, `sat` for saturday and `sun` for Sunday |
 
 
-## Goals
+## Goals {#reports-goals}
 
 > Path
 
