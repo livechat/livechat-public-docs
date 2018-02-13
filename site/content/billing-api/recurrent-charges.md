@@ -85,5 +85,5 @@ All endpoints return a recurrent charge object.
 * `GET /v1/recurrent_charge/:ID` - get the existing charge
 * `PUT /v1/recurrent_charge/:ID/accept` - accept recurrent charge. The buyer must confirm the payment before the charge is collected
 * `PUT /v1/recurrent_charge/:ID/decline` - decline recurrent charge. The buyer can decline charge
-* `PUT /v1/recurrent_charge/:ID/activate` - activate direct charge
-* `PUT /v1/recurrent_charge/:ID/cancel` - cancel direct charge. Proportional refund is created when cancelled during the settlement period
+* `PUT /v1/recurrent_charge/:ID/activate` - activate recurrent charge
+* `PUT /v1/recurrent_charge/:ID/cancel` - cancel recurrent charge. Proportional refund is created when cancelled during the settlement period
