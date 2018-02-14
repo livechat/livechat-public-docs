@@ -14,7 +14,7 @@ You can use Chat Widget Visitor SDK in two different ways:
 
 Now, you can import SDK in your code:
 
-`import LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";`
+`import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";`
 
 #### Using script tag - UMD module hosted on unpkg's CDN
 
