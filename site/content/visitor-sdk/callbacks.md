@@ -213,3 +213,22 @@ visitorSDK.on('chat_rated', data => {
 | ------- | ----------------------- | ----------------- |
 | rate    | "good" \ "bad" \ "none" | Rate type         |
 | comment | string                  | Rate comment text |
+
+## new_invitation
+
+Callback function executed when an [invitation](https://www.livechatinc.com/features/engaging-customers/#Automatic-greetings) was sent to visitor.
+
+```js
+visitorSDK.on('new_invitation', invitationData => {
+  console.log(invitationData)
+})
+```
+
+#### Payload:
+
+| param             | type    | description                                |
+| ----------------- | ------- | ------------------------------------------ |
+| id                | string  | Message ID                                 |
+| authorId          | string  | Message author ID                          |
+| text              | string  | Message text                               |
+| receivedFirstTime | boolean | Was invitation received for the first time |
