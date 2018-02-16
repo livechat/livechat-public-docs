@@ -7,6 +7,16 @@ weight: 50
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.32.0] - 16.02.2018
+
+##### Added
+
+* Added [new_invitation](https://www.livechatinc.com/features/engaging-customers/#Automatic-greetings) callback
+
+##### Fixed
+
+* Fix documentation - npm installation code snippet
+
 #### [v0.31.3] - 31.01.2018
 
 ##### Fixed
