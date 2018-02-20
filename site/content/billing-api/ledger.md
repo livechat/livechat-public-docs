@@ -37,4 +37,4 @@ If you want to use this API, you must create an app in Developers Console and ch
 Base URL: `https://billing.livechatinc.com`
 
 * `GET /v1/ledger` - returns the current ledger. It lists up to 20 entries, use `?page=X` for pagination. Required format: `{result: [LEDGER ENTRY 1, LEDGER ENTRY 2, ...]}`,
-* `PUT /v1/direct_charge/:ID/accept` - returns the current ledger balance in cents. Format: `{"balance": 10}`
+* `GET /v1/ledger/balance` - returns the current ledger balance in cents. Format: `{"balance": 10}`
