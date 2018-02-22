@@ -6,7 +6,7 @@ weight: 40
 
 The Direct Charges API is a tool to collect one-time fees (also called "direct charges").
 
-## Statuses
+## Statuses {#direct-charges-statuses}
 
 There are six possible direct charge statuses:
 
@@ -19,7 +19,7 @@ There are six possible direct charge statuses:
 | `failed`    | the charge could not be collected                            |
 | `success`   | the charge has been collected                                |
 
-## Flows
+## Flows {#direct-charges-flows}
 
 There are three possible direct charge flows:
 
