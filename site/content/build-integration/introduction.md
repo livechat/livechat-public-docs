@@ -11,4 +11,4 @@ This tutorial will help you build your very own integration and get it listed on
 *   [Sign up](https://www.livechatinc.com/signup/) for a trial account that will serve as your integration sandbox.
 *   [Sign up](https://developers.livechatinc.com/console/) to your Developers Console.
 *   Use this documentation to create an integration based around the webhooks.
-*   [Let us know](#publish) that you have created an integration.
+*   And finally [publish your integration](#publish-your-integration)!
