@@ -55,6 +55,7 @@ visitorSDK
 | ---------------- | ------------------------------------ |
 | connection       | "Request failed"                     |
 | missing argument | "Missing text or customId parameter" |
+| state            | "Chat is offline"                    |
 
 ## closeChat
 
