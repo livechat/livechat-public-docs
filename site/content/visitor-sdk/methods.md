@@ -55,6 +55,7 @@ visitorSDK
 | ---------------- | ------------------------------------ |
 | connection       | "Request failed"                     |
 | missing argument | "Missing text or customId parameter" |
+| state            | "Chat is offline"                    |
 
 ## closeChat
 
@@ -244,13 +245,98 @@ visitorSDK
 | "missing argument" | Missing email parameter                |
 | "connection"       | Request failed                         |
 
-## sendPrechatForm - not implemented yet
+## getPrechatForm
 
-Collects the pre-chat form information (it will be visible during the chat and in the archives).
+Get pre-chat survey form fields configured in [chat window settings section](https://my.livechatinc.com/settings/pre-chat-survey) in agent app.
 
 ```js
-visitorSDK.sendPrechatForm(form)
+visitorSDK
+  .getPrechatForm()
+  .then(data => {
+    console.log('Pre-Chat form data', data)
+  })
+  .catch(error => {
+    console.log('error')
+  })
 ```
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type        | description                                                    |
+| ------ | ----------- | -------------------------------------------------------------- |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                                                                         | description                                                                                                                |
+| -------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| type     | "name" / "text" / "email" / "select" / "checkbox" / "radio" / "group_select" / "information" | Type of the field                                                                                                          |
+| required | boolean                                                                                      | Is field required?                                                                                                         |
+| name     | string                                                                                       | field's name                                                                                                               |
+| label    | string                                                                                       | Field's label                                                                                                              |
+| value    | string                                                                                       | Optional - field's value                                                                                                   |
+| options  | fieldOption[]                                                                                | Array with fields options - only for fields of type: radio, checkbox, select, group_select. see option's description below |
+
+#### fieldOption object description
+
+| param   | type    | description          |
+| ------- | ------- | -------------------- |
+| label   | string  | input's label        |
+| checked | boolean | input's checked flag |
+| value   | string  | input's value        |
+
+## sendPrechatForm
+
+Collects the pre-chat survey form information (it will be visible during the chat and in the archives). Pre-chat form form should be rendered using fields fetched by getPrechatForm method.
+
+```js
+const formAnswers = {
+  '151913066848701614': 'Sidney Bechet', // "151913066848701614" is field's name, and "Sidney Bechet" is value provided by the visitor
+  '151913066848701615': 's.brechet@example.org',
+  '15191306684870388': ['1', '2'], // Fieds with "checkbox" type have multiple values.
+}
+
+visitorSDK
+  .sendPrechatForm(formAnswers)
+  .then(() => {
+    console.log('Pre-chat sent')
+  })
+  .catch(error => {
+    console.log('error')
+  })
+```
+
+#### Parameters:
+
+| param       | type   | description                                             |
+| ----------- | ------ | ------------------------------------------------------- |
+| formAnswers | object | Pre-chat forms answers object - field.name: field.value |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type            | reason                                        | fields       |
+| --------------- | --------------------------------------------- | ------------ |
+| connection      | "Request failed"                              |              |
+| state           | "You can't send prechat when chat is running" |              |
+| wrong arguments |                                               | fieldError[] |
+
+`wrong arguments` error object contains additional array "fields" with detailed validations errors.
+
+#### fieldError object description
+
+| param       | type    | description                                                               |
+| ----------- | ------- | ------------------------------------------------------------------------- |
+| reason      | string  | Error reason, e.g. "Required field", "Wrong type"                         |
+| description | boolean | Optional. Detailed error description, e.g. "Pease fill in required field" |
+| field       | string  | Field's name                                                              |
 
 ## sendPostchatForm - not implemented yet
 
