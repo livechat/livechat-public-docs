@@ -2,43 +2,25 @@
 weight: 40
 ---
 
-# JavaScript API
+# JavaScript Widgets API
 
-To use the JavaScript API you have to attach the [core functionality](#developing-your-own-extension) script.
+To use the JavaScript API you should import the [Agent App Widgets SDK](https://www.npmjs.com/package/@livechat/agent-app-widget-sdk).
 
-## Initialize the communication
+## Init and receive customer profile
 ```js
-// Additionaly, you have to authorize using "Sign in with LiveChat":
+import LiveChat from '@livechat/agent-app-widget-sdk';
+
+// ...
+
 LiveChat.init();
+
+LiveChat.on("customer_profile", function( data ) {
+	console.log( data )
+})
+
 ```
 
-Let the Agent App know the extension is ready. Once called, the Agent App removes the loader screen from the extension and sends a request to `https://your_extension_url/authorize/`. This mechanism allows you to introduce an authorization flow for your service.
-
-<aside class="notice"><strong>Note:</strong> When using <a href="#sign-in-with-livechat-button-recommended">Sign in with LiveChat</a> authorization method, you should add <code>authorization: false</code> flag to <code>LiveChat.init()</code> call. It will notify LiveChat you handle authorization on your own.</aside>
-
-## Get the ID of the session
-
-Returns the ID of the current extension session.
-
-```js
-LiveChat.getSessionId();
-```
-
-## Refresh the session ID
-
-Deletes the ID of the previous session and calls of a new one.
-
-```js
-LiveChat.refreshSessionId();
-```
-
-## Put message
-
-It appends given message at the end of current conversation input window or into ticket window. Agent has to confirm sending this message.
-
-```js
-LiveChat.putMessage(message);
-```
+Let the Agent App know the widget is ready. Once called, the Agent App removes the loading spinner and shows the content of the widget.
 
 ## Events
 
@@ -106,3 +88,30 @@ Events `customer_profile` and `customer_profile_hidden` return an object width a
 | Property | Description |
 |------------|-------------|
 | `id` | Unique ID of a visitor |
+
+
+## Put message to textarea
+
+It appends given message at the end of current conversation input window or into ticket window. Agent has to confirm sending this message.
+
+```js
+LiveChat.putMessage("Hello! This message comes from the App Widget. Press enter to send it!");
+```
+
+
+
+## Get the ID of the session
+
+Returns the ID of the current extension session.
+
+```js
+LiveChat.getSessionId();
+```
+
+## Refresh the session ID
+
+Deletes the ID of the previous session and requests of a new one.
+
+```js
+LiveChat.refreshSessionId();
+```
