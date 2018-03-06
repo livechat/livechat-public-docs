@@ -37,17 +37,25 @@ curl "https://api.livechatinc.com/goals" \
   {
     "id": 1041,
     "name": "purchase",
-    "active": 1
+    "active": 1,
+    "type": "url"
   },
   {
     "id": 1181,
     "name": "nike shoes variable",
-    "active": 1
+    "active": 1,
+    "type": "custom_variable"
   }
 ]
 ```
 
 Returns all currently set goals. The `active` parameter indicates whether a goal is enabled or not.
+
+#### Optional parameters
+
+| Parameter | Description |
+|---------|--------------------|
+| `type` | type of the goal: `custom_variable`, `url`, `api` or `sales_tracker` |
 
 ## Get a single goal details
 
@@ -96,6 +104,7 @@ The `type` attribute can take the following values:
 *   `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`.
 *   `url` – with two additional parameters: `url` and `match_type` with possible values: `substring` (default), `exact`.
 *   `api` – with no additional parameters.
+*   `sales_tracker` – with seven additional parameters: `sales_tracker_id`, `value_type`, `value`, `currency`, `time_range`, `order_field_name` and `value_field_name`
 
 ## Mark a goal as successful
 
@@ -208,8 +217,8 @@ Creates a new goal.
 
 | Parameter | Description |
 |---------|--------------------|
-| `name` | |
-| `type`| |
+| `name` | name of the goal |
+| `type`| type of the goal |
 
 #### Additional info
 
@@ -218,6 +227,7 @@ The `type` can take the following values:
 *   `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`. Both are required.
 *   `url` – with two additional parameters: `url` (required) and `match_type` (optional) with possible values: `substring` (default), `exact`.
 *   `api` – with no additional parameters.
+*   `sales_tracker` – with optional parameters: `value_type` (possible values: `set`, `not_set`, `dynamic`), `value`, `currency`, `time_range`, `order_field_name`, `value_field_name` and `sales_tracker_id`
 
 The `active` parameter indicates whether the goal is active or not.
 
@@ -273,8 +283,9 @@ The `GOAL_ID` is obtained from the [goals list](#list-all-goals).
 
 | Parameter | Description |
 |---------|--------------------|
-| `name` | |
-| `type`| |
+| `name` | name of the goal |
+| `type`| type of the goal |
+| `active` | active state of the goal |
 
 #### Additional info
 
@@ -283,6 +294,7 @@ The `type` can take the following values:
 *   `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`. Both are required.
 *   `url` – with two additional parameters: `url` (required) and `match_type` (optional) with possible values: `substring` (default), `exact`.
 *   `api` – with no additional parameters.
+*   `sales_tracker` – with optional parameters: `order_field_name`, `value_field_name` and `sales_tracker_id`
 
 The `active` parameter indicates whether the goal is active or not.
 

@@ -739,12 +739,22 @@ goal=71&group_by=month" \
   "2013-01": {
     "begin": "2013-01-01",
     "end": "2013-01-30",
-    "goals": 4
+    "goals": 4,
+    "value": {
+      "USD": {
+        "sales_count": 1,
+        "value": 100
+      },
+      "EUR": {
+        "sales_count": 1,
+        "value": 49.5
+      }
+    }
   }
 }
 ```
 
-Shows the number of reached goals.
+Shows the number of reached goals and value of tracked sales.
 
 #### Optional arguments
 
@@ -758,6 +768,8 @@ Shows the number of reached goals.
 | `agent` | agent's login, not set by default, return statistics for the specified agent |
 | `group_by` | defaults to `day` (or `hour` when date_from equals date_to), can be set to `month`, `hour` or `day` |
 | `tag[]` | return statistics for the specified tag |
+| `sales_tracker` | if `1` returns only tracked sales, if `0`(default) returns only goals |
+| `currency` | currency of tracked sales |
 
 ## Greetings {#reports-greetings}
 
