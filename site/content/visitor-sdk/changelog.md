@@ -7,6 +7,12 @@ weight: 50
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.33.2] - 6.03.2018
+
+##### Fixed
+
+* Fix sendPrechatForm method - incorrect answers bug
+
 #### [v0.33.1] - 27.02.2018
 
 ##### Fixed
