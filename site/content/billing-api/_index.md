@@ -5,4 +5,5 @@ tagline: "Set up payments and subscriptions for your apps."
 desc: "Make money with LiveChat Billing API."
 color: "#b83b5e"
 type: "platform"
+weight: 20
 ---
