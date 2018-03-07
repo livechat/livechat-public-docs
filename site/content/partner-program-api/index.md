@@ -18,9 +18,9 @@ LiveChat Partner Program API allows you to build your own tools that will help y
 
 ## Authorization
 Each API request requires authorization header to identify the Partner. Authorization is provided by unique API token.
-{{% block %}}
+
 You can create your token in the [API tokens section](/dashboard/account/tokens) in Dashboard.
-{{% /block %}}
+
 
 #### Example
 ```
