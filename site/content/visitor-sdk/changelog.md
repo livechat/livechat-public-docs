@@ -7,6 +7,31 @@ weight: 50
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.33.3] - 8.03.2018
+
+##### Fixed
+
+* Fix sendTicketForm method - incorrect data passed to request
+
+#### [v0.33.2] - 6.03.2018
+
+##### Fixed
+
+* Fix sendPrechatForm method - incorrect answers bug
+
+#### [v0.33.1] - 27.02.2018
+
+##### Fixed
+
+* Fix sendMessage method - reject promise if chat is offline
+
+#### [v0.33.0] - 26.02.2018
+
+##### Added
+
+* Added getPrechatForm method
+* Added sendPrechatForm method
+
 #### [v0.32.0] - 16.02.2018
 
 ##### Added
