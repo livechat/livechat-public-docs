@@ -496,3 +496,19 @@ Disconnect Visitor SDK and unsubscribe from all callbacks.
 ```js
 visitorSDK.destroy()
 ```
+
+## getTranslations
+
+Get translations for current group.
+
+```js
+visitorSDK.getTranslations().then(translations => {
+  console.log('Translations', translations)
+})
+```
+
+#### Errors:
+
+| type       | reason           |
+| ---------- | ---------------- |
+| connection | "Request failed" |
