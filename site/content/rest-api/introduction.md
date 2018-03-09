@@ -26,6 +26,13 @@ The next segment of the URL path depends on the type of your request. For exampl
 
 <aside class="notice">All requests must have `X-API-VERSION` header set to the number of the version that you'd like to use. The most recent version is 2.</aside>
 
+## Data centers
+
+LiveChat system operates in two data centers: `dal` and `fra`. The default data center is `dal`.
+
+All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
+
+For example: if the user token starts with `fra-`, you should add `X-Region: fra` header. If the token starts with `dal-` you don't have to specify the header.
 
 ## Authentication
 
