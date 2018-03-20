@@ -202,9 +202,9 @@ visitorSDK.setSneakPeek({
 
 #### Parameters:
 
-| param   | type   | description                |
-| ------- | ------ | -------------------------- |
-| message | string | Current message input text |
+| param | type   | description                |
+| ----- | ------ | -------------------------- |
+| text  | string | Current message input text |
 
 **Note:** Sneak peek won't be sent every time you call a function. It will be throttled (i.e. sent not earlier than 300ms after the last sneak peek request).
 
