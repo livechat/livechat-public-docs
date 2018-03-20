@@ -287,6 +287,13 @@ This method has no parameters.
 | checked | boolean | input's checked flag |
 | value   | string  | input's value        |
 
+#### Errors:
+
+| type         | reason                        |
+| ------------ | ----------------------------- |
+| "connection" | Request failed                |
+| "state"      | Pre-chat survey is turned off |
+
 ## sendPrechatForm
 
 Collects the pre-chat survey form information (it will be visible during the chat and in the archives). Pre-chat form form should be rendered using fields fetched by getPrechatForm method.
@@ -506,6 +513,25 @@ visitorSDK.getTranslations().then(translations => {
   console.log('Translations', translations)
 })
 ```
+
+#### Errors:
+
+| type       | reason           |
+| ---------- | ---------------- |
+| connection | "Request failed" |
+
+## getPredictedAgent
+
+Get agent details without starting a chat
+
+#### Response:
+
+| param     | type   | description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| name      | string | Agent's name                                    |
+| id        | string | Agent's ID                                      |
+| avatarUrl | string | Agent's avatar - path to the image on Amazon s3 |
+| jobTitle  | string | Agent's job title                               |
 
 #### Errors:
 
