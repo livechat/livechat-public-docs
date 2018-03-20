@@ -232,3 +232,13 @@ visitorSDK.on('new_invitation', invitationData => {
 | authorId          | string  | Message author ID                          |
 | text              | string  | Message text                               |
 | receivedFirstTime | boolean | Was invitation received for the first time |
+
+## ready
+
+Callback executed when SDK finished initialization and all chat history was fetched. This callback is called without any additional data.
+
+```js
+visitorSDK.on('ready', () => {
+  console.log('Visitor SDK is ready')
+})
+```
