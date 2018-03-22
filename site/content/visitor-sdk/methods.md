@@ -619,3 +619,27 @@ Get agent details without starting a chat
 | type       | reason           |
 | ---------- | ---------------- |
 | connection | "Request failed" |
+
+## getConfig
+
+Get chat widget configuration
+
+#### Response:
+
+| param           | type                 | description                        |
+| --------------- | -------------------- | ---------------------------------- |
+| visitorData     | object               | Visitor's data                     |
+| features        | object               | Feature toggles and settings       |
+| buttons         | array                | Buttons configuration              |
+| theme           | object               | Theme settings                     |
+| domainWhitelist | array                | Whitelisted domains                |
+| widgetType      | "embedded" / "popup" | Chat widget type                   |
+| integrations    | object               | Installed chat widget integrations |
+| language        | string               | Chat widget language               |
+| groups          | object               | Groups details                     |
+
+#### Errors:
+
+| type       | reason           |
+| ---------- | ---------------- |
+| connection | "Request failed" |
