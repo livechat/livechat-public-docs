@@ -245,6 +245,55 @@ visitorSDK
 | "missing argument" | Missing email parameter                |
 | "connection"       | Request failed                         |
 
+## getPostchatForm
+
+Get post-chat survey form fields configured in [chat window settings section](https://my.livechatinc.com/settings/post-chat-survey) in agent app.
+
+```js
+visitorSDK
+  .getPostchatForm()
+  .then(data => {
+    console.log('Post-Chat form data', data)
+  })
+  .catch(error => {
+    console.log('error')
+  })
+```
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type        | description                                                    |
+| ------ | ----------- | -------------------------------------------------------------- |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                                     | description                                                                                                                |
+| -------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| type     | "text" / "select" / "checkbox" / "radio" / "information" | Type of the field                                                                                                          |
+| required | boolean                                                  | Is field required?                                                                                                         |
+| name     | string                                                   | field's name                                                                                                               |
+| label    | string                                                   | Field's label                                                                                                              |
+| value    | string                                                   | Optional - field's value                                                                                                   |
+| options  | fieldOption[]                                            | Array with fields options - only for fields of type: radio, checkbox, select, group_select. see option's description below |
+
+#### fieldOption object description
+
+| param   | type    | description          |
+| ------- | ------- | -------------------- |
+| label   | string  | input's label        |
+| checked | boolean | input's checked flag |
+| value   | string  | input's value        |
+
+#### Errors:
+
+| type         | reason                         |
+| ------------ | ------------------------------ |
+| "connection" | Request failed                 |
+| "state"      | Post-chat survey is turned off |
+
 ## getPrechatForm
 
 Get pre-chat survey form fields configured in [chat window settings section](https://my.livechatinc.com/settings/pre-chat-survey) in agent app.
@@ -345,13 +394,45 @@ visitorSDK
 | description | boolean | Optional. Detailed error description, e.g. "Pease fill in required field" |
 | field       | string  | Field's name                                                              |
 
-## sendPostchatForm - not implemented yet
+## sendPostchatForm
 
 Collects the [post-chat form](https://www.livechatinc.com/features/getting-feedback/#Post-chat-surveys) information (it will be visible in the archives).
 
 ```js
-visitorSDK.sendPostchatForm(form)
+const formAnswers = {
+  '151913066848701614': 'Good support!', // "151913066848701614" is field's name, and "Good support!" is value provided by the visitor
+  '15191306684870388': ['1', '2'], // Fieds with "checkbox" type have multiple values.
+}
+
+visitorSDK
+  .sendPostchatForm(formAnswers)
+  .then(() => {
+    console.log('Pre-chat sent')
+  })
+  .catch(error => {
+    console.log('error')
+  })
 ```
+
+#### Parameters:
+
+| param       | type   | description                                              |
+| ----------- | ------ | -------------------------------------------------------- |
+| formAnswers | object | Post-chat forms answers object - field.name: field.value |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type | reason | fields |
+| --------------- | -------------------------=-------------------- | ------------ |
+| connection | "Request failed" | |
+| state | "You can't send postchat when chat is running" | |
+| wrong arguments | | fieldError[] |
 
 ## getVisitorData
 
