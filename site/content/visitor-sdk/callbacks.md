@@ -185,15 +185,15 @@ visitorSDK.on('typing_indicator', typingData => {
 | authorId | string  | Author ID of the writer           |
 | isTyping | boolean | Author is typing / stopped typing |
 
-## message_seen - not implemented yet
+## message_seen
 
 Callback function executed when a message is marked as seen.
 
 Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
 ```js
-visitorSDK.on('message_seen', messageData => {
-  console.log(messageData)
+visitorSDK.on('message_seen', customId => {
+  console.log(customId)
 })
 ```
 
@@ -232,3 +232,13 @@ visitorSDK.on('new_invitation', invitationData => {
 | authorId          | string  | Message author ID                          |
 | text              | string  | Message text                               |
 | receivedFirstTime | boolean | Was invitation received for the first time |
+
+## ready
+
+Callback executed when SDK finished initialization and all chat history was fetched. This callback is called without any additional data.
+
+```js
+visitorSDK.on('ready', () => {
+  console.log('Visitor SDK is ready')
+})
+```
