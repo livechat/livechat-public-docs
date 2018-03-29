@@ -172,16 +172,14 @@ visitorSDK
 | "connection"       | Request failed                                        |
 | "connection"       | Rate Comment request failed                           |
 
-## markMessageAsSeen - not implemented yet
+## markMessageAsSeen
 
 Marks a message as Seen.
 
 Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
 ```js
-visitorSDK.markMessageAsSeen({
-  messageId: '123123123',
-})
+visitorSDK.markMessageAsSeen('123123123')
 ```
 
 #### Parameters:
@@ -643,3 +641,26 @@ Get chat widget configuration
 | type       | reason           |
 | ---------- | ---------------- |
 | connection | "Request failed" |
+
+## startChat
+
+Start the chat
+
+```js
+visitorSDK.startChat().then(data => {
+  console.log('data', data)
+})
+```
+
+#### Response:
+
+| param  | type   | description |
+| ------ | ------ | ----------- |
+| chatId | string | New Chat ID |
+
+#### Errors:
+
+| type       | reason                                 |
+| ---------- | -------------------------------------- |
+| connection | "Request failed"                       |
+| state      | "You can't start new chat during chat" |
