@@ -172,16 +172,14 @@ visitorSDK
 | "connection"       | Request failed                                        |
 | "connection"       | Rate Comment request failed                           |
 
-## markMessageAsSeen - not implemented yet
+## markMessageAsSeen
 
 Marks a message as Seen.
 
 Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
 
 ```js
-visitorSDK.markMessageAsSeen({
-  messageId: '123123123',
-})
+visitorSDK.markMessageAsSeen('123123123')
 ```
 
 #### Parameters:
