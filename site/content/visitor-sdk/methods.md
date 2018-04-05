@@ -172,7 +172,7 @@ visitorSDK
 | "connection"       | Request failed                                        |
 | "connection"       | Rate Comment request failed                           |
 
-## markMessageAsSeen - not implemented yet
+## markMessageAsSeen
 
 Marks a message as Seen.
 
