@@ -641,3 +641,26 @@ Get chat widget configuration
 | type       | reason           |
 | ---------- | ---------------- |
 | connection | "Request failed" |
+
+## startChat
+
+Start the chat
+
+```js
+visitorSDK.startChat().then(data => {
+  console.log('data', data)
+})
+```
+
+#### Response:
+
+| param  | type   | description |
+| ------ | ------ | ----------- |
+| chatId | string | New Chat ID |
+
+#### Errors:
+
+| type       | reason                                 |
+| ---------- | -------------------------------------- |
+| connection | "Request failed"                       |
+| state      | "You can't start new chat during chat" |
