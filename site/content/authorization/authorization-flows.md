@@ -182,9 +182,9 @@ Your application exchanges the authorization code for an `access_token` and `ref
 ### 1. Create the app
 Go to [Developers Console](https://developers.livechatinc.com/console) to create a new server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
 
-### 2. Redirect o LiveChat OAuth Server
+### 2. Redirect to LiveChat OAuth Server
 
-> Example redirection to LiveChat OAuth Server:
+> Sample code for redirecting to LiveChat OAuth Server:
 
 ```
 https://accounts.livechatinc.com/
