@@ -5,9 +5,9 @@ weight: 20
 # Setup
 
 ## 1. Create new app
-Create new "LiveChat OAuth 2.0 Client" app in <a href="https://developers.livechatinc.com/console/">Developers Console</a>. You will receive a new `client_id` that we will use in the next steps.
+Create a new "LiveChat OAuth 2.0 Client" app in <a href="https://developers.livechatinc.com/console/">Developers Console</a>. You will receive a new `client_id` that can be used in the next steps.
 
-Please note that **Redirect URI** field must match the URL of the website with "Sign in with LiveChat" button installed. The button will not work on any other URL addresses.
+Please note that **Redirect URI** field must match the URL of the website that has the "Sign in with LiveChat" button installed. The button will not work with any other URL addresses.
 
 
 ## 2. Include SDK library
@@ -35,9 +35,9 @@ var instance = AccountsSDK.init({ ... });
 <a href="" onclick="instance.openPopup()">Sign in with LiveChat</a>
 ```
 
-Insert HTML code to prepare the container for "Sign in with LiveChat" button. Its `class` attribute must have value of `livechat-login-button`. The button will be automatically inserted into the container.
+Insert HTML code to prepare the container for the "Sign in with LiveChat" button. Its `class` attribute must have value of `livechat-login-button`. The button will be automatically inserted into the container.
 
-If you prefer to design your own button, you can do that, too. Just bind the [`openPopup()`](#instance-openpopup) method of `AccountsSDK` instance to the `onclick` attribute for your link or button.
+If you prefer to design your own button, you can do that, too. Just bind the [`openPopup()`](#instance-openpopup) method of `AccountsSDK` instance to the `onclick` attribute of your link or button.
 
 
 ## 4. Initialize the SDK
@@ -56,10 +56,10 @@ var instance = AccountsSDK.init({
 </script>
 ```
 
-Insert the following JavaScript code before the closing `</body>` tag.
+Insert the JavaScript code you can see above **before the closing `</body>` tag**.
 
 That's it!
 
-Your users will see "Sign in with LiveChat" button if they are not yet logged in or they didn't grant access for your app.
+Your users will see the "Sign in with LiveChat" button if they are not yet logged in or they didn't grant access for your app.
 
 If they are already logged in, you will immediately receive valuable information about your user, such as their `access_token` or `license` number.
