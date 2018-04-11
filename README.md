@@ -49,19 +49,19 @@ You can read more about Hugo's template language in their documentation here:
 
 https://gohugo.io/templates/overview/
 
-The most useful page there is the one about the available functions:
+The most useful page is the one about the available functions:
 
 https://gohugo.io/templates/functions/
 
 1. For assets that are completely static and don't need to go through the asset pipeline,
 use the `site/static` folder. Font-files, PDFs, etc, all go there.
 
-2. Files in the static folder ends up in the web root. So a file called `site/static/favicon.ico`
+2. Files in the static folder end up in the web root. So a file called `site/static/favicon.ico`
 will end up being available as `/favicon.ico` and so on...
 
 3. The `src/js/app.js` file is the entrypoint for webpack and will be built to `/dist/app.js`.
 
-4. You can use ES6 and use both relative imports or import libraries from npm.
+4. You can use ES6 and use both relative imports, or import libraries from npm.
 
 5. Any CSS file directly under the `src/css/` folder will get compiled with Sass
-to `/dist/css/{filename}.css`. Import statements will be resolved as part of the build
+to `/dist/css/{filename}.css`. Import statements will be resolved as a part of the build.
