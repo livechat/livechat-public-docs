@@ -18,7 +18,7 @@ Now, you can import SDK in your code:
 
 #### Using script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.34.0/dist/livechat-visitor-sdk.min.js"></script>`
+`<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.35.0/dist/livechat-visitor-sdk.min.js"></script>`
 
 If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
