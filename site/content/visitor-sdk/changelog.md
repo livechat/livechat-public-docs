@@ -7,6 +7,14 @@ weight: 50
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.35.0] - 01.05.2018
+
+#### Added
+
+* Added sendPostChatForm method
+* Added getPostChatForm method
+* Added acceptInvitation method
+
 #### [v0.34.0] - 19.03.2018
 
 ##### Added
