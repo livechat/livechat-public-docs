@@ -135,7 +135,7 @@ Returns all tickets.
 
 The results are divided into pages, each containing 25 tickets.
 
-`total` cates the total number of tickets.  
+`total` indicates the total number of tickets.  
 `pages` indicates the total number of pages.
 
 To access next pages of the results, use `?page=<PAGE>` parameter.  
