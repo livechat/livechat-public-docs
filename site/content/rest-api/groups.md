@@ -156,10 +156,12 @@ curl "https://api.livechatinc.com/groups" \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
-       "name":"Human Resources",
-       "agents[0]":"jenny.doe@mycompany.com",
-       "agents[1]":"john.doe@mycompany.com" 
-      }'  
+        "name": "Human Resources",
+        "agents": [
+          "jenny.doe@mycompany.com",
+          "john.doe@mycompany.com"
+        ]
+      }'
 ```
 
 > Sample response
@@ -222,9 +224,11 @@ curl "https://api.livechatinc.com/groups/3" \
   -H X-API-Version:2 -X PUT \   
   -H Content-type:application/json \
   -d '{
-        "name"="Quality Assurance",
-        "agents[0]":"john.doe@mycompany.com",
-        "agents[1]":"jane.doe@mycompany.com"
+        "name": "Quality Assurance",
+        "agents": [
+          "john.doe@mycompany.com",
+          "jane.doe@mycompany.com"
+        ]
       }'
 ```
 
@@ -240,7 +244,7 @@ curl "https://api.livechatinc.com/groups/3" \
     "jane.doe@mycompany.com"
   ],
   "status": "offline"
- }
+}
    
 ```
 
