@@ -7,6 +7,12 @@ weight: 50
 Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
 notified about changes in Visitor SDK.
 
+#### [v0.35.1] - 08.05.2018
+
+#### Fixes
+
+* Fixed CORS error
+
 #### [v0.35.0] - 01.05.2018
 
 #### Added
