@@ -72,8 +72,8 @@ Events `customer_profile` and `customer_profile_hidden` return an object width a
 | `id` | Unique ID of a visitor |
 | `name` | Visitor name (if provided) |
 | `email` | Visitor email (if provided) |
-| `chat` | Object with two properties: `id` (unique chat id) and `groupID` (unique group id) |
-| `source` | String representing the source of an event. Possible values: `chats`, `visitors`, `archives`. |
+| `chat` | Object with two properties: `id` (unique chat id) and `groupID` (unique group id); this object may be empty when a visitor is not currently chatting |
+| `source` | String representing the source of an event; possible values: `chats`, `visitors`, `archives` |
 
 ### Customer profile hidden
 
