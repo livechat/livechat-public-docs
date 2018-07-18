@@ -4,7 +4,7 @@ This documentation describes version **v3.0** of customer-api.
 
 **This API is experimental and WILL change over time. It's available only as an early access for some developers.**
 
-<div class="callout type-info">Throughout the text we will use the term <strong>"client"</strong> to describe a service (an application, a script, an integration, etc.) which uses LiveChat Agent API.</div>
+<div class="callout type-info">Throughout the text we will use the term <strong>"client"</strong> to describe a service (an application, a script, an integration, etc.) which uses LiveChat Customer API.</div>
 
 ## Web API
 
@@ -116,7 +116,7 @@ Customer authentication is handled by access tokens. See how to obtain an access
 Chat messages are not guaranteed to be sorted by server. A client should sort them by `order` parameter. Do not use `timestamp` to sort messages because two events can have the same timestamp.
 
 # Examples
-All examples have a similar structure: they connect and log in to Agent API and then start a chat by sending a welcome message (via Websocket).
+All examples have a similar structure: they connect and log in to Customer API and then start a chat by sending a welcome message (via Websocket).
 
 ## JavaScript
 Sample file: [examples/example.js](./examples/example.js)
