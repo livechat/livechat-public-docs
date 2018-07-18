@@ -27,7 +27,7 @@ To add the dependency, use the following code:
 
 ```js
 dependencies {
-    compile 'com.github.livechat:chat-window-android:v2.0.0'
+    compile 'com.github.livechat:chat-window-android:v2.0.3'
 }
 ```
 <div class="clear"></div>
