@@ -99,7 +99,7 @@ A client should ping the server each 15 seconds, otherwise the connection will b
 ```
 
 ## Authentication
-Agent authentication is handled by access tokens. See how to obtain an access token in [Authorization](https://www.chat.io/docs/authorization/) section.
+Agent authentication is handled by access tokens. See how to obtain an access token in [Authorization](https://docs.livechatinc.com/authorization/) section.
 
 All authorization scopes are defined [here](https://www.chat.io/docs/authorization/#scopes-list). Each action in Agent API describes required scopes.
 
