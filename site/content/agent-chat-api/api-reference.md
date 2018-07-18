@@ -2,6 +2,8 @@
 
 This documentation describes version **v3.0** of agent-api.
 
+**This API is experimental and WILL change over time. It's available only as an early access for some developers.**
+
 <div class="callout type-info">Throughout the text we will use the term <strong>"client"</strong> to describe a service (an application, a script, an integration, etc.) which uses LiveChat Agent API.</div>
 
 ## Web API
