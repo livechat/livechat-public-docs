@@ -108,7 +108,7 @@ A client should ping the server each 15 seconds, otherwise the connection will b
 ```
 
 ## Authentication
-Customer authentication is handled by access tokens. See how to obtain an access token in [Authorization](https://www.chat.io/docs/authorization/#customer-authorization-flow) section.
+Customer authentication is handled by access tokens. See how to obtain an access token in [Authorization](https://docs.livechatinc.com/authorization/) section.
 
 ## Events order
 Chat messages are not guaranteed to be sorted by server. A client should sort them by `order` parameter. Do not use `timestamp` to sort messages because two events can have the same timestamp.
