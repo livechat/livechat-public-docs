@@ -48,7 +48,7 @@ Real-Time Messaging API (RTM API) is based on a websocket-like connection. A cli
 
 | Transport | Endpoint |
 |--------|----------------|
-| `socket.io` | `https://api.livechatinc.com/v3.0//agentrtm/sio` |
+| `socket.io` | `https://api.livechatinc.com/v3.0/agent/rtm/sio` |
 | `websocket` | `wss://api.livechatinc.com/v3.0/agent/rtm/ws` |
 
 ##### Example
