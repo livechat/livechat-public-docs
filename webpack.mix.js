@@ -22,15 +22,15 @@ mix.webpackConfig({
 });
 
 mix
-  .copy("src/_redirects", "dist/_redirects")
-  .js("src/js/app.js", "dist/js")
-  .sass("src/css/app.scss", "dist/css")
+  // .copy("src/_redirects", "dist/docs/_redirects")
+  .js("src/js/app.js", "dist/docs/js")
+  .sass("src/css/app.scss", "dist/docs/css")
   .options({
     processCssUrls: false
   })
   .browserSync({
     server: "dist",
-    startPath: '/',
+    startPath: '/docs',
     proxy: false,
     files: ["dist/**/*.js", "dist/**/*.css", "dist/**/*.html"],
     reloadThrottle: 100
