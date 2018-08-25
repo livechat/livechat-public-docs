@@ -24,9 +24,9 @@ There are a few scenarios in which you can acquire an `access_token`:
 
 In this scenario, LiveChat user enters your website with a "Sign in with LiveChat" button installed. After clicking the button, they enter LiveChat login and password in a pop-up window and grant access to some parts of their account.
 
-In return, you acquire an `access_token` which can be used to call [REST API](/rest-api) methods.
+In return, you acquire an `access_token` which can be used to call [REST API](/docs/rest-api) methods.
 
-Read more how to implement this flow in a dedicated ["Sign in with LiveChat"](/sign-in-with-livechat) article.
+Read more how to implement this flow in a dedicated ["Sign in with LiveChat"](/docs/sign-in-with-livechat) article.
 
 ## Public web apps
 
@@ -78,7 +78,7 @@ https://my-application.com/
 
 After successful authorization, the user is redirected back to your app. The URL will include a number of params in the hash section of the URL:
 
-* **access_token** – token you can use to call [REST API](/rest-api) methods on behalf of the user.
+* **access_token** – token you can use to call [REST API](/docs/rest-api) methods on behalf of the user.
 * **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to repeat the authorization process to get the new `access_token`.
 * **state** – value of the `state` param that you passed in redirection to LiveChat OAuth Server.
 * **token_type=Bearer**
@@ -155,7 +155,7 @@ echo $result;
 ```
 
 
-This example app fetches [Agents list](/rest-api#list-all-agents) and returns it in the browser's console.
+This example app fetches [Agents list](/docs/rest-api#list-all-agents) and returns it in the browser's console.
 
 You should update `clientId` and `redirectUri` params from the example to match actual values. You can set up these params when creating the app in [LiveChat Developers Console](https://developers.livechatinc.com/console). Your app must also have access to **read agents list** scopes. Scopes are also configured in the Developers Console.
 
@@ -260,7 +260,7 @@ Required parameters:
 <br>
 The response will include the following params in JSON format:
 
-* **access_token** – token you can use to call [REST API](/rest-api) methods on behalf of the user.
+* **access_token** – token you can use to call [REST API](/docs/rest-api) methods on behalf of the user.
 * **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details).
 * **refresh_token** – token that can be used to generate new access tokens.
 * **token_type=Bearer**
@@ -303,7 +303,7 @@ Required parameters:
 <br>
 The response will include the following params in JSON format:
 
-* **access_token** – token you can use to call [REST API](/rest-api) methods on behalf of the user.
+* **access_token** – token you can use to call [REST API](/docs/rest-api) methods on behalf of the user.
 * **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details).
 * **refresh_token** – token that can be used to generate new access tokens.
 * **token_type=Bearer**
@@ -353,7 +353,7 @@ Please note that refresh tokens are not supported for direct validation. If `acc
 <br>
 The response will include the following params in JSON format:
 
-* **access_token** – token you can use to call [REST API](/rest-api) methods on behalf of the user.
+* **access_token** – token you can use to call [REST API](/docs/rest-api) methods on behalf of the user.
 * **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details).
 * **refresh_token** – token that can be used to generate new access tokens.
 * **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).

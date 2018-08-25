@@ -194,7 +194,7 @@ For example, if you have your own database with some additional details about yo
 
 <img src="https://www.livechatinc.com/wp-content/uploads/2013/02/visitor-details1.png" width="300" style="margin:30px 0"/>
 
-**Note:** this method can only be used along with the [Webhooks](/build-integration/#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See a sample integration in [Webhooks documentation](/build-integration/#webhooks).
+**Note:** this method can only be used along with the [Webhooks](/docs/build-integration/#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See a sample integration in [Webhooks documentation](/docs/build-integration/#webhooks).
 
 #### Required properties
 

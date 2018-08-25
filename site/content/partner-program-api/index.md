@@ -595,7 +595,7 @@ curl --request GET \
 ```
 * `401 - Unauthorized` - missing or incorrect authorization header
 * `403 - Forbidden` - not enough money to withdraw (min. $50)
-* `409 - Conflict` - billing info not found, please [update billing](/docs/api/#update-billing)
+* `409 - Conflict` - billing info not found, please [update billing](#update-billing)
 
 
 ## Get Withdrawal List
@@ -866,7 +866,7 @@ curl --request GET \
 * `<license_id>` - **required** - license ID
 
 #### Payload
-* `token` - **required** - Recurly token ([get](/docs/api/#get-recurly-token))
+* `token` - **required** - Recurly token ([get](#get-recurly-token))
 * `plan` - **required** - sales plan, one of `starter`, `team` or `business`
 * `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
 * `seats` - **required** - seats number
@@ -911,7 +911,7 @@ curl --request GET \
 * `<license_id>` - **required** - license ID
 
 #### Payload
-* `token` - **required** - Recurly token ([get](/docs/api/#get-recurly-token))
+* `token` - **required** - Recurly token ([get](#get-recurly-token))
 
 #### Response
 * `200 - OK`

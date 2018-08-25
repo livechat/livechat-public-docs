@@ -19,14 +19,14 @@ Widgets are primary elements of Agent App interface. There are number of ways yo
 * embed and display static content, e.g. knowledge base articles, conversation prompts or context information,
 * embed your SaaS service or web app as a part of agents' workspace,
 * query external services with visitor email or LiveChat group ID (CRM, marketing automation, etc.),
-* create store with [in-app purchases](/billing-api) to sell additional services or features of your app,
-* query [LiveChat REST API](/rest-api) to do basically anything with the visitor, agent or chat.
+* create store with [in-app purchases](/docs/billing-api) to sell additional services or features of your app,
+* query [LiveChat REST API](/docs/rest-api) to do basically anything with the visitor, agent or chat.
 
 ## Important notes
 
 To build Agent App Widgets you need to have basic knowledge about JavaScript and HTML. We've got a lot of sample apps ready for you to take further. If you got stuck at any point, feel free to contact us anytime via chat.
 
-Keep in mind the widgets are front-end elements of LiveChat Agent App. If you'd like to build  an app that works on the server-side, please see the [REST API docs](/rest-api).
+Keep in mind the widgets are front-end elements of LiveChat Agent App. If you'd like to build  an app that works on the server-side, please see the [REST API docs](/docs/rest-api).
 
 ### Feature requests
 

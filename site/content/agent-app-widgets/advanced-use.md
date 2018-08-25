@@ -6,7 +6,7 @@ weight: 30
 
 ## Developing your own widget
 
-If you want to build your own widget, be sure to include both the [LiveChat Boilerplate](/boilerplate) and [JavaScript Widget API](#javascript-widgets-api):
+If you want to build your own widget, be sure to include both the [LiveChat Boilerplate](/docs/boilerplate) and [JavaScript Widget API](#javascript-widgets-api):
 
 > Our widget SDK package is hosted on NPM. You can get it with following command:
 
@@ -30,11 +30,11 @@ After a successful initialization, the Agent App should remove the spinner and d
 
 ## Accessing LiveChat data
 
-You can leverage OAuth2.0 authorization flow to access data from the [REST API](/rest-api). Head to [Sign in with LiveChat](/sign-in-with-livechat) docs for more information.
+You can leverage OAuth2.0 authorization flow to access data from the [REST API](/docs/rest-api). Head to [Sign in with LiveChat](/docs/sign-in-with-livechat) docs for more information.
 
 ## Layout and Styling
 
-We ship a [LiveChat Boilerplate](/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the widget interface.
+We ship a [LiveChat Boilerplate](/docs/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the widget interface.
 
 > Place this tag within the `<head></head>` section:
 

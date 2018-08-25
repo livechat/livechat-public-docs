@@ -114,7 +114,7 @@ Upload the example script (displayed in the right column) to your web server and
 
 <img src="https://cdn.livechatinc.com/website/uploads/2013/02/visitor-details1.png" alt="Visitor details in LiveChat"/>
 
-You can read a more detailed documentation in [Visitors API](/rest-api/#add-custom-visitor-details).
+You can read a more detailed documentation in [Visitors API](/docs/rest-api/#add-custom-visitor-details).
 
 ### Notifying internal statusboard about a queued visitor
 
@@ -156,7 +156,7 @@ Each webhook is a HTTP POST request made to the URL that you provide in the web 
 Each webhook contains the following properties:
 
 *   `event_type` – tells you the event that triggered the webhook. Possible values: `chat_started`, `chat_ended`, `visitor_queued`.
-*   `token` and `license_id` – your authentication credentials that let you call LiveChat’s REST API methods. You won’t need to use them unless you want to make a call to LiveChat’s API right when you receive a webhook. In that case, you just need to pass these `token` and `license_id` credentials in your API call. [Here’s an example](/rest-api/#add-custom-visitor-details).
+*   `token` and `license_id` – your authentication credentials that let you call LiveChat’s REST API methods. You won’t need to use them unless you want to make a call to LiveChat’s API right when you receive a webhook. In that case, you just need to pass these `token` and `license_id` credentials in your API call. [Here’s an example](/docs/rest-api/#add-custom-visitor-details).
 *   additional information – please read the [Webhook data types](#webhook-data-types) section.
 
 When your server receives a webhook from LiveChat, it should respond with `HTTP 200` response. Otherwise, LiveChat will retry sending the webhook to your service for a number of times unless it receives the correct `HTTP 200` response.

@@ -16,7 +16,7 @@ In terms of LiveChat apps, authentication is when you check the user credentials
 ## Basic use cases
 
 ### Authorizing REST API calls
-> `Authorization` header example in LiveChat [REST API](/rest-api) call:
+> `Authorization` header example in LiveChat [REST API](/docs/rest-api) call:
 
 ```shell
 curl "https://api.livechatinc.com/agents" \
@@ -24,7 +24,7 @@ curl "https://api.livechatinc.com/agents" \
   -H "X-API-Version: 2"
 ```
 
-The most popular tool used by developers is [REST API](/rest-api). Calling API methods on behalf of LiveChat user is as simple as including `Authorization: Bearer <access_token>` HTTP header in each call. Find out how to acquire the `access_token` in the sections below.
+The most popular tool used by developers is [REST API](/docs/rest-api). Calling API methods on behalf of LiveChat user is as simple as including `Authorization: Bearer <access_token>` HTTP header in each call. Find out how to acquire the `access_token` in the sections below.
 
 ### Authentication service
 
