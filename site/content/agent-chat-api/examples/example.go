@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	apiURL       string        = "wss://api.chat.io/agent/v3.0/rtm/ws"
+	apiURL       string        = "wss://api.livechatinc.com/agent/v3.0/rtm/ws"
 	pingInterval time.Duration = time.Second * 30
 	accessToken  string        = "Bearer <ACCESS_TOKEN>"
 )
