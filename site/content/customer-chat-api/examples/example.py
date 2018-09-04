@@ -6,7 +6,7 @@ import time
 import json
 import random
 
-api_url = "wss://api.chat.io/customer/v3.0/rtm/ws"
+api_url = "wss://api.livechatinc.com/v3.0/customer/rtm/ws"
 license_id = 0 # <LICENSE_ID>
 customer_access_token = "Bearer <ACCESS_TOKEN>"
 
@@ -48,18 +48,18 @@ def api_send_chat_message(ws, chat_id, message):
 				"type": "message",
 				"text": message
 			}
-		}		
+		}
 	}
 	ws.send(json.dumps(send_message_request))
 
 def on_message_login(ws, received_message):
 	if received_message['success']:
 		print "Login succeeded"
-	
-		print "Starting a new chat..."			
+
+		print "Starting a new chat..."
 		api_start_chat(ws)
 	else:
-		print "Login failed"	
+		print "Login failed"
 
 def on_message_start_chat(ws, received_message):
 	chat_id = received_message['payload']['chat']['id']
@@ -69,7 +69,7 @@ def on_message_start_chat(ws, received_message):
 
 def on_message(ws, message):
 	received_message = json.loads(message)
-	
+
 	print "on_message: {0}".format(received_message)
 
 	switcher = {
@@ -88,10 +88,10 @@ def on_close(ws):
 
 def on_open(ws):
 	print "Connected"
-	
-	# it's required to send login before start sending 
-	# any other protocol messages. Login message subscribe 
-	# connection for receiving server push messages. 
+
+	# it's required to send login before start sending
+	# any other protocol messages. Login message subscribe
+	# connection for receiving server push messages.
 	print "Logging in..."
 	api_login(ws)
 

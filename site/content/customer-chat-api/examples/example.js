@@ -1,5 +1,5 @@
 var cfg = {
-    apiUrl: "wss://api.chat.io/customer/v3.0/rtm/ws",
+    apiUrl: "wss://api.livechatinc.com/v3.0/customer/rtm/ws",
     licenseID: 0, // <LICENSE_ID>
     customerAccessToken: "Bearer <TOKEN>",
 }
@@ -34,30 +34,30 @@ var onMessage = function(d) {
     //handle unsuccesed messages
     if (msg.success == false) {
         console.error(msg.payload.error)
-        return 
+        return
     }
 
-    console.log("You have recieved message:", msg.action) 
+    console.log("You have recieved message:", msg.action)
 
     // handle protocol responses
     switch (msg.action) {
-        case "login": 
+        case "login":
             return onMessageLogin(msg)
             break
 
         case "start_chat":
-            return onMessageStartChat(msg)     
+            return onMessageStartChat(msg)
             break
     }
 }
 
 var onMessageLogin = function(msg) {
     console.log("Your vustomer ID:", msg.payload.customer_id)
-    return apiSendStartChat()  
+    return apiSendStartChat()
 }
 
 var onMessageStartChat = function(msg) {
-    console.log("start_chat payload:", msg.payload)   
+    console.log("start_chat payload:", msg.payload)
     apiSendChatMessage(msg.payload.chat.id)
 }
 
@@ -73,12 +73,12 @@ var apiSendLogin = function() {
 var apiSendStartChat = function() {
     sendMessage("start_chat", {
         routing_scope: {type: "license"} // scope type is required
-    });     
+    });
 }
 
 var apiSendChatMessage = function(chatID) {
     sendMessage("send_event", {
-        "chat_id": chatID, 
+        "chat_id": chatID,
         "event": {
             "type": "message",
             "text": "Hello World!"
@@ -88,12 +88,12 @@ var apiSendChatMessage = function(chatID) {
 var onConnect = function(msg) {
     console.log("You are connected!")
 
-    // it's required to send login before start sending 
-    // any other protocol messages. Login message subscribe 
-    // connection for receiving server push messages. 
+    // it's required to send login before start sending
+    // any other protocol messages. Login message subscribe
+    // connection for receiving server push messages.
     apiSendLogin()
 
-    // ping 
+    // ping
     PING = setInterval(function() {
         sendMessage("ping")
     }, 30000)
@@ -112,4 +112,3 @@ var client = new WebSocket(cfg.apiUrl + "?license_id=" + cfg.licenseID)
 client.onmessage = onMessage
 client.onopen = onConnect
 client.onclose = onDisconnect
-
