@@ -1,5 +1,5 @@
 var cfg = {
-    apiUrl: "wss://api.chat.io/customer/v3.0/rtm/ws",
+    apiUrl: "wss://api.livechatinc.com/v3.0/agent/rtm/ws",
     licenseID: 0, // <LICENSE_ID>
     customerAccessToken: "Bearer <TOKEN>",
 }
