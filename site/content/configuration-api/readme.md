@@ -7,11 +7,11 @@ weight: 10
 
 ## Overview
 
-Chat.io Configuration API is a service for storing license configuration.
+LiveChat Configuration API is a service for storing license configuration.
 
 ## Use cases
 
-With chat.io Configuration API you can:
+With LiveChat Configuration API you can:
 
 - set up webhooks
 - create and manage bot agents
@@ -27,9 +27,9 @@ If you want to perform a chat from the agent perspective, you should use [Agent 
 
 ## Prerequisites
 
-To start off with chat.io Configuration API, follow these steps:
+To start off with LiveChat Configuration API, follow these steps:
 
-1. Sign up or sign in to the [Developers Console](https://console.chat.io/).
+1. Sign up or sign in to the [Developers Console](https://developers.livechatinc.com/console/).
 2. Create a new app ("Backend" type).
 3. Copy the Client Secret and Client ID.
 
