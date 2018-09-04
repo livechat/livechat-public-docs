@@ -6,7 +6,7 @@ import time
 import json
 import random
 
-api_url = "wss://api.chat.io/customer/v3.0/rtm/ws"
+api_url = "wss://api.livechatinc.com/v3.0/agent/rtm/ws"
 license_id = 0 # <LICENSE_ID>
 customer_access_token = "Bearer <ACCESS_TOKEN>"
 
