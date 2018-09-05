@@ -1,12 +1,14 @@
 ---
-weight: 20
+weight: 30
 ---
 
-# Webhooks
 
-You can configure LiveChat to be immediately notified about particular events. Such a notification is called a **webhook** – it’s just a simple HTTP request that LiveChat sends to your server when a particular event occurs. Check the basic auth example on the right.
 
-## Setting up the webhooks
+# Webhooks reference
+
+LiveChat can send notifications when some particular action is performed. Such a notification is called a **webhook** – it’s just a simple HTTP request that LiveChat sends to your server when a particular event occurs. Check the basic auth example on the right.
+
+## Set up the webhooks for development
 
 > Go to **Settings > Integrations > Webhooks** and set up your webhook URLs
 > <img src="https://cdn.livechatinc.com/website/uploads/2015/03/finalizing-webhook-creation.jpg" alt="Finalizing web hook creation" width="500"/>
