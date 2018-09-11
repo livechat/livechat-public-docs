@@ -1,9 +1,9 @@
 ---
-title: "Customer Chat API"
-menuTitle: "<u>Customer Chat API</u>"
+title: "Customer API"
+menuTitle: "<u>Customer API</u>"
 tagline: "Send chat messages as a customer." 
 desc: "Send chat messages as a customer."
 color: "#b83b5e"
-type: "hidden"
-weight: 30
+type: "platform"
+weight: 2
 ---

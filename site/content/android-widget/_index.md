@@ -1,8 +1,9 @@
 ---
 title: "Android Widget"
-menuTitle: "Mobile Chat Widget for<br/><u>Android App</u>"
-tagline: "Embed Chat Widget in your Android app"
-desc: "Offer live chat support in your Android App by embedding Android Chat Widget."
+menuTitle: "Embed a mobile chat window in your Android app"
+tagline: "Embed a mobile chat window in your Android application"
+desc: "Embed a mobile chat window in your Android application."
 color: "#46b776"
 type: "mobile-widget"
+weight: 10
 ---
