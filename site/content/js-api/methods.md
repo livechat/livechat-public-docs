@@ -20,6 +20,20 @@ You can set custom variables that the LiveChat agents will see in their apps. Cu
 
 Please note that custom variables can also be set in the tracking code `window.__lc.params` variable ([read more](#tracking-code)). The above method should be used if you want to update the custom variables without page refresh.
 
+## Update custom variables
+
+This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
+
+```js
+var custom_variables = [
+  { name: 'page', value: 'Store' },
+  { name: 'user_id', value: '12345' }
+];
+LC_API.update_custom_variables(custom_variables);
+```
+
+It works the same way as "Set custom variables" method, but it will merge new visitor's properties with current visitor's properties, instead of replacing them of them with new set.
+
 ## Open the chat window
 
 ```js
