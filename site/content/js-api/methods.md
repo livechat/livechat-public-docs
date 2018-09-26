@@ -32,7 +32,7 @@ var custom_variables = [
 LC_API.update_custom_variables(custom_variables);
 ```
 
-It works the same way as "Set custom variables" method, but it will merge new visitor's properties with current visitor's properties, instead of replacing them of them with new set.
+It works the same way as "Set custom variables" method, but it will merge new visitor's properties with the current visitor's properties, instead of replacing them with a new set.
 
 ## Open the chat window
 
