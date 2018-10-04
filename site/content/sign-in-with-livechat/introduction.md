@@ -20,7 +20,7 @@ Then, user must allow the app to access specified parts of his LiveChat account:
 
 <img src="../assets/images/sign-in-with-livechat/flow-3.png" width="690" style="margin-top: 20px; border: 1px solid #ddd;"/>
 
-Finally, the app receives an `access_token` that allows it perform REST API calls, limited to what the user agreed to in hte prompt.
+Finally, the app receives an `access_token` that allows it perform REST API calls, limited to what the user agreed to in the prompt.
 
 For example, you can display LiveChat tracking code which already includes the user's account number:
 
