@@ -14,6 +14,9 @@ import LiveChat from '@livechat/agent-app-widget-sdk';
 
 LiveChat.init();
 
+// Forces Web App to send you information about the current customer
+LiveChat.refreshSessionId();
+
 LiveChat.on("customer_profile", function( data ) {
 	console.log( data )
 })
