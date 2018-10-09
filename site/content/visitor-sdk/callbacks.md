@@ -202,7 +202,7 @@ visitorSDK.on('message_seen', data => {
 | param    | type                | description                  |
 | -------- | ------------------- | ---------------------------- |
 | id       | string              | Seen message id              |
-| customId | string              | Senn message custom id       |
+| customId | string              | Seen message custom id       |
 | type     | "agent" / "visitor" | Original message author type |
 
 ## chat_rated
