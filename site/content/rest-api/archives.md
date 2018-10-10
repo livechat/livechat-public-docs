@@ -198,6 +198,7 @@ curl "https://api.livechatinc.com/chats?\
                "date":"Wed, 01/23/13 11:57:14 am",
                "timestamp":1358937663,
                "type":"event",
+               "event_type": "closed",
                "user_type":"visitor"
             },
          ],
