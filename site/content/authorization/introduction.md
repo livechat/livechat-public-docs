@@ -33,3 +33,9 @@ You can authenticate users of your app using LiveChat authorization flows. You c
 ### Connect with LiveChat
 
 Let's say you have a service which can import chat data from the external sources. You can use a [Sign in with LiveChat SDK](#sign-in-with-livechat) to create something like _"Connect with LiveChat"_ button. This way your users can connect their LiveChat accounts to your service with just a few clicks.
+
+# Examples
+Example for authorizing the customers
+
+## JavaScript
+Sample file: [examples/example.js](./examples/example.js)

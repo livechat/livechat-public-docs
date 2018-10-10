@@ -1,0 +1,5 @@
+export const CONNECTED = 'connected'
+export const DISCONNECTED = 'disconnected'
+export const RECONNECTING = 'reconnecting'
+export const STOPPED = 'stopped'
+export const DESTROYED = 'destroyed'
