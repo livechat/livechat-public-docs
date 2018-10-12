@@ -1,0 +1,1182 @@
+---
+seo_title: "API — LiveChat Partner Program"
+seo_description: "Getting started with LiveChat Partners API. See our API documentation to make the best use of the partnership."
+title: "API"
+---
+# About
+LiveChat Partner Program API allows you to build your own tools that will help you make a better use of your data. It’s 100% open, so it’s up to you what you create.
+
+#### URL
+`https://api.livechatinc.com`
+
+#### Status
+`GET /v2/partners/status` - check if API is running
+
+#### Response
+* `200 - OK`
+* everything else - API has some issues
+
+## Authorization
+Each API request requires authorization header to identify the Partner. Authorization is provided by unique API token.
+
+You can create your token in the [API tokens section](https://partners.livechatinc.com/dashboard/account/tokens) in Dashboard.
+
+
+#### Example
+```
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+# Account
+
+## Get Profile
+`GET /v2/partners` - get profile info
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "partner_id": "xyz",
+    "login": "joe@email.com",
+    "full_name": "Joe Doe",
+    "contact_name": "Jane Doe",
+    "contact_email": "jane@email.com",
+	"websites": [
+        "https://example.com"
+    ],
+	"send_monthly_summary": true,
+	"send_newsletter": true,
+	"send_notifications": true,
+	"affiliate": {
+		"url": "https://www.livechatinc.com/?a=xyz&utm_source=PP",
+		"short_url": "https://lc.chat/zxc",
+		"current_commission": {
+			"percent": 20,
+			"end_timestamp": ""
+		}
+	},
+	"reseller": {
+		"current_discount": {
+			"percent": 20,
+			"end_timestamp": ""
+		}
+	},
+	"expert": {
+		"status": "verified",
+		"marketplace_position": 2
+	}
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Update Profile
+`PUT /v2/partners` - edit profile info
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `full_name` - **required** - full name
+* `contact_name` - **required** - contact name
+* `contact_email` - **required** - contact email
+* `send_monthly_summary` - **required** - `boolean` value
+* `send_newsletter` - **required** - `boolean` value
+* `send_notifications` - **required** - `boolean` value
+* `websites` - optional - an array of websites (URLs)
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect payload parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Change Password
+`PUT /v2/partners/password` - change password to your account
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `current_password` - **required** - current password
+* `new_password` - **required** - new password (min. 6 characters)
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - incorrect current password
+
+
+## Get the Number of Active Licenses
+`GET /v2/partners/active-licenses` - get the number of active affiliate/reseller trials, trials with credit card and paid licenses
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "affiliate_trials": 120,
+    "affiliate_trials_cc": 84,
+    "affiliate_paid": 92,
+    "reseller_trials": 13,
+    "reseller_trials_cc": 7,
+    "reseller_paid": 28
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get Earnings
+`GET /v2/partners/earnings` - get earnings (affiliate commission, balance, blocked amount, pending amount, withdrawals and total reseller discount)
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "balance": 29.44,
+    "commission": 29.44,
+    "blocked": 0,
+    "withdrawals": 0,
+    "pending": 0,
+    "discount": 20
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Create API Token
+`POST /v2/partners/tokens` - create new API token
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `label` - **required** - label for the token (min. 3 characters)
+
+#### Response
+* `201 - Created` - newly created token, example:
+
+```json
+{
+	"id": 1,
+	"token": "secret_token_qwerty...",
+	"creation_timestamp": "2018-03-06 15:14:26",
+	"label": "My first API token"
+}
+```
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `409 - Conflict` - given label was already taken
+
+
+## Get API Token List
+`GET /v2/partners/tokens` - get list of active API tokens
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+	"result": [
+		{
+			"id": 2,
+			"token": "secret_token_xyz...",
+			"creation_timestamp": "2018-03-06 17:14:26",
+			"label": "Token for my service"
+		},
+		{
+			"id": 1,
+			"token": "secret_token_qwerty...",
+			"creation_timestamp": "2018-03-06 15:14:26",
+			"label": "My first API token"
+		}
+	]
+}
+```
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Revoke API Token
+`DELETE /v2/partners/tokens/<id>` - revoke API token
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<id>` - **required** - token ID
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+# Affiliate Partner
+
+## Get Active Coupons
+`GET /v2/partners/coupons` - get active coupons
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "id": 1,
+            "label": "30% off first payment"
+        },
+		{
+            "id": 2,
+            "label": "$25 discount"
+        }
+    ]
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Create Campaign
+`POST /v2/partners/affiliates/campaigns` - create new campaign
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `name` - **required** - campaign name (min. 5, max. 100 characters)
+* `trial_duration` - **required** - days of trial period (mix. 30, max. 60)
+* `coupon_id` - optional - ID of the coupon assigned to partner (will apply a discount)
+* `link` - optional - slug of LiveChat page. If you want the campaign to point end-user to https://www.livechatinc.com/features/, set `link` param to `features/` (we will add `https://www.livechatinc.com/` automatically)
+
+#### Response
+* `201 - Created` - newly created campaign, example:
+
+```json
+{
+    "name": "New campaign",
+    "slug": "pp_new-campaign",
+    "trial_duration": 45,
+    "discount": "Active",
+    "url": "https://www.livechatinc.com/features/?a=xyz&utm_campaign=pp_new-campaign",
+    "short_url": "https://lc.chat/abc",
+    "creation_timestamp": "2018-03-06 11:30:40"
+}
+```
+**Note:** `slug` is a URL-friendly campaign name with `pp_` prefix
+
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - not allowed to use given `coupon_id`
+* `409 - Conflict` - campaign with given name already exists
+
+
+## Disable Campaign
+`DELETE /v2/partners/affiliates/campaigns/<slug>` - disable campaign
+
+#### Parameters
+* `<slug>` - **required** - campaign's slug
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - incorrect parameter
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - given campaign doesn't exist or was already disabled
+
+
+## Get Active Campaigns
+`GET /v2/partners/affiliates/campaigns/active` - get active campaigns
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "name": "Hello World!",
+            "slug": "pp_hello-world",
+            "trial_duration": 30,
+            "discount": "30% off first payment",
+            "url": "https://www.livechatinc.com/pricing/?a=xyz&utm_campaign=pp_hello-world&utm_source=PP",
+            "short_url": "https://lc.chat/abc",
+            "creation_timestamp": "2018-03-06 23:42:19"
+        },
+        {
+            "name": "Another campaign",
+            "slug": "pp_another-campaign",
+            "trial_duration": 45,
+            "discount": "",
+            "url": "https://www.livechatinc.com/?a=xyz&utm_campaign=pp_another-campaign&utm_source=PP",
+            "short_url": "https://lc.chat/xyz",
+            "creation_timestamp": "2018-03-05 14:03:31"
+        }
+    ]
+}
+```
+**Note:** `slug` is a URL-friendly campaign name with `pp_` prefix
+
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get Disabled Campaigns
+`GET /v2/partners/affiliates/campaigns/disabled` - get disabled campaigns
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "name": "Another campaign",
+            "slug": "pp_another-campaign",
+            "trial_duration": 45,
+            "discount": "",
+            "creation_timestamp": "2018-02-02 08:12:17",
+            "disabled_timestamp": "2018-03-01 17:07:46"
+        }
+    ]
+}
+```
+**Note:** `slug` is a URL-friendly campaign name with `pp_` prefix
+
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get License List
+`GET /v2/partners/affiliates/licenses` - get affiliates licenses
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query parameters
+* `date_from` - optional - get licenses created from a given date
+* `date_to` - optional - get licenses created to a given date
+
+**Note:** Date format: `YYYY-MM-DD`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "tier1": [
+        {
+            "client_email": "w...n@l...c",
+            "creation_timestamp": "2018-03-01 16:11:26",
+            "end_timestamp": "2018-03-30 16:11:25",
+            "cc_added": false,
+            "paid": false,
+            "seats": 100,
+            "plan": "team",
+            "billing_cycle": "monthly",
+            "chat_installed": false,
+            "conversations": 0,
+            "total_commission": 0,
+			"commission_percent": 20,
+            "utm_source": "",
+            "utm_medium": "banner",
+            "utm_content": "",
+            "utm_term": "",
+            "utm_campaign": "default_link",
+            "blocked": false
+        },
+        {
+            "client_email": "j...e@e...m",
+            "creation_timestamp": "2018-01-29 16:30:03",
+            "end_timestamp": "2019-01-27 16:30:03",
+            "cc_added": true,
+            "paid": true,
+            "seats": 10,
+            "plan": "business",
+            "billing_cycle": "annual",
+            "chat_installed": true,
+            "conversations": 10,
+			"total_commission": 1200,
+			"commission_percent": 20,
+            "utm_source": "email",
+            "utm_medium": "header_link",
+            "utm_content": "",
+            "utm_term": "",
+            "utm_campaign": "promo_campaign",
+            "blocked": false,
+        }
+    ],
+    "tier2": []
+}
+```
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get Performance Report
+`GET /v2/partners/affiliates/performance` - get affiliate's performance report
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query parameters
+* `date_from` - optional - get report for licenses created from a given date
+* `date_to` - optional - get report for licenses created to a given date
+
+**Note:** Date format: `YYYY-MM-DD`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "campaign": "My campaign",
+            "medium": "banner",
+            "content": "v29",
+            "term": "",
+            "clicks": 100,
+            "trials": 50,
+            "trial_percent": 50,
+            "paid": 10,
+            "paid_percent": 20,
+            "commission": 178.45,
+            "chat_installations": 34,
+            "aha": 27
+        },
+        {
+            "campaign": "My other campaign",
+            "medium": "screenshot",
+            "content": "v3",
+            "term": "keyword",
+            "clicks": 50,
+            "trials": 20,
+            "trial_percent": 40,
+            "paid": 10,
+            "paid_percent": 50,
+            "commission": 35,
+            "chat_installations": 16,
+            "aha": 12
+        }
+    ]
+}
+```
+**Note:** `chat_installations` is a number of _Qualified Leads_ - trial licenses with code attached to websites (more likely to convert); `aha` is a number of _Qualified Leads_ that had at least 10 chats (very likely to convert - _AHA moment_).
+
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get Affiliate History
+`GET /v2/partners/affiliates/history` - get historical stats for affiliate activity (up to last 12 months)
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "date": "2018-03",
+            "trials": 11,
+            "paid": 50,
+            "commission": 501.6
+        },
+        {
+            "date": "2018-02",
+            "trials": 23,
+            "paid": 32,
+            "commission": 230.35
+        },
+		{
+            "date": "2018-01",
+            "trials": 35,
+            "paid": 41,
+            "commission": 124.8
+        }
+    ]
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get Billing
+`GET /v2/partners/affiliates/billing` - get affiliate billing information
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "company": "Awesome Company",
+    "vat": "123",
+    "address": "Wall Street 123",
+    "city": "New York",
+    "zip_code": "10005",
+    "country": "US",
+    "paypal": "paypal@email.com",
+    "type": "business"
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Update Billing
+`PUT /v2/partners/affiliates/billing` - update affiliate billing information
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `type` - **required** - `business` or `individual`
+* `company` - **required** - company name (business) or full name (individual)
+* `address` - **required**
+* `city` - **required**
+* `country` - **required** - country code, one of [these](https://api.livechatinc.com/v2/partners/data/countries)
+* `paypal` - **required** - PayPal login (email)
+* `zip_code` - optional - ZIP / Postal code
+* `vat` - optional - VAT
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Request Withdrawal
+`POST /v2/partners/affiliates/withdrawals` - create withdrawal request
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `201 - Created` - example:
+
+```json
+{
+    "request_timestamp": "2018-03-06 12:24:42",
+    "action_timestamp": "",
+    "status": "pending",
+    "amount": 1520,
+    "invoice_id": "2018/2/xyz"
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - not enough money to withdraw (min. $50)
+* `409 - Conflict` - billing info not found, please [update billing](#update-billing)
+
+
+## Get Withdrawal List
+`GET /v2/partners/affiliates/withdrawals` - get affiliate withdrawals
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query parameters
+* `date_from` - optional - get report for withdrawals from a given date
+* `date_to` - optional - get report for withdrawals to a given date
+
+**Note:** Date format: `YYYY-MM-DD`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+			"request_timestamp": "2018-03-06 12:24:42",
+		    "action_timestamp": "",
+		    "status": "pending",
+		    "amount": 1520,
+		    "invoice_id": "2018/2/xyz"
+        },
+		{
+			"request_timestamp": "2018-02-02 11:43:37",
+		    "action_timestamp": "2018-02-02 12:04:11",
+		    "status": "paid",
+		    "amount": 1063.3,
+		    "invoice_id": "2018/1/xyz"
+		}
+    ]
+}
+```
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+# Solution Partner
+
+## Create License
+`POST /v2/partners/resellers/licenses` - create new license for a client
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `client_name` - **required** - client's full name
+* `client_email` - **required** - client's email address
+* `purchase_order` - optional - custom parameter
+
+#### Response
+* `201 - Created` - example:
+
+```json
+{
+    "license": "123",
+    "client_name": "Joe Doe",
+    "client_email": "joe@example.com",
+	"purchase_order": "Test license",
+	"creation_timestamp": "2018-03-06 12:59:13",
+	"end_timestamp": "2018-04-05 11:59:12",
+    "cc_added": false,
+    "paid": false,
+    "seats": 100,
+    "plan": "team",
+    "billing_cycle": "monthly",
+	"total_discount": 0,
+    "discount_percent": 20,
+    "expired": false,
+    "blocked": false,
+    "recurly": {
+        "subscriber": false,
+        "in_trial": true,
+        "recurrent": false
+    }
+}
+```
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `409 - Conflict` - given `client_email` already has a LiveChat license
+
+
+## Get License (Client) List
+`GET /v2/partners/resellers/licenses` - get license list
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query parameters
+* `date_from` - optional - get report for licenses created from a given date
+* `date_to` - optional - get report for licenses created to a given date
+
+**Note:** Date format: `YYYY-MM-DD`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+			"license": "123",
+			"client_name": "Joe Doe",
+			"client_email": "joe@example.com",
+			"purchase_order": "Test license",
+			"creation_timestamp": "2018-03-06 12:59:13",
+			"end_timestamp": "2018-04-05 11:59:12",
+			"cc_added": false,
+			"paid": false,
+			"seats": 100,
+			"plan": "team",
+			"billing_cycle": "monthly",
+			"total_discount": 0,
+			"discount_percent": 20,
+			"expired": false,
+			"blocked": false
+        }
+    ]
+}
+```
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get License Details
+`GET /v2/partners/resellers/licenses/<license_id>` - get license details
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+	"license": "123",
+    "client_name": "Joe Doe",
+    "client_email": "joe@example.com",
+	"purchase_order": "Test license",
+	"creation_timestamp": "2018-03-06 12:59:13",
+	"end_timestamp": "2018-04-05 11:59:12",
+    "cc_added": false,
+    "paid": false,
+    "seats": 100,
+    "plan": "team",
+    "billing_cycle": "monthly",
+	"total_discount": 0,
+    "discount_percent": 20,
+    "expired": false,
+    "blocked": false,
+    "recurly": {
+        "subscriber": false,
+        "in_trial": true,
+        "recurrent": false
+    }
+}
+```
+* `400 - Bad Request` - missing or incorrect `license_id` parameter
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license not found
+
+
+## Get Licenses Invoice List
+`GET /v2/partners/resellers/licenses/<license_id>/invoices` - get license invoices
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "invoice_no": 123,
+            "date": "2018-03-03 09:38:33",
+            "plan": "team",
+            "seats": 10,
+            "billing_cycle": "monthly",
+            "amount": 312,
+            "status": "paid"
+        },
+        {
+            "invoice_no": 122,
+            "date": "2018-02-01 09:18:13",
+            "plan": "team",
+            "seats": 10,
+            "billing_cycle": "monthly",
+            "amount": 312,
+            "status": "paid"
+        }
+    ]
+}
+```
+* `400 - Bad Request` - missing or incorrect `license_id` parameter
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license not found
+
+
+## Get Licenses Invoice PDF
+`GET /v2/partners/resellers/licenses/<license_id>/invoices/<invoice_no>` - get reseller's license invoices.
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+* `<invoice_no>` - **required** - invoice number
+
+#### Response
+* `200 - OK` - PDF file (`Content-Type: application/pdf`)
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license or invoice not found
+
+
+## Get Solution Partner History
+`GET /v2/partners/resellers/history` - get historical stats for Solution Partner activity (up to last 12 months)
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "date": "2018-03",
+            "trials": 41,
+            "paid": 27
+        },
+        {
+            "date": "2018-02",
+            "trials": 35,
+            "paid": 38
+        },
+        {
+            "date": "2018-01",
+            "trials": 29,
+            "paid": 48
+        }
+    ]
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Create License Subscription
+`POST /v2/partners/resellers/licenses/<license_id>/subscription` - create new subscription
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Payload
+* `token` - **required** - Recurly token ([get](#get-recurly-token))
+* `plan` - **required** - sales plan, one of `starter`, `team` or `business`
+* `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
+* `seats` - **required** - seats number
+
+#### Response
+* `201 - Created`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license not found
+* `409 - Conflict` - subscription already exists
+
+
+## Update License Subscription
+`PUT /v2/partners/resellers/licenses/<license_id>/subscription` - update subscription
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Payload
+* `plan` - **required** - sales plan, one of `starter`, `team` or `business`
+* `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
+* `seats` - **required** - seats number
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license not found
+* `409 - Conflict` - subscription doesn't exist
+
+
+## Update License Billing
+`PUT /v2/partners/resellers/licenses/<license_id>/billing` - update subscription billing information
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Payload
+* `token` - **required** - Recurly token ([get](#get-recurly-token))
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license not found
+
+
+## Close License Subscription
+`DELETE /v2/partners/resellers/licenses/<license_id>/subscription` - close subscription
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Payload
+* `password` - **required** - password in LiveChat Partner Program
+* `expire` - optional - `boolean` value (default: `false`). When closing subscription your license will expire at the end of its billing cycle. To expire your subscription immediately, set `expire` param to `true`.
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - password is incorrect
+* `404 - Not Found` - license not found
+
+
+## Get Recurly Token
+`GET https://api.recurly.com/js/v1/token` - get token from Recurly (token is required when creating new subscription or updating existing subscription with new billing info)
+
+#### Parameters
+* `key` - **required** - public key (`ewr1-QCXZap10wOSm13fxI4u5Jt`)
+* `first_name` - **required** - first name
+* `last_name` - **required** - last name
+* `number` - **required** - credit card number
+* `month` - **required** - credit card expiration month (format: `MM`)
+* `year` - **required** - credit card expiration year (format: `YYYY`)
+* `verification_value` - **required** - CVV code
+* `address1` - **required** - address
+* `city` - **required** - city
+* `state` - **required** - state
+* `zip` - **required** - ZIP/Postal code
+* `country` - **required** - country code, one of [these](https://api.livechatinc.com/v2/partners/data/countries)
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "id": "B79ibIjbXbqSAhKjxQWERTY"
+}
+```
+* everything else - missing or incorrect parameters (please read the error message)
+
+
+# Expert
+
+## Upload Logo
+`POST /v2/partners/experts/profile/logo` - upload Expert logo
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Body
+* `.jpg` or `.png` image, min. 350x350px, max. 1000x1000px - **required**
+
+#### Response
+* `200 - OK` - URL of logo, example:
+
+```json
+{
+	"result": "https://cdn.example.com/expert-logo.png"
+}
+```
+* `400 - Bad Request` - incorrect file
+* `403 - Forbidden` - missing or incorrect authorization token
+
+
+## Create Expert Profile
+`POST /v2/partners/experts/profile` - create Expert profile
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `company` - **required** - company name (min. 4 characters)
+* `phone` - **required** - phone number
+* `description` - **required** - description visible in profile details (min. 10 characters)
+* `short_description` - **required** - description visible in expert tile (min. 10 characters)
+* `country` - **required** - country code, one of [these](https://api.livechatinc.com/v2/partners/data/countries)
+* `website` - **required** - website URL
+* `categories` - **required** - an array of categories (codes); [available categories](https://api.livechatinc.com/v2/partners/data/categories/expert)
+* `projects` - **required** - an array of projects (URLs)
+* `agents` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - number of agents, accepted values: `1-5`, `6-15`, `16-30`, `31-50`, `51+`
+* `languages` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - an array of languages (codes); [available languages](https://api.livechatinc.com/v2/partners/data/languages)
+* `hour_rate` - optional - minimal hourly rate
+* `project_rate` - optional - minimal project rate
+* `facebook` - optional - URL to Facebook page
+* `twitter` - optional - URL to Twitter page
+* `linkedin` - optional - URL to LinkedIn page
+* `googleplus` - optional - URL to Google+ page
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - missing logo
+
+
+## Update Expert Profile
+`PUT /v2/partners/experts/profile` - update Expert profile details
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Payload
+* `company` - **required** - company name (min. 4 characters)
+* `phone` - **required** - phone number
+* `description` - **required** - description visible in profile details (min. 10 characters)
+* `short_description` - **required** - description visible in expert tile (min. 10 characters)
+* `country` - **required** - country code, one of [these](https://api.livechatinc.com/v2/partners/data/countries)
+* `website` - **required** - website URL
+* `categories` - **required** - an array of categories (codes); [available categories](https://api.livechatinc.com/v2/partners/data/categories/expert)
+* `projects` - **required** - an array of projects (URLs)
+* `agents` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - number of agents, accepted values: `1-5`, `6-15`, `16-30`, `31-50`, `51+`
+* `languages` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - an array of languages (codes); [available languages](https://api.livechatinc.com/v2/partners/data/languages)
+* `hour_rate` - optional - minimal hourly rate
+* `project_rate` - optional - minimal project rate
+* `facebook` - optional - URL to Facebook page
+* `twitter` - optional - URL to Twitter page
+* `linkedin` - optional - URL to LinkedIn page
+* `googleplus` - optional - URL to Google+ page
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - missing logo
+
+
+## Get Expert Profile
+`GET /v2/partners/experts/profile` - get Expert profile details
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "expert_id": "acme",
+    "status": "verified",
+    "company": "ACME",
+    "phone": "123456789",
+    "logo": "https://cdn.example.com/expert-logo.png",
+    "description": "long description goes here",
+    "short_description": "short description (visible in Marketplace tile)",
+    "agents": "5+",
+    "hour_rate": "50",
+    "project_rate": "500",
+    "country": "US",
+    "website": "https://partners.livechatinc.com",
+    "facebook": "",
+    "twitter": "https://twitter/LiveChatProgram",
+    "linkedin": "",
+    "googleplus": "",
+    "categories": [
+		"api-and-integrations",
+        "chat-customization",
+        "chat-strategy-consultancy"
+    ],
+    "languages": [
+        "EN",
+        "ES",
+		"PL"
+    ],
+    "projects": [
+        "https://example.com",
+    ]
+}
+```
+* `403 - Forbidden` - Partner is not an Expert
+* `401 - Unauthorized` - missing or incorrect authorization header
+
+
+## Get Comments
+`GET /v2/partners/experts/comments` - get comments on Expert's profile
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "comment": "This Expert provides a valuable tool to any online business. Very impressed with the speed at which chats are answered and the professional yet personal touch with which they approach each chat.",
+            "author": "Joe",
+            "creation_timestamp":"2018-03-06 10:21:50",
+            "website": "https://example.com"
+        },
+        {
+            "comment": "Great company and great people. They have helped train the team and get the most out of the chat system. Inbounds have increased and process has improved. The product itself is very easy to use. A brilliant service end to end.",
+            "author": "Jane",
+            "creation_timestamp": "2018-02-22 13:32:28",
+            "website": ""
+        }
+    ]
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - Partner is not an Expert
+
+
+## Get Stats
+`GET /v2/partners/experts/stats` - get stats ([Experts Marketplace](https://www.livechatinc.com/experts-marketplace/) position, number of comments and messages) for Expert profile
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "position": 1,
+    "comments": 18,
+    "messages": 132
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - partner is not an expert
+
+
+## Get Expert History
+`GET /v2/partners/experts/history` - get historical stats for Expert profile views (up to last 12 months)
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+* `200 - OK` - example:
+
+```json
+{
+    "result": [
+        {
+            "date": "2018-03",
+            "profile_views": 123
+        },
+        {
+            "date": "2018-02",
+            "profile_views": 212
+        },
+        {
+            "date": "2018-01",
+            "profile_views": 286
+        }
+    ]
+}
+```
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - Partner is not an Expert
