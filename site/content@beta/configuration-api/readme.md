@@ -3,37 +3,67 @@ title: 'Configuration API Guide'
 weight: 10
 ---
 
-## Introduction
+# Introduction
 
 Configuration API is a service for storing configuration of license. You can set
 up here different types of features such as properties or webhooks.
 
-### URL
+
+## Overview
+
+LiveChat Configuration API is a service for storing license configuration.
+
+## Use cases
+
+With LiveChat Configuration API you can:
+
+- set up webhooks
+- create and manage bot agents
+
+## Important notes
+
+To use this tool you need to have basic knowledge of REST or websocket APIs, OAuth 2.0 protocol and your technology of choice.
+
+If you want to perform a chat from the agent perspective, you should use [Agent API](/beta-docs/agent-chat-api/).
+
+<div class="callout type-warning">This API is under <strong>heavy development</strong>. We introduce changes every month. If you want to stay updated, follow the changelog below.</div>
+# Getting started
+
+## Prerequisites
+
+To start off with LiveChat Configuration API, follow these steps:
+
+1. Sign up or sign in to the [Developers Console](https://developers.livechatinc.com/console/).
+2. Create a new app ("Server-side" type).
+3. Copy the Client Secret and Client ID.
+
+
+## URL
 
 Configuration API is available under URL
 `api.livechatinc.com/<version>/configuration/{endpoint}`.
 
-### Versioning
+## Versioning
 
-There are several API versions available, for example: `v0.3` or `v0.4`. If you want to use the latest version,
-you should use `api.chat.io/configuration/{endpoint}` URL, but it is not
+There are several API versions available, for example: `v3.0` or `v0.4`. If you want to use the latest version,
+you should use `api.livechatinc.com/configuration/{endpoint}` URL, but it is not
 recommended.
 
-### Authentication
+## Authentication
 
 Authentication is done via `Authorization` header. In each request you should
 add `Authorization` header with Bearer token.
 
 ```
-curl -v api.chat.io/v3.0/configuration/agents/get_bot_agent_details -H "Authorization: Bearer fra-7XNqYbjTS4ux1uSdp1ig8w" -X POST -d '{"bot_agent_id":"9a1829e224aea210da3a3f46a7074e28"}'
+curl -v api.livechatinc.com/v3.0/configuration/agents/get_bot_agent_details -H "Authorization: Bearer fra-7XNqYbjTS4ux1uSdp1ig8w" -X POST -d '{"bot_agent_id":"9a1829e224aea210da3a3f46a7074e28"}'
 ```
 
-### Propagation delay
+## Propagation delay
 
 All configurations set by this API will have action in system after max 2
 minutes. This delay will be removed in future.
 
-## BOT Agent
+# BOT Agent
 
 * BOT Agent enables writing integrations using agent-api to communicate in chats
   as a regular Agent.
@@ -46,15 +76,15 @@ minutes. This delay will be removed in future.
   identified by `client_id`. By "My BOT Agents" the BOTs owned by application
   with given `client_id` is meant.
 
-### Differences from regular Agent
+## Differences from regular Agent
 
 * you can not log in using BOT Agent account
 * you can not set password for BOT Agent account
 * BOT Agent does not have an email - agent_id is a random hash
 
-### Methods
+## Methods
 
-##### Create BOT Agent
+#### Create BOT Agent
 
 **Endpoint**: `/agents/create_bot_agent`
 
@@ -79,7 +109,7 @@ minutes. This delay will be removed in future.
 | `webhooks.actions[].additional_data` | `string[]` | No | Additional data that will arrive with webhook |
 
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -128,9 +158,9 @@ minutes. This delay will be removed in future.
     with free slots in that group
 * `webhooks` - go [here](#webhooks) for possible actions values and payloads.
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
@@ -138,7 +168,7 @@ minutes. This delay will be removed in future.
 }
 ```
 
-##### Remove BOT Agent
+#### Remove BOT Agent
 
 **Endpoint**: `agents/remove_bot_agent`
 
@@ -150,7 +180,7 @@ minutes. This delay will be removed in future.
 | -------------- | -------- | -------- | ------------ |
 | `bot_agent_id` | `string` | Yes      | BOT agent ID |
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -158,16 +188,16 @@ minutes. This delay will be removed in future.
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
 }
 ```
 
-#### Update BOT Agent
+### Update BOT Agent
 
 **Endpoint**: `agents/update_bot_agent`
 
@@ -192,7 +222,7 @@ minutes. This delay will be removed in future.
 | `webhooks.actions[].filters` | `object`   | No       | filters to check if webhook should be triggered        |
 | `webhooks.actions[].additional_data` | `string[]` | No | Additional data that will arrive with webhook |
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -238,16 +268,16 @@ minutes. This delay will be removed in future.
     with free slots in that group
 * `webhooks` - go [here](#webhooks) for possible actions values and payloads.
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
 }
 ```
 
-#### Get BOT Agents
+### Get BOT Agents
 
 **Endpoint**: `agents/get_bot_agents`
 
@@ -259,7 +289,7 @@ minutes. This delay will be removed in future.
 | -------------- | ------ | -------- | ----------------------------------------------------------------------------------------- |
 | `all`          | `bool` | No       | Get all BOT Agents, if `false` returns only caller's BOT Agents, default value is `false` |
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -267,9 +297,9 @@ minutes. This delay will be removed in future.
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
@@ -282,7 +312,7 @@ minutes. This delay will be removed in future.
 }
 ```
 
-#### Get BOT Agent details
+### Get BOT Agent details
 
 **Endpoint**: `agents/get_bot_agent_details`
 
@@ -294,7 +324,7 @@ minutes. This delay will be removed in future.
 | -------------- | -------- | -------- | ------------ |
 | `bot_agent_id` | `string` | Yes      | BOT Agent ID |
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -302,9 +332,9 @@ minutes. This delay will be removed in future.
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
@@ -350,9 +380,9 @@ minutes. This delay will be removed in future.
 }
 ```
 
-## Webhooks
+# Webhooks
 
-#### Register webhook
+### Register webhook
 
 **Endpoint**: `webhooks/register_webhook`
 
@@ -370,34 +400,34 @@ minutes. This delay will be removed in future.
 
 * `action` possible values:
   * `incoming_chat_thread` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#incoming-chat-thread), 
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#incoming-chat-thread), 
     available filters for the action: `chat_properties`, `thread_properties` and `chat_member_ids`
   * `incoming_event` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#incoming-event),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#incoming-event),
     available filters for the action: `chat_properties`, `event_properties`, `chat_member_ids` and `author_type`
   * `incoming_rich_message_postback` - triggers on action
-    [link to change](https://www.chat.io/docs/agent-api/api-reference/v3.0/#incoming-rich-message-postback),
+    [link to change](/beta-docs/agent-api/api-reference/v3.0/#incoming-rich-message-postback),
     available filters for the action: `chat_properties`, `event_properties` and `chat_member_ids`
   * `last_seen_timestamp_updated` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#last-seen-timestamp-updated),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#last-seen-timestamp-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `thread_closed` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#thread-closed),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#thread-closed),
     available filters for the action: `chat_properties`, `thread_properties` and `chat_member_ids`
   * `chat_scopes_updated` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-scopes-updated),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-scopes-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_properties_updated` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-properties-updated),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-properties-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_thread_properties_updated` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-thread-properties-updated),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-thread-properties-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_user_added` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-user-added),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-user-added),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_user_removed` - triggers on action
-    [agent-api push](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-user-removed),
+    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-user-removed),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `agent_status_changed` - triggers when status of some agent is changed,
     available filters for the action: `chat_member_ids`
@@ -425,7 +455,7 @@ minutes. This delay will be removed in future.
   * `access` (available only for actions: `incoming_chat_event` and `chat_user_added`)
   * `thread_id` (available only for action `chat_user_added`)
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -454,9 +484,9 @@ minutes. This delay will be removed in future.
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
@@ -464,7 +494,7 @@ minutes. This delay will be removed in future.
 }
 ```
 
-#### Get webhooks config
+### Get webhooks config
 
 **Endpoint**: `webhooks/get_webhooks_config`
 
@@ -472,16 +502,16 @@ minutes. This delay will be removed in future.
 * `webhooks--my:read` - to get my webhooks config
 * `webhooks--all:read` - to get all webhooks config
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
@@ -511,7 +541,7 @@ minutes. This delay will be removed in future.
 }
 ```
 
-#### Unregister webhook
+### Unregister webhook
 
 **Endpoint**: `webhooks/unregister_webhook`
 
@@ -523,7 +553,7 @@ minutes. This delay will be removed in future.
 | -------------- | -------- | -------- | ---------- |
 | `webhook_id`   | `string` | Yes      | Webhook ID |
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -531,18 +561,18 @@ minutes. This delay will be removed in future.
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {
 }
 ```
 
-## Webhooks data structure
+# Webhooks data structure
 
-### Webhook format
+## Webhook format
 
 ```js
 {
@@ -560,22 +590,22 @@ minutes. This delay will be removed in future.
 }
 ```
 
-### Payload for actions derived from agent-api pushes:
+## Payload for actions derived from agent-api pushes:
 
-* [`incoming_chat_thread`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#incoming-chat-thread)
-* [`incoming_event`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#incoming-event)
-* [`last_seen_timestamp_updated`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#last-seen-timestamp-updated)
-* [`thread_closed`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#thread-closed)
-* [`chat_scopes_updated`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-scopes-updated)
-* [`chat_properties_updated`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-properties-updated)
-* [`chat_thread_properties_updated`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-thread-properties-updated)
-* [`chat_user_added`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-user-added)
-* [`chat_user_removed`](https://www.chat.io/docs/agent-api/api-reference/v3.0/#chat-chat-user-removed)
+* [`incoming_chat_thread`](/beta-docs/agent-api/api-reference/v3.0/#incoming-chat-thread)
+* [`incoming_event`](/beta-docs/agent-api/api-reference/v3.0/#incoming-event)
+* [`last_seen_timestamp_updated`](/beta-docs/agent-api/api-reference/v3.0/#last-seen-timestamp-updated)
+* [`thread_closed`](/beta-docs/agent-api/api-reference/v3.0/#thread-closed)
+* [`chat_scopes_updated`](/beta-docs/agent-api/api-reference/v3.0/#chat-scopes-updated)
+* [`chat_properties_updated`](/beta-docs/agent-api/api-reference/v3.0/#chat-properties-updated)
+* [`chat_thread_properties_updated`](/beta-docs/agent-api/api-reference/v3.0/#chat-thread-properties-updated)
+* [`chat_user_added`](/beta-docs/agent-api/api-reference/v3.0/#chat-user-added)
+* [`chat_user_removed`](/beta-docs/agent-api/api-reference/v3.0/#chat-chat-user-removed)
 
 
-### Payload for another actions:
+## Payload for another actions:
 
-#### `agent_status_changed`
+### `agent_status_changed`
 
 ```js
 {
@@ -590,7 +620,7 @@ possible status values:
 * `not accepting chats`
 * `offline`
 
-#### `agent_deleted`
+### `agent_deleted`
 
 ```js
 {
@@ -599,9 +629,9 @@ possible status values:
 ```
 
 
-## Properties
+# Properties
 
-#### Create properties
+### Create properties
 
 **Endpoint**: `properties/create_properties`
 
@@ -623,10 +653,10 @@ possible status values:
 | `<property_name>.range.to`      | `int` | No | only values equal or lower than this parameter can be set to this property |
 
 Note: only one of `domain` and `range` can be set in single property
-Note: for more information about properties see [Properties Guide](https://www.chat.io/docs/apis-overview/#properties)
+Note: for more information about properties see [Properties Guide](/beta-docs/apis-overview/#properties)
 
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {  
@@ -668,9 +698,9 @@ Note: for more information about properties see [Properties Guide](https://www.c
 }
 ```
 
-##### Example response payloads
+#### Example response payloads
 
-###### Success
+##### Success
 
 ```js
 {}
@@ -678,7 +708,7 @@ Note: for more information about properties see [Properties Guide](https://www.c
 
 
 
-#### Get property configs
+### Get property configs
 
 **Endpoint**: `properties/get_property_configs`
 
@@ -690,10 +720,10 @@ Note: for more information about properties see [Properties Guide](https://www.c
 | -------------- | -------- | -------- | ------------------------------------------------ |
 | `all`          | `bool` | No      | if true returns all properties on license (default false)|
 
-Note: for more information about properties see [Properties Guide](https://www.chat.io/docs/apis-overview/#properties)
+Note: for more information about properties see [Properties Guide](/beta-docs/apis-overview/#properties)
 
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
@@ -701,9 +731,9 @@ Note: for more information about properties see [Properties Guide](https://www.c
 }
 ```
 
-##### Example response
+#### Example response
 
-###### Success
+##### Success
 
 ```js
 {  
@@ -753,9 +783,9 @@ Note: for more information about properties see [Properties Guide](https://www.c
 
 
 
-## Auto access rules
+# Auto access rules
 
-#### Add auto access rules
+### Add auto access rules
 
 **Endpoint**: `auto_access_rules/add_auto_access_rules`
 
@@ -790,7 +820,7 @@ Note: for more information about properties see [Properties Guide](https://www.c
       * `value` - value to match (`string`)
       * `exact_match` - if exact match, if set to `false` a `match_object.value` will be matched as substring of `customer_url`
   
-##### Example request payload
+#### Example request payload
 ```js
 {
   "description": "Chats from Facebook or Twitter",
@@ -820,8 +850,8 @@ Note: for more information about properties see [Properties Guide](https://www.c
 }
 ```
 
-##### Example response payloads
-###### Success
+#### Example response payloads
+##### Success
 ```js
 {
   "auto_access_rules_id": "pqi8oasdjahuakndw9nsad9na"
@@ -830,21 +860,21 @@ Note: for more information about properties see [Properties Guide](https://www.c
 
 
 
-#### Get auto access rules config
+### Get auto access rules config
 
 **Endpoint**: `auto_access_rules/get_auto_access_rules_config`
 
 
-##### Example request payload
+#### Example request payload
 
 ```js
 {
 }
 ```
 
-##### Example response
+#### Example response
 
-###### Success
+##### Success
 
 ```js
 {
@@ -889,7 +919,7 @@ Note: for more information about properties see [Properties Guide](https://www.c
 }
 ```
 
-#### Remove auto access rules
+### Remove auto access rules
 
 **Endpoint**: `auto_access_rules/remove_auto_access_rules`
 
@@ -899,15 +929,15 @@ Note: for more information about properties see [Properties Guide](https://www.c
 | | `auto_access_rules_id` | `string` | Yes | auto access rules ID |
 
   
-##### Example request payload
+#### Example request payload
 ```js
 {
   "auto_access_rules_id": "pqi8oasdjahuakndw9nsad9na"
 }
 ```
 
-##### Example response payloads
-###### Success
+#### Example response payloads
+##### Success
 ```js
 {
 }
