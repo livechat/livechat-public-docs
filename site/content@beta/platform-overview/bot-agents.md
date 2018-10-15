@@ -10,7 +10,7 @@ BOT Agents are similar to their human counterparts. They can join chats and post
 
 ## What can BOT Agents do?
 
-BOT Agents are created with the [Configuration API](/docs/configuration-api/). Then, BOT Agents communicate with the [Agent API](/docs/agent-chat-api/) by the [Web API](/docs/agent-chat-api/api-reference/v0.4/#web-api) or websocket connection, listening to incoming webhooks (or pushes) and reacting to them.
+BOT Agents are created with the [Configuration API](/docs/configuration-api/). Then, BOT Agents communicate with the [Agent Chat API](/docs/agent-chat-api/) by the [Web API](/docs/agent-chat-api/api-reference/v0.4/#web-api) or websocket connection, listening to incoming webhooks (or pushes) and reacting to them.
 
 ### Post messages and react to keywords
 
@@ -25,7 +25,7 @@ BOT Agents can react to specific keywords during chats. For example, if you set 
 
 ## Technical notes
 
-* BOT Agents use the [Agent API](/docs/agent-chat-api/) to post messages to chats as Agents, so you can use them to write your own integrations. 
+* BOT Agents use the [Agent Chat API](/docs/agent-chat-api/) to post messages to chats as Agents, so you can use them to write your own integrations. 
 
 * When logged in, a BOT Agent is connected to the agent SSO access token that creates and updates the BOT. A BOT Agent is logged out when the access token is revoked.
 
@@ -36,9 +36,10 @@ BOT Agents can react to specific keywords during chats. For example, if you set 
 You can create and manage BOT agents using the [Configuration API](/docs/configuration-api/api-reference/v0.3/#bot-agent).
 
 <div class="callout type-warning">Currently we doesnt's support group management. All agents belong to group 0 by default.</div>
-
+<!--
 ## A sample BOT Agent
 
 We have created a sample Pizza Bot to illustrate the concept of BOT Agents. 
 
 * [Pizza Bot at Github](https://github.com/livechat/chat.io-integrations/tree/master/python/pizzabot_example)
+-->
