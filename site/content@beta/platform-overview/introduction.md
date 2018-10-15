@@ -16,8 +16,8 @@ The communication protocol handles various kinds of information: rich messages, 
 
 There are two primary APIs available:
 
-- [Agent API](../agent-api)<br/>to send chat messages as an agent,
-- [Customer API](../customer-api)<br/> to send chat messages as a customer (visitor) .
+- [Agent Chat API](../agent-chat-api)<br/>to send chat messages as an agent,
+- [Customer Chat API](../customer-chat-api)<br/> to send chat messages as a customer (visitor) .
 
 Both APIs have much in common. However, their use cases are different, which is reflected in their methods. 
 
@@ -32,8 +32,8 @@ See the diagram below to understand the basic flow of information between the se
 
 The most basic use cases of the LiveChat APIs are listing and performing chats. This section describes the general concept of both. For working examples in JavaScript, Go and Python head to the API references:
 
-- [Agent API examples](../agent-api/api-reference/v0.3#examples)
-- [Customer API examples](../customer-api/api-reference/v0.3#examples)
+- [Agent Chat API examples](../agent-chat-api/api-reference/v0.3#examples)
+- [Customer Chat API examples](../customer-chat-api/api-reference/v0.3#examples)
 
 ### Listing chats
 
@@ -44,7 +44,7 @@ When you log in to the Agent or Customer API you will receive one of the followi
 
 These objects contain chat and thread IDs. The IDs can be used to retrieve chat history.
 
-If you want to retrieve chats from the customer perspective, you should use [Customer API](../customer-api). When you log in as an agent, you should go with [Agent API](../agent-api).
+If you want to retrieve chats from the customer perspective, you should use [Customer Chat API](../customer-chat-api). When you log in as an agent, you should go with [Agent Chat API](../agent-chat-api).
 
 ### Performing a chat
 
