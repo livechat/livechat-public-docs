@@ -6,7 +6,7 @@ weight: 30
 
 ## Limitations
 
-There is currently a limit of 25 refresh tokens per client per user. When limit is reached, the oldest token is automaticaly revoked (with rabbitmq publishing). 
+There is currently a limit of 25 refresh tokens per client per user. When limit is reached, the oldest token is automaticaly revoked. 
 
 Another limitation is 3 redirects in 30 seconds to Livechat OAuth 2.0 server per client per user. When limit is reached, server redirects to error page with `too_many_redirects` error detail.
 
