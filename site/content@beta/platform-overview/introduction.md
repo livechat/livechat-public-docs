@@ -32,8 +32,8 @@ See the diagram below to understand the basic flow of information between the se
 
 The most basic use cases of the LiveChat APIs are listing and performing chats. This section describes the general concept of both. For working examples in JavaScript, Go and Python head to the API references:
 
-- [Agent Chat API examples](../agent-chat-api/api-reference/v0.3#examples)
-- [Customer Chat API examples](../customer-chat-api/api-reference/v0.3#examples)
+- [Agent Chat API examples](../agent-chat-api/#examples)
+- [Customer Chat API examples](../customer-chat-api/#examples)
 
 ### Listing chats
 
@@ -48,6 +48,6 @@ If you want to retrieve chats from the customer perspective, you should use [Cus
 
 ### Performing a chat
 
-You can start a chat both as a customer and as an agent. If you are an agent you can also [join](../agent-api/api-reference/#join-chat) a chat. When you are in a chat you can send events to it via [send_event](../agent-api/api-reference/#send-event) method.
+You can start a chat both as a customer and as an agent. If you are an agent you can also [join](../agent-chat-api/#add-user-to-chat) a chat. When you are in a chat you can send events to it via [send_event](../agent-chat-api/#send-event) method.
 
 Currently all new events and chats are sent to all agents within the license. In the future, *scopes* will define which groups of users have access to chats/events and other types of data.
