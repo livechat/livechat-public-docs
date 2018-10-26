@@ -24,7 +24,7 @@ Both APIs have much in common. However, their use cases are different, which is 
 See the diagram below to understand the basic flow of information between the services. The animation explains the basic chat flow: from logging in, through starting a chat, to sending [events](#events).
 
 <video loop width="750" height="500" controls>
-<source type="video/mp4" src="/docs/apis-overview/images/simple_event_schema.mp4">
+<source type="video/mp4" src="/beta-docs/platform-overview/images/simple_event_schema.mp4">
 </video>
 
 
