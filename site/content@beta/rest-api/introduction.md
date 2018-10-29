@@ -8,7 +8,7 @@ Welcome to the LiveChat API documentation!
 
 Our API provides a set of flexible tools which you can use to create new outstanding projects. We smile a bit more each time we see skilled developers unleash their creativity!
 
-Please note that this documentation refers to the **latest API version: 2.0**. If you are looking for the previous version, check out the deprecated [API 1.0 documentation](https://www.livechatinc.com/api/v1/).
+Please note that this documentation refers to the **latest API version: 3.0**. If you are looking for the previous version, check out the deprecated [API 2.0 documentation](https://developers.livechatinc.com/beta-docs/rest-api).
 
 ## Basic API usage
 
@@ -52,7 +52,7 @@ OAuth 2.0 authentication is the recommended way of authenticating to LiveChat AP
 
 It is the most secure way of making API calls. With this flow, you will get access only to some parts of LiveChat account, such as reading agents list. This is more secure than [API key flow](#api-key) which has always access to all LiveChat account data.
 
-To start using OAuth 2.0, please read a dedicated [Authorization](/docs/authorization) guide.
+To start using OAuth 2.0, please read a dedicated [Authorization](/beta-docs/authorization) guide.
 
 ### API key
 

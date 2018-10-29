@@ -13,7 +13,7 @@ You can also get some basic visitor’s statistics. For instance, the chat windo
 
 ## Support for the JavaScript API in chat window installed in native mobile apps
 
-When you install the chat window in a [native mobile app](https://docs.livechatinc.com/#mobile-widgets), you can still interact with the JavaScript API using the `LC_API` object.
+When you install the chat window in a [native mobile app](https://developers.livechatinc.com/beta-docs/#mobile-chat-widgets), you can still interact with the JavaScript API using the `LC_API` object.
 
 ## Support for React-based single-page apps
 

@@ -1132,7 +1132,7 @@ curl --request GET \
 
 
 ## Get Stats
-`GET /v2/partners/experts/stats` - get stats ([Experts Marketplace](https://www.livechatinc.com/experts-marketplace/) position, number of comments and messages) for Expert profile
+`GET /v2/partners/experts/stats` - get stats ([Experts Marketplace](https://www.livechatinc.com/marketplace/experts/) position, number of comments and messages) for Expert profile
 
 #### Headers
 * `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`

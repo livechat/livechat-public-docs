@@ -21,7 +21,7 @@ In this example `routing` is a namespace, while `pinned` and `count` are propert
 
 ## Configuration
 
-Properties are configurable via [Configuration API](/docs/configuration-api/). They can be created whithin a license and they are grouped in namespaces, which help distinguish which property belongs to a given integration.
+Properties are configurable via [Configuration API](../beta-docs/configuration-api/). They can be created whithin a license and they are grouped in namespaces, which help distinguish which property belongs to a given integration.
 Your namespace will be named after your application id.
 
 There are several things that you can configure:
@@ -37,7 +37,7 @@ There are three property types:
 
 #### Note about tokenized_string
 
-`tokenized_string` is string that is split to tokens before indexing in our search engine. This can be useful if you want to use that property as a filter in the methods like [get_archives](/docs/agent-chat-api/api-reference/#get-archives).
+`tokenized_string` is string that is split to tokens before indexing in our search engine. This can be useful if you want to use that property as a filter in the methods like [get_archives](../beta-docs/agent-chat-api/#get-archives).
 
 ### Property locations
 
@@ -47,7 +47,7 @@ Properties can be set within three locations:
 * thread
 * event
 
-You can configure access to properties within those locations. You can, for example, create a property that is visible for agents within a chat and a thread, and not visible within an event. For more details, see [Configuration API docs](/docs/configuration-api/api-reference/#properties).
+You can configure access to properties within those locations. You can, for example, create a property that is visible for agents within a chat and a thread, and not visible within an event. For more details, see [Configuration API docs](../beta-docs/configuration-api/#properties).
 
 ### Property domain
 
@@ -120,7 +120,7 @@ curl https://accounts.livechatinc.com/info -H "Authorization: Bearer c5e4f61e1a6
 
 `client_id` is your application id.
 
-Now, you can set those properties within the existing chat from customer perspective via agent/customer api method [update_chat_properties](/docs/customer-api/api-reference/#update-chat-properties)
+Now, you can set those properties within the existing chat from customer perspective via agent/customer api method [update_chat_properties](../beta-docs/customer-chat-api/#update-chat-properties)
 ```
 curl -v https://api.livechatinc.com/customer/v0.5/action/update_chat_properties \
     -H "Content-Type: application/json" \
@@ -137,7 +137,7 @@ curl -v https://api.livechatinc.com/customer/v0.5/action/update_chat_properties 
     }'
 ```
 
-And they will appear from the agent's perspective either in chat object as a return element (in the sample response from [get_archives](/docs/agent-chat-api/api-reference/#get-archives) method)
+And they will appear from the agent's perspective either in chat object as a return element (in the sample response from [get_archives](../beta-docs/agent-chat-api/#get-archives) method)
 
 ```js
 {
@@ -166,7 +166,7 @@ And they will appear from the agent's perspective either in chat object as a ret
 }
 ```
 
- or in push [chat_properties_updated](/docs/customer-api/api-reference/#chat-properties-updated)
+ or in push [chat_properties_updated](../beta-docs/customer-chat-api/#chat-properties-updated)
 
  ```js
 {

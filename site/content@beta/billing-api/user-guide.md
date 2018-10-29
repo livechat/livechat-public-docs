@@ -6,7 +6,7 @@ weight: 30
 
 ## 1. Authorization
 
-The Billing API is based on the [LiveChat OAuth](https://docs.livechatinc.com/authorization/) authorization flow. All endpoints require access tokens, and some endpoints are limited by scope or client ID.
+The Billing API is based on the [LiveChat OAuth](https://developers.livechatinc.com/beta-docs/authorization/) authorization flow. All endpoints require access tokens, and some endpoints are limited by scope or client ID.
 
 ## 2. APIS
 
