@@ -71,8 +71,8 @@ group[]=0" \
     "operators": [
       // (...)
     ],
-    "page_address": "https://docs.livechatinc.com/js-api/#on-chat-window-minimized",
-    "page_current": "https://docs.livechatinc.com/js-api/#on-chat-window-minimized",
+    "page_address": "https://developers.livechatinc.com/beta-docs/js-api/#on-chat-window-minimized",
+    "page_current": "https://developers.livechatinc.com/beta-docs/js-api/#on-chat-window-minimized",
     "page_entered": "2017-02-16 12:36:21",
     "page_entered_ts": 1487244981,
     "page_time": "2017-02-16 12:39:12",
@@ -98,7 +98,7 @@ group[]=0" \
       },
       {
         "invitation": "",
-        "page": "https://docs.livechatinc.com/",
+        "page": "https://developers.livechatinc.com/beta-docs/",
         "time": "2017-02-16 12:38:33",
         "time_ref": 1487245113,
         "time_ts": 1487245113,
@@ -194,7 +194,7 @@ For example, if you have your own database with some additional details about yo
 
 <img src="https://www.livechatinc.com/wp-content/uploads/2013/02/visitor-details1.png" width="300" style="margin:30px 0"/>
 
-**Note:** this method can only be used along with the [Webhooks](/docs/build-integration/#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See a sample integration in [Webhooks documentation](/docs/build-integration/#webhooks).
+**Note:** this method can only be used along with the [Webhooks](https://developers.livechatinc.com/beta-docs/configuration-api/#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See a sample integration in [Webhooks documentation](https://developers.livechatinc.com/beta-docs/configuration-api/#webhooks).
 
 #### Required properties
 

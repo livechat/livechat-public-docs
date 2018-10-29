@@ -4,7 +4,7 @@ weight: 30
 
 # Customer authorization flow
 
-To authorize [Customer API](/docs/customer-api/) you will need different access token than for the [Agent API](/docs/agent-api/) or [Configuration API](/docs/configuration-api).
+To authorize [Customer API](/beta-docs/customer-chat-api/) you will need different access token than for the [Agent API](/beta-docs/agent-chat-api/) or [Configuration API](/beta-docs/configuration-api).
 
 ### Creating new customer along with customer access token
 

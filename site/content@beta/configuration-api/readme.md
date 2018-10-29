@@ -65,7 +65,7 @@ minutes. This delay will be removed in future.
 
 # BOT Agent
 
-* BOT Agent enables writing integrations using agent-api to communicate in chats
+* BOT Agent enables writing integrations using agent-chat-api to communicate in chats
   as a regular Agent.
 
 * Logged in BOT Agent is connected to agent SSO access token that
@@ -400,34 +400,34 @@ minutes. This delay will be removed in future.
 
 * `action` possible values:
   * `incoming_chat_thread` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#incoming-chat-thread), 
+    [agent-chat-api push](/beta-docs/agent-chat-api/#incoming-chat-thread), 
     available filters for the action: `chat_properties`, `thread_properties` and `chat_member_ids`
   * `incoming_event` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#incoming-event),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#incoming-event),
     available filters for the action: `chat_properties`, `event_properties`, `chat_member_ids` and `author_type`
   * `incoming_rich_message_postback` - triggers on action
-    [link to change](/beta-docs/agent-api/api-reference/v3.0/#incoming-rich-message-postback),
+    [link to change](/beta-docs/agent-chat-api/#incoming-rich-message-postback),
     available filters for the action: `chat_properties`, `event_properties` and `chat_member_ids`
   * `last_seen_timestamp_updated` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#last-seen-timestamp-updated),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#last-seen-timestamp-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `thread_closed` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#thread-closed),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#thread-closed),
     available filters for the action: `chat_properties`, `thread_properties` and `chat_member_ids`
   * `chat_scopes_updated` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-scopes-updated),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-scopes-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_properties_updated` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-properties-updated),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-properties-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_thread_properties_updated` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-thread-properties-updated),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-thread-properties-updated),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_user_added` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-user-added),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-user-added),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `chat_user_removed` - triggers on action
-    [agent-api push](/beta-docs/agent-api/api-reference/v3.0/#chat-user-removed),
+    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-user-removed),
     available filters for the action: `chat_properties` and `chat_member_ids`
   * `agent_status_changed` - triggers when status of some agent is changed,
     available filters for the action: `chat_member_ids`
@@ -590,17 +590,17 @@ minutes. This delay will be removed in future.
 }
 ```
 
-## Payload for actions derived from agent-api pushes:
+## Payload for actions derived from agent-chat-api pushes:
 
-* [`incoming_chat_thread`](/beta-docs/agent-api/api-reference/v3.0/#incoming-chat-thread)
-* [`incoming_event`](/beta-docs/agent-api/api-reference/v3.0/#incoming-event)
-* [`last_seen_timestamp_updated`](/beta-docs/agent-api/api-reference/v3.0/#last-seen-timestamp-updated)
-* [`thread_closed`](/beta-docs/agent-api/api-reference/v3.0/#thread-closed)
-* [`chat_scopes_updated`](/beta-docs/agent-api/api-reference/v3.0/#chat-scopes-updated)
-* [`chat_properties_updated`](/beta-docs/agent-api/api-reference/v3.0/#chat-properties-updated)
-* [`chat_thread_properties_updated`](/beta-docs/agent-api/api-reference/v3.0/#chat-thread-properties-updated)
-* [`chat_user_added`](/beta-docs/agent-api/api-reference/v3.0/#chat-user-added)
-* [`chat_user_removed`](/beta-docs/agent-api/api-reference/v3.0/#chat-chat-user-removed)
+* [`incoming_chat_thread`](/beta-docs/agent-chat-api/#incoming-chat-thread)
+* [`incoming_event`](/beta-docs/agent-chat-api/#incoming-event)
+* [`last_seen_timestamp_updated`](/beta-docs/agent-chat-api/#last-seen-timestamp-updated)
+* [`thread_closed`](/beta-docs/agent-chat-api/#thread-closed)
+* [`chat_scopes_updated`](/beta-docs/agent-chat-api/#chat-scopes-updated)
+* [`chat_properties_updated`](/beta-docs/agent-chat-api/#chat-properties-updated)
+* [`chat_thread_properties_updated`](/beta-docs/agent-chat-api/#chat-thread-properties-updated)
+* [`chat_user_added`](/beta-docs/agent-chat-api/#chat-user-added)
+* [`chat_user_removed`](/beta-docs/agent-chat-api/#chat-chat-user-removed)
 
 
 ## Payload for another actions:
@@ -653,7 +653,7 @@ possible status values:
 | `<property_name>.range.to`      | `int` | No | only values equal or lower than this parameter can be set to this property |
 
 Note: only one of `domain` and `range` can be set in single property
-Note: for more information about properties see [Properties Guide](/beta-docs/apis-overview/#properties)
+Note: for more information about properties see [Properties Guide](/beta-docs/platform-overview/#properties)
 
 
 #### Example request payload
@@ -720,7 +720,7 @@ Note: for more information about properties see [Properties Guide](/beta-docs/ap
 | -------------- | -------- | -------- | ------------------------------------------------ |
 | `all`          | `bool` | No      | if true returns all properties on license (default false)|
 
-Note: for more information about properties see [Properties Guide](/beta-docs/apis-overview/#properties)
+Note: for more information about properties see [Properties Guide](/beta-docs/platform-overview/#properties)
 
 
 #### Example request payload

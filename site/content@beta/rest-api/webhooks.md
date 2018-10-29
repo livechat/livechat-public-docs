@@ -6,7 +6,7 @@ weight: 140
 
 This method will help you build your own LiveChat integrations by **creating** and **managing webhooks**. 
 
-Check out our [webhooks tutorial](https://docs.livechatinc.com/build-integration/#!webhooks) for more information, use cases and to learn how to get started.
+Check out our [webhooks tutorial](https://developers.livechatinc.com/beta-docs/configuration-api/#webhooks) for more information, use cases and to learn how to get started.
 
 ## Available paths {#webhooks-available-paths}
 

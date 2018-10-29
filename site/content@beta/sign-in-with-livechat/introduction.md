@@ -31,4 +31,4 @@ For example, you can display LiveChat tracking code which already includes the u
 With the "Sign in with LiveChat" flow, you can easily build an app which:
 
 * obtains access to LiveChat user's email or license number,
-* will receive an `access_token` that can be used to perform different <a href="/rest-api">REST API</a> calls.
+* will receive an `access_token` that can be used to perform different <a href="/beta-docs/rest-api">REST API</a> calls.

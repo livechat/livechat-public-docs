@@ -94,7 +94,7 @@ If the user passes through "Sign in with LiveChat" flow, `error` param will be n
 
 If `response_code` was set to **access_token**:
 
-* **access_token** – used for authorization in [REST API](/docs/rest-api) calls,
+* **access_token** – used for authorization in [REST API](/beta-docs/rest-api) calls,
 * **scopes** – array of scopes that `access_token` has access to,
 * **expires_in** – number of seconds from now that `access_token` will be valid,
 * **entity_id** – LiveChat user email,

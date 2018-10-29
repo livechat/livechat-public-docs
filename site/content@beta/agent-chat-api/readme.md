@@ -7,7 +7,7 @@ weight: 10
 
 ## Overview
 
-LiveChat Agent API allows you to join a chat as **an agent**. It has a different set of methods than the [Customer API](/beta-docs/customer-api/). The main reason to have separate APIs for both Customer and Agent are their specific use cases.
+LiveChat Agent API allows you to join a chat as **an agent**. It has a different set of methods than the [Customer API](/beta-docs/customer-chat-api/). The main reason to have separate APIs for both Customer and Agent are their specific use cases.
 
 ## Use cases
 
@@ -22,7 +22,7 @@ With LiveChat Agent API you can do the following:
 
 To use this tool you need to have basic knowledge of REST or websocket APIs, OAuth 2.0 protocol and your technology of choice. We've got examples ready in JavaScript, Go and Python.
 
-If you want to perform a chat from the customer perspective, you should use [Customer API](/beta-docs/customer-api/).
+If you want to perform a chat from the customer perspective, you should use [Customer API](/beta-docs/customer-chat-api/).
 
 <div class="callout type-warning">This API is under <strong>heavy development</strong>. We introduce changes every month. If you want to stay updated, follow the changelog below.</div>
 
