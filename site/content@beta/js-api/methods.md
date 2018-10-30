@@ -16,7 +16,7 @@ LC_API.set_custom_variables(custom_variables);
 
 You can set custom variables that the LiveChat agents will see in their apps. Custom variables will be saved in the chat transcript, so you will see them in the [Archives](https://my.livechatinc.com/archives) even after the chat has been finished. (Note: if the variables are set after the chat has started, they will not be saved in Archives.)
 
-<img src="https://developers.livechatinc.com/wp-content/uploads/2015/12/custom-variables-in-livechat-u@2x.jpg" width="400"/>
+<img src="https://www.livechatinc.com/wp-content/uploads/2015/03/custom-variables-in-livechat@2x.jpg" width="400"/>
 
 Please note that custom variables can also be set in the tracking code `window.__lc.params` variable ([read more](#tracking-code)). The above method should be used if you want to update the custom variables without page refresh.
 
