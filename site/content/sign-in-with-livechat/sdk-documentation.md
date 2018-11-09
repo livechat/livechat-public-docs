@@ -6,12 +6,12 @@ weight: 30
 
 ## Methods
 
-### **AccountsSDK.init({ ... })**
+### **accountsSdk.init({ ... })**
 
 > Example `init()` method usage
 
 ```js
-var instance = AccountsSDK.init({
+const instance = accountsSdk.init({
   client_id: "<your_client_id>",
   onIdentityFetched: (error, data) => {
     // ...
@@ -19,7 +19,7 @@ var instance = AccountsSDK.init({
 });
 ```
 
-This method initiates the SDK and returns the AccountsSDK object instance. It accepts an object with the following properties:
+This method initiates the SDK and returns the `accountsSdk` object instance. It accepts an object with the following properties:
 
 * **client_id** – obtained from the [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
 
@@ -27,7 +27,7 @@ This method initiates the SDK and returns the AccountsSDK object instance. It ac
 
 * **onIdentityFetched(error, data)** – the callback executed when user's identity is fetched. The callback will include either `error` or `data` object depending on the current user authorization status.<br>You will find the detailed documentation in <a href="#response-format">Response format</a> section.
 
-<aside class="notice"><code>AccountsSDK</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
+<aside class="notice"><code>accountsSdk</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
 
 ### **instance.openPopup()**
 
@@ -35,7 +35,7 @@ This method initiates the SDK and returns the AccountsSDK object instance. It ac
 
 ```js
 // javascript
-var instance = AccountsSDK.init({ ... });
+const instance = accountsSdk.init({ ... });
 ```
 
 ```html
@@ -51,7 +51,7 @@ Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in w
 
 ```js
 // javascript
-var instance = AccountsSDK.init({ ... });
+const instance = accountsSdk.init({ ... });
 
 function signMeOut(e) {
   e.preventDefault();
@@ -73,7 +73,7 @@ It signs the user out and executes the `callback` function (with no arguments) w
 > Sample `displayButtons()` method usage:
 
 ```js
-var instance = AccountsSDK.init({ ... });
+const instance = accountsSdk.init({ ... });
 
 // some DOM changes which cause buttons to disappear from DOM
 // (...)

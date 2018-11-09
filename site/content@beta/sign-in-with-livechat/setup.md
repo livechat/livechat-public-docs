@@ -11,10 +11,32 @@ Please note that **Redirect URI** field must match the URL of the website that h
 
 
 ## 2. Include SDK library
+SDK is available in two formats: an NPM module and a CDN-hosted library.
+
+### NPM module
+```bash
+npm install --save @livechat/accounts-sdk
+```
+
+```js
+import { accountsSdk } from '@livechat/accounts-sdk';
+```
+If you build an app using Webpack, you can just import the `accountsSdk` module from the NPM.
+
+### CDN-hosted library
 ```html
 <script src="//cdn.livechatinc.com/accounts/accounts-sdk.min.js"></script>
 ```
-Create a simple HTML page and include the following JavaScript library.
+If you do not use Webpack, you can still include the library using a `<script>` tag in your HTML. This will create an `AccountsSDK` global object.
+
+---
+
+**Note:** SDK objects from NPM and CDN-hosted libraries have different names:
+
+* NPM module: `accountsSdk`
+* CDN-hosted library: `AccountsSDK`
+
+If you use the CDN-hosted version of this SDK, change `accountsSdk` that you see in all examples in this documentation to `AccountsSDK`.
 
 ## 3. Prepare button container
 
@@ -28,7 +50,7 @@ Create a simple HTML page and include the following JavaScript library.
 
 ```js
 // javascript
-var instance = AccountsSDK.init({ ... });
+const instance = accountsSdk.init({ ... });
 ```
 ```html
 <!-- html -->
@@ -44,7 +66,7 @@ If you prefer to design your own button, you can do that, too. Just bind the [`o
 
 ```html
 <script>
-var instance = AccountsSDK.init({
+const instance = accountsSdk.init({
   client_id: '<your_client_id>',
   onIdentityFetched: (error, data) => {
     if (data) {
