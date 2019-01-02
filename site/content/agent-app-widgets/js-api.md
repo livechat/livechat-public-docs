@@ -58,13 +58,13 @@ Events `customer_profile` and `customer_profile_hidden` return an object width a
   },
   "source": "chats",
   "geolocation": {
-    "city": "Wroclaw"
-    "country": "Poland"
-    "country_code": "PL"
-    "latitude": "51.1093"
-    "longitude": "17.0248"
-    "region": "Dolnoslaskie"
-    "timezone": "Europe/Warsaw"
+    "city": "Wroclaw",
+    "country": "Poland",
+    "country_code": "PL",
+    "latitude": "51.1093",
+    "longitude": "17.0248",
+    "region": "Dolnoslaskie",
+    "timezone": "Europe/Warsaw",
     "zipcode": ""
   }
 }
