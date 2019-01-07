@@ -101,7 +101,191 @@ It appends given message at the end of current conversation input window or into
 LiveChat.putMessage("Hello! This message comes from the App Widget. Press enter to send it!");
 ```
 
+## Add new content to Visitor Details
 
+### Introduction
+
+You can use the SDK to add your own content to the Visitor Details view. To better understand the following part lets first define the definitions we will be using:   
+
+- **Section** - An element of Visitor Details that can be collapsed / expanded and is a completed set of information that is grouped under a single title.
+- **Component** - A single line in the section that can have one of pre-defined formats and be filled with the data from AAW.
+
+### How to add a section
+To extend the Visitor Details view you need to first declare the initial state of the section in the Developer Console:
+
+  1. Log into the Agent App using your license.
+  2. Go to [Developer Console Apps](https://developers.livechatinc.com/console/apps) and select your app or create a new Agent App Widget app.
+  3. Go to the `Building blocks` section of your app and create a new Agent App widget. You need to provide the `Widget source URL`, which can be either an URL pointing to the Web (for eg. `https://livechat.github.io/sample-widget-integration/`) or to localhost (for eg. `https://localhost:4000`), if you want to use the local version of the widget.
+  4. Set the `Widget placement` to `Chat details` and provide the initial state JSON, eg.: 
+
+```json
+{
+  "customSections": [
+    { 
+      "title": "Example section",
+      "components": [
+        {
+          "type": "button",
+          "data": {
+            "label": "Example button",
+            "id": "example-button"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+  6. The sections **can only be initialized once** and can't be modified afterwarts. This means you can't add or remove sections using the SDK later on, but you can update existing ones.
+  7. Go to `Private installation` and click the `Install app` button.
+  8. Your widget should be now visible in the right sidebar of the Agent App chat view. Beware - if you did configure set any icon for your widget, it may appear that it is not there. Just hover over the widget icon bar and check, if there's any clickable whitespace. You can set the icon in Developmers Console.
+
+### How to update a section
+
+To update a section you can use the `modifyCustomerDetailsSection` method like this:
+
+```js
+LiveChat.modifyCustomerDetailsSection(
+  { 
+    "title": "Example section",
+    "components": [
+      {
+        "type": "button",
+        "data": {
+          "label": "Updated button",
+          "id": "example-button"
+        }
+      }
+    ]
+  } 
+);
+```
+---
+**IMPORTANT**
+
+The **title** attribute in the root of the JSON acts as an ID to the section and *can not* be changed. You need to provide it to identify which section you want to update.
+
+---
+
+### Component types
+Components are *lego bricks* which can be used for building a section.
+
+#### Title
+Title could be used in several cases. Component look depends of given data.
+
+| Property | Required | Type | Note |
+|----------|----------| ---- | ----------- |
+| `title` | Yes | string |                   |
+| `value` | No | string |                    |
+| `description` | No | string |              |
+| `imgUrl` | No | string |                   |
+| `imgSize` | No | string, one of: ["small", "big"]` | Default value: "big" |
+| `link` | No | string | URL added when title is a link. |
+
+> Example of title component
+
+```json
+{
+    type: 'title',
+    data: {
+        title: 'title',
+        value: 'value',
+        description: 'description',
+        imgUrl: 'https://www.gstatic.com/webp/gallery/4.jpg'
+    }
+}
+```
+
+#### Button
+Simple button from design system
+
+| Property | Required | Type   |
+|----------|----------| ------ |
+| `title`  | Yes      | string |
+| `value`  | Yes      | string | 
+
+> Example of button component
+
+```json
+{
+    type: 'button',
+    data: {
+          label: 'second button',
+          id: 'second-button'
+    }
+}
+```
+
+#### Label with value
+
+| Property | Required | Type    | Description |
+|----------|----------| ------- | ----------- |
+| `label`  | No       | string  |             |
+| `value`  | No       | string  |             |
+| `inline` | No       | boolean | Default value: `true` |
+
+> Example of label with value component
+
+```json
+{
+  type: 'label_value',
+  data: {
+    label: 'Name',
+    value: 'Stefan',
+  }
+}
+```
+
+#### Link
+
+| Property | Required | Type    | Description |
+|----------|----------| ------- | ----------- |
+| `url`    | Yes      | string  |             |
+| `value`  | No       | string  |             |
+| `target` | No       | string  | Same as HTML attribute |
+| `inline` | No       | boolean |             |
+
+> Example of link component
+
+```json
+{
+  type: 'link',
+  data: {
+    value: 'click me',
+    url: 'google.com'
+  }
+}
+```
+
+#### Line
+Line could be used to separate section content. It has no components inside. 
+
+> Example of line component
+
+```json
+{
+    type: 'line'
+}
+```
+
+#### Section
+Section is a container for components.
+
+| Property     | Required | Type                |
+|--------------|----------| ------------------- |
+| `title`      | Yes      | string              |
+| `imgUrl`     | Yes      | array of components | 
+| `components` | No       | string              | 
+
+> Example of section component
+
+```json
+{
+    title: 'card with image',
+    imgUrl: 'https://www.gstatic.com/webp/gallery/4.jpg',
+    components: []
+}
+```
 
 ## Get the ID of the session
 
