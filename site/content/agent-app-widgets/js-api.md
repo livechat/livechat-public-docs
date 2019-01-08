@@ -105,16 +105,16 @@ LiveChat.putMessage("Hello! This message comes from the App Widget. Press enter 
 
 ### Introduction
 
-You can use the SDK to add your own content to the Visitor Details view. To better understand the following part lets first define the definitions we will be using:   
+You can use the SDK to add your own content to the Visitor Details view. To better understand the following part, lets first define the definitions we will be using:   
 
-- **Section** - An element of Visitor Details that can be collapsed / expanded and is a completed set of information that is grouped under a single title.
-- **Component** - A single line in the section that can have one of pre-defined formats and be filled with the data from AAW.
+- **Section** - An element of Visitor Details that can be collapsed / expanded and includes a completed set of information that is grouped under a single title.
+- **Component** - A single line in the section that can have one of the pre-defined formats and be filled with the data from AAW.
 
 ### How to add a section
-To extend the Visitor Details view you need to first declare the initial state of the section in the Developer Console:
+To extend the Visitor Details view, you need to first declare the initial state of the section in the Developer Console:
 
   1. Log into the Agent App using your license.
-  2. Go to [Developer Console Apps](https://developers.livechatinc.com/console/apps) and select your app or create a new Agent App Widget app.
+  2. Go to [Developer Console Apps](https://developers.livechatinc.com/console/apps) and select your app or create a new one with the Agent App Widget template.
   3. Go to the `Building blocks` section of your app and create a new Agent App widget. You need to provide the `Widget source URL`, which can be either an URL pointing to the Web (for eg. `https://livechat.github.io/sample-widget-integration/`) or to localhost (for eg. `https://localhost:4000`), if you want to use the local version of the widget.
   4. Set the `Widget placement` to `Chat details` and provide the initial state JSON, eg.: 
 
@@ -136,9 +136,9 @@ To extend the Visitor Details view you need to first declare the initial state o
   ]
 }
 ```
-  6. The sections **can only be initialized once** and can't be modified afterwarts. This means you can't add or remove sections using the SDK later on, but you can update existing ones.
+  6. The sections list can only be initialized once and they can't be modified afterwarts. This means you can't add or remove a section using the SDK later on. You can however modify the list of components inside a section later on.
   7. Go to `Private installation` and click the `Install app` button.
-  8. Your widget should be now visible in the right sidebar of the Agent App chat view. Beware - if you did configure set any icon for your widget, it may appear that it is not there. Just hover over the widget icon bar and check, if there's any clickable whitespace. You can set the icon in Developmers Console.
+  8. Your widget should be now visible in the right sidebar of the Agent App chat view. Beware - if you did not set any icon for your widget, it may appear that the widget not there. To make sure, you can hover over the widget icon bar and check if there's any clickable whitespace. You can set the icon in Developers Console.
 
 ### How to update a section
 
@@ -163,7 +163,7 @@ LiveChat.modifyCustomerDetailsSection(
 ---
 **IMPORTANT**
 
-The **title** attribute in the root of the JSON acts as an ID to the section and *can not* be changed. You need to provide it to identify which section you want to update.
+The **title** attribute in the root of the JSON acts as an ID to the section and *cannot* be changed. You need to provide it to identify which section you want to update.
 
 ---
 
@@ -171,7 +171,7 @@ The **title** attribute in the root of the JSON acts as an ID to the section and
 Components are *lego bricks* which can be used for building a section.
 
 #### Title
-Title could be used in several cases. Component look depends of given data.
+Title could be used in several cases. Component look depends on given data.
 
 | Property | Required | Type | Note |
 |----------|----------| ---- | ----------- |
