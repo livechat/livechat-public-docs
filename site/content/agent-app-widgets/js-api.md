@@ -176,8 +176,8 @@ Section is a container for components.
 | Property     | Required | Type                |
 |--------------|----------| ------------------- |
 | `title`      | Yes      | string              |
-| `imgUrl`     | Yes      | array of components | 
-| `components` | No       | string              | 
+| `components` | Yes      | array of components | 
+| `imgUrl`     | No       | string              | 
 
 > Example of section component
 
@@ -192,13 +192,13 @@ Section is a container for components.
 #### Title
 Title could be used in several cases. Component look depends on given data.
 
-| Property | Required | Type | Note |
-|----------|----------| ---- | ----------- |
-| `title` | Yes | string |                   |
-| `value` | No | string |                    |
-| `description` | No | string |              |
-| `imgUrl` | No | string |                   |
-| `imgSize` | No | string, one of: ["small", "big"]` | Default value: "big" |
+| Property      | Required | Type | Note        |
+|---------------|----------| ---- | ----------- |
+| `title`       | Yes      | string |           |
+| `value`       | No       | string |           |
+| `description` | No       | string |           |
+| `imgUrl`      | No       | string |           |
+| `imgSize`     | No       | string, one of: ["small", "big"]` | Default value: "big" | 
 | `link` | No | string | URL added when title is a link. |
 
 > Example of title component
