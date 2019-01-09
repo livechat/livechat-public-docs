@@ -183,9 +183,9 @@ Section is a container for components.
 
 ```json
 {
-    title: 'card with image',
-    imgUrl: 'https://www.gstatic.com/webp/gallery/4.jpg',
-    components: []
+    "title": "card with image",
+    "components": [],
+    "imgUrl": "https://www.gstatic.com/webp/gallery/4.jpg"
 }
 ```
 
@@ -205,12 +205,12 @@ Title could be used in several cases. Component look depends on given data.
 
 ```json
 {
-    type: 'title',
-    data: {
-        title: 'title',
-        value: 'value',
-        description: 'description',
-        imgUrl: 'https://www.gstatic.com/webp/gallery/4.jpg'
+    "type": "title",
+    "data": {
+        "title": "title",
+        "value": "value",
+        "description": "description",
+        "imgUrl": "https://www.gstatic.com/webp/gallery/4.jpg"
     }
 }
 ```
@@ -227,10 +227,10 @@ Simple button from design system.
 
 ```json
 {
-    type: 'button',
-    data: {
-          id: 'second-button',
-          label: 'second button'
+    "type": "button",
+    "data": {
+          "id": "second-button",
+          "label": "second button"
     }
 }
 ```
@@ -255,10 +255,10 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
 
 ```json
 {
-  type: 'label_value',
-  data: {
-    label: 'Name',
-    value: 'Stefan',
+  "type": "label_value",
+  "data": {
+    "label": "Name",
+    "value": "Stefan",
   }
 }
 ```
@@ -276,10 +276,10 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
 
 ```json
 {
-  type: 'link',
-  data: {
-    value: 'click me',
-    url: 'google.com'
+  "type": "link",
+  "data": {
+    "value": "click me",
+    "url": "google.com"
   }
 }
 ```
@@ -291,7 +291,7 @@ Line could be used to separate section content. It has no components inside.
 
 ```json
 {
-    type: 'line'
+    "type": "line"
 }
 ```
 
