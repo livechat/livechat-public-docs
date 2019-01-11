@@ -269,7 +269,6 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
 |----------|----------| ------- | ----------- |
 | `url`    | Yes      | string  |             |
 | `value`  | No       | string  |             |
-| `target` | No       | string  | Same as HTML attribute |
 | `inline` | No       | boolean |             |
 
 > Example of link component
