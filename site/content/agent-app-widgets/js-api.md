@@ -278,7 +278,7 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "type": "link",
   "data": {
     "value": "click me",
-    "url": "google.com"
+    "url": "http://google.com"
   }
 }
 ```
