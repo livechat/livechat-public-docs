@@ -231,7 +231,8 @@ Simple button from design system.
     "type": "button",
     "data": {
           "id": "second-button",
-          "label": "second button"
+          "label": "second button",
+          "openApp": "true"
     }
 }
 ```
@@ -260,17 +261,18 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "data": {
     "label": "Name",
     "value": "Stefan",
+    "inline": "false"
   }
 }
 ```
 
 #### Link
 
-| Property | Required | Type    | Description |
-|----------|----------| ------- | ----------- |
-| `url`    | Yes      | string  |             |
-| `value`  | No       | string  |             |
-| `inline` | No       | boolean |             |
+| Property | Required | Type    | Description     |
+|----------|----------| ------- | --------------- |
+| `url`    | Yes      | string  |                 |
+| `value`  | No       | string  |                 |
+| `inline` | No       | boolean | default: `true` |
 
 > Example of link component
 
@@ -279,7 +281,8 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "type": "link",
   "data": {
     "value": "click me",
-    "url": "http://google.com"
+    "url": "http://google.com",
+    "inline": "false"
   }
 }
 ```
