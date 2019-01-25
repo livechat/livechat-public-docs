@@ -219,7 +219,7 @@ Title could be used in several cases. Component look depends on given data.
 Simple button from design system.
 
 | Property      | Required | Type    | Description            |
-|---------------|----------| ------- |                        |
+|---------------|----------| ------- | ---------------------- |
 | `id`          | Yes      | string  |                        |
 | `label`       | Yes      | string  |                        |
 | `openApp`     | No       | boolean | Default value: `false` | 
