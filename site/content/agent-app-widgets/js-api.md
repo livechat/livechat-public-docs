@@ -232,7 +232,7 @@ Simple button from design system.
     "data": {
           "id": "second-button",
           "label": "second button",
-          "openApp": "true"
+          "openApp": true
     }
 }
 ```
@@ -261,7 +261,7 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "data": {
     "label": "Name",
     "value": "Stefan",
-    "inline": "false"
+    "inline": false
   }
 }
 ```
@@ -282,7 +282,7 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "data": {
     "value": "click me",
     "url": "http://google.com",
-    "inline": "false"
+    "inline": false
   }
 }
 ```
