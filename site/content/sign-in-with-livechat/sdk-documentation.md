@@ -27,7 +27,41 @@ This method initiates the SDK and returns the `accountsSdk` object instance. It 
 
 * **onIdentityFetched(error, data)** – the callback executed when user's identity is fetched. The callback will include either `error` or `data` object depending on the current user authorization status.<br>You will find the detailed documentation in <a href="#response-format">Response format</a> section.
 
+* **linkLabel** – allows to change default _Sign in with LiveChat_ label with custom text.
+
+* **popupRoute** – allows to change default popup's endpoint, to i.e. `signup`.
+
 <aside class="notice"><code>accountsSdk</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
+
+### **instance.updateOptions()**
+
+> Example `updateOptions()` method usage:
+
+```js
+// javascript
+const instance = accountsSdk.init({ ... });
+ 
+ document.getElementById('signup-button').onclick = function() {
+   instance.updateOptions({
+     popupRoute: 'signup'
+   });
+   instance.openPopup();
+ };
+ 
+ document.getElementById('signin-button').onclick = function() {
+   instance.updateOptions({
+     popupRoute: ''
+   });
+   instance.openPopup();
+ };
+```
+
+```html
+<button id="signup-button">Sign up with LiveChat!</button>
+<button id="signin-button">Already have an account? Sign in!</button>
+```
+
+Allows to update SDK options after calling `init()` method. 
 
 ### **instance.openPopup()**
 
