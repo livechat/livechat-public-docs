@@ -61,7 +61,7 @@ const instance = accountsSdk.init({ ... });
 <button id="signin-button">Already have an account? Sign in!</button>
 ```
 
-Allows to update SDK options after calling `init()` method. 
+Allows to update SDK options after calling `init()` method. It accepts an object with same schema as `init()` method.
 
 ### **instance.openPopup()**
 
