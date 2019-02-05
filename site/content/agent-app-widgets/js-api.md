@@ -218,10 +218,11 @@ Title could be used in several cases. Component look depends on given data.
 #### Button
 Simple button from design system.
 
-| Property | Required | Type   |
-|----------|----------| ------ |
-| `id`     | Yes      | string |
-| `label`  | Yes      | string | 
+| Property      | Required | Type    | Description            |
+|---------------|----------| ------- | ---------------------- |
+| `id`          | Yes      | string  |                        |
+| `label`       | Yes      | string  |                        |
+| `openApp`     | No       | boolean | Default value: `false` | 
 
 > Example of button component
 
@@ -230,7 +231,8 @@ Simple button from design system.
     "type": "button",
     "data": {
           "id": "second-button",
-          "label": "second button"
+          "label": "second button",
+          "openApp": true
     }
 }
 ```
@@ -259,17 +261,18 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "data": {
     "label": "Name",
     "value": "Stefan",
+    "inline": false
   }
 }
 ```
 
 #### Link
 
-| Property | Required | Type    | Description |
-|----------|----------| ------- | ----------- |
-| `url`    | Yes      | string  |             |
-| `value`  | No       | string  |             |
-| `inline` | No       | boolean |             |
+| Property | Required | Type    | Description     |
+|----------|----------| ------- | --------------- |
+| `url`    | Yes      | string  |                 |
+| `value`  | No       | string  |                 |
+| `inline` | No       | boolean | default: `true` |
 
 > Example of link component
 
@@ -278,7 +281,8 @@ Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
   "type": "link",
   "data": {
     "value": "click me",
-    "url": "http://google.com"
+    "url": "http://google.com",
+    "inline": false
   }
 }
 ```
