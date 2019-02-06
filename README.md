@@ -17,7 +17,7 @@ Be sure that you have the node >= 6.0.0 and npm installed. Next, clone this repo
 
 ```bash
 npm install
-npm start
+npm run start@2.0
 ```
 
 To build your static output to the `/dist` folder, use:
