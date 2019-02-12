@@ -34,6 +34,26 @@ LC_API.update_custom_variables(custom_variables);
 
 It works the same way as [Set custom variables](/docs/js-api/#set-custom-variables) method, but it will merge new visitor's properties with the current visitor's properties, instead of replacing them with a new set.
 
+## Set visitor name
+
+This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
+
+```js
+LC_API.set_visitor_name('John Doe');
+```
+
+Sets current visitor name which is used in chat and as default value in forms where `name` field appears.
+
+## Set visitor email
+
+This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
+
+```js
+LC_API.set_visitor_email('john.doe@mail.com');
+```
+
+Sets current visitor email which is used in chat and as default value in forms where `email` field appears.
+
 ## Open the chat window
 
 ```js
