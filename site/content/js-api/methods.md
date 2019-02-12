@@ -49,7 +49,7 @@ Sets current visitor name which is used in chat and as default value in forms wh
 This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
 
 ```js
-LC_API.set_visitor_email('john.doe@mail.com');
+LC_API.set_visitor_email('john@doe.com');
 ```
 
 Sets current visitor email which is used in chat and as default value in forms where `email` field appears.
