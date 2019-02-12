@@ -91,3 +91,5 @@ window.__lc.params = [
 LiveChat tracking code is available in the [LiveChat app](https://my.livechatinc.com/settings/code).
 
 You can customize the tracking code to send additional information about your visitors to LiveChat applications.
+
+Alternatively instead of using `window.__lc.visitor` you can set visitor name and email using dedicated methods: [set_visitor_name](#set-visitor-name) and [set_visitor_email](#set-visitor-email)
