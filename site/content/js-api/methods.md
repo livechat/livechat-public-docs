@@ -42,7 +42,7 @@ This method works only with [new chat widget](https://developers.livechatinc.com
 LC_API.set_visitor_name('John Doe');
 ```
 
-Sets current visitor name which is used in chat and as default value in forms where `name` field appears.
+Sets current visitor name which is used in chat, Agent App Customers section and as default value in forms where `name` field appears.
 
 ## Set visitor email
 
@@ -52,7 +52,7 @@ This method works only with [new chat widget](https://developers.livechatinc.com
 LC_API.set_visitor_email('john@doe.com');
 ```
 
-Sets current visitor email which is used in chat and as default value in forms where `email` field appears.
+Sets current visitor email which is used in chat, Agent App Customers section and as default value in forms where `email` field appears.
 
 ## Open the chat window
 
