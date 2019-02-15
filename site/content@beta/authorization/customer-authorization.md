@@ -6,7 +6,7 @@ weight: 30
 
 To authorize [Customer API](/beta-docs/customer-chat-api/) you will need different access token than for the [Agent API](/beta-docs/agent-chat-api/) or [Configuration API](/beta-docs/configuration-api).
 
-### Creating new customer along with customer access token
+## Creating new customer
 
 You can create a new customer on licence or use an existing identity. The `<ACCESS_TOKEN>` mentioned below is the one that you get from the app authorization flow. Required scope: `customers.identity--manage`.
 
@@ -35,7 +35,7 @@ POST https://accounts.livechatinc.com/customer/ -H "Authorization: Bearer <ACCES
 }
 ```
 
-### Customer chat url
+## Customer chat URL
 
 It's possible to create customer direct chat url using `license_id` and `access_token`.
 
