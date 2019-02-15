@@ -2,68 +2,78 @@
 
 # Customer Chat API
 
-* [Introduction](#introduction)
-  * [Web API](#web-api)
-  * [Real-Time Messaging API](#real-time-messaging-api)
-  * [Authentication](#authentication)
-  * [Events order](#events-order)
-* [Examples](#examples)
-  * [JavaScript](#javascript)
-  * [Go](#go)
-  * [Python](#python)
-* [Objects](#objects)
-  * [Chat](#chat)
-  * [Thread](#thread)
-  * [User](#user)
-  * [Event](#event)
-  * [Typing indicator](#typing-indicator)
-  * [Sneak peek](#sneak-peek)
-  * [Scopes](#scopes)
-  * [Properties](#properties)
-* [Errors handling](#errors-handling)
-  * [Format](#format)
-  * [Possible errors](#possible-errors)
-* [Methods](#methods)
-  * [Login](#login)
-  * [Get chats summary](#get-chats-summary)
-  * [Get chat threads](#get-chat-threads)
-  * [Get chat threads summary](#get-chat-threads-summary)
-  * [Get groups status](#get-groups-status)
-  * [Get predicted agent](#get-predicted-agent)
-  * [Get url details](#get-url-details)
-  * [Start chat](#start-chat)
-  * [Send event](#send-event)
-  * [Send file](#send-file)
-  * [Send rich message postback](#send-rich-message-postback)
-  * [Send sneak peek](#send-sneak-peek)
-  * [Close thread](#close-thread)
-  * [Update customer](#update-customer)
-  * [Update customer page](#update-customer-page)
-  * [Update chat properties](#update-chat-properties)
-  * [Update chat thread properties](#update-chat-thread-properties)
-  * [Update event properties](#update-event-properties)
-  * [Update last seen timestamp](#update-last-seen-timestamp)
-  * [Check goals](#check-goals)
-* [Pushes](#pushes)
-  * [Incoming chat thread](#incoming-chat-thread)
-  * [Incoming event](#incoming-event)
-  * [Incoming rich message postback](#incoming-rich-message-postback)
-  * [Incoming multicast](#incoming-multicast)
-  * [Incoming typing indicator](#incoming-typing-indicator)
-  * [Customer disconnected](#customer-disconnected)
-  * [Thread closed](#thread-closed)
-  * [Access set](#access-set)
-  * [Customer updated](#customer-updated)
-  * [Customer page updated](#customer-page-updated)
-  * [Customer side storage updated](#customer-side-storage-updated)
-  * [Chat properties updated](#chat-properties-updated)
-  * [Chat thread properties updated](#chat-thread-properties-updated)
-  * [Event properties updated](#event-properties-updated)  
-  * [Last seen timestamp updated](#last-seen-timestamp-updated)
-  * [Chat user added](#chat-user-added)
-  * [Chat user removed](#chat-user-removed)
-  * [Chat transferred](#chat-transferred)
-</div>
+- [Introduction](#introduction)
+  - [Web API](#web-api)
+  - [Real-Time Messaging API](#real-time-messaging-api)
+  - [Authentication](#authentication)
+  - [Events order](#events-order)
+- [Examples](#examples)
+  - [JavaScript](#javascript)
+  - [Go](#go)
+  - [Python](#python)
+- [Objects](#objects)
+  - [Chat](#chat)
+  - [Thread](#thread)
+  - [User](#user)
+  - [Event](#event)
+  - [Typing indicator](#typing-indicator)
+  - [Sneak peek](#sneak-peek)
+  - [Access](#access)
+  - [Properties](#properties)
+- [Errors handling](#errors-handling)
+  - [Format](#format)
+  - [Possible errors](#possible-errors)
+- [Methods](#methods)
+  - [Login](#login)
+  - [Get chats summary](#get-chats-summary)
+  - [Get chat threads](#get-chat-threads)
+  - [Get chat threads summary](#get-chat-threads-summary)
+  - [Get groups status](#get-groups-status)
+  - [Get predicted agent](#get-predicted-agent)
+  - [Get url details](#get-url-details)
+  - [Start chat](#start-chat)
+  - [Activate chat](#activate-chat)
+  - [Send event](#send-event)
+  - [Send file](#send-file)
+  - [Send rich message postback](#send-rich-message-postback)
+  - [Send sneak peek](#send-sneak-peek)
+  - [Close thread](#close-thread)
+  - [Update chat properties](#update-chat-properties)
+  - [Update chat thread properties](#update-chat-thread-properties)
+  - [Update event properties](#update-event-properties)
+  - [Update last seen timestamp](#update-last-seen-timestamp)
+  - [Update customer](#update-customer)
+  - [Update customer page](#update-customer-page)
+  - [Set customer fields](#set-customer-fields)
+  - [Check goals](#check-goals)
+  - [Delete chat properties](#delete-chat-properties)
+  - [Delete chat thread properties](#delete-chat-thread-properties)
+  - [Delete event properties](#delete-event-properties)
+  - [Get form](#get-form)
+- [Pushes](#pushes)
+  - [Incoming chat thread](#incoming-chat-thread)
+  - [Incoming event](#incoming-event)
+  - [Incoming rich message postback](#incoming-rich-message-postback)
+  - [Incoming multicast](#incoming-multicast)
+  - [Incoming typing indicator](#incoming-typing-indicator)
+  - [Customer disconnected](#customer-disconnected)
+  - [Thread closed](#thread-closed)
+  - [Access set](#access-set)
+  - [Customer updated](#customer-updated)
+  - [Customer page updated](#customer-page-updated)
+  - [Customer side storage updated](#customer-side-storage-updated)
+  - [Chat properties updated](#chat-properties-updated)
+  - [Chat thread properties updated](#chat-thread-properties-updated)
+  - [Event properties updated](#event-properties-updated)
+  - [Last seen timestamp updated](#last-seen-timestamp-updated)
+  - [Chat user added](#chat-user-added)
+  - [Chat user removed](#chat-user-removed)
+  - [Chat transferred](#chat-transferred)
+  - [Chat properties deleted](#chat-properties-deleted)
+  - [Chat thread properties deleted](#chat-thread-properties-deleted)
+  - [Event properties deleted](#event-properties-deleted)
+  - [Event updated](#event-updated)
+    </div>
 
 # Introduction to API
 
@@ -79,27 +89,28 @@ Web API is similar to REST API. A client can send a **request message** that res
 
 **API endpoint**
 
-| HTTP method | Endpoint |
-|--------|----------------|
-| `POST` | `https://api.livechatinc.com/v3.0/customer/action/<action>` |
+| HTTP method | Endpoint                                                    |
+| ----------- | ----------------------------------------------------------- |
+| `POST`      | `https://api.livechatinc.com/v3.0/customer/action/<action>` |
 
 **Required headers**
 
-| Header | Value | Notes |
-| --- | --- | --- |
-| `Content-Type` | `multipart/form-data; boundary=<boundary>` | Valid for `send_file` action |
-| | `application/json` | Valid for every action except `send_file` |
-| `Authorization` | `Bearer <token>` | Access token |
+| Header          | Value                                      | Notes                                     |
+| --------------- | ------------------------------------------ | ----------------------------------------- |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` | Valid for `send_file` action              |
+|                 | `application/json`                         | Valid for every action except `send_file` |
+| `Authorization` | `Bearer <token>`                           | Access token                              |
 
 A client should send query string params in every request to Web API:
 
-| Param | Required | Type | Notes |
-| --- | --- | --- | --- |
-| `license_id` | Yes | Integer | LiveChat account ID |
+| Param        | Required | Type    | Notes               |
+| ------------ | -------- | ------- | ------------------- |
+| `license_id` | Yes      | Integer | LiveChat account ID |
 
 ### Messages format
 
 **Request**
+
 ```js
 {
 	"payload": {
@@ -116,15 +127,15 @@ Real-Time Messaging API (RTM API) is based on a websocket-like connection. A cli
 
 **API endpoints**
 
-| Transport | Endpoint |
-|--------|----------------|
+| Transport   | Endpoint                                         |
+| ----------- | ------------------------------------------------ |
 | `websocket` | `wss://api.livechatinc.com/v3.0/customer/rtm/ws` |
 
 Client must send query string param when connecting to RTM API:
 
-| Param | Required | Type | Notes |
-| --- | --- | --- | --- |
-| `license_id` | Yes | Integer | LiveChat account ID |
+| Param        | Required | Type    | Notes               |
+| ------------ | -------- | ------- | ------------------- |
+| `license_id` | Yes      | Integer | LiveChat account ID |
 
 **Example**
 
@@ -139,6 +150,7 @@ A client should ping the server each 15 seconds, otherwise the connection will b
 ### Messages format
 
 **Request**
+
 ```js
 {
 	"request_id": "<request_id>", // optional
@@ -150,6 +162,7 @@ A client should ping the server each 15 seconds, otherwise the connection will b
 ```
 
 **Response**
+
 ```js
 {
 	"request_id": "<request_id>", // optional
@@ -163,6 +176,7 @@ A client should ping the server each 15 seconds, otherwise the connection will b
 ```
 
 #### Push
+
 ```js
 {
 	"request_id": "<request_id>", // optional, applies only to requester
@@ -175,34 +189,43 @@ A client should ping the server each 15 seconds, otherwise the connection will b
 ```
 
 ## Authentication
-Customer authentication is handled by access tokens. See how to obtain an access token in [Authorization](/beta-docs/authorization/#customer-authorization-flow) section.
+
+Customer authentication is handled by access tokens. See how to obtain an access token in [Authorization](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow) section.
 
 ## Events order
+
 Chat messages are not guaranteed to be sorted by server. A client should sort them by `order` parameter. Do not use `timestamp` to sort messages because two events can have the same timestamp.
 
 # Examples
+
 All examples have a similar structure: they connect and log in to Agent API and then start a chat by sending a welcome message (via Websocket).
 
 ## JavaScript
+
 Sample file: [examples/example.js](./examples/example.js)
 
 ## Go
+
 Sample file: [examples/example.go](./examples/example.go)
 
 Remember to install the proper lib:
+
 ```
 go get github.com/gorilla/websocket
 ```
 
 ## Python
+
 Sample file: [examples/example.py](./examples/example.py)
 
 Remember to install the proper lib:
+
 ```
 sudo pip install websocket-client
 ```
 
 # Objects
+
 Objects are standardized data formats that are used in API requests and responses.
 
 You don't need to wonder if you should use `chat_id` or `chatID` parameter in your API call. Instead, just look up the `Chat` object structure to know how to use it in the request or when parsing the response.
@@ -212,12 +235,13 @@ Objects can include other objects. For example, `Chat` object may return `users`
 Please ignore fields with prefix `__priv_`. These fields may change between minor versions.
 
 ## Thread
+
 ```js
 {
-	"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"id": "K600PKZON8",
 	"active": true,
-	"order": 123123,
-	"user_ids": ["john@gmail.com"],
+	"order": 3,
+	"user_ids": ["agent1@example.com"],
 	"events": [
 		// array of "Event" objects
 	],
@@ -230,17 +254,20 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 
 }
 ```
-* `active` takes the following values:
-  * `true` (thread still active)
-  * `false` (thread no longer active)
 
-* `properties` is optional
-* `access` is optional
+- `active` takes the following values:
+
+  - `true` (thread still active)
+  - `false` (thread no longer active)
+
+- `properties` is optional
+- `access` is optional
 
 ## Chat
+
 ```js
 {
-	"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"id": "PJ0MRSHTDG",
 	"users": [
 		// array of "User" objects
 	],
@@ -255,8 +282,9 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 	}
 }
 ```
-* `properties` is optional
-* `access` is optional
+
+- `properties` is optional
+- `access` is optional
 
 ## User
 
@@ -267,7 +295,8 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 	"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"type": "customer",
 	"name": "John Smith",
-	"email": "john@gmail.com",
+	"email": "customer1@example.com",
+	"avatar": "https://domain.com/avatars/1.jpg",
 	"fields": {
 		"custom field name": "custom field value"
 	},
@@ -276,11 +305,16 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 }
 ```
 
+- `avatar` is optional
+- `fields` is optional
+
+When chat is archived `fields` field is not present.
+
 ### Agent
 
 ```js
 {
-	"id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
+	"id": "agent1@example.com",
 	"type": "agent",
 	"name": "Support Team",
  	"avatar": "cdn.livechatinc.com/avatars/1.png",
@@ -296,7 +330,7 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "12312.301231238591134",
+	"custom_id": "31-0C-1C-07-DB-16",
 	"order": 1, // generated server-side
 	"type": "message",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -304,7 +338,7 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 	"text": "hello there",
 	"postback": {
 		"id": "action_call",
-		"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+		"thread_id": "K600PKZON8",
 		"event_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
 		"type": "phone",
 		"value": "790034890"
@@ -314,10 +348,12 @@ Please ignore fields with prefix `__priv_`. These fields may change between mino
 	}
 }
 ```
-* `postback` is optional
-* `postback.type` is required only if `postback.value` is present and vice versa
-* `custom_id` is optional
-* `properties` is optional
+
+- `postback` is optional
+- `postback.type` is required only if `postback.value` is present and vice versa
+- `custom_id` is optional
+- `properties` is optional
+- `text` max raw text size is 16KB (it't not equal to text characters count - one UTF-8 character like emoji 😁 can use up to 4 bytes), if you want to send more, please split it into more messages
 
 ### System message
 
@@ -341,7 +377,7 @@ An annotation does not create a new thread. It just adds an event to the last th
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "12312.301231238591134",
+	"custom_id": "31-0C-1C-07-DB-16",
 	"order": 1, // generated server-side
 	"type": "annotation",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -353,15 +389,18 @@ An annotation does not create a new thread. It just adds an event to the last th
 	}
 }
 ```
-* `custom_id` is optional
-* `text` is optional
-* `properties` is optional
+
+- `custom_id` is optional
+- `text` is optional
+- `properties` is optional
+- `text` is optional, max raw text size is 16KB (it't not equal to text characters count - one UTF-8 character like emoji 😁 can use up to 4 bytes), if you want to send more, please split it into more messages
 
 ### Filled form
+
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "12312.301231238591134",
+	"custom_id": "31-0C-1C-07-DB-16",
 	"order": 4, // generated server-side
 	"type": "filled_form",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -369,73 +408,61 @@ An annotation does not create a new thread. It just adds an event to the last th
 	"properties": {
 		// "Properties" object
 	},
-	"form_id": "1473433500211",
+	"form_id": "154417206262605962",
 	"fields": [{
-			"type": "text",
-			"id": "14734335045454",
-			"label": "Your name",
-			"required": true,
-			"value": "Jan Kowalski"
-		},
-		{
-			"type": "email",
-			"id": "14734335045456",
-			"label": "Your email",
-			"required": true,
-			"value": "jan.kowalski@gmail.com"
-		},
-		{
-			"type": "radio",
-			"id": "14734335045457",
-			"label": "Chat purpose",
-			"required": true,
-			"options": [{
-					"value": "support",
-					"checked": true
-				},
-				{
-					"value": "sale",
-					"checked": false
-				}
-			]
-		},
-		{
-			"type": "checkbox",
-			"id": "14734335045458",
-			"label": "Company industry",
-			"required": true,
-			"options": [{
-				"value": "automotive",
-				"checked": true
-			}, {
-				"value": "it",
-				"checked": true
-			}]
-		},
-		{
-			"type": "select",
-			"id": "14734335045459",
-			"label": "Country",
-			"required": true,
-			"options": [{
-				"value": "usa",
-				"checked": false
-			}, {
-				"value": "pl",
-				"checked": true
-			}]
+		"type": "name",
+		"id": "154417206262603539",
+		"label": "Your name",
+		"answer": "Jan Kowalski"
+	}, {
+		"type": "email",
+		"id": "154417206262601584",
+		"label": "Your email",
+		"answer": "jan.kowalski@gmail.com"
+	}, {
+		"type": "radio",
+		"id": "154417206262602571",
+		"label": "Chat purpose",
+		"answer": {
+				"id": "0",
+				"label": "Support"
 		}
-	]
+	}, {
+		"type": "checkbox",
+		"id": "154417206262604640",
+		"label": "Company industry",
+		"answers": [{
+			"id": "0"
+			"label": "automotive"
+		}, {
+			"id": "1"
+			"label": "it"
+		}]
+	}, {
+		"type": "group_chooser",
+		"id": "154417206262605324",
+		"label": "Choose department",
+		"answer": {
+			"group_id": 1,
+			"label": "Marketing"
+		}
+	}]
 }
 ```
-* `custom_id` is optional
-* `properties` is optional
+
+- `custom_id` and `properties` are optional
+- supported field types:
+  - for open questions (text answer): `name`, `email`, `question` and `textarea`
+  - for single choice questions: `radio`, `select`
+  - for multiple choice questions: `checkbox`
+  - for group choice questions: `group_chooser`
 
 ### File
+
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "12312.301231238591134",
+	"custom_id": "31-0C-1C-07-DB-16",
 	"order": 1, // generated server-side
 	"type": "file",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -453,17 +480,18 @@ An annotation does not create a new thread. It just adds an event to the last th
 	"height": 480
 }
 ```
-* `custom_id` is optional
-* `properties` is optional
-* `width`, `height`, `thumbnail_url` and `thumbnail2x_url` is optional and available only for images
-* supported images types: `png`, `jpeg` and `gif`.
+
+- `custom_id` is optional
+- `properties` is optional
+- `width`, `height`, `thumbnail_url` and `thumbnail2x_url` is optional and available only for images
+- supported images types: `png`, `jpeg` and `gif`.
 
 ### Custom
 
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "12312.301231238591134",
+	"custom_id": "31-0C-1C-07-DB-16",
 	"order": 1, // generated server-side
 	"type": "custom",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -478,14 +506,16 @@ An annotation does not create a new thread. It just adds an event to the last th
 	}
 }
 ```
-* `custom_id` is optional
-* `properties` is optional
+
+- `custom_id` is optional
+- `properties` is optional
 
 ### Rich message
+
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "12345-bhdsa",
+	"custom_id": "31-0C-1C-07-DB-16",
 	"order": 1, // generated server-side
 	"type": "rich_message",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -508,7 +538,7 @@ An annotation does not create a new thread. It just adds an event to the last th
 		"buttons": [{
 			"text": "yes",
 			"postback_id": "action_yes",
-			"user_ids": ["a7eef798-f8df-4364-8059-649c35c9ed0e", "a7qef880-aaaa-4364-8059-649c35c9ed0q"]
+			"user_ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
 		}, {
 			"text": "no",
 			"postback_id": "action_no",
@@ -525,19 +555,20 @@ An annotation does not create a new thread. It just adds an event to the last th
 	}]
 }
 ```
-* `custom_id`, `properties` and `elements` are optional
-* `elements` may contain 1-10 `element` objects
-* all `elements` properties are optional: `title`, `subtitle`, `image` and `buttons`
-* `image` properties (expect for `url`) are optional: `name`, `url`, `content_type`, `size`, `width` and `height`
-* `buttons` may contain 1-11 `button` objects
 
-* `template_id` describes how the event should be presented in an app
-* `elements.buttons.postback_id` describes the action sent via `send_rich_message_postback` method
-* multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add user to all these buttons at once.
-* `elements.buttons.user_ids` describes users that sent the postback with `"toggled": true`
+- `custom_id`, `properties` and `elements` are optional
+- `elements` may contain 1-10 `element` objects
+- all `elements` properties are optional: `title`, `subtitle`, `image` and `buttons`
+- `image` properties (expect for `url`) are optional: `name`, `url`, `content_type`, `size`, `width` and `height`
+- `buttons` may contain 1-11 `button` objects
 
+- `template_id` describes how the event should be presented in an app
+- `elements.buttons.postback_id` describes the action sent via `send_rich_message_postback` method
+- multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add user to all these buttons at once.
+- `elements.buttons.user_ids` describes users that sent the postback with `"toggled": true`
 
 ## Typing indicator
+
 ```js
 {
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -547,6 +578,7 @@ An annotation does not create a new thread. It just adds an event to the last th
 ```
 
 ## Sneak peek
+
 ```js
 {
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -556,7 +588,8 @@ An annotation does not create a new thread. It just adds an event to the last th
 ```
 
 ## Access
-An empty object designates no access, which means that all agents can see it.
+
+`group_ids` is required, group 0 means that all agents can see it.
 
 ```js
 {
@@ -568,7 +601,7 @@ An empty object designates no access, which means that all agents can see it.
 
 ## Properties
 
-<div class="callout type-info">This section describes properties object format only, to read more about properties click [here](/beta-docs/apis-overview/#properties).</div>
+<div class="callout type-info">This section describes properties object format only, to read more about properties click [here](https://developers.livechatinc.com/beta-docs/platform-overview/#properties).</div>
 
 ```js
 {
@@ -581,6 +614,7 @@ An empty object designates no access, which means that all agents can see it.
 ```
 
 ## Sample properties
+
 ```js
 {
 	"properties": {
@@ -602,7 +636,9 @@ An empty object designates no access, which means that all agents can see it.
 ```
 
 # Errors handling
+
 ## Format
+
 ### Error payload
 
 ```js
@@ -619,18 +655,23 @@ An empty object designates no access, which means that all agents can see it.
 
 ## Possible errors
 
-| Type | Default Message | Notes |
-|--------|----------------|---|
-| `internal` | Internal server error | |
-| `customer_banned` | Customer is banned | |
-| `validation` | Wrong format of request | |
-| `authorization` | Authorization error | Customer is not allowed to perform action |
-| `authentication` | Authentication error | Invalid / expired access token |
-| `license_expired` | License expired | |
-| `request_timeout` | Request timed out | Timeout threshold is 15 seconds |
-| `unsupported_version` | Unsupported version | Unsupported version of protocol |
-| `misdirected_request` | Wrong region | Client's request should be performed to another region |
-
+| Type                    | Default Message              | Notes                                                  |
+| ----------------------- | ---------------------------- | ------------------------------------------------------ |
+| `internal`              | Internal server error        |                                                        |
+| `customer_banned`       | Customer is banned           |                                                        |
+| `validation`            | Wrong format of request      |                                                        |
+| `authorization`         | Authorization error          | Customer is not allowed to perform action              |
+| `authentication`        | Authentication error         | Invalid / expired access token                         |
+| `license_expired`       | License expired              |                                                        |
+| `request_timeout`       | Request timed out            | Timeout threshold is 15 seconds                        |
+| `unsupported_version`   | Unsupported version          | Unsupported version of protocol                        |
+| `misdirected_request`   | Wrong region                 | Client's request should be performed to another region |
+| `group_unavailable`     | Group unavailable            | No agent available for group                           |
+| `entity_too_large`      | Upload limit exceeded (10MB) | Client's request is to large                           |
+| `group_offline`         | Group offline                | Group is offline (has no online agents)                |
+| `users_limit_reached`   | users limit reached          | customers limit reached                                |
+| `wrong_product_version` | Wrong product version        |                                                        |
+| `license_not_found`     | License not found            | License with specified ID doesn't exist                |
 
 \* `misdirected_request` error returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
@@ -639,30 +680,32 @@ With this information client is able to figure out where he should be connected.
 
 ## Login
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `login` | ✓ | - | - |
+| Action  | RTM API | Web API | Push message |
+| ------- | :-----: | :-----: | :----------: |
+| `login` |    ✓    |    -    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `token` | Yes | OAuth token from customer accounts |
-| `group_id` | No | |
-| `customer.name` | No | |
-| `customer.email` | No | |
-| `customer.fields` | No | map in `"key": "value"` format |
-| `customer_page.url` | No | |
-| `customer_page.title` | No | |
-| `referrer` | No | |
-| `customer_side_storage` | No | map in `"key": "value"` format |
-
+| Request object          | Required | Type     | Notes                              |
+| ----------------------- | -------- | -------- | ---------------------------------- |
+| `token`                 | Yes      | `string` | OAuth token from customer accounts |
+| `group_id`              | No       | `number` |                                    |
+| `customer`              | No       | `object` |                                    |
+| `customer.name`         | No       | `string` |                                    |
+| `customer.email`        | No       | `string` |                                    |
+| `customer.avatar`       | No       | `string` | url to customer avatar             |
+| `customer.fields`       | No       | `object` | map in `"key": "value"` format     |
+| `customer_page.url`     | No       | `string` |                                    |
+| `customer_page.title`   | No       | `string` |                                    |
+| `referrer`              | No       | `string` |                                    |
+| `customer_side_storage` | No       | `object` | map in `"key": "value"` format     |
 
 **Note about customer_side_storage**
 
 We are using `customer_side_storage` to keep some data on client side. You should pass a map from `customer_side_storage_updated` push payload to this field.
 
 **Sample request payload**
+
 ```js
 {
 	"token": "Bearer p-cjQcfhTqego5I48WeAPw",
@@ -674,6 +717,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"customer_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
@@ -698,7 +742,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 		},
 		"static_config_version": "3435.4545",
 		"predicted_agent": {
-			"id": "cf756f02812909107e844ae41cba1530",
+			"id": "agent1@example.com",
 			"name": "Bart",
 			"type": "agent",
 			"avatar": "cdn.livechatinc.com/avatars/1.png",
@@ -709,7 +753,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 			"unique_id": "e35a4fb4106d87e550fe1af480639058",
 			"text": "some message",
 			"agent": {
-				"id": "cf756f02812909107e844ae41cba1530",
+				"id": "agent1@example.com",
 				"name": "Bart",
 				"type": "agent",
 				"avatar": "cdn.livechatinc.com/avatars/1.png",
@@ -723,18 +767,19 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 ## Get chats summary
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `get_chats_summary` | ✓ | ✓ | - |
+| Action              | RTM API | Web API | Push message |
+| ------------------- | :-----: | :-----: | :----------: |
+| `get_chats_summary` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `offset` | No | Default is 0, maximum is 100 |
-| `limit` | No | Default is 10, maximum is 25 |
+| Request object | Required | Type     | Notes                        |
+| -------------- | -------- | -------- | ---------------------------- |
+| `offset`       | No       | `number` | Default is 0, maximum is 100 |
+| `limit`        | No       | `number` | Default is 10, maximum is 25 |
 
 **Sample request payload**
+
 ```js
 {
 	"offset": 0,
@@ -743,6 +788,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"chats_summary": [{
@@ -760,14 +806,14 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 		},
 		"last_event_per_type": { // last event of each type in chat
 			"message": {
-				"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+				"thread_id": "K600PKZON8",
 				"thread_order": 343544565,
 				"event": {
 					// "Event > Message" object
 				}
 			},
 			"system_message": {
-				"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+				"thread_id": "K600PKZON8",
 				"thread_order": 343544565,
 				"event": {
 					// "Event > System message" object
@@ -780,33 +826,34 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 }
 ```
 
-
 ## Get chat threads
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `get_chat_threads` | ✓ | ✓ | - |
+| Action             | RTM API | Web API | Push message |
+| ------------------ | :-----: | :-----: | :----------: |
+| `get_chat_threads` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required |
-|----------------|----------|
-| `chat_id` | Yes |
-| `thread_ids` | Yes |
+| Request object | Required | Type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
+| `thread_ids`   | Yes      | `string` |       |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat_id": "PJ0MRSHTDG",
 	"thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
 }
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"chat": {
-		"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+		"id": "PJ0MRSHTDG",
 		"users": [
 			// array of "User" objects
 		],
@@ -817,7 +864,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 			// "Access" object
 		},
 		"threads": [
-			// Thread object
+			// array of "Thread" objects
 		]
 	}
 }
@@ -825,28 +872,30 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 ## Get chat threads summary
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `get_chat_threads_summary` | ✓ | ✓ | - |
+| Action                     | RTM API | Web API | Push message |
+| -------------------------- | :-----: | :-----: | :----------: |
+| `get_chat_threads_summary` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `chat_id` | Yes |
-| `offset` | No | Default is 0 |
-| `limit` | No | Default is 25, maximum is 100 |
+| Request object | Required | Type     | Notes                         |
+| -------------- | -------- | -------- | ----------------------------- |
+| `chat_id`      | Yes      | `string` |                               |
+| `offset`       | No       | `number` | Default is 0                  |
+| `limit`        | No       | `number` | Default is 25, maximum is 100 |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat_id": "PJ0MRSHTDG",
 	"offset": 0,
 	"limit": 100
 }
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"threads_summary": [{
@@ -866,18 +915,19 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 ## Get groups status
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `get_groups_status` | ✓ | ✓ | - |
+| Action              | RTM API | Web API | Push message |
+| ------------------- | :-----: | :-----: | :----------: |
+| `get_groups_status` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `all` | No | If set to true then you will get status for all groups |
-| `groups` | No | table of group id's |
+| Request object | Required | Type    | Notes                                                  |
+| -------------- | -------- | ------- | ------------------------------------------------------ |
+| `all`          | No       | `bool`  | If set to true then you will get status for all groups |
+| `groups`       | No       | `array` | table of group id's                                    |
 
 **Sample request payload**
+
 ```js
 {
 	`groups`: [1, 2, 3]
@@ -885,6 +935,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"groups_status": {
@@ -898,45 +949,52 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 ## Get predicted agent
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `get_predicted_agent` | ✓ | ✓ | - |
+| Action                | RTM API | Web API | Push message |
+| --------------------- | :-----: | :-----: | :----------: |
+| `get_predicted_agent` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
+| Request object | Required | Type | Notes |
+| -------------- | -------- | ---- | ----- |
+
 
 **Sample request payload**
+
 ```js
 {
 }
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"agent": {
-        "id": "example_id",
-        "name": "example_name",
-        "avatar": "https://example.avatar/example.com"
+        "id": "agent1@example.com",
+        "name": "Name",
+        "avatar": "https://example.avatar/example.com",
+        "is_bot": false,
+        "job_title": "support hero",
+        "type": "agent"
     }
 }
 ```
 
 ## Get URL details
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `get_url_details` | ✓ | ✓ | - |
+| Action            | RTM API | Web API | Push message |
+| ----------------- | :-----: | :-----: | :----------: |
+| `get_url_details` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `url` | Yes | Valid website url |
+| Request object | Required | Type     | Notes             |
+| -------------- | -------- | -------- | ----------------- |
+| `url`          | Yes      | `string` | Valid website url |
 
 **Sample request payload**
+
 ```js
 {
 	"url": "https://livechatinc.com"
@@ -944,6 +1002,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"title": "LiveChat | Live Chat Software and Help Desk Software",
@@ -957,22 +1016,23 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 ## Start chat
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `start_chat` | ✓ | ✓ | [`incoming_chat_thread`](#incoming-chat-thread) |
-
-Note: customer details must be sent to server before the chat can be started (see [`update customer`](#update-customer) method).
+| Action       | RTM API | Web API |                  Push message                   |
+| ------------ | :-----: | :-----: | :---------------------------------------------: |
+| `start_chat` |    ✓    |    ✓    | [`incoming_chat_thread`](#incoming-chat-thread) |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|---|
-| `chat.access` | No | Chat a to set, defaults to all agents |
-| `chat.properties` | No | Initial chat properties |
-| `chat.thread.events` | No | Initial chat events array |
-| `chat.thread.properties` | No | Initial chat thread properties |
+| Request object           | Required | Type     | Notes                                      |
+| ------------------------ | -------- | -------- | ------------------------------------------ |
+| `chat`                   | No       | `object` |                                            |
+| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents |
+| `chat.properties`        | No       | `object` | Initial chat properties                    |
+| `chat.thread`            | No       | `object` |                                            |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                  |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties             |
 
 **Sample request payload**
+
 ```js
 {
 	"chat": {
@@ -987,11 +1047,11 @@ Note: customer details must be sent to server before the chat can be started (se
 		"thread": {
 			"events": [{
 				"type": "message",
-				"custom_id": "12312.301231238591134",
+				"custom_id": "31-0C-1C-07-DB-16",
 				"text": "hello there"
 			}, {
 				"type": "system_message",
-				"custom_id": "12312.301231238591135",
+				"custom_id": "31-0C-1C-07-DB-16",
 				"text": "hello there"
 			}],
 			"properties": {
@@ -1006,18 +1066,19 @@ Note: customer details must be sent to server before the chat can be started (se
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"chat": {
-		"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+		"id": "PJ0MRSHTDG",
 		"users": [
 			// array of "User" objects
 		],
 		"properties": {
 			// "Properties" object
 		},
-		"scopes": {
-			// "Scopes" object
+		"access": {
+			// "Access" object
 		},
 		"thread": {
 			// "Thread" object
@@ -1026,38 +1087,117 @@ Note: customer details must be sent to server before the chat can be started (se
 }
 ```
 
-## Send event
+## Activate chat
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `send_event` | ✓ | ✓ | [`incoming_event`](#incoming-event) <br> or <br> [`incoming_chat_thread`](#incoming-chat-thread)* |
-
-\* `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread
+| Action          | RTM API | Web API |                  Push message                   |
+| --------------- | :-----: | :-----: | :---------------------------------------------: |
+| `activate_chat` |    ✓    |    ✓    | [`incoming_chat_thread`](#incoming-chat-thread) |
 
 **Request payload**
 
-| Request object | Required | Notes                    |
-|----------------|----------|--------------------------|
-| `chat_id`      | Yes      | Id of the chat that we want to send the message to |
-| `event`        | Yes      | Event object             |
-| `attach_to_last_thread`| No| If `true`, adds event to last thread, otherwise creates new one, default `false`|
+| Request object           | Required | Type     | Notes                                      |
+| ------------------------ | -------- | -------- | ------------------------------------------ |
+| `chat`                   | Yes      | `object` |                                            |
+| `chat.id`                | Yes      | `string` | ID of the chat will be activated           |
+| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents |
+| `chat.properties`        | No       | `object` | Initial chat properties                    |
+| `chat.thread`            | No       | `object` |                                            |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                  |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties             |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"event": {
-		"type": "message",
-		"text": "hello world",
-		"custom_id": "12345-bhdsa"
+	"chat": {
+		"id": "PJ0MRSHTDG",
+		"access": {
+			"group_ids": [1]
+		},
+		"properties": {
+			"source": {
+				"type": "facebook"
+			}
+		},
+		"thread": {
+			"events": [{
+				"type": "message",
+				"custom_id": "31-0C-1C-07-DB-16",
+				"text": "hello there"
+			}, {
+				"type": "system_message",
+				"custom_id": "31-0C-1C-07-DB-16",
+				"text": "hello there"
+			}],
+			"properties": {
+				"source": {
+					"type": "facebook"
+				},
+				...
+			}
+		}
 	}
 }
 ```
 
 **Sample response payload**
+
 ```js
 {
-	"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat": {
+		"id": "PJ0MRSHTDG",
+		"users": [
+			// array of "User" objects
+		],
+		"properties": {
+			// "Properties" object
+		},
+		"access": {
+			// "Access" object
+		},
+		"threads": [
+			// array of "Thread" objects
+		]
+	}
+}
+```
+
+/\* `threads` array contains only newly created thread
+
+## Send event
+
+| Action       | RTM API | Web API |                                            Push message                                            |
+| ------------ | :-----: | :-----: | :------------------------------------------------------------------------------------------------: |
+| `send_event` |    ✓    |    ✓    | [`incoming_event`](#incoming-event) <br> or <br> [`incoming_chat_thread`](#incoming-chat-thread)\* |
+
+\* `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread
+
+**Request payload**
+
+| Request object          | Required | Type     | Notes                                                                            |
+| ----------------------- | -------- | -------- | -------------------------------------------------------------------------------- |
+| `chat_id`               | Yes      | `string` | Id of the chat that we want to send the message to                               |
+| `event`                 | Yes      | `object` | Event object                                                                     |
+| `attach_to_last_thread` | No       | `bool`   | If `true`, adds event to last thread, otherwise creates new one, default `false` |
+
+**Sample request payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"event": {
+		"type": "message",
+		"text": "hello world",
+		"custom_id": "31-0C-1C-07-DB-16",
+	}
+}
+```
+
+**Sample response payload**
+
+```js
+{
+	"thread_id": "K600PKZON8",
 	"event": {
 		// "Event" object
 	}
@@ -1066,23 +1206,24 @@ Note: customer details must be sent to server before the chat can be started (se
 
 ## Send file
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `send_file` | - | ✓ | [`incoming_event`](#incoming-event) <br> or <br> [`incoming_chat_thread`](#incoming-chat-thread)* |
+| Action      | RTM API | Web API |                                            Push message                                            |
+| ----------- | :-----: | :-----: | :------------------------------------------------------------------------------------------------: |
+| `send_file` |    -    |    ✓    | [`incoming_event`](#incoming-event) <br> or <br> [`incoming_chat_thread`](#incoming-chat-thread)\* |
 
 \* `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread
 
 **Sample request (with payload)**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `payload.chat_id`      | Yes      | Id of the chat that we want to send the file to |
-| `payload.custom_id`        | Yes      | |
-| `payload.file`      | Yes      | max 10MB |
+| Request object      | Required | Notes                                           |
+| ------------------- | -------- | ----------------------------------------------- |
+| `payload.chat_id`   | Yes      | Id of the chat that we want to send the file to |
+| `payload.custom_id` | Yes      |                                                 |
+| `payload.file`      | Yes      | max 10MB                                        |
 
-* Content-Type header in form `Content-Type: multipart/form-data; boundary=<boundary>` is required.
+- Content-Type header in form `Content-Type: multipart/form-data; boundary=<boundary>` is required.
 
 **Sample request (with payload)**
+
 ```
 	payload.chat_id=a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5
 	payload.custom_id=12345-bhdsa
@@ -1090,6 +1231,7 @@ Note: customer details must be sent to server before the chat can be started (se
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"url": "https://cdn.livechat-static.com/api/file/lc/att/345678/bhdbfhdbf87348374837483.png"
@@ -1098,27 +1240,29 @@ Note: customer details must be sent to server before the chat can be started (se
 
 ## Send rich message postback
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `send_rich_message_postback` | ✓ | ✓ | [`incoming_rich_message_postback`](#incoming-rich-message-postback)* |
+| Action                       | RTM API | Web API |                             Push message                              |
+| ---------------------------- | :-----: | :-----: | :-------------------------------------------------------------------: |
+| `send_rich_message_postback` |    ✓    |    ✓    | [`incoming_rich_message_postback`](#incoming-rich-message-postback)\* |
 
 \* `incoming_rich_message_postback` will be sent only for active threads.
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|---|
-| `chat_id` | Yes | |
-| `thread_id` | Yes | |
-| `event_id` | Yes | |
-| `postback.id` | Yes | Postback name of the button |
-| `postback.toggled` | Yes | Postback toggled true/false |
+| Request object     | Required | Type     | Notes                       |
+| ------------------ | -------- | -------- | --------------------------- |
+| `chat_id`          | Yes      | `string` |                             |
+| `thread_id`        | Yes      | `string` |                             |
+| `event_id`         | Yes      | `string` |                             |
+| `postback`         | Yes      | `object` |                             |
+| `postback.id`      | Yes      | `string` | Postback name of the button |
+| `postback.toggled` | Yes      | `bool`   | Postback toggled true/false |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f6",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
 	"postback": {
 		"id": "action_yes",
@@ -1131,21 +1275,22 @@ No response payload.
 
 ## Send sneak peek
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `send_sneak_peek` | ✓ | ✓ | - |
+| Action            | RTM API | Web API | Push message |
+| ----------------- | :-----: | :-----: | :----------: |
+| `send_sneak_peek` |    ✓    |    ✓    |      -       |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `chat_id` | Yes | Id of the chat that we want to send the sneak peek to |
-| `sneak_peek_text` | Yes | Sneak peek text |
+| Request object    | Required | Type     | Notes                                                 |
+| ----------------- | -------- | -------- | ----------------------------------------------------- |
+| `chat_id`         | Yes      | `string` | Id of the chat that we want to send the sneak peek to |
+| `sneak_peek_text` | Yes      | `string` | Sneak peek text                                       |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat_id": "PJ0MRSHTDG",
 	"sneak_peek_text": "hello world"
 }
 ```
@@ -1154,20 +1299,21 @@ No response payload.
 
 ## Close thread
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `close_thread` | ✓ | ✓ | [`thread_closed`](#thread-closed) |
+| Action         | RTM API | Web API |                                    Push message                                     |
+| -------------- | :-----: | :-----: | :---------------------------------------------------------------------------------: |
+| `close_thread` |    ✓    |    ✓    | [`incoming_event`](#incoming_event) <br> and <br> [`thread_closed`](#thread-closed) |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `chat_id` | Yes ||
+| Request object | Required | Type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"
+	"chat_id": "PJ0MRSHTDG",
 }
 ```
 
@@ -1175,21 +1321,22 @@ No response payload.
 
 ## Update chat properties
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `update_chat_properties` | ✓ | ✓ | [`chat_properties_updated`](#chat-properties-updated) |
+| Action                   | RTM API | Web API |                     Push message                      |
+| ------------------------ | :-----: | :-----: | :---------------------------------------------------: |
+| `update_chat_properties` |    ✓    |    ✓    | [`chat_properties_updated`](#chat-properties-updated) |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `chat_id`      | Yes      | Id of the chat that we want to set property for |
-| `properties`   | Yes      | Chat properties to set |
+| Request object | Required | Type     | Notes                                           |
+| -------------- | -------- | -------- | ----------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to set property for |
+| `properties`   | Yes      | `object` | Chat properties to set                          |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat_id": "PJ0MRSHTDG",
 	"properties": {
 		"rating": {
 			"score": 1,
@@ -1204,23 +1351,24 @@ No response payload.
 
 ## Update chat thread properties
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `update_chat_thread_properties` | ✓ | ✓ | [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
+| Action                          | RTM API | Web API |                            Push message                             |
+| ------------------------------- | :-----: | :-----: | :-----------------------------------------------------------------: |
+| `update_chat_thread_properties` |    ✓    |    ✓    | [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 **Request payload**
 
-| Request object | Required | Notes                                              |
-|----------------|----------|----------------------------------------------------|
-| `chat_id`      | Yes      | Id of the chat that we want to set property for    |
-| `thread_id`    | Yes      | Id of the thread that we want to set property for  |
-| `properties  ` | Yes      | Chat properties to set                             |
+| Request object | Required | Type     | Notes                                             |
+| -------------- | -------- | -------- | ------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to set property for   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to set property for |
+| `properties`   | Yes      | `object` | Chat properties to set                            |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"thread_id": "EW2WQSA8",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"properties": {
 		"rating": {
 			"score": 1,
@@ -1233,24 +1381,25 @@ No response payload.
 
 ## Update event properties
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `update_event_properties` | ✓ | ✓ | [`event_properties_updated`](#event-properties-updated) |
+| Action                    | RTM API | Web API |                      Push message                       |
+| ------------------------- | :-----: | :-----: | :-----------------------------------------------------: |
+| `update_event_properties` |    ✓    |    ✓    | [`event_properties_updated`](#event-properties-updated) |
 
 **Request payload**
 
-| Request object | Required | Notes                                              |
-|----------------|----------|----------------------------------------------------|
-| `chat_id`      | Yes      | Id of the chat that we want to set property for    |
-| `thread_id`    | Yes      | Id of the thread that we want to set property for  |
-| `event_id`     | Yes      | Id of the event that we want to set property for  |
-| `properties  ` | Yes      | Chat properties to set                             |
+| Request object | Required | Type     | Notes                                             |
+| -------------- | -------- | -------- | ------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to set property for   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to set property for |
+| `event_id`     | Yes      | `string` | Id of the event that we want to set property for  |
+| `properties`   | Yes      | `object` | Chat properties to set                            |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"thread_id": "EW2WQSA8",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"event_id": "2_EW2WQSA8",
 	"properties": {
 		"rating": {
@@ -1266,27 +1415,28 @@ No response payload.
 
 ## Update last seen timestamp
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `update_last_seen_timestamp` | ✓ | ✓ | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated) |
+| Action                       | RTM API | Web API |                         Push message                          |
+| ---------------------------- | :-----: | :-----: | :-----------------------------------------------------------: |
+| `update_last_seen_timestamp` |    ✓    |    ✓    | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated) |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `chat_id`      | Yes      |       |
-| `timestamp` | No | |
-
+| Request object | Required | Type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
+| `timestamp`    | No       | `number` |       |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat_id": "PJ0MRSHTDG",
 	"timestamp": 123456789
 }
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"timestamp": 123456789
@@ -1295,23 +1445,25 @@ No response payload.
 
 ## Update customer
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `update_customer` | ✓ | ✓ | [`customer_updated`](#customer-updated) |
-
+| Action            | RTM API | Web API |              Push message               |
+| ----------------- | :-----: | :-----: | :-------------------------------------: |
+| `update_customer` |    ✓    |    ✓    | [`customer_updated`](#customer-updated) |
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `name`      | No      |  |
-| `email`      | No      |  |
-| `fields`      | No      | key value object |
+| Request object | Required | Type     | Notes                  |
+| -------------- | -------- | -------- | ---------------------- |
+| `name`         | No       | `string` |                        |
+| `email`        | No       | `string` |                        |
+| `avatar`       | No       | `string` | url to customer avatar |
+| `fields`       | No       | `object` | key value object       |
 
 **Sample request payload**
+
 ```js
 {
 	"name": "John Doe",
+	"avatar": "https://domain.com/avatars/1.jpg",
 	"fields": {
 		"company_size": "10-100"
 	}
@@ -1319,6 +1471,7 @@ No response payload.
 ```
 
 **Sample response payload**
+
 ```js
 {
 	"customer": {
@@ -1327,23 +1480,23 @@ No response payload.
 }
 ```
 
-
 ## Update customer page
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `update_customer_page` | ✓ | - | [`customer_page_updated`](#customer-page-updated) |
+| Action                 | RTM API | Web API |                   Push message                    |
+| ---------------------- | :-----: | :-----: | :-----------------------------------------------: |
+| `update_customer_page` |    ✓    |    -    | [`customer_page_updated`](#customer-page-updated) |
 
 User agent and referrer is updated by default using the browser’s headers.
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `url`      | Yes      |  |
-| `title`      | No      |  |
+| Request object | Required | Type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `url`          | Yes      | `string` |       |
+| `title`        | No       | `string` |       |
 
 **Sample request payload**
+
 ```js
 {
 	"url": "https://livechatinc.com/pricing"
@@ -1351,25 +1504,56 @@ User agent and referrer is updated by default using the browser’s headers.
 }
 ```
 
+## Set customer fields
+
+| Action                | RTM API | Web API |              Push message               |
+| --------------------- | :-----: | :-----: | :-------------------------------------: |
+| `set_customer_fields` |    ✓    |    ✓    | [`customer_updated`](#customer-updated) |
+
+User agent and referrer is updated by default using the browser’s headers.
+
+**Request payload**
+
+| Request object | Required | Type     | Notes            |
+| -------------- | -------- | -------- | ---------------- |
+| `fields`       | Yes      | `object` | key value object |
+
+**Sample request payload**
+
+```js
+{
+	"fields": {
+		"company_size": "10-100"
+	}
+}
+```
+
+**Sample response payload**
+
+```js
+{
+}
+```
+
 ## Check goals
 
-| Action | RTM API | Web API | Push message |
-| --- | :---: | :---: | :---: |
-| `check_goals` | - | ✓ | - |
+| Action        | RTM API | Web API | Push message |
+| ------------- | :-----: | :-----: | :----------: |
+| `check_goals` |    -    |    ✓    |      -       |
 
-This method is used to check goals when customer is offline. You should call this method to provide goals params for server when customers limit is reached. 
+This method is used to check goals when customer is offline. You should call this method to provide goals params for server when customers limit is reached.
 Works only for offline customers.
 
 **Request payload**
 
-| Request object | Required | Notes |
-|----------------|----------|-------|
-| `page_url`     |  Yes     |       |
-| `customer_fields` | Yes 	| 		|
-| `group_id`	 |  Yes     |       |
-
+| Request object    | Required | Type     | Notes |
+| ----------------- | -------- | -------- | ----- |
+| `page_url`        | Yes      | `string` |       |
+| `customer_fields` | Yes      | `string` |       |
+| `group_id`        | Yes      | `number` |       |
 
 **Sample request payload**
+
 ```js
 {
 	`page_url`: "https://mypage.com",
@@ -1382,34 +1566,237 @@ Works only for offline customers.
 
 No response payload.
 
+## Delete chat properties
+
+| Action                   | RTM API | Web API |                     Push message                      |
+| ------------------------ | :-----: | :-----: | :---------------------------------------------------: |
+| `delete_chat_properties` |    ✓    |    ✓    | [`chat_properties_deleted`](#chat-properties-deleted) |
+
+**Permissions**
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats requester belong to
+
+**Request payload**
+
+| Request object | Required | Type     | Notes                                              |
+| -------------- | -------- | -------- | -------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for |
+| `properties`   | Yes      | `object` | Chat properties to delete                          |
+
+**Sample request payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"properties": {
+		"rating": ["score", "comment"],
+		...
+	}
+}
+```
+
+No response payload.
+
+## Delete chat thread properties
+
+| Action                          | RTM API | Web API |                            Push message                             |
+| ------------------------------- | :-----: | :-----: | :-----------------------------------------------------------------: |
+| `delete_chat_thread_properties` |    ✓    |    ✓    | [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
+
+**Permissions**
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats requester belong to
+
+**Request payload**
+
+| Request object | Required | Type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
+| `properties`   | Yes      | `object` | Chat thread properties to delete                     |
+
+**Sample request payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"properties": {
+		"rating": ["score", "comment"],
+		...
+	}
+}
+```
+
+No response payload.
+
+## Delete event properties
+
+| Action                    | RTM API | Web API |                      Push message                       |
+| ------------------------- | :-----: | :-----: | :-----------------------------------------------------: |
+| `delete_event_properties` |    ✓    |    ✓    | [`event_properties_deleted`](#event-properties-deleted) |
+
+**Request payload**
+
+| Request object | Required | Type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
+| `event_id`     | Yes      | `string` | Id of the event that we want to delete property for  |
+| `properties`   | Yes      | `object` | Event properties to delete                           |
+
+**Sample request payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "2_EW2WQSA8",
+	"properties": {
+		"rating": ["score", "comment"],
+		...
+	}
+}
+```
+
+No response payload.
+
+## Get form
+
+| Action     | RTM API | Web API | Push message |
+| ---------- | :-----: | :-----: | :----------: |
+| `get_form` |    ✓    |    ✓    |      -       |
+
+**Request payload**
+
+| Request object | Required | Type     | Notes                                                  |
+| -------------- | -------- | -------- | ------------------------------------------------------ |
+| `group_id`     | Yes      | `number` | Id of the group that we want form                      |
+| `type`         | Yes      | `string` | Type of form. Possible values: `prechat` or `postchat` |
+
+**Sample request payload**
+
+```js
+{
+	"group_id": 0,
+	"type": "prechat"
+}
+```
+
+**Sample response payload**
+
+```js
+{
+	"enabled": true,
+	"form": {
+		"id": "154417206262605962",
+		"fields": [{
+			"id": "154417206262601237",
+			"type": "header",
+			"label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+		}, {
+			"id": "154417206262603539",
+			"type": "name",
+			"label": "Name:",
+			"required": false
+		}, {
+			"id": "154417206262601584",
+			"type": "email",
+			"label": "E-mail:",
+			"required": false
+		}, {
+			"id": "154417206262602571",
+			"type": "radio",
+			"label": "Chat purpose:",
+			"required": false,
+			"options": [{
+				"id": "0",
+				"label": "Support",
+				"checked": false
+			}, {
+				"id": "1",
+				"label": "Sales",
+				"checked": false
+			}]
+		}, {
+			"id": "154417206262604640",
+			"type": "checkbox",
+			"label": "Company industry:",
+			"required": false,
+			"options": [{
+				"id": "0",
+				"label": "automotive",
+				"checked": false
+			}, {
+				"id": "1",
+				"label": "it",
+				"checked": false
+			}]
+		}, {
+			"id": "154417206262605324",
+			"type": "group_chooser",
+			"label": "Choose department",
+			"required": true,
+			"options": [{
+				"group_id": 0,
+				"label": "Finance",
+				"checked": false
+			}, {
+				"group_id": 1,
+				"label": "Marketing",
+				"checked": false
+			}]
+		}, {
+			"id": "154417206262607356",
+			"type": "rating",
+			"label": "How would you rate this chat?",
+			"comment_label": "Thank you for the rating! You can leave a comment in the box below:",
+			"required": false
+		}]
+	}
+}
+```
+
+- if form is disabled, there will be no `form` object
+- supported field types:
+  - for headers (no answer, not in `filled_form` event): `header`
+  - for open questions (text answer): `name`, `email`, `question` and `textarea`
+  - for single/multiple choice questions: `radio`, `select`, `checkbox`
+  - for group choice questions: `group_chooser`
+  - for rating (not in `filled_form` event): `rating`
+
 # Pushes
+
 Server => Client methods are used for keeping the application state up-to-date. They are available only in `websocket` transport.
 
 ## Incoming chat thread
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `incoming_chat_thread` | ✓ | ✓ |
+| Action                 | RTM API | Webhook |
+| ---------------------- | :-----: | :-----: |
+| `incoming_chat_thread` |    ✓    |    ✓    |
 
 **Push payload**
 
 | Object | Notes |
-|--------|------------------|
-| `chat` | |
+| ------ | ----- |
+| `chat` |       |
 
 **Sample push payload**
+
 ```js
 {
 	"chat": {
-		"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+		"id": "PJ0MRSHTDG",
 		"users": [
 			// array of "User" objects
 		],
 		"properties": {
 			// "Properties" object
 		},
-		"scopes": {
-			// "Scopes" object
+		"access": {
+			// "Access" object
 		},
 		"thread": {
 			// "Thread" object
@@ -1420,23 +1807,24 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ## Incoming event
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `incoming_event` | ✓ | ✓ |
+| Action           | RTM API | Webhook |
+| ---------------- | :-----: | :-----: |
+| `incoming_event` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object | Notes |
-|--------------------|-------------|
-| `chat_id`   | |
-| `thread_id` | |
-| `event`     | |
+| Object      | Notes |
+| ----------- | ----- |
+| `chat_id`   |       |
+| `thread_id` |       |
+| `event`     |       |
 
 **Sample push payload**
+
 ```js
 {
-	"chat_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0a",
-	"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"event": {
 		// "Event" object
 	}
@@ -1445,27 +1833,28 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ## Incoming rich message postback
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `incoming_rich_message_postback` | ✓ | ✓ |
+| Action                           | RTM API | Webhook |
+| -------------------------------- | :-----: | :-----: |
+| `incoming_rich_message_postback` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object         | Notes    |
-|----------------|----------|
-| `user_id`       |          |
-| `chat_id`       |          |
-| `thread_id`       |          |
-| `event_id`       |          |
-| `postback.id`       |          |
-| `postback.toggled`       |          |
+| Object             | Notes |
+| ------------------ | ----- |
+| `user_id`          |       |
+| `chat_id`          |       |
+| `thread_id`        |       |
+| `event_id`         |       |
+| `postback.id`      |       |
+| `postback.toggled` |       |
 
 **Sample push payload**
+
 ```js
 {
-	"user_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f6",
+	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
 	"postback": {
 		"id": "action_yes",
@@ -1476,22 +1865,22 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ## Incoming multicast
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `incoming_multicast` | ✓ | - |
+| Action               | RTM API | Webhook |
+| -------------------- | :-----: | :-----: |
+| `incoming_multicast` |    ✓    |    -    |
 
 **Push payload**
 
-| Object         | Notes    |
-|----------------|----------|
-| `author_id`       |          |
-| `content`       |          |
-
+| Object      | Notes |
+| ----------- | ----- |
+| `author_id` |       |
+| `content`   |       |
 
 **Sample push payload**
+
 ```js
 {
-	"author_id": "jack@gmail.com",
+	"author_id": "agent1@example.com",
 	"content": {
 		"example": {
 			"nested": "json"
@@ -1502,23 +1891,24 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ## Incoming typing indicator
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `incoming_typing_indicator` | ✓ | - |
+| Action                      | RTM API | Webhook |
+| --------------------------- | :-----: | :-----: |
+| `incoming_typing_indicator` |    ✓    |    -    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `chat_id` | |
-| `thread_id` | |
-| `typing_indicator` | |
+| Object             | Notes |
+| ------------------ | ----- |
+| `chat_id`          |       |
+| `thread_id`        |       |
+| `typing_indicator` |       |
 
 **Sample request payload**
+
 ```js
 {
-	"chat_id": "123-123-123-123",
-	"thread_id": "123-123-123-321",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"typing_indicator": {
 		// "Typing indicator" object
 	}
@@ -1527,17 +1917,18 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ## Customer disconnected
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `customer_disconnected` | ✓ | - |
+| Action                  | RTM API | Webhook |
+| ----------------------- | :-----: | :-----: |
+| `customer_disconnected` |    ✓    |    -    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `reason` | |
+| Object   | Notes |
+| -------- | ----- |
+| `reason` |       |
 
 **Sample push payload**
+
 ```js
 {
 	"reason": "misdirected_request",
@@ -1548,62 +1939,67 @@ Server => Client methods are used for keeping the application state up-to-date. 
 ```
 
 ### Possible reasons
-| Type | Notes |
-|--------|----------------|
-| `customer_banned` | Customer has been banned |
-| `too_many_connections` | Customer reached max number of connections |
-| `license_not_found` | License with specified ID doesn't exist |
-| `unsupported_version` | Connecting to unsupported version of Customer API |
-| `ping_timeout` | Not receiving ping for some time from customer |
-| `inactivity_timeout` | Customer didn't chat nor did change page in past 30 min |
-| `internal_error` | Internal error |
-| `misdirected_request` | Customer connected to server in wrong region |
+
+| Type                      | Notes                                                   |
+| ------------------------- | ------------------------------------------------------- |
+| `customer_banned`         | Customer has been banned                                |
+| `too_many_connections`    | Customer reached max number of connections              |
+| `license_not_found`       | License with specified ID doesn't exist                 |
+| `unsupported_version`     | Connecting to unsupported version of Customer API       |
+| `ping_timeout`            | Not receiving ping for some time from customer          |
+| `inactivity_timeout`      | Customer didn't chat nor did change page in past 30 min |
+| `internal_error`          | Internal error                                          |
+| `misdirected_request`     | Customer connected to server in wrong region            |
+| `access_token_expired`    | Access token life time has elapsed                      |
+| `product_version_changed` | Product version has changed                             |
 
 \* Reason `misdirected_request` returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
 
 ## Thread closed
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `thread_closed` | ✓ | ✓ |
+| Action          | RTM API | Webhook |
+| --------------- | :-----: | :-----: |
+| `thread_closed` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `chat_id` | |
-| `thread_id` | |
-| `user_id` | Missing if thread was closed by router |
+| Object      | Notes                                  |
+| ----------- | -------------------------------------- |
+| `chat_id`   |                                        |
+| `thread_id` |                                        |
+| `user_id`   | Missing if thread was closed by router |
 
 **Sample payload**
+
 ```js
 {
-	"chat_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"thread_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-	"user_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d" // optional
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
 }
 ```
 
 ## Access set
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `access_set` | ✓ | ✓ |
+| Action       | RTM API | Webhook |
+| ------------ | :-----: | :-----: |
+| `access_set` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object         | Notes    |
-|----------------|----------|
-| `resource` | Resource type         |
-| `id`       | Resource id         |
-| `access`   |          |
+| Object     | Notes         |
+| ---------- | ------------- |
+| `resource` | Resource type |
+| `id`       | Resource id   |
+| `access`   |               |
 
 **Sample push payload**
+
 ```js
 {
 	"resource": "chat",
-	"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+	"id": "PJ0MRSHTDG",
 	"access": {
 		"group_ids": [
 			1
@@ -1614,18 +2010,18 @@ With this information client is able to figure out where he should be connected.
 
 ## Customer updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `customer_updated` | ✓ | - |
+| Action             | RTM API | Webhook |
+| ------------------ | :-----: | :-----: |
+| `customer_updated` |    ✓    |    -    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `customer` | |
-
+| Object     | Notes |
+| ---------- | ----- |
+| `customer` |       |
 
 **Sample push payload**
+
 ```js
 {
 	"customer": {
@@ -1636,19 +2032,20 @@ With this information client is able to figure out where he should be connected.
 
 ## Customer page updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `customer_page_updated` | ✓ | - |
+| Action                  | RTM API | Webhook |
+| ----------------------- | :-----: | :-----: |
+| `customer_page_updated` |    ✓    |    -    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `url` |  |
-| `title` |  |
-| `timestamp` | |
+| Object      | Notes |
+| ----------- | ----- |
+| `url`       |       |
+| `title`     |       |
+| `timestamp` |       |
 
 **Sample payload**
+
 ```js
 {
 	"url": "https://livechatinc.com/pricing",
@@ -1657,22 +2054,22 @@ With this information client is able to figure out where he should be connected.
 }
 ```
 
-
 ## Customer side storage updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `customer_side_storage_updated` | ✓ | |
+| Action                          | RTM API | Webhook |
+| ------------------------------- | :-----: | :-----: |
+| `customer_side_storage_updated` |    ✓    |         |
 
 Content of `customer_side_storage` map should be kept on client side (for example in browsers local storage) and sent in [login](#login).
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
+| Object                  | Notes                          |
+| ----------------------- | ------------------------------ |
 | `customer_side_storage` | map in `"key": "value"` format |
 
 **Sample payload**
+
 ```js
 {
 	'customer_side_storage': {
@@ -1681,24 +2078,24 @@ Content of `customer_side_storage` map should be kept on client side (for exampl
 }
 ```
 
-
 ## Chat properties updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `chat_properties_updated` | ✓ | ✓ |
+| Action                    | RTM API | Webhook |
+| ------------------------- | :-----: | :-----: |
+| `chat_properties_updated` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `chat_id` | |
+| Object       | Notes                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `chat_id`    |                                                                                                            |
 | `properties` | this is not a full properties object, this push shows only the properties which have been recently updated |
 
 **Sample payload**
+
 ```js
 {
-	"chat_id": "123-123-123-123",
+	"chat_id": "PJ0MRSHTDG",
 	"properties": {
 		"rating": {
 			"comment": {
@@ -1709,26 +2106,26 @@ Content of `customer_side_storage` map should be kept on client side (for exampl
 }
 ```
 
-
 ## Chat thread properties updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `chat_thread_properties_updated` | ✓ | ✓ |
+| Action                           | RTM API | Webhook |
+| -------------------------------- | :-----: | :-----: |
+| `chat_thread_properties_updated` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `chat_id` | |
-| `thread_id` | |
+| Object       | Notes                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| `chat_id`    |                                                                                                 |
+| `thread_id`  |                                                                                                 |
 | `properties` | this is not full properties object, this push shows only properties wchich was recently updated |
 
 **Sample payload**
+
 ```js
 {
-	"chat_id": "123-123-123-123",
-	"thread_id": "E2WDHA8A",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"properties": {
 		"rating": {
 			"comment": {
@@ -1741,24 +2138,25 @@ Content of `customer_side_storage` map should be kept on client side (for exampl
 
 ## Event properties updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `event_properties_updated` | ✓ | ✓ |
+| Action                     | RTM API | Webhook |
+| -------------------------- | :-----: | :-----: |
+| `event_properties_updated` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `chat_id` | |
-| `thread_id` | |
-| `event_id` | |
+| Object       | Notes                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| `chat_id`    |                                                                                                 |
+| `thread_id`  |                                                                                                 |
+| `event_id`   |                                                                                                 |
 | `properties` | this is not full properties object, this push shows only properties wchich was recently updated |
 
 **Sample payload**
+
 ```js
 {
-	"chat_id": "123-123-123-123",
-	"thread_id": "E2WDHA8A",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"event_id": "2_E2WDHA8A",
 	"properties": {
 		"rating": {
@@ -1772,49 +2170,51 @@ Content of `customer_side_storage` map should be kept on client side (for exampl
 
 ## Last seen timestamp updated
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `last_seen_timestamp_updated` | ✓ | ✓ |
+| Action                        | RTM API | Webhook |
+| ----------------------------- | :-----: | :-----: |
+| `last_seen_timestamp_updated` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object | Notes |
-|--------|------------------|
-| `user_id` | |
-| `chat_id` | |
-| `thread_id` | |
-| `timestamp` | |
+| Object      | Notes |
+| ----------- | ----- |
+| `user_id`   |       |
+| `chat_id`   |       |
+| `thread_id` |       |
+| `timestamp` |       |
 
 **Sample payload**
+
 ```js
 {
-	"user_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
-	"chat_id": "123-123-123-123",
-	"thread_id": "123-123-123-321",
+	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"timestamp": 123456789
 }
 ```
 
 ## Chat user added
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `chat_user_added` | ✓ | ✓ |
+| Action            | RTM API | Webhook |
+| ----------------- | :-----: | :-----: |
+| `chat_user_added` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object         | Notes    |
-|----------------|----------|
-| `chat_id`       |          |
-| `thread_id`       |          |
-| `user`       |          |
-| `user_type`       | possible values are `agent`, `customer`          |
+| Object      | Notes                                   |
+| ----------- | --------------------------------------- |
+| `chat_id`   |                                         |
+| `thread_id` |                                         |
+| `user`      |                                         |
+| `user_type` | possible values are `agent`, `customer` |
 
 **Sample push payload**
+
 ```js
 {
-	"chat_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
-	"thread_id": "85f3bfc9-06c1-434e-958b-2a5239b07df3",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
 	"user": {
 		// "User > Customer" or "User > Agent" object
 	},
@@ -1824,52 +2224,164 @@ Content of `customer_side_storage` map should be kept on client side (for exampl
 
 ## Chat user removed
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `chat_user_removed` | ✓ | ✓ |
+| Action              | RTM API | Webhook |
+| ------------------- | :-----: | :-----: |
+| `chat_user_removed` |    ✓    |    ✓    |
 
 **Push payload**
 
-| Object         | Notes    |
-|----------------|----------|
-| `chat_id`       |          |
-| `thread_id`       |          |
-| `user_id`       |          |
-| `user_type`       | possible values are `agent`, `customer`          |
+| Object      | Notes                                   |
+| ----------- | --------------------------------------- |
+| `chat_id`   |                                         |
+| `thread_id` |                                         |
+| `user_id`   |                                         |
+| `user_type` | possible values are `agent`, `customer` |
 
 **Sample push payload**
+
 ```js
 {
-	"chat_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
-	"thread_id": "85f3bfc9-06c1-434e-958b-2a5239b07df3",
-	"user_id": "cb531744-e6a4-4ded-b3eb-b3eb4ded4ded",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"user_id": "agent1@example.com",
 	"user_type": "agent"
 }
 ```
 
 ## Chat transferred
 
-| Action | RTM API | Webhook |
-| --- | :---: | :---: |
-| `chat_transferred` | ✓ | - |
+| Action             | RTM API | Webhook |
+| ------------------ | :-----: | :-----: |
+| `chat_transferred` |    ✓    |    -    |
 
 **Push payload**
 
-| Object         | Notes    |
-|----------------|----------|
-| `chat_id`       |          |
-| `thread_id`       |          |
-| `requester_id` | |
-| `type`       | `agent` or `group` |
-| `ids`       | `group` or `agent` ids array  |
+| Object         | Notes                        |
+| -------------- | ---------------------------- |
+| `chat_id`      |                              |
+| `thread_id`    |                              |
+| `requester_id` |                              |
+| `type`         | `agent` or `group`           |
+| `ids`          | `group` or `agent` ids array |
 
 **Sample push payload**
+
 ```js
 {
-	"chat_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
-	"thread_id": "85f3bfc9-06c1-434e-958b-2a5239b07df3",
-	"requester_id" : "cb531744-e6a4-4ded-b3eb-b3eb4ded4ded",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"requester_id" : "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"type": "agent",
-	"ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
+	"ids": ["agent1@example.com"]
+}
+```
+
+## Chat properties deleted
+
+| Action                    | RTM API | Webhook |
+| ------------------------- | :-----: | :-----: |
+| `chat_properties_deleted` |    ✓    |    ✓    |
+
+**Push payload**
+
+| Object       | Notes                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `chat_id`    |                                                                                                            |
+| `properties` | this is not a full properties object, this push shows only the properties which have been recently deleted |
+
+**Sample push payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"properties": {
+		"rating": ["score", "comment"]
+		},
+		...
+	}
+}
+```
+
+## Chat thread properties deleted
+
+| Action                           | RTM API | Webhook |
+| -------------------------------- | :-----: | :-----: |
+| `chat_thread_properties_deleted` |    ✓    |    ✓    |
+
+**Push payload**
+
+| Object       | Notes                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `chat_id`    |                                                                                                            |
+| `thread_id`  |                                                                                                            |
+| `properties` | this is not a full properties object, this push shows only the properties which have been recently deleted |
+
+**Sample push payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"properties": {
+		"rating": ["score", "comment"]
+		},
+		...
+	}
+}
+```
+
+## Event properties deleted
+
+| Action                     | RTM API | Webhook |
+| -------------------------- | :-----: | :-----: |
+| `event_properties_deleted` |    ✓    |    ✓    |
+
+**Push payload**
+
+| Object       | Notes                                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| `chat_id`    |                                                                                                |
+| `thread_id`  |                                                                                                |
+| `event_id`   |                                                                                                |
+| `properties` | this is not full properties object, this push shows only properties which was recently deleted |
+
+**Sample payload**
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "2_E2WDHA8A",
+	"properties": {
+		"rating": ["score", "comment"]
+		},
+		...
+	}
+}
+```
+
+## Event updated
+
+| Action          | RTM API | Webhook |
+| --------------- | :-----: | :-----: |
+| `event_updated` |    ✓    |    ✓    |
+
+**Push payload**
+
+| Object      | Notes |
+| ----------- | ----- |
+| `chat_id`   |       |
+| `thread_id` |       |
+| `event`     |       |
+
+**Sample payload**
+
+```js
+{
+	"chat_id": "123-123-123-123",
+	"thread_id": "E2WDHA8A",
+	"event": {
+		// "Event" object
+	}
 }
 ```
