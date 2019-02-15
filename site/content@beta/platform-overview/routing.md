@@ -2,7 +2,7 @@
 weight: 40
 ---
 
-# Routing
+# Chat Routing
 
 Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents at a single license .
 
