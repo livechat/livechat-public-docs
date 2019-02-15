@@ -2,7 +2,7 @@
 weight: 20
 ---
 
-# App authorization flows
+# Agent authorization flows
 All apps integrated with LiveChat must be first created in [LiveChat Developers Console](https://developers.livechatinc.com/console). When a user starts using your app, they will see what parts of his account your app will have access to:
 
 <img src="../assets/images/authorization/grant-access.png" style="border: 1px solid #ddd" />
@@ -38,10 +38,10 @@ Then, the user is redirected to your app with `access_token` included in the URL
 
 <img src="../assets/images/authorization/public-web-app.png" style="border: 1px solid #ddd" />
 
-### 1. Create the app
+### Step 1: Create the app
 Go to [Developers Console](https://developers.livechatinc.com/console) and create a new "LiveChat OAuth 2.0 Client" app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
 
-### 2. Redirect to LiveChat OAuth Server
+### Step 2: Redirect to LiveChat OAuth Server
 
 > Example redirection to LiveChat OAuth Server:
 
@@ -64,7 +64,7 @@ with the following URL params:
 * **redirect_uri** – URL of your web application that LiveChat OAuth Server will redirect the user back after successful authorization. It must be one of the URLs that you entered when creating the app in the previous step.
 * **state** – you can provide here any value that might be useful to your application. It is strongly recommended to include an anti-forgery token here mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).
 
-### 3. Acquire the access token
+### Step 3: Acquire the access token
 
 > Example redirection back to your app:
 
@@ -179,10 +179,10 @@ Your application exchanges the authorization code for an `access_token` and `ref
 
 <img src="../assets/images/authorization/public-backend-app.png" style="border: 1px solid #ddd" />
 
-### 1. Create the app
+### Step 1: Create the app
 Go to [Developers Console](https://developers.livechatinc.com/console) to create a new server-side app. **Redirect URI** is the address of your app that will receive authorization `code` in a URL. **Scopes** is a list of permissions your app will get.
 
-### 2. Redirect to LiveChat OAuth Server
+### Step 2: Redirect to LiveChat OAuth Server
 
 > Sample code for redirecting to LiveChat OAuth Server:
 
@@ -206,7 +206,7 @@ Optional URL parameters:
 
 * **state** – provide any state that might be useful to your application. It will be included in the redirection to `redirect_uri` endpoint.<br>It is strongly recommended to include an anti-forgery token in the state to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).
 
-### 3. Acquire the code
+### Step 3: Acquire the code
 
 > Example redirection back to your app:
 
@@ -220,7 +220,7 @@ When the user approves the access request, they are redirected back to your app.
 
 If the user does not approve the request, LiveChat OAuth Server will not redirect the user to your application.
 
-### 4. Exchange code for access token and refresh token
+### Step 4: Exchange code for access token and refresh token
 
 > Example request:
 
