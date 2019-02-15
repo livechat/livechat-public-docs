@@ -1,5 +1,5 @@
 ---
-title: 'Configuration API Guide'
+title: "Configuration API Guide"
 weight: 10
 ---
 
@@ -8,36 +8,6 @@ weight: 10
 Configuration API is a service for storing configuration of license. You can set
 up here different types of features such as properties or webhooks.
 
-
-## Overview
-
-LiveChat Configuration API is a service for storing license configuration.
-
-## Use cases
-
-With LiveChat Configuration API you can:
-
-- set up webhooks
-- create and manage bot agents
-
-## Important notes
-
-To use this tool you need to have basic knowledge of REST or websocket APIs, OAuth 2.0 protocol and your technology of choice.
-
-If you want to perform a chat from the agent perspective, you should use [Agent API](/beta-docs/agent-chat-api/).
-
-<div class="callout type-warning">This API is under <strong>heavy development</strong>. We introduce changes every month. If you want to stay updated, follow the changelog below.</div>
-# Getting started
-
-## Prerequisites
-
-To start off with LiveChat Configuration API, follow these steps:
-
-1. Sign up or sign in to the [Developers Console](https://developers.livechatinc.com/console/).
-2. Create a new app ("Server-side" type).
-3. Copy the Client Secret and Client ID.
-
-
 ## URL
 
 Configuration API is available under URL
@@ -45,7 +15,7 @@ Configuration API is available under URL
 
 ## Versioning
 
-There are several API versions available, for example: `v3.0` or `v0.4`. If you want to use the latest version,
+There are several API versions available, for example: `v0.3` or `v0.4`. If you want to use the latest version,
 you should use `api.livechatinc.com/configuration/{endpoint}` URL, but it is not
 recommended.
 
@@ -63,51 +33,64 @@ curl -v api.livechatinc.com/v3.0/configuration/agents/get_bot_agent_details -H "
 All configurations set by this API will have action in system after max 2
 minutes. This delay will be removed in future.
 
-# BOT Agent
+# Bot Agent
 
-* BOT Agent enables writing integrations using agent-chat-api to communicate in chats
+- Bot Agent enables writing integrations using agent-api to communicate in chats
   as a regular Agent.
 
-* Logged in BOT Agent is connected to agent SSO access token that
-  creates/updates the BOT and is being logged out when the access token is
+- Logged in Bot Agent is connected to agent SSO access token that
+  creates/updates the Bot and is being logged out when the access token is
   revoked.
 
-* Each BOT Agent is a resource owned by an application in developers platform
-  identified by `client_id`. By "My BOT Agents" the BOTs owned by application
+- Each Bot Agent is a resource owned by an application in developers platform
+  identified by `client_id`. By "My Bot Agents" the Bots owned by application
   with given `client_id` is meant.
 
 ## Differences from regular Agent
 
-* you can not log in using BOT Agent account
-* you can not set password for BOT Agent account
-* BOT Agent does not have an email - agent_id is a random hash
+- you can not log in using Bot Agent account
+- you can not set password for Bot Agent account
+- Bot Agent does not have an email - agent_id is a random hash
+
+## Test property namespace
+
+For each license there are added some test properties.
+
+| Namespace | Property                    | Type               | Access                     |
+| --------- | --------------------------- | ------------------ | -------------------------- |
+| `test`    | `bool_property`             | `bool`             | rw for everyone everywhere |
+| `test`    | `int_property`              | `int`              | rw for everyone everywhere |
+| `test`    | `string_property`           | `string`           | rw for everyone everywhere |
+| `test`    | `tokenized_string_property` | `tokenized_string` | rw for everyone everywhere |
+
+Note: `tokenized_string` is similar to `string` type, except values of it are splitted into tokens to enable search of each word.
 
 ## Methods
 
-#### Create BOT Agent
+#### Create Bot Agent
 
 **Endpoint**: `/agents/create_bot_agent`
 
 **Permissions**:
-* `agents-bot--my:write` - to create my bot agents
 
-| Request object               | Type       | Required | Notes                                                                |
-| ---------------------------- | ---------- | -------- | -------------------------------------------------------------------- |
-| `name`                       | `string`   | Yes      | display name                                                         |
-| `avatar`                     | `string`   | No       | avatar URL                                                           |
-| `status`                     | `string`   | Yes      | agent status                                                         |
-| `max_chats_count`            | `int`      | No       | maximum incoming chats that can be routed to the agent, by default 6 |
-| `groups`                     | `object[]` | No       | groups the agent belongs to                                          |
-| `groups[].id`                | `uint`     | Yes      | group ID                                                             |
-| `groups[].priority`          | `string`   | Yes      | agent priority in group                                              |
-| `webhooks`                   | `object`   | No      | webhooks sent to the agent                                           |
-| `webhooks.url`               | `string`   | Yes      | destination URL for webhooks                                         |
-| `webhooks.secret_key`        | `string`   | Yes      | secret sent in webhooks to verify webhook source                     |
-| `webhooks.actions`           | `object[]` | Yes      | triggering actions                                                   |
-| `webhooks.actions[].name`    | `string`   | Yes      | triggering action name                                               |
-| `webhooks.actions[].filters` | `object`   | No       | filters to check if webhook should be triggered                      |
-| `webhooks.actions[].additional_data` | `string[]` | No | Additional data that will arrive with webhook |
+- `agents-bot--my:rw` - to create my bot agents
 
+| Request object                       | Type       | Required | Notes                                                                |
+| ------------------------------------ | ---------- | -------- | -------------------------------------------------------------------- |
+| `name`                               | `string`   | Yes      | display name                                                         |
+| `avatar`                             | `string`   | No       | avatar URL                                                           |
+| `status`                             | `string`   | Yes      | agent status                                                         |
+| `max_chats_count`                    | `int`      | No       | maximum incoming chats that can be routed to the agent, by default 6 |
+| `groups`                             | `object[]` | No       | groups the agent belongs to                                          |
+| `groups[].id`                        | `uint`     | Yes      | group ID                                                             |
+| `groups[].priority`                  | `string`   | Yes      | agent priority in group                                              |
+| `webhooks`                           | `object`   | No       | webhooks sent to the agent                                           |
+| `webhooks.url`                       | `string`   | Yes      | destination URL for webhooks                                         |
+| `webhooks.secret_key`                | `string`   | Yes      | secret sent in webhooks to verify webhook source                     |
+| `webhooks.actions`                   | `object[]` | Yes      | triggering actions                                                   |
+| `webhooks.actions[].name`            | `string`   | Yes      | triggering action name                                               |
+| `webhooks.actions[].filters`         | `object`   | No       | filters to check if webhook should be triggered                      |
+| `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhook                        |
 
 #### Example request payload
 
@@ -140,23 +123,23 @@ minutes. This delay will be removed in future.
 }
 ```
 
-* `status` possible values:
-  * `accepting chats` - agent is logged in and chat router routes incoming chats
+- `status` possible values:
+  - `accepting chats` - agent is logged in and chat router routes incoming chats
     to them
-  * `not accepting chats` - agent is logged in but chat router does not route
+  - `not accepting chats` - agent is logged in but chat router does not route
     incoming chats to them
-  * `offline` - agent is not logged in
-* `groups[].priority` possible values:
-  * `first` - the highest chat routing priority - agents with `first` priority
-    get chats before the others from that group, eg BOTs can get chats before
+  - `offline` - agent is not logged in
+- `groups[].priority` possible values:
+  - `first` - the highest chat routing priority - agents with `first` priority
+    get chats before the others from that group, eg Bots can get chats before
     normal agents.
-  * `normal` - the middle chat routing priority - agents with `normal` priority
+  - `normal` - the middle chat routing priority - agents with `normal` priority
     get chats before the others with `last` priority when there are no agents
     with `first` priority available with free slots in that group
-  * `last` - the lowest chat routing priority - agents with `last` priority get
+  - `last` - the lowest chat routing priority - agents with `last` priority get
     chats when there are no agents with `first` or `normal` priority available
     with free slots in that group
-* `webhooks` - go [here](#webhooks) for possible actions values and payloads.
+- `webhooks` - go [here](#webhooks) for possible actions values and payloads.
 
 #### Example response payloads
 
@@ -168,17 +151,18 @@ minutes. This delay will be removed in future.
 }
 ```
 
-#### Remove BOT Agent
+#### Remove Bot Agent
 
 **Endpoint**: `agents/remove_bot_agent`
 
 **Permissions**:
-* `agents-bot--my:write` - to remove my bot agent
-* `agents-bot--all:write` - to remove any bot agent
+
+- `agents-bot--my:rw` - to remove my bot agent
+- `agents-bot--all:rw` - to remove any bot agent
 
 | Request object | Type     | Required | Notes        |
 | -------------- | -------- | -------- | ------------ |
-| `bot_agent_id` | `string` | Yes      | BOT agent ID |
+| `bot_agent_id` | `string` | Yes      | Bot agent ID |
 
 #### Example request payload
 
@@ -197,30 +181,31 @@ minutes. This delay will be removed in future.
 }
 ```
 
-### Update BOT Agent
+### Update Bot Agent
 
 **Endpoint**: `agents/update_bot_agent`
 
 **Permissions**:
-* `agents-bot--my:write` - to update my bot agent
 
-| Request object               | Type       | Required | Notes                                                  |
-| ---------------------------- | ---------- | -------- | ------------------------------------------------------ |
-| `id`                         | `string`   | Yes      | bot agent ID                                           |
-| `name`                       | `string`   | No       | display name                                           |
-| `avatar`                     | `string`   | No       | avatar URL                                             |
-| `status`                     | `string`   | No       | agent status                                           |
-| `max_chats_count`            | `int`      | No       | maximum incoming chats that can be routed to the agent |
-| `groups`                     | `object[]` | No       | groups the agent belongs to                            |
-| `groups[].id`                | `uint`     | Yes      | group ID                                               |
-| `groups[].priority`          | `string`   | Yes      | agent priority in group                                |
-| `webhooks`                   | `object`   | No       | webhooks sent to the agent                             |
-| `webhooks.url`               | `string`   | Yes      | destination URL for webhooks                           |
-| `webhooks.secret_key`        | `string`   | Yes      | secret sent in webhooks to verify webhook source       |
-| `webhooks.actions`           | `object[]` | Yes      | triggering actions                                     |
-| `webhooks.actions[].name`    | `string`   | Yes      | triggering action name                                 |
-| `webhooks.actions[].filters` | `object`   | No       | filters to check if webhook should be triggered        |
-| `webhooks.actions[].additional_data` | `string[]` | No | Additional data that will arrive with webhook |
+- `agents-bot--my:rw` - to update my bot agent
+
+| Request object                       | Type       | Required | Notes                                                  |
+| ------------------------------------ | ---------- | -------- | ------------------------------------------------------ |
+| `id`                                 | `string`   | Yes      | bot agent ID                                           |
+| `name`                               | `string`   | No       | display name                                           |
+| `avatar`                             | `string`   | No       | avatar URL                                             |
+| `status`                             | `string`   | No       | agent status                                           |
+| `max_chats_count`                    | `int`      | No       | maximum incoming chats that can be routed to the agent |
+| `groups`                             | `object[]` | No       | groups the agent belongs to                            |
+| `groups[].id`                        | `uint`     | Yes      | group ID                                               |
+| `groups[].priority`                  | `string`   | Yes      | agent priority in group                                |
+| `webhooks`                           | `object`   | No       | webhooks sent to the agent                             |
+| `webhooks.url`                       | `string`   | Yes      | destination URL for webhooks                           |
+| `webhooks.secret_key`                | `string`   | Yes      | secret sent in webhooks to verify webhook source       |
+| `webhooks.actions`                   | `object[]` | Yes      | triggering actions                                     |
+| `webhooks.actions[].name`            | `string`   | Yes      | triggering action name                                 |
+| `webhooks.actions[].filters`         | `object`   | No       | filters to check if webhook should be triggered        |
+| `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhook          |
 
 #### Example request payload
 
@@ -250,23 +235,23 @@ minutes. This delay will be removed in future.
 }
 ```
 
-* `status` possible values:
-  * `accepting chats` - agent is logged in and chat router routes incoming chats
+- `status` possible values:
+  - `accepting chats` - agent is logged in and chat router routes incoming chats
     to them
-  * `not accepting chats` - agent is logged in but chat router does not route
+  - `not accepting chats` - agent is logged in but chat router does not route
     incoming chats to them
-  * `offline` - agent is not logged in
-* `groups[].priority` possible values:
-  * `first` - the highest chat routing priority - agents with `first` priority
-    get chats before the others from that group, eg BOTs can get chats before
+  - `offline` - agent is not logged in
+- `groups[].priority` possible values:
+  - `first` - the highest chat routing priority - agents with `first` priority
+    get chats before the others from that group, eg Bots can get chats before
     normal agents.
-  * `normal` - the middle chat routing priority - agents with `normal` priority
+  - `normal` - the middle chat routing priority - agents with `normal` priority
     get chats before the others with `last` priority when there are no agents
     with `first` priority available with free slots in that group
-  * `last` - the lowest chat routing priority - agents with `last` priority get
+  - `last` - the lowest chat routing priority - agents with `last` priority get
     chats when there are no agents with `first` or `normal` priority available
     with free slots in that group
-* `webhooks` - go [here](#webhooks) for possible actions values and payloads.
+- `webhooks` - go [here](#webhooks) for possible actions values and payloads.
 
 #### Example response payloads
 
@@ -277,17 +262,18 @@ minutes. This delay will be removed in future.
 }
 ```
 
-### Get BOT Agents
+### Get Bot Agents
 
 **Endpoint**: `agents/get_bot_agents`
 
 **Permissions**:
-* `agents-bot--my:read` - to get my bot agent
-* `agents-bot--all:read` - to get all bot agents
+
+- `agents-bot--my:ro` - to get my bot agent
+- `agents-bot--all:ro` - to get all bot agents
 
 | Request object | Type   | Required | Notes                                                                                     |
 | -------------- | ------ | -------- | ----------------------------------------------------------------------------------------- |
-| `all`          | `bool` | No       | Get all BOT Agents, if `false` returns only caller's BOT Agents, default value is `false` |
+| `all`          | `bool` | No       | Get all Bot Agents, if `false` returns only caller's Bot Agents, default value is `false` |
 
 #### Example request payload
 
@@ -312,17 +298,18 @@ minutes. This delay will be removed in future.
 }
 ```
 
-### Get BOT Agent details
+### Get Bot Agent details
 
 **Endpoint**: `agents/get_bot_agent_details`
 
 **Permissions**:
-* `agents-bot--my:read` - to get my bot agent details
-* `agents-bot--all:read` - to get any bot agent details
+
+- `agents-bot--my:ro` - to get my bot agent details
+- `agents-bot--all:ro` - to get any bot agent details
 
 | Request object | Type     | Required | Notes        |
 | -------------- | -------- | -------- | ------------ |
-| `bot_agent_id` | `string` | Yes      | BOT Agent ID |
+| `bot_agent_id` | `string` | Yes      | Bot Agent ID |
 
 #### Example request payload
 
@@ -387,73 +374,69 @@ minutes. This delay will be removed in future.
 **Endpoint**: `webhooks/register_webhook`
 
 **Permissions**:
-* `webhooks--my:write` - to register my webhook
 
-| Request object | Type     | Required | Notes                                            |
-| -------------- | -------- | -------- | ------------------------------------------------ |
-| `url`          | `string` | Yes      | Destination URL for webhook                      |
-| `description`  | `string` | No       | Webhook description                              |
-| `action`       | `string` | Yes      | Triggerring action                               |
-| `secret_key`   | `string` | Yes      | Secret sent in webhooks to verify webhook source |
-| `filters`      | `object` | No       | Filters to check if webhook should be triggered  |
-| `additional_data` | `[string]` | No | Additional data that will arrive with webhook |
+- `webhooks--my:rw` - to register my webhook
 
-* `action` possible values:
-  * `incoming_chat_thread` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#incoming-chat-thread), 
-    available filters for the action: `chat_properties`, `thread_properties` and `chat_member_ids`
-  * `incoming_event` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#incoming-event),
-    available filters for the action: `chat_properties`, `event_properties`, `chat_member_ids` and `author_type`
-  * `incoming_rich_message_postback` - triggers on action
-    [link to change](/beta-docs/agent-chat-api/#incoming-rich-message-postback),
-    available filters for the action: `chat_properties`, `event_properties` and `chat_member_ids`
-  * `last_seen_timestamp_updated` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#last-seen-timestamp-updated),
-    available filters for the action: `chat_properties` and `chat_member_ids`
-  * `thread_closed` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#thread-closed),
-    available filters for the action: `chat_properties`, `thread_properties` and `chat_member_ids`
-  * `chat_scopes_updated` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-scopes-updated),
-    available filters for the action: `chat_properties` and `chat_member_ids`
-  * `chat_properties_updated` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-properties-updated),
-    available filters for the action: `chat_properties` and `chat_member_ids`
-  * `chat_thread_properties_updated` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-thread-properties-updated),
-    available filters for the action: `chat_properties` and `chat_member_ids`
-  * `chat_user_added` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-user-added),
-    available filters for the action: `chat_properties` and `chat_member_ids`
-  * `chat_user_removed` - triggers on action
-    [agent-chat-api push](/beta-docs/agent-chat-api/#chat-user-removed),
-    available filters for the action: `chat_properties` and `chat_member_ids`
-  * `agent_status_changed` - triggers when status of some agent is changed,
+| Request object            | Type       | Required | Notes                                                            |
+| ------------------------- | ---------- | -------- | ---------------------------------------------------------------- |
+| `url`                     | `string`   | Yes      | Destination URL for webhook                                      |
+| `description`             | `string`   | No       | Webhook description                                              |
+| `action`                  | `string`   | Yes      | Triggerring action                                               |
+| `secret_key`              | `string`   | Yes      | Secret sent in webhooks to verify webhook source                 |
+| `filters`                 | `object`   | No       | Filters to check if webhook should be triggered                  |
+| `filters.author_type`     | `string`   | No       | Possible values: `customer`, `agent`                             |
+| `filters.chat_member_ids` | `object`   | No       | Only one filter (`agents_any` or `agents_exclude`) is allowed    |
+| `filters.agents_any`      | `[]string` | No       | If any specified agent is in chat, webhook will be triggered     |
+| `filters.agents_exclude`  | `[]string` | No       | If any specified agent is in chat, webhook will not be triggered |
+| `additional_data`         | `[]string` | No       | Additional data that will arrive with webhook                    |
+
+- `action` possible values:
+  - `incoming_chat_thread` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-chat-thread),
     available filters for the action: `chat_member_ids`
-  * `agent_deleted` - triggers when some agent is deleted,
+  - `incoming_event` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-event),
+    available filters for the action: `chat_member_ids` and `author_type`
+  - `incoming_rich_message_postback` - triggers on action
+    [link to change](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-rich-message-postback),
     available filters for the action: `chat_member_ids`
-* `filters` possible filters:
-  * `chat_properties.<namespace>.<name>.<filter_type>`
-    `<filter_type>` possible values (only one is allowed for single property):
-      * `exists` (`bool`)
-      * `values` (`type[]` - array with specific type for property: `string`,
-        `int` or `bool`)
-      * `exclude_values` (`type[]` - array with specific type for property:
-        `string`, `int` or `bool`)
-  * `thread_properties.<namespace>.<name>.<filter_type>`
-    `<filter_type>` as above
-  * `event_properties.<namespace>.<name>.<filter_type>`
-    `<filter_type>` as above
-  * `chat_member_ids` (only one of above is allowed)
-      * `agents` (`string[]`) - array of agent ids. If all agents from this array are in chat, then webhook will be triggered.
-      * `agents_any` (`string[]`) - array of agent ids. If any agent from this array is in chat, then webhook will be triggered.
-      * `agents_exclude` (`string[]`) - array of agent ids. If any agent from this array is in chat, then webhook will not be triggered.
-  * `author_type` - `customer` or `agent`, allowed only for `incoming_event` action
-* `additional_data` possible values in array:
-  * `chat_properties` (available for every action except `agent_status_changed` and `agent_deleted`)
-  * `access` (available only for actions: `incoming_chat_event` and `chat_user_added`)
-  * `thread_id` (available only for action `chat_user_added`)
+  - `last_seen_timestamp_updated` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#last-seen-timestamp-updated),
+    available filters for the action: `chat_member_ids`
+  - `thread_closed` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#thread-closed),
+    available filters for the action: `chat_member_ids`
+  - `chat_properties_updated` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-updated),
+    available filters for the action: `chat_member_ids`
+  - `chat_thread_properties_updated` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-updated),
+    available filters for the action: `chat_member_ids`
+  - `chat_properties_deleted` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-deleted),
+    available filters for the action: `chat_member_ids`
+  - `chat_thread_properties_deleted` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-deleted),
+    available filters for the action: `chat_member_ids`
+  - `chat_user_added` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-added),
+    available filters for the action: `chat_member_ids`
+  - `chat_user_removed` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-removed),
+    available filters for the action: `chat_member_ids`
+  - `agent_status_changed` - triggers when status of some agent is changed,
+    available filters for the action: `chat_member_ids`
+  - `agent_deleted` - triggers when some agent is deleted,
+    available filters for the action: `chat_member_ids`
+- `filters` possible filters:
+  - `chat_member_ids` (only one of above is allowed)
+    - `agents_any` (`string[]`) - array of agent ids. If any agent from this array is in chat, then webhook will be triggered.
+    - `agents_exclude` (`string[]`) - array of agent ids. If any agent from this array is in chat, then webhook will not be triggered.
+  - `author_type` - `customer` or `agent`, allowed only for `incoming_event` action
+- `additional_data` possible values in array:
+  - `chat_properties` (available for every action except `agent_status_changed` and `agent_deleted`)
+  - `access` (available only for actions: `incoming_chat_event` and `chat_user_added`)
+  - `thread_id` (available only for action `chat_user_added`)
 
 #### Example request payload
 
@@ -464,20 +447,8 @@ minutes. This delay will be removed in future.
   "action": "thread_closed",
   "secret_key": "laudla991lamda0pnoaa0",
   "filters": {
-    "chat_properties": {
-      "source": {
-        "type": {
-          "values": ["facebook", "twitter"]
-        }
-      },
-      "rating": {
-        "comment": {
-          "exists": true
-        }
-      }
-    },
     "chat_member_ids": {
-      "agents": ["johndoe@mail.com"]
+      "agents_any": ["johndoe@mail.com"]
     }
   },
   "additional_data": ["chat_properties"]
@@ -499,8 +470,9 @@ minutes. This delay will be removed in future.
 **Endpoint**: `webhooks/get_webhooks_config`
 
 **Permissions**:
-* `webhooks--my:read` - to get my webhooks config
-* `webhooks--all:read` - to get all webhooks config
+
+- `webhooks--my:ro` - to get my webhooks config
+- `webhooks--all:ro` - to get all webhooks config
 
 #### Example request payload
 
@@ -523,17 +495,8 @@ minutes. This delay will be removed in future.
       "action": "thread_closed",
       "secret_key": "laudla991lamda0pnoaa0",
       "filters": {
-        "chat_properties": {
-          "source": {
-            "type": {
-              "values": ["facebook", "twitter"]
-            }
-          },
-          "rating": {
-            "comment": {
-              "exists": true
-            }
-          }
+        "chat_member_ids": {
+          "agents_any": ["johndoe@mail.com"]
         }
       }
     }
@@ -546,8 +509,9 @@ minutes. This delay will be removed in future.
 **Endpoint**: `webhooks/unregister_webhook`
 
 **Permissions**:
-* `webhooks--my:write` - to unregister my webhook
-* `webhooks--all:write` - to unregister any webhook
+
+- `webhooks--my:rw` - to unregister my webhook
+- `webhooks--all:rw` - to unregister any webhook
 
 | Request object | Type     | Required | Notes      |
 | -------------- | -------- | -------- | ---------- |
@@ -590,18 +554,16 @@ minutes. This delay will be removed in future.
 }
 ```
 
-## Payload for actions derived from agent-chat-api pushes:
+## Payload for actions derived from agent-api pushes:
 
-* [`incoming_chat_thread`](/beta-docs/agent-chat-api/#incoming-chat-thread)
-* [`incoming_event`](/beta-docs/agent-chat-api/#incoming-event)
-* [`last_seen_timestamp_updated`](/beta-docs/agent-chat-api/#last-seen-timestamp-updated)
-* [`thread_closed`](/beta-docs/agent-chat-api/#thread-closed)
-* [`chat_scopes_updated`](/beta-docs/agent-chat-api/#chat-scopes-updated)
-* [`chat_properties_updated`](/beta-docs/agent-chat-api/#chat-properties-updated)
-* [`chat_thread_properties_updated`](/beta-docs/agent-chat-api/#chat-thread-properties-updated)
-* [`chat_user_added`](/beta-docs/agent-chat-api/#chat-user-added)
-* [`chat_user_removed`](/beta-docs/agent-chat-api/#chat-chat-user-removed)
-
+- [`incoming_chat_thread`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-chat-thread)
+- [`incoming_event`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-event)
+- [`last_seen_timestamp_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#last-seen-timestamp-updated)
+- [`thread_closed`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#thread-closed)
+- [`chat_properties_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-updated)
+- [`chat_thread_properties_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-updated)
+- [`chat_user_added`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-added)
+- [`chat_user_removed`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-chat-user-removed)
 
 ## Payload for another actions:
 
@@ -616,9 +578,9 @@ minutes. This delay will be removed in future.
 
 possible status values:
 
-* `accepting chats`
-* `not accepting chats`
-* `offline`
+- `accepting chats`
+- `not accepting chats`
+- `offline`
 
 ### `agent_deleted`
 
@@ -628,7 +590,6 @@ possible status values:
 }
 ```
 
-
 # Properties
 
 ### Create properties
@@ -636,40 +597,40 @@ possible status values:
 **Endpoint**: `properties/create_properties`
 
 **Permissions**:
-* `properties--my:write` - to create my properties (in my namespace)
 
-| Request object | Type     | Required | Notes                                            |
-| -------------- | -------- | -------- | ------------------------------------------------ |
-| `<property_name>.type`| `string` | Yes      | values allowed: `int`, `string`, `bool` and `tokenized_string` |
-| `<property_name>.description`  | `string` | No       | property description                              |
-| `<property_name>.locations`       | `object` | Yes      |                                |
-| `<property_name>.locations.<location>`   | `object` | at least one location | `<location>` is one of these values: `chat`, `thread`, `event` |
-| `<property_name>.locations.<location>.access.<user>`      | `object` | at least one user | `<user>` is one of these values: `agent`, `customer`  |
-| `<property_name>.locations.<location>.access.<user>.read`      | `bool` | Yes | if true, then `<user>` can read this property |
-| `<property_name>.locations.<location>.access.<user>.write`      | `bool` | Yes | if true, then `<user>` can write to this property |
-| `<property_name>.domain`      | `[<type>]` | No | this is array of values that properties can be set to |
-| `<property_name>.range`      | `object` | No | this is range of values that properties can be set to |
-| `<property_name>.range.from`      | `int` | No | only values equal or greater than this parameter can be set to this property |
-| `<property_name>.range.to`      | `int` | No | only values equal or lower than this parameter can be set to this property |
+- `properties--my:rw` - to create my properties (in my namespace)
+
+| Request object                                             | Type       | Required              | Notes                                                                        |
+| ---------------------------------------------------------- | ---------- | --------------------- | ---------------------------------------------------------------------------- |
+| `<property_name>.type`                                     | `string`   | Yes                   | values allowed: `int`, `string`, `bool` and `tokenized_string`               |
+| `<property_name>.description`                              | `string`   | No                    | property description                                                         |
+| `<property_name>.locations`                                | `object`   | Yes                   |                                                                              |
+| `<property_name>.locations.<location>`                     | `object`   | at least one location | `<location>` is one of these values: `chat`, `thread`, `event`               |
+| `<property_name>.locations.<location>.access.<user>`       | `object`   | at least one user     | `<user>` is one of these values: `agent`, `customer`                         |
+| `<property_name>.locations.<location>.access.<user>.read`  | `bool`     | Yes                   | if true, then `<user>` can read this property                                |
+| `<property_name>.locations.<location>.access.<user>.write` | `bool`     | Yes                   | if true, then `<user>` can write to this property                            |
+| `<property_name>.domain`                                   | `[<type>]` | No                    | this is array of values that properties can be set to                        |
+| `<property_name>.range`                                    | `object`   | No                    | this is range of values that properties can be set to                        |
+| `<property_name>.range.from`                               | `int`      | No                    | only values equal or greater than this parameter can be set to this property |
+| `<property_name>.range.to`                                 | `int`      | No                    | only values equal or lower than this parameter can be set to this property   |
 
 Note: only one of `domain` and `range` can be set in single property
-Note: for more information about properties see [Properties Guide](/beta-docs/platform-overview/#properties)
-
+Note: for more information about properties see [Properties Guide](https://developers.livechatinc.com/beta-docs/platform-overview/#properties)
 
 #### Example request payload
 
 ```js
-{  
+{
   "greeting":{
     "type":"string",
     "locations":{
-      "chat":{  
-        "access":{  
-          "agent":{  
+      "chat":{
+        "access":{
+          "agent":{
             "read":true,
             "write":false
           },
-          "customer":{  
+          "customer":{
             "read":true,
             "write":true
           }
@@ -681,9 +642,9 @@ Note: for more information about properties see [Properties Guide](/beta-docs/pl
   "scoring":{
     "type":"int",
     "locations":{
-      "event":{  
-        "access":{  
-          "agent":{  
+      "event":{
+        "access":{
+          "agent":{
             "read":true,
             "write":true
           }
@@ -703,25 +664,24 @@ Note: for more information about properties see [Properties Guide](/beta-docs/pl
 ##### Success
 
 ```js
-{}
+{
+}
 ```
-
-
 
 ### Get property configs
 
 **Endpoint**: `properties/get_property_configs`
 
 **Permissions**:
-* `properties--my:read` - to get my properties configs (my namespace)
-* `properties--all:read` - to get all properties configs (all namespaces)
 
-| Request object | Type     | Required | Notes                                            |
-| -------------- | -------- | -------- | ------------------------------------------------ |
-| `all`          | `bool` | No      | if true returns all properties on license (default false)|
+- `properties--my:ro` - to get my properties configs (my namespace)
+- `properties--all:ro` - to get all properties configs (all namespaces)
 
-Note: for more information about properties see [Properties Guide](/beta-docs/platform-overview/#properties)
+| Request object | Type   | Required | Notes                                                     |
+| -------------- | ------ | -------- | --------------------------------------------------------- |
+| `all`          | `bool` | No       | if true returns all properties on license (default false) |
 
+Note: for more information about properties see [Properties Guide](https://developers.livechatinc.com/beta-docs/platform-overview/#properties)
 
 #### Example request payload
 
@@ -736,18 +696,18 @@ Note: for more information about properties see [Properties Guide](/beta-docs/pl
 ##### Success
 
 ```js
-{  
-  "58737b5829e65621a45d598aa6f2ed8e":{  
+{
+  "58737b5829e65621a45d598aa6f2ed8e":{
     "greeting":{
     "type":"string",
     "locations":{
-      "chat":{  
-        "access":{  
-          "agent":{  
+      "chat":{
+        "access":{
+          "agent":{
             "read":true,
             "write":false
           },
-          "customer":{  
+          "customer":{
             "read":true,
             "write":true
           }
@@ -759,9 +719,9 @@ Note: for more information about properties see [Properties Guide](/beta-docs/pl
   "scoring":{
     "type":"int",
     "locations":{
-      "event":{  
-        "access":{  
-          "agent":{  
+      "event":{
+        "access":{
+          "agent":{
             "read":true,
             "write":true
           }
@@ -778,167 +738,5 @@ Note: for more information about properties see [Properties Guide](/beta-docs/pl
     //
   }
   ...
-}
-```
-
-
-
-# Auto access rules
-
-### Add auto access rules
-
-**Endpoint**: `auto_access_rules/add_auto_access_rules`
-
-| Action | Request object | Type | Required | Notes |
-| -------|----------------|------|----------|-------|
-| `add_auto_access_rules` ||||
-| | `access` | `object` | Yes | Destination scope |
-| | `rules` | `object` | Yes | Rules to check for scope auto |
-| | `description` | `string` | No | Auto chat scopes description |
-
-* `access` object:
-```js
-{
-   "access": {
-      "groups": [1, 2],
-      "agents": ["john@doe.com"]
-   }
-}
-```
-
-* `rules` possible rules:
-  * `chat_properties.<namespace>.<name>.<filter_type>`
-    * `<filter_type>` possible values (only one is allowed for single property):
-      * `exists` (`bool`)
-      * `values` (`type[]` - array with specific type for property: `string`, `int` or `bool`)
-      * `exclude_values` (`type[]` - array with specific type for property: `string`, `int` or `bool`)
-  * `customer_url.<string_filter_type>`
-    * `<string_filter_type>` possible values (only one is allowed for single customer_url):
-      * `values` (`match_object[]`)
-      * `exclude_values` (`match_object[]`)
-    * `<match_object>` structure:
-      * `value` - value to match (`string`)
-      * `exact_match` - if exact match, if set to `false` a `match_object.value` will be matched as substring of `customer_url`
-  
-#### Example request payload
-```js
-{
-  "description": "Chats from Facebook or Twitter",
-  "access": {
-    "groups": [1]
-  },
-  "rules": {
-    "chat_properties": {
-      "source": {
-        "type": {
-          "values": ["facebook", "twitter"]
-        }
-      },
-      "facebook": {
-        "page_id": {
-          "values": ["63121487121"]
-        }
-      }
-    },
-    "customer_url": {
-      "values": [{
-        "value": "livechatinc.com",
-        "exact_match": false
-      }]
-    }
-  }
-}
-```
-
-#### Example response payloads
-##### Success
-```js
-{
-  "auto_access_rules_id": "pqi8oasdjahuakndw9nsad9na"
-}
-```
-
-
-
-### Get auto access rules config
-
-**Endpoint**: `auto_access_rules/get_auto_access_rules_config`
-
-
-#### Example request payload
-
-```js
-{
-}
-```
-
-#### Example response
-
-##### Success
-
-```js
-{
-    "auto_access_rules_config": [
-        {
-            "id": "1faad6f5f1d6e8fdf27e8af9839783b7",
-            "description": "Chats from Facebook or Twitter",
-            "access": {
-                "groups": [
-                    0
-                ]
-            },
-            "rules": {
-                "chat_properties": {
-                    "facebook": {
-                        "page_id": {
-                            "values": [
-                                "63121487121"
-                            ]
-                        }
-                    },
-                    "source": {
-                        "type": {
-                            "values": [
-                                "facebook",
-                                "twitter"
-                            ]
-                        }
-                    }
-                },
-                "customer_url": {
-                    "values": [
-                        {
-                            "value": "livechatinc.com",
-                            "exact_match": false
-                        }
-                    ]
-                }
-            }
-        }
-    ]
-}
-```
-
-### Remove auto access rules
-
-**Endpoint**: `auto_access_rules/remove_auto_access_rules`
-
-| Action | Request object | Type | Required | Notes |
-| -------|----------------|------|----------|-------|
-| `remove_auto_access_rules` ||||
-| | `auto_access_rules_id` | `string` | Yes | auto access rules ID |
-
-  
-#### Example request payload
-```js
-{
-  "auto_access_rules_id": "pqi8oasdjahuakndw9nsad9na"
-}
-```
-
-#### Example response payloads
-##### Success
-```js
-{
 }
 ```
