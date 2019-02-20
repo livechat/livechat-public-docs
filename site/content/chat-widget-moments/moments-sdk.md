@@ -31,7 +31,7 @@ Default method exported by the library. It's initializing connection with chat w
 
 ```js
 import createMomentsSDK from "@livechat/moments-sdk";
-const momentsSDK = initMomentsSDK({ title: "My App" }).then(momentsSDK => {
+createMomentsSDK({ title: "My App" }).then(momentsSDK => {
   // your code
 });
 ```
