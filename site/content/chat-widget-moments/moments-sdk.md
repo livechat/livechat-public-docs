@@ -4,19 +4,34 @@ weight: 50
 
 # Moments SDK
 
-Moment SDK is the library to integrate web application used as Moment with Chat Widget. It's not necessary to use Moment SDK inside Moment web applications, but it provides more chat widget integration options - It allows you to send messages as a visitor, set visitor attributes or close Moment.
+Moment SDK is the library to integrate web application used as Moments with Chat Widget. It's not necessary to use Moments SDK inside Moments web applications, but it provides more chat widget integration options - It allows you to send messages as a visitor, set visitor attributes or close Moment.
 
 ## Methods
 
-### initMomentSDK
+### Getting Started
+
+To simply get started with creating your moments app add `@livechat/moments-sdk` as dependency to your project:
+
+```
+npm install @livechat/moments-sdk
+```
+
+and then import `createMomentsSDK` function which is exported as default from package.
+
+```js
+import createMomentsSDK from "@livechat/moments-sdk";
+```
+
+### createMomentsSDK
 
 Default method exported by the library. It's initializing connection with chat widget. You can pass additional properties:
 
-- title: Application title, will be placed on Moment titlebar
+- title: Application title, will be placed on Moments titlebar
+- icon: URL to Application icon, will be placed on Moments title bar
 
 ```js
-import initMomentsSDK from "@livechat/moments-sdk";
-const momentsSDK = initMomentsSDK({ title: "My App" }).then(momentsSDK => {
+import createMomentsSDK from "@livechat/moments-sdk";
+createMomentsSDK({ title: "My App" }).then(momentsSDK => {
   // your code
 });
 ```
