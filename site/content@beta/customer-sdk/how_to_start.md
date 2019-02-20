@@ -31,7 +31,7 @@ or with a node-style `require` call:
 
 ### Using script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/customer-sdk@2"></script>`
+`<script src="https://unpkg.com/@livechat/customer-sdk"></script>`
 
 If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://codesandbox.io/s/rm3prxw88n).
