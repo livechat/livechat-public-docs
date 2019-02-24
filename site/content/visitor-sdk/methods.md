@@ -103,14 +103,38 @@ visitorSDK
   .catch(error => {
     console.log(error)
   })
+
+visitorSDK
+  .sendFile({
+    file: {
+      uri: fileUri,
+      type: 'image/jpeg',
+      name: 'image.jpg'
+    },
+    customId: '123423215',
+  })
+  .then(response => {
+    console.log(response.status)
+  })
+  .catch(error => {
+    console.log(error)
+  })
 ```
 
 #### Parameters:
 
 | param      | type     | description                                                                    |
 | ---------- | -------- | ------------------------------------------------------------------------------ |
-| file       | blob     | File to upload                                                                 |
+| file       | blob     | File to upload from web-based clients                                          |
+| file       | object   | File to upload from mobile-based clients                                       |
 | onProgress | function | Callback function. It will receive a progress value (a number between 0 and 1) |
+
+#### File object in case of mobile-based client:
+| object item | type   | description                                          |
+| ----------- | ------ | ---------------------------------------------------- |
+| uri         | string | File uri for the file you want to upload.            |
+| type        | string | File type such as 'image/jpeg', text/plain, etc.     |
+| name        | string | File name such as 'complaint.txt', 'image.jpg', etc. |
 
 #### Errors:
 
