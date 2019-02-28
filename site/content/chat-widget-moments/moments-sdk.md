@@ -55,7 +55,7 @@ Parameters:
 - customProperties - customer's additional data object
 
 ```js
-momentsSDK.setAttributes({ clinetId: "SJ3CJ6JVNMK42A", source: "Organic" });
+momentsSDK.setAttributes({ clientId: "SJ3CJ6JVNMK42A", source: "Organic" });
 ```
 
 ### close
