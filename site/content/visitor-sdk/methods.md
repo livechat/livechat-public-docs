@@ -349,7 +349,7 @@ Collects the pre-chat survey form information (it will be visible during the cha
 const formAnswers = {
   '151913066848701614': 'Sidney Bechet', // "151913066848701614" is field's name, and "Sidney Bechet" is value provided by the visitor
   '151913066848701615': 's.brechet@example.org',
-  '15191306684870388': ['1', '2'], // Fieds with "checkbox" type have multiple values.
+  '15191306684870388': ['1', '2'], // Fields with "checkbox" type have multiple values.
 }
 
 visitorSDK
@@ -399,7 +399,7 @@ Collects the [post-chat form](https://www.livechatinc.com/features/getting-feedb
 ```js
 const formAnswers = {
   '151913066848701614': 'Good support!', // "151913066848701614" is field's name, and "Good support!" is value provided by the visitor
-  '15191306684870388': ['1', '2'], // Fieds with "checkbox" type have multiple values.
+  '15191306684870388': ['1', '2'], // Fields with "checkbox" type have multiple values.
 }
 
 visitorSDK
