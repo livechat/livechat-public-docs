@@ -245,7 +245,7 @@ Simple button from design system.
 ##### Click events
 
 ```js
-Livechat.on("customer_details_section_button_click", ({ buttonId }) => {
+LiveChat.on("customer_details_section_button_click", ({ buttonId }) => {
   console.log(buttonId);
 });
 ```
