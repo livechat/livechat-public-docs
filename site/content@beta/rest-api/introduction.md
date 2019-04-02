@@ -126,6 +126,7 @@ The errors are returned using the standard HTTP error code syntax. In general, t
 *   `400` – The request is incorrect, please make sure that the passed arguments are matching the format in the method's documentation.
 *   `401` – Unauthorized. You attempt to authenticate with an invalid username or API key.
 *   `404` – Not Found. You attempt to request a resource which doesn't exist.
+*   `422` – Unprocessable Entity. You attempt to upload too big file.
 *   `500` – Internal Server Error. Something unexpected happened on our end. Please try again or contact our support.
 
 ## Cross-domain
