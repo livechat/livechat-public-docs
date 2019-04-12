@@ -4,13 +4,15 @@ weight: 10
 
 # Introduction
 
-Agent App Widgets are web applications loaded inside the LiveChat Agent App. All agents can interact with the widget during chats with customers. The widget itself is displayed in the Agent's App sidebar:
+There are several ways to extend the integration interface of the **LiveChat Agent App**. The most common one makes use of widgets. **Agent App Widgets** are web applications loaded inside the LiveChat Agent App. 
+
+Such a solution allows for interactions between widgets and agents (people chatting with customers). For example, agents could benefit from analytics, collected and displayed by a widget.
 
 <img src="../assets/images/agent-app-widget-sample.png" width="600" style="margin-top: 20px;max-width: 100%;"/>
 
-## Overview
+Typically, widgets are displayed in the right sidebar, as a part of the **Details** section. This is not the only possible placement for widgets, though. Other placement options include **Settings** and [Fullscreen Apps](#sample-apps).
 
-This tool is a simple JavaScript SDK, which allows you to communicate with LiveChat Agent App from within the embedded widget.
+
 
 ## Use cases
 
@@ -24,9 +26,10 @@ Widgets are primary elements of Agent App interface. There are number of ways yo
 
 ## Important notes
 
-To build Agent App Widgets you need to have basic knowledge about JavaScript and HTML. We've got a lot of sample apps ready for you to take further. If you got stuck at any point, feel free to contact us anytime via chat.
+From a technical point of view, an Agent App Widget is a JavaScript SDK. Therefore, you need to have some knowledge of HTML and JavaScript to build your own widget. 
 
-Keep in mind the widgets are front-end elements of LiveChat Agent App. If you'd like to build  an app that works on the server-side, please see the [REST API docs](/docs/rest-api).
+Bear in mind that widgets are front-end elements of the LiveChat Agent App. If your intention is to build a server-side application, we encourage you to familiarize yourself with the [REST API documentation](https://developers.livechatinc.com/docs/rest-api/).
+
 
 ### Feature requests
 
