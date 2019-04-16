@@ -4,13 +4,13 @@ weight: 10
 
 # Introduction
 
-There are several ways to extend the integration interface of the **LiveChat Agent App**. The most common one makes use of widgets. **Agent App Widgets** are web applications loaded inside the LiveChat Agent App. 
+There are several ways to extend the **LiveChat Agent App** interface. The most common one makes use of widgets. **Agent App Widgets** are web applications loaded inside the LiveChat Agent App. They can use the JavaScript SDK to communicate with the Agent App.  
 
 Such a solution allows for interactions between widgets and agents (people chatting with customers). For example, agents could benefit from analytics, collected and displayed by a widget.
 
 <img src="../assets/images/agent-app-widget-sample.png" width="600" style="margin-top: 20px;max-width: 100%;"/>
 
-Typically, widgets are displayed in the right sidebar, as a part of the **Details** section. This is not the only possible placement for widgets, though. Other placement options include **Settings** and [Fullscreen Apps](#sample-apps).
+Typically, widgets are displayed in the right sidebar, as a part of the **Details** section. This is not the only possible placement for widgets, though. Other placement options include **Settings** and [Fullscreen Apps](#fullscreen-apps).
 
 
 
@@ -26,7 +26,7 @@ Widgets are primary elements of Agent App interface. There are number of ways yo
 
 ## Important notes
 
-From a technical point of view, an Agent App Widget is a JavaScript SDK. Therefore, you need to have some knowledge of HTML and JavaScript to build your own widget. 
+From a technical point of view, widgets are regular web applications. For that reason, you need to have some knowledge of HTML, CSS, and JavaScript to build your own widget. 
 
 Bear in mind that widgets are front-end elements of the LiveChat Agent App. If your intention is to build a server-side application, we encourage you to familiarize yourself with the [REST API documentation](https://developers.livechatinc.com/docs/rest-api/).
 
