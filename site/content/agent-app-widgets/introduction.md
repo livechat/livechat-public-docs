@@ -4,7 +4,7 @@ weight: 10
 
 # Introduction
 
-There are several ways to extend the **LiveChat Agent App** interface. The most common one makes use of widgets. **Agent App Widgets** are web applications loaded inside the LiveChat Agent App. They can use the JavaScript SDK to communicate with the Agent App.  
+There are several ways to extend the **LiveChat** user interface. The most common one makes use of widgets. **Agent App Widgets** are web applications loaded inside the LiveChat Agent App. They can use the JavaScript SDK to communicate with the Agent App.  
 
 Such a solution allows for interactions between widgets and agents (people chatting with customers). For example, agents could benefit from analytics, collected and displayed by a widget.
 
