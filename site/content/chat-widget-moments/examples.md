@@ -8,7 +8,7 @@ weight: 30
 
 Data picker - app written in Vue, allows a customer to pick any date from datepicker. It sends a chosen option back to a chat.
 
-Source code is available on [github](https://github.com/livechat/widget-webview-extensions/tree/master/extensions/datepicker), preview is deployed [here](https://cdn.livechat-static.com/widget-webview-extensions/datepicker/).
+Source code is available on [github](https://github.com/livechat/moments-apps-examples/tree/master/examples/datepicker), preview is deployed [here](https://cdn.livechat-static.com/moments-apps-examples/datepicker/).
 
 ## Network tester
 
