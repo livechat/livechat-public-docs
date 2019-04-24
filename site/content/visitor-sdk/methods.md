@@ -243,13 +243,13 @@ visitorSDK
 | "missing argument" | Missing email parameter                |
 | "connection"       | Request failed                         |
 
-## getPostchatForm
+## getPostChatForm
 
 Get post-chat survey form fields configured in [chat window settings section](https://my.livechatinc.com/settings/post-chat-survey) in agent app.
 
 ```js
 visitorSDK
-  .getPostchatForm()
+  .getPostChatForm()
   .then(data => {
     console.log('Post-Chat form data', data)
   })
