@@ -42,13 +42,12 @@ To extend your **LiveChat Agent App** with an application located in the **Detai
 
 ### Fullscreen apps
 
-The third option are the applications with the _location_ property set to _fullscreen_. The application icon is located in the **navigation bar** on the left. In this example, we added an app named **Weather** (visible above the **Marketplace** icon), which loads a weather forecast website. 
+The third option are the applications with the _location_ property set to _fullscreen_. The application icon is located in the **navigation bar** on the left. 
 
-![Navigation icon](navigation-icon.png)
-
+In this example, we added an app named **Weather** (visible above the **Marketplace** icon), which loads a weather forecast website. 
 Clicking the icon loads the app URL as an iframe. The application is displayed fullscreen, right in the Agent App. 
 
-![Fullscreen app](fullscreen-app.png)
+![Fullscreen app](fullscreen_app.png)
 <!--GRAPHICS HERE (navigation icon) & (fullscreen app)-->
 
 Keep in mind that this feature is not supported on the mobile version of the LiveChat Agent App.
