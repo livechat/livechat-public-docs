@@ -2,7 +2,9 @@
 title: "Building apps for the LiveChat ecosystem"
 desc: "Overview of possible extensions of the LiveChat Agent App"
 tagline: "Build your LiveChat ecosystem with different applications"
-color: "#46b776"
+color: "#19bb87"
 type: "guide"
-menuTitle: Building apps for the LiveChat ecosystem
+weight: 1
+menuTitle: Building<br/> LiveChat apps
+fullWidth: true
 ---

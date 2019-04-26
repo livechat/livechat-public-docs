@@ -1,0 +1,37 @@
+---
+weight: 10
+---
+
+# Introduction
+
+This article showcases all possible ways to extend, customize or build upon LiveChat Platform.
+
+Customize the interface of LiveChat, implement your own chat widget or automate variety of tasks. Create minor tweaks for your team, build integrations with other platforms or create new products in the LiveChat ecosystem.
+
+## App capabilities
+
+LiveChat Platform provides multiple tools for developers, so that your app can do the following and other things:
+
+- Integrate with other products and services
+- Extend LiveChat user interfaces
+- Automate tasks with webhooks
+- Read and write LiveChat data
+- Implement custom Chat Widget
+- Let users sign in to your service with Sign in with LiveChat
+- Send & receive messages with **Beta Messaging APIs\***
+
+Are you building an app for everyone? We provide simple [monetization](/how-to-monetize-apps/) and distribution tools.
+
+\*) We're working on new set of APIs that introduce new features and multiple improvements. The most important one is new Chat API that allows you to send and receive rich messages, exchange events and perform all variety of actions within the LiveChat ecosystem. Got you curious? Hit us up at [developers@livechatinc.com](mailto:developers@livechatinc.com) for more details &amp; early access!
+
+## Creating LiveChat apps
+
+To create LiveChat Apps you need an account in [Developer Console](/console/). It's a dedicated panel to manage and distribute your apps.
+
+1. Sign in to [Developer Console](/console/).
+2. Go to the [Apps](/console/apps/) section.
+3. Create new app!
+
+See a 3-minute tutorial on creating simple app with Firebase.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nZkkPm1E4G0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
