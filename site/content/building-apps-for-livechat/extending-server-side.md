@@ -23,7 +23,7 @@ See the [webhooks guide](/docs/build-integration/) for more details.
 
 ### Process automation
 
-Automation speeds up manual processes and reduces the possibility of mistakes. The perfect candidate for automation trigger is a chat being tagged. It can happen either for ongoing chats or the archived ones. Once the Agent assigns a certain tag to a chat, you can for instance send a follow up email to the customer or notify your team on the Slack.
+Automation speeds up manual processes and reduces the risk of making mistakes. The perfect candidate for automation trigger is a chat being tagged. It can happen either for ongoing chats or the archived ones. Once the agent assigns a certain tag to a chat, you can, for instance, send a follow-up email to the customer or notify your team in Slack.
 
 ### Channel integrations\* [beta]
 
@@ -40,4 +40,4 @@ Chatbots are multipurpose time savers. They could lead conversations with custom
 
 ## Advanced reporting
 
-Managers need customized reports based on data from LiveChat. Those might be very specific collations for the analysis and statistics. For example, the number of chats rated as good in relation to agents' weekly activity. Or, the number of times a particular word appeared in conversations. The key is to pull data from the LiveChat via [Reports API](/docs/rest-api/#reports).
+Managers need customized reports based on data from LiveChat. Those might be very specific collations for the analysis and statistics. For example, the number of chats rated as good in relation to agents' weekly activity. Or, the number of times a particular word appeared in conversations. The key is to pull data from LiveChat via [Reports API](/docs/rest-api/#reports).
