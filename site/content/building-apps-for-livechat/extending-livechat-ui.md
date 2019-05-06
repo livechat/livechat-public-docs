@@ -2,7 +2,7 @@
 weight: 20
 ---
 
-# Extending user interface
+# Extending user interfaces
 
 LiveChat Platform provides simple tools to extend the Agent interface. With apps, you can add new panels, widgets, and other UI elements.
 
@@ -54,8 +54,6 @@ See the [documentation](https://developers.livechatinc.com/docs/agent-app-widget
 
 The application icon is located in the **navigation bar** on the left.
 
-In this example, we added an app named **Weather**, which loads a weather forecast website.
-
 Clicking the icon loads the app URL as an iframe. The application is displayed fullscreen, right in the Agent App.
 
 ![Fullscreen app](livechat-fullscreen-app.jpg)
@@ -66,20 +64,10 @@ Fullscreen apps help to reduce _context switching_. Users no longer need to swit
 
 See how to create a fullscreen app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
 
-## App settings
+### App settings
 
 Some applications require settings configuration, especially when they use external services. After installing the app, users need to do the setup in order for the application to work.
 
-<!-- Let's take **MailChimp** as our example.
+We provide a special place called Settings page, where you can embed a page with configuration. It's recommended to use it together with [Sign in with LiveChat](/docs/sign-in-with-livechat/).
 
-<img src="mail_chimp.png" style="margin-top: 5px;max-width: 100%;"/>
-
-Users can install it from the [Marketplace](https://www.livechatinc.com/marketplace/).
-
-<img src="mail_chimp2.png" style="margin-top: 5px;max-width: 100%;"/>
-
-**MailChimps** is installed, but not yet ready to use. In this case, settings need to be configured in the **Agent App**.
-
-<img src="mail_chimp3.png" style="margin-top: 5px;max-width: 100%;"/>
-
-After the successful configuration, **MailChimp** can be used within the LiveChat Agent App. -->
+See how to setup a Settings page for your app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
