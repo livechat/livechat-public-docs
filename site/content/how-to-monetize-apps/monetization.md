@@ -1,18 +1,20 @@
 ---
 weight: 10 
 ---
-
-# How to monetize apps?
+## Introduction
 
 <!--Abstract, short intro -->
 Whether your app is already up and running or you're just starting off, the topic of **app monetization** will eventually cross your mind. If you don't know how to go about generating income from your apps, this is the place for you to start.
 
 
 <!-- Intro for newcomers -->
-## Introduction
+## If you're new to LiveChat
+
+Developers can extend LiveChat by building applications. Such apps may introduce new features or adjust the behavior of LiveChat products. The goal is to satisfy the specific business needs and use cases.
+
 If you're new to LiveChat, here's how things work in here. LiveChat can be extended with various applications built by developers. All of this is done to meet the specific business needs of those who use LiveChat. You, as a developer and app author, can sell it on our [Marketplace](https://www.livechatinc.com/marketplace/). 
 
-If you'd like to know what types of applications can be built upon LiveChat Platform, check out the [Building LiveChat apps](/building-apps-for-livechat/) doc. 
+Check out the [Building LiveChat apps](/building-apps-for-livechat/) doc to learn what types of applications can be built upon the LiveChat Platform.
 
 The place to start creating your apps with different building blocks is our [Developer Console](https://developers.livechatinc.com/console/). If your app is ready, you can continue with the monetization process. 
 
@@ -21,20 +23,21 @@ The place to start creating your apps with different building blocks is our [Dev
 
 Here's the core info about monetization at **LiveChat**:
 
-* You can perform all the actions in one place- [Developer Console](https://developers.livechatinc.com/console/), which speeds up the whole procedure. 
-* We use PayPal as our billing platform. 
+* Setting up monetization is easy and can be done entirely in [Developer Console](https://developers.livechatinc.com/console/).
+* We take care of processing the payments. Then, we transfer your earnings to you via PayPal.
 * The provision is 20%, so if you set the app price to be 10$, you will earn 8$ net. 
-* We offer two billing cycles: **once a month** and **one-time payment**. We recommend the recurring payment option. We're currently working on the implementation on **micropayments**, so stay tuned for this one!
+* We offer two billing cycles: **once a month** and **one-time payment**. We recommend the recurring payment option. 
+* You can leverage LiveChat [Billing API](https://developers.livechatinc.com/docs/billing-api/) to implement micropayments in your app.
 <!-- Czemu rekomendujemy recurring? Co mozna jeszcze powiedziec o micropayments?-->
 
 ## Your role vs. Our role
 
-### **Billing**
-**Your part** in this process is to go through the **monetization procedure** and, most importantly, **decide on the app payment details**. 
-Once it's done, we will take care of charging customers on your behalf. Payments will hit your bank account depending on the billing cycle you choose.
+### **Choose the billing plan**
+The only action on your side is to choose the app billing model and set up monetization. It's as simple as using the **App Monetization Building Block**. Payments will be collected automatically depending on the billing cycle you picked.
 
-### **Marketing**
-You can also count on our support when it comes to the **promotion** of your product. We could, for example, present your service on a dedicated website, popularizing it among potential buyers. 
+
+### **Get help with marketing**
+Our part is to help you successfully launch your app. We're ready to support the **promotion** of your product. We can, for example, present your service on a dedicated landing page, popularizing it among potential customers.
 
 
 
@@ -42,11 +45,11 @@ You can also count on our support when it comes to the **promotion** of your pro
 
 If you want to know the process inside out, follow the sample configuration we've prepared. We'll use an app named **Statistics** as our example.
 
-Strange as it may seem, we'll start from the very end. Our goal is to **publish the app on Marketplace**, so that others can see and buy it. If you navigate to the tab of this very name, you'll find the list of all the actions you need to complete.
+<!--Strange as it may seem, we'll start from the very end. Our goal is to **publish the app on Marketplace**, so that others can see and buy it. If you navigate to the tab of this very name, you'll find the list of all the actions you need to complete.
 
 ![List of steps](steps.png)
 
-At any point during the configuration, you can go to this tab and check out what's still left to be done. 
+At any point during the configuration, you can go to this tab and check out what's still left to be done. -->
 
 ### **Step 1 Starting in the UI**
 We begin in the **Building Blocks** tab. This is where we can find the **App Monetization** tile. 
