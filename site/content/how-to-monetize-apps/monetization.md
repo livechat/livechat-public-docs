@@ -1,14 +1,15 @@
 ---
 weight: 10 
 ---
-## Introduction
+
+# Introduction
 
 <!--Abstract, short intro -->
 Whether your app is already up and running or you're just starting off, the topic of **app monetization** will eventually cross your mind. If you don't know how to go about generating income from your apps, this is the place for you to start.
 
 
 <!-- Intro for newcomers -->
-## If you're new to LiveChat
+## If you are new to LiveChat
 
 **LiveChat** is an online customer service platform. Developers can extend LiveChat by building applications. Such apps may introduce new features or adjust the behavior of LiveChat products. The goal is to satisfy the specific business needs and use cases.
 
@@ -39,17 +40,18 @@ Our part is to help you successfully launch your app. We're ready to support the
 
 
 
-## Sample configuration
+# Sample configuration
 
 If you want to know the process inside out, follow the sample configuration we've prepared. We'll use an app named **Statistics** as our example.
 
 
-### **Step 1 Starting in the UI**
+## **Step 1 Starting in the UI**
 We begin in the **Building Blocks** tab. This is where we can find the **App Monetization** tile. 
-![App Monetization tile](app_monetization_tile_2.png)
+
+![App Monetization tile](livechat-monetization-step-1.jpg)
 
 
-### **Step 2 Setting up payment details**
+## **Step 2 Setting up payment details**
 What you need to do next is set up the following information:
 
 * the **price** of your application 
@@ -59,18 +61,18 @@ What you need to do next is set up the following information:
   
 ![Payment details](payment_details_2.png)
 
-### **Step 3 Creating the app description**
+## **Step 3 Creating the app description**
 Then, go to **Listing details** and fill in the required fields. This is the place for you to inform about the app and encourage potential users. Make sure to present your app's main functionality and key features.
 
 ![Listing details](description2.png)
 
-### **Step 4 Testing the app**
+## **Step 4 Testing the app**
 After that, it's time for you to install the app on your account and test it. You can install it in the **Private installation** tab. 
 
-### **Step 5 Submitting for review**
+## **Step 5 Submitting for review**
 If you feel that your application is ready, submit it for review. It will be an action point for us. We will review your application and get back to you as soon as possible. If you need help along the way, you can always reach us at [developers@livechatinc.com](mailto:developers@livechatinc.com). 
 
-### **Step 6 Publishing**
+## **Step 6 Publishing**
 
 You'll know that your app is ready for publishing when you see a note saying that **the app is accepted**.
 In case of rejection, we'll conact you via email to give you feedback and discuss what needs to be changed.
@@ -81,6 +83,6 @@ Publish the app and that's it! The very last thing for you to do is give us a bi
 
 
 
-## Questions?
+# Questions?
 
 We 're happy to provide our support in case you need. If you have any questions or suggestions, feel free to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
