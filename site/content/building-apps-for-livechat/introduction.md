@@ -20,7 +20,7 @@ LiveChat Platform provides multiple tools for developers, so that your app can d
 - Let users sign in to your service with Sign in with LiveChat
 - Send & receive rich messages with Beta Chat APIs\*
 
-Are you building an app for everyone? We provide simple [monetization](/how-to-monetize-apps/) and distribution tools.
+Are you building an app for everyone? We provide simple [monetization](/docs/how-to-monetize-apps/) and distribution tools.
 
 <div class="note">
 *) We're working on a new set of APIs, which introduce new features and multiple improvements. The most important one is the new Chat API. It allows you to send and receive rich messages, exchange events, and perform all variety of actions within the LiveChat ecosystem. Got you curious? Hit us up at <a href="mailto:developers@livechatinc.com">developers@livechatinc.com</a> for more details and early access!

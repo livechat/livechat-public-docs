@@ -13,20 +13,20 @@ Whether your app is already up and running or you're just starting off, the topi
 
 **LiveChat** is an online customer service platform. Developers can extend LiveChat by building applications. Such apps may introduce new features or adjust the behavior of LiveChat products. The goal is to satisfy the specific business needs and use cases.
 
-If you'd like to know what types of applications can be built upon the LiveChat Platform, check out the [Building LiveChat apps](/building-apps-for-livechat/) doc. 
+If you'd like to know what types of applications can be built upon the LiveChat Platform, check out the [Building LiveChat apps](/docs/building-apps-for-livechat/) doc. 
 
-The place to start creating your apps with different building blocks is our [Developer Console](https://developers.livechatinc.com/console/). If your app is ready, you can continue with the monetization process. 
+The place to start creating your apps with different building blocks is our [Developer Console](/console/). If your app is ready, you can continue with the monetization process. 
 
 <!-- How the process looks -->
 ## Core information
 
 Here's the core info about monetization at **LiveChat**:
 
-* You can set up monetization in [Developer Console](https://developers.livechatinc.com/console/) with just a few easy steps.
+* You can set up monetization in [Developer Console](/console/) with just a few easy steps.
 * We take care of processing the payments. Then, we transfer your earnings to you via PayPal.
 * The provision is 20%, so if you set the app price to be 10$, you will earn 8$ net. 
 * We offer two billing cycles: **once a month** and **one-time payment**. We recommend the recurring payment option. 
-* You can leverage LiveChat [Billing API](https://developers.livechatinc.com/docs/billing-api/) to implement micropayments in your app.
+* You can leverage LiveChat [Billing API](/docs/billing-api/) to implement micropayments in your app.
 <!-- Czemu rekomendujemy recurring? Co mozna jeszcze powiedziec o micropayments?-->
 
 ## Your role vs. Our role
