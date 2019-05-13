@@ -46,10 +46,9 @@ If you want to know the process inside out, follow the sample configuration we'v
 
 
 ## **Step 1 Starting in the UI**
-We begin in the **Building Blocks** tab. This is where we can find the **App Monetization** tile. 
+Make sure you are signed in to your [Developer Console](/console/). We begin in the **Building Blocks** tab. This is where we can find the **App Monetization** tile. 
 
-![App Monetization tile](livechat-monetization-step-1.jpg)
-
+![App Monetization tile](livechat-monetization-step-1.png)
 
 ## **Step 2 Setting up payment details**
 What you need to do next is set up the following information:
@@ -58,13 +57,12 @@ What you need to do next is set up the following information:
 * the **billing cycle**
 * the **trial period** 
   
-  
-![Payment details](payment_details_2.png)
+![Payment details](livechat-monetization-step-2.png)
 
 ## **Step 3 Creating the app description**
 Then, go to **Listing details** and fill in the required fields. This is the place for you to inform about the app and encourage potential users. Make sure to present your app's main functionality and key features.
 
-![Listing details](description2.png)
+![Listing details](livechat-monetization-step-3.png)
 
 ## **Step 4 Testing the app**
 After that, it's time for you to install the app on your account and test it. You can install it in the **Private installation** tab. 
@@ -77,7 +75,7 @@ If you feel that your application is ready, submit it for review. It will be an 
 You'll know that your app is ready for publishing when you see a note saying that **the app is accepted**.
 In case of rejection, we'll conact you via email to give you feedback and discuss what needs to be changed.
 
-![Publish your app at Marketplace](publish_app.png)
+![Publish your app at Marketplace](livechat-monetization-step-6.png)
 
 Publish the app and that's it! The very last thing for you to do is give us a bit of time. Your app will be visible on Marketplace in up to 30 minutes.
 
