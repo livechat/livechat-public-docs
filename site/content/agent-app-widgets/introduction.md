@@ -4,17 +4,11 @@ weight: 10
 
 # Introduction
 
-Agent App Widgets are web applications loaded inside the **LiveChat Agent App**. All agents can interact with the widget during chats with customers. The widget itself is displayed in the sidebar of the Agent App:
-
-<img src="../assets/images/agent-app-widget-sample.png" width="600" style="margin-top: 20px;max-width: 100%;"/>
-
-<!--## Overview
-
-This tool is a simple JavaScript SDK, which allows you to communicate with LiveChat Agent App from within the embedded widget.-->
+Agent App Widgets are web applications loaded inside the **LiveChat Agent App** user interface. Read about their possible locations in the [Building LiveChat apps](/docs/building-apps-for-livechat/#app-locations) article.
 
 ## Use cases
 
-Widgets are primary elements of Agent App interface. There are number of ways you can use the them:
+Widgets are primary elements of Agent App's user interface. There are number of ways you can use the them:
 
 * embed and display static content, e.g. knowledge base articles, conversation prompts or context information,
 * embed your SaaS service or web app as a part of agents' workspace,

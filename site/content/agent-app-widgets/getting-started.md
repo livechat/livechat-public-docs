@@ -4,7 +4,7 @@ weight: 20
 
 # Getting started
 
-To add a  widget displayed in the sidebar of your Agent App, follow the steps below. If you don't have your own widget, you can use one of our [Sample Apps](#sample-apps).
+To add a widget, follow the steps below. If you don't have your own widget, you can use one of our [Sample Apps](#sample-apps).
 
 1. Go to <a href="https://developers.livechatinc.com/console/apps">LiveChat Developers Console</a>.
 2. Click **New app +** and follow the app wizard.
