@@ -8,15 +8,15 @@ weight: 30
 
 If you're building your own widget and you need to interact with the Agent App, be sure to use the [Agent App SDK](#agent-app-sdk).
 
-If you developed a widget already, you're probably using the [Widget SDK](#widget-sdk). Mind that it is not actively maintained anymore and its usage is discouraged. Neverthless, we provide backward compatibility for the SDK, so your widgets should be still working.
+If you've already developed a widget, you're probably using the [Widget SDK](#widget-sdk). Keep in mind that **it is no longer actively maintained**. However, we provide backward compatibility for this SDK, so your existing widgets should still be working properly. When building new widgets, we encourage you to use the [Agent App SDK](#agent-app-sdk) instead.
 
 ## Accessing LiveChat data
 
-You can leverage OAuth2.0 authorization flow to access data from the [REST API](/docs/rest-api). Head to [Sign in with LiveChat](/docs/sign-in-with-livechat) docs for more information.
+You can leverage the OAuth2.0 authorization flow to access data from the [REST API](/docs/rest-api). Head to [Sign in with LiveChat](/docs/sign-in-with-livechat) docs for more information.
 
 ## Layout and Styling
 
-If you're using React, you can use the [LiveChat's Design System](https://github.com/livechat/design-system), which is a component library used directly in the LiveChat's user interface.
+If you're using React, you can use the [LiveChat Design System](https://github.com/livechat/design-system), which is a component library used directly in the LiveChat user interface.
 
 We also ship a [LiveChat Boilerplate](/docs/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the widget interface.
 
@@ -28,21 +28,23 @@ We also ship a [LiveChat Boilerplate](/docs/boilerplate) – it's a lightweight 
 
 ## Hosting the widget
 
-You can host your widget locally or on a dedicated server. The hosted content has to be served over **HTTPS Protocol**. 
+You can host your widget locally or on a dedicated server. The hosted content has to be served over the **HTTPS Protocol**. 
 
-While development, you can use a self-signed certificate for `localhost` or upload your widget to an SSL-enabled host. You can also leverage bundlers like [Webpack](https://webpack.js.org/configuration/dev-server/) to use https-enabled development server.
+During development, you can use a self-signed certificate for `localhost` or upload your widget to an SSL-enabled host. You can also leverage bundlers like [Webpack](https://webpack.js.org/configuration/dev-server/) to use an https-enabled development server.
 
 ## Creating a Customer Details widget
 
-When developing a Details app, you may want to add your own content to the Customer Details view as a widget. First, let's first define the definitions we will be using:   
+When developing an app in the **Details** section, you can add some content to the **Customer Details** view and display it as a widget. This way you turn it into a **Customer Details widget**.  
 
-- **Section** - An element of Customer Details that includes a completed set of information that is grouped under a single widget.
-- **Component** - A single line in the section that can have one of the pre-defined formats and be filled with the data from the app.
+Let's define the terms we use in this document:   
+
+- **Section** - an element of **Customer Details**. It contains a complete set of information grouped under a single widget.
+- **Component** - a single line in a section. It can have one of the pre-defined formats and be filled with data from the app.
 
 ### How to add a widget
-In order to display the widget, you need to first declare the initial state of the section. Go to your app's page in the [Developer Console](https://developers.livechatinc.com/console/apps) and create a new Details widget or update an exisiting one. The initial state of section can be added using the `Initial state` input.
+To display a widget, first, you need to declare the initial state of a section. Go to **Apps** in [Developer Console](https://developers.livechatinc.com/console/apps) and create a new **Details** widget or update an exisiting one. The initial state of a section can be added using the `Initial state` input.
 
-> Example of initial state JSON:
+> Example of the initial state JSON:
 
 ```json
 {
@@ -63,9 +65,9 @@ In order to display the widget, you need to first declare the initial state of t
 }
 ```
 
-You can define how many sections you want, but remember that you can't add or remove any section later on. However, you can still modify the components inside any section.
+You can define as many sections as you want. Once your widget is running within the Agent App, you can't add nor remove any sections. However, you can still modify the components within any section.
 
-Also, The **title** attribute in initial state acts as an ID to the section and *cannot* be modifed at any time.
+Also, the `title` attribute in the section initial state acts as a section ID. You **should not** modify it.
 
 ### How to update a section
 
@@ -73,12 +75,12 @@ You can control your widget and change its components using the Agent App SDK. P
 
 ### Component types
 
-Here's the list of all components you can use to build the Customer Details.
+Here's the list of all the components you can use to build the Customer Details app.
 
 #### Section
 Section is a container for components.
 
-> Example of section component
+> Example of a section component
 
 ```json
 {
@@ -95,9 +97,9 @@ Section is a container for components.
 | `imgUrl`     | No       | string              | 
 
 #### Title
-Title could be used in several cases. Component look depends on given data.
+Title could be used in several cases. Component look depends on the given data.
 
-> Example of title component
+> Example of a title component
 
 ```json
 {
@@ -121,9 +123,9 @@ Title could be used in several cases. Component look depends on given data.
 | `link` | No | string | URL added when title is a link. |
 
 #### Button
-Simple button from design system.
+Simple button component
 
-> Example of button component
+> Example of a button component
 
 ```json
 {
@@ -169,7 +171,7 @@ You can listen for button clicks using the SDK. Note that `buttonId` will be the
 
 #### Link
 
-> Example of link component
+> Example of a link component
 
 ```json
 {
@@ -191,7 +193,7 @@ You can listen for button clicks using the SDK. Note that `buttonId` will be the
 #### Line
 Line could be used to separate section content. It has no components inside. 
 
-> Example of line component
+> Example of a line component
 
 ```json
 {

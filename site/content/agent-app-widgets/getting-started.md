@@ -12,7 +12,7 @@ To add a widget, follow the steps below. If you don't have your own widget, you 
 4. Go to **Agent App Widgets -> New Widget +**.
   * Enter the **Widget source URL**.
   * Select the desired location as the **Widget placement**.
-5. Go to the **Private installation** tab and install the app at your license. 
+5. Go to the **Private installation** tab and install the app on your account. 
 
 After successful installation, you'll see the widget in your LiveChat Agent App.
 

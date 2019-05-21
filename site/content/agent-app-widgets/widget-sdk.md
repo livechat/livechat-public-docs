@@ -8,13 +8,13 @@ To use the JavaScript API you should import the [Agent App Widget SDK](https://w
 
 **Please remember that it's considered [deprecated](#developing-your-own-widget) and you should use the [Agent App SDK](#agent-app-sdk) instead.**
 
-> Our widget SDK package is hosted on NPM. You can get it with following command:
+> Our widget SDK package is hosted on NPM. You can get it with the following command:
 
 ```
 npm install --save @livechat/agent-app-widget-sdk
 ```
 
-> Import the SDK and fire `LiveChat.init()` method
+> Import the SDK and fire the `LiveChat.init()` method
 
 ```js
 import LiveChat from '@livechat/agent-app-widget-sdk';
@@ -57,7 +57,7 @@ LiveChat.on("<event_name>", function( data ) {
 | `customer_profile_hidden` | the opened customer profile belongs to the visitor that left the **Visitors** list |
 
 
-Events `customer_profile` and `customer_profile_hidden` return an object width additional properties.
+Events `customer_profile` and `customer_profile_hidden` return an object with additional properties.
 
 ### Customer profile displayed
 
@@ -111,7 +111,7 @@ Events `customer_profile` and `customer_profile_hidden` return an object width a
 
 ## Put message to textarea
 
-It appends given message at the end of current conversation input window or into ticket window. Agent has to confirm sending this message.
+It appends a given message at the end of the current conversation input window or into the ticket window. Agent has to confirm sending the message.
 
 ```js
 LiveChat.putMessage("Hello! This message comes from the App Widget. Press enter to send it!");
@@ -127,7 +127,7 @@ LiveChat.getSessionId();
 
 ## Refresh the session ID
 
-Deletes the ID of the previous session and requests of a new one.
+Deletes the ID of the previous session and requests a new one.
 
 ```js
 LiveChat.refreshSessionId();

@@ -7,8 +7,6 @@ weight: 20
 
 If you'd like to experiment with some of the already existing apps, make sure to check out the repository we've prepared. Once installed, these widgets will be displayed in the right sidebar of the Agent App.
 
-* [iFrame loader](https://glitch.com/edit/#!/livechat-load-iframe?path=README.md:1:0): allows to embed any website.
-* [Visitor preview widget](https://glitch.com/edit/#!/livechat-sample-agent-app): displays data of the currently selected visitor.
 * [Tag Master](https://github.com/livechat/sample-apps/tree/master/tag-master): allows user to create, view, and delete tags and canned responses in easy and predictable way.
 * [Progress](https://github.com/livechat/sample-apps/tree/master/progress): creates reports based on data from chats.
 * [Supervisor](https://github.com/livechat/sample-apps/tree/master/supervisor): helps to monitor the weekly progress of your agents, as well as their availability.

@@ -43,11 +43,11 @@ You can also use the UMD build of the SDK directly in the browser.
 
 ## Usage
 
-The usage of the SDK depends on what type of widget you want to use. Refer to the specific instructions for available widgets.
+The usage of the SDK depends on the type of widget you want to use. Refer to the specific instructions for available widget types.
 
 * [Details widget](#details-widgets)
 
-Neverthless, all widgets created by SDK share a common interface that will let you listen to events happening in the Agent App.
+Neverthless, all widgets created with the SDK share a common interface, which lets you listen to the events happening in the Agent App.
 
 > Supposing that `widget` is a widget instance:
 
@@ -82,9 +82,9 @@ createDetailsWidget().then(widget => {
 
 #### `customer_profile`
 
-Emitted when an agent opens a conversation within Chats, Archives, or selects the customer profile in the Customers sections. The handler will get the customer profile object as an argument.
+Emitted when an agent opens a conversation within Chats or Archives, or when an agents selects the customer profile in the Customers sections. The handler will get the customer profile object as an argument.
 
-> Listen to customer profile changes
+> Listen to the customer profile changes:
 
 ```js
 widget.on("customer_profile", profile => {
@@ -123,7 +123,7 @@ widget.on("customer_details_section_button_click", ({ buttonId }) => {
 
 #### Get the customer profile
 
-If you want to access to the current customer profile, you should use the `getCustomerProfile` method.
+If you want to access the current customer profile, you should use the `getCustomerProfile` method.
 
 > Get the current customer profile
 
@@ -131,11 +131,11 @@ If you want to access to the current customer profile, you should use the `getCu
 const profile = widget.getCustomerProfile();
 ```
 
-The returned profile will be an object identical to the one emitted by the `customer_profile` event. It can also be `null`, if no profile was recorded.
+The returned profile will be an object identical to the one emitted by the `customer_profile` event. It can also be `null` if no profile was recorded.
 
 #### Append text to the message box
 
-You can add any text to the current chat's message box by using the `putMessage` method. The method returns a promise.
+You can add any text to the current chat message box by using the `putMessage` method. The method returns a promise.
 
 > Append text to the message box
 
@@ -147,13 +147,13 @@ widget.putMessage("this text will be appended").then(() => {
 
 #### Modify Customer Details widget's state
 
-If you configured a [Customer Details widget](#creating-a-customer-details-widget), you can modify its section state using the `modifySection` method. The method accepts the section state definition as its only parameter and returns a promise.
+If you configured a [Customer Details widget](#creating-a-customer-details-widget), you can modify its section state using the `modifySection` method. The method accepts the section state definition as its only parameter, and returns a promise.
 
-You can look up [component types](#component-types) to see how to create the state definition.
+You can look up the [component types](#component-types) to see how to create the state definition.
 
 The `title` of a given section has to match the one specified in the initial state. Otherwise, the section won't change. Also, the Agent App ignores the commands without valid section definitions. Make sure that the definition you're sending is correct.
 
-> Modifing the Customer Details widget's state
+> Modify the Customer Details widget's state
 
 ```js
 widget
