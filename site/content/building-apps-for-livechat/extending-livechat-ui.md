@@ -4,11 +4,15 @@ weight: 20
 
 # Extending user interfaces
 
-LiveChat Platform provides simple tools to extend the Agent interface. With apps, you can add new panels, widgets, and other UI elements.
+LiveChat Platform provides simple tools to extend the Agent App interface. With apps, you can add new panels, widgets, and other UI elements.
 
 From a technical perspective, you can build a web application with HTML, CSS, or JavaScript and embed it in different locations of the LiveChat Agent interface. We also provide some native primitives, which don't require from you any coding skills.
 
-## Chat Actions
+You're not limited to the Agent App only. There are several options to [extend the Chat Widget](#extending-the-chat-widget) as well! 
+
+## Extending the Agent App
+
+### Chat Actions
 
 The simplest way to extend the LiveChat Agent App is by using Chat Actions. They are buttons available at hand while chatting.
 
@@ -20,7 +24,7 @@ Popular use cases handle actions such as ticket creation, sending chat transcrip
 
 Check out our [blog post](https://developers.livechatinc.com/blog/chat-actions/) about Chat Actions to learn more.
 
-## App locations
+### App locations
 
 Currently, your app can extend three areas of the the LiveChat Agent interface:
 
@@ -30,7 +34,7 @@ Currently, your app can extend three areas of the the LiveChat Agent interface:
 
 If you feel we lack some options, please drop us a line at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
 
-### Details section
+#### Details section
 
 Apps in the Details tabs are the most common way to extend LiveChat UI. They are displayed in the right sidebar of the Agent App when browsing Chats or Archives.
 
@@ -40,7 +44,7 @@ In the example above, the **Tag Master** app is installed. It's one of the open-
 
 Apps located in the Details section are **contextual**. It means they inherit the properties of the currently opened chat. You can use this information to present contextual data for the particular chats.
 
-#### Customer Details widgets
+##### Customer Details widgets
 
 Additionally, those apps can expose a widget in the native Customer Details tab. Those widgets serve as shortcuts or essence of the information presented in the app.
 
@@ -50,7 +54,7 @@ Widgets are simply tiles displayed one below another. In this example, we see ho
 
 See the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/) to learn how to embedd your app in the Details section.
 
-### Main menu (fullscreen apps)
+#### Main menu (fullscreen apps)
 
 The application icon is located in the **navigation bar** on the left.
 
@@ -64,10 +68,59 @@ Fullscreen apps help to reduce _context switching_. Users no longer need to swit
 
 See how to create a fullscreen app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
 
-### App settings
+#### App settings
 
 Some applications require settings configuration, especially when they use external services. After installing the app, users need to do the setup in order for the application to work.
 
 We provide a special place called Settings page, where you can embed a page with configuration. It's recommended to use it together with [Sign in with LiveChat](/docs/sign-in-with-livechat/).
 
 See how to setup a Settings page for your app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
+
+## Extending the Chat Widget
+
+### Mobile Chat Widgets
+Have you got a mobile app? You can still make use of LiveChat and improve your *mobile* user experience! All you need to do is install the mobile **Chat Widget** compatible with your app.
+
+- Mobile [Chat Widget for iOS](https://developers.livechatinc.com/docs/ios-widget/) apps
+- Mobile [Chat Widget for Android](https://developers.livechatinc.com/docs/android-widget/) apps
+- Mobile [Chat Widget for React Native](https://developers.livechatinc.com/docs/react-native-livechat/) apps 
+ 
+
+### Rich messages
+Sending a [Rich message](https://www.livechatinc.com/kb/rich-messages/) is the way to go when you want your reply to be more personal and visually attractive. Rich messages are more than just plain text. You can make use of images, buttons, quick replies, and cards as well. 
+
+Rich messages are the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/kb/chatbots-explained/) will come in handy. Currently, they're available either with our ChatBot integration or [Beta API 3.0](https://developers.livechatinc.com/beta-docs/).
+
+
+### Moments
+[Chat Widget Moments](https://developers.livechatinc.com/docs/chat-widget-moments/) are webpages embedded in an iframe, displayed during a chat. 
+![Moment](moments.png)
+
+Thanks to **Moments**, customers can perform specific actions. For example, you could pick a date from a popping up calendar instead of typing it manually. Moments were created to solve complex problems easily and securely. You can think of them as an accessible API to integrate the **Chat Widget** with some other software. 
+
+
+### JavaScript API
+[**Chat Widget JavaScript API**](https://developers.livechatinc.com/docs/js-api/) is an easy yet powerful way to integrate your website or application with the **LiveChat** platform. 
+This is what e-commerce owners often use to pass visitor data or to track sales made via chat (read about [Sales tracker](https://www.livechatinc.com/kb/sales-tracker/) to learn more).
+
+The integration of your app with the **Chat Widget** can be multiform and contextual. To improve the customer support experience, you could add a _chat-with-customer-support_ button in those app locations, which trouble users the most. 
+
+What's more, you could use [methods](https://developers.livechatinc.com/docs/js-api/#methods) and [callbacks](https://developers.livechatinc.com/docs/js-api/#callbacks) to send additional data about a chat or visitor. It's possible to manipulate the Chat Widget state (maximize, minimize, hide) and build handlers for the events happening in conversations.
+
+Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well with SPAs, and you will be able to use the API without any problem.
+
+<!--
+Goals: https://www.livechatinc.com/kb/goals-set-up-and-use/
+Adwords integration using JavaScript API tutorial: https://www.livechatinc.com/kb/google-adwords-tracking-chat-conversions/
+Chat widget visibility: https://www.livechatinc.com/kb/chat-widget-visibility/ 
+-->
+
+
+### Customer SDK
+
+You can build advanced custom solutions with the use of [Customer SDK](https://developers.livechatinc.com/beta-docs/customer-sdk/). With this JavaScript library, you can fully customize a chat widget to meet a specific scenario.
+Before you interact with this API, keep in mind that complicated solutions call for strong coding skills. 
+
+
+
+ 
