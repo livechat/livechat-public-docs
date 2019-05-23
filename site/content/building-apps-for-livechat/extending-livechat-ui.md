@@ -86,10 +86,17 @@ Have you got a mobile app? You can still make use of LiveChat and improve your *
 - Mobile [Chat Widget for React Native](https://developers.livechatinc.com/docs/react-native-livechat/) apps 
  
 
-### Rich messages
-Sending a [Rich message](https://www.livechatinc.com/kb/rich-messages/) is the way to go when you want your reply to be more personal and visually attractive. Rich messages are more than just plain text. You can make use of images, buttons, quick replies, and cards as well. 
+### JavaScript API
+[**Chat Widget JavaScript API**](https://developers.livechatinc.com/docs/js-api/) is an easy yet powerful way to integrate your website or application with the **LiveChat** platform.
 
-Rich messages are the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/kb/chatbots-explained/) will come in handy. Currently, they're available either with our ChatBot integration or [Beta API 3.0](https://developers.livechatinc.com/beta-docs/).
+The integration of your app with the **Chat Widget** can be multiform and contextual.      
+E-commerce owners often use JavaScript API to pass visitor data or to track sales made via chat (read about [Sales tracker](https://www.livechatinc.com/kb/sales-tracker/) to learn more).
+
+Also, it could be used to improve the customer support experience. There might be some app locations where users usually get stuck or have problems. To troubleshoot that, you could add a _chat-with-customer-support_ button. Users would click it to ask customer support for help. Similarily, you could put such a button in the _Contact_ or _Help_ section of your app. Those are the tabs where users normally look for support.
+
+What's more, you could use [methods](https://developers.livechatinc.com/docs/js-api/#methods) and [callbacks](https://developers.livechatinc.com/docs/js-api/#callbacks) to send additional data about a chat or visitor. It's possible to manipulate the Chat Widget state (maximize, minimize, hide) and build handlers for the events happening in conversations.
+
+Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well with SPAs, and you will be able to use the API without any problem.
 
 
 ### Moments
@@ -99,26 +106,15 @@ Rich messages are the core feature of our **ChatBot** integration. If you're not
 Thanks to **Moments**, customers can perform specific actions. For example, you could pick a date from a popping up calendar instead of typing it manually. Moments were created to solve complex problems easily and securely. You can think of them as an accessible API to integrate the **Chat Widget** with some other software. 
 
 
-### JavaScript API
-[**Chat Widget JavaScript API**](https://developers.livechatinc.com/docs/js-api/) is an easy yet powerful way to integrate your website or application with the **LiveChat** platform. 
-This is what e-commerce owners often use to pass visitor data or to track sales made via chat (read about [Sales tracker](https://www.livechatinc.com/kb/sales-tracker/) to learn more).
+## Rich messages
+Sending a [Rich message](https://www.livechatinc.com/kb/rich-messages/) is the way to go when you want your reply to be more personal and visually attractive. Rich messages are more than just plain text. You can make use of images, buttons, quick replies, and cards as well. 
 
-The integration of your app with the **Chat Widget** can be multiform and contextual. To improve the customer support experience, you could add a _chat-with-customer-support_ button in those app locations, which trouble users the most. 
-
-What's more, you could use [methods](https://developers.livechatinc.com/docs/js-api/#methods) and [callbacks](https://developers.livechatinc.com/docs/js-api/#callbacks) to send additional data about a chat or visitor. It's possible to manipulate the Chat Widget state (maximize, minimize, hide) and build handlers for the events happening in conversations.
-
-Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well with SPAs, and you will be able to use the API without any problem.
-
-<!--
-Goals: https://www.livechatinc.com/kb/goals-set-up-and-use/
-Adwords integration using JavaScript API tutorial: https://www.livechatinc.com/kb/google-adwords-tracking-chat-conversions/
-Chat widget visibility: https://www.livechatinc.com/kb/chat-widget-visibility/ 
--->
+Rich messages are the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/kb/chatbots-explained/) will come in handy. Currently, they're available either with our ChatBot integration or [Beta API 3.0](https://developers.livechatinc.com/beta-docs/).
 
 
 ### Customer SDK
 
-You can build advanced custom solutions with the use of [Customer SDK](https://developers.livechatinc.com/beta-docs/customer-sdk/). With this JavaScript library, you can fully customize a chat widget to meet a specific scenario.
+You can build advanced custom solutions with the use of [Customer SDK](https://developers.livechatinc.com/beta-docs/customer-sdk/). With this JavaScript library, you can create a chat widget from scratch. It allows you to meet a specific scenario, but is definitely the most challenging option.
 Before you interact with this API, keep in mind that complicated solutions call for strong coding skills. 
 
 
