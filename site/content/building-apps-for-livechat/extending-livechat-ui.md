@@ -18,7 +18,7 @@ The simplest way to extend the LiveChat Agent App is by using Chat Actions. They
 
 Popular use cases handle actions such as ticket creation, sending chat transcript, or banning a visitor. This is where Chat Actions are displayed in the UI:
 
-![Chat Actions](livechat-chat-actions.jpg)
+![LiveChat Chat Actions](livechat-chat-actions.jpg)
 
 <!-- ![Chat Actions](chat-actions-licence.png) -->
 
@@ -38,7 +38,7 @@ If you feel we lack some options, please drop us a line at [developers@livechati
 
 Apps in the Details tabs are the most common way to extend LiveChat UI. They are displayed in the right sidebar of the Agent App when browsing Chats or Archives.
 
-![Tag Master](livechat-tag-master-app.jpg)
+![LiveChat Tag Master](livechat-tag-master-app.jpg)
 
 In the example above, the **Tag Master** app is installed. It's one of the open-source [sample apps](https://developers.livechatinc.com/docs/agent-app-widgets/#sample-widgets) you can [clone](https://github.com/livechat/sample-apps/tree/master/tag-master) and play with.
 
@@ -48,7 +48,7 @@ Apps located in the Details section are **contextual**. It means they inherit th
 
 Additionally, those apps can expose a widget in the native Customer Details tab. Those widgets serve as shortcuts or essence of the information presented in the app.
 
-![Customer Details widgets](livechat-cards-for-shopify.jpg)
+![LiveChat Customer Details widgets](livechat-cards-for-shopify.jpg)
 
 Widgets are simply tiles displayed one below another. In this example, we see how **Cards for Shopify** and **CartValue** extend default Customer Details tab. Widgets are a great solution for displaying information that agents need to have at hand, as they don't need to switch between tabs.
 
@@ -60,7 +60,7 @@ The application icon is located in the **navigation bar** on the left.
 
 Clicking the icon loads the app URL as an iframe. The application is displayed fullscreen, right in the Agent App.
 
-![Fullscreen app](livechat-fullscreen-app.jpg)
+![LiveChat Fullscreen app](livechat-fullscreen-app.jpg)
 
 Keep in mind that this feature is not supported on the mobile version of the LiveChat Agent App.
 
@@ -101,7 +101,7 @@ Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well
 
 ### Moments
 [Chat Widget Moments](https://developers.livechatinc.com/docs/chat-widget-moments/) are webpages embedded in an iframe, displayed during a chat. 
-![Moment](moments.png)
+![LiveChat Moment](moments.png)
 
 Thanks to **Moments**, customers can perform specific actions. For example, you could pick a date from a popping up calendar instead of typing it manually. Moments were created to solve complex problems easily and securely. You can think of them as an accessible API to integrate the **Chat Widget** with some other software. 
 
