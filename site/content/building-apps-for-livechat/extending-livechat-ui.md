@@ -79,6 +79,7 @@ See how to setup a Settings page for your app in the [documentation](https://dev
 ## Extending the Chat Widget
 
 ### Mobile Chat Widgets
+
 Have you got a mobile app? You can still make use of LiveChat and improve your *mobile* user experience! All you need to do is install the mobile **Chat Widget** compatible with your app.
 
 - Mobile [Chat Widget for iOS](https://developers.livechatinc.com/docs/ios-widget/) apps
@@ -87,6 +88,7 @@ Have you got a mobile app? You can still make use of LiveChat and improve your *
  
 
 ### JavaScript API
+
 [**Chat Widget JavaScript API**](https://developers.livechatinc.com/docs/js-api/) is an easy yet powerful way to integrate your website or application with the **LiveChat** platform.
 
 The integration of your app with the **Chat Widget** can be multiform and contextual.      
@@ -100,6 +102,7 @@ Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well
 
 
 ### Moments
+
 [Chat Widget Moments](https://developers.livechatinc.com/docs/chat-widget-moments/) are webpages embedded in an iframe, displayed during a chat. 
 
 ![LiveChat Moment](livechat-moments-in-chat.jpg)
@@ -107,7 +110,8 @@ Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well
 Thanks to **Moments**, customers can perform specific actions. For example, you could pick a date from a popping up calendar instead of typing it manually, or let your customer make a purchase right on the spot. Moments were created to solve complex problems easily and securely. You can think of them as an accessible API to integrate the **Chat Widget** with some other software. 
 
 
-## Rich messages
+### Rich messages
+
 Sending a [Rich message](https://www.livechatinc.com/kb/rich-messages/) is the way to go when you want your reply to be more personal and visually attractive. Rich messages are more than just plain text. You can make use of images, buttons, quick replies, and cards as well. 
 
 Rich messages are the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/kb/chatbots-explained/) will come in handy. Currently, they're available either with our ChatBot integration or Beta Chat APIs*.
