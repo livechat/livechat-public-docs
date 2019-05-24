@@ -11,7 +11,7 @@ Whether your app is already up and running or you're just starting off, the topi
 <!-- Intro for newcomers -->
 ## If you are new to LiveChat
 
-**LiveChat** is an online customer service platform. Developers can extend LiveChat by building applications. Such apps may introduce new features or adjust the behavior of LiveChat products. The goal is to satisfy the specific business needs and use cases.
+[**LiveChat**](https://www.livechatinc.com/) is an online customer service platform. Developers can extend LiveChat by building applications. Such apps may introduce new features or adjust the behavior of LiveChat products. The goal is to satisfy the specific business needs and use cases.
 
 If you'd like to know what types of applications can be built upon the LiveChat Platform, check out the [Building LiveChat apps](/docs/building-apps-for-livechat/) doc. 
 
@@ -39,7 +39,6 @@ The only action on your side is to choose the app billing model and set up monet
 Our part is to help you successfully launch your app. We're ready to support the **promotion** of your product. We can, for example, present your service on a dedicated landing page, popularizing it among potential customers.
 
 
-
 # Sample configuration
 
 If you want to know the process inside out, follow the sample configuration we've prepared. We'll use an app named **Statistics** as our example.
@@ -48,7 +47,7 @@ If you want to know the process inside out, follow the sample configuration we'v
 ## **Step 1 Starting in the UI**
 Make sure you are signed in to your [Developer Console](/console/). We begin in the **Building Blocks** tab. This is where we can find the **App Monetization** tile. 
 
-![App Monetization tile](livechat-monetization-step-1.png)
+![LiveChat App Monetization tile](livechat-monetization-step-1.png)
 
 ## **Step 2 Setting up payment details**
 What you need to do next is set up the following information:
@@ -57,12 +56,12 @@ What you need to do next is set up the following information:
 * the **billing cycle**
 * the **trial period** 
   
-![Payment details](livechat-monetization-step-2.png)
+![LiveChat Payment details](livechat-monetization-step-2.png)
 
 ## **Step 3 Creating the app description**
 Then, go to **Listing details** and fill in the required fields. This is the place for you to inform about the app and encourage potential users. Make sure to present your app's main functionality and key features.
 
-![Listing details](livechat-monetization-step-3.png)
+![LiveChat Listing details](livechat-monetization-step-3.png)
 
 ## **Step 4 Testing the app**
 After that, it's time for you to install the app on your account and test it. You can install it in the **Private installation** tab. 
@@ -75,7 +74,7 @@ If you feel that your application is ready, submit it for review. It will be an 
 You'll know that your app is ready for publishing when you see a note saying that **the app is accepted**.
 In case of rejection, we'll conact you via email to give you feedback and discuss what needs to be changed.
 
-![Publish your app at Marketplace](livechat-monetization-step-6.png)
+![LiveChat Publish your app at Marketplace](livechat-monetization-step-6.png)
 
 Publish the app and that's it! The very last thing for you to do is give us a bit of time. Your app will be visible on Marketplace in up to 30 minutes.
 
