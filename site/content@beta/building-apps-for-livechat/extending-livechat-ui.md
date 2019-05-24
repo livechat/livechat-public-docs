@@ -110,21 +110,14 @@ Thanks to **Moments**, customers can perform specific actions. For example, you 
 ## Rich messages
 Sending a [Rich message](https://www.livechatinc.com/kb/rich-messages/) is the way to go when you want your reply to be more personal and visually attractive. Rich messages are more than just plain text. You can make use of images, buttons, quick replies, and cards as well. 
 
-Rich messages are the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/kb/chatbots-explained/) will come in handy. Currently, they're available either with our ChatBot integration or Beta Chat APIs*.
-
-<div class="note">
-*) We're working on a new set of APIs, which introduce new features and multiple improvements. Got you curious? Hit us up at <a href="mailto:developers@livechatinc.com">developers@livechatinc.com</a> for more details and early access!
-</div>
+Rich messages are the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/kb/chatbots-explained/) will come in handy. Currently, they're available either with our ChatBot integration or [Beta API 3.0](https://developers.livechatinc.com/beta-docs/).
 
 
 ### Customer SDK
 
-You can build advanced custom solutions with the use of Beta Customer SDK*. With this JavaScript library, you can create a chat widget from scratch. It allows you to meet a specific scenario, but is definitely the most challenging option.
+You can build advanced custom solutions with the use of [Customer SDK](https://developers.livechatinc.com/beta-docs/customer-sdk/). With this JavaScript library, you can create a chat widget from scratch. It allows you to meet a specific scenario, but is definitely the most challenging option.
 Before you interact with this API, keep in mind that complicated solutions call for strong coding skills. 
 
-<div class="note">
-*) We're working on a new set of APIs and SDKs, which introduce multiple improvements and advanced integration tools. Got you curious? Hit us up at <a href="mailto:developers@livechatinc.com">developers@livechatinc.com</a> for more details and early access!
-</div>
 
 
  
