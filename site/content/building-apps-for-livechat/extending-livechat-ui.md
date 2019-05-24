@@ -101,9 +101,10 @@ Building a Single Page App (SPA)? We're fine with that! LiveChat integrates well
 
 ### Moments
 [Chat Widget Moments](https://developers.livechatinc.com/docs/chat-widget-moments/) are webpages embedded in an iframe, displayed during a chat. 
-![LiveChat Moment](moments.png)
 
-Thanks to **Moments**, customers can perform specific actions. For example, you could pick a date from a popping up calendar instead of typing it manually. Moments were created to solve complex problems easily and securely. You can think of them as an accessible API to integrate the **Chat Widget** with some other software. 
+![LiveChat Moment](livechat-moments-in-chat.jpg)
+
+Thanks to **Moments**, customers can perform specific actions. For example, you could pick a date from a popping up calendar instead of typing it manually, or let your customer make a purchase right on the spot. Moments were created to solve complex problems easily and securely. You can think of them as an accessible API to integrate the **Chat Widget** with some other software. 
 
 
 ## Rich messages
