@@ -18,25 +18,19 @@ You can leverage the OAuth2.0 authorization flow to access data from the [REST A
 
 If you're using React, you can use the [LiveChat Design System](https://github.com/livechat/design-system), which is a component library used directly in the LiveChat user interface.
 
-We also ship a [LiveChat Boilerplate](/docs/boilerplate) – it's a lightweight CSS stylesheet to help you lift off with creating the widget interface.
-
-> Place this tag within the `<head></head>` section:
-
-```html
-<link rel="stylesheet" href="//cdn.livechatinc.com/boilerplate/1.1.css">
-```
-
 ## Hosting the widget
 
 You can host your widget locally or on a dedicated server. The hosted content has to be served over the **HTTPS Protocol**. 
 
 During development, you can use a self-signed certificate for `localhost` or upload your widget to an SSL-enabled host. You can also leverage bundlers like [Webpack](https://webpack.js.org/configuration/dev-server/) to use an https-enabled development server.
 
+If you need a quick way to **deploy** your widget, you can use [Netlify Drop](https://developers.livechatinc.com/blog/widget-hosting-on-netlify/).
+
 ## Creating a Customer Details widget
 
 When developing an app in the **Details** section, you can add some content to the **Customer Details** view and display it as a widget. This way you turn it into a **Customer Details widget**.  
 
-Let's define the terms we use in this document:   
+Let's define the terms we use in this document:
 
 - **Section** - an element of **Customer Details**. It contains a complete set of information grouped under a single widget.
 - **Component** - a single line in a section. It can have one of the pre-defined formats and be filled with data from the app.

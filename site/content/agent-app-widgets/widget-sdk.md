@@ -4,9 +4,9 @@ weight: 45
 
 # Widget SDK
 
-To use the JavaScript API you should import the [Agent App Widget SDK](https://www.npmjs.com/package/@livechat/agent-app-widget-sdk). 
+**Please remember that the Widget SDK is considered [deprecated](#developing-your-own-widget) and you should use the [Agent App SDK](#agent-app-sdk) instead.**
 
-**Please remember that it's considered [deprecated](#developing-your-own-widget) and you should use the [Agent App SDK](#agent-app-sdk) instead.**
+To use the JavaScript API you should import the [Agent App Widget SDK](https://www.npmjs.com/package/@livechat/agent-app-widget-sdk). Note that this document describes the API for `1.3.x` version of the package. If you're using the `2.x` version, please refer to the [README](https://github.com/livechat/agent-app-widget-sdk#readme) file located in the Github repository.
 
 > Our widget SDK package is hosted on NPM. You can get it with the following command:
 
