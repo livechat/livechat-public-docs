@@ -68,6 +68,14 @@ Fullscreen apps help to reduce _context switching_. Users no longer need to swit
 
 See how to create a fullscreen app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
 
+#### MessageBox
+
+With this type of widget placement you can integrate your apps in the Message Box. To showcase that, we integrated Giphy, but it could also be useful for presenting items from an online store. This type of integration makes the whole chatting experience much more engaging.
+
+![LiveChat MessageBox](messagebox.png)
+
+To learn more about the implementation, see [MessageBox](https://developers.livechatinc.com/docs/agent-app-widgets/#messagebox).
+
 #### App settings
 
 Some applications require settings configuration, especially when they use external services. After installing the app, users need to do the setup in order for the application to work.
