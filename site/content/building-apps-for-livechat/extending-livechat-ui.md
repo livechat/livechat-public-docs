@@ -70,11 +70,11 @@ See how to create a fullscreen app in the [documentation](https://developers.liv
 
 #### MessageBox
 
-With this type of widget placement you can integrate your apps in the Message Box. To showcase that, we integrated Giphy, but it could also be useful for presenting items from an online store. This type of integration makes the whole chatting experience much more engaging.
+With this type of widget placement you can integrate your apps in the Message Box. You could use it to send gifs or present items from an online store. This type of integration makes the whole chatting experience much more engaging.
 
 ![LiveChat MessageBox](messagebox.png)
 
-To learn more about the implementation, see [MessageBox](https://developers.livechatinc.com/docs/agent-app-widgets/#messagebox).
+It works in a simple and intuitive way. You open the app, select the element, and confirm your choice by clicking **Send**. This mechanism protects you from sending an element by accident. To learn more about the implementation, see [MessageBox](https://developers.livechatinc.com/docs/agent-app-widgets/#messagebox).
 
 #### App settings
 
