@@ -7,4 +7,5 @@ type: "agent-app"
 menuTitle: Agent App <br/><u>Widgets</u>
 compatible: true
 hideSearch: true
+weight: 2
 ---
