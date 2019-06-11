@@ -79,11 +79,12 @@ In case of rejection, we'll conact you via email to give you feedback and discus
 Publish the app and that's it! The very last thing for you to do is give us a bit of time. Your app will be visible on Marketplace in up to 30 minutes.
 
 # Look up your revenue
-You can check your current account balance in **Profile >> Billing**. 
-![LiveChat Your Wallet](dev_revenue.png)
+You can check your current account balance in **Profile >> My Revenue**. 
 
-In this tab, we display how much you've earned in total. You can request a withdrawal, but only if there's at least $50 on your account. Clicking the **request a withdrawal** button will prompt to you to send us an email, so that we take care of further billing operations.
+![LiveChat Current Account Balance](my_revenue.png)
+
+In this tab, we display how much you've earned in total. You can request a withdrawal, but only if there's at least $50 on your account. Clicking the **request a withdrawal** button will prompt to you to send us an email, so that we can take care of further billing operations.
 
 # Questions?
 
-We 're happy to provide our support in case you need. If you have any questions or suggestions, feel free to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
+We're happy to provide our support in case you need it. If you have any questions or suggestions, feel free to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
