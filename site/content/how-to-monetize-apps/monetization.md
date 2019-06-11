@@ -81,9 +81,9 @@ Publish the app and that's it! The very last thing for you to do is give us a bi
 # Look up your revenue
 You can check your current account balance in **Profile >> My Revenue**. 
 
-![LiveChat Current Account Balance](my_revenue.png)
+![LiveChat Current Account Balance](livechat-monetization-revenue.png)
 
-In this tab, we display how much you've earned in total. You can request a withdrawal, but only if there's at least $50 on your account. Clicking the **request a withdrawal** button will prompt to you to send us an email, so that we can take care of further billing operations.
+In this tab, we display how much you've earned in total. You can request a withdrawal, but only if there's at least $50 in your account. Clicking the **request a withdrawal** button will prompt to you to send us an email, so that we can take care of further billing operations.
 
 # Questions?
 
