@@ -27,7 +27,7 @@ Here's the core info about monetization at **LiveChat**:
 * The provision is 20%, so if you set the app price to be 10$, you will earn 8$ net. 
 * We offer two billing cycles: **once a month** and **one-time payment**. We recommend the recurring payment option. 
 * You can leverage LiveChat [Billing API](/docs/billing-api/) to implement micropayments in your app.
-<!-- Czemu rekomendujemy recurring? Co mozna jeszcze powiedziec o micropayments?-->
+
 
 ## Your role vs. Our role
 
@@ -78,8 +78,13 @@ In case of rejection, we'll conact you via email to give you feedback and discus
 
 Publish the app and that's it! The very last thing for you to do is give us a bit of time. Your app will be visible on Marketplace in up to 30 minutes.
 
+# Look up your revenue
+You can check your current account balance in **Profile >> My Revenue**. 
 
+![LiveChat Current Account Balance](livechat-monetization-revenue.png)
+
+In this tab, we display how much you've earned in total. You can request a withdrawal, but only if there's at least $50 in your account. Clicking the **request a withdrawal** button will prompt to you to send us an email, so that we can take care of further billing operations.
 
 # Questions?
 
-We 're happy to provide our support in case you need. If you have any questions or suggestions, feel free to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
+We're happy to provide our support in case you need it. If you have any questions or suggestions, feel free to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
