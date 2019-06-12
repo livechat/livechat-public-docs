@@ -1028,12 +1028,12 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `client_name` - **required** - client's full name (min. 5, max. 100 characters)
 * `client_email` - **required** - client's email address
 * `payment_origin` - **required** - subscription's payment management, one of `partner` or `client`
-* `trial_duration` - optional - days of trial period (min. 14, max. 60)
-* `coupon_id` - optional - coupon id (applied when `payment_origin="client"`)
+* `trial_duration` - optional - days of trial period (min. 14, max. 60), applied when `payment_origin="client"`
+* `coupon_id` - optional - coupon id applied when `payment_origin="client"`
 * `data_center` - optional - your client's data storage center, one of `dal` or `fra`
 * `purchase_order` - optional - custom parameter
 
-**Note:** Data center: `dal` - Dallas, USA, `fra` - Frankfurt, Germany. Default value of `data_center` is `dal`. Trial duration for `payment_origin="partner"` is set to 14-days, for `payment_origin="client"` default vaule is 14-days.
+**Note:** Data center: `dal` - Dallas (US), `fra` - Frankfurt (EU). Default value of `data_center` is `dal`.
 
 #### Response
 * `201 - Created`
@@ -1599,7 +1599,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 
 ```json
 {
-    "withdrawal_id": 0,
+    "withdrawal_id": 1,
     "request_timestamp": "2019-03-06 12:24:42",
     "action_timestamp": "",
     "status": "pending",
