@@ -276,7 +276,6 @@ You can create your token in the [API tokens section](https://partners.livechati
 
 #### Response
 * `200 - OK`
-* `400 - Bad Request` - incorrect parameters
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
@@ -401,7 +400,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 
 #### Payload
 * `name` - **required** - campaign name (min. 5, max. 100 characters)
-* `trial_duration` - **required** - days of trial period (mix. 30, max. 60)
+* `trial_duration` - **required** - days of trial period (min. 14, max. 60)
 * `coupon_id` - optional - ID of the coupon assigned to partner (will apply a discount)
 * `link` - optional - slug of LiveChat page. If you want the campaign to point end-user to https://www.livechatinc.com/features/, set `link` param to `features/` (we will add `https://www.livechatinc.com/` automatically)
 
@@ -441,7 +440,7 @@ You can create your token in the [API tokens section](https://partners.livechati
         {
             "name": "Hello World!",
             "slug": "pp_hello-world",
-            "trial_duration": 30,
+            "trial_duration": 14,
             "discount": "30% off first payment",
             "url": "https://www.livechatinc.com/pricing/?a=xyz&utm_campaign=pp_hello-world&utm_source=PP",
             "short_url": "https://lc.chat/abc",
@@ -949,14 +948,14 @@ You can create your token in the [API tokens section](https://partners.livechati
     "result": [
         {
             "date": "2019-03",
-            "trials": 0,
-            "paid": 0,
-            "commission": 157.95,
-            "leads": 0
+            "trials": 13,
+            "paid": 2,
+            "commission": 454.50,
+            "leads": 2
         },
         {
             "date": "2019-02",
-            "trials": 0,
+            "trials": 4,
             "paid": 1,
             "commission": 157.95,
             "leads": 1
@@ -966,7 +965,7 @@ You can create your token in the [API tokens section](https://partners.livechati
             "trials": 1,
             "paid": 0,
             "commission": 0,
-            "leads": 0
+            "leads": 1
         }
     ]
 }
@@ -1026,14 +1025,21 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
 
 #### Payload
-* `client_name` - **required** - client's full name
+* `client_name` - **required** - client's full name (min. 5, max. 100 characters)
 * `client_email` - **required** - client's email address
+* `payment_origin` - **required** - subscription's payment management, one of `partner` or `client`
+* `trial_duration` - optional - days of trial period (min. 14, max. 60)
+* `coupon_id` - optional - coupon id (applied when `payment_origin="client"`)
+* `data_center` - optional - your client's data storage center, one of `dal` or `fra`
 * `purchase_order` - optional - custom parameter
+
+**Note:** Data center: `dal` - Dallas, USA, `fra` - Frankfurt, Germany. Default value of `data_center` is `dal`. Trial duration for `payment_origin="partner"` is set to 14-days, for `payment_origin="client"` default vaule is 14-days.
 
 #### Response
 * `201 - Created`
 * `400 - Bad Request` - missing or incorrect parameters
 * `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - `coupon_id` is incorrect
 * `409 - Conflict` - given `client_email` already has a LiveChat license
 
 
@@ -1593,11 +1599,12 @@ You can create your token in the [API tokens section](https://partners.livechati
 
 ```json
 {
-    "request_timestamp": "2018-03-06 12:24:42",
+    "withdrawal_id": 0,
+    "request_timestamp": "2019-03-06 12:24:42",
     "action_timestamp": "",
     "status": "pending",
     "amount": 1520,
-    "invoice_id": "2018/2/xyz"
+    "invoice_id": "2019/2/xyz"
 }
 ```
 
@@ -1621,20 +1628,20 @@ You can create your token in the [API tokens section](https://partners.livechati
 {
     "result": [
         {
+            "withdrawal_id": 1,
             "request_timestamp": "2018-03-06 12:24:42",
             "action_timestamp": "",
             "status": "pending",
             "amount": 1520,
-            "invoice_id": "2018/2/xyz",
-            "withdrawal_id": 1
+            "invoice_id": "2019/2/xyz"
         },
         {
+            "withdrawal_id": 2,
             "request_timestamp": "2018-02-02 11:43:37",
             "action_timestamp": "2018-02-02 12:04:11",
             "status": "paid",
             "amount": 1063.3,
-            "invoice_id": "2018/1/xyz",
-            "withdrawal_id": 2
+            "invoice_id": "2018/9/xyz"
         }
     ]
 }
@@ -1678,8 +1685,6 @@ You can create your token in the [API tokens section](https://partners.livechati
     "lc_country": "United States of America"
 }
 ```
-
->Note: We use this endpoint to generate the invoices PDF in our App
 
 `GET /v2/partners/affiliates/withdrawals/invoices/{invoice_id}` - get withdrawal`s invoice
 
