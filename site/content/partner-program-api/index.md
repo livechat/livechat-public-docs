@@ -342,9 +342,6 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `400 - Bad Request` - missing or incorrect parameters
 * `401 - Unauthorized` - missing or incorrect authorization header
 
-
-# Affiliate Partner
-
 ## Get Active Coupons
 
 >Response example:
@@ -374,7 +371,11 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Create LiveChat Campaign
+# Affiliate Partner
+
+## LiveChat
+
+### Create Campaign
 
 >Response example:
 
@@ -412,7 +413,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `409 - Conflict` - campaign with given name already exists
 
 
-## Disable LiveChat Campaign
+### Disable Campaign
 `DELETE /v2/partners/affiliates/campaigns/<slug>` - **DEPRECATED**
 
 `DELETE /v2/partners/affiliates/livechat/campaigns/<slug>` - disable campaign
@@ -430,7 +431,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `403 - Forbidden` - given campaign doesn't exist or was already disabled
 
 
-## Get LiveChat Active Campaigns
+### Get Active Campaigns
 
 >Response example:
 
@@ -472,7 +473,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get LiveChat Disabled Campaigns
+### Get Disabled Campaigns
 
 >Response example:
 
@@ -504,7 +505,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get LiveChat Licenses' List
+### Get Licenses List
 
 >Response example:
 
@@ -572,7 +573,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get LiveChat Performance Report
+### Get Performance Report
 
 >Response example:
 
@@ -631,7 +632,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get LiveChat Affiliate History
+### Get Affiliate History
 
 >Response example:
 
@@ -672,7 +673,9 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Create Partner Program Campaign
+## Partner Program
+
+### Create Campaign
 
 >Response example:
 
@@ -703,7 +706,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `409 - Conflict` - campaign with given name already exists
 
 
-## Disable Partner Program Campaign
+### Disable Campaign
 
 `DELETE /v2/partners/affiliates/livechat-partner-program/campaigns/<slug>` - disable campaign
 
@@ -720,7 +723,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `403 - Forbidden` - given campaign doesn't exist or was already disabled
 
 
-## Get Partner Program Active Campaigns
+### Get Active Campaigns
 
 >Response example:
 
@@ -756,7 +759,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get Partner Program Disabled Campaigns
+### Get Disabled Campaigns
 
 >Response example:
 
@@ -784,7 +787,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get Partner Program Leads' List
+### Get Leads List
 
 >Response example:
 
@@ -833,7 +836,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get Partner Program Leads' Licenses
+### Get Leads Licenses
 
 >Response example:
 
@@ -889,7 +892,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get Partner Program Performance Report
+### Get Performance Report
 
 >Response example:
 
@@ -939,7 +942,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get Partner Program Leads History
+### Get Leads History
 
 >Response example:
 
@@ -1664,7 +1667,7 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `401 - Unauthorized` - missing or incorrect authorization header
 
 
-## Get Withdrawal's Invoice
+## Get Withdrawal Invoice
 
 >Response example:
 
