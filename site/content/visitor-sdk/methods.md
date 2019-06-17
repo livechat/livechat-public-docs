@@ -343,7 +343,7 @@ This method has no parameters.
 
 ## sendPrechatForm
 
-Collects the pre-chat survey form information (it will be visible during the chat and in the archives). Pre-chat form form should be rendered using fields fetched by getPrechatForm method.
+Collects the pre-chat survey form information (it will be visible during the chat and in the archives). Pre-chat form should be rendered using fields fetched by getPrechatForm method.
 
 ```js
 const formAnswers = {
