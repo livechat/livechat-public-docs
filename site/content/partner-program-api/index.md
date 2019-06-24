@@ -1118,7 +1118,7 @@ You can create your token in the [API tokens section](https://partners.livechati
     "discount_percent": 0,
     "expired": false,
     "blocked": false,
-    "payment_origin": ,
+    "payment_origin": "client",
     "conversations": 403,
     "conversations_last_30_days": 195,
     "total_commission": 125,
@@ -1309,6 +1309,97 @@ You can create your token in the [API tokens section](https://partners.livechati
 * `200 - OK`
 * `400 - Bad Request` - missing or incorrect parameters
 * `401 - Unauthorized` - missing or incorrect authorization header
+* `404 - Not Found` - license not found
+
+
+## Get License Operators
+
+>Response example:
+
+```json
+{
+	"result": [
+		{
+			"login": "jane@example.com",
+			"name": "Jane the Agent",
+			"permission": "normal"
+		},
+		{
+			"login": "joe@example.com",
+			"name": "Joe",
+			"permission": "administrator"
+		},
+		{
+			"login": "john@example.com",
+			"name": "John",
+			"permission": "owner"
+		}
+	]
+}
+```
+
+`GET /v2/partners/solutions/licenses/<license_id>/operators` - get license's owner, admins and agents (only for Solution Partner's licenses where Partner manages subscription)
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - subscription is not managed by the Partner
+* `404 - Not Found` - license not found
+
+
+## Move License Subscription Management to the Client
+
+>Response example:
+
+```json
+{
+    "license": "123",
+    "client_name": "Joe Doe",
+    "client_email": "joe@example.com",
+    "purchase_order": "Test license",
+    "creation_timestamp": "2019-03-30 12:59:13",
+    "end_timestamp": "2019-07-30 11:59:12",
+    "cc_added": false,
+    "paid": true,
+    "seats": 12,
+    "plan": "team",
+    "billing_cycle": "monthly",
+    "total_discount": 0,
+    "discount_percent": 0,
+    "expired": false,
+    "blocked": false,
+    "payment_origin": "client",
+    "conversations": 403,
+    "conversations_last_30_days": 195,
+    "total_commission": 0,
+    "commission_percent": 20,
+    "data_center": "fra"
+}
+```
+
+`POST /v2/partners/solutions/licenses/<license_id>/move` - move license's subscription management to the client
+
+#### Headers
+* `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Parameters
+* `<license_id>` - **required** - license ID
+
+#### Payload
+* `new_owner` - **required** - login of desired license owner (one of [operators](#get-license-operators)) - please specify even if operator is already an owner
+
+#### Response
+* `200 - OK`
+* `400 - Bad Request` - missing or incorrect parameters
+* `401 - Unauthorized` - missing or incorrect authorization header
+* `403 - Forbidden` - subscription is not managed by the Partner
 * `404 - Not Found` - license not found
 
 
