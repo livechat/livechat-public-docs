@@ -14,7 +14,7 @@ If you need to customize the LiveChat widget, using Chat Widget Visitor SDK is o
 
 Keep in mind, however, that interacting with this API requires **significant development skills**.
 
-* If you only want to modify the look and feel of the chat window, check if you can do this with [custom CSS](https://www.livechatinc.com/kb/customize-your-chat-window-with-css/).
+* If you only want to modify the look and feel of the chat widget, check our powerful yet easy to use [chat widget configurator](https://www.livechatinc.com/help/customize-your-chat/).
 
 * If you want to integrate the chat widget with your application, you can use the the existing [JS API](https://docs.livechatinc.com/js-api/).
 
