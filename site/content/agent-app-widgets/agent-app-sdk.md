@@ -202,7 +202,9 @@ Calling this method does not automatically send the message right away. The mess
     elements: [
       {
         title: "My cat photo",
-        image: "imgs/john-the-cat.jpg"
+        image: {
+          url: "https://example.org/imgs/john-the-cat.jpg"
+        }
       }
     ]
   };
