@@ -26,7 +26,7 @@ Check out our [blog post](https://developers.livechatinc.com/blog/chat-actions/)
 
 ### App locations
 
-Currently, your app can extend three areas of the the LiveChat Agent interface:
+Currently, your app can extend three areas of the LiveChat Agent App interface:
 
 - the Details section, by adding a new tab with your web content or a new widget in the default Customer Details tab
 - the Main menu, by adding a new, fullscreen section with your web content

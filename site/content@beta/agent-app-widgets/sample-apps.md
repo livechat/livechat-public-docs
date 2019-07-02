@@ -7,7 +7,7 @@ weight: 20
 
 We've prepared a repository of sample apps for your convenience.
 
-* [Tag Master](https://github.com/livechat/sample-apps/tree/master/tag-master): widget allows user to create, view and delete tags and canned responses in easy and predictable way.
+* [Tag Master](https://github.com/livechat/sample-apps/tree/master/Tag%20Master): widget allows user to create, view and delete tags and canned responses in easy and predictable way.
 * [Progress](https://github.com/livechat/sample-apps/tree/master/progress): a simple app that creates reports based on data from chats.
 * [Supervisor](https://github.com/livechat/sample-apps/tree/master/supervisor): simple widget for helping you to monitor weekly progress of your agents and also their availability.
 

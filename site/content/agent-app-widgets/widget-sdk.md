@@ -43,7 +43,7 @@ After the content of your widget is loaded, fire the `LiveChat.init()` method. I
 
 ## Events
 
-Events allow you react to the actions in the Agent App. Use this method as a listener for certain events.
+Events allow you react to actions in the Agent App. Use this method as a listener for certain events.
 
 ```js
 LiveChat.on("<event_name>", function( data ) {
@@ -51,13 +51,7 @@ LiveChat.on("<event_name>", function( data ) {
 })
 ```
 
-| Event name | Triggers when |
-|------------|-------------|
-| `customer_profile` | the agent opens a customer profile within **Chats**, **Archives** or **Visitors** sections |
-| `customer_profile_hidden` | the opened customer profile belongs to the visitor that left the **Visitors** list |
-
-
-Events `customer_profile` and `customer_profile_hidden` return an object with additional properties.
+The `customer_profile` event is triggerd when an agent opens a customer profile within the **Chats**, **Archives**, or **Visitors** section. It returns an object with additional properties.
 
 ### Customer profile displayed
 
@@ -93,20 +87,6 @@ Events `customer_profile` and `customer_profile_hidden` return an object with ad
 | `email` | Visitor email (if provided) |
 | `chat` | Object with two properties: `id` (unique chat id) and `groupID` (unique group id); this object may be empty when a visitor is not currently chatting |
 | `source` | String representing the source of an event; possible values: `chats`, `visitors`, `archives` |
-
-### Customer profile hidden
-
-> Sample `data` object for `customer_profile_hidden` event
-
-```json
-{
-  "id": "S126126161.O136OJPO1"
-}
-```
-
-| Property | Description |
-|------------|-------------|
-| `id` | Unique ID of a visitor |
 
 
 ## Put message to textarea
