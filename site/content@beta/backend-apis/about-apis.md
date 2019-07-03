@@ -11,6 +11,8 @@ There are two primary Chat APIs:
 
 The **Agent Chat API** contains a different set of methods than the **Customer Chat API**. We separated both APIs as they cover different use cases. 
 
+To use those APIs, you need to be _authorized_. This topic is thoroughly explained in the [**Authorizing API calls**](../authorization) document.
+
 ## RTM API vs. Web API
 
 Both APIs have much in common. One similarity is that they're both **Real Time Messaging APIs (RTM APIs)**, which translates to enabling real-time communication. Websocket transport allows for **pushes**, which are server-client methods used to keep application state up-to-date. In case of the Agent App and the Chat Widget, the continuous connection is crucial. That's why they both implement RTM API.
@@ -45,7 +47,7 @@ All event types share the following fields:
 | `custom_id`  | the ID that you can set for your own purposes                                | client    | string            |
 | `order`      | events with a lower `order` will appear first                                | server    | int               |
 | `author_id`  | the ID of the sender of an event                                             | server    | string            |
-| `text`       | the payload that you can send whithin an event (for example message content) | client    | string            |
+| `text`       | the payload that you can send within an event (for example message content) | client    | string            |
 | `recipients` | the posibble values are `"all"`(default) and `"agents"`                      | client    | string            |
 | `properties` | event [properties](#properties)                                              | client    | properties object |
 
@@ -272,7 +274,7 @@ In our example, `routing` is the namespace, while `pinned` and `count` are prope
 
 > First, we create our properties configuration using the Configuration API.
 
-```
+```json
 curl -v https://api.livechatinc.com/configuration/properties/create_properties \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer c5e4f61e1a6c3b1521b541bc5c5a2ac5" \
@@ -351,9 +353,9 @@ Property domain can be configured in two ways:
 <!-- End of description -->
 
 > The two properties are within the namespace named after your `application id`. If you don't know your `application id`, you can check it with the request below.
-> In this case, `client_id` is your `application id`.
+> In this case, `client_id` is your `application id`. You can find the `client_id` in [**Developers Console**](https://developers.livechatinc.com/console/) **>> the Authorization building block** of your app.
 
-```
+```json
 curl https://accounts.livechatinc.com/info -H "Authorization: Bearer c5e4f61e1a6c3b1521b541bc5c5a2ac5"
 {
     "access_token":"c5e4f61e1a6c3b1521b541bc5c5a2ac5",
@@ -364,7 +366,7 @@ curl https://accounts.livechatinc.com/info -H "Authorization: Bearer c5e4f61e1a6
 
 > Now, you can set up the properties within the existing chat from the customer's perspective using the Agent/Customer Chat API method: [update_chat_properties](../customer-chat-api/#update-chat-properties).
 
-```
+```json
 curl -v https://api.livechatinc.com/customer/v0.5/action/update_chat_properties \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer c5e4f61e1a6c3b1521b541bc5c5a2ac5" \
