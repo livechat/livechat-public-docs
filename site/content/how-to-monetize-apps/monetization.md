@@ -72,7 +72,7 @@ If you feel that your application is ready, submit it for review. It will be an 
 ## **Step 6 Publishing**
 
 You'll know that your app is ready for publishing when you see a note saying that **the app is accepted**.
-In case of rejection, we'll conact you via email to give you feedback and discuss what needs to be changed.
+In case of rejection, we'll contact you via email to give you feedback and discuss what needs to be changed.
 
 ![LiveChat Publish your app at Marketplace](livechat-monetization-step-6.png)
 
