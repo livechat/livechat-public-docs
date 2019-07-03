@@ -41,7 +41,7 @@ LiveChat.on("customer_profile", function( data ) {
 
 After the content of your widget is loaded, fire the `LiveChat.init()` method. It will let the Agent App know when to hide the spinning loader.
 
-## Events
+## Widget SDK events
 
 Events allow you react to actions in the Agent App. Use this method as a listener for certain events.
 
@@ -51,7 +51,7 @@ LiveChat.on("<event_name>", function( data ) {
 })
 ```
 
-The `customer_profile` event is triggerd when an agent opens a customer profile within the **Chats**, **Archives**, or **Visitors** section. It returns an object with additional properties.
+The `customer_profile` event is triggered when an agent opens a customer profile within the **Chats**, **Archives**, or **Visitors** section. It returns an object with additional properties.
 
 ### Customer profile displayed
 
