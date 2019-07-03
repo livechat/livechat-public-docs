@@ -26,11 +26,12 @@ Check out our [blog post](https://developers.livechatinc.com/blog/chat-actions/)
 
 ### App locations
 
-Currently, your app can extend three areas of the LiveChat Agent App interface:
+Your app can extend several areas of the LiveChat Agent App interface:
 
 - the Details section, by adding a new tab with your web content or a new widget in the default Customer Details tab
 - the Main menu, by adding a new, fullscreen section with your web content
 - Chat Actions, by adding a new action button in the Chat Action menu
+- the Message Box, by adding an integration displayed right in that area
 
 If you feel we lack some options, please drop us a line at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
 
@@ -40,7 +41,7 @@ Apps in the Details tabs are the most common way to extend LiveChat UI. They are
 
 ![LiveChat Tag Master](livechat-tag-master-app.jpg)
 
-In the example above, the **Tag Master** app is installed. It's one of the open-source [sample apps](https://developers.livechatinc.com/docs/agent-app-widgets/#sample-widgets) you can [clone](https://github.com/livechat/sample-apps/tree/master/tag-master) and play with.
+In the example above, the **Tag Master** app is installed. It's one of the open-source [sample apps](https://github.com/livechat/sample-apps) you can [clone](https://github.com/livechat/sample-apps/tree/master/Tag%20Master) and play with.
 
 Apps located in the Details section are **contextual**. It means they inherit the properties of the currently opened chat. You can use this information to present contextual data for the particular chats.
 
@@ -82,7 +83,7 @@ Some applications require settings configuration, especially when they use exter
 
 We provide a special place called Settings page, where you can embed a page with configuration. It's recommended to use it together with [Sign in with LiveChat](/docs/sign-in-with-livechat/).
 
-See how to setup a Settings page for your app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
+See how to set up a Settings page for your app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
 
 ## Extending the Chat Widget
 
