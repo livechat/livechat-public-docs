@@ -3,7 +3,7 @@ weight: 20
 ---
 
 
-# Sample Widgets
+# Sample Apps
 
 If you'd like to experiment with some of the already existing apps, make sure to check out the repository we've prepared. Once installed, these widgets will be displayed in the right sidebar of the Agent App.
 
