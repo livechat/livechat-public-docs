@@ -93,7 +93,7 @@ While the chat changes its state, the router sends system messages. Read more ab
 | `Chat is idle due to <minutes_number> minutes of inactivity` | `routing.idle` |
 | `Chat archived because customer was banned by <agent> for N days` | `customer_banned` |
 
-#### System messages: rounting.assigned
+#### System messages: routing.assigned
 
 ##### General info
 
@@ -109,7 +109,7 @@ While the chat changes its state, the router sends system messages. Read more ab
 | An agent has left the chat and another agent is available | automatic |
 | An agent got available for an unassigned chat | automatic |
 
-#### System messages: rounting.unassigned
+#### System messages: routing.unassigned
 
 ##### General info
 
@@ -131,7 +131,7 @@ Bot Agents are similar to their human counterparts. They can join chats and post
 
 <img src="images/bot-agent.jpg" alt="LiveChat Bot Agent" class="has-border"/>
 
-Bot Agents are created and managed with the use of the  [Configuration API](../configuration-api/#bot-agent). They communicate with the [Agent Chat API](../agent-chat-api/) by the [**Web API**](../agent-chat-api/#web-api) or **websocket connection**. They listen to incoming webhooks (or pushes) and react to them.
+Bot Agents are created and managed with the use of the  [Configuration API](../configuration-api/#bot-agent). They communicate with the [Agent Chat API](../agent-chat-api/) by the [**Web API**](../agent-chat-api/#web-api) or [**websocket connection**](#rtm-api-vs-web-api). They listen to incoming webhooks (or pushes) and react to them.
 
 #### Example: reacting to keywords
 

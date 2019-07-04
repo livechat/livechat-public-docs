@@ -12,7 +12,8 @@ The [**Agent Chat API**](../agent-chat-api) allows for:
 - interact with the chat by Bot Agents (acting as Agents) 
 - building a custom Agent App
 - browsing chat archives
-- banning Customers
+- banning Customers 
+- and much more
 
 ## Chatting as Agent
 
