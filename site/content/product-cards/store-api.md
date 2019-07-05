@@ -56,10 +56,10 @@ curl -X GET \
 
 Parameters:
 
-- __storeId__ is an internal ID provided by _/stores_ endpoint
-- __page__ is optional parameter that allows to paginate categories (by default 1)
+- **storeId**: is an internal ID provided by `/stores` endpoint
+- **page** *(optional):* allows to paginate categories (default: `1`)
 
-Response:
+Expected response:
 
 ```json
 {
