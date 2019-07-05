@@ -27,9 +27,9 @@ curl -X GET \
   -H 'Authorization: Bearer <livechat-oauth-token>'
 ```
 
-It's possible to have more than one store connected to Product Cards. Widget calls your backend for a list of stores as follows:
+The very first request (that will be sent to your backend from our app) fetches basic info about stores available for Product Cards app. It means that it's possible to have more than one store connected to Product Cards. Widget calls your backend for a list of stores as follows:
 
-*Note:* Even if you have only one store, you need to create this endpoint and provide us the `storeId` - it's required for other requests.
+*__Note__: Even if you want to connect only one store, you need to create this endpoint and provide us the `storeId` - it's required for other requests.*
 
 Expected response:
 
@@ -47,6 +47,8 @@ Expected response:
 ``` 
 
 ## Categories
+
+Next Product Cards will fetch information about categories available in the store. The **Categories filter** is based on this endpoint data. 
 
 ```bash
 curl -X GET \
@@ -78,6 +80,8 @@ Expected response:
 
 ## Products
 
+Last but not least, the app will fetch a list of products which show up in the form of tiles.
+
 ```bash
 curl -X GET \
   'https://store.com/api/products?storeId=10001&page=1&term=Harry+Potter&sort=name&direction=asc&categories=5001%2C5010' \
@@ -102,8 +106,8 @@ Expected response:
       "id": "2001",
       "name": "Harry Potter",
       "description": "New adventures of a young wizard.",
-      "productUrl": "https://store.com/item/harry+potter",
-      "imageUrl": "https://cdn.store.com/item_220221.jpg"
+      "productUrl": "https://store.com/item/2001/harry+potter",
+      "imageUrl": "https://cdn.store.com/item_2001.jpg"
     }
   ],
   "pagination": {
@@ -116,3 +120,6 @@ Expected response:
   }
 }
 ```
+
+Product Cards supports pagination, based on <a href ="https://github.com/NationalBankBelgium/REST-API-Design-Guide/wiki/Pagination-Example" target="_blank">*NationalBankBelgium* REST API Design Guide</a>.
+
