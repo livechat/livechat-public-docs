@@ -67,3 +67,44 @@ Response:
   ]
 }
 ```
+
+## Products
+
+```bash
+curl -X GET \
+  'https://store.com/api/products?storeId=10001&page=1&term=Harry+Potter&sort=name&direction=asc&categories=5001%2C5010' \
+  -H 'Authorization: Bearer <livechat-oauth-token>'
+```
+
+Parameters:
+
+- __storeId__ is an internal ID provided by _/stores_ endpoint
+- __page__ (optional) parameter that allows to paginate products
+- __term__ (optional) allows to filter products by name
+- __sort__ (optional) sort by field (supported values: id, name)
+- __direction__ (optional) sort's direction (supported values: asc, desc)
+- __categories__ (optional) allows too filter products by a list of categories (list of IDs separated by comma)
+
+Response:
+
+```json
+{
+  "products": [
+    {
+      "id": "2001",
+      "name": "Harry Potter",
+      "description": "New adventures of a young wizard.",
+      "productUrl": "https://store.com/item/harry+potter",
+      "imageUrl": "https://cdn.store.com/item_220221.jpg"
+    }
+  ],
+  "pagination": {
+    "currentPage": 2,
+    "limit": 50,
+    "offset": 50,
+    "previousOffset": 0,
+    "pageCount": 7,
+    "totalCount": 310
+  }
+}
+```
