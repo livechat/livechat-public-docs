@@ -4,7 +4,7 @@ weight: 30
 
 # Store API
 
-## CORS
+## Security
 
 ```
 Access-Control-Allow-Origin: https://productcards.livechatinc.com
@@ -12,6 +12,12 @@ Access-Control-Allow-Methods: GET, POST, OPTIONS
 ```
 
 To avoid CORS-related conflicts you should set proper `Access-Control-Allow-Origin` and `Access-Control-Allow-Methods` headers.
+
+The app uses **LiveChat OAuth token** to authorize requests sent to your backend service. To confirm that user is authorized, you should [validate given token](../authorization/#validating-the-access-token) and check if it matches Product Cards client ID and/or your license number.
+
+```
+Product Cards Client ID: 9e63f93f6782051e6a43549c132a1f7a
+```
 
 ## Stores
 
