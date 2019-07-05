@@ -37,3 +37,33 @@ Expected response:
   }
 ]
 ```
+
+## Categories
+
+```bash
+curl -X GET \
+  'https://store.com/api/categories?storeId=10001&page=1' \
+  -H 'Authorization: Bearer <livechat-oauth-token>'
+```
+
+Parameters:
+
+- __storeId__ is an internal ID provided by _/stores_ endpoint
+- __page__ is optional parameter that allows to paginate categories (by default 1)
+
+Response:
+
+```json
+{
+  "categories": [
+    {
+      "id": "5001", // internal id of a category
+      "name": "Books"
+    },
+    {
+      "id": "5010",
+      "name": "Games"
+    }
+  ]
+}
+```
