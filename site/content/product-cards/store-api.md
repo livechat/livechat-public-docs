@@ -80,7 +80,7 @@ Expected response:
 
 ## Products
 
-Last but not least, the app will fetch a list of products which show up in the form of tiles.
+Last but not least, the app will fetch a list of products which show up in the form of tiles. The response can be paginated, based on <a href ="https://github.com/NationalBankBelgium/REST-API-Design-Guide/wiki/Pagination-Example" target="_blank">*NationalBankBelgium* REST API Design Guide</a>.
 
 ```bash
 curl -X GET \
@@ -120,6 +120,4 @@ Expected response:
   }
 }
 ```
-
-Product Cards supports pagination, based on <a href ="https://github.com/NationalBankBelgium/REST-API-Design-Guide/wiki/Pagination-Example" target="_blank">*NationalBankBelgium* REST API Design Guide</a>.
 
