@@ -45,8 +45,8 @@ You can also use the UMD build of the SDK directly in the browser.
 
 The usage of the SDK depends on the type of widget you want to use. Refer to the specific instructions for available widget types.
 
-* [Details widget](#details-widgets)
-* [MessageBox](#messagebox)
+- [Details widget](#details-widgets)
+- [MessageBox](#messagebox)
 
 Nevertheless, all widgets created with the SDK share a common interface, which lets you listen to the events happening in the Agent App.
 
@@ -186,6 +186,12 @@ createMessageBoxWidget().then(widget => {
 });
 ```
 
+### Events
+
+#### `customer_profile`
+
+Emitted after the widget has been opened in the MessageBox. The handler will get a `ICustomerProfile` object, similar to the one emitted by a [Details widget](#details-widgets).
+
 ### Actions
 
 #### Set a message to be stored by MessageBox
@@ -197,19 +203,20 @@ Calling this method does not automatically send the message right away. The mess
 > Set a message to be stored by MessageBox
 
 ```javascript
-  const richMessage = {
-    template_id: "cards",
-    elements: [
-      {
-        title: "My cat photo",
-        image: "imgs/john-the-cat.jpg"
-      }
-    ]
-  };
+const richMessage = {
+  template_id: "cards",
+  elements: [
+    {
+      title: "My cat photo",
+      image: "imgs/john-the-cat.jpg"
+    }
+  ]
+};
 
-  widget.putMessage(richMessage);
+widget.putMessage(richMessage);
 ```
-#### Rich Message object format
+
+##### Rich Message object format
 
 - `custom_id`, `properties` and `elements` are optional
 - `elements` may contain 1-10 element objects
@@ -221,3 +228,13 @@ Calling this method does not automatically send the message right away. The mess
 - `elements.buttons.postback_id` describes the action sent via the `send_rich_message_postback` method
 - multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all these buttons at once.
 - `elements.buttons.user_ids` describes users who sent the postback with `"toggled": true`
+
+#### Retrieve the customer profile
+
+You can obtain the last recorded customer profile using the `getCustomerProfile` method. It works exactly like the method in the [Details widget](#details-widgets).
+
+> Obtaining the customer profile in the message box
+
+```javascript
+const profile = widget.getCustomerProfile();
+```
