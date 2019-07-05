@@ -27,7 +27,9 @@ curl -X GET \
   -H 'Authorization: Bearer <livechat-oauth-token>'
 ```
 
-It's possible to have more than one store connected to Product Cards. Widget calls backend for a list of stores as follows:
+It's possible to have more than one store connected to Product Cards. Widget calls your backend for a list of stores as follows:
+
+*Note:* Even if you have only one store, you need to create this endpoint and provide us the `storeId` - it's required for other requests.
 
 Expected response:
 
@@ -42,7 +44,7 @@ Expected response:
     "name": "MyStore2"
   }
 ]
-```
+``` 
 
 ## Categories
 
