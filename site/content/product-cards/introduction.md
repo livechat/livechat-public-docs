@@ -4,11 +4,11 @@ weight: 10
 
 # Introduction
 
-> ![Product Cards preview](https://cdn.livechat-static.com/api/file/v2/lc/att-old/8656216/5f2833fbbdcd1ee5c933867031d975a6/shopping-cards-for-shopify-beta.gif)
-
 Hello, developer!
 
 This tutorial will help you build your own backend service that you can use to connect your store with <a href="https://www.livechatinc.com/marketplace/apps/product-cards/" target="_blank">Product cards app</a>.
+
+![Product Cards preview](https://cdn.livechat-static.com/api/file/v2/lc/att-old/8656216/5f2833fbbdcd1ee5c933867031d975a6/shopping-cards-for-shopify-beta.gif)
 
 ## What are Product Cards? 
 
