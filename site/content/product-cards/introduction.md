@@ -18,4 +18,4 @@ Each product card consists of an image, description, and a button that is linked
 
 ## Important notes
 
-To use this tool you need to have basic knowledge about creating RESTful backend service in any programming language (i.e., *node.js*, *Golang* or *PHP*). 
+To use this tool you need to have basic knowledge about creating RESTful backend service in any programming language *(i.e., node.js, Golang or PHP)*. 
