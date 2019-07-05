@@ -86,14 +86,14 @@ curl -X GET \
 
 Parameters:
 
-- __storeId__ is an internal ID provided by _/stores_ endpoint
-- __page__ (optional) parameter that allows to paginate products
-- __term__ (optional) allows to filter products by name
-- __sort__ (optional) sort by field (supported values: id, name)
-- __direction__ (optional) sort's direction (supported values: asc, desc)
-- __categories__ (optional) allows too filter products by a list of categories (list of IDs separated by comma)
+- **storeId**: is an internal ID provided by `/stores` endpoint
+- **page** *(optional):* allows to paginate products (default: `1`)
+- **term** *(optional):* allows to filter products by name
+- **sort** *(optional):* allows to sort by field (supported values: `id`, `name`)
+- **direction** *(optional):* allows to determine sort's direction (supported values: `asc`, `desc`)
+- **categories** *(optional):* allows too filter products by a list of categories (list of IDs separated by comma)
 
-Response:
+Expected response:
 
 ```json
 {
