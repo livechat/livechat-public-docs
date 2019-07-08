@@ -4,23 +4,23 @@ weight: 10
 
 # Introduction
 
-Hello, developer!
+Hello developers!
 
-This tutorial will help you build LiveChat webhook integration and get it listed in [LiveChat Marketplace](http://www.livechatinc.com/marketplace/).
+This tutorial will help you build a LiveChat webhook integration and get it listed in [LiveChat Marketplace](http://www.livechatinc.com/marketplace/).
 
 ## Use cases
 
-Typical use case for webhook integration is connecting LiveChat to external CRM, marketing automation tools or data analytics platforms.
+A typical use case for webhook integration is connecting LiveChat to an external CRM, marketing automation tools, or data analytics platforms.
 
-Follow this tutorial if you're developing an LiveChat integration that reacts to internal LiveChat events, such as new incoming chat or queued visitor.
+Follow this tutorial if you're developing a LiveChat integration that reacts to internal LiveChat events, such as a new incoming chat or queued visitor.
 
-For instance if you're integrating a marketing automation tool, you could add a new contact every time a LiveChat visitor starts a chat.
+For instance, if you're integrating a marketing automation tool, you could add a new contact every time a LiveChat visitor starts a chat.
 
 ## Important notes
 
 To use this tool you need to have basic knowledge about [webhooks](https://en.wikipedia.org/wiki/Webhook) and LiveChat [authorization protocol](/docs/authorization/) (OAuth2.0). 
 
-This tutorial is will not be helpful for integration that pulls data on demand (not in reaction to some LiveChat event). If you just want to pull LiveChat reports on user request, you'd rather just use [REST API](/docs/rest-api/).
+This tutorial won't be helpful for building integrations that pull data on demand (not in reaction to some LiveChat event). If you just want to pull LiveChat reports on user request, you'd rather just use [REST API](/docs/rest-api/).
 
 # Getting started
 
@@ -58,20 +58,20 @@ You'll need a LiveChat Developers Account. [Sign up](https://developers.livechat
 
 Settings page is the place where you can:
 
-- ask user to connect their account with your OAuth2.0 provider,
+- ask users to connect their accounts with your OAuth2.0 provider,
 - display configuration options,
 - inform users about additional installation steps (if there are any).
 
  If you need to access LiveChat user data, we recommend using [Sign in with LiveChat SDK](/docs/sign-in-with-livechat/).
 
- For instance if you're building an integration that binds LiveChat data with external service, you should create a settings page that:
+ For instance if you're building an integration that binds LiveChat data with an external service, you should create a settings page that:
 
  - imports [Sign in with LiveChat SDK](/docs/sign-in-with-livechat/) and inits authorization with data from Authorization Block created in step I.3.2
  - imports your sign in form or other authorization flow (e.g. "Connect with..." button)
  - binds both informations and stores new user in your database
  - displays a confirmation screen when the integration is up and running
 
- The settings page will be available right after LiveChat user installs your app in the  Marketplace. 
+ The settings page will be available right after LiveChat user installs your app in the Marketplace. 
 
 ## III. Create the webhook listener
 
