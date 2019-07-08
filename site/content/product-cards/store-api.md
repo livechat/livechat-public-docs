@@ -16,10 +16,10 @@ Access-Control-Allow-Methods: GET, POST, OPTIONS
 To avoid CORS-related conflicts, you should set proper `Access-Control-Allow-Origin` and `Access-Control-Allow-Methods` headers.
 
 ```
-Product Cards Client ID: 9e63f93f6782051e6a43549c132a1f7a
+Product Cards client ID: 9e63f93f6782051e6a43549c132a1f7a
 ```
 
-The app uses **LiveChat OAuth token** to authorize requests sent to your backend service. To confirm that the user is authorized, you should [validate given token](../authorization/#validating-the-access-token) and check if it matches Product Cards client ID and/or your license number.
+The app uses **LiveChat OAuth token** to authorize requests sent to your backend service. To confirm that the user is authorized, you should [validate given token](../authorization/#validating-the-access-token) and check if it matches Product Cards client ID **and** your license number.
 
 ## Stores
 
@@ -31,7 +31,7 @@ curl -X GET \
 
 The very first request (that will be sent to your backend from our app) fetches basic info about stores available for Product Cards app. It means that it's possible to have more than one store connected to Product Cards. Widget calls your backend for a list of stores as follows:
 
-*__Note__: Even if you want to connect only one store, you need to create this endpoint and provide us the store ID - it's required for other requests.*
+*__Note__: Even if you want to connect only one store, you need to create this endpoint and provide us the store ID - it's required for next requests.*
 
 Example response:
 

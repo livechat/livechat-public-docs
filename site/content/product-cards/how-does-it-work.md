@@ -16,7 +16,7 @@ To make Product Cards work with your store, you need to prepare own backend serv
 
 ## Frontend
 
-The frontend flow (presented in the diagram above) is based on communication between the app, your backend service and [LiveChat Accounts](../authorization/):
+The frontend flow (presented in the diagram above) is based on communication between the app, your backend service, and [LiveChat Accounts](../authorization/):
 
 1. The app uses [Sign in with LiveChat](../sign-in-with-livechat/) to acquire the access token. This token will be used to [authorize requests](../authorization/#validating-the-access-token) in your backend service for requests below (via `Authorization` header).
 2. Then app fetches the `/stores` endpoint to get a list of available stores.
