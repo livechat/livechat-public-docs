@@ -4,6 +4,8 @@ weight: 30
 
 # Store API
 
+This section describes all endpoints that you should implement in your backend service. 
+
 ## Security
 
 ```
@@ -14,22 +16,22 @@ Access-Control-Allow-Methods: GET, POST, OPTIONS
 To avoid CORS-related conflicts, you should set proper `Access-Control-Allow-Origin` and `Access-Control-Allow-Methods` headers.
 
 ```
-Product Cards Client ID: 9e63f93f6782051e6a43549c132a1f7a
+Product Cards client ID: 9e63f93f6782051e6a43549c132a1f7a
 ```
 
-The app uses **LiveChat OAuth token** to authorize requests sent to your backend service. To confirm that the user is authorized, you should [validate given token](../authorization/#validating-the-access-token) and check if it matches Product Cards client ID and/or your license number.
+The app uses **LiveChat OAuth token** to authorize requests sent to your backend service. To confirm that the user is authorized, you should [validate given token](../authorization/#validating-the-access-token) and check if it matches Product Cards client ID **and** your license number.
 
 ## Stores
 
 ```bash
 curl -X GET \
   'https://store.com/api/stores' \
-  -H 'Authorization: Bearer <livechat-oauth-token>'
+  -H 'Authorization: Bearer <livechat-access-token>'
 ```
 
 The very first request (that will be sent to your backend from our app) fetches basic info about stores available for Product Cards app. It means that it's possible to have more than one store connected to Product Cards. Widget calls your backend for a list of stores as follows:
 
-*__Note__: Even if you want to connect only one store, you need to create this endpoint and provide us the `storeId` - it's required for other requests.*
+*__Note__: Even if you want to connect only one store, you need to create this endpoint and provide us the store ID - it's required for next requests.*
 
 Example response:
 
@@ -53,7 +55,7 @@ Next Product Cards will fetch information about categories available in the stor
 ```bash
 curl -X GET \
   'https://store.com/api/categories?storeId=10001&page=1' \
-  -H 'Authorization: Bearer <livechat-oauth-token>'
+  -H 'Authorization: Bearer <livechat-access-token>'
 ```
 
 Parameters:
@@ -85,7 +87,7 @@ Last but not least, the app will fetch a list of products which show up in the f
 ```bash
 curl -X GET \
   'https://store.com/api/products?storeId=10001&page=1&term=Harry+Potter&sort=name&direction=asc&categories=5001%2C5010' \
-  -H 'Authorization: Bearer <livechat-oauth-token>'
+  -H 'Authorization: Bearer <livechat-access-token>'
 ```
 
 Parameters:
@@ -95,7 +97,7 @@ Parameters:
 - **term** *(optional):* allows to filter products by name
 - **sort** *(optional):* allows to sort by field (supported values: `id`, `name`)
 - **direction** *(optional):* allows to determine sort's direction (supported values: `asc`, `desc`)
-- **categories** *(optional):* allows too filter products by a list of categories (list of IDs separated by comma)
+- **categories** *(optional):* allows to filter products by a list of categories (list of IDs separated by comma)
 
 Example response:
 
