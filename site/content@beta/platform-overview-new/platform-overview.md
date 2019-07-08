@@ -31,21 +31,11 @@ Speeding up the work can be easily achieved with **Chat Actions**, which are sho
 Web appplications can be displayed **fullscreen**, right in the Agent App. If you're planning on integrating your CRM with LiveChat, that might be the way to go.
 
 There's also another area where developers can integrate their apps- it's the Message Box. This interface can be used for extensions related strongly to messages, which are being sent.
-It could be used to send gifs (see [Integration with Giphy](https://developers.livechatinc.com/docs/building-apps-for-livechat/#messagebox)) or files from Dropbox.
+It could be used to send gifs or files from [Dropbox](https://www.livechatinc.com/marketplace/apps/dropbox/).
 
-<!-- **See the integration of the MessageBox & Dropbox:**  -->
-
-<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
-    <caption>The integration of the MessageBox & Dropbox</caption>
-    <tbody>
-        <tr>
-            <td style="width:580px;">
-                <a href="https://youtu.be/P07QVFOrT04" target="_blank" style="color:#2200FF;text-decoration:none;">
-                <img src="https://cdn.livechatinc.com/mailing/2019-06/managers/video-managers.jpg" style="border:0;display:block;outext-decoration:none;height:auto;width:100%;font-size:13px;" width="580" alt="video-managers.jpg"></a>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/P07QVFOrT04" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 ## Chat Widget
 
@@ -80,7 +70,7 @@ The **Configuration API** is dedicated to handling licence and agent's propertie
 
 # Interacting with data
 
-One of the most extensively used sections in the Agent App is **Reports**. We provide several types of reports, which help managers with the analysis. You can measure chat satisfaction and duration, keep track of agents' activity, or compare time periods to observe trends. Again, this is just a tiny bit of what's available in terms of reporting. Yet, we're aware that what we offer does not cover every single business case. This is where [**Reports API**](https://developers.livechatinc.com/docs/rest-api/#reports) comes into play. It serves as a sets of tools to create apps which interact on the server side. With this API, it's possible to design exactly what you need. 
+One of the most extensively used sections in the Agent App is [**Reports**](https://www.livechatinc.com/help/reporting-options-available-in-livechat/). We provide several types of reports, which help managers with the analysis. You can measure chat satisfaction and duration, keep track of agents' activity, or compare time periods to observe trends. Again, this is just a tiny bit of what's available in terms of reporting. Yet, we're aware that what we offer does not cover every single business case. This is where [**Reports API**](https://developers.livechatinc.com/docs/rest-api/#reports) comes into play. It serves as a sets of tools to create apps which interact on the server side. With this API, it's possible to design exactly what you need. 
 
 If you'd like to know more, see [Interacting with data](https://developers.livechatinc.com/docs/building-apps-for-livechat/#interacting-with-data).
 
