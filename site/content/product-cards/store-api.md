@@ -31,7 +31,7 @@ The very first request (that will be sent to your backend from our app) fetches 
 
 *__Note__: Even if you want to connect only one store, you need to create this endpoint and provide us the `storeId` - it's required for other requests.*
 
-Expected response:
+Example response:
 
 ```json
 [
@@ -61,7 +61,7 @@ Parameters:
 - **storeId**: is an internal ID provided by `/stores` endpoint
 - **page** *(optional):* allows to paginate categories (default: `1`)
 
-Expected response:
+Example response:
 
 ```json
 {
@@ -97,7 +97,7 @@ Parameters:
 - **direction** *(optional):* allows to determine sort's direction (supported values: `asc`, `desc`)
 - **categories** *(optional):* allows too filter products by a list of categories (list of IDs separated by comma)
 
-Expected response:
+Example response:
 
 ```json
 {
