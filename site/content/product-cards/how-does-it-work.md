@@ -25,3 +25,8 @@ Now user can use stores filter (if more than one store was returned in `/stores`
 
 ## Backend
 
+The Product Cards app can work with any backend service that supports communication based on HTTP requests.
+
+Your backend service should be accessible for your users from the browser. You should check the [Security](#security) section below to learn how to secure your backend.
+
+The frontend app expects a response to be in the strict format, which is described in the [Store API](#store-api) section below.
