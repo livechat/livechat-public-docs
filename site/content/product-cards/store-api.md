@@ -4,7 +4,7 @@ weight: 30
 
 # Store API
 
-This section describes all endpoints that you should implement in your backend service. 
+This section describes all endpoints that you should implement in your backend service. You can use our <a href="https://productcards.livechatinc.com/#/validator/" target="_blank">Validator Tool</a> to test your implementation.
 
 ## Security
 

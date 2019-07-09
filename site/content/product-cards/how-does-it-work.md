@@ -6,7 +6,7 @@ weight: 20
 
 Product Cards is React-based frontend app, and it is prepared to connect with any backend service that responds in the expected schema.
 
-To make Product Cards work with your store, you need to prepare own backend service, which implements [Store API](#store-api).
+To make Product Cards work with your store, you need to prepare own backend service, which implements [Store API](#store-api). You can use our <a href="https://productcards.livechatinc.com/#/validator/" target="_blank">Validator Tool</a> to test your implementation.
 
 ## App flow
 
