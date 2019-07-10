@@ -54,14 +54,13 @@ Next Product Cards will fetch information about categories available in the stor
 
 ```bash
 curl -X GET \
-  'https://store.com/api/categories?storeId=10001&page=1' \
+  'https://store.com/api/categories?storeId=10001' \
   -H 'Authorization: Bearer <livechat-access-token>'
 ```
 
 Parameters:
 
 - **storeId**: is an internal ID provided by `/stores` endpoint
-- **page** *(optional):* allows to paginate categories (default: `1`)
 
 Example response:
 
@@ -82,11 +81,15 @@ Example response:
 
 ## Products
 
-Last but not least, the app will fetch a list of products which show up in the form of tiles. The response can be paginated, based on <a href ="https://github.com/NationalBankBelgium/REST-API-Design-Guide/wiki/Pagination-Example" target="_blank">*NationalBankBelgium* REST API Design Guide</a>.
+Last but not least, the app will fetch a list of products which show up in the form of tiles. The response should be paginated and support the following params:
+
+- **currentPage**: the page that was returned with current request
+- **pageCount**: total amount of pages
+- **totalCount**: total amount of products (from all pages)
 
 ```bash
 curl -X GET \
-  'https://store.com/api/products?storeId=10001&page=1&term=Harry+Potter&sort=name&direction=asc&categories=5001%2C5010' \
+  'https://store.com/api/products?storeId=10001&page=1&categories=5001%2C5010&term=Harry+Potter&sort=name&direction=asc' \
   -H 'Authorization: Bearer <livechat-access-token>'
 ```
 
@@ -94,10 +97,10 @@ Parameters:
 
 - **storeId**: is an internal ID provided by `/stores` endpoint
 - **page** *(optional):* allows to paginate products (default: `1`)
-- **term** *(optional):* allows to filter products by name
+- **categories** *(optional):* allows to filter products by a list of categories (list of IDs separated by comma and urlencoded)
+- **term** *(optional):* allows to filter products by name (urlencoded)
 - **sort** *(optional):* allows to sort by field (supported values: `id`, `name`)
 - **direction** *(optional):* allows to determine sort's direction (supported values: `asc`, `desc`)
-- **categories** *(optional):* allows to filter products by a list of categories (list of IDs separated by comma)
 
 Example response:
 
@@ -114,11 +117,8 @@ Example response:
   ],
   "pagination": {
     "currentPage": 2,
-    "limit": 50,
-    "offset": 50,
-    "previousOffset": 0,
-    "pageCount": 7,
-    "totalCount": 310
+    "pageCount": 2,
+    "totalCount": 51
   }
 }
 ```
