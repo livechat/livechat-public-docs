@@ -48,7 +48,7 @@ The usage of the SDK depends on the type of widget you want to use. Refer to the
 * [Details widget](#details-widgets)
 * [MessageBox](#messagebox)
 
-Neverthless, all widgets created with the SDK share a common interface, which lets you listen to the events happening in the Agent App.
+Nevertheless, all widgets created with the SDK share a common interface, which lets you listen to the events happening in the Agent App.
 
 > Supposing that `widget` is a widget instance:
 

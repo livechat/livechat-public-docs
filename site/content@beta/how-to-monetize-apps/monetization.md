@@ -24,7 +24,7 @@ Here's the core info about monetization at **LiveChat**:
 
 * You can set up monetization in [Developer Console](/console/) with just a few easy steps.
 * We take care of processing the payments. Then, we transfer your earnings to you via PayPal.
-* The provision is 20%, so if you set the app price to be $10, you will earn $8 net. 
+* The commission is 20%, so if you set the app price to be $10, you will earn $8 net. 
 * We offer two billing cycles: **once a month** and **one-time payment**. We recommend the recurring payment option. 
 * You can leverage LiveChat [Billing API](/docs/billing-api/) to implement micropayments in your app.
 
