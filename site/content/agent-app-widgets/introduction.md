@@ -24,4 +24,5 @@ Bear in mind that widgets are front-end elements of the LiveChat Agent App. If y
 
 ### Feature requests
 
-If you have any feature requests related to the Agent App Widgets, let us know! We're open for your insights and suggestions.
+If you have any feature requests related to the Agent App Widgets, let us know! We're open for your insights and suggestions. Feel free to drop us an email at [developers@livechatinc.com](mailto:developers@livechatinc.com).
+

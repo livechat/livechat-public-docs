@@ -4,7 +4,9 @@ weight: 20
 
 # Getting started
 
-To add a widget, follow the steps below. If you don't have your own widget, you can use one of our [Sample Apps](#sample-apps).
+You can add your own app or one of our [Sample Apps](#sample-apps) in a few easy steps. 
+
+This instruction applies to [widgets in the Details section](../building-apps-for-livechat/#details-section), [Fullscreen apps](../building-apps-for-livechat/#main-menu-fullscreen-apps), [MessageBox integrations](../building-apps-for-livechat/#messagebox), and [App Settings](../building-apps-for-livechat/#app-settings). Make sure to choose **the placement corresponding to your app type** in Step 4. 
 
 1. Go to <a href="https://developers.livechatinc.com/console/apps">LiveChat Developers Console</a>.
 2. Click **New app +** and follow the app wizard.

@@ -24,7 +24,7 @@ Here's the core info about monetization at **LiveChat**:
 
 * You can set up monetization in [Developer Console](/console/) with just a few easy steps.
 * We take care of processing the payments. Then, we transfer your earnings to you via PayPal.
-* The provision is 20%, so if you set the app price to be 10$, you will earn 8$ net. 
+* The commission is 20%, so if you set the app price to be $10, you will earn $8 net. 
 * We offer two billing cycles: **once a month** and **one-time payment**. We recommend the recurring payment option. 
 * You can leverage LiveChat [Billing API](/docs/billing-api/) to implement micropayments in your app.
 
@@ -72,11 +72,11 @@ If you feel that your application is ready, submit it for review. It will be an 
 ## **Step 6 Publishing**
 
 You'll know that your app is ready for publishing when you see a note saying that **the app is accepted**.
-In case of rejection, we'll conact you via email to give you feedback and discuss what needs to be changed.
+In case of rejection, we'll contact you via email to give you feedback and discuss what needs to be changed.
 
 ![LiveChat Publish your app at Marketplace](livechat-monetization-step-6.png)
 
-Publish the app and that's it! The very last thing for you to do is give us a bit of time. Your app will be visible on Marketplace in up to 30 minutes.
+Publish the app and that's it! Your app is now available on our Marketplace.
 
 # Look up your revenue
 You can check your current account balance in **Profile >> My Revenue**. 

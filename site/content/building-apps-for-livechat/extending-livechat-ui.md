@@ -26,11 +26,12 @@ Check out our [blog post](https://developers.livechatinc.com/blog/chat-actions/)
 
 ### App locations
 
-Currently, your app can extend three areas of the the LiveChat Agent interface:
+Your app can extend several areas of the LiveChat Agent App interface:
 
 - the Details section, by adding a new tab with your web content or a new widget in the default Customer Details tab
 - the Main menu, by adding a new, fullscreen section with your web content
 - Chat Actions, by adding a new action button in the Chat Action menu
+- the Message Box, by adding an integration displayed right in that area
 
 If you feel we lack some options, please drop us a line at [developers@livechatinc.com](mailto:developers@livechatinc.com)!
 
@@ -40,7 +41,7 @@ Apps in the Details tabs are the most common way to extend LiveChat UI. They are
 
 ![LiveChat Tag Master](livechat-tag-master-app.jpg)
 
-In the example above, the **Tag Master** app is installed. It's one of the open-source [sample apps](https://developers.livechatinc.com/docs/agent-app-widgets/#sample-widgets) you can [clone](https://github.com/livechat/sample-apps/tree/master/tag-master) and play with.
+In the example above, the **Tag Master** app is installed. It's one of the open-source [sample apps](https://github.com/livechat/sample-apps) you can [clone](https://github.com/livechat/sample-apps/tree/master/Tag%20Master) and play with.
 
 Apps located in the Details section are **contextual**. It means they inherit the properties of the currently opened chat. You can use this information to present contextual data for the particular chats.
 
@@ -70,11 +71,11 @@ See how to create a fullscreen app in the [documentation](https://developers.liv
 
 #### MessageBox
 
-With this type of widget placement you can integrate your apps in the Message Box. You could use it to send gifs or present items from an online store. This type of integration makes the whole chatting experience much more engaging.
+With this type of widget placement you can integrate your apps in the Message Box. You could use it to send gifs or present items from an online store. It would make the whole chatting experience much more engaging. You could also use it to send files from [Dropbox](https://www.livechatinc.com/marketplace/apps/dropbox/).
 
-![LiveChat MessageBox](messagebox.png)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/P07QVFOrT04" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-It works in a simple and intuitive way. You open the app, select the element, and confirm your choice by clicking **Send**. This mechanism protects you from sending an element by accident. To learn more about the implementation, see [MessageBox](https://developers.livechatinc.com/docs/agent-app-widgets/#messagebox).
+The integration is simple and intuitive. You open the app, select the element, and confirm your choice by clicking **Send**. This mechanism protects you from sending an element by accident. To learn more about the implementation, see [MessageBox](https://developers.livechatinc.com/docs/agent-app-widgets/#messagebox).
 
 #### App settings
 
@@ -82,7 +83,7 @@ Some applications require settings configuration, especially when they use exter
 
 We provide a special place called Settings page, where you can embed a page with configuration. It's recommended to use it together with [Sign in with LiveChat](/docs/sign-in-with-livechat/).
 
-See how to setup a Settings page for your app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
+See how to set up a Settings page for your app in the [documentation](https://developers.livechatinc.com/docs/agent-app-widgets/).
 
 ## Extending the Chat Widget
 
