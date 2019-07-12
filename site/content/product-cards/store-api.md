@@ -16,7 +16,7 @@ Access-Control-Allow-Methods: GET, POST, OPTIONS
 To avoid CORS-related conflicts, you should set the proper `Access-Control-Allow-Origin` and `Access-Control-Allow-Methods` headers.
 
 ```
-Product Cards client ID: 9e63f93f6782051e6a43549c132a1f7a
+Product Cards client ID: a555da1d4ebae88d885b81dec0d568bf
 ```
 
 The app uses the **LiveChat OAuth token** to authorize requests sent to your backend service. To confirm that the user is authorized, [validate a given token](../authorization/#validating-the-access-token) and check if it matches the Product Cards client ID **and** your license number.
