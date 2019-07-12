@@ -13,7 +13,7 @@ Access-Control-Allow-Origin: https://productcards.livechatinc.com
 Access-Control-Allow-Methods: GET, POST, OPTIONS
 ```
 
-To avoid CORS-related conflicts, you should set proper `Access-Control-Allow-Origin` and `Access-Control-Allow-Methods` headers.
+To avoid CORS-related conflicts, you should set the proper `Access-Control-Allow-Origin` and `Access-Control-Allow-Methods` headers.
 
 ```
 Product Cards client ID: 9e63f93f6782051e6a43549c132a1f7a
