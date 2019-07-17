@@ -15,7 +15,6 @@ if (argv.baseURL && argv.output) {
         .exec("git rev-parse --abbrev-ref HEAD", { silent: true })
         .stdout.trim();
 
-      // Ignore master branches
       return name === "master" ? "" : name;
     } catch (e) {
       return "";
