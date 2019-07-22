@@ -8,7 +8,9 @@ Hello developer!
 
 This tutorial helps you build your own backend service. You can use it to connect your store with the <a href="https://www.livechatinc.com/marketplace/apps/product-cards/" target="_blank">Product cards app</a>.
 
-![Product Cards preview](https://cdn.livechat-static.com/api/file/v2/lc/att-old/8656216/5f2833fbbdcd1ee5c933867031d975a6/shopping-cards-for-shopify-beta.gif)
+<div style="text-align:center">
+  <img src="../assets/images/product-cards/product-cards-preview.gif" alt="Product Cards preview">
+</div>
 
 ## What are Product Cards? 
 
