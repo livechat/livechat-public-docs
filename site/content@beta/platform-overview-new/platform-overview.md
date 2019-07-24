@@ -47,7 +47,7 @@ To make chatting more engaging, you could make use of [Chat Widget Moments](http
 
 If you want to know more about extending the LiveChat UI, check out [this guide](https://developers.livechatinc.com/docs/building-apps-for-livechat/#extending-user-interfaces).
 
-# Backend APIs
+# Platform APIs
 
 Many applications built upon the LiveChat Platform need to use our API. For that reason, we make it accessible and let developers play with it. 
 
@@ -62,15 +62,15 @@ There's also the [Configuration API](https://developers.livechatinc.com/beta-doc
 
 Together, the **Agent Chat API** and the **Customer Chat API** create the **Chat API**. It is a full set of methods to use either as an agent or as a customer. We divide it though, to make it more use-case-specific. The distinction is intuitive; when you want to join a chat as an agent, use the Agent Chat API. To interact as a customer, use the Customer Chat API. 
 
-These two sets of APIs are powerful. The Agent Chat API lets you build your custom Agent App, as well as browser chat archives, or ban customers. With the use of the Customer Chat API, you can build a custom Chat Widget. Both APIs allow for interactions, such as joining a chat, posting messages, etc.
+These two sets of APIs are very versatile. The Agent Chat API lets you build your custom Agent App, as well as browser chat archives, or ban customers. With the use of the Customer Chat API, you can build a custom Chat Widget. Both APIs allow for interactions, such as joining a chat, posting messages, etc.
 
 ## Configuration API
 
-The **Configuration API** is dedicated to handling licence and agent's properties, webhooks management, and bot agents configuration.
+The **Configuration API** is a service for storing license configurations. It allows for properties setup, webhooks management, and bot agents configuration.
 
 # Interacting with data
 
-One of the most extensively used sections in the Agent App is [**Reports**](https://www.livechatinc.com/help/reporting-options-available-in-livechat/). We provide several types of reports, which help managers with the analysis. You can measure chat satisfaction and duration, keep track of agents' activity, or compare time periods to observe trends. Again, this is just a tiny bit of what's available in terms of reporting. Yet, we're aware that what we offer does not cover every single business case. This is where [**Reports API**](https://developers.livechatinc.com/docs/rest-api/#reports) comes into play. It serves as a sets of tools to create apps which interact on the server side. With this API, it's possible to design exactly what you need. 
+One of the most extensively used section in the Agent App is [**Reports**](https://www.livechatinc.com/help/reporting-options-available-in-livechat/). We provide several types of reports, which help managers with the analysis. You can measure chat satisfaction and duration, keep track of agents' activity, or compare time periods to observe trends. Again, this is just a tiny bit of what's available in terms of reporting. Yet, we're aware that what we offer does not cover every single business case. This is where [**Reports API**](https://developers.livechatinc.com/docs/rest-api/#reports) comes into play. It serves as a sets of tools to create apps which interact on the server side. With this API, it's possible to design exactly what you need. 
 
 If you'd like to know more, see [Interacting with data](https://developers.livechatinc.com/docs/building-apps-for-livechat/#interacting-with-data).
 
