@@ -17,7 +17,7 @@ You can also have a quick glance at the list below. It summarizes, from a more t
 | ✅|text messaging APIs|
 | ✅|rich messaging APIs|
 | ✅|chat routing APIs|
-| ✅|stateless trasport via XHR requests|
+| ✅|stateless transport via XHR requests|
 | ✅|real-time messaging (RTM)|
 | ✅|continuous, threaded chat|
 | ✅|chatbots|
