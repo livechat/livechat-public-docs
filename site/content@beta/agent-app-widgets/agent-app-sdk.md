@@ -231,7 +231,7 @@ widget.putMessage(richMessage);
 
 #### Retrieve the customer profile
 
-You can obtain the last recorded customer profile using the `getCustomerProfile` method. It works exactly like the method in the [Details widget](#details-widgets).
+You can obtain the customer profile recorded most recently using the `getCustomerProfile` method. It works exactly like the method in the [Details widget](#details-widgets).
 
 > Obtaining the customer profile in the message box
 
