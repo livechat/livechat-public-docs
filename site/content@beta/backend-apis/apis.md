@@ -48,7 +48,7 @@ The [**Configuration API**](../configuration-api) allows for:
 
 In the near future, it will allow for groups configuration. For now, refer to [**Platform REST API**](https://developers.livechatinc.com/docs/rest-api/) to manage groups properties.
 
-<!-- Koniecznie zreviewowac ten przyklad. Czy on ma duzy sens? Ja nie wiem o co w nim chodzi wiec nie jestem w stanie powiedziec czy cos wnosi. Chyba jest tez za dlugi i opisy poszczegolnych krokow sa dlugie i niezbyt da sie edytowac czcionki -->
+<!-- Czy ten przyklad wnosi jakas wartosc i w ogole jest dzialajacy? Pozbylabym sie go zupelnie i przyjela, ze w tym dokumencie nie ma kodu. Wtedy mozna sie pozbyc tego szarego bloku na kod po prawej i lepiej wyswietlac grafiki i animacje ktore dojda. -->
 
 ## Properties
 
@@ -64,14 +64,18 @@ In the near future, it will allow for groups configuration. For now, refer to [*
     }
 }
 ```
+<!-- Szkoda zostawiac caly szary blok na kod tylko po to, zeby wysietlic maly fragmencik prezentujacy properties. Moze zamiast tego przykladu dac
+link do repo? Albo wstawic to jako obrazek? Chyba ze jest jakis inny sposob formatowania, zeby to nie uciekalo na prawo. -->
 Properties are key-value storages. They can be set within a chat, a thread, or an event. 
+
+
 
 In our example, `routing` is the namespace, while `pinned` and `count` are properties names.
 
 
 #### Configuration
 
-> **Example: using properties to create a basic chat rating.** 
+<!-- > **Example: using properties to create a basic chat rating.** 
 
 > We need two properties: `rating_score` and `rating_comment`. They should be writable by a Customer, and readable by an Agent in a chat.
 
@@ -118,8 +122,8 @@ curl -v https://api.livechatinc.com/configuration/properties/create_properties \
         }
     }
 }'
-```
-<!-- Description -->
+``` -->
+
 You can create properties within a license and configure them using the [Configuration API](../configuration-api/). They are grouped in namespaces, which helps distinguishing which property belongs to a given integration. Your namespace is always named after your `application id`.
 
 You can configure the property [type](#property-types), [location](#property-locations), and [domain](#property-domain).
@@ -155,7 +159,7 @@ Property domain can be configured in two ways:
 - by defining a range. All values within the range are allowed in this property. It works only for numeric types (for example a range from `1` to `3`).
 <!-- End of description -->
 
-> The two properties are within the namespace named after your `application id`. If you don't know your `application id`, you can check it with the request below.
+<!-- > The two properties are within the namespace named after your `application id`. If you don't know your `application id`, you can check it with the request below.
 > In this case, `client_id` is your `application id`. You can find the `client_id` in [**Developers Console**](https://developers.livechatinc.com/console/) **>> the Authorization building block** of your app.
 
 ```json
@@ -227,7 +231,7 @@ curl -v https://api.livechatinc.com/customer/v0.5/action/update_chat_properties 
        }
 }
 }
-```
+``` -->
 
 ## Webhooks
 
