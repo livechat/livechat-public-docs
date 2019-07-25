@@ -10,4 +10,4 @@ This document is a great starting point if you plan on using our APIs. You'll le
 
 ## Important note
 
-This document describes **the latest API version: 3.0**. If you're looking for the previous version, refer to [**Platform REST API**](https://developers.livechatinc.com/docs/rest-api/#introduction).
+This document describes **the latest API version: 3.1**. If you're looking for the previous version, refer to [**Platform REST API**](https://developers.livechatinc.com/docs/rest-api/#introduction).
