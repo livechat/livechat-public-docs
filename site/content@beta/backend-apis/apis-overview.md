@@ -71,7 +71,3 @@ The [incoming event](../agent-chat-api/#incoming-event) push will inform you abo
 <!-- Gdzie dac: incoming_rich_message_postback oraz incoming_multicast? -->
 
 
-## Webhooks
-
-LiveChat provides a number of webhooks. You can manage them via the [Configuration API](../beta-docs/configuration-api/#webhooks).
-We can distinguish **global webhooks** and **bot-specific webhooks**. Once **global webhooks** are set up, you will always receive them. **Bot-specific** webhooks are strongly coupled with the bot's status (`accepting chats`, `not accepting chats`, `offline`). If the bot is offline, webhooks won't be received. 

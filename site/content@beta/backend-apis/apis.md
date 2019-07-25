@@ -42,9 +42,9 @@ Chats are continuous so Customers can always preview their chats' history. Yet, 
 The [**Configuration API**](../configuration-api) allows for:
 
 - storing license configurations, 
-- creating chat, thread, and event properties
-- managing webhooks, for example registering and unregistering
-- managing Bot Agents, for example creating and removing
+- creating chat, thread, and event [properties](#properties)
+- managing [webhooks](#webhooks), for example registering and unregistering
+- managing [Bot Agents](#bot-agents), for example creating and removing
 
 In the near future, it will allow for groups configuration. For now, refer to [**Platform REST API**](https://developers.livechatinc.com/docs/rest-api/) to manage groups properties.
 
@@ -69,7 +69,7 @@ Properties are key-value storages. They can be set within a chat, a thread, or a
 In our example, `routing` is the namespace, while `pinned` and `count` are properties names.
 
 
-### Configuration
+#### Configuration
 
 > **Example: using properties to create a basic chat rating.** 
 
@@ -120,7 +120,7 @@ curl -v https://api.livechatinc.com/configuration/properties/create_properties \
 }'
 ```
 <!-- Description -->
-You can create properties within a licence and configure them using the [Configuration API](../configuration-api/). They are grouped in namespaces, which helps distinguishing which property belongs to a given integration. Your namespace is always named after your `application id`.
+You can create properties within a license and configure them using the [Configuration API](../configuration-api/). They are grouped in namespaces, which helps distinguishing which property belongs to a given integration. Your namespace is always named after your `application id`.
 
 You can configure the property [type](#property-types), [location](#property-locations), and [domain](#property-domain).
 
@@ -228,3 +228,39 @@ curl -v https://api.livechatinc.com/customer/v0.5/action/update_chat_properties 
 }
 }
 ```
+
+## Webhooks
+
+LiveChat provides a number of webhooks. You can manage them via the [Configuration API](../beta-docs/configuration-api/#webhooks).
+We can distinguish **global webhooks** and **bot-specific webhooks**. Once **global webhooks** are set up, you will always receive them. **Bot-specific** webhooks are strongly coupled with the bot's status (`accepting chats`, `not accepting chats`, `offline`). If the bot is offline, webhooks won't be received. 
+
+## Bot Agents
+
+Bot Agents are similar to their human counterparts. They can join chats and post messages, but they also have a special feature: you can attach [webhooks](../configuration-api/#webhooks) to them.
+
+<img src="images/bot-agent.jpg" alt="LiveChat Bot Agent" class="has-border"/>
+
+<!-- Zmienic ta grafike!!! -->
+
+Bot Agents are created and managed with the use of the  [Configuration API](../configuration-api/#bot-agent). They communicate with the [Agent Chat API](../agent-chat-api/) by the [**Web API**](../agent-chat-api/#web-api) or [**websocket connection**](#rtm-api-vs-web-api). They listen to incoming webhooks (or pushes) and react to them.
+
+#### Reacting to keywords
+
+Bot Agents can react to specific keywords appearing in the chat. Let's say you set a _pizza_ keyword. Your Bot Agent will join the chat whenever the keyword is used and send the _"Woohoo!"_ message to all agents in the chat. Then, it'll leave the chat.
+
+#### Bots vs. regular Agents
+
+Here are the major differences between Bot Agents and regular Agents:
+
+* You can't log in to a Bot Agent account.
+* You can't set password for a Bot Agent account.
+* Bot Agents don't have email addresses. Their <code>agent_id</code> is a random hash.
+* You can assign webhooks to Bot Agents as a communication channel for [pushes](../agent-chat-api/#pushes).
+
+<!-- ### Technical notes
+
+* Bot Agents use the [Agent Chat API](../agent-chat-api/) to post messages to chats as Agents, so you can use them to write your own integrations. 
+
+* When logged in, a Bot Agent is connected to the Agent's SSO access token, which creates and updates the Bot. A Bot Agent is logged out when the access token is revoked.
+
+* Each Bot Agent is **a resource** owned by an application (identified by `client_id`) in the [Developers Console](https://developers.livechatinc.com/console/). **My Bot Agents** are the Bots owned by the application with a given `client_id`. -->

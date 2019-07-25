@@ -124,33 +124,4 @@ tak jak w przypadku pushy czy eventów. Wykomentowuje przykłądy, bo to chyba n
 | No free agent slots available | automatic |
 | A chat is unassigned | manual | -->
 
-## Bot Agents
 
-Bot Agents are similar to their human counterparts. They can join chats and post messages, but they also have a special feature: you can attach [webhooks](../configuration-api/#webhooks) to them.
-
-<img src="images/bot-agent.jpg" alt="LiveChat Bot Agent" class="has-border"/>
-
-<!-- Zmienic ta grafike!!! -->
-
-Bot Agents are created and managed with the use of the  [Configuration API](../configuration-api/#bot-agent). They communicate with the [Agent Chat API](../agent-chat-api/) by the [**Web API**](../agent-chat-api/#web-api) or [**websocket connection**](#rtm-api-vs-web-api). They listen to incoming webhooks (or pushes) and react to them.
-
-#### Reacting to keywords
-
-Bot Agents can react to specific keywords appearing in the chat. Let's say you set a _pizza_ keyword. Your Bot Agent will join the chat whenever the keyword is used and send the _"Woohoo!"_ message to all agents in the chat. Then, it'll leave the chat.
-
-#### Bots vs. regular Agents
-
-Here are the major differences between Bot Agents and regular Agents:
-
-* You can't log in to a Bot Agent account.
-* You can't set password for a Bot Agent account.
-* Bot Agents don't have email addresses. Their <code>agent_id</code> is a random hash.
-* You can assign webhooks to Bot Agents as a communication channel for [pushes](../agent-chat-api/#pushes).
-
-<!-- ### Technical notes
-
-* Bot Agents use the [Agent Chat API](../agent-chat-api/) to post messages to chats as Agents, so you can use them to write your own integrations. 
-
-* When logged in, a Bot Agent is connected to the Agent's SSO access token, which creates and updates the Bot. A Bot Agent is logged out when the access token is revoked.
-
-* Each Bot Agent is **a resource** owned by an application (identified by `client_id`) in the [Developers Console](https://developers.livechatinc.com/console/). **My Bot Agents** are the Bots owned by the application with a given `client_id`. -->
