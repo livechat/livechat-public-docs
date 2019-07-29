@@ -6,12 +6,12 @@ weight: 30
 
 There are two primary Chat APIs:
 
-- [Agent Chat API](https://developers.livechatinc.com/beta-docs/agent-chat-api/), which serves to join a chat as an agent.
-- [Customer Chat API](https://developers.livechatinc.com/beta-docs/customer-chat-api/), which serves to join a chat as a customer.
+- [Agent Chat API](https://developers.livechatinc.com/beta-docs/agent-chat-api/), which serves to join a chat as Agent.
+- [Customer Chat API](https://developers.livechatinc.com/beta-docs/customer-chat-api/), which serves to join a chat as Customer.
 
-The **Agent Chat API** contains a different set of methods than the **Customer Chat API**. We separated both APIs as they cover different use cases. 
+The separation of Chat APIs helps you decide which set of methods you should use. It depends on the role of the chat user. Want to join a chat as Agent? Refer to the Agent Chat API. Want to send messages as Customer? Use the Customer Chat API.
 
-To use those APIs, you need to be _authorized_. This topic is thoroughly explained in the [**Authorizing API calls**](../authorization) document.
+To use both APIs, you need to be _authorized_. This topic is thoroughly explained in the [**Authorizing API calls**](../authorization) document.
 
 ### RTM API vs. Web API
 

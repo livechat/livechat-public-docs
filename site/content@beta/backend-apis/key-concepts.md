@@ -11,7 +11,7 @@ By looking at the chat structure, you notice that each **chat** is is divided in
 ![Chats and Threads](chat_threads.png "chats and threads")
 <!-- Grafika do zrobienia. Trzeba komus zlecic -->
 
-Consider the example of an online store. A customer starts a chat to ask about the shoes he bought. If he hasn't got any previous chat history, **a new chat is started**. Within this chat, **a new thread is created** (conversation topic). The messages he exchanges with the customer service assistant are received by the thread as **events**. After solving the problem, the custmer says goodbye and closes the chat, which automatically **closes the thread**. Let's say the customer is rude and leaves without saying goodbye. In this case, the thread closes after 30 minutes of inactivity (time periods are configurable). The chat **doesn't end**, though.
+Consider the example of an online store. A customer starts a chat to ask about the shoes he bought. If he hasn't got any previous chat history, **a new chat is started**. Within this chat, **a new thread is created** (conversation topic). The messages he exchanges with the customer service assistant are received by the thread as **events**. After solving the problem, the customer says goodbye and closes the chat, which automatically **closes the thread**. Let's say the customer is rude and leaves without saying goodbye. In this case, the thread closes after 30 minutes of inactivity (time periods are configurable). The chat **doesn't end**, though.
 
 The next day, customer returns to ask about his other purchase. A new thread starts in the context of the chat, which has been **continuously open**. Each time customer returns and starts a new conversation topic, he needs to click **_start a chat_**. If we stuck to our naming convention, that would have to be **_start a thread_**, because this is what he actually does behind the scenes. 
 
@@ -55,25 +55,6 @@ Routing is the process of **assigning chats to agents**. The primary goal of the
 
 Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [Understanding chat routing](https://www.livechatinc.com/help/understanding-chat-routing/).
 
-<!-- ### Automatic routing
-
-The diagram below present the flow of automatic routing.
-
-![Automatic routing](automatic-routing.png "automatic routing")
-
-### Manual routing
-
-The diagram below present the flow of manual routing.
-
-![Manual routing](manual-routing.png "manual routing") -->
-
-<!-- 1. Czy dajemy te grafiki, przerabiamy je? 
-
-    2. Czy wspominamy o custom routingu, ktory bedzie mozliwy w przyszlosci? 
-    
-    3. Czy rezygnujemy z opisow i linkujemy do artykulu w Help Center? 
-    
-    4. Fajnie by bylo tu kiedys nagrac filmik z lektorem  -->
 
 #### Router system messages
 
