@@ -6,7 +6,7 @@ weight: 40
 
 ## Use cases
 
-The [**Agent Chat API**](../agent-chat-api) allows for: 
+The **Agent Chat API** allows for: 
 
 - interaction with the chat as Agent (joining a chat, posting messages)
 - interact with the chat by Bot Agents (acting as Agents) 
@@ -14,6 +14,8 @@ The [**Agent Chat API**](../agent-chat-api) allows for:
 - browsing chat archives
 - banning Customers 
 - and much more
+
+If you plan on using the **Agent Chat API** as **RTM API**, refer to [Agent Chat RTM API](../agent-chat-rtm-api). For the **Web API** usage, read the [Agent Chat Web API](../agent-chat-web-api) document.
 
 ## Chatting as Agent
 
@@ -28,6 +30,10 @@ The [**Customer Chat API**](../customer-chat-api) allows for:
 - interacting with the chat as Customer (join a chat, post messages)
 - building a custom Chat Widget
 - implementing new conversation channels (Facebook Messenger or Twitter)
+
+<!-- If you plan on using the **Customer Chat API** as **RTM API**, refer to [Customer Chat RTM API](../customer-chat-rtm-api). For the **Web API** usage, read the [Customer Chat Web API](../customer-chat-web-api) document. -->
+
+The **Customer Chat API** can also be used either as RTM API or Web API. For now, both usages are described in [one document]((../customer-chat-api)). We're currently working on this document, so expect changes soon!
 
 ## Chatting as Customer
 
