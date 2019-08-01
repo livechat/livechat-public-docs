@@ -24,12 +24,9 @@ Available callbacks:
 
 The Chat Widget has finished loading.
 
-Example usage:
-
 ```js
 function onLoad() {
-  // chat has finished loading
-}
+  // chat has finished loading}
 
 LiveChatWidget.on('load', onLoad)
 LiveChatWidget.off('load', onLoad)
@@ -44,8 +41,6 @@ Availability has changed for the current group.
 | param        | type                  | description           |
 | ------------ | --------------------- | --------------------- |
 | availability | "online" \| "offline" | Groups's availability |
-
-Example usage:
 
 ```js
 function onAvailabilityChanged(availability) {
@@ -70,8 +65,6 @@ This responds to both user actions like maximizing or minimizing the window as w
 | param      | type                                   | description              |
 | ---------- | -------------------------------------- | ------------------------ |
 | visibility | "maximized" \| "minimized" \| "hidden" | Chat widget's visibility |
-
-Example usage:
 
 ```js
 function onVisibilityChanged(visibility) {
@@ -100,8 +93,6 @@ This can be used to track if and when customers are being invited to chat, are a
 | ------ | ------------------------------------------------- | ----------------- |
 | status | 'queued' \| 'chatting' \| 'browsing' \| 'invited' | Customer's status |
 
-Example usage:
-
 ```js
 function onCustomerStatusChanged(status) {
   // do something
@@ -128,8 +119,6 @@ event: {
 }
 ```
 
-Example usage:
-
 ```js
 function onNewEvent(event) {
   // do something
@@ -149,8 +138,6 @@ Payload:
 | -------- | ----------------------------------- | ----------- |
 | formType | "prechat" \| "postchat" \| "ticket" | Form's type |
 
-Example usage:
-
 ```js
 function onFormSubmitted(formType) {
   // do something
@@ -169,8 +156,6 @@ Called after the customer has rated the chat, or canceled the previous rating.
 | param | type                      | description             |
 | ----- | ------------------------- | ----------------------- |
 | value | "good" \| "bad" \| "none" | Customer's rating value |
-
-Example usage:
 
 ```js
 function onRatingSubmitted(value) {
