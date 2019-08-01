@@ -4,49 +4,15 @@ weight: 50
 
 ## Examples
 
-Payload:
-
-```ts
-{
-    timestamp: number,
-    type: 'message' | 'rich_message' | 'file',
-    author: {
-        id: string,
-        type: 'customer' | 'agent',
-    },
-}
-```
-
-### form submitted
+### Show chat widget after 30 seconds and keep it open after reload
 
 ```js
-const callback = data => {}
-
-LiveChatWidget.on('form_submitted', callback)
-LiveChatWidget.off('form_submitted', callback)
-```
-
-Payload:
-
-```ts
-{
-    type: 'prechat' | 'postchat' | 'ticket',
-}
-```
-
-### rating submitted
-
-```js
-const callback = data => {}
-
-LiveChatWidget.on('rating_submitted', callback)
-LiveChatWidget.off('rating_submitted', callback)
-```
-
-Payload:
-
-```ts
-{
-  value: 'good' | 'bad' | 'none'
+var isVisible = Cookies.get('livechat_chat_visible')
+if (!isVisible) {
+  LiveChatWidget.call('hide')
+  setTimeout(() => {
+    Cookies.set('livechat_chat_visible', 'true')
+    LiveChatWidget.call('show')
+  }, 30000)
 }
 ```
