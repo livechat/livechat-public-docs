@@ -2,7 +2,7 @@
 weight: 40
 ---
 
-# API Description
+# API Callbacks
 
 ## Reacting to Events with Callbacks
 
@@ -39,7 +39,7 @@ LiveChatWidget.off('load', onLoad)
 
 Availability has changed for the current group.
 
-Payload:
+#### Payload
 
 | param        | type                  | description           |
 | ------------ | --------------------- | --------------------- |
@@ -65,7 +65,7 @@ LiveChatWidget.off('availability_changed', onAvailabilityChanged)
 Called the visibility of our Chat Widget is changed.
 This responds to both user actions like maximizing or minimizing the window as well as hiding or showing the Chat Widget through the use of this API.
 
-Payload:
+#### Payload
 
 | param      | type                                   | description              |
 | ---------- | -------------------------------------- | ------------------------ |
@@ -94,7 +94,7 @@ LiveChatWidget.off('visibility_changed', onVisibilityChanged)
 Called when your customer status is changed.
 This can be used to track if and when customers are being invited to chat, are already chatting or if they are waiting for an agent to become available in the queue.
 
-Payload:
+#### Payload
 
 | param  | type                                              | description       |
 | ------ | ------------------------------------------------- | ----------------- |
@@ -115,7 +115,7 @@ LiveChatWidget.off('customer_status_changed', onCustomerStatusChanged)
 
 Called for both incoming and outgoing events.
 
-Payload:
+#### Payload
 
 ```ts
 event: {
@@ -147,9 +147,7 @@ Payload:
 
 | param    | type                                | description |
 | -------- | ----------------------------------- | ----------- |
-| formType | 'prechat' \| 'postchat' \| 'ticket' | Form's type |
-
-|
+| formType | "prechat" \| "postchat" \| "ticket" | Form's type |
 
 Example usage:
 
@@ -166,11 +164,11 @@ LiveChatWidget.off('form_submitted', onFormSubmitted)
 
 Called after the customer has rated the chat, or canceled the previous rating.
 
-Payload:
+#### Payload
 
 | param | type                      | description             |
 | ----- | ------------------------- | ----------------------- |
-| value | 'good' \| 'bad' \| 'none' | Customer's rating value |
+| value | "good" \| "bad" \| "none" | Customer's rating value |
 
 Example usage:
 
