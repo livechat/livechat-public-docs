@@ -15,14 +15,12 @@ Example:
 LiveChatWidget.get('state')
 ```
 
-Returns:
+#### Response
 
-```ts
-{
-    availability: 'online' | 'offline',
-    visibility: 'maximized' | 'minimized' | 'hidden',
-}
-```
+| param        | type                                   | description              |
+| ------------ | -------------------------------------- | ------------------------ |
+| availability | 'online' \| 'offline'                  | Group's availability     |
+| visibility   | 'maximized' \| 'minimized' \| 'hidden' | Chat widget's visibility |
 
 ## get customer data
 
@@ -32,15 +30,13 @@ Returns a filtered list of Customer data.
 LiveChatWidget.get('customer_data')
 ```
 
-Returns:
+#### Response
 
-```ts
-{
-    id: string,		// unique customer id
-    name?: string,	// customer name, as provided
-    email?: string,	// customer e-mail address, as provided
-    isReturning: boolean,	// has this customer visited you before
-    status: 'queued' | 'chatting' | 'browsing' | 'invited',
-    fields: Record<string, string>, // additional free-form information
-}
-```
+| param            | type                                              | description                                |
+| ---------------- | ------------------------------------------------- | ------------------------------------------ |
+| id               | string                                            | unique customer id                         |
+| name             | string                                            | customer name, as provided                 |
+| email            | string                                            | customer e-mail address, as provided       |
+| isReturning      | boolean                                           | has this customer visited you before       |
+| status           | 'queued' \| 'chatting' \| 'browsing' \| 'invited' | Customer's status                          |
+| sessionVariables | Record<string, string>                            | additional free-form session's information |
