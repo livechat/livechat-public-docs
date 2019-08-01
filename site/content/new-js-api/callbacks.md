@@ -23,7 +23,7 @@ Available callbacks:
 ### load
 
 The Chat Widget has finished loading.
-You will receive [Chat Widget state]() and [Customer Data]() in
+With this callback you will receive [Chat Widget State](#get-state) and [Customer Data](#get-customer-data) as if requested by their getters.
 
 Payload:
 
@@ -42,14 +42,12 @@ type CustomerDataType = {
   fields: Record<string, string> // additional free-form information
 }
 
-loadingState = {
+LoadingStateType = {
   state: StateType,
   customerData: CustomerDataType,
 }
-```
 
-```js
-function onLoad(loadingState) {
+function onLoad(loadingState: LoadingStateType) {
   // chat has finished loading
 }
 
