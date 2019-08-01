@@ -4,7 +4,7 @@ weight: 50
 
 ## Examples
 
-### Show chat widget after 30 seconds and keep it open after reload
+#### Show chat widget after 30 seconds and keep it open after reload
 
 ```js
 var isVisible = Cookies.get('livechat_chat_visible')
