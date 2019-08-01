@@ -23,10 +23,35 @@ Available callbacks:
 ### load
 
 The Chat Widget has finished loading.
+You will receive [Chat Widget state]() and [Customer Data]() in
+
+Payload:
+
+```ts
+type StateType = {
+  availability: 'online' | 'offline'
+  visibility: 'maximized' | 'minimized' | 'hidden'
+}
+
+type CustomerDataType = {
+  id: string // unique customer id
+  name?: string // customer name, as provided
+  email?: string // customer e-mail address, as provided
+  isReturning: boolean // has this customer visited you before
+  status: 'queued' | 'chatting' | 'browsing' | 'invited'
+  fields: Record<string, string> // additional free-form information
+}
+
+loadingState = {
+  state: StateType,
+  customerData: CustomerDataType,
+}
+```
 
 ```js
-function onLoad() {
-  // chat has finished loading}
+function onLoad(loadingState) {
+  // chat has finished loading
+}
 
 LiveChatWidget.on('load', onLoad)
 LiveChatWidget.off('load', onLoad)
