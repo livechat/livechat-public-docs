@@ -61,9 +61,9 @@ Availability has changed for the current group.
 
 #### Payload
 
-| param        | type                  | description           |
-| ------------ | --------------------- | --------------------- |
-| availability | "online" \| "offline" | Groups's availability |
+| param        | type                      | description           |
+| ------------ | ------------------------- | --------------------- |
+| availability | `"online"` \| `"offline"` | Groups's availability |
 
 ```js
 function onAvailabilityChanged(availability) {
@@ -85,9 +85,9 @@ This responds to both user actions like maximizing or minimizing the window as w
 
 #### Payload
 
-| param      | type                                   | description              |
-| ---------- | -------------------------------------- | ------------------------ |
-| visibility | "maximized" \| "minimized" \| "hidden" | Chat widget's visibility |
+| param      | type                                         | description              |
+| ---------- | -------------------------------------------- | ------------------------ |
+| visibility | `"maximized"` \| `"minimized"` \| `"hidden"` | Chat widget's visibility |
 
 ```js
 function onVisibilityChanged(visibility) {
@@ -112,9 +112,9 @@ This can be used to track if and when customers are being invited to chat, are a
 
 #### Payload
 
-| param  | type                                              | description       |
-| ------ | ------------------------------------------------- | ----------------- |
-| status | 'queued' \| 'chatting' \| 'browsing' \| 'invited' | Customer's status |
+| param  | type                                                      | description       |
+| ------ | --------------------------------------------------------- | ----------------- |
+| status | `'queued'` \| `'chatting'` \| `'browsing'` \| `'invited'` | Customer's status |
 
 ```js
 function onCustomerStatusChanged(status) {
@@ -157,9 +157,9 @@ Called after a form has been submitted in the chat.
 
 Payload:
 
-| param    | type                                | description |
-| -------- | ----------------------------------- | ----------- |
-| formType | "prechat" \| "postchat" \| "ticket" | Form's type |
+| param    | type                                      | description |
+| -------- | ----------------------------------------- | ----------- |
+| formType | `"prechat"` \| `"postchat"` \| `"ticket"` | Form's type |
 
 ```js
 function onFormSubmitted(formType) {
@@ -176,9 +176,9 @@ Called after the customer has rated the chat, or canceled the previous rating.
 
 #### Payload
 
-| param | type                      | description             |
-| ----- | ------------------------- | ----------------------- |
-| value | "good" \| "bad" \| "none" | Customer's rating value |
+| param | type                            | description             |
+| ----- | ------------------------------- | ----------------------- |
+| value | `"good"` \| `"bad"` \| `"none"` | Customer's rating value |
 
 ```js
 function onRatingSubmitted(value) {
