@@ -9,11 +9,9 @@ weight: 30
 Returns the Chat Widget State.
 This includes widget visibility and license availability.
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.get('state')
-```
+`LiveChatWidget.get('state')`
 
 #### Response
 
@@ -26,9 +24,7 @@ LiveChatWidget.get('state')
 
 Returns a filtered list of Customer data.
 
-```js
-LiveChatWidget.get('customer_data')
-```
+`LiveChatWidget.get('customer_data')`
 
 #### Response
 
