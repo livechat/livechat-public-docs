@@ -4,7 +4,7 @@ weight: 20
 
 # API Methods
 
-This API allows you to interact with the Chat Widget embeded on your website by giving you control over the behaviour and data passed through to LiveChat.
+This API allows you to interact with the Chat Widget embedded on your website by giving you control over the behaviour and data passed through to LiveChat.
 
 ## Interacting with the Chat Widget
 
