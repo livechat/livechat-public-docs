@@ -17,7 +17,7 @@ This API works only with the [new Chat Widget](https://developers.livechatinc.co
 
 The API is accessed through the `LiveChatWidget` object.
 It is being initialized within the LiveChat tracking code, which is used to install our Chat Widget on your site.
-If you haven't installed the code already, you can find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code).
+If you haven't installed the code already, you can find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code). The API requires the newest version of the code snippet, so if you had installed the code a while ago and the API presented here doesn't work, you should either update the code or use the [old version of JS API](https://developers.livechatinc.com/docs/js-api/#introduction).
 
 This object comes with four methods:
 
@@ -28,6 +28,4 @@ This object comes with four methods:
 Using these methods is based on passing the correct arguments in the following pattern: `LiveChatWidget.method('method', 'data')`.
 For example, if you would like to set your Customer's name to `John Doe`, this is how it would look like:
 
-```js
-LiveChatWidget.call('set_visitor_name', 'John Doe')
-```
+`LiveChatWidget.call('set_visitor_name', 'John Doe')`
