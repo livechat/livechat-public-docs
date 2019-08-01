@@ -37,13 +37,13 @@ LiveChatWidget.off('load', onLoad)
 
 ### availability changed
 
-Availability has changed for your license.
+Availability has changed for the current group.
 
 Payload:
 
-```ts
-availability: 'online' | 'offline'
-```
+| param        | type                  | description           |
+| ------------ | --------------------- | --------------------- |
+| availability | "online" \| "offline" | Groups's availability |
 
 Example usage:
 
@@ -67,9 +67,9 @@ This responds to both user actions like maximizing or minimizing the window as w
 
 Payload:
 
-```ts
-visibility: 'maximized' | 'minimized' | 'hidden'
-```
+| param      | type                                   | description              |
+| ---------- | -------------------------------------- | ------------------------ |
+| visibility | "maximized" \| "minimized" \| "hidden" | Chat widget's visibility |
 
 Example usage:
 
@@ -96,9 +96,9 @@ This can be used to track if and when customers are being invited to chat, are a
 
 Payload:
 
-```ts
-status: 'queued' | 'chatting' | 'browsing' | 'invited'
-```
+| param  | type                                              | description       |
+| ------ | ------------------------------------------------- | ----------------- |
+| status | 'queued' \| 'chatting' \| 'browsing' \| 'invited' | Customer's status |
 
 Example usage:
 
@@ -145,11 +145,11 @@ Called after a form has been submitted in the chat.
 
 Payload:
 
-```ts
-{
-    formType: 'prechat' | 'postchat' | 'ticket',
-}
-```
+| param    | type                                | description |
+| -------- | ----------------------------------- | ----------- |
+| formType | 'prechat' \| 'postchat' \| 'ticket' | Form's type |
+
+|
 
 Example usage:
 
@@ -168,11 +168,9 @@ Called after the customer has rated the chat, or canceled the previous rating.
 
 Payload:
 
-```ts
-{
-  value: 'good' | 'bad' | 'none'
-}
-```
+| param | type                      | description             |
+| ----- | ------------------------- | ----------------------- |
+| value | 'good' \| 'bad' \| 'none' | Customer's rating value |
 
 Example usage:
 
