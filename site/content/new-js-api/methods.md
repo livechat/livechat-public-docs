@@ -27,21 +27,17 @@ For more information, you can read these articles in our help center: https://ww
 
 Maximizes the Chat Widget.
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.call('maximize')
-```
+`LiveChatWidget.call('maximize')`
 
 ### minimize
 
 Minimizes the Chat Widget.
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.call('minimize')
-```
+`LiveChatWidget.call('minimize')`
 
 ### hide
 
@@ -50,20 +46,16 @@ You will need to use another API call to show it afterwards.
 
 Example:
 
-```js
-LiveChatWidget.call('hide')
-```
+`LiveChatWidget.call('hide')`
 
 ### destroy
 
 Destroys the Chat Widget.
 It won't be available for further actions until the window is refreshed.
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.call('destroy')
-```
+`LiveChatWidget.call('destroy')`
 
 ## Setters
 
@@ -71,43 +63,29 @@ LiveChatWidget.call('destroy')
 
 Creates new session variables, or replaces the ones set previously.
 
-Example:
-
-```js
-LiveChatWidget.call('set_session_variables', {
-  cart_value: '450',
-})
-```
+`LiveChatWidget.call('set_session_variables', { cart_value:'450' })`
 
 ### update session variables
 
 Changes values for your session variables.
 Please note that this will include new session variables with those previously set, instead of replacing them.
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.call('udpate_session_variables', {
-  cart_value: '450',
-})
-```
+`LiveChatWidget.call('udpate_session_variables', { cart_value: '450' })`
 
 ### set visitor name
 
 Sets the Visitor name
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.call('set_visitor_name', 'John Doe')
-```
+`LiveChatWidget.call('set_visitor_name', 'John Doe')`
 
 ### set visitor email
 
 Sets the Visitor e-mail address
 
-Example:
+#### Example
 
-```js
-LiveChatWidget.call('set_visitor_email', 'john@example.com')
-```
+`LiveChatWidget.call('set_visitor_email', 'john@example.com')`
