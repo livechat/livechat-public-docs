@@ -24,80 +24,6 @@ weight: 60
 | **other** | [`get_archives`](#get-archives) [`get_chat_threads`](#get-chat-threads) [`get_chat_threads_summary`](#get-chat-threads-summary) [`close_thread`](#close-thread) [`multicast`](#multicast) [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`send_rich_message_postback`](#send-rich-message-postback) [`change_push_notifications`](#change-push-notifications)| 
 
 
-<!-- [**chats** ](#chats)
-
-- [activate_chat](#activate-chat)
-- [follow-chat](#follow-chat)
-- [get_chats_summary](#get-chats-summary)
-- [start chat](#start-chat)
-- [transfer chat](#transfer-chat)
-- [unfollow-chat](#unfollow-chat)
-
-[**chat access**](#chat-access)
-
-- [grant_access](#grant-access)   
-- [revoke_access](#revoke-access) 
-- [set_access](#set-access)   
-
-[**chat users**](#chat-users)
-
-- [add user to chat](#add-user-to-chat)
-- [remove user from chat](#remove-user-from-chat)
-- [update_agent](#update-agent)  
-- [set_away_status](#set-away-status) //RTm only
-
-[**customers**](#customers)
-
-- [ban customer](#ban-customer)
-- [create customer](#create-customer)
-- [get_customers](#get-customers)
-- [set customers](#get-customers)
-- [update customer](#update-customer)
-
-
-[**events**](#events)
-
-- [send event](#send-event)
-- [send rich message postback](#send-rich-message-postback)
-
-
-[**login/logout**](#login/logout)
-
-- [login](#login) // RTM only
-- [logout](#logout) // RTM only
-
-
-[**properties (chat/thread/event)**](#chat-thread-event-properties)
-
-- [delete chat properties](#delete-chat-properties)
-- [delete chat thread properties](#delete-chat-thread-properties)
-- [delete event properties](#delete-event-properties)
-- [update chat thread properties](#update-chat-thread-properties)
-- [update chat properties](#update-chat-properties)
-- [update event properties](#update-event-properties)
-
-
- [**thread tags**](#thread-tags)
-
-- [tag_chat_thread](#tag-chat-thread)
-- [untag_chat_thread](#untag-chat-thread)
-
-
-[**other**](#other)
-
-- [get_archives](#get-archives)
-- [get chat threads](#get-chat-threads)
-- [get chat threads summary](#get-chat-threads-summary)
-- [close thread](#close-thread)
-- [multicast](#multicast)
-- [update last seen timestamp](#update-last-seen-timestamp)
-- [upload image](#upload-image) // Web only
-- [send typing indicator](#send-typing-indicator)
-- [send_rich_message_postback](#send-rich-message-postback)
-- [send_file](#send-file) // Web only
-- [change push notifications](#change-push-notifications) // RTM only -->
-
-
 ## chats
 
 ### `activate_chat`
@@ -306,47 +232,6 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object` |                                                                  |
 | `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
 | `chat.thread.properties` | No       | `object` |                                                                  |
-
-> A sample **response** payload
-
-```js
-{
-	"chat": {
-		"properties": {
-			"source": {
-				"type": "facebook"
-			},
-			...
-		},
-		"users": [{
-			"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-			"type": "customer"
-		}],
-		"thread": {
-			"events": [{
-				"type": "message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there",
-				"recipients": "all"
-			}, {
-				"type": "system_message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there",
-				"recipients": "agents"
-			}],
-			"properties": {
-				"source": {
-					"type": "facebook"
-				},
-				...
-			}
-		}
-		"access": {
-			"group_ids": [1]
-		}
-	}
-}
-```
 
 > A sample **response** payload
 
