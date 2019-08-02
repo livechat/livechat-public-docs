@@ -196,6 +196,7 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
 | `avatar`                             | `string`   | No       | avatar URL                                             |
 | `status`                             | `string`   | No       | agent status                                           |
 | `max_chats_count`                    | `int`      | No       | maximum incoming chats that can be routed to the agent |
+| `default_group_priority`             | `string`   | No       | Default routing priority for group without defined one |
 | `groups`                             | `object[]` | No       | groups the agent belongs to                            |
 | `groups[].id`                        | `uint`     | Yes      | group ID                                               |
 | `groups[].priority`                  | `string`   | Yes      | agent priority in group                                |
@@ -251,6 +252,11 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
   - `last` - the lowest chat routing priority - agents with `last` priority get
     chats when there are no agents with `first` or `normal` priority available
     with free slots in that group
+- `default_group_priority` possible values:
+  - `first` - Chats are assigned to bot before normal agents
+  - `normal` - Chats are assigned with the same priority as it would for normal agents
+  - `last` - If there is no agent available then, chat will be assigned to bot
+  - `supervisor` - Bot works as `supervisor` so he/she will not be assigned to any chats
 - `webhooks` - go [here](#webhooks) for possible actions values and payloads.
 
 #### Example response payloads
@@ -377,53 +383,60 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
 
 - `webhooks--my:rw` - to register my webhook
 
-| Request object            | Type       | Required | Notes                                                            |
-| ------------------------- | ---------- | -------- | ---------------------------------------------------------------- |
-| `url`                     | `string`   | Yes      | Destination URL for webhook                                      |
-| `description`             | `string`   | No       | Webhook description                                              |
-| `action`                  | `string`   | Yes      | Triggerring action                                               |
-| `secret_key`              | `string`   | Yes      | Secret sent in webhooks to verify webhook source                 |
-| `filters`                 | `object`   | No       | Filters to check if webhook should be triggered                  |
-| `filters.author_type`     | `string`   | No       | Possible values: `customer`, `agent`                             |
-| `filters.chat_member_ids` | `object`   | No       | Only one filter (`agents_any` or `agents_exclude`) is allowed    |
-| `filters.agents_any`      | `[]string` | No       | If any specified agent is in chat, webhook will be triggered     |
-| `filters.agents_exclude`  | `[]string` | No       | If any specified agent is in chat, webhook will not be triggered |
-| `additional_data`         | `[]string` | No       | Additional data that will arrive with webhook                    |
+| Request object                           | Type       | Required | Notes                                                                                    |
+| ---------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------------- |
+| `url`                                    | `string`   | Yes      | Destination URL for webhook                                                              |
+| `description`                            | `string`   | No       | Webhook description                                                                      |
+| `action`                                 | `string`   | Yes      | Triggerring action                                                                       |
+| `secret_key`                             | `string`   | Yes      | Secret sent in webhooks to verify webhook source                                         |
+| `filters`                                | `object`   | No       | Filters to check if webhook should be triggered                                          |
+| `filters.author_type`                    | `string`   | No       | Possible values: `customer`, `agent`                                                     |
+| `filters.only_my_chats`                  | `bool`     | No       | Trigger webhooks only for chats with property `source.client_id` equal to my `client_id` |
+| `filters.chat_member_ids`                | `object`   | No       | Only one filter (`agents_any` or `agents_exclude`) is allowed                            |
+| `filters.chat_member_ids.agents_any`     | `[]string` | No       | If any specified agent is in chat, webhook will be triggered                             |
+| `filters.chat_member_ids.agents_exclude` | `[]string` | No       | If any specified agent is in chat, webhook will not be triggered                         |
+| `additional_data`                        | `[]string` | No       | Additional data that will arrive with webhook                                            |
 
 - `action` possible values:
   - `incoming_chat_thread` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-chat-thread),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `incoming_event` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-event),
-    available filters for the action: `chat_member_ids` and `author_type`
+    available filters for the action: `chat_member_ids` and `author_type`, `only_my_chats`
   - `incoming_rich_message_postback` - triggers on action
     [link to change](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-rich-message-postback),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `last_seen_timestamp_updated` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#last-seen-timestamp-updated),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `thread_closed` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#thread-closed),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `chat_properties_updated` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-updated),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `chat_thread_properties_updated` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-updated),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `chat_properties_deleted` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-deleted),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `chat_thread_properties_deleted` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-deleted),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `chat_user_added` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-added),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `chat_user_removed` - triggers on action
     [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-removed),
-    available filters for the action: `chat_member_ids`
+    available filters for the action: `chat_member_ids`, `only_my_chats`
+  - `chat_thread_tagged` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat_thread_tagged),
+    available filters for the action: `chat_member_ids`, `only_my_chats`
+  - `chat_thread_untagged` - triggers on action
+    [agent-api push](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat_thread_tagged),
+    available filters for the action: `chat_member_ids`, `only_my_chats`
   - `agent_status_changed` - triggers when status of some agent is changed,
     available filters for the action: `chat_member_ids`
   - `agent_deleted` - triggers when some agent is deleted,
@@ -433,9 +446,10 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
     - `agents_any` (`string[]`) - array of agent ids. If any agent from this array is in chat, then webhook will be triggered.
     - `agents_exclude` (`string[]`) - array of agent ids. If any agent from this array is in chat, then webhook will not be triggered.
   - `author_type` - `customer` or `agent`, allowed only for `incoming_event` action
+  - `only_my_chats` - `true` or `false`
 - `additional_data` possible values in array:
   - `chat_properties` (available for every action except `agent_status_changed` and `agent_deleted`)
-  - `access` (available only for actions: `incoming_chat_event` and `chat_user_added`)
+  - `access` (available only for actions: `incoming_event` and `chat_user_added`)
   - `thread_id` (available only for action `chat_user_added`)
 
 #### Example request payload
@@ -498,7 +512,8 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
         "chat_member_ids": {
           "agents_any": ["johndoe@mail.com"]
         }
-      }
+      },
+      "owner_client_id": "asXdesldiAJSq9padj"
     }
   ]
 }
