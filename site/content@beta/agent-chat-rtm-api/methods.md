@@ -21,7 +21,7 @@ weight: 60
 | **login/logout** | [`login`](#login) [`logout`](#logout) |
 | **properties (chat/thread/event)** | [`delete_chat_properties`](#delete-chat-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`delete_event_properties`](#delete-event-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`update_chat_properties`](#update-chat-properties) [`update_event_properties`](#update-event-properties) |  
 | **thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread) | 
-| **other** | - [`get_archives`](#get-archives) [`get_chat_threads`](#get-chat-threads) [`get_chat_threads_summary`](#get-chat-threads-summary) [`close_thread`](#close-thread) [`multicast`](#multicast) [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`send_rich_message_postback`](#send-rich-message-postback) [`change_push_notifications`](#change-push-notifications)| 
+| **other** | [`get_archives`](#get-archives) [`get_chat_threads`](#get-chat-threads) [`get_chat_threads_summary`](#get-chat-threads-summary) [`close_thread`](#close-thread) [`multicast`](#multicast) [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`send_rich_message_postback`](#send-rich-message-postback) [`change_push_notifications`](#change-push-notifications)| 
 
 
 <!-- [**chats** ](#chats)
@@ -307,7 +307,7 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
 | `chat.thread.properties` | No       | `object` |                                                                  |
 
-> A sample **request** payload**
+> A sample **response** payload
 
 ```js
 {
