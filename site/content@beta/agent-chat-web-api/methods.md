@@ -62,7 +62,7 @@ It returns threads that the current agent has access to in a given chat.
 }
 ```
 
-| Parameter | Required | Data ype     | Notes |
+| Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
 | `thread_ids`   | No       | `array`  |       |
@@ -121,7 +121,7 @@ It returns threads that the current agent has access to in a given chat.
 }
 ```
 
-| Parameter | Required | Data ype     | Notes |
+| Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
 | `order`      | No      | `string` | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default)|
