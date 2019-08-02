@@ -8,9 +8,10 @@ Scopes define the access to certain resources.
 
 - `ro` means read only
 - `rw` means read/write
-- all `rw` scopes contains `ro` privileges
-- all `all` scopes contains `access` privileges and `my` privileges
-- all `access` scopes contains `my` privileges
+- all `rw` scopes contain `ro` privileges
+- all `access` scopes contain `my` privileges
+- all `all` scopes contain `access` privileges and `my` privileges
+
 
 For more details check [here](../services/sso/typedef.go).
 
@@ -21,13 +22,13 @@ This chart shows every possible chats scenarios:
 - chats without my access and without my presence (`chats -A -P`)
 - chats with my access but without my presence (`chats +A -P`)
 - chats with my presence but without my access (`chats -A +P`)
-- chats with my access and with my presence (`chats +P +A`)
+- chats with my access and with my presence (`chats +A +P`)
 
 ![](./chats.png)
 
 The table shows scopes dependency of accessing chat:
 
-|          | `chats -A -P` | `chats +A -P` | `chats -A +P` | `chats +P +A` |
+|          | `chats -A -P` | `chats +A -P` | `chats -A +P` | `chats +A +P` |
 | -------- | ------------- | ------------- | ------------- | ------------- |
 | `all`    | ✓             | ✓             | ✓             | ✓             |
 | `access` | -             | ✓             | ✓             | ✓             |

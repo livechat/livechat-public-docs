@@ -4,7 +4,9 @@ weight: 70
 
 # Pushes
  
- Pushes are **server - client methods** used for keeping the application state up-to-date. They are available only in `websocket` transport.
+ Pushes are **server - client methods** used for keeping the application state up-to-date. They are available only in the `websocket` transport. The Agent Chat Web API uses [webhooks](../agent-chat-web-api/#webhooks). The majority of pushes have their webhook equivalents.
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 |   |  |
 |-------|--------| 
@@ -14,7 +16,6 @@ weight: 70
 | **customers** |[`customer_page_updated`](#customer-page-updated) [`customer_visit_ended`](#customer-visit-ended) [`customer_visit_started`](#customer-visit-started) [`customer_updated`](#customer-updated) [`customer_created`](#customer-created) [`customer_banned`](#customer-banned)| 
 | **events** | [`event_updated`](#event-updated) [`incoming_event`](#incoming-event) |
 | **properties (chat/thread/event)** | [`event_properties_updated`](#event-properties-updated) [`event_properties_deleted`](#event-properties-deleted) [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) [`chat_thread_properties_updated`](#chat-thread-properties-updated) [`chat_properties_deleted`](#chat-properties-deleted) [`chat_properties_updated`](#chat-properties-updated) |  
-| **thread** | [`incoming_chat_thread`](#incoming-chat-thread) [`thread_closed`](#thread-closed)  [`last_seen_timestamp_updated`](#last-seen-timestamp-updated) |
 | **thread tags** | [`chat_thread_tagged`](#chat-thread-tagged) [`chat_thread_untagged`](#chat-thread-untagged) | 
 | **other** | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated) [`thread_closed`](#thread-closed) [`incoming_sneak_peek`](#incoming-sneak-peek) [`incoming_typing_indicator`](#incoming-typing-indicator) [`incoming_multicast`](#incoming-multicast) [`incoming_rich_message_postback`](#incoming-rich-message-postback) [`incoming_chat_thread`](#incoming-chat-thread)| 
 
@@ -72,7 +73,7 @@ weight: 70
 |  |  |
 |-------|--------|
 | **Action**   | `access_granted`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#access-granted) |
 
 
 #### Push payload
@@ -105,7 +106,7 @@ weight: 70
 |  |  |
 |-------|--------|
 | **Action**   | `access_revoked`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#access-revoked) |
 
 
 #### Push payload
@@ -138,7 +139,7 @@ weight: 70
 |  |  |
 |-------|--------|
 | **Action**   | `access_set`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#access-set) |
 
 
 #### Push payload
@@ -235,7 +236,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_user_added`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-user-added) |
 
 
 #### Push payload
@@ -264,7 +265,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_user_removed`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-user-removed) |
 
 
 #### Push payload
@@ -313,7 +314,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `customer_created`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#customer-created) |
 
 
 ### `customer_updated`
@@ -444,7 +445,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_event`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#incoming-event) |
 
 
 ### `event_updated`
@@ -466,7 +467,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `event_updated`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#event-updated) |
 
 
 
@@ -492,7 +493,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_properties_deleted`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-properties-deleted) |
 
 #### Push payload
 
@@ -523,7 +524,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_properties_deleted`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-properties-deleted) |
 
 
 #### Push payload
@@ -556,7 +557,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `event_properties_deleted`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#event-properties-deleted) |
 
 #### Push payload
 
@@ -590,7 +591,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_properties_updated`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-properties-updated) |
 
 
 #### Push payload
@@ -629,7 +630,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_properties_updated`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-properties-updated) |
 
 
 #### Push payload
@@ -664,7 +665,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `event_properties_updated`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#event-properties-updated) |
 
 
 #### Push payload
@@ -673,7 +674,7 @@ With this piece of information, the client is able to figure out where it should
 | ------------ | ----------------------------------------------------------------------------------------------- |
 | `properties` | This is not a full `properties` object. This push shows only the properties, which have been recently updated.  |
 
-## thread
+
 
 ## thread tags
 
@@ -694,7 +695,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_tagged`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-tagged) |
 
 
 ### `chat_thread_untagged`
@@ -714,7 +715,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_untagged`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-tagged) |
 
 
 ## other
@@ -748,7 +749,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_chat_thread`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#incoming-chat-thread) |
 
 
 ### `incoming_rich_message_postback`
@@ -773,7 +774,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_rich_message_postback`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#incoming-rich-message-postback) |
 
 
 
@@ -872,25 +873,13 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `thread_closed`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#thread-closed) |
 
 #### Push payload
 
 | Object      | Notes                                  |
 | ----------- | -------------------------------------- |
 | `user_id`   | Missing if thread was closed by router |
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -911,7 +900,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `last_seen_timestamp_updated`  |
-| **Webhook equivalent**| ✓ |
+| **Webhook equivalent**| [✓](../agent-chat-web-api/#last-seen-timestamp-updated) |
 
 
 

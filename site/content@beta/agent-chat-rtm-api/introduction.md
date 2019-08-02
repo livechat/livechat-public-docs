@@ -9,9 +9,6 @@ weight: 10
 
 This documentation describes the version **v3.0** of the **Agent Chat Real-Time Messaging API**.
 
-<!-- <div class="callout type-info">Throughout the text we will use the term <strong>"client"</strong> to describe a service (an application, a script, an integration, etc.) which uses LiveChat Agent API.</div> -->
-
-
 ## What is RTM API
 Real-Time Messaging API (RTM API) is based on a websocket-like connection. Client can send a **request message** that results in getting a **response message**. It's also possible to get **push messages**.
 
@@ -20,7 +17,7 @@ If you're wondering which API to use - Agent Chat **RTM API** or **Web API**, ke
 
 **Real-Time Messaging API** allows for building stateful integrations that require **logging in** and **maintaning the connection**. Since connection maintenance is required, the implementation might be more challanging than with Web API.
 
-Agent Chat RTM API enables communication in real time. It supports pushes related to `sneak peek` and `typing indicator`. Web API doesn’t have equivalent webhooks, which means you won't be informed about incoming sneak-peeks and typing indicators using Web API. 
+Agent Chat RTM API enables communication in real time. It supports pushes like `sneak peek`, `typing indicator`, and other. Web API doesn’t have equivalent webhooks, which means you won't be informed about certain events using Web API. 
 
 Also, RTM API will be a better choice if you want to avoid time delays or presume significant traffic. 
 

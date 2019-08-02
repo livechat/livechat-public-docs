@@ -5,7 +5,7 @@ weight: 60
 
 # Methods
 
-#### The base URL to send the requests to
+#### The API enpoint
 
 | HTTP method  | Base URL |
 |-------|--------|
@@ -35,101 +35,6 @@ weight: 60
 | **other** | [`get_archives`](#get-archives) [`get_chat_threads`](#get-chat-threads) [`send_file`](#send-file) [`get_chat_threads_summary`](#get-chat-threads-summary) [`close_thread`](#close-thread) [`upload_image`](#upload-image) [`multicast`](#multicast) [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`send_rich_message_postback`](#send-rich-message-postback)| 
 
 ## chats
-
-### `start_chat`
-
-Starts a chat.
-
--------------------------------------------------------------------------------------------
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/start_chat`  |
-| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| ✓ |
-| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
-
-__*)__ 
-When `chat.users` is defined, one of following scopes is required:
-
-- `chats--all:rw`
-- `chats--access:rw`
-- `chats--my:rw`
-
-#### Request
-
-> A sample **request** payload
-
-```js
-{
-	"chat": {
-		"properties": {
-			"source": {
-				"type": "facebook"
-			},
-			...
-		},
-		"users": [{
-			"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-			"type": "customer"
-		}],
-		"thread": {
-			"events": [{
-				"type": "message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there",
-				"recipients": "all"
-			}, {
-				"type": "system_message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there",
-				"recipients": "agents"
-			}],
-			"properties": {
-				"source": {
-					"type": "facebook"
-				},
-				...
-			},
-			"tags": ["bug_report"]
-		}
-		"access": {
-			"group_ids": [1]
-		},
-		"is_followed": true
-	},
-	"continuous": true
-}
-```
-
-| Parameters           | Required | Data type     | Notes                                                            |
-| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `chat`                   | No       | `object` |                                                                  |
-| `chat.properties`        | No       | `object` |                                                                  |
-| `chat.access`            | No       | `object` |                                                                  |
-| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
-| `chat.thread`            | No       | `object` |                                                                  |
-| `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
-| `chat.thread.properties` | No       | `object` |                                                                  |
-
-
-> A sample **response** payload
-
-```js
-{
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"thread": {
-			// "Thread" object
-		}
-	}
-}
-```
 
 ### `activate_chat`
 
@@ -258,18 +163,27 @@ It won't be sent when the requester already follows the chat or is the chat memb
 No response payload.
 
 
-### `unfollow_chat`
-Removes the requester from the chat followers. After that, only key changes to the chat (like `transfer_chat` or `close_active_thread`) will be sent to the requester. Chat members cannot unfollow the chat.
+### `start_chat`
 
---------------------------------------
+Starts a chat.
+
+-------------------------------------------------------------------------------------------
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/unfollow_chat`  |
-| __Required scopes__| - |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/start_chat`  |
+| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **RTM API equivalent**| ✓ |
+| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
+
+__*)__ 
+When `chat.users` is defined, one of following scopes is required:
+
+- `chats--all:rw`
+- `chats--access:rw`
+- `chats--my:rw`
 
 #### Request
 
@@ -277,17 +191,73 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 ```js
 {
-	"chat_id": "PJ0MRSHTDG",
+	"chat": {
+		"properties": {
+			"source": {
+				"type": "facebook"
+			},
+			...
+		},
+		"users": [{
+			"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+			"type": "customer"
+		}],
+		"thread": {
+			"events": [{
+				"type": "message",
+				"custom_id": "31-0C-1C-07-DB-16",
+				"text": "hello there",
+				"recipients": "all"
+			}, {
+				"type": "system_message",
+				"custom_id": "31-0C-1C-07-DB-16",
+				"text": "hello there",
+				"recipients": "agents"
+			}],
+			"properties": {
+				"source": {
+					"type": "facebook"
+				},
+				...
+			},
+			"tags": ["bug_report"]
+		}
+		"access": {
+			"group_ids": [1]
+		},
+		"is_followed": true
+	},
+	"continuous": true
 }
 ```
 
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` |   |
+| Parameters           | Required | Data type     | Notes                                                            |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
+| `chat`                   | No       | `object` |                                                                  |
+| `chat.properties`        | No       | `object` |                                                                  |
+| `chat.access`            | No       | `object` |                                                                  |
+| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
+| `chat.thread`            | No       | `object` |                                                                  |
+| `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
+| `chat.thread.properties` | No       | `object` |                                                                  |
 
-#### Response
 
-No response payload.
+> A sample **response** payload
+
+```js
+{
+	"chat": {
+		"id": "PJ0MRSHTDG",
+		"users": [
+			// array of "User" objects
+		],
+		"thread": {
+			// "Thread" object
+		}
+	}
+}
+```
+
 
 
 ### `transfer_chat`
@@ -322,6 +292,42 @@ No response payload.
 | `target.type`  | Yes      | `string` | `group` or `agent`                                                           |
 | `target.ids`   | Yes      | `array`  | `group` or `agent` ids array                                                 |
 | `force`        | No       | `bool`   | If `true`, always transfers chat, otherwise fails when cannot assign any agent from requested groups, default `false` |
+
+
+
+### `unfollow_chat`
+Removes the requester from the chat followers. After that, only key changes to the chat (like `transfer_chat` or `close_active_thread`) will be sent to the requester. Chat members cannot unfollow the chat.
+
+--------------------------------------
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/unfollow_chat`  |
+| __Required scopes__| - |
+| **RTM API equivalent**| ✓ |
+
+#### Request
+
+> A sample **request** payload
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+}
+```
+
+| Parameter | Required | Data type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` |   |
+
+#### Response
+
+No response payload.
+
+
+
 
 
 
@@ -592,6 +598,47 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 No response payload.
 
 
+### `create_customer`
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/create_customer`  |
+| __Required scopes__| `customers:rw`|
+| **RTM API equivalent**| ✓ |
+| **Webhook**| [`customer_created`](#customer-created) |
+
+#### Request
+
+> A sample **request** payload
+
+```js
+{
+	"email": "customer1@example.com",
+	"avatar": "https://domain.com/avatars/1.jpg",
+	"fields": {
+		"some_key": "some_value"
+	}
+}
+```
+
+| Parameter | Required | Data type     | Notes                          |
+| -------------- | -------- | -------- | ------------------------------ |
+| `name`         | No       | `string` |                                |
+| `email`        | No       | `string` |                                |
+| `avatar`       | No       | `string` | url to customer avatar         |
+| `fields`       | No       | `object` | Map in `"key": "value"` format |
+
+> A sample **response** payload
+
+```js
+{
+  // "User > Customer" object
+}
+```
+
+
 ### `get_customers`
 
 It returns customers list.
@@ -707,45 +754,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 ------------------------------------------------------------------------------------------------
 
 
-### `create_customer`
 
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/create_customer`  |
-| __Required scopes__| `customers:rw`|
-| **RTM API equivalent**| ✓ |
-| **Webhook**| [`customer_created`](#customer-created) |
-
-#### Request
-
-> A sample **request** payload
-
-```js
-{
-	"email": "customer1@example.com",
-	"avatar": "https://domain.com/avatars/1.jpg",
-	"fields": {
-		"some_key": "some_value"
-	}
-}
-```
-
-| Parameter | Required | Data type     | Notes                          |
-| -------------- | -------- | -------- | ------------------------------ |
-| `name`         | No       | `string` |                                |
-| `email`        | No       | `string` |                                |
-| `avatar`       | No       | `string` | url to customer avatar         |
-| `fields`       | No       | `object` | Map in `"key": "value"` format |
-
-> A sample **response** payload
-
-```js
-{
-  // "User > Customer" object
-}
-```
 
 
 ### `update_customer`
