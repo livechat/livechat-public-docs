@@ -46,7 +46,7 @@ The table shows scopes dependency of accessing chat parts:
 
 ## Scope types
 
-### Agents scopes
+#### Agents scopes
 
 | Scope            | role          | Description                                            |
 | ---------------- | ------------- | ------------------------------------------------------ |
@@ -55,7 +55,7 @@ The table shows scopes dependency of accessing chat parts:
 | `access_rules:ro` | administrator | Read permission for auto chat scopes configuration       |
 | `access_rules:rw` | administrator | Read/write permission for auto chat scopes configuration |
 
-### Bot Agents scopes
+#### Bot Agents scopes
 
 | Scope                | role          | Description                                                                      |
 | -------------------- | ------------- | -------------------------------------------------------------------------------- |
@@ -64,7 +64,7 @@ The table shows scopes dependency of accessing chat parts:
 | `agents-bot--all:ro` | administrator | Read permission for bot agents configuration (all in license)                    |
 | `agents-bot--all:rw` | administrator | Read/write permission for bot agents configuration (all in license, delete only) |
 
-### Chats scopes
+#### Chats scopes
 
 | Scope                           | role          | Description                                                                                                                                                                           |
 | ------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -87,7 +87,7 @@ The table shows scopes dependency of accessing chat parts:
 
 _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because you have to join the chat to be able to write to it_
 
-### Customers scopes
+#### Customers scopes
 
 | Scope              | role          | Description                                  |
 | ------------------ | ------------- | -------------------------------------------- |
@@ -96,14 +96,14 @@ _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because
 | `customers:ro`     | normal        | Read permission for customers                |
 | `customers:rw`     | normal        | Read/write permission for customers          |
 
-### Multicast scopes
+#### Multicast scopes
 
 | Scope          | role   | Description                                          |
 | -------------- | ------ | ---------------------------------------------------- |
 | `multicast:rw` | normal | Permission for multicast data to agents or customers |
 
 
-### Properties scopes
+#### Properties scopes
 
 | Scope                | role          | Description                                                                                  |
 | -------------------- | ------------- | -------------------------------------------------------------------------------------------- |
@@ -111,7 +111,7 @@ _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because
 | `properties--my:rw`  | administrator | Read/write permission for chat/thread/events properties configuration (only in my namespace) |
 | `properties--all:ro` | administrator | Read permission for chat/thread/events properties configuration (all in license)             |
 
-### Webhooks scopes
+#### Webhooks scopes
 
 | Scope              | role          | Description                                                                    |
 | ------------------ | ------------- | ------------------------------------------------------------------------------ |

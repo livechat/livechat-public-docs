@@ -22,3 +22,12 @@ If you're wondering which API to use - Agent Chat **RTM API** or **Web API**, ke
 ## Authentication
 
 **Agent authentication** is handled by access tokens. Find out how to get an **access token** from [Agent authorization flows](../authorization/#agent-authorization-flows). All authorization scopes are listed in the [Scopes](#scopes) section. If a method requires certain scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
+
+## Data centers
+
+LiveChat system operates in two data centers: `dal` and `fra`. The default data center is `dal`.
+
+All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
+
+Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with `dal-` you don’t have to specify the header.
+

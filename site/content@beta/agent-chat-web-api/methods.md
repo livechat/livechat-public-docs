@@ -38,26 +38,14 @@ weight: 60
 
 ### `activate_chat`
 
-#### Specifics
+> **`activate_chat`** sample request
 
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/activate_chat`  |
-| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#activate-chat) |
-| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
-
-__*)__ 
-When `chat.users` is defined, one of following scopes is required:
-
-- `chats--all:rw`
-- `chats--access:rw`
-- `chats--my:rw`
-
-
-#### Request
-
-> A sample **request** payload
+   ```json
+  curl "https://api.livechatinc.com/v3.0/agent/action/activate_chat" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H Content-type:application/json \
+  -H "X-API-Version: 3"
+  ```
 
 ```js
 {
@@ -93,18 +81,25 @@ When `chat.users` is defined, one of following scopes is required:
 }
 ```
 
-| Parameter           | Required | Data type     | Notes                                                            |
-| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `chat`                   | Yes      | `object` |                                                                  |
-| `chat.id`                | Yes      | `string` | ID of the chat will be activated                                 |
-| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents                       |
-| `chat.properties`        | No       | `object` | Initial chat properties                                          |
-| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
-| `chat.thread`            | No       | `object` |                                                                  |
-| `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+#### Specifics
 
-> A sample **response** payload
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/activate_chat`  |
+| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
+| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#activate-chat) |
+| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
+
+__*)__ 
+When `chat.users` is defined, one of following scopes is required:
+
+- `chats--all:rw`
+- `chats--access:rw`
+- `chats--my:rw`
+
+#### Request
+
+> **`activate_chat`** sample response 
 
 ```js
 {
@@ -126,6 +121,19 @@ When `chat.users` is defined, one of following scopes is required:
 	}
 }
 ```
+
+| Parameter           | Required | Data type     | Notes                                                            |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
+| `chat`                   | Yes      | `object` |                                                                  |
+| `chat.id`                | Yes      | `string` | ID of the chat will be activated                                 |
+| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents                       |
+| `chat.properties`        | No       | `object` | Initial chat properties                                          |
+| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
+| `chat.thread`            | No       | `object` |                                                                  |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+
+
 
 ### `follow_chat`
 Marks the chat as followed. All changes to the chat will be sent to the requester until the chat is reactivated or unfollowed. Chat members don't need to follow their chats as they should receive all chat pushes regardless of their follower status.
