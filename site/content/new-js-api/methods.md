@@ -2,30 +2,18 @@
 weight: 20
 ---
 
-# API Methods
-
-This API allows you to interact with the Chat Widget embedded on your website by giving you control over the behaviour and data passed through to LiveChat.
-
-## Interacting with the Chat Widget
+# Methods
 
 You can use the following methods to change the visibility of the Chat Widget.
 
-- [maximize](#maximize)
-- [minimize](#minimize)
-- [hide](#hide)
-- [destroy](#destroy)
+Available methods:
 
-## Passing data to LiveChat
+- [Maximize](#maximize)
+- [Minimize](#minimize)
+- [Hide](#hide)
+- [Destroy](#destroy)
 
-Various data can be sent over to the LiveChat integration to be used by your Agents.
-For more information, you can read these articles in our help center: https://www.livechatinc.com/help/custom-variables-configuration/
-
-- [set session variables](#set-session-variables)
-- [update session variables](#update-session-variables)
-- [set visitor name](#set-visitor-name)
-- [set visitor email](#set-visitor-email)
-
-### maximize
+## Maximize
 
 Maximizes the Chat Widget.
 
@@ -33,7 +21,7 @@ Maximizes the Chat Widget.
 
 `LiveChatWidget.call('maximize')`
 
-### minimize
+## Minimize
 
 Minimizes the Chat Widget.
 
@@ -41,7 +29,7 @@ Minimizes the Chat Widget.
 
 `LiveChatWidget.call('minimize')`
 
-### hide
+## Hide
 
 Hides the Chat Widget from the site.
 You will need to use another API call to show it afterwards.
@@ -50,7 +38,7 @@ You will need to use another API call to show it afterwards.
 
 `LiveChatWidget.call('hide')`
 
-### destroy
+## Destroy
 
 Destroys the Chat Widget.
 It won't be available for further actions until the window is refreshed.
