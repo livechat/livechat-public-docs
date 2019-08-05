@@ -2,9 +2,7 @@
 weight: 50
 ---
 
-# API Callbacks
-
-## Reacting to Events with Callbacks
+# Callbacks
 
 Callbacks allow you to react to events triggered by the Chat Widget.
 You might be interested in adding behavior only when a certain event has happened.
@@ -12,50 +10,39 @@ This can be accomplished by subscribing a callback with the API.
 
 Available callbacks:
 
-- [load](#load)
-- [availability changed](#availability-changed)
-- [visibility changed](#visibility-changed)
-- [customer status changed](#customer-status-changed)
-- [new event](#new-event)
-- [form submitted](#form-submitted)
-- [rating submitted](#rating-submitted)
+- [On load](#load)
+- [On availability changed](#availability-changed)
+- [On visibility changed](#visibility-changed)
+- [On customer status changed](#customer-status-changed)
+- [On new event](#new-event)
+- [On form submitted](#form-submitted)
+- [On rating submitted](#rating-submitted)
 
-### load
+## On load
 
 The Chat Widget has finished loading.
-With this callback you will receive [Chat Widget State](#get-state) and [Customer Data](#get-customer-data) as if requested by their getters.
+With this callback you will receive Chat Widget State and Customer Data as if requested by their getters.
 
-Payload:
+#### Payload
 
-```ts
-type StateType = {
-  availability: 'online' | 'offline'
-  visibility: 'maximized' | 'minimized' | 'hidden'
-}
+| param        | type                               | description                 |
+| ------------ | ---------------------------------- | --------------------------- |
+| state        | [WidgetState](#get-state)          | Chat widget's state         |
+| customerData | [CustomerData](#get-customer-data) | Chat widget's customer data |
 
-type CustomerDataType = {
-  id: string // unique customer id
-  name?: string // customer name, as provided
-  email?: string // customer e-mail address, as provided
-  isReturning: boolean // has this customer visited you before
-  status: 'queued' | 'chatting' | 'browsing' | 'invited'
-  fields: Record<string, string> // additional free-form information
-}
-
-LoadingStateType = {
-  state: StateType,
-  customerData: CustomerDataType,
-}
-
-function onLoad(loadingState: LoadingStateType) {
+```js
+function onLoad(initialData) {
   // chat has finished loading
+
+  var state = initialData.state
+  var customerData = initialData.customerData
 }
 
 LiveChatWidget.on('load', onLoad)
 LiveChatWidget.off('load', onLoad)
 ```
 
-### availability changed
+## On availability changed
 
 Availability has changed for the current group.
 
@@ -66,8 +53,8 @@ Availability has changed for the current group.
 | availability | `"online"` \| `"offline"` | Groups's availability |
 
 ```js
-function onAvailabilityChanged(availability) {
-  if (availability === 'online') {
+function onAvailabilityChanged(data) {
+  if (data.availability === 'online') {
     // we're available to chat!
   } else {
     // sadly, no agents are available at the moment.
@@ -78,7 +65,7 @@ LiveChatWidget.on('availability_changed', onAvailabilityChanged)
 LiveChatWidget.off('availability_changed', onAvailabilityChanged)
 ```
 
-### visibility changed
+## On visibility changed
 
 Called the visibility of our Chat Widget is changed.
 This responds to both user actions like maximizing or minimizing the window as well as hiding or showing the Chat Widget through the use of this API.
@@ -90,8 +77,8 @@ This responds to both user actions like maximizing or minimizing the window as w
 | visibility | `"maximized"` \| `"minimized"` \| `"hidden"` | Chat widget's visibility |
 
 ```js
-function onVisibilityChanged(visibility) {
-  switch (visibility) {
+function onVisibilityChanged(data) {
+  switch (data.visibility) {
     case 'maximized':
       break
     case 'minimized':
@@ -105,42 +92,51 @@ LiveChatWidget.on('visibility_changed', onVisibilityChanged)
 LiveChatWidget.off('visibility_changed', onVisibilityChanged)
 ```
 
-### customer status changed
+## On customer status changed
 
 Called when your customer status is changed.
 This can be used to track if and when customers are being invited to chat, are already chatting or if they are waiting for an agent to become available in the queue.
 
 #### Payload
 
-| param  | type                                                      | description       |
-| ------ | --------------------------------------------------------- | ----------------- |
-| status | `'queued'` \| `'chatting'` \| `'browsing'` \| `'invited'` | Customer's status |
+| param  | type                                                     | description       |
+| ------ | -------------------------------------------------------- | ----------------- |
+| status | `'queued'` \| `'chatting'` \| `'invited'` \|`'browsing'` | Customer's status |
 
 ```js
-function onCustomerStatusChanged(status) {
-  // do something
+function onCustomerStatusChanged(data) {
+  switch (data.status) {
+    case 'queued':
+      // customer is in queue
+      break
+    case 'chatting':
+      // customer is currently chatting
+      break
+    case 'invited':
+      // customer received an invitation but not strated the chat
+      break
+    case 'browsing':
+      // customer is in idle state, not queued, not chatting and not received an invitation
+      break
+  }
 }
 
 LiveChatWidget.on('customer_status_changed', onCustomerStatusChanged)
 LiveChatWidget.off('customer_status_changed', onCustomerStatusChanged)
 ```
 
-### new event
+## On new event
 
 Called for both incoming and outgoing events.
 
 #### Payload
 
-```ts
-event: {
-    timestamp: number,
-    type: 'message' | 'rich_message' | 'file',
-    author: {
-        id: string,
-        type: 'customer' | 'agent',
-    },
-}
-```
+| param       | type                                        | description            |
+| ----------- | ------------------------------------------- | ---------------------- |
+| timestamp   | `number`                                    | Event's send timestamp |
+| type        | `'message'` \| `'rich_message'` \| `'file'` | Event's type           |
+| author.id   | `string`                                    | Event's author id      |
+| author.type | `'customer'` \| `'agent'`                   | Event's author type    |
 
 ```js
 function onNewEvent(event) {
@@ -151,7 +147,7 @@ LiveChatWidget.on('new_event', onNewEvent)
 LiveChatWidget.off('new_event', onNewEvent)
 ```
 
-### form submitted
+## On form submitted
 
 Called after a form has been submitted in the chat.
 
@@ -170,7 +166,7 @@ LiveChatWidget.on('form_submitted', onFormSubmitted)
 LiveChatWidget.off('form_submitted', onFormSubmitted)
 ```
 
-### rating submitted
+## On rating submitted
 
 Called after the customer has rated the chat, or canceled the previous rating.
 

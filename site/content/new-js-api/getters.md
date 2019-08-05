@@ -4,31 +4,36 @@ weight: 30
 
 # Getters
 
-## get state
+Available getters:
+
+- [Get state](#get-state)
+- [Get customer data](#get-customer-data)
+
+## Get state
 
 Returns the Chat Widget State.
 This includes widget visibility and license availability.
 
-### Example
+#### Example
 
 `LiveChatWidget.get('state')`
 
-### Response
+#### Response
 
 | param        | type                                         | description              |
 | ------------ | -------------------------------------------- | ------------------------ |
 | availability | `'online'` \| `'offline'`                    | Group's availability     |
 | visibility   | `'maximized'` \| `'minimized'` \| `'hidden'` | Chat widget's visibility |
 
-## get customer data
+## Get customer data
 
 Returns a filtered list of Customer data.
 
-### Example
+#### Example
 
 `LiveChatWidget.get('customer_data')`
 
-### Response
+#### Response
 
 | param            | type                                                      | description                                |
 | ---------------- | --------------------------------------------------------- | ------------------------------------------ |
