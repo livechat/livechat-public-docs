@@ -4,7 +4,7 @@ weight: 40
 
 ## Setters
 
-### Set session variables
+### set session variables
 
 Creates new session variables, or replaces the ones set previously.
 
@@ -17,7 +17,7 @@ Please note that this will include new session variables with those previously s
 
 #### Example
 
-`LiveChatWidget.call('udpate_session_variables', { cart_value: '450' })`
+`LiveChatWidget.call('update_session_variables', { cart_value: '450' })`
 
 ### set visitor name
 
