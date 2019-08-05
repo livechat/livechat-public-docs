@@ -17,9 +17,13 @@ This API works only with the [new Chat Widget](https://developers.livechatinc.co
 
 The API is accessed through the `LiveChatWidget` object.
 It is being initialized within the LiveChat tracking code, which is used to install our Chat Widget on your site.
-If you haven't installed the code already, you can find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code). The API requires the newest version of the code snippet, so if you had installed the code a while ago and the API presented here doesn't work, you should either update the code or use the [old version of JS API](https://developers.livechatinc.com/docs/js-api/#introduction).
+If you haven't installed the code already, you can find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code).
 
-This object comes with four methods:
+The API requires the newest version of the code snippet (≥2.0), so if you had installed the code a while ago and the API presented here doesn't work, you should either update the code or use the [old version of JS API](https://developers.livechatinc.com/docs/js-api/#introduction). You can check the current version of your snippet by calling the `scriptTagVersion` function:
+
+`LiveChatWidget.scriptTagVersion()`
+
+The `LiveChatWidget` object comes with four methods:
 
 - `on` and `off` which are responsible for handling callbacks,
 - `call` which allows you to trigger functions,
