@@ -15,7 +15,7 @@ Real-Time Messaging API (RTM API) is based on a websocket-like connection. Clien
 ## When to use RTM API
 If you're wondering which API to use - Agent Chat **RTM API** or **Web API**, keep on reading.
 
-**Real-Time Messaging API** allows for building stateful integrations that require **logging in** and **maintaning the connection**. Since connection maintenance is required, the implementation might be more challanging than with Web API.
+**Real-Time Messaging API** allows for building stateful integrations that require **logging in** and **maintaining the connection**. Since connection maintenance is required, the implementation might be more challanging than with Web API.
 
 Agent Chat RTM API enables communication in real time. It supports pushes like `sneak peek`, `typing indicator`, and other. Web API doesn’t have equivalent webhooks, which means you won't be informed about certain events using Web API. 
 
