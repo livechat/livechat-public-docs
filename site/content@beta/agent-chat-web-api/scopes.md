@@ -13,8 +13,6 @@ Scopes define the access to certain resources.
 - all `all` scopes contain `access` privileges and `my` privileges
 
 
-For more details check [here](../services/sso/typedef.go).
-
 ## Accessing chat 
 
 This chart shows every possible chats scenarios:
