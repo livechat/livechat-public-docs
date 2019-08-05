@@ -6,16 +6,16 @@ weight: 30
 
 There are two primary Chat APIs:
 
-- [Agent Chat API](https://developers.livechatinc.com/beta-docs/agent-chat-api/), which serves to join a chat as Agent.
-- [Customer Chat API](https://developers.livechatinc.com/beta-docs/customer-chat-api/), which serves to join a chat as Customer.
+- **Agent Chat API**, which serves to join a chat as Agent.
+- **Customer Chat API**, which serves to join a chat as Customer.
 
 The separation of Chat APIs helps you decide which set of methods you should use. It depends on the role of the chat user. Want to join a chat as Agent? Refer to the Agent Chat API. Want to send messages as Customer? Use the Customer Chat API.
 
 To use both APIs, you need to be _authorized_. This topic is thoroughly explained in the [**Authorizing API calls**](../authorization) document.
 
-### RTM API vs. Web API
+## RTM API vs. Web API
 
-Agent Chat API and Customer Chat API can be used either as **Real Time Messaging APIs (RTM APIs)** or **Web API**. 
+Agent Chat API and Customer Chat API can be used either as **Real-Time Messaging APIs (RTM APIs)** or **Web APIs**. 
 
 To learn about differences between these two API types, see the comparison below:
 
@@ -23,18 +23,16 @@ To learn about differences between these two API types, see the comparison below
 |**Characteristics**|     **RTM API**      | **Web API**               |
 |:-----------------:|:--------------------:|:-------------------------:|
 |**connection type**|   stateful  e.g. websocket        |  stateless, via XHR requests     |
-| **finds out about state changes via**  |   [pushes](#pushes)      |    [webhooks](#webhooks)   |
+| **finds out about state changes via**  |   [pushes](../agent-chat-rtm-api/pushes)      |    [webhooks]((../agent-chat-web-api/pushes))   |
 |**used by** |Agent App, Chat Widget|external apps, integrations|
+|**documentation** |[Agent Chat RTM API](../agent-chat-rtm-api/#when-to-use-rtm-api) [Customer Chat RTM API](../customer-chat-api/#real-time-messaging-api) |[Agent Chat Web API](../agent-chat-web-api/#when-to-use-web-api) [Customer Chat Web API](../customer-chat-api/#web-api)|
 
+If you're not sure, which implementation to choose, we suggest reading about particular APIs. You'll find the **When to use RTM/Web API** section in each document - refer to the table above for links.
 
-<!-- RTM API enables real-time communication. Websocket transport allows for **pushes**, which are server-client methods used to keep application state up-to-date. In case of the Agent App and the Chat Widget, the continuous connection is crucial. That's why they both implement RTM API. 
-
-Integrations built upon the LiveChat Platform don't usually need to keep the connection open continuously. In the context of app functioning, short delays are insignificant. It's the reason why **Web API** is more commonly used than **RTM API** when building an integration. Just like REST API, Web API is based on sending the **request** and getting the **response**. Instead of pushes, Web API makes use of **webhooks**.
--->
-
+<!--
 ## Events
 
-**Events** are portions of data sent to a chat using the [send_event](https://developers.livechatinc.com/beta-docs/agent-chat-api/#send-event) method. 
+ **Events** are portions of data sent to a chat using the [send_event](https://developers.livechatinc.com/beta-docs/agent-chat-api/#send-event) method. 
 
 See reference for a particular event type, either in the Agent or Customer Chat API: 
 
@@ -67,7 +65,6 @@ The [incoming event](../agent-chat-api/#incoming-event) push will inform you abo
 | **thread** | `incoming_chat_thread` `thread closed` `chat_thread_tagged` `chat_thread_untagged` `last_seen_timestamp_updated` | `incoming_chat_thread` `thread closed` `last_seen_timestamp_updated` |
 | **typing indicator** | `incoming_typing_indicator`  | `incoming_typing_indicator` |
 | **user** | `agent_updated` `agent_disconnected` `chat_user_added` `chat_user_removed` `customer_created` `customer_updated` `customer_visit_started` `customer_visit_ended` `customer_page_updated` | `chat_user_added` `chat_user_removed` `customer_updated` `customer_page_updated` `customer_side_storage_updated` `customer_disconnected`|
-
-<!-- Gdzie dac: incoming_rich_message_postback oraz incoming_multicast? -->
+-->
 
 

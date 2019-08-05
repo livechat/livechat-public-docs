@@ -72,7 +72,7 @@ We can distinguish **global webhooks** and **bot-specific webhooks**. Once **glo
 
 Bot Agents are similar to their human counterparts. They can join chats and post messages, but they also have a special feature: you can attach [webhooks](../configuration-api/#webhooks) to them.
 
-<img src="images/bot-agent.jpg" alt="LiveChat Bot Agent" class="has-border"/>
+<!-- <img src="images/bot-agent.jpg" alt="LiveChat Bot Agent" class="has-border"/> -->
 
 <!-- Zmienic ta grafike!!! -->
 
@@ -80,7 +80,7 @@ Bot Agents are created and managed via the [Configuration API](../configuration-
 Bot Agents are authorized with the use of the Agent's token. Using Bot Agents requires sending the `author_id` property.
 They can listen to incoming webhooks (or pushes) and react to them.
 
-#### Reacting to keywords
+<!-- #### Reacting to keywords
 
 Bot Agents can react to specific keywords appearing in the chat. Let's say you set a _pizza_ keyword. Your Bot Agent will join the chat whenever the keyword is used and send the _"Woohoo!"_ message to all agents in the chat. Then, it'll leave the chat.
 
@@ -91,7 +91,7 @@ Here are the major differences between Bot Agents and regular Agents:
 * You can't log in to a Bot Agent account.
 * You can't set password for a Bot Agent account.
 * Bot Agents don't have email addresses. Their <code>agent_id</code> is a random hash.
-* You can assign webhooks to Bot Agents as a communication channel for [pushes](../agent-chat-api/#pushes).
+* You can assign webhooks to Bot Agents as a communication channel for [pushes](../agent-chat-api/#pushes). -->
 
 <!-- ### Technical notes
 
