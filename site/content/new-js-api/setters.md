@@ -4,7 +4,7 @@ weight: 40
 
 ## Setters
 
-### Set session variables
+### set session variables
 
 Creates new session variables, or replaces the ones set previously.
 
