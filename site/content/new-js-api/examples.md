@@ -27,7 +27,7 @@ if (!isWidgetVisible) {
 ## Open widget using button
 
 Show hidden or minimized widget after button has been clicked.
-Yo can change widget visibility as described in our [Help Center](https://www.livechatinc.com/help/chat-widget-visibility/)
+You can change widget visibility as described in our [Help Center](https://www.livechatinc.com/help/chat-widget-visibility/)
 
 ```html
 <html>
