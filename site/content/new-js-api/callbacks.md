@@ -67,7 +67,7 @@ LiveChatWidget.off('availability_changed', onAvailabilityChanged)
 
 ## On visibility changed
 
-Called the visibility of our Chat Widget is changed.
+Called once the visibility of our Chat Widget has changed.
 This responds to both user actions like maximizing or minimizing the window as well as hiding or showing the Chat Widget through the use of this API.
 
 #### Payload
@@ -94,7 +94,7 @@ LiveChatWidget.off('visibility_changed', onVisibilityChanged)
 
 ## On customer status changed
 
-Called when your customer status is changed.
+Called when your customer status has changed.
 This can be used to track if and when customers are being invited to chat, are already chatting or if they are waiting for an agent to become available in the queue.
 
 #### Payload
