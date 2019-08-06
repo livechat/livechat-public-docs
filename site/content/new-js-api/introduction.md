@@ -25,9 +25,10 @@ The API requires the newest version of the code snippet (≥2.0), so if you had 
 
 The `LiveChatWidget` object comes with four methods:
 
-- `on` and `off` which are responsible for handling callbacks,
-- `call` which allows you to trigger functions,
-- `get` which makes it possible to fetch data.
+- `on` registers a callback function for a specific event
+- `off` removes a callback registered by `on`
+- `call` allows you to trigger functions
+- `get` makes it possible to fetch data.
 
 Using these methods is based on passing the correct arguments in the following pattern: `LiveChatWidget.method('method', 'data')`.
 For example, if you would like to set your Customer's name to `John Doe`, this is how it would look like:
