@@ -40,7 +40,6 @@ Here are some general rules, which summarize the previous section and add new in
 
 To better understand the flow between services, watch a short video.
 
-<!-- Animacja do zmiany. Zajmie sie tym Gosia oraz Bartek. -->
 
 <video loop width="750" height="500" style="height: auto;" controls>
 <source type="video/mp4" src="/beta-docs/platform-overview/images/simple_event_schema.mp4">
@@ -50,7 +49,6 @@ To better understand the flow between services, watch a short video.
 ## Chat routing
 
 Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents who use the same license.  
-<!-- In the future, it will be possible to create a custom routing mechanism and run it on the LiveChat platform. -->
 
 Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [Understanding chat routing](https://www.livechatinc.com/help/understanding-chat-routing/).
 
@@ -58,50 +56,5 @@ Chats are being assigned to agents **either automatically or manually**. Our def
 #### Router system messages
 
 While the chat changes its state, the router sends system messages. Read more about **system messages** in [Agent](#agent-system-messages) and [Customer](#customer-system-messages) Chat API.
-
-<!-- Nie wiem trochę o co chodzi z tymi rodzajami system messages. Czy z grubsza mozna je podzielić na takie po stronie Agenta i po stronie Customera. Wtedy mona by tu wymienic typy
-tak jak w przypadku pushy czy eventów. Wykomentowuje przykłądy, bo to chyba nie miejsce na to. -->
-
-<!-- ####  Overview
-
-| Message text | System message type |
-|--------------|---------------------|
-| `Chat is unassigned because <agent_name> hasn't replied in <minutes_number> minutes` | `routing.unassigned` |
-| `Chat assigned to <agent_name> because <agent_name> hasn't replied in <minutes_number> minutes` | `routing.assigned` |
-| `Chat archived due to long inactivity` | `routing.archived` |
-| `Chat is idle due to <minutes_number> minutes of inactivity` | `routing.idle` |
-| `Chat archived because customer was banned by <agent> for N days` | `customer_banned` |
-
-#### System messages: routing.assigned
-
-##### General info
-
-| Message text | System message type |
-|--------------|---------------------|
-| `Chat assigned to <agent_name>` | `routing.assigned` |
-
-##### Use cases
-
-| Case| Routing type |
-|--------------|---------------------|
-| A new chat is started and an agent is available | automatic |
-| An agent has left the chat and another agent is available | automatic |
-| An agent got available for an unassigned chat | automatic |
-
-#### System messages: routing.unassigned
-
-##### General info
-
-| Message text | System message type |
-|--------------|---------------------|
-| `Chat is unassigned` | `routing.unassigned` |
-
-##### Use cases
-
-| Case| Routing type |
-|--------------|---------------------|
-| An agent has left the chat and there were no other agents are available | automatic |
-| No free agent slots available | automatic |
-| A chat is unassigned | manual | -->
 
 
