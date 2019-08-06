@@ -826,17 +826,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 ### `send_event`
 
 #### Specifics
-|  |  |
-|-------|--------|
-| **Action**   | `send_event`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#send-event) |
-| **Push message**| [`incoming_event`](#incoming-event ) or [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
-__*)__ The `incoming_chat_thread` push will be sent instead of `incoming_event `only if the event starts a new thread.
-
-<!-- 
-v3.1
 |  |  |
 |-------|--------|
 | **Action**   | `send_event`  |
