@@ -4,6 +4,8 @@ weight: 30
 
 # Getters
 
+You can use the getters to fetch the data from Chat Widget.
+
 Available getters:
 
 - [Get state](#get-state)
