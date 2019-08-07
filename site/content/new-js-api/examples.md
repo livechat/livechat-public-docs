@@ -4,6 +4,8 @@ weight: 70
 
 # Examples
 
+Here you can find some example usage of Chat Widget JavaScript API. They all require widget to be installed on the page and `window.LiveChatWidget` to be defined.
+
 ## Show widget after time
 
 Show chat widget after 30 seconds and keep it open after reload.
