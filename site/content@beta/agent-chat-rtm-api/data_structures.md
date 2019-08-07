@@ -30,7 +30,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 ## Properties
 
-> General format of **Properties** 
+> The general format of **Properties** 
 
 ```js
 {
@@ -150,7 +150,7 @@ Property domain can be configured in two ways:
 |----------|:-------------:|------:|
 | `access` | optional |  -   |
 | `active` |  ? | values: `true` (thread is still active) or `false`(thread no longer active)|
-| `events` | optional |doesn't exists if `restricted_access` is `true`)|
+| `events` | optional |doesn't exists if `restricted_access` is `true`|
 | `properties` |    optional  |  -  |
 | `restricted_access` | optional |   -  |
 

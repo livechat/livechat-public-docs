@@ -50,7 +50,7 @@ These are the available **event types**:
 |----------|:-------------:|------:|
 | `custom_id` |  optional | - |
 | `properties` | optional |   -  |
-| `recipients` |    required   |  can take the following values: `all` (default), `agents` |
+| `recipients` |    required   |  possible values: `all` (default), `agents` |
 
 
 ## File
@@ -89,7 +89,7 @@ These are the available **event types**:
 | `content_type` | required | supported image types: `image/png`, `image/jpeg`, `image/gif` |
 | `custom_id` |  optional | - |
 | `properties` |  optional | - |
-| `recipients` |    required   |  can take the following values: `all` (default), `agents` |
+| `recipients` |    required   |  possible values: `all` (default), `agents` |
 | `system_message_type` | required |   -  |
 | `width`, `height`, `thumbnail_url`, `thumbnail2x_url`| optional | only for images |
 
@@ -162,7 +162,7 @@ These are the available **event types**:
 |----------|:-------------:|------:|
 | `custom_id`  |    optional   | -   |
 | `properties` | optional |   -  |
-| `recipients` |  required | can take the following values: `all` (default), `agents` |
+| `recipients` |  required | possible values: `all` (default), `agents` |
 | `name`, `email`, `question`, `textarea`|optional | for open questions (text answer) |
 | `radio`, `select`  |    optional   | for single-choice questions |
 | `checkbox` | optional  | for multiple-choice questions |
@@ -208,7 +208,7 @@ These are the available **event types**:
 | `postback.type` | required | required only if `postback.value` is present |
 | `postback.value`| required | required only if `postback.type` is present |
 | `properties` | optional |   -  |
-| `recipients` |  required | can take the following values: `all` (default), `agents` |
+| `recipients` |  required | possible values: `all` (default), `agents` |
 | `text` | required | max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages |
 
 
@@ -238,7 +238,7 @@ These are the available **event types**:
 | Field  |      Req./Opt.     |  Note |
 |----------|:-------------:|------:|
 | `custom_id` |  optional | - |
-| `recipients` |    required   |  can take the following values: `all` (default for system events), `agents` (for events sent via send_event)  |
+| `recipients` |    required   |  possible values: `all` (default for system events), `agents` (for the events sent via `send_event`)  |
 | `system_message_type` | required |   -  |
 
 
@@ -247,178 +247,178 @@ Here's the list of all system messages you might come across:
 #### `agent_added`
 |  Content    |  Generated when |
 |:-------------:|------:|
-|  _%initiator% added %agent% to the chat_ | agent was added to chat via `add_user_to_chat` request and is not the first agent ever in the chat |
+|  _%initiator% added %agent% to the chat_ | agent was added to chat via `add_user_to_chat` request and is not the first agent ever in the chat. |
 
 #### `agent_joined` 
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%agent% joined the chat_  | agent added themselves to chat via `add_user_to_chat` request and is not the first agent ever in the chat |
+| _%agent% joined the chat_  | agent added themselves to chat via `add_user_to_chat` request and is not the first agent ever in the chat. |
 
 #### `agent_removed`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%initiator% removed %agent% from the chat_ | agent was removed from chat via the `remove_user_from_chat` request |
+| _%initiator% removed %agent% from the chat_ | agent was removed from chat via the `remove_user_from_chat` request. |
 
 
 #### `archived_customer_disconnected`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% left the chat_ | chat ended after customer left the website |
+| _%customer% left the chat_ | chat ended after customer left the website. |
 
 #### `chat_transferred`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%initiator% transferred the chat to %targets%_ | chat was transferred via the `transfer_chat` request |
+| _%initiator% transferred the chat to %targets%_ | chat was transferred via the `transfer_chat` request. |
 
 #### `customer_added`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%initiator% added %customer% to the chat_ | customer was added to chat via `add_user_to_chat` request |
+| _%initiator% added %customer% to the chat_ | customer was added to chat via `add_user_to_chat` request. |
 
 #### `customer_banned`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | chat ended because customer was banned via the `ban_customer` request |
+| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | chat ended because customer was banned via the `ban_customer` request. |
 
 #### `customer_removed`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%initiator% removed %customer% from the chat_ | customer was removed from chat via `remove_user_from_chat` request|
+| _%initiator% removed %customer% from the chat_ | customer was removed from chat via `remove_user_from_chat` request.|
 
 #### `manual_archived_agent`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%agent% archived the chat_ | agent closed chat via close_thread request |
+| _%agent% archived the chat_ | agent closed chat via close_thread request. |
 
 #### `manual_archived_customer`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% archived the chat_ | customer closed chat via close_thread request |
+| _%customer% archived the chat_ | customer closed chat via close_thread request. |
 
 #### `rating.chat_commented`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% left the following comment: %comment%_ | chat was commented by customer |
+| _%customer% left the following comment: %comment%_ | chat was commented by customer. |
 
 #### `rating.chat_rated`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% rated the chat as %score%_ | chat was rated by customer |
+| _%customer% rated the chat as %score%_ | chat was rated by customer. |
 
 #### `rating.chat_rating_canceled`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% canceled the chat rating_ | chat rating was cancelled by customer |
+| _%customer% canceled the chat rating_ | chat rating was cancelled by customer. |
 
 #### `routing.archived_deleted`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _The chat was closed because %agent% account had been deleted_ | chat was archived after agent was removed from license, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% account had been deleted_ | chat was archived after agent was removed from license, no other agent could be selected and queues were disabled. |
 
 #### `routing.archived_disconnected`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _The chat was closed because %agent% had lost internet connection_ | chat was archived after agent unexpectedly loses connection, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% had lost internet connection_ | chat was archived after agent unexpectedly loses connection, no other agent could be selected and queues were disabled. |
 
 #### `routing.archived_inactive`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat archived due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time |
+| _Chat archived due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time. |
 
 #### `routing.archived_offline`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat archived due to no available agents_ | no agent could be selected after chat was placed in queue |
+| _Chat archived due to no available agents_ | no agent could be selected after chat was placed in queue. |
 
 #### `routing.archived_other`
 |  Content    |  Generated when |
 |:----------------:|------:|
-|  _The chat was closed_  | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled |
+|  _The chat was closed_  | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled. |
 
 #### `routing.archived_remotely_signed_out`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _The chat was closed because %agent% had been remotely signed out_ | chat was archived after agent was logged out, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% had been remotely signed out_ | chat was archived after agent was logged out, no other agent could be selected and queues were disabled. |
 
 #### `routing.archived_signed_out` 
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _The chat was closed because %agent% had signed out_ | chat was archived after agent logged out, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% had signed out_ | chat was archived after agent logged out, no other agent could be selected and queues were disabled. |
 
 #### `routing.assigned_deleted`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% account had been deleted_ | chat was assigned to new agent after previous one was removed from license |
+| _Chat assigned to %addedAgent% because %removedAgent% account had been deleted_ | chat was assigned to new agent after previous one was removed from license. |
 
 #### `routing.assigned_disconnected`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% had lost internet connection_ | chat was assigned to new agent after previous one unexpectedly lost connection |
+| _Chat assigned to %addedAgent% because %removedAgent% had lost internet connection_ | chat was assigned to new agent after previous one unexpectedly lost connection. |
 
 #### `routing.assigned_inactive` 
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | chat was assigned to new agent after previous one failed to response in a timely manner |
+| _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | chat was assigned to new agent after previous one failed to response in a timely manner. |
 
 #### `routing.assigned_other`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _The chat was closed_ | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled |
+| _The chat was closed_ | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled. |
 
 #### `routing.assigned_remotely_signed_out`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% had been remotely signed out_ | chat was assigned to new agent after previous one was logged out |
+| _Chat assigned to %addedAgent% because %removedAgent% had been remotely signed out_ | chat was assigned to new agent after previous one was logged out. |
 
 #### `routing.assigned_signed_out`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% had signed out_ | chat was assigned to new agent after previous one logged out |
+| _Chat assigned to %addedAgent% because %removedAgent% had signed out_ | chat was assigned to new agent after previous one logged out. |
 
 #### `routing.idle`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat is idle due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time |
+| _Chat is idle due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time. |
 
 #### `routing.unassigned_deleted`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Customer was queued because %agent% account has been deleted_ | chat was queued after agent was removed from license |
+| _Customer was queued because %agent% account has been deleted_ | chat was queued after agent was removed from license. |
 
 #### `routing.unassigned_disconnected`
 |  Content    |  Generated when |
 |:-------------:|------:|
- _Customer was queued because %agent% had lost internet connection_ | chat was queued after agent unexpectedly lost connection |
+ _Customer was queued because %agent% had lost internet connection_ | chat was queued after agent unexpectedly lost connection. |
 
 #### `routing.unassigned_other`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat is unassigned_ | chat was queued after agent was removed from chat for other reasons |
+| _Chat is unassigned_ | chat was queued after agent was removed from chat for other reasons. |
 
 #### `routing.unassigned_remotely_signed_out`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Customer was queued because %agent% had been remotely signed out_ | chat was queued after agent was logged out |
+| _Customer was queued because %agent% had been remotely signed out_ | chat was queued after agent was logged out. |
 
 #### `routing.unassigned_signed_out`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Customer was queued because %agent% had signed out_ | chat was queued after agent logged out |
+| _Customer was queued because %agent% had signed out_ | chat was queued after agent logged out. |
 
 #### `system_archived` 
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _Chat archived_ | license was moved to another lc_serv instance while there were still active chats |
+| _Chat archived_ | license was moved to another lc_serv instance while there were still active chats. |
 
 #### `transcript_requested`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% requested the chat transcript to be sent to %email%_ | customer enables transcript |
+| _%customer% requested the chat transcript to be sent to %email%_ | customer enables transcript. |
 
 #### `transcript_sent`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%customer% sent the chat transcript to %email%_ | achat ended with transcript enabled by customer |
+| _%customer% sent the chat transcript to %email%_ | achat ended with transcript enabled by customer. |
 
 
 ## Rich message
@@ -481,11 +481,11 @@ Here's the list of all system messages you might come across:
 | `custom_id` | optional |   -  |
 | `elements` |    optional  | can contain 1 - 10 `element` objects |
 | `elements.buttons` | optional | `buttons` can contain 1 - 11 `button` objects |
-| `elements.buttons.postback_id` | ? | describes the action sent via `send_rich_message_postback`; multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all those buttons at once |
-| `elements.buttons.user_ids` | ? | describes users that sent the postback with `"toggled": true` |
+| `elements.buttons.postback_id` | optional | Describes the action sent via `send_rich_message_postback`; multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.user_ids` | optional | describes users that sent the postback with `"toggled": true` |
 | `elements.image`| optional | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height` |
 | `elements.subtitle`| optional |  |
 | `elements.title`| optional |  |
 | `properties` | optional |   -  |
-| `recipients` |  required | can take the following values: `all` (default), `agents` |
-| `template_id` | ? | describes how the event should be presented in an app |
+| `recipients` |  required | possible values: `all` (default), `agents` |
+| `template_id` | ? | Describes how the event should be presented in an app. |

@@ -86,10 +86,10 @@ When `chat.users` is defined, one of following scopes is required:
 | Request object           | Required | Type     | Notes                                                            |
 | ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
 | `chat`                   | Yes      | `object` |                                                                  |
-| `chat.id`                | Yes      | `string` | ID of the chat will be activated                                 |
-| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents                       |
+| `chat.id`                | Yes      | `string` | The ID of the chat, which will be activated.                     |
+| `chat.access`            | No       | `object` | Chat access to set, default to all agents                       |
 | `chat.properties`        | No       | `object` | Initial chat properties                                          |
-| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
+| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer).|
 | `chat.thread`            | No       | `object` |                                                                  |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |

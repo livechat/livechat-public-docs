@@ -93,7 +93,7 @@ weight: 40
 | `customer_last_event_created_at` | optional |   -  |
 | `created_at` |  optional | - |
 | `email` |  optional | - |
-| `fields` |  optional | isn't present when the chat is archived |
+| `fields` |  optional | not present when the chat is archived |
 | `name`  |  optional | - |
 | `last_seen_timestamp` |  optional | - |
 | `last_visit` |  optional | - |
