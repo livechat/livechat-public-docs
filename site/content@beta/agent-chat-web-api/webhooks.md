@@ -42,7 +42,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `access_granted`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#access-granted) |
+| **Push equivalent**| [`access_granted`](../agent-chat-rtm-api/#access-granted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#access-granted)</sup> |
 
 
 #### Webhook payload
@@ -75,7 +75,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `access_revoked`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#access-revoked) |
+| **Push equivalent**| [`access_revoked`](../agent-chat-rtm-api/#access-revoked)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#access-revoked)</sup> |
 
 
 #### Webhook payload
@@ -108,7 +108,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `access_set`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#access-set) |
+| **Push equivalent**| [`access_set`](../agent-chat-rtm-api/#access-set)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#access-set)</sup> |
 
 
 #### Webhook payload
@@ -140,7 +140,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_user_added`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-user-added) |
+| **Push equivalent**| [`chat_user_added`](../agent-chat-rtm-api/#chat-user-added)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-user-added)</sup> |
 
 
 #### Webhook payload
@@ -169,7 +169,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_user_removed`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-user-removed) |
+| **Push equivalent**| [`chat_user_removed`](../agent-chat-rtm-api/#chat-user-removed)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-user-removed)</sup> |
 
 
 #### Webhook payload
@@ -197,7 +197,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `customer_created`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#customer-created) |
+| **Push equivalent**| [`customer_created`](../agent-chat-rtm-api/#customer-created)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#customer-created)</sup> |
 
 
 ## events
@@ -221,7 +221,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_event`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#incoming-event) |
+| **Push equivalent**| [`incoming_event`](../agent-chat-rtm-api/#incoming-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-event)</sup> |
 
 
 ### `event_updated`
@@ -243,7 +243,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `event_updated`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#event-updated) |
+| **Push equivalent**| [`event_updated`](../agent-chat-rtm-api/#event-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#event-updated)</sup> |
 
 
 
@@ -269,7 +269,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_properties_deleted`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-properties-deleted) |
+| **Push equivalent**| [`chat_properties_deleted`](../agent-chat-rtm-api/#chat-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-properties-deleted)</sup> |
 
 #### Webhook payload
 
@@ -300,7 +300,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_properties_deleted`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-thread-properties-deleted) |
+| **Push equivalent**| [`chat_thread_properties_deleted`](../agent-chat-rtm-api/#chat-thread-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-properties-deleted)</sup> |
 
 
 #### Webhook payload
@@ -333,7 +333,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `event_properties_deleted`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#event-properties-deleted) |
+| **Push equivalent**| [`event_properties_deleted`](../agent-chat-rtm-api/#event-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#event-properties-deleted)</sup> |
 
 #### Webhook payload
 
@@ -367,7 +367,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_properties_updated`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-properties-updated) |
+| **Push equivalent**| [`chat_properties_updated`](../agent-chat-rtm-api/#chat-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-properties-updated)</sup> |
 
 
 #### Webhook payload
@@ -406,7 +406,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_properties_updated`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-thread-properties-updated) |
+| **Push equivalent**| [`chat_thread_properties_updated`](../agent-chat-rtm-api/#chat-thread-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-properties-updated)</sup> |
 
 
 #### Webhook payload
@@ -441,7 +441,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `event_properties_updated`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#event-properties-updated) |
+| **Push equivalent**| [`event_properties_updated`](../agent-chat-rtm-api/#event-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#event-properties-updated)</sup> |
 
 
 #### Webhook payload
@@ -471,7 +471,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_tagged`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-thread-tagged) |
+| **Push equivalent**| [`chat_thread_tagged`](../agent-chat-rtm-api/#chat-thread-tagged)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-tagged)</sup> |
 
 
 ### `chat_thread_untagged`
@@ -491,7 +491,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_untagged`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#chat-thread-tagged) |
+| **Push equivalent**| [`chat_thread_untagged`](../agent-chat-rtm-api/#chat-thread-tagged)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-tagged)</sup> |
 
 
 ## other
@@ -525,7 +525,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_chat_thread`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#incoming-chat-thread) |
+| **Push equivalent**| [`incoming_chat_thread`](../agent-chat-rtm-api/#incoming-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-chat-thread)</sup> |
 
 
 ### `incoming_rich_message_postback`
@@ -550,7 +550,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_rich_message_postback`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#incoming-rich-message-postback) |
+| **Push equivalent**| [`incoming_rich_message_postback`](../agent-chat-rtm-api/#incoming-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-rich-message-postback)</sup> |
 
 
 
@@ -648,7 +648,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `thread_closed`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#thread-closed) |
+| **Push equivalent**| [`thread_closed`](../agent-chat-rtm-api/#thread-closed)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#thread-closed)</sup> |
 
 #### Webhook payload
 
@@ -675,7 +675,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 |  |  |
 |-------|--------|
 | **Action**   | `last_seen_timestamp_updated`  |
-| **Push equivalent**| [✓](../agent-chat-rtm-api/#last-seen-timestamp-updated) |
+| **Push equivalent**| [`last_seen_timestamp_updated`](../agent-chat-rtm-api/#last-seen-timestamp-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#last-seen-timestamp-updated)</sup> |
 
 
 

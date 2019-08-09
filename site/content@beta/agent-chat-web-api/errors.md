@@ -39,9 +39,4 @@ weight: 80
 \* `misdirected_request` error returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
 
-![Error](error_flickr.png)
-
-
-1. Wszystkie errory zebrane w jednej sekcji czy poszczegolne errory w widoku metod?
-2. Wspomnienie o typowych errorach w widoku metody i link do glownego rozdzialu.
 

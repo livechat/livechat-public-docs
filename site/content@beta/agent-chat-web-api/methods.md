@@ -1598,7 +1598,7 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 
 #### Request
 
-| Parameter | Required | Data type     | Notes |
+| Parameter | Required | Data type     |  |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
 
@@ -1641,12 +1641,12 @@ No response payload.
 
 
 #### Request
+      
 
-| Parameter | Required | Data type     | Notes |
+| Parameter | Required | Data type     |  |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
-| `timestamp`    | No       | `number` |       |
-
+| `timestamp`  | No       | `number` |     |
 
 
 
@@ -1676,7 +1676,7 @@ No response payload.
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/upload_image`  |
 | __Required scopes__| - |
 | **RTM API equivalent**| - |
-| **Webhook**| - |
+| **Push message**| - |
 
 #### Request
 
