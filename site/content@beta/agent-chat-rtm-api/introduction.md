@@ -21,13 +21,13 @@ Agent Chat RTM API enables communication in real time. It supports pushes like `
 
 Also, the RTM API will be a better choice if you want to avoid time delays or presume significant traffic. 
 
-**Not what you're looking for?** Perhaps, you need to use [**Agent Chat Web API**](../agent-chat-web-api) instead.
+**Not what you're looking for?** Perhaps, you need to use [**Agent Chat Web API**](../agent-chat-web-api)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api)</sup> instead.
 
 ## Authentication
 
-**Agent authentication** is handled by access tokens. Find out how to get an **access token** from [Agent authorization flows](../authorization/#agent-authorization-flows). Client must authorize himself by [logging in](#login) within 30 seconds, otherwise the connection will be closed.
+**Agent authentication** is handled by access tokens. Find out how to get an **access token** from [Agent authorization flows](../authorization/#agent-authorization-flows)<sup>[![LiveChat Link](link.svg)](../authorization/#agent-authorization-flows)</sup>. Client must authorize himself by [logging in](#login) within 30 seconds, otherwise the connection will be closed.
 
-After successful authorization, client should **ping the server** each 15 seconds, otherwise the connection will be closed after about 30 seconds of inactivity. If the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2) is unavailable (in web browsers), client should use a protocol message with the ping action. Until authorization is completed, ping is a no-op. 
+After successful authorization, client should **ping the server** each 15 seconds, otherwise the connection will be closed after about 30 seconds of inactivity. If the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2)<sup>[![LiveChat Link](link.svg)](https://tools.ietf.org/html/rfc6455#section-5.5.2)</sup> is unavailable (in web browsers), client should use a protocol message with the ping action. Until authorization is completed, ping is a no-op. 
 
 All authorization scopes are listed in the [Scopes](#scopes) section. If a method requires particular scopes, you'll find them included in the method description. 
 
