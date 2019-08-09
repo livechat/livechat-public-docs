@@ -34,7 +34,7 @@ weight: 60
 |-------|--------|
 | **Action**   | `activate_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#activate-chat) |
+| **Web API equivalent**|[`activate_chat`]((../agent-chat-web-api/#activate-chat)) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#activate-chat)</sup>|
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -43,7 +43,6 @@ When `chat.users` is defined, one of following scopes is required:
 - `chats--all:rw`
 - `chats--access:rw`
 - `chats--my:rw`
-
 
 #### Request
 
@@ -128,7 +127,7 @@ Marks the chat as followed. All changes to the chat will be sent to the requeste
 |-------|--------|
 | **Action**   | `follow_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#follow-chat) |
+| **Web API equivalent**|[`follow_chat`](../agent-chat-web-api/#follow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#follow-chat)</sup> |
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__
@@ -167,7 +166,7 @@ Starts a chat.
 |-------|--------|
 | **Action**   | `start_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#start-chat) |
+| **Web API equivalent**| [`start_chat`](../agent-chat-web-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#start-chat)</sup> |
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -256,7 +255,7 @@ When `chat.users` is defined, one of following scopes is required:
 |-------|--------|
 | **Action**   | `transfer_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#transfer-chat) |
+| **Web API equivalent**| [`transfer_chat`](../agent-chat-web-api/#transfer-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#transfer-chat)</sup> |
 | **Push message**| [`chat_transferred`](#chat-transferred)  |
 
 
@@ -300,7 +299,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 |-------|--------|
 | **Action**   | `unfollow_chat`  |
 | __Required scopes__| - |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#unfollow-chat) |
+| **Web API equivalent**| [`unfollow_chat`](../agent-chat-web-api/#unfollow-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#unfollow-chat)</sup> |
 
 #### Request
 
@@ -330,7 +329,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `grant_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#grant-access)|
+| **Web API equivalent**| [`grant_access`](../agent-chat-web-api/#grant-access) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#grant-access)</sup>|
 | **Push message**| [`access_granted`](#access-granted)|
 
 #### Request
@@ -369,7 +368,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `revoke_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#revoke-access) |
+| **Web API equivalent**| [`revoke_access`](../agent-chat-web-api/#revoke-access) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#revoke-access)</sup> |
 | **Push message**| [`access_revoked`](#access-revoked)|
 
 #### Request
@@ -408,7 +407,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `set_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#set-access) |
+| **Web API equivalent**| [`set_access`](../agent-chat-web-api/#set-access) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#set-access)</sup> |
 | **Push message**| [`access_set`](#access-set)|
 
 
@@ -452,7 +451,7 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 |-------|--------|
 | **Action**   | `add_user_to_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#add-user-to-chat) |
+| **Web API equivalent**| [`add_user_to_chat`](../agent-chat-web-api/#add-user-to-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#add-user-to-chat)</sup> |
 | **Push message**| [`chat_user_added`](#chat_user_added) |
 
 #### Request
@@ -490,7 +489,7 @@ Updates agent properties.
 |-------|--------|
 | **Action**   | `update_agent`  |
 | __Required scopes__| `agents--my:rw` `agents--all:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#update-agent) |
+| **Web API equivalent**|[`update_agent`](../agent-chat-web-api/#update-agent) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#update-agent)</sup> |
 | **Push message**| [`agent_updated`](#agent-updated)|
 
 #### Request
@@ -523,7 +522,7 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 |-------|--------|
 | **Action**   | `remove_user_from_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#remove-user-from-chat) |
+| **Web API equivalent**|[`remove_user_from_chat`](../agent-chat-web-api/#remove-user-from-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#remove-user-from-chat)</sup> |
 | **Push message**| [`chat_user_added`](#chat_user_added) |
 
 > A sample **request** payload
@@ -597,7 +596,7 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 |-------|--------|
 | **Action**   | `ban_customer`  |
 | __Required scopes__| `customers.ban:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#ban-customer) |
+| **Web API equivalent**| [`ban_customer`](../agent-chat-web-api/#ban-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#ban-customer)</sup> |
 | **Push message**| [`customer_banned`](#customer-banned) |
 
 #### Request
@@ -632,7 +631,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `create_customer`  |
 | __Required scopes__| `customers:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#create-customer) |
+| **Web API equivalent**|[create_customer](../agent-chat-web-api/#create-customer) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#create-customer)</sup> |
 | **Push message**| [`customer_created`](#customer-created) |
 
 #### Request
@@ -676,7 +675,7 @@ It returns customers list.
 |-------|--------|
 | **Action**   | `get_customers`  |
 | __Required scopes__| `customers:ro`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#get-customers) |
+| **Web API equivalent**| [`get_customers`](../agent-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-customers)</sup> |
 
 #### Request
 
@@ -787,7 +786,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 |-------|--------|
 | **Action**   | `update_customer`  |
 | __Required scopes__| `customers:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#update-customer) |
+| **Web API equivalent**| [`update_customer`](../agent-chat-web-api/#update-customer) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#update-customer)</sup> |
 | **Push message**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -831,7 +830,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 |-------|--------|
 | **Action**   | `send_event`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#send_event) |
+| **Web API equivalent**| [`send_event`](../agent-chat-web-api/#send_event)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#send_event)</sup> |
  -->
 
 #### Request
@@ -1037,7 +1036,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `delete_chat_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#delete-chat-properties) |
+| **Web API equivalent**| [`delete_chat_properties`](../agent-chat-web-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#delete-chat-properties)</sup> |
 | **Push message**| [`chat_properties_deleted`](#chat-properties-deleted) |
 
 
@@ -1073,7 +1072,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `delete_chat_thread_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#delete-chat-thread-properties) |
+| **Web API equivalent**| [`delete_chat_thread_properties`](../agent-chat-web-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#delete-chat-thread-properties)</sup> |
 | **Push message**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
 
 #### Request
@@ -1110,7 +1109,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `delete_event_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#delete-event-properties) |
+| **Web API equivalent**| [`delete_event_properties`](../agent-chat-web-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#delete-event-properties)</sup> |
 | **Push message**| [`event_properties_deleted`](#event-properties-deleted) |
 
 #### Request
@@ -1149,7 +1148,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `update_chat_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#update-chat-properties) |
+| **Web API equivalent**| [`update_chat_properties`](../agent-chat-web-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#update-chat-properties)</sup> |
 | **Push message**| [`chat_properties_updated`](#chat-properties-updated) |
 
 #### Request
@@ -1187,7 +1186,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `update_chat_thread_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#update-chat-thread-properties) |
+| **Web API equivalent**|[`update_chat_thread_properties`](../agent-chat-web-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#update-chat-thread-properties)</sup> |
 | **Push message**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 #### Request
@@ -1227,7 +1226,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `update_event_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#update-event-properties) |
+| **Web API equivalent**| [`update_event_properties`](../agent-chat-web-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#update-event-properties)</sup> |
 | **Push message**| [`event_properties_updated`](#event-properties-updated) |
 
 #### Request
@@ -1272,7 +1271,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `tag_chat_thread`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#tag-chat-thread) |
+| **Web API equivalent**|[`tag_chat_thread`](../agent-chat-web-api/#tag-chat-thread) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#tag-chat-thread)</sup> |
 | **Push message**| [`chat_thread_tagged`](#chat-thread-tagged) |
 
 #### Request
@@ -1307,7 +1306,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `untag_chat_thread	`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#untag-chat-thread) |
+| **Web API equivalent**|[`untag_chat_thread`](../agent-chat-web-api/#untag-chat-thread) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#untag-chat-thread)</sup> |
 | **Push message**| [`chat_thread_untagged`](#chat-thread-untagged) |
 
 #### Request
@@ -1348,7 +1347,7 @@ It returns the active threads the current agent has access to.
 |-------|--------|
 | **Action**   | `get_archives`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#get-archives) |
+| **Web API equivalent**| [`get_archives`](../agent-chat-web-api/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-archives)</sup> |
 
 > A sample **request** payload
 
@@ -1437,7 +1436,7 @@ It returns threads that the current agent has access to in a given chat.
 |-------|--------|
 | **Action**   | `get_chat_threads`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#get-chat-threads) |
+| **Web API equivalent**| [`get_chat_threads`](../agent-chat-web-api/#get-chat-threads) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads)</sup> |
 
 #### Request
 
@@ -1495,7 +1494,7 @@ It returns threads that the current agent has access to in a given chat.
 |-------|--------|
 | **Action**   | `get_chat_threads_summary`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#get-chat-threads-summary) |
+| **Web API equivalent**| [`get_chat_threads_summary`](../agent-chat-web-api/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads-summary)</sup> |
 
 #### Request
 
@@ -1551,7 +1550,7 @@ It returns threads that the current agent has access to in a given chat.
 |-------|--------|
 | **Action**   | `send_rich_message_postback`  |
 | __Required scopes__| `chats.conversation--my:rw` `chats.conversation--all:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#send-rich-message-postback) |
+| **Web API equivalent**| [`send_rich_message_postback`](../agent-chat-web-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#send-rich-message-postback)</sup> |
 | **Push message**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
 
 __*)__  `incoming_rich_message_postback` will be sent only for active threads.
@@ -1592,7 +1591,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `multicast`  |
 | __Required scopes__| `multicast:rw` |
-| **Web API equivalent**| [✓](../agent-chat-web-api/#multicast) |
+| **Web API equivalent**|[`multicast`](../agent-chat-web-api/#multicast) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#multicast)</sup> |
 | **Push message**| [`incoming_multicast`](#incoming-multicast)|
 
 #### Request
@@ -1652,7 +1651,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `send_typing_indicator`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#send-typing-indicator) |
+| **Web API equivalent**|[`send_typing_indicator`](../agent-chat-web-api/#send-typing-indicator) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#send-typing-indicator)</sup> |
 
 #### Request
 
@@ -1689,7 +1688,7 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 |-------|--------|
 | **Action**   | `close_thread`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#close-thread) |
+| **Web API equivalent**| [`close_thread`](../agent-chat-web-api/#close-thread) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#close-thread)</sup> |
 | **Push message**| [`thread_closed`](#thread-closed)  |
 
 #### Request
@@ -1758,7 +1757,7 @@ No response payload.
 |-------|--------|
 | **Action**   | `update_last_seen_timestamp`  |
 | __Required scopes__| `chats--access:ro` `chats--all:ro`|
-| **Web API equivalent**| [✓](../agent-chat-web-api/#update-last-seen-timestamp) |
+| **Web API equivalent**| [`update_last_seen_timestamp`](../agent-chat-web-api/#update-last-seen-timestamp) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#update-last-seen-timestamp)</sup> |
 | **Push message**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
 
 
