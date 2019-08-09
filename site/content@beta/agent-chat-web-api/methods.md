@@ -41,14 +41,11 @@ If you specify the API version in the URL, you don't have to include the optiona
 
 > **`activate_chat`** sample request
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/activate_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-```js
-{
+  -H "Content-type:application/json"  \
+  -d '{
 	"chat": {
 		"id": "PJ0MRSHTDG",
 		"access": {
@@ -66,6 +63,7 @@ If you specify the API version in the URL, you don't have to include the optiona
 				"text": "hello there"
 			}, {
 				"type": "system_message",
+				"system_message_type": "routing.assigned",
 				"custom_id": "31-0C-1C-07-DB-16",
 				"text": "hello there"
 			}],
@@ -76,10 +74,10 @@ If you specify the API version in the URL, you don't have to include the optiona
 				...
 			},
 			"tags": ["bug_report"]
-		}
-	}
-}
-```
+				}
+			}
+		}'
+  ```
 
 #### Specifics
 
@@ -142,17 +140,14 @@ Marks the chat as followed. All changes to the chat will be sent to the requeste
 
 > **`follow_chat`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/follow_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
-}
-```
+	  }'
+  ```
 
 #### Specifics
 
@@ -185,14 +180,11 @@ Starts a chat.
 
 > **`start_chat`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/start_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat": {
 		"properties": {
 			"source": {
@@ -230,9 +222,8 @@ Starts a chat.
 		"is_followed": true
 	},
 	"continuous": true
-}
-```
-
+	}'
+  ```
 
 > **`start_chat`** sample response 
 
@@ -286,22 +277,19 @@ When `chat.users` is defined, one of following scopes is required:
 
 > **`transfer_chat`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/transfer_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"target": {
 		"type":  "group"
 		"ids": [1]
-	},
+			},
 	"force": true
-}
-```
-
+	}'
+  ```
 
 #### Specifics
 
@@ -335,16 +323,14 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 > **`unfollow_chat`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/unfollow_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
-}
-```
+	}'
+  ```
 
 #### Specifics
 
@@ -375,22 +361,19 @@ No response payload.
 
 > **`grant_access`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/grant_access" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"resource": "chat",
 	"id": "PJ0MRSHTDG",
 	"access": {
 		"type": "group",
 		"id": 1
-	}
-}
-```
+			}
+	}'
+  ```
 
 #### Specifics
 
@@ -421,21 +404,19 @@ No response payload.
 
 > **`revoke_access`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/revoke_access" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"resource": "chat",
 	"id": "PJ0MRSHTDG",
 	"access": {
 		"type": "group",
 		"id": 1
-	}
-}
-```
+			}
+	}'
+  ```
 
 #### Specifics
 
@@ -465,20 +446,18 @@ No response payload.
 
 > **`set_access`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/set_access" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"resource": "chat",
 	"id": "PJ0MRSHTDG",
 	"access": {
 		"type": "group",
 		"id": 1
-	}
-}
+			}
+	}'
 ```
 
 #### Specifics
@@ -515,18 +494,16 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 
 > **`add_user_to_chat`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/add_user_to_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"user_id": "agent1@example.com",
 	"user_type": "agent"
-}
-```
+	}'
+  ```
 
 #### Specifics
 
@@ -558,18 +535,16 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 
 > **`remove_user_from_chat`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/remove_user_from_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"user_id": "agent1@example.com",
 	"user_type": "agent"
-}
-```
+	}'
+  ```
 
 #### Specifics
 |  |  |
@@ -600,16 +575,14 @@ Updates agent properties.
 
 > **`update_agent`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/update_agent" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"routing_status": "accepting_chats"
-}
-```
+	}'
+  ```
 
 #### Specifics
 
@@ -641,19 +614,17 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 > **`ban_customer`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/ban_customer" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"ban": {
 		"days": 5
-	}
-}
-```
+		}
+	}'
+  ```
 
 #### Specifics
 
@@ -681,20 +652,18 @@ No response payload.
 
 > **`create_customer`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/create_customer" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"email": "customer1@example.com",
 	"avatar": "https://domain.com/avatars/1.jpg",
 	"fields": {
 		"some_key": "some_value"
-	}
-}
-```
+			}
+	}'
+  ```
 > **`create_customer`** sample response
 
 ```js
@@ -732,27 +701,26 @@ It returns customers list.
 
 > **`get_customers`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/get_customers" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"filters": {
 		"country": {
 			"values": ["United States", "Poland"]
-		},
+					},
 		"visits_count": {
 			"gte": 20
-		},
+						},
 		"created_at": {
 			"gte": "2017-10-12T15:19:21.010200+01:00"
-		}
-	},
+					}
+				},
 	"page_id": "MTUxNzM5ODEzMTQ5Ng=="
-}
-```
+	}'
+  ```
+
 > **`get_customers`** sample response
 
 ```js
@@ -851,20 +819,18 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 > **`update_customer`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/update_customer" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
 	"name": "John Doe",
 	"avatar": "https://domain.com/avatars/1.jpg",
 	"fields": {
 		"score": "low"
-	}
-}
+			}
+	}'
 ```
 
 > **`update_customer`** sample response 
@@ -902,13 +868,11 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 > **`send_event`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/send_event" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"attach_to_last_thread": false,
 	"event": {
@@ -916,9 +880,10 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 		"text": "hello world",
 		"recipients": "agents",
 		"custom_id": "31-0C-1C-07-DB-16",
-	}
-}
-```
+			}
+	}'
+  ```
+
 > **`send_event`** sample response 
 
 ```js
@@ -959,20 +924,18 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 
 > **`delete_chat_properties`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"properties": {
 		"rating": ["score", "comment"],
 		...
-	}
-}
-```
+				}
+	}'
+  ```
 
 #### Specifics
 
@@ -1000,20 +963,18 @@ No response payload.
 
 > **`delete_chat_thread_properties`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"properties": {
 		"rating": ["score", "comment"],
 		...
-	}
-}
+				}
+	}'
 ```
 
 #### Specifics
@@ -1042,23 +1003,20 @@ No response payload.
 
 > **`delete_event_properties`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/delete_event_properties" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"event_id": "2_EW2WQSA8",
 	"properties": {
 		"rating": ["score", "comment"],
 		...
-	}
-}
-```
+				}
+	}'
+  ```
 
 #### Specifics
 
@@ -1087,23 +1045,21 @@ No response payload.
 
 > **`update_chat_properties`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/update_chat_properties" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"properties": {
 		"rating": {
 			"score": 2,
 			"comment": "Very good, veeeery good"
-		},
+				},
 		...
-	}
-}
-```
+			}
+		}'
+  ```
 
 #### Specifics
 
@@ -1130,24 +1086,22 @@ No response payload.
 
 > **`update_chat_thread_properties`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"properties": {
 		"rating": {
 			"score": 2,
 			"comment": "Very good, veeeery good"
-		},
+				},
 		...
-	}
-}
-```
+		}
+	}'
+  ```
 
 #### Specifics
 
@@ -1176,13 +1130,11 @@ No response payload.
 
 > **`update_event_properties`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/update_event_properties" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"event_id": "2_EW2WQSA8",
@@ -1190,11 +1142,11 @@ No response payload.
 		"rating": {
 			"score": 1,
 			"comment": "Very good, veeeery good"
-		},
+				},
 		...
-	}
-}
-```
+		}
+	}'
+  ```
 
 #### Specifics
 
@@ -1225,18 +1177,17 @@ No response payload.
 
 > **`tag_chat_thread`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"tag": "bug_report"
-}
-```
+	}'
+  ```
+
 
 #### Specifics
 
@@ -1265,18 +1216,16 @@ No response payload.
 
 > **`untag_chat_thread`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"tag": "bug_report"
-}
-```
+	}'
+  ```
 
 #### Specifics
 
@@ -1312,18 +1261,16 @@ It returns threads that the current agent has access to in a given chat.
 
 > **`get_chat_threads`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/get_chat_threads" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_ids": ["K600PKZON8"]
-}
+	}'
 ```
+
 > **`get_chat_threads`** sample response 
 
 ```js
@@ -1375,18 +1322,17 @@ It returns threads that the current agent has access to in a given chat.
 
 > **`get_chat_threads_summary`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/get_chat_threads" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"limit": 25,
 	"page_id": "MjpkZXNj"
-}
-```
+	}'
+  ```
+
 > **`get_chat_threads_summary`** sample response
 
 ```js 
@@ -1437,16 +1383,15 @@ It returns threads that the current agent has access to in a given chat.
 
 > **`send_file`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/send_file" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:multipart/form-data; boundary=<boundary>
+  -H "Content-type:multipart/form-data; boundary=<boundary>" \
+  -d 'payload.chat_id=a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5
+	  payload.custom_id=12345-bhdsa
+	  payload.file=test.png'
   ```
-```
-	payload.chat_id=a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5
-	payload.custom_id=12345-bhdsa
-	payload.file=test.png
-```
+
 > **`send_file`** sample response 
 
 ```js
@@ -1482,23 +1427,20 @@ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only
 
 > **`send_rich_message_postback`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
 	"postback": {
 		"id": "Method URL_yes",
 		"toggled": true
-	}
-}
-```
+				}
+	}'
+  ```
 
 #### Specifics
 |  |  |
@@ -1529,32 +1471,29 @@ No response payload.
 
 > **`multicast`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/multicast" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"scopes": {
 		"agents": {
 			"all": true,
 			"ids": ["agent1@example.com", "agent2@example.com"],
 			"groups": [1, 2]
-		},
+					},
 		"customers": {
 			"ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
-		}
-	},
+					}
+			},
 	"content": {
 		"example": {
 			"nested": "json"
-		}
-	},
+					}
+				},
 	"type": "type1"
-}
-```
+	}'
+  ```
 
 #### Specifics
 |  |  |
@@ -1586,27 +1525,21 @@ __*)__ `scopes` can take the following values:
 
 At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
 
-#### Response
 
-No response payload.
 
 ### `send_typing_indicator`
 
 > **`send_typing_indicator`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-> **`send_typing_indicator`** sample response 
-
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"recipients": "all",
 	"is_typing": true
-}
+	}'
 ```
 
 #### Specifics
@@ -1639,15 +1572,13 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 
 > **`close_thread`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/close_thread" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
-}
+	}'
 ```
 
 #### Specifics
@@ -1670,27 +1601,20 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 No response payload.
 
 
-#### Response
-
-No response payload.
-
-
 
 ### `update_last_seen_timestamp`
 
 > **`update_last_seen_timestamp`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:application/json
-  ```
-  ```js
-{
+  -H "Content-type:application/json" \
+  -d '{
 	"chat_id": "PJ0MRSHTDG",
 	"timestamp": 123456789
-}
-```
+	}'
+  ```
 
 > **`update_last_seen_timestamp`** sample response 
 
@@ -1724,14 +1648,13 @@ No response payload.
 
 > **`upload_image`** sample request 
 
-   ```json
+   ```shell
   curl "https://api.livechatinc.com/v3.0/agent/action/upload_image" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H Content-type:multipart/form-data; boundary=<boundary>
+  -H "Content-type:multipart/form-data; boundary=<boundary>" \
+  -d 'payload.image=test.png'
   ```
-```
-	payload.image=test.png
-```
+
 > **`upload_image`** sample response
 
 ```js
