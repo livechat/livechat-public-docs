@@ -85,7 +85,7 @@ If you specify the API version in the URL, you don't have to include the optiona
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/activate_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#activate-chat) |
+| **RTM API equivalent**| [`activate_chat`](../agent-chat-rtm-api/#activate-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#activate-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -155,7 +155,7 @@ Marks the chat as followed. All changes to the chat will be sent to the requeste
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/follow_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#follow-chat) |
+| **RTM API equivalent**| [`follow_chat`](../agent-chat-rtm-api/#follow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#follow-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__
@@ -247,7 +247,7 @@ Starts a chat.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/start_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#start-chat) |
+| **RTM API equivalent**| [`start_chat`](../agent-chat-rtm-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#start-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -297,7 +297,7 @@ When `chat.users` is defined, one of following scopes is required:
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/transfer_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#transfer-chat) |
+| **RTM API equivalent**| [`transfer_chat`](../agent-chat-rtm-api/#transfer-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#transfer-chat)</sup> |
 | **Webhook**| [`chat_transferred`](#chat-transferred)  |
 
 
@@ -338,7 +338,8 @@ Removes the requester from the chat followers. After that, only key changes to t
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/unfollow_chat`  |
 | __Required scopes__| - |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#unfollow-chat) |
+| **RTM API equivalent**| [`unfollow_chat`](../agent-chat-rtm-api/#unfollow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#unfollow-chat)</sup> |
+| **Webhook**| - |
 
 #### Request
 
@@ -381,7 +382,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/grant_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#grant-access) |
+| **RTM API equivalent**| [`grant_access`](../agent-chat-rtm-api/#grant-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#grant-access)</sup> |
 | **Webhook**| [`access_granted`](#access-granted)|
 
 
@@ -424,7 +425,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/revoke_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#revoke-access) |
+| **RTM API equivalent**| [`revoke_access`](../agent-chat-rtm-api/#revoke-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#revoke-access)</sup> |
 | **Webhook**| [`access_revoked`](#access-revoked)|
 
 #### Request
@@ -466,7 +467,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/set_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#set-access) |
+| **RTM API equivalent**| [`set_access`](../agent-chat-rtm-api/#set-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#set-access)</sup> |
 | **Webhook**| [`access_set`](#access-set)|
 
 
@@ -511,7 +512,7 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/add_user_to_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#add-user-to-chat) |
+| **RTM API equivalent**| [`add_user_to_chat`](../agent-chat-rtm-api/#add-user-to-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#add-user-to-chat)</sup> |
 | **Webhook**| [`chat_user_added`](#chat_user_added) |
 
 #### Request
@@ -551,7 +552,7 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/remove_user_from_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#remove-user-from-chat) |
+| **RTM API equivalent**| [`remove_user_from_chat`](../agent-chat-rtm-api/#remove-user-from-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#remove-user-from-chat)</sup> |
 | **Webhook**| [`chat_user_added`](#chat_user_added) |
 
 **Request payload**
@@ -590,7 +591,7 @@ Updates agent properties.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_agent`  |
 | __Required scopes__| `agents--my:rw` `agents--all:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#update-agent) |
+| **RTM API equivalent**| [`update_agent`](../agent-chat-rtm-api/#update-agent)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-agent)</sup> |
 | **Webhook**| [`agent_updated`](#agent-updated)|
 
 #### Request
@@ -632,7 +633,7 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/ban_customer`  |
 | __Required scopes__| `customers.ban:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#ban-customer) |
+| **RTM API equivalent**| [`ban_customer`](../agent-chat-rtm-api/#ban-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#ban-customer)</sup> |
 | **Webhook**| [`customer_banned`](#customer-banned) |
 
 #### Request
@@ -678,7 +679,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/create_customer`  |
 | __Required scopes__| `customers:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#create-customer) |
+| **RTM API equivalent**| [`create_customer`](../agent-chat-rtm-api/#create-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#create-customer)</sup> |
 | **Webhook**| [`customer_created`](#customer-created) |
 
 #### Request
@@ -740,7 +741,8 @@ It returns customers list.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_customers`  |
 | __Required scopes__| `customers:ro`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#get-customers) |
+| **RTM API equivalent**| [`get_customers`](../agent-chat-rtm-api/#get-customers)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-customers)</sup> |
+| **Webhook**| - |
 
 #### Request
 
@@ -847,7 +849,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_customer`  |
 | __Required scopes__| `customers:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#update-customer) |
+| **RTM API equivalent**| [`update_customer`](../agent-chat-rtm-api/#update-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-customer)</sup> |
 | **Webhook**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -900,7 +902,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_event`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#send-event) |
+| **RTM API equivalent**| [`send_event`](../agent-chat-rtm-api/#send-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-event)</sup> |
 | **Webhook**| [`incoming_event`](#incoming-event ) or [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_event `only if the event starts a new thread.
@@ -943,7 +945,7 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#delete-chat-properties) |
+| **RTM API equivalent**| [`delete_chat_properties`](../agent-chat-rtm-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-properties)</sup> |
 | **Webhook**| [`chat_properties_deleted`](#chat-properties-deleted) |
 
 
@@ -983,7 +985,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#delete-chat-thread-properties) |
+| **RTM API equivalent**| [`delete_chat_thread_properties`](../agent-chat-rtm-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-thread-properties)</sup> |
 | **Webhook**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
 
 #### Request
@@ -1024,7 +1026,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_event_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#delete-event-properties) |
+| **RTM API equivalent**| [`delete_event_properties`](../agent-chat-rtm-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-event-properties)</sup> |
 | **Webhook**| [`event_properties_deleted`](#event-properties-deleted) |
 
 #### Request
@@ -1067,7 +1069,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#update-chat-properties) |
+| **RTM API equivalent**| [`update_chat_properties`](../agent-chat-rtm-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-properties)</sup> |
 | **Webhook**| [`chat_properties_updated`](#chat-properties-updated) |
 
 #### Request
@@ -1109,7 +1111,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#update-chat-thread-properties) |
+| **RTM API equivalent**| [`update_chat_thread_properties`](../agent-chat-rtm-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-thread-properties)</sup> |
 | **Webhook**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 #### Request
@@ -1154,7 +1156,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_event_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#update-event-properties) |
+| **RTM API equivalent**| [`update_event_properties`](../agent-chat-rtm-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-event-properties)</sup> |
 | **Webhook**| [`event_properties_updated`](#event-properties-updated) |
 
 #### Request
@@ -1195,7 +1197,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#tag-chat-thread) |
+| **RTM API equivalent**| [`tag_chat_thread`](../agent-chat-rtm-api/#tag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#tag-chat-thread)</sup> |
 | **Webhook**| [`chat_thread_tagged`](#chat-thread-tagged) |
 
 #### Request
@@ -1233,7 +1235,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread	`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#untag-chat-thread) |
+| **RTM API equivalent**| [`untag_chat_thread`](../agent-chat-rtm-api/#untag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#untag-chat-thread)</sup> |
 | **Webhook**| [`chat_thread_untagged`](#chat-thread-untagged) |
 
 #### Request
@@ -1305,9 +1307,10 @@ It returns threads that the current agent has access to in a given chat.
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads_summary`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#get-chat-threads) |
+| **RTM API equivalent**| [`get_chat_threads`](../agent-chat-rtm-api/#get-chat-threads)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads)</sup> |
+| **Webhook**| - |
 
 #### Request
 
@@ -1360,7 +1363,8 @@ It returns threads that the current agent has access to in a given chat.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads_summary`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#get-chat-threads-summary) |
+| **RTM API equivalent**| [`get_chat_threads_summary`](../agent-chat-rtm-api/#get-chat-threads-summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads-summary)</sup> |
+| **Webhook**| - |
 
 #### Request
 
@@ -1447,7 +1451,7 @@ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback`  |
 | __Required scopes__| `chats.conversation--my:rw` `chats.conversation--all:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#send-rich-message-postback) |
+| **RTM API equivalent**| [`send_rich_message_postback`](../agent-chat-rtm-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-rich-message-postback)</sup> |
 | **Webhook**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
 
 __*)__  `incoming_rich_message_postback` will be sent only for active threads.
@@ -1500,7 +1504,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/multicast`  |
 | __Required scopes__| `multicast:rw` |
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#multicast) |
+| **RTM API equivalent**| [`multicast`](../agent-chat-rtm-api/#multicast)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#multicast)</sup> |
 | **Webhook**| [`incoming_multicast`](#incoming-multicast)|
 
 #### Request
@@ -1547,7 +1551,9 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#send-typing-indicator) |
+| **RTM API equivalent**| [`send_typing_indicator`](../agent-chat-rtm-api/#send-typing-indicator)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-typing-indicator)</sup> |
+| **Webhook**| - |
+
 
 #### Request
 
@@ -1587,7 +1593,7 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/close_thread`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#close-thread) |
+| **RTM API equivalent**| [`close_thread`](../agent-chat-rtm-api/#close-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#close-thread)</sup> |
 | **Webhook**| [`thread_closed`](#thread-closed)  |
 
 #### Request
@@ -1630,7 +1636,7 @@ No response payload.
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp`  |
 | __Required scopes__| `chats--access:ro` `chats--all:ro`|
-| **RTM API equivalent**| [✓](../agent-chat-rtm-api/#update-last-seen-timestamp) |
+| **RTM API equivalent**| [`update_last_seen_timestamp`](../agent-chat-rtm-api/#update-last-seen-timestamp)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-last-seen-timestamp)</sup> |
 | **Webhook**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
 
 
@@ -1670,6 +1676,7 @@ No response payload.
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/upload_image`  |
 | __Required scopes__| - |
 | **RTM API equivalent**| - |
+| **Webhook**| - |
 
 #### Request
 

@@ -34,7 +34,7 @@ weight: 60
 |-------|--------|
 | **Action**   | `activate_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**|[`activate_chat`]((../agent-chat-web-api/#activate-chat)) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#activate-chat)</sup>|
+| **Web API equivalent**|[`activate_chat`](../agent-chat-web-api/#activate-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#activate-chat)</sup>|
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -300,6 +300,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 | **Action**   | `unfollow_chat`  |
 | __Required scopes__| - |
 | **Web API equivalent**| [`unfollow_chat`](../agent-chat-web-api/#unfollow-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#unfollow-chat)</sup> |
+| **Push message**| - |
 
 #### Request
 
@@ -557,6 +558,7 @@ No response payload.
 | **Action**   | `set_away_status`  |
 | __Required scopes__| `agents--my:rw`|
 | **Web API equivalent**| - |
+| **Push message**| - |
 
 #### Request
 
@@ -676,6 +678,7 @@ It returns customers list.
 | **Action**   | `get_customers`  |
 | __Required scopes__| `customers:ro`|
 | **Web API equivalent**| [`get_customers`](../agent-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-customers)</sup> |
+| **Push message**| - |
 
 #### Request
 
@@ -831,7 +834,8 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 | **Action**   | `send_event`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **Web API equivalent**| [`send_event`](../agent-chat-web-api/#send_event)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#send_event)</sup> |
- -->
+| **Push message**| - |
+
 
 #### Request
 
@@ -883,6 +887,7 @@ It returns current agent's initial state.
 | **Action**   | `login`  |
 | **Required scopes** | - |
 | **Web API equivalent**| -|
+| **Push message**| - |
 
 > A sample **request** payload
 
@@ -1016,6 +1021,7 @@ logs out the agent
 | **Action**   | `logout`  |
 | **Required scopes** | - |
 | **Web API equivalent**| -|
+| **Push message**| - |
 
 #### Request
 
@@ -1348,6 +1354,7 @@ It returns the active threads the current agent has access to.
 | **Action**   | `get_archives`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
 | **Web API equivalent**| [`get_archives`](../agent-chat-web-api/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-archives)</sup> |
+| **Push message**| - |
 
 > A sample **request** payload
 
@@ -1437,6 +1444,7 @@ It returns threads that the current agent has access to in a given chat.
 | **Action**   | `get_chat_threads`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro`|
 | **Web API equivalent**| [`get_chat_threads`](../agent-chat-web-api/#get-chat-threads) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads)</sup> |
+| **Push message**| - |
 
 #### Request
 
@@ -1495,6 +1503,7 @@ It returns threads that the current agent has access to in a given chat.
 | **Action**   | `get_chat_threads_summary`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
 | **Web API equivalent**| [`get_chat_threads_summary`](../agent-chat-web-api/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads-summary)</sup> |
+| **Push message**| - |
 
 #### Request
 
@@ -1652,6 +1661,7 @@ No response payload.
 | **Action**   | `send_typing_indicator`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
 | **Web API equivalent**|[`send_typing_indicator`](../agent-chat-web-api/#send-typing-indicator) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#send-typing-indicator)</sup> |
+| **Push message**| - |
 
 #### Request
 
@@ -1724,6 +1734,7 @@ Change firebase push notifications properties.
 | **Action**   | `change_push_notifications`  |
 | __Required scopes__| - |
 | **Web API equivalent**| - |
+| **Push message**| - |
 
 #### Request
 
