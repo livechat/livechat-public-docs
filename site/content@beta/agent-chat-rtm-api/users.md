@@ -7,7 +7,7 @@ weight: 40
 **Users** are another important data structure. Within this data structure type, we can distinguish:
 
 - [Agent](#agent)
-- [Customer](#customer)
+	* [Customer](#customer)
 - [My profile](#my-profile)
 
 
@@ -33,6 +33,23 @@ weight: 40
 |----------|:-------------:|------:|
 | `routing_status` |  optional | returned only if the agent's currently logged in |
 
+### My profile
+
+> A sample **My profile** data structure
+
+```js
+{
+	"id": "agent1@example.com",
+	"type": "agent",
+	"name": "Support Team",
+	"email": "agent1@example.com",
+	"present": true,
+	"last_seen_timestamp": 1473433500,
+	"avatar": "cdn.livechatinc.com/avatars/1.png",
+	"routing_status": "accepting_chats",
+	"permission": "administrator"
+}
+```
 
 ## Customer
 
@@ -101,20 +118,4 @@ weight: 40
 | `statistics` |  optional | - |
 
 
-## My profile
 
-> A sample **My profile** data structure
-
-```js
-{
-	"id": "agent1@example.com",
-	"type": "agent",
-	"name": "Support Team",
-	"email": "agent1@example.com",
-	"present": true,
-	"last_seen_timestamp": 1473433500,
-	"avatar": "cdn.livechatinc.com/avatars/1.png",
-	"routing_status": "accepting_chats",
-	"permission": "administrator"
-}
-```
