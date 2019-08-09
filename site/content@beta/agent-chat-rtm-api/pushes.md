@@ -73,7 +73,7 @@ weight: 70
 |  |  |
 |-------|--------|
 | **Action**   | `access_granted`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#access-granted) |
+| **Webhook equivalent**| [`access_granted`](../agent-chat-web-api/#access-granted)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#access-granted) |
 
 
 #### Push payload
@@ -106,7 +106,7 @@ weight: 70
 |  |  |
 |-------|--------|
 | **Action**   | `access_revoked`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#access-revoked) |
+| **Webhook equivalent**| [`access_revoked`](../agent-chat-web-api/#access-revoked)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#access-revoked) |
 
 
 #### Push payload
@@ -139,7 +139,7 @@ weight: 70
 |  |  |
 |-------|--------|
 | **Action**   | `access_set`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#access-set) |
+| **Webhook equivalent**| [`access_set`](../agent-chat-web-api/#access-set)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#access-set) |
 
 
 #### Push payload
@@ -236,7 +236,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_user_added`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-user-added) |
+| **Webhook equivalent**| [`chat_user_added`](../agent-chat-web-api/#chat-user-added)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-user-added) |
 
 
 #### Push payload
@@ -265,7 +265,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_user_removed`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-user-removed) |
+| **Webhook equivalent**| [`chat_user_removed`](../agent-chat-web-api/#chat-user-removed)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-user-removed) |
 
 
 #### Push payload
@@ -314,7 +314,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `customer_created`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#customer-created) |
+| **Webhook equivalent**| [`customer_created`](../agent-chat-web-api/#customer-created)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#customer-created) |
 
 
 ### `customer_updated`
@@ -445,7 +445,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_event`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#incoming-event) |
+| **Webhook equivalent**| [`incoming_event`](../agent-chat-web-api/#incoming-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#incoming-event) |
 
 
 ### `event_updated`
@@ -467,7 +467,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `event_updated`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#event-updated) |
+| **Webhook equivalent**| [`event_updated`](../agent-chat-web-api/#event-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#event-updated) |
 
 
 
@@ -493,7 +493,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_properties_deleted`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-properties-deleted) |
+| **Webhook equivalent**| [`chat_properties_deleted`](../agent-chat-web-api/#chat-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-properties-deleted) |
 
 #### Push payload
 
@@ -524,7 +524,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_properties_deleted`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-properties-deleted) |
+| **Webhook equivalent**| [`chat_thread_properties_deleted`](../agent-chat-web-api/#chat-thread-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-thread-properties-deleted) |
 
 
 #### Push payload
@@ -557,7 +557,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `event_properties_deleted`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#event-properties-deleted) |
+| **Webhook equivalent**| [`event_properties_deleted`](../agent-chat-web-api/#event-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#event-properties-deleted) |
 
 #### Push payload
 
@@ -591,7 +591,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_properties_updated`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-properties-updated) |
+| **Webhook equivalent**| [`chat_properties_updated`](../agent-chat-web-api/#chat-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-properties-updated) |
 
 
 #### Push payload
@@ -630,7 +630,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_properties_updated`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-properties-updated) |
+| **Webhook equivalent**| [`chat_thread_properties_updated`](../agent-chat-web-api/#chat-thread-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-thread-properties-updated) |
 
 
 #### Push payload
@@ -665,7 +665,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `event_properties_updated`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#event-properties-updated) |
+| **Webhook equivalent**| [`event_properties_updated`](../agent-chat-web-api/#event-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#event-properties-updated) |
 
 
 #### Push payload
@@ -695,12 +695,12 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_tagged`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-tagged) |
+| **Webhook equivalent**| [`chat_thread_tagged`](../agent-chat-web-api/#chat-thread-tagged)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-thread-tagged) |
 
 
 ### `chat_thread_untagged`
 
-> **`chat_thread_tagged`** sample payload
+> **`chat_thread_untagged`** sample payload
 
 ```js
 {
@@ -715,7 +715,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `chat_thread_untagged`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#chat-thread-tagged) |
+| **Webhook equivalent**| [`chat_thread_untagged`](../agent-chat-web-api/#chat-thread-untagged)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#chat-thread-untagged) |
 
 
 ## other
@@ -749,7 +749,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_chat_thread`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#incoming-chat-thread) |
+| **Webhook equivalent**| [`incoming_chat_thread`](../agent-chat-web-api/#incoming-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#incoming-chat-thread) |
 
 
 ### `incoming_rich_message_postback`
@@ -774,7 +774,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `incoming_rich_message_postback`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#incoming-rich-message-postback) |
+| **Webhook equivalent**| [`incoming_rich_message_postback`](../agent-chat-web-api/#incoming-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#incoming-rich-message-postback) |
 
 
 
@@ -873,7 +873,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `thread_closed`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#thread-closed) |
+| **Webhook equivalent**| [`thread_closed`](../agent-chat-web-api/#thread-closed)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#thread-closed) |
 
 #### Push payload
 
@@ -900,7 +900,7 @@ With this piece of information, the client is able to figure out where it should
 |  |  |
 |-------|--------|
 | **Action**   | `last_seen_timestamp_updated`  |
-| **Webhook equivalent**| [✓](../agent-chat-web-api/#last-seen-timestamp-updated) |
+| **Webhook equivalent**| [`last_seen_timestamp_updated`](../agent-chat-web-api/#last-seen-timestamp-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#last-seen-timestamp-updated) |
 
 
 
