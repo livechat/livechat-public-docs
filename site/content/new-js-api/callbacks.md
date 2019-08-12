@@ -4,13 +4,13 @@ weight: 50
 
 # Callbacks
 
-Callbacks allow you to react to events triggered by the Chat Widget.
-You might be interested in adding behavior only when a certain event has happened.
+Callbacks allow you to react to the events triggered by the Chat Widget.
+You can use them to add custom behaviors when certain events happen.
 This can be accomplished by subscribing a callback with the API.
 
 Available callbacks:
 
-- [On load](#load)
+- [On ready](#ready)
 - [On availability changed](#availability-changed)
 - [On visibility changed](#visibility-changed)
 - [On customer status changed](#customer-status-changed)
@@ -18,28 +18,28 @@ Available callbacks:
 - [On form submitted](#form-submitted)
 - [On rating submitted](#rating-submitted)
 
-## On load
+## On ready
 
-The Chat Widget has finished loading.
-With this callback you will receive Chat Widget State and Customer Data as if requested by their getters.
+The Chat Widget has finished loading. If the Chat Widget is already loaded the provided handler function will be called immediately.
+With this callback, you will receive the Chat Widget state and customer data as if requested by their getters.
 
 #### Payload
 
-| param        | type                               | description                 |
-| ------------ | ---------------------------------- | --------------------------- |
-| state        | [WidgetState](#get-state)          | Chat widget's state         |
-| customerData | [CustomerData](#get-customer-data) | Chat widget's customer data |
+| param        | type                               | description                        |
+| ------------ | ---------------------------------- | ---------------------------------- |
+| state        | [WidgetState](#get-state)          | the Chat Widget state              |
+| customerData | [CustomerData](#get-customer-data) | Customer data from the Chat Widget |
 
 ```js
-function onLoad(initialData) {
-  // chat has finished loading
+function onReady(initialData) {
+  // Chat Widget is ready
 
   var state = initialData.state
   var customerData = initialData.customerData
 }
 
-LiveChatWidget.on('load', onLoad)
-LiveChatWidget.off('load', onLoad)
+LiveChatWidget.on('ready', onReady)
+LiveChatWidget.off('ready', onReady)
 ```
 
 ## On availability changed
@@ -48,9 +48,9 @@ Availability has changed for the current group.
 
 #### Payload
 
-| param        | type                      | description           |
-| ------------ | ------------------------- | --------------------- |
-| availability | `"online"` \| `"offline"` | Groups's availability |
+| param        | type                      | description             |
+| ------------ | ------------------------- | ----------------------- |
+| availability | `"online"` \| `"offline"` | Availability of a group |
 
 ```js
 function onAvailabilityChanged(data) {
@@ -67,14 +67,14 @@ LiveChatWidget.off('availability_changed', onAvailabilityChanged)
 
 ## On visibility changed
 
-Called once the visibility of our Chat Widget has changed.
-This responds to both user actions like maximizing or minimizing the window as well as hiding or showing the Chat Widget through the use of this API.
+Called once the visibility of the Chat Widget has changed.
+This applies to both user actions like maximizing or minimizing the window as well as hiding or showing the Chat Widget through the use of this API.
 
 #### Payload
 
-| param      | type                                         | description              |
-| ---------- | -------------------------------------------- | ------------------------ |
-| visibility | `"maximized"` \| `"minimized"` \| `"hidden"` | Chat widget's visibility |
+| param      | type                                         | description                |
+| ---------- | -------------------------------------------- | -------------------------- |
+| visibility | `"maximized"` \| `"minimized"` \| `"hidden"` | the Chat Widget visibility |
 
 ```js
 function onVisibilityChanged(data) {
@@ -94,8 +94,12 @@ LiveChatWidget.off('visibility_changed', onVisibilityChanged)
 
 ## On customer status changed
 
-Called when your customer status has changed.
-This can be used to track if and when customers are being invited to chat, are already chatting or if they are waiting for an agent to become available in the queue.
+Called once the status of your Customer has changed.
+This can be used to track the following info:
+
+- If and when Customers are being invited to chat
+- If Customers are already chatting
+- If they are waiting for an agent to become available in the queue
 
 #### Payload
 
@@ -113,10 +117,10 @@ function onCustomerStatusChanged(data) {
       // customer is currently chatting
       break
     case 'invited':
-      // customer received an invitation but not strated the chat
+      // customer received an invitation but didn't start the chat
       break
     case 'browsing':
-      // customer is in idle state, not queued, not chatting and not received an invitation
+      // customer is in idle state, not queued, not chatting, and didn't receive an invitation
       break
   }
 }
