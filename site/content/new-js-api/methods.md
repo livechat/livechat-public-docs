@@ -4,9 +4,7 @@ weight: 20
 
 # Methods
 
-You can use the following methods to change the visibility of the Chat Widget.
-
-Available methods:
+To change the visibility of the Chat Widget, you can use the following methods:
 
 - [Maximize](#maximize)
 - [Minimize](#minimize)
@@ -31,8 +29,8 @@ Minimizes the Chat Widget.
 
 ## Hide
 
-Hides the Chat Widget from the site.
-You will need to use another API call to show it afterwards.
+It hides the Chat Widget on the site.
+You will need to use either 'maximize' or 'minimze' API calls to show it afterwards.
 
 #### Example
 

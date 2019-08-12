@@ -1,8 +1,8 @@
 ---
-title: 'LiveChat – New Chat Widget JavaScript API'
-menuTitle: 'Chat Widget <br/><u>New JavaScript API</u>'
-tagline: 'Customize the behaviour of the Chat Widget'
-desc: 'Adjust the mechanics of the widget or leverage the API to pass additional details on the visitor.'
+title: 'LiveChat – Chat Widget - JavaScript API'
+menuTitle: 'Chat Widget <br/><u> JavaScript API</u>'
+tagline: 'Customize the behavior of the Chat Widget'
+desc: 'Adjust the mechanics of the Widget or leverage the API to pass additional details on the Visitor.'
 color: '#d85b55'
 type: 'widget'
 compatible: true
