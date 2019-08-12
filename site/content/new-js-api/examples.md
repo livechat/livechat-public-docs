@@ -4,11 +4,11 @@ weight: 70
 
 # Examples
 
-Here you can find some example usage of Chat Widget JavaScript API. They all require widget to be installed on the page and `window.LiveChatWidget` to be defined.
+Here you can find some example usage of the Chat Widget JavaScript API. They all require the Widget to be installed on the page and `window.LiveChatWidget` to be defined.
 
-## Show widget after time
+## Show the Widget after time
 
-Show chat widget after 30 seconds and keep it open after reload.
+Show the Chat Widget after 30 seconds and keep it open after reloading.
 
 ```js
 LiveChatWidget.on('visibility_changed', function(data) {
@@ -26,10 +26,10 @@ if (!isWidgetVisible) {
 }
 ```
 
-## Open widget using button
+## Open the Widget using button
 
-Show hidden or minimized widget after button has been clicked.
-You can change widget visibility as described in our [Help Center](https://www.livechatinc.com/help/chat-widget-visibility/)
+Show the hidden or minimized Widget after a button has been clicked.
+You can change the Widget visibility as described in our [Help Center](https://www.livechatinc.com/help/chat-widget-visibility/)
 
 ```html
 <html>
@@ -47,7 +47,7 @@ You can change widget visibility as described in our [Help Center](https://www.l
 
 ## Prefill username and email
 
-Set customer name and email using users login and email.
+Set the Customers name and email using their login and email.
 
 ```js
 var user = JSON.parse(localStorage.getItem('user'))

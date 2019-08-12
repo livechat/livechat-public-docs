@@ -4,7 +4,7 @@ weight: 30
 
 # Getters
 
-You can use the getters to fetch the data from Chat Widget.
+You can use getters to fetch the data from the Chat Widget.
 
 Available getters:
 
@@ -13,8 +13,8 @@ Available getters:
 
 ## Get state
 
-Returns the Chat Widget State.
-This includes widget visibility and license availability.
+Returns the Chat Widget state.
+This includes Widget visibility and license availability.
 
 #### Example
 
@@ -22,14 +22,14 @@ This includes widget visibility and license availability.
 
 #### Response
 
-| param        | type                                         | description              |
-| ------------ | -------------------------------------------- | ------------------------ |
-| availability | `'online'` \| `'offline'`                    | Group's availability     |
-| visibility   | `'maximized'` \| `'minimized'` \| `'hidden'` | Chat widget's visibility |
+| param        | type                                         | description                |
+| ------------ | -------------------------------------------- | -------------------------- |
+| availability | `'online'` \| `'offline'`                    | Group's availability       |
+| visibility   | `'maximized'` \| `'minimized'` \| `'hidden'` | the Chat Widget visibility |
 
 ## Get customer data
 
-Returns a filtered list of Customer data.
+Returns a filtered list of customer data.
 
 #### Example
 
@@ -37,11 +37,11 @@ Returns a filtered list of Customer data.
 
 #### Response
 
-| param            | type                                                      | description                                |
-| ---------------- | --------------------------------------------------------- | ------------------------------------------ |
-| id               | `string`                                                  | unique customer id                         |
-| name             | `string`                                                  | customer name, as provided                 |
-| email            | `string`                                                  | customer e-mail address, as provided       |
-| isReturning      | `boolean`                                                 | has this customer visited you before       |
-| status           | `'queued'` \| `'chatting'` \| `'browsing'` \| `'invited'` | Customer's status                          |
-| sessionVariables | `Record<string, string>`                                  | additional free-form session's information |
+| param            | type                                                      | description                              |
+| ---------------- | --------------------------------------------------------- | ---------------------------------------- |
+| id               | `string`                                                  | unique customer id                       |
+| name             | `string`                                                  | customer name, as provided               |
+| email            | `string`                                                  | customer e-mail address, as provided     |
+| isReturning      | `boolean`                                                 | if this customer visited you before      |
+| status           | `'queued'` \| `'chatting'` \| `'browsing'` \| `'invited'` | Customer's status                        |
+| sessionVariables | `Record<string, string>`                                  | additional free-form session information |
