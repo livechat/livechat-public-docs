@@ -8,6 +8,7 @@ weight: 30
 
 Calendly - integration available to install in [LiveChat Marketplace](https://www.livechatinc.com/marketplace/apps/calendly/), allowing customers to schedule meetings directly from the Chat widget. 
 It consists of two parts:
+
 - [Agent App Widget](https://developers.livechatinc.com/docs/agent-app-widgets/#messagebox) application, attached to the Message box, allowing an agent to send a Rich message with an invitation
 - Calendly Moment app, integrating Calendly JavaScript API with Moments SDK, allowing prefilling customer name and email and sending booking confirmation to a chat.
 
