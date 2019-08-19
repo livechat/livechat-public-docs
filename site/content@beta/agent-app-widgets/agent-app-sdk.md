@@ -192,6 +192,10 @@ createMessageBoxWidget().then(widget => {
 
 Emitted after the widget has been opened in the MessageBox. The handler will get a `ICustomerProfile` object, similar to the one emitted by a [Details widget](#details-widgets).
 
+#### `message_sent`
+
+Emitted after the message set using the [`putMessage`](set-a-message-to-be-stored-by-messagebox) method has been sent by the agent.
+
 ### Actions
 
 #### Set a message to be stored by MessageBox
