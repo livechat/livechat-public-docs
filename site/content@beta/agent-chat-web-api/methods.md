@@ -26,78 +26,176 @@ If you specify the API version in the URL, you don't have to include the optiona
 
 |   |  |
 |-------|--------| 
-| **chats** | [`activate_chat`](#activate-chat) [`follow_chat`](#follow-chat) [`get_chats_summary`](#get-chats-summary) [`start_chat`](#start-chat) [`transfer_chat`](#transfer-chat) [`unfollow_chat`](#unfollow-chat) |
+| **chats** | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`get_archives`](#get-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread) [`follow_chat`](#follow-chat)  [`unfollow_chat`](#unfollow-chat) |
 | **chat access** | [`grant_access`](#grant-access) [`revoke_access`](#revoke-access) [`set_access`](#set-access)   |
-| **chat users** | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat) [`update_agent`](#update-agent)| 
-| **customers** | [`ban_customer`](#ban-customer) [`create_customer`](#create-customer) [`get_customers`](#get-customers) [`set_customers`](#get-customers) [`update_customer`](#update-customer)| 
-| **events** | [`send_event`](#send-event) |
-| **properties (chat/thread/event)** | [`delete_chat_properties`](#delete-chat-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`delete_event_properties`](#delete-event-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`update_chat_properties`](#update-chat-properties) [`update_event_properties`](#update-event-properties) |  
+| **chat users** | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat) | 
+| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`send_rich_message_postback`](#send-rich-message-postback)|
+| **properties (chat/thread/event)** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties)|  
 | **thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread) | 
-| **other** | [`get_archives`](#get-archives) [`get_chat_threads`](#get-chat-threads) [`send_file`](#send-file) [`get_chat_threads_summary`](#get-chat-threads-summary) [`close_thread`](#close-thread) [`upload_image`](#upload-image) [`multicast`](#multicast) [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`send_rich_message_postback`](#send-rich-message-postback)| 
+| **customers** | [`get_customers`](#get-customers) [`create_customer`](#create-customer)  [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)| 
+| **status** | [`set_away_status`](#set-away-status)  [`change_push_notifications`](#change-push-notifications) [`update_agent`](#update-agent) |
+| **other** |  [`upload_image`](#upload-image)  [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)| 
 
 ## chats
 
-### `activate_chat`
+### `get_chats_summary`
 
-> **`activate_chat`** sample request
+> **`get_chats_summary`** sample request
 
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/activate_chat" \
+```shell
+curl "https://api.livechatinc.com/v3.0/agent/action/get_chats_summary" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json"  \
   -d '{
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"access": {
-			"group_ids": [1]
-		},
+	"filters": {
 		"properties": {
-			"source": {
-				"type": "facebook"
-			}
-		},
-		"thread": {
-			"events": [{
-				"type": "message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there"
-			}, {
-				"type": "system_message",
-				"system_message_type": "routing.assigned",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there"
-			}],
-			"properties": {
-				"source": {
-					"type": "facebook"
-				},
-				...
-			},
-			"tags": ["bug_report"]
+			"rating": {
+				"score": {
+					"values": [1]
 				}
 			}
-		}'
+		},
+		"include_active": false
+	},
+	"page_id": "MTUxNzM5ODEzMTQ5Ng=="
+}'
   ```
+
+> A sample **response** payload
+
+```js
+{
+	"chats": [{
+		"chat": {
+			"id": "PJ0MRSHTDG",
+			"users": [
+				// array of "User" objects
+			],
+			"thread": {
+				// "Thread" object
+			}
+		}
+	}],
+	"pagination": {
+		"page": 1,
+		"total": 3 // this is total number of threads matching filters
+	}
+}
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/activate_chat`  |
-| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [`activate_chat`](../agent-chat-rtm-api/#activate-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#activate-chat)</sup> |
-| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chats_summary`  |
+| __Required scopes *__| `chats--all:ro` `chats--access:ro` `chats--my:ro` |
+| **RTM API equivalent**| [`get_chats_summary`](../agent-chat-rtm-api/#get_chats_summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get_chats_summary)</sup> |
+| **Webhook**| - |
 
-__*)__ 
-When `chat.users` is defined, one of following scopes is required:
 
-- `chats--all:rw`
-- `chats--access:rw`
-- `chats--my:rw`
+| Request object           | Required | Type     | Notes                                                            |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
+| `filters`                | No       | `object` |                                                                  |
+| `filters.query`    	   | No       | `string` | 												                    |
+| `filters.date_from`      | No       | `string` | `YYYY-MM-DD` format                 						        |
+| `filters.date_to`        | No       | `string` | `YYYY-MM-DD` format                           	                |
+| `filters.agent_ids`      | No       | `array`  | Array of agent IDs												|
+| `filters.group_ids`      | No       | `array`  | Array of group IDs                                               |
+| `filters.properties.<namespace>.<name>.<filter_type>`     | No       | `any`  | Initial chat events array         |
+| `pagination`			   | No       | `object` | 								                                    |
+| `pagination.page`		   | No       | `number` | 	Default is 1, min is 1, max is 1000		                        |
+| `pagination.limit`	   | No       | `number` | 	Default is 25, min is 0, max is 100                             |
+
+`filter_type` can take the following values:
+
+- exists (bool)
+- values (type[] - array with specific type for property: `string`, `int`, or `bool`)
+- exclude_values (type[] - array with specific type for property: `string`, `int`, or `bool`)
+
+There's only one value allowed for a single property.
+
+
+
+### `get_chat_threads_summary`
+
+> **`get_chat_threads_summary`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/get_chat_threads" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"limit": 25,
+	"page_id": "MjpkZXNj"
+	}'
+  ```
+
+> **`get_chat_threads_summary`** sample response
+
+```js 
+{
+	"threads_summary": [
+            {
+                "id": "PT039ES4OG",
+                "order": 2,
+                "events_count": 2
+            },
+            {
+                "id": "PT039DS6IP",
+                "order": 1,
+                "events_count": 17
+            }
+        ],
+        "found_threads": 7,
+        "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+        "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
+}
+```
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads_summary`  |
+| **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
+| **RTM API equivalent**| [`get_chat_threads_summary`](../agent-chat-rtm-api/#get-chat-threads-summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads-summary)</sup> |
+| **Webhook**| - |
 
 #### Request
 
-> **`activate_chat`** sample response 
+| Parameter | Required | Data type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
+| `order`      | No      | `string` | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default)|
+| `limit`      | No      | `number` | Defaul: 10, maximum: 100      |
+| `page_id`   | No       | `string`  |       |
+
+#### Response
+
+| Parameter  | Data type     | Notes |
+| -------------- | -------- | ----- |
+| `found_threads`   | `string` | Number of threads in a chat    |
+
+
+### `get_chat_threads`
+
+It returns threads that the current agent has access to in a given chat.
+
+--------------------------------------------------------------------------------
+
+> **`get_chat_threads`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/get_chat_threads" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_ids": ["K600PKZON8"]
+	}'
+```
+
+> **`get_chat_threads`** sample response 
 
 ```js
 {
@@ -106,70 +204,136 @@ When `chat.users` is defined, one of following scopes is required:
 		"users": [
 			// array of "User" objects
 		],
-		"properties": {
-			// "Properties" object
+		"threads": [ // optional
+			// "Thread" object
+		],
+		"threads_summary": [{
+				"thread_id": "K600PKZON8",
+				"order": 129846129847
+			},
+			{
+				"thread_id": "K600PKZON8",
+				"order": 129846129848
+			}
+		],
+		"properites": {
+			// "Properites" object
 		},
 		"access": {
 			// "Access" object
-		},
-		"threads": [
-			// array of "Thread" objects
-		],
-		"is_followed": true
+		}
 	}
 }
 ```
+#### Specifics
 
-| Parameter           | Required | Data type     | Notes                                                            |
-| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `chat`                   | Yes      | `object` |                                                                  |
-| `chat.id`                | Yes      | `string` | ID of the chat will be activated                                 |
-| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents                       |
-| `chat.properties`        | No       | `object` | Initial chat properties                                          |
-| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
-| `chat.thread`            | No       | `object` |                                                                  |
-| `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads`  |
+| **Required scopes** | `chats--all:ro` `chats--access:ro`|
+| **RTM API equivalent**| [`get_chat_threads`](../agent-chat-rtm-api/#get-chat-threads)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads)</sup> |
+| **Webhook**| - |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
+| `thread_ids`   | No       | `array`  |       |
 
 
+### `get_archives`
 
-### `follow_chat`
-Marks the chat as followed. All changes to the chat will be sent to the requester until the chat is reactivated or unfollowed. Chat members don't need to follow their chats as they should receive all chat pushes regardless of their follower status.
+It returns the active threads the current agent has access to.
 
---------------------------------------
-
-> **`follow_chat`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/follow_chat" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	  }'
-  ```
+------------------------------------------------------
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/follow_chat`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`follow_chat`](../agent-chat-rtm-api/#follow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#follow-chat)</sup> |
-| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
+| **Method URL**    | `https://api.livechatinc.com/v3.0/agent/action/get_archives`  |
+| **Required scopes** | `chats--all:ro` `chats--access:ro`|
+| **RTM API equivalent**| [`get_archives`](../agent-chat-rtm-api/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-archives)</sup> |
+| **Webhook**| - |
 
+> **`get_archives`** sample request 
+
+```shell
+ curl "https://api.livechatinc.com/v3.0/agent/action/get_archives" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"filters": {
+		"query": "search keyword",
+		"agent_ids": ["agent1@example.com"],
+		"date_from": "2016-09-01",
+		"date_to": "2016-10-01",
+		"properties": {
+			"rating": {
+				"score": {
+					"values": [1]
+				}
+			},
+			"rating": {
+				"comment": {
+					"exists": true
+				}
+			}
+		}
+	},
+	"pagination": {
+		"page": 1,
+		"limit": 25
+	}
+}'
+```
+
+#### Request 
+
+| Parameter                                        | Required | Data type     | Notes                               |
+| ----------------------------------------------------- | -------- | -------- | ----------------------------------- |
+| `filters`                                             | No       | `object` |                                     |
+| `filters.query`                                       | No       | `string` |                                     |
+| `filters.date_from`                                   | No       | `string` | `YYYY-MM-DD` format                 |
+| `filters.date_to`                                     | No       | `string` | `YYYY-MM-DD` format                 |
+| `filters.agent_ids`                                   | No       | `array`  | Array of agent IDs                  |
+| `filters.group_ids`                                   | No       | `array`  | Array of group IDs                  |
+| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                     |
+| `<filter_type>`									    | No       | `any`    |  __*__                              |
+| `pagination`                                          | No       | `object` |                                     |
+| `pagination.page`                                     | No       | `number` | Default is 1, min is 1, max is 1000 |
+| `pagination.limit`                                    | No       | `number` | Default is 25, min is 0, max is 100 |
+
+> > **`get_archives`** sample response 
+
+```js
+{
+	"chats": [{
+		"chat": {
+			"id": "PJ0MRSHTDG",
+			"users": [
+				// array of "User" objects
+			],
+			"thread": {
+				// "Thread" object
+			}
+		}
+	}],
+	"pagination": {
+		"page": 1,
+		"total": 3 // this is total number of threads matching filters
+	}
+}
+```
 __*)__
-It won't be sent when the requester already follows the chat or is the chat member.
+`<filter_type>` can take the following values:
 
-#### Request
+  - `exists` (`bool`)
+  - `values` (`type[]` - an array with aspecific type for property: `string`, `int` or `bool`)
+  - `exclude_values` (`type[]` - array with specific type for property: `string`, `int` or `bool`)
 
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` |   |
-
-#### Response
-
-No response payload.
+There's only one value allowed for a single property.
 
 
 ### `start_chat`
@@ -270,50 +434,177 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread.properties` | No       | `object` |                                                                  |
 
 
+### `activate_chat`
 
-
-
-### `transfer_chat`
-
-> **`transfer_chat`** sample request 
+> **`activate_chat`** sample request
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/transfer_chat" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/activate_chat" \
   -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
+  -H "Content-type:application/json"  \
   -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"target": {
-		"type":  "group"
-		"ids": [1]
+	"chat": {
+		"id": "PJ0MRSHTDG",
+		"access": {
+			"group_ids": [1]
+		},
+		"properties": {
+			"source": {
+				"type": "facebook"
+			}
+		},
+		"thread": {
+			"events": [{
+				"type": "message",
+				"custom_id": "31-0C-1C-07-DB-16",
+				"text": "hello there"
+			}, {
+				"type": "system_message",
+				"system_message_type": "routing.assigned",
+				"custom_id": "31-0C-1C-07-DB-16",
+				"text": "hello there"
+			}],
+			"properties": {
+				"source": {
+					"type": "facebook"
+				},
+				...
 			},
-	"force": true
-	}'
+			"tags": ["bug_report"]
+				}
+			}
+		}'
   ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/transfer_chat`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`transfer_chat`](../agent-chat-rtm-api/#transfer-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#transfer-chat)</sup> |
-| **Webhook**| [`chat_transferred`](#chat-transferred)  |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/activate_chat`  |
+| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
+| **RTM API equivalent**| [`activate_chat`](../agent-chat-rtm-api/#activate-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#activate-chat)</sup> |
+| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
+__*)__ 
+When `chat.users` is defined, one of following scopes is required:
+
+- `chats--all:rw`
+- `chats--access:rw`
+- `chats--my:rw`
 
 #### Request
 
-| Parameter | Required | Data ype     | Notes                                                                                                                 |
-| -------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | id of resource                                                               |
-| `target`       | No       | `object` | If missing, chat will be transferred within current group                    |
-| `target.type`  | Yes      | `string` | `group` or `agent`                                                           |
-| `target.ids`   | Yes      | `array`  | `group` or `agent` ids array                                                 |
-| `force`        | No       | `bool`   | If `true`, always transfers chat, otherwise fails when cannot assign any agent from requested groups, default `false` |
+> **`activate_chat`** sample response 
+
+```js
+{
+	"chat": {
+		"id": "PJ0MRSHTDG",
+		"users": [
+			// array of "User" objects
+		],
+		"properties": {
+			// "Properties" object
+		},
+		"access": {
+			// "Access" object
+		},
+		"threads": [
+			// array of "Thread" objects
+		],
+		"is_followed": true
+	}
+}
+```
+
+| Parameter           | Required | Data type     | Notes                                                            |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
+| `chat`                   | Yes      | `object` |                                                                  |
+| `chat.id`                | Yes      | `string` | ID of the chat will be activated                                 |
+| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents                       |
+| `chat.properties`        | No       | `object` | Initial chat properties                                          |
+| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
+| `chat.thread`            | No       | `object` |                                                                  |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+
+
+
+### `close_thread`
+
+Closes the thread. Nobody will be able to send any messages to this thread anymore.
+
+------------------------------------------------------------------------------------------------
+
+> **`close_thread`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/close_thread" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	}'
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/close_thread`  |
+| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
+| **RTM API equivalent**| [`close_thread`](../agent-chat-rtm-api/#close-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#close-thread)</sup> |
+| **Webhook**| [`thread_closed`](#thread-closed)  |
+
+#### Request
+
+| Parameter | Required | Data type     |  |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
 
 #### Response
 
 No response payload.
+
+
+### `follow_chat`
+Marks the chat as followed. All changes to the chat will be sent to the requester until the chat is reactivated or unfollowed. Chat members don't need to follow their chats as they should receive all chat pushes regardless of their follower status.
+
+--------------------------------------
+
+> **`follow_chat`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/follow_chat" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	  }'
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/follow_chat`  |
+| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
+| **RTM API equivalent**| [`follow_chat`](../agent-chat-rtm-api/#follow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#follow-chat)</sup> |
+| **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
+
+__*)__
+It won't be sent when the requester already follows the chat or is the chat member.
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` |   |
+
+#### Response
+
+No response payload.
+
 
 
 ### `unfollow_chat`
@@ -351,7 +642,6 @@ Removes the requester from the chat followers. After that, only key changes to t
 #### Response
 
 No response payload.
-
 
 
 
@@ -485,6 +775,50 @@ No response payload.
 
 No response payload.
 
+
+### `transfer_chat`
+
+> **`transfer_chat`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/transfer_chat" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"target": {
+		"type":  "group"
+		"ids": [1]
+			},
+	"force": true
+	}'
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/transfer_chat`  |
+| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
+| **RTM API equivalent**| [`transfer_chat`](../agent-chat-rtm-api/#transfer-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#transfer-chat)</sup> |
+| **Webhook**| [`chat_transferred`](#chat-transferred)  |
+
+
+#### Request
+
+| Parameter | Required | Data ype     | Notes                                                                                                                 |
+| -------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | id of resource                                                               |
+| `target`       | No       | `object` | If missing, chat will be transferred within current group                    |
+| `target.type`  | Yes      | `string` | `group` or `agent`                                                           |
+| `target.ids`   | Yes      | `array`  | `group` or `agent` ids array                                                 |
+| `force`        | No       | `bool`   | If `true`, always transfers chat, otherwise fails when cannot assign any agent from requested groups, default `false` |
+
+#### Response
+
+No response payload.
+
+
 ## chat users
 
 ### `add_user_to_chat`
@@ -568,20 +902,207 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 No response payload.
 
 
-### `update_agent`
 
-Updates agent properties.
+## events
 
------------------------------------------------------------------------------
+### `send_event`
 
-> **`update_agent`** sample request 
+> **`send_event`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/update_agent" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/send_event" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
-	"routing_status": "accepting_chats"
+	"chat_id": "PJ0MRSHTDG",
+	"attach_to_last_thread": false,
+	"event": {
+		"type": "message",
+		"text": "hello world",
+		"recipients": "agents",
+		"custom_id": "31-0C-1C-07-DB-16",
+			}
+	}'
+  ```
+
+> **`send_event`** sample response 
+
+```js
+{
+	"thread_id": "K600PKZON8",
+	"event": {
+		// "Event" object
+	}
+}
+```
+
+#### Specifics
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_event`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
+| **RTM API equivalent**| [`send_event`](../agent-chat-rtm-api/#send-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-event)</sup> |
+| **Webhook**| [`incoming_event`](#incoming-event ) or [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
+
+__*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_event `only if the event starts a new thread.
+
+
+#### Request
+
+| Parameters         | Required | Data type     | Notes                                                                            |
+| ----------------------- | -------- | -------- | -------------------------------------------------------------------------------- |
+| `chat_id`               | Yes      | `string` | Id of the chat that we want to send the message to                               |
+| `event`                 | Yes      | `object` | Event object                                                                     |
+| `attach_to_last_thread` | No       | `bool`   | If `true`, adds event to last thread, otherwise creates new one, default `false` |
+| `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
+
+
+
+### `send_file`
+
+> **`send_file`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/send_file" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:multipart/form-data; boundary=<boundary>" \
+  -d 'payload.chat_id=a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5
+	  payload.custom_id=12345-bhdsa
+	  payload.file=test.png'
+  ```
+
+> **`send_file`** sample response 
+
+```js
+{
+	"url": "https://cdn.livechat-static.com/api/file/lc/att/345678/bhdbfhdbf87348374837483.png"
+}
+```
+
+#### Specifics
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_file`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
+| **RTM API equivalent**| - |
+| **Webhook**|[`incoming_chat_thread](#incoming-chat-thread) or [`incoming_event`](#incoming-event )__*__ |
+
+__*)__
+The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only if the event starts a new thread.
+
+#### Request
+
+| Parameter				 | 		Required | Data type| Notes                     |
+| -------------- | -------- | -------- | ------------------------- |
+| `payload`        				  | Yes  | `object` |                              |
+| `payload.chat_id`				  | Yes  | `string` | The id of the chat that you want to send the file to			   |
+| `payload.require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
+| `payload.custom_id` 			  | No   | `string` | Postback name of the button |
+| `payload.file`				  | Yes  | `binary`   | maximum size: 10 MB |
+
+
+### `send_rich_message_postback`
+
+> **`send_rich_message_postback`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+	"postback": {
+		"id": "Method URL_yes",
+		"toggled": true
+				}
+	}'
+  ```
+
+#### Specifics
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback`  |
+| __Required scopes__| `chats.conversation--my:rw` `chats.conversation--all:rw` |
+| **RTM API equivalent**| [`send_rich_message_postback`](../agent-chat-rtm-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-rich-message-postback)</sup> |
+| **Webhook**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
+
+__*)__  `incoming_rich_message_postback` will be sent only for active threads.
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                     |
+| -------------- | -------- | -------- | ------------------------- |
+| `chat_id`       | Yes      | `string` |                              |
+| `event_id`      | Yes      | `string`    | 				     		   |
+| `postback`      | Yes       | `object` | 							   |
+| `postback.id` | Yes       | `string` | Postback name of the button |
+| `postback.toggled`| Yes     | `bool`   | Postback toggled true/false |
+| `thread_id`     | Yes       | `string` | 						       |
+
+#### Response
+
+No response payload.
+
+
+## properties (chat/thread/event)
+
+
+### `update_chat_properties`
+
+> **`update_chat_properties`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/update_chat_properties" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"properties": {
+		"rating": {
+			"score": 2,
+			"comment": "Very good, veeeery good"
+				},
+		...
+			}
+		}'
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_properties`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`update_chat_properties`](../agent-chat-rtm-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-properties)</sup> |
+| **Webhook**| [`chat_properties_updated`](#chat-properties-updated) |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                                           |
+| -------------- | -------- | -------- | ----------------------------------------------- |
+| `chat_id`      | Yes      | `string` | The id of the chat that you to set a property for.|
+| `properties`   | Yes      | `object` | Chat properties to set                          |
+
+#### Response
+
+No response payload.
+
+### `delete_chat_properties`
+
+> **`delete_chat_properties`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"properties": {
+		"rating": ["score", "comment"],
+		...
+				}
 	}'
   ```
 
@@ -589,40 +1110,42 @@ Updates agent properties.
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_agent`  |
-| __Required scopes__| `agents--my:rw` `agents--all:rw`|
-| **RTM API equivalent**| [`update_agent`](../agent-chat-rtm-api/#update-agent)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-agent)</sup> |
-| **Webhook**| [`agent_updated`](#agent-updated)|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`delete_chat_properties`](../agent-chat-rtm-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-properties)</sup> |
+| **Webhook**| [`chat_properties_deleted`](#chat-properties-deleted) |
+
 
 #### Request
 
-| Parameter  | Required | Data type     | Notes                                                     |
-| ---------------- | -------- | -------- | --------------------------------------------------------- |
-| `agent_id`       | No       | `string` | The current agent is used by default.                     |
-| `routing_status` | No       | `string` | Possible values: `accepting_chats`, `not_accepting_chats` |
+| Parameter | Required | Data type     | Notes                                              |
+| -------------- | -------- | -------- | -------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for |
+| `properties`   | Yes      | `object` | Chat properties to delete                          |
 
 #### Response
 
 No response payload.
 
-## customers
 
-### `ban_customer`
 
-Bans the customer for a specific period of time. It immediately disconnects all active sessions of this customer and does not accept new ones during the ban lifespan.
+### `update_chat_thread_properties`
 
-------------------------------------------------------------------------------------------------
-
-> **`ban_customer`** sample request 
+> **`update_chat_thread_properties`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/ban_customer" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
-	"customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-	"ban": {
-		"days": 5
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"properties": {
+		"rating": {
+			"score": 2,
+			"comment": "Very good, veeeery good"
+				},
+		...
 		}
 	}'
   ```
@@ -631,68 +1154,234 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/ban_customer`  |
-| __Required scopes__| `customers.ban:rw` |
-| **RTM API equivalent**| [`ban_customer`](../agent-chat-rtm-api/#ban-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#ban-customer)</sup> |
-| **Webhook**| [`customer_banned`](#customer-banned) |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`update_chat_thread_properties`](../agent-chat-rtm-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-thread-properties)</sup> |
+| **Webhook**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 #### Request
 
-| Parameter | Required | Data type     | Notes |
-| -------------- | -------- | -------- | ----- |
-| `customer_id`  | Yes      | `string` |       |
-| `ban`          | Yes      | `object` |       |
-| `ban.days`     | Yes      | `number` |       |
+
+| Parameter | Required | Data type     | Notes                                             |
+| -------------- | -------- | -------- | ------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | The id of the chat that you want to set properties for|
+| `thread_id`    | Yes      | `string` | The id of the thread that you want to set properties for |
+| `properties`   | Yes      | `object` | Chat properties to set                            |
 
 #### Response
 
 No response payload.
 
 
-### `create_customer`
+### `delete_chat_thread_properties`
 
-> **`create_customer`** sample request 
+> **`delete_chat_thread_properties`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/create_customer" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
-	"email": "customer1@example.com",
-	"avatar": "https://domain.com/avatars/1.jpg",
-	"fields": {
-		"some_key": "some_value"
-			}
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"properties": {
+		"rating": ["score", "comment"],
+		...
+				}
 	}'
-  ```
-> **`create_customer`** sample response
-
-```js
-{
-  // "User > Customer" object
-}
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/create_customer`  |
-| __Required scopes__| `customers:rw`|
-| **RTM API equivalent**| [`create_customer`](../agent-chat-rtm-api/#create-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#create-customer)</sup> |
-| **Webhook**| [`customer_created`](#customer-created) |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`delete_chat_thread_properties`](../agent-chat-rtm-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-thread-properties)</sup> |
+| **Webhook**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
 
 #### Request
 
-| Parameter | Required | Data type     | Notes                          |
-| -------------- | -------- | -------- | ------------------------------ |
-| `name`         | No       | `string` |                                |
-| `email`        | No       | `string` |                                |
-| `avatar`       | No       | `string` | url to customer avatar         |
-| `fields`       | No       | `object` | Map in `"key": "value"` format |
+| Parameter | Required | Data type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
+| `properties`   | Yes      | `object` | Chat thread properties to delete                     |
+
+#### Response
+
+No response payload.
 
 
+### `update_event_properties`
 
+> **`update_event_properties`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/update_event_properties" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "2_EW2WQSA8",
+	"properties": {
+		"rating": {
+			"score": 1,
+			"comment": "Very good, veeeery good"
+				},
+		...
+		}
+	}'
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_event_properties`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`update_event_properties`](../agent-chat-rtm-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-event-properties)</sup> |
+| **Webhook**| [`event_properties_updated`](#event-properties-updated) |
+
+#### Request
+
+
+| Parameter | Required | Data type     | Notes                                             |
+| -------------- | -------- | -------- | ------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that you want to set properties for. |
+| `thread_id`    | Yes      | `string` | Id of the thread that you want to set properties for.|
+| `event_id`     | Yes      | `string` | Id of the event that you want to set properties for. |
+| `properties`   | Yes      | `object` | Chat properties to set                            |
+
+#### Response
+
+No response payload.
+
+
+### `delete_event_properties`
+
+> **`delete_event_properties`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/delete_event_properties" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "2_EW2WQSA8",
+	"properties": {
+		"rating": ["score", "comment"],
+		...
+				}
+	}'
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_event_properties`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`delete_event_properties`](../agent-chat-rtm-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-event-properties)</sup> |
+| **Webhook**| [`event_properties_deleted`](#event-properties-deleted) |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
+| `event_id`     | Yes      | `string` | Id of the event that we want to delete property for  |
+| `properties`   | Yes      | `object` | Event properties to delete                           |
+
+
+#### Response
+
+No response payload.
+
+
+## thread tags
+
+### `tag_chat_thread`
+
+> **`tag_chat_thread`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"tag": "bug_report"
+	}'
+  ```
+
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread`  |
+| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
+| **RTM API equivalent**| [`tag_chat_thread`](../agent-chat-rtm-api/#tag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#tag-chat-thread)</sup> |
+| **Webhook**| [`chat_thread_tagged`](#chat-thread-tagged) |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to add a tag to   		  |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to add a tag to 	 	  |
+| `tag`    		 | Yes      | `string` | Tag name											  |
+
+
+#### Response
+
+No response payload.
+
+
+### `untag_chat_thread`
+
+> **`untag_chat_thread`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"tag": "bug_report"
+	}'
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread	`  |
+| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
+| **RTM API equivalent**| [`untag_chat_thread`](../agent-chat-rtm-api/#untag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#untag-chat-thread)</sup> |
+| **Webhook**| [`chat_thread_untagged`](#chat-thread-untagged) |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that you want to remove the tag from   |
+| `thread_id`    | Yes      | `string` | Id of the thread that you want to remove the tag from |
+| `tag`    		 | Yes      | `string` | Tag name											  |
+
+
+#### Response
+
+No response payload.
+
+
+## customers
 
 ### `get_customers`
 
@@ -814,6 +1503,47 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 ------------------------------------------------------------------------------------------------
 
 
+### `create_customer`
+
+> **`create_customer`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/create_customer" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:application/json" \
+  -d '{
+	"email": "customer1@example.com",
+	"avatar": "https://domain.com/avatars/1.jpg",
+	"fields": {
+		"some_key": "some_value"
+			}
+	}'
+  ```
+> **`create_customer`** sample response
+
+```js
+{
+  // "User > Customer" object
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/create_customer`  |
+| __Required scopes__| `customers:rw`|
+| **RTM API equivalent**| [`create_customer`](../agent-chat-rtm-api/#create-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#create-customer)</sup> |
+| **Webhook**| [`customer_created`](#customer-created) |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                          |
+| -------------- | -------- | -------- | ------------------------------ |
+| `name`         | No       | `string` |                                |
+| `email`        | No       | `string` |                                |
+| `avatar`       | No       | `string` | url to customer avatar         |
+| `fields`       | No       | `object` | Map in `"key": "value"` format |
 
 
 
@@ -863,244 +1593,22 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 | `fields`       | No       | `object` | Map in `"key": "value"` format |
 
 
+### `ban_customer`
 
-## events
+Bans the customer for a specific period of time. It immediately disconnects all active sessions of this customer and does not accept new ones during the ban lifespan.
 
-### `send_event`
+------------------------------------------------------------------------------------------------
 
-> **`send_event`** sample request 
+> **`ban_customer`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/send_event" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/ban_customer" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"attach_to_last_thread": false,
-	"event": {
-		"type": "message",
-		"text": "hello world",
-		"recipients": "agents",
-		"custom_id": "31-0C-1C-07-DB-16",
-			}
-	}'
-  ```
-
-> **`send_event`** sample response 
-
-```js
-{
-	"thread_id": "K600PKZON8",
-	"event": {
-		// "Event" object
-	}
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_event`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [`send_event`](../agent-chat-rtm-api/#send-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-event)</sup> |
-| **Webhook**| [`incoming_event`](#incoming-event ) or [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
-
-__*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_event `only if the event starts a new thread.
-
-
-#### Request
-
-| Parameters         | Required | Data type     | Notes                                                                            |
-| ----------------------- | -------- | -------- | -------------------------------------------------------------------------------- |
-| `chat_id`               | Yes      | `string` | Id of the chat that we want to send the message to                               |
-| `event`                 | Yes      | `object` | Event object                                                                     |
-| `attach_to_last_thread` | No       | `bool`   | If `true`, adds event to last thread, otherwise creates new one, default `false` |
-| `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
-
-
-
-
-## properties (chat/thread/event)
-
-### `delete_chat_properties`
-
-> **`delete_chat_properties`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"properties": {
-		"rating": ["score", "comment"],
-		...
-				}
-	}'
-  ```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`delete_chat_properties`](../agent-chat-rtm-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-properties)</sup> |
-| **Webhook**| [`chat_properties_deleted`](#chat-properties-deleted) |
-
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                              |
-| -------------- | -------- | -------- | -------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for |
-| `properties`   | Yes      | `object` | Chat properties to delete                          |
-
-#### Response
-
-No response payload.
-
-
-### `delete_chat_thread_properties`
-
-> **`delete_chat_thread_properties`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"properties": {
-		"rating": ["score", "comment"],
-		...
-				}
-	}'
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`delete_chat_thread_properties`](../agent-chat-rtm-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-thread-properties)</sup> |
-| **Webhook**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
-| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
-| `properties`   | Yes      | `object` | Chat thread properties to delete                     |
-
-#### Response
-
-No response payload.
-
-
-### `delete_event_properties`
-
-> **`delete_event_properties`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/delete_event_properties" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "2_EW2WQSA8",
-	"properties": {
-		"rating": ["score", "comment"],
-		...
-				}
-	}'
-  ```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_event_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`delete_event_properties`](../agent-chat-rtm-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-event-properties)</sup> |
-| **Webhook**| [`event_properties_deleted`](#event-properties-deleted) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
-| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
-| `event_id`     | Yes      | `string` | Id of the event that we want to delete property for  |
-| `properties`   | Yes      | `object` | Event properties to delete                           |
-
-
-#### Response
-
-No response payload.
-
-### `update_chat_properties`
-
-> **`update_chat_properties`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/update_chat_properties" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"properties": {
-		"rating": {
-			"score": 2,
-			"comment": "Very good, veeeery good"
-				},
-		...
-			}
-		}'
-  ```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`update_chat_properties`](../agent-chat-rtm-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-properties)</sup> |
-| **Webhook**| [`chat_properties_updated`](#chat-properties-updated) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                           |
-| -------------- | -------- | -------- | ----------------------------------------------- |
-| `chat_id`      | Yes      | `string` | The id of the chat that you to set a property for.|
-| `properties`   | Yes      | `object` | Chat properties to set                          |
-
-#### Response
-
-No response payload.
-
-
-### `update_chat_thread_properties`
-
-> **`update_chat_thread_properties`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"properties": {
-		"rating": {
-			"score": 2,
-			"comment": "Very good, veeeery good"
-				},
-		...
+	"customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"ban": {
+		"days": 5
 		}
 	}'
   ```
@@ -1109,44 +1617,40 @@ No response payload.
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`update_chat_thread_properties`](../agent-chat-rtm-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-thread-properties)</sup> |
-| **Webhook**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/ban_customer`  |
+| __Required scopes__| `customers.ban:rw` |
+| **RTM API equivalent**| [`ban_customer`](../agent-chat-rtm-api/#ban-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#ban-customer)</sup> |
+| **Webhook**| [`customer_banned`](#customer-banned) |
 
 #### Request
 
-
-| Parameter | Required | Data type     | Notes                                             |
-| -------------- | -------- | -------- | ------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | The id of the chat that you want to set properties for|
-| `thread_id`    | Yes      | `string` | The id of the thread that you want to set properties for |
-| `properties`   | Yes      | `object` | Chat properties to set                            |
+| Parameter | Required | Data type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `customer_id`  | Yes      | `string` |       |
+| `ban`          | Yes      | `object` |       |
+| `ban.days`     | Yes      | `number` |       |
 
 #### Response
 
 No response payload.
 
 
-### `update_event_properties`
+## status
 
-> **`update_event_properties`** sample request 
+### `update_agent`
+
+Updates agent properties.
+
+-----------------------------------------------------------------------------
+
+> **`update_agent`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/update_event_properties" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/update_agent" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "2_EW2WQSA8",
-	"properties": {
-		"rating": {
-			"score": 1,
-			"comment": "Very good, veeeery good"
-				},
-		...
-		}
+	"routing_status": "accepting_chats"
 	}'
   ```
 
@@ -1154,322 +1658,104 @@ No response payload.
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_event_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`update_event_properties`](../agent-chat-rtm-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-event-properties)</sup> |
-| **Webhook**| [`event_properties_updated`](#event-properties-updated) |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_agent`  |
+| __Required scopes__| `agents--my:rw` `agents--all:rw`|
+| **RTM API equivalent**| [`update_agent`](../agent-chat-rtm-api/#update-agent)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-agent)</sup> |
+| **Webhook**| [`agent_updated`](#agent-updated)|
 
 #### Request
 
-
-| Parameter | Required | Data type     | Notes                                             |
-| -------------- | -------- | -------- | ------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that you want to set properties for. |
-| `thread_id`    | Yes      | `string` | Id of the thread that you want to set properties for.|
-| `event_id`     | Yes      | `string` | Id of the event that you want to set properties for. |
-| `properties`   | Yes      | `object` | Chat properties to set                            |
+| Parameter  | Required | Data type     | Notes                                                     |
+| ---------------- | -------- | -------- | --------------------------------------------------------- |
+| `agent_id`       | No       | `string` | The current agent is used by default.                     |
+| `routing_status` | No       | `string` | Possible values: `accepting_chats`, `not_accepting_chats` |
 
 #### Response
 
 No response payload.
 
-## thread tags
-
-### `tag_chat_thread`
-
-> **`tag_chat_thread`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"tag": "bug_report"
-	}'
-  ```
-
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`tag_chat_thread`](../agent-chat-rtm-api/#tag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#tag-chat-thread)</sup> |
-| **Webhook**| [`chat_thread_tagged`](#chat-thread-tagged) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to add a tag to   		  |
-| `thread_id`    | Yes      | `string` | Id of the thread that we want to add a tag to 	 	  |
-| `tag`    		 | Yes      | `string` | Tag name											  |
-
-
-#### Response
-
-No response payload.
-
-
-### `untag_chat_thread`
-
-> **`untag_chat_thread`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"tag": "bug_report"
-	}'
-  ```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread	`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`untag_chat_thread`](../agent-chat-rtm-api/#untag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#untag-chat-thread)</sup> |
-| **Webhook**| [`chat_thread_untagged`](#chat-thread-untagged) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that you want to remove the tag from   |
-| `thread_id`    | Yes      | `string` | Id of the thread that you want to remove the tag from |
-| `tag`    		 | Yes      | `string` | Tag name											  |
-
-
-#### Response
-
-No response payload.
 
 
 ## other
 
+### `update_last_seen_timestamp`
 
-### `get_chat_threads`
-
-It returns threads that the current agent has access to in a given chat.
-
---------------------------------------------------------------------------------
-
-> **`get_chat_threads`** sample request 
+> **`update_last_seen_timestamp`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/get_chat_threads" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
 	"chat_id": "PJ0MRSHTDG",
-	"thread_ids": ["K600PKZON8"]
+	"timestamp": 123456789
 	}'
-```
+  ```
 
-> **`get_chat_threads`** sample response 
+> **`update_last_seen_timestamp`** sample response 
 
 ```js
 {
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"threads": [ // optional
-			// "Thread" object
-		],
-		"threads_summary": [{
-				"thread_id": "K600PKZON8",
-				"order": 129846129847
-			},
-			{
-				"thread_id": "K600PKZON8",
-				"order": 129846129848
-			}
-		],
-		"properites": {
-			// "Properites" object
-		},
-		"access": {
-			// "Access" object
-		}
-	}
+	"timestamp": 123456789
 }
 ```
+
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads`  |
-| **Required scopes** | `chats--all:ro` `chats--access:ro`|
-| **RTM API equivalent**| [`get_chat_threads`](../agent-chat-rtm-api/#get-chat-threads)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads)</sup> |
-| **Webhook**| - |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp`  |
+| __Required scopes__| `chats--access:ro` `chats--all:ro`|
+| **RTM API equivalent**| [`update_last_seen_timestamp`](../agent-chat-rtm-api/#update-last-seen-timestamp)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-last-seen-timestamp)</sup> |
+| **Webhook**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
+
 
 #### Request
+      
 
-| Parameter | Required | Data type     | Notes |
+| Parameter | Required | Data type     |  |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
-| `thread_ids`   | No       | `array`  |       |
+| `timestamp`  | No       | `number` |     |
 
 
 
-### `get_chat_threads_summary`
+### `send_typing_indicator`
 
-> **`get_chat_threads_summary`** sample request 
+> **`send_typing_indicator`** sample request 
 
    ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/get_chat_threads" \
+  curl "https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator" \
   -H "Authorization: Bearer <your_access_token>" \
   -H "Content-type:application/json" \
   -d '{
 	"chat_id": "PJ0MRSHTDG",
-	"limit": 25,
-	"page_id": "MjpkZXNj"
+	"recipients": "all",
+	"is_typing": true
 	}'
-  ```
-
-> **`get_chat_threads_summary`** sample response
-
-```js 
-{
-	"threads_summary": [
-            {
-                "id": "PT039ES4OG",
-                "order": 2,
-                "events_count": 2
-            },
-            {
-                "id": "PT039DS6IP",
-                "order": 1,
-                "events_count": 17
-            }
-        ],
-        "found_threads": 7,
-        "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
-        "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
-}
 ```
-#### Specifics
 
+#### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads_summary`  |
-| **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **RTM API equivalent**| [`get_chat_threads_summary`](../agent-chat-rtm-api/#get-chat-threads-summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads-summary)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **RTM API equivalent**| [`send_typing_indicator`](../agent-chat-rtm-api/#send-typing-indicator)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-typing-indicator)</sup> |
 | **Webhook**| - |
 
-#### Request
-
-| Parameter | Required | Data type     | Notes |
-| -------------- | -------- | -------- | ----- |
-| `chat_id`      | Yes      | `string` |       |
-| `order`      | No      | `string` | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default)|
-| `limit`      | No      | `number` | Defaul: 10, maximum: 100      |
-| `page_id`   | No       | `string`  |       |
-
-#### Response
-
-| Parameter  | Data type     | Notes |
-| -------------- | -------- | ----- |
-| `found_threads`   | `string` | Number of threads in a chat    |
-
-
-
-### `send_file`
-
-> **`send_file`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/send_file" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:multipart/form-data; boundary=<boundary>" \
-  -d 'payload.chat_id=a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5
-	  payload.custom_id=12345-bhdsa
-	  payload.file=test.png'
-  ```
-
-> **`send_file`** sample response 
-
-```js
-{
-	"url": "https://cdn.livechat-static.com/api/file/lc/att/345678/bhdbfhdbf87348374837483.png"
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_file`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| - |
-| **Webhook**|[`incoming_chat_thread](#incoming-chat-thread) or [`incoming_event`](#incoming-event )__*__ |
-
-__*)__
-The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only if the event starts a new thread.
 
 #### Request
 
-| Parameter				 | 		Required | Data type| Notes                     |
-| -------------- | -------- | -------- | ------------------------- |
-| `payload`        				  | Yes  | `object` |                              |
-| `payload.chat_id`				  | Yes  | `string` | The id of the chat that you want to send the file to			   |
-| `payload.require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
-| `payload.custom_id` 			  | No   | `string` | Postback name of the button |
-| `payload.file`				  | Yes  | `binary`   | maximum size: 10 MB |
-
-
-
-### `send_rich_message_postback`
-
-> **`send_rich_message_postback`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-	"postback": {
-		"id": "Method URL_yes",
-		"toggled": true
-				}
-	}'
-  ```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback`  |
-| __Required scopes__| `chats.conversation--my:rw` `chats.conversation--all:rw` |
-| **RTM API equivalent**| [`send_rich_message_postback`](../agent-chat-rtm-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-rich-message-postback)</sup> |
-| **Webhook**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
-
-__*)__  `incoming_rich_message_postback` will be sent only for active threads.
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                     |
-| -------------- | -------- | -------- | ------------------------- |
-| `chat_id`       | Yes      | `string` |                              |
-| `event_id`      | Yes      | `string`    | 				     		   |
-| `postback`      | Yes       | `object` | 							   |
-| `postback.id` | Yes       | `string` | Postback name of the button |
-| `postback.toggled`| Yes     | `bool`   | Postback toggled true/false |
-| `thread_id`     | Yes       | `string` | 						       |
+| Parameter | Required | Data type     | Notes                                                       |
+| -------------- | -------- | -------- | ----------------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
+| `recipients`   | No       | `string` | `all` (default), `agents`                                   |
+| `is_typing`    | Yes      | `bool`   | Bool                                                        |
 
 #### Response
 
 No response payload.
+
 
 ### `multicast`
 
@@ -1531,122 +1817,10 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 
 
 
-### `send_typing_indicator`
-
-> **`send_typing_indicator`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"recipients": "all",
-	"is_typing": true
-	}'
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`send_typing_indicator`](../agent-chat-rtm-api/#send-typing-indicator)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-typing-indicator)</sup> |
-| **Webhook**| - |
-
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                       |
-| -------------- | -------- | -------- | ----------------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
-| `recipients`   | No       | `string` | `all` (default), `agents`                                   |
-| `is_typing`    | Yes      | `bool`   | Bool                                                        |
-
-#### Response
-
-No response payload.
 
 
 
 
-### `close_thread`
-
-Closes the thread. Nobody will be able to send any messages to this thread anymore.
-
-------------------------------------------------------------------------------------------------
-
-> **`close_thread`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/close_thread" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	}'
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/close_thread`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`close_thread`](../agent-chat-rtm-api/#close-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#close-thread)</sup> |
-| **Webhook**| [`thread_closed`](#thread-closed)  |
-
-#### Request
-
-| Parameter | Required | Data type     |  |
-| -------------- | -------- | -------- | ----- |
-| `chat_id`      | Yes      | `string` |       |
-
-#### Response
-
-No response payload.
-
-
-
-### `update_last_seen_timestamp`
-
-> **`update_last_seen_timestamp`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:application/json" \
-  -d '{
-	"chat_id": "PJ0MRSHTDG",
-	"timestamp": 123456789
-	}'
-  ```
-
-> **`update_last_seen_timestamp`** sample response 
-
-```js
-{
-	"timestamp": 123456789
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp`  |
-| __Required scopes__| `chats--access:ro` `chats--all:ro`|
-| **RTM API equivalent**| [`update_last_seen_timestamp`](../agent-chat-rtm-api/#update-last-seen-timestamp)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-last-seen-timestamp)</sup> |
-| **Webhook**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
-
-
-#### Request
-      
-
-| Parameter | Required | Data type     |  |
-| -------------- | -------- | -------- | ----- |
-| `chat_id`      | Yes      | `string` |       |
-| `timestamp`  | No       | `number` |     |
 
 
 
