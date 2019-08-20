@@ -2,11 +2,12 @@
 weight: 50
 ---
 
-# Other data structures
+# Other common structures
 
 Apart from [Events](#events) and [Users](#users), there are also other common data structures you might work with. Those are:
 
 - [Access](#access)
+- [Chats](#chats)
 - [Properties](#properties)
 - [Threads](#threads)
 
@@ -27,6 +28,36 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 | Field  |      Req./Opt.     |  Note |
 |----------|:-------------:|------:|
 | ``group_ids`` |  required | `group 0` means that all agents can see it |
+
+
+## Chats
+
+> A sample **Chat** data structure
+
+```js
+{
+	"id": "PJ0MRSHTDG",
+	"users": [
+		// array of "User" objects
+	],
+	"threads": [
+		// array of "Thread" objects
+	],
+	"properties": {
+		// "Properties" object
+	},
+	"access": {
+		// "Access" object
+	}
+}
+```
+
+| Field  |      Req./Opt.     |  Note |
+|----------|:-------------:|------:|
+| `properties` |  optional |  |
+| `access` |  optional |  |
+
+
 
 ## Properties
 

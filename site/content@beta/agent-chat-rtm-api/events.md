@@ -5,52 +5,20 @@ weight: 30
 # Events
 
 One of the data structures are **events**. They are sent to a chat via the `send_event` method. 
-Apart from events, there are also [properties](#property), [users](#user), [thread](#thread), and [other data structures](#other-data-structures). 
+Apart from events, there are also [Properties](#properties), [Users](#users), and [other data structures](#other-common-structures). 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 These are the available **event types**:
 
-- [Custom](#custom)
+
 - [File](#file) 
 - [Filled form](#filled-form)
 - [Message](#message) 
 - [Rich message](#rich-message) 
+- [Custom](#custom)
 - [System message](#system-message) 
 
-
-## Custom
-
->  A sample **Custom** event
-
-``` js
-{
-	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "31-0C-1C-07-DB-16",
-	"order": 1, // generated server-side
-	"type": "custom",
-	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-	"timestamp": 1473433500, // generated server-side
-	"content": {
-		"custom": {
-			"nested": "json"
-		}
-	},
-	"recipients": "all",
-	"properties": {
-		// "Properties" object
-	}
-}
-```
-**an event with customizable payload**
-
-----------------------------------
-
-| Field  |      Req./Opt.     |  Note |
-|----------|:-------------:|------:|
-| `custom_id` |  optional | - |
-| `properties` | optional |   -  |
-| `recipients` |    required   |  possible values: `all` (default), `agents` |
 
 
 ## File
@@ -210,6 +178,40 @@ These are the available **event types**:
 | `properties` | optional |   -  |
 | `recipients` |  required | possible values: `all` (default), `agents` |
 | `text` | required | max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages |
+
+
+## Custom
+
+>  A sample **Custom** event
+
+``` js
+{
+	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+	"custom_id": "31-0C-1C-07-DB-16",
+	"order": 1, // generated server-side
+	"type": "custom",
+	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"timestamp": 1473433500, // generated server-side
+	"content": {
+		"custom": {
+			"nested": "json"
+		}
+	},
+	"recipients": "all",
+	"properties": {
+		// "Properties" object
+	}
+}
+```
+**an event with customizable payload**
+
+----------------------------------
+
+| Field  |      Req./Opt.     |  Note |
+|----------|:-------------:|------:|
+| `custom_id` |  optional | - |
+| `properties` | optional |   -  |
+| `recipients` |    required   |  possible values: `all` (default), `agents` |
 
 
 ## System message
