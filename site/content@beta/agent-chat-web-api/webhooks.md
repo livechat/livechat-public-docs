@@ -10,13 +10,73 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 |   |  |
 |-------|--------| 
+| **chats** | [`incoming_chat_thread`](#incoming-chat-thread) [`thread_closed`](#thread-closed)|
 | **chat access** | [`access_granted`](#access-granted) [`access_revoked`](#access-revoked) [`access_set`](#access-set)  |
-| **chat users** |[`chat_user_removed`](#chat-user-removed) [`chat_user_added`](#chat-user-added)   | 
-| **customers** | [`customer_created`](#customer-created)| 
-| **events** | [`event_updated`](#event-updated) [`incoming_event`](#incoming-event) |
-| **properties (chat/thread/event)** | [`event_properties_updated`](#event-properties-updated) [`event_properties_deleted`](#event-properties-deleted) [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) [`chat_thread_properties_updated`](#chat-thread-properties-updated) [`chat_properties_deleted`](#chat-properties-deleted) [`chat_properties_updated`](#chat-properties-updated) |  
+| **chat users** |[`chat_user_added`](#chat-user-added) [`chat_user_removed`](#chat-user-removed)   | 
+| **events** | [`incoming_event`](#incoming-event) [`event_updated`](#event-updated) [`incoming_rich_message_postback`](#incoming-rich-message-postback) |
+| **properties (chat/thread/event)** | [`chat_properties_updated`](#chat-properties-updated) [`chat_properties_deleted`](#chat-properties-deleted) [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) [`chat_thread_properties_updated`](#chat-thread-properties-updated) [`event_properties_updated`](#event-properties-updated) [`event_properties_deleted`](#event-properties-deleted) |  
 | **thread tags** | [`chat_thread_tagged`](#chat-thread-tagged) [`chat_thread_untagged`](#chat-thread-untagged) | 
-| **other** | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated) [`thread_closed`](#thread-closed) [`incoming_rich_message_postback`](#incoming-rich-message-postback) [`incoming_chat_thread`](#incoming-chat-thread)| 
+| **customers** | [`customer_created`](#customer-created)| 
+| **other** | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)  | 
+
+
+## chats
+
+### `incoming_chat_thread`
+
+> **`incoming_chat_thread`** sample payload
+
+```js
+{
+	"chat": {
+		"id": "PJ0MRSHTDG",
+		"users": [
+			// array of "User" objects
+		],
+		"properties": {
+			"source": {
+				"type": "facebook"
+			},
+			...
+		},
+		"thread": {
+			// "Thread" object
+		}
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `incoming_chat_thread`  |
+| **Push equivalent**| [`incoming_chat_thread`](../agent-chat-rtm-api/#incoming-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-chat-thread)</sup> |
+
+### `thread_closed`
+
+> **`thread_closed`** sample payload
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `thread_closed`  |
+| **Push equivalent**| [`thread_closed`](../agent-chat-rtm-api/#thread-closed)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#thread-closed)</sup> |
+
+#### Webhook payload
+
+| Object      | Notes                                  |
+| ----------- | -------------------------------------- |
+| `user_id`   | Missing if thread was closed by router |
 
 
 ## chat access
@@ -178,26 +238,6 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | ----------- | --------------------------------------- |
 | `user_type` | possible values: `agent`, `customer` |
 
-## customers
-
-### `customer_created`
-
-> **`customer_created`** sample payload
-
-```js
-{
-	"customer": {
-		// "User > Customer" object
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `customer_created`  |
-| **Push equivalent**| [`customer_created`](../agent-chat-rtm-api/#customer-created)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#customer-created)</sup> |
 
 
 ## events
@@ -247,99 +287,32 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 
 
+
+### `incoming_rich_message_postback`
+
+> **`incoming_rich_message_postback`** sample payload
+
+```js
+{
+	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+	"postback": {
+		"id": "action_yes",
+		"toggled": true
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `incoming_rich_message_postback`  |
+| **Push equivalent**| [`incoming_rich_message_postback`](../agent-chat-rtm-api/#incoming-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-rich-message-postback)</sup> |
+
 ## properties (chat/thread/event)
-
-### `chat_properties_deleted`
-
-> **`chat_properties_deleted`** sample payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"properties": {
-		"rating": ["score", "comment"]
-		},
-		...
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `chat_properties_deleted`  |
-| **Push equivalent**| [`chat_properties_deleted`](../agent-chat-rtm-api/#chat-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-properties-deleted)</sup> |
-
-#### Webhook payload
-
-| Object       | Notes                                                                                                      |
-| ------------ | ---------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
-
-
-
-### `chat_thread_properties_deleted`
-
-> **`chat_thread_properties_deleted`** sample payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"properties": {
-		"rating": ["score", "comment"]
-		},
-		...
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `chat_thread_properties_deleted`  |
-| **Push equivalent**| [`chat_thread_properties_deleted`](../agent-chat-rtm-api/#chat-thread-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-properties-deleted)</sup> |
-
-
-#### Webhook payload
-
-| Object       | Notes                                                                                                      |
-| ------------ | ---------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
-
-
-
-### `event_properties_deleted`
-
-> **`event_properties_deleted`** sample payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "2_E2WDHA8A",
-	"properties": {
-		"rating": ["score", "comment"]
-		},
-		...
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `event_properties_deleted`  |
-| **Push equivalent**| [`event_properties_deleted`](../agent-chat-rtm-api/#event-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#event-properties-deleted)</sup> |
-
-#### Webhook payload
-
-| Object       | Notes                                                                                          |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
 
 ### `chat_properties_updated`
 
@@ -370,13 +343,35 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | **Push equivalent**| [`chat_properties_updated`](../agent-chat-rtm-api/#chat-properties-updated)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-properties-updated)</sup> |
 
 
+
+
+### `chat_properties_deleted`
+
+> **`chat_properties_deleted`** sample payload
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"properties": {
+		"rating": ["score", "comment"]
+		},
+		...
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `chat_properties_deleted`  |
+| **Push equivalent**| [`chat_properties_deleted`](../agent-chat-rtm-api/#chat-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-properties-deleted)</sup> |
+
 #### Webhook payload
 
 | Object       | Notes                                                                                                      |
 | ------------ | ---------------------------------------------------------------------------------------------------------- |
 | `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
-
-
 
 
 ### `chat_thread_properties_updated`
@@ -416,6 +411,37 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated.  |
 
 
+### `chat_thread_properties_deleted`
+
+> **`chat_thread_properties_deleted`** sample payload
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"properties": {
+		"rating": ["score", "comment"]
+		},
+		...
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `chat_thread_properties_deleted`  |
+| **Push equivalent**| [`chat_thread_properties_deleted`](../agent-chat-rtm-api/#chat-thread-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-properties-deleted)</sup> |
+
+
+#### Webhook payload
+
+| Object       | Notes                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+
+
 
 ### `event_properties_updated`
 
@@ -449,6 +475,54 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | Object       | Notes                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------- |
 | `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated.  |
+
+
+### `event_properties_deleted`
+
+> **`event_properties_deleted`** sample payload
+
+```js
+{
+	"chat_id": "PJ0MRSHTDG",
+	"thread_id": "K600PKZON8",
+	"event_id": "2_E2WDHA8A",
+	"properties": {
+		"rating": ["score", "comment"]
+		},
+		...
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `event_properties_deleted`  |
+| **Push equivalent**| [`event_properties_deleted`](../agent-chat-rtm-api/#event-properties-deleted)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#event-properties-deleted)</sup> |
+
+#### Webhook payload
+
+| Object       | Notes                                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+
+
+
+#### Webhook payload
+
+| Object       | Notes                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+
+
+
+
+
+
+
+
+
 
 
 
@@ -494,169 +568,29 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | **Push equivalent**| [`chat_thread_untagged`](../agent-chat-rtm-api/#chat-thread-tagged)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-tagged)</sup> |
 
 
+## customers
+
+### `customer_created`
+
+> **`customer_created`** sample payload
+
+```js
+{
+	"customer": {
+		// "User > Customer" object
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `customer_created`  |
+| **Push equivalent**| [`customer_created`](../agent-chat-rtm-api/#customer-created)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#customer-created)</sup> |
+
+
 ## other
-
-### `incoming_chat_thread`
-
-> **`incoming_chat_thread`** sample payload
-
-```js
-{
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			"source": {
-				"type": "facebook"
-			},
-			...
-		},
-		"thread": {
-			// "Thread" object
-		}
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `incoming_chat_thread`  |
-| **Push equivalent**| [`incoming_chat_thread`](../agent-chat-rtm-api/#incoming-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-chat-thread)</sup> |
-
-
-### `incoming_rich_message_postback`
-
-> **`incoming_rich_message_postback`** sample payload
-
-```js
-{
-	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-	"postback": {
-		"id": "action_yes",
-		"toggled": true
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `incoming_rich_message_postback`  |
-| **Push equivalent**| [`incoming_rich_message_postback`](../agent-chat-rtm-api/#incoming-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-rich-message-postback)</sup> |
-
-
-
-### `incoming_multicast`
-
-> **`incoming_multicast`** sample payload
-
-```js
-{
-	"author_id": "agent1@example.com",
-	"content": {
-		"example": {
-			"nested": "json"
-		}
-	},
-	"type": "type1"
-}
-```
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `incoming_multicast`  |
-| **Push equivalent**| - |
-
-#### Webhook payload
-
-| Object  | Required |
-|-------|--------|
-| `author_id`   |   No   |
-| `content` |   Yes   |
-| `type`      | No       | 
-
-
-### `incoming_typing_indicator`
-
-> **`incoming_typing_indicator`** sample payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"typing_indicator": {
-		// "Typing indicator" object
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `incoming_typing_indicator`  |
-| **Push equivalent**| - |
-
-
-
-### `incoming_sneak_peek`
-
-> **`incoming_sneak_peek`** sample payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"sneak_peek": {
-		// "Sneak peek" object
-	}
-}
-```
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `incoming_sneak_peek`  |
-| **Push equivalent**| - |
-
-
-
-
-### `thread_closed`
-
-> **`thread_closed`** sample payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `thread_closed`  |
-| **Push equivalent**| [`thread_closed`](../agent-chat-rtm-api/#thread-closed)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#thread-closed)</sup> |
-
-#### Webhook payload
-
-| Object      | Notes                                  |
-| ----------- | -------------------------------------- |
-| `user_id`   | Missing if thread was closed by router |
-
-
 
 ### `last_seen_timestamp_updated`
 

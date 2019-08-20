@@ -33,7 +33,7 @@ If you specify the API version in the URL, you don't have to include the optiona
 | **properties (chat/thread/event)** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties)|  
 | **thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread) | 
 | **customers** | [`get_customers`](#get-customers) [`create_customer`](#create-customer)  [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)| 
-| **status** | [`set_away_status`](#set-away-status)  [`change_push_notifications`](#change-push-notifications) [`update_agent`](#update-agent) |
+| **status** | [`update_agent`](#update-agent) |
 | **other** |  [`upload_image`](#upload-image)  [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)| 
 
 ## chats
@@ -985,7 +985,7 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 | **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_file`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **RTM API equivalent**| - |
-| **Webhook**|[`incoming_chat_thread](#incoming-chat-thread) or [`incoming_event`](#incoming-event )__*__ |
+| **Webhook**|[`incoming_chat_thread`](#incoming-chat-thread) or [`incoming_event`](#incoming-event )__*__ |
 
 __*)__
 The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only if the event starts a new thread.
@@ -1637,6 +1637,7 @@ No response payload.
 
 ## status
 
+
 ### `update_agent`
 
 Updates agent properties.
@@ -1757,6 +1758,51 @@ No response payload.
 No response payload.
 
 
+
+### `upload_image`
+
+> **`upload_image`** sample request 
+
+   ```shell
+  curl "https://api.livechatinc.com/v3.0/agent/action/upload_image" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "Content-type:multipart/form-data; boundary=<boundary>" \
+  -d 'payload.image=test.png'
+  ```
+
+> **`upload_image`** sample response
+
+```js
+{
+	"url": "https://cdn.livechat-static.com/api/file/lc/img/24434343/dmkslfmndsfgds6fsdfsdnfsd.png",
+	"path": "24434343/dmkslfmndsfgds6fsdfsdnfsd.png"
+}
+```
+
+#### Specifics
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/upload_image`  |
+| __Required scopes__| - |
+| **RTM API equivalent**| - |
+| **Push message**| - |
+
+#### Request
+
+| Parameter				 | 		Required | Data type| Notes                  |
+| -------------- | -------- | -------- | ------------------------- |
+| `payload`        				  | Yes  | `object` |  maximum size: 10 MB   |
+| `payload.image`				  | Yes  | `binary` | maximum size: 10 MB    |
+
+
+#### Response
+
+| Parameter		 | 		 Notes                |
+| -------------- |  ------------------------- |
+| `url`        	 |  is a ready-to-use temporary URL, but it can expire in the future  |
+| `path`		 |  should be used for database and must be appended to `base_url` (`https://cdn.livechat-static.com/api/file/lc/img`)|
+
+
 ### `multicast`
 
 > **`multicast`** sample request 
@@ -1814,59 +1860,4 @@ __*)__ `scopes` can take the following values:
    	- `ids` (`[]string` - an array of customer's ids)
 
 At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
-
-
-
-
-
-
-
-
-
-
-### `upload_image`
-
-> **`upload_image`** sample request 
-
-   ```shell
-  curl "https://api.livechatinc.com/v3.0/agent/action/upload_image" \
-  -H "Authorization: Bearer <your_access_token>" \
-  -H "Content-type:multipart/form-data; boundary=<boundary>" \
-  -d 'payload.image=test.png'
-  ```
-
-> **`upload_image`** sample response
-
-```js
-{
-	"url": "https://cdn.livechat-static.com/api/file/lc/img/24434343/dmkslfmndsfgds6fsdfsdnfsd.png",
-	"path": "24434343/dmkslfmndsfgds6fsdfsdnfsd.png"
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/upload_image`  |
-| __Required scopes__| - |
-| **RTM API equivalent**| - |
-| **Push message**| - |
-
-#### Request
-
-| Parameter				 | 		Required | Data type| Notes                  |
-| -------------- | -------- | -------- | ------------------------- |
-| `payload`        				  | Yes  | `object` |  maximum size: 10 MB   |
-| `payload.image`				  | Yes  | `binary` | maximum size: 10 MB    |
-
-
-#### Response
-
-| Parameter		 | 		 Notes                |
-| -------------- |  ------------------------- |
-| `url`        	 |  is a ready-to-use temporary URL, but it can expire in the future  |
-| `path`		 |  should be used for database and must be appended to `base_url` (`https://cdn.livechat-static.com/api/file/lc/img`)|
-
-
-
 

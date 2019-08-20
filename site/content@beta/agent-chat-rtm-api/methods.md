@@ -21,7 +21,7 @@ weight: 60
 | **thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread) | 
 | **customers** |  [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) |
 | **status** | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`update_agent`](#update-agent) [`set_away_status`](#set-away-status) [`logout`](#logout) |
-| **other** | [`update_last_seen_timestamp`](#update-last-seen-timestamp)  [`send_typing_indicator`](#send-typing-indicator)  [`multicast`](#multicast)     | 
+| **other** | [`update_last_seen_timestamp`](#update-last-seen-timestamp)  [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) | 
 
 
 ## chats
@@ -1902,6 +1902,9 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 #### Response
 
 No response payload.
+
+
+
 
 
 
