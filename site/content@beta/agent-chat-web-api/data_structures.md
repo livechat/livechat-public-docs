@@ -8,6 +8,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 - [Access](#access)
 - [Chats](#chats)
+- [Chat summary](#chat-summary)
 - [Properties](#properties)
 - [Threads](#threads)
 
@@ -29,33 +30,99 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 |----------|:-------------:|------:|
 | `group_ids` |  required | `group 0` means that all agents can see it |
 
-
 ## Chats
 
 > A sample **Chat** data structure
 
 ```js
 {
-	"id": "PJ0MRSHTDG",
-	"users": [
-		// array of "User" objects
-	],
-	"threads": [
-		// array of "Thread" objects
-	],
-	"properties": {
-		// "Properties" object
-	},
-	"access": {
-		// "Access" object
-	}
-}
+        "id": "PJ0MRSHTDG",
+        "users": [
+            // array of "User" objects
+        ],
+        "threads": [ // optional
+            // "Thread" object
+        ],
+        "threads_summary": [{
+                "thread_id": "K600PKZON8",
+                "order": 129846129847
+            },
+            {
+                "thread_id": "K600PKZON8",
+                "order": 129846129848
+            }
+        ],
+        "properites": {
+            // "Properites" object
+        },
+        "access": {
+            // "Access" object
+        },
+        "is_followed": true
+    }
 ```
 
 | Field  |      Req./Opt.     |  Note |
 |----------|:-------------:|------:|
 | `properties` |  optional |  |
 | `access` |  optional |  |
+
+
+## Chat summary
+
+
+> A sample **Chat summary** data structure 
+
+```js
+{
+        "id": "PJ0MRSHTDG",
+        "users": [
+            // array of "User" objects
+        ],
+        "last_event_per_type": { // last event of each type in chat
+            "message": {
+                "thread_id": "K600PKZON8",
+                "thread_order": 3,
+                "event": {
+                    // "restricted_access": true
+                    // or
+                    // "Event > Message" object
+                }
+            },
+            "system_message": {
+                "thread_id": "K600PKZON6",
+                "thread_order": 1,
+                "event": {
+                    // "restricted_access": true
+                    // or
+                    // "Event > System message" object
+                }
+            },
+            ...
+        },
+        "last_thread_summary": {
+            "id": "K600PKZON8",
+            "order": 3,
+            "timestamp": 1473433500,
+            "user_ids": ["agent1@example.com"],
+            "properites": {
+            // "Properites" object
+            },
+            "tags": ["bug_report"]
+        },
+        "properites": {
+            // "Properites" object
+        },
+        "access": {
+            // "Access" object
+        },
+        "is_followed": false
+	}
+```
+
+**Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_thread_summary` and `last_event_per_type`.
+
+-----------------------------------------------------------------------------------------
 
 ## Properties
 

@@ -28,6 +28,10 @@ weight: 60
 
 ### `get_chats_summary`
 
+It returns summaries of the chats an Agent has access to.
+
+--------------------------------------------------------------
+
 #### Specifics
 
 |  |  |
@@ -98,6 +102,7 @@ weight: 60
 | `filters.agent_ids`      | No       | `array`  | Array of agent IDs												|
 | `filters.group_ids`      | No       | `array`  | Array of group IDs                                               |
 | `filters.properties.<namespace>.<name>.<filter_type>`     | No       | `any`  | Initial chat events array         |
+| `include_active`     	   | No       | `bool`   | Defines if the returned chat summary includes active chats; default is `True`|
 | `pagination`			   | No       | `object` | 								                                    |
 | `pagination.page`		   | No       | `number` | 	Default is 1, min is 1, max is 1000		                        |
 | `pagination.limit`	   | No       | `number` | 	Default is 25, min is 0, max is 100                             |
@@ -235,7 +240,9 @@ It returns threads that the current agent has access to in a given chat.
 
 ### `get_archives`
 
-It returns the active threads the current agent has access to.
+It returns a list of the chats an Agent has access to. Together with a **chat**, the **events** of **one thread** from this chat are returned. 
+
+The list classification is based on threads; 1 chat per 1 thread. Thus, the same **chat** object may appear on the list several times, but each time with a different **thread**. The returned **chat** is a complete object, not only a **chat summary**. 
 
 ------------------------------------------------------
 
@@ -1458,6 +1465,8 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 | `avatar`       | No       | `string` | url to customer avatar         |
 | `fields`       | No       | `object` | Map in `"key": "value"` format |
 
+Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
+
 > A sample **response** payload
 
 ```js
@@ -1845,6 +1854,12 @@ No response payload.
 
 
 ### `multicast`
+
+This method was created for **chat-unrelated communication**. Messages sent using `multicast` are not being saved. 
+
+For example, it could be used in an app that sends notifications to Agents or Customers, when a certain condition is met (e.g. an important Customer started the chat).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #### Specifics
 |  |  |
