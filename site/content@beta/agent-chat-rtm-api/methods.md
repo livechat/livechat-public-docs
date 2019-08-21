@@ -10,6 +10,32 @@ weight: 60
 
 ---------------------------------------------------------------
 
+> **RTM API request format**
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "<action>",
+	"payload": {
+		// optional
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+```
+
+> **RTM API response format**
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "<action>",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// optional
+	}
+}
+```
 
 |   |  |
 |-------|--------| 
@@ -32,22 +58,23 @@ It returns summaries of the chats an Agent has access to.
 
 --------------------------------------------------------------
 
-#### Specifics
+> `get_chats_summary` sample request with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `get_chats_summary`  |
-| __Required scopes *__| `chats--all:ro` `chats--access:ro` `chats--my:ro` |
-| **Web API equivalent**|[`activate_chat`](../agent-chat-web-api/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get_chats_summary)</sup>|
-| **Push message**| - |
-
-#### Request
-
-> A sample **request** payload
-
-```js
+```json
 {
-	"filters": {
+	"action": "get_chats_summary",
+	"payload": {}
+}
+```
+
+<!-- > `get_chats_summary` sample request with optional params
+
+```json
+{
+	"request_id": "12345", // optional
+	"action": "get_chats_summary",
+	"payload": {
+		"filters": {
 		"query": "search keyword",
 		"agent_ids": ["agent1@example.com"],
 		"date_from": "2016-09-01",
@@ -68,12 +95,15 @@ It returns summaries of the chats an Agent has access to.
 	"pagination": {
 		"page": 1,
 		"limit": 25
-	}
+				}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
-```
-> A sample **response** payload
+```  -->
 
-```js
+> `get_chats_summary` sample **response** 
+
+```json
 {
 	"chats": [{
 		"chat": {
@@ -88,24 +118,31 @@ It returns summaries of the chats an Agent has access to.
 	}],
 	"pagination": {
 		"page": 1,
-		"total": 3 // this is total number of threads matching filters
+		"total": 3 
 	}
 }
 ```
 
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_chats_summary`  |
+| __Required scopes *__| `chats--all:ro` `chats--access:ro` `chats--my:ro` |
+| **Web API equivalent**|[`activate_chat`](../agent-chat-web-api/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get_chats_summary)</sup>|
+| **Push message**| - |
+
+#### Request
+
+
 | Request object           | Required | Type     | Notes                                                            |
 | ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `filters`                | No       | `object` |                                                                  |
-| `filters.query`    	   | No       | `string` | 												                    |
-| `filters.date_from`      | No       | `string` | `YYYY-MM-DD` format                 						        |
-| `filters.date_to`        | No       | `string` | `YYYY-MM-DD` format                           	                |
-| `filters.agent_ids`      | No       | `array`  | Array of agent IDs												|
-| `filters.group_ids`      | No       | `array`  | Array of group IDs                                               |
-| `filters.properties.<namespace>.<name>.<filter_type>`     | No       | `any`  | Initial chat events array         |
-| `include_active`     	   | No       | `bool`   | Defines if the returned chat summary includes active chats; default is `True`|
+| `filters`                | No       | `object` |  Mustn't change between requests for subsequent pages. Otherwise the behavior is undefined.|
+| `filters.include_active` | No       | `bool`   | Defines if the returned chat summary includes active chats; default is `True`|
+| `filters.properties.<namespace>.<name>.<filter_type>`   | No       | `any`  |             |
 | `pagination`			   | No       | `object` | 								                                    |
 | `pagination.page`		   | No       | `number` | 	Default is 1, min is 1, max is 1000		                        |
-| `pagination.limit`	   | No       | `number` | 	Default is 25, min is 0, max is 100                             |
+| `pagination.total`	   | No       | `number` | 	Total number of threads matching filters; Default is 25, min is 0, max is 100   |
 
 `filter_type` can take the following values:
 
@@ -116,39 +153,41 @@ It returns summaries of the chats an Agent has access to.
 There's only one value allowed for a single property.
 
 
+#### Response
+
+| Parameter  | Data type     | Notes |
+| -------------- | -------- | ----- |
+| `found_chats`   | `string` | An estimated number. The real number of found chats can differ a little. |
+
+
 ### `get_chat_threads_summary`
 
-#### Specifics
+> `get_chat_threads_summary` sample request with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `get_chat_threads_summary`  |
-| **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **Web API equivalent**| [`get_chat_threads_summary`](../agent-chat-web-api/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads-summary)</sup> |
-| **Push message**| - |
-
-#### Request
-
-> A sample **request** payload
-
-```js
+```json
 {
-	"chat_id": "PJ0MRSHTDG",
-	"limit": 25,
-	"page_id": "MjpkZXNj"
+	"action": "get_chat_threads_summary",
+	"payload": {
+			"chat_id": "PJ0MRSHTDG"
+			}
 }
 ```
 
-| Parameter | Required | Data ype     | Notes |
-| -------------- | -------- | -------- | ----- |
-| `chat_id`      | Yes      | `string` |       |
-| `order`      | No      | `string` | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default)|
-| `limit`      | No      | `number` | Defaul: 10, maximum: 100      |
-| `page_id`   | No       | `string`  |       |
+<!-- > `get_chat_threads_summary` sample request with optional params
 
-#### Response
+```json
+{
+	"request_id": "23456", // optional
+	"action": "get_chat_threads_summary",
+	"payload": {
+			"chat_id": "PJ0MRSHTDG",
+			"limit": 25,
+			"page_id": "MjpkZXNj"
+	}
+}
+``` -->
 
-> A sample **response** payload
+> `get_chat_threads_summary` sample **response** 
 
 ```js 
 {
@@ -169,6 +208,27 @@ There's only one value allowed for a single property.
         "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
 }
 ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_chat_threads_summary`  |
+| **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
+| **Web API equivalent**| [`get_chat_threads_summary`](../agent-chat-web-api/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads-summary)</sup> |
+| **Push message**| - |
+
+#### Request
+
+| Parameter | Required | Data ype     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
+| `order`      | No      | `string` | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default)|
+| `limit`      | No      | `number` | Defaul: 10, maximum: 100      |
+| `page_id`   | No       | `string`  |       |
+
+#### Response
+
 | Parameter  | Data type     | Notes |
 | -------------- | -------- | ----- |
 | `found_threads`   | `string` | Number of threads in a chat    |
@@ -181,33 +241,30 @@ It returns threads that the current agent has access to in a given chat.
 
 --------------------------------------------------------------------------------
 
-#### Specifics
+> `get_chat_threads` sample **request** with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `get_chat_threads`  |
-| **Required scopes** | `chats--all:ro` `chats--access:ro`|
-| **Web API equivalent**| [`get_chat_threads`](../agent-chat-web-api/#get-chat-threads) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads)</sup> |
-| **Push message**| - |
-
-#### Request
-
-> A sample **request** payload
-
-```js
+```json
 {
-	"chat_id": "PJ0MRSHTDG",
-	"thread_ids": ["K600PKZON8"]
+	"action": "get_chat_threads",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG"
+	}
 }
 ```
 
-| Parameter | Required | Data ype     | Notes |
-| -------------- | -------- | -------- | ----- |
-| `chat_id`      | Yes      | `string` |       |
-| `thread_ids`   | No       | `array`  |       |
+<!-- > `get_chat_threads` sample **request** with optional params
 
+```json
+{
+	"action": "get_chat_threads",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"thread_ids": ["K600PKZON8"]
+	}
+}
+``` -->
 
-> A sample **response** payload
+> `get_chat_threads` sample **response** 
 
 ```js
 {
@@ -238,6 +295,24 @@ It returns threads that the current agent has access to in a given chat.
 }
 ```
 
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_chat_threads`  |
+| **Required scopes** | `chats--all:ro` `chats--access:ro`|
+| **Web API equivalent**| [`get_chat_threads`](../agent-chat-web-api/#get-chat-threads) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-chat-threads)</sup> |
+| **Push message**| - |
+
+#### Request
+
+| Parameter | Required | Data ype     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `chat_id`      | Yes      | `string` |       |
+| `thread_ids`   | No       | `array`  |       |
+
+
+
 ### `get_archives`
 
 It returns a list of the chats an Agent has access to. Together with a **chat**, the **events** of **one thread** from this chat are returned. 
@@ -246,19 +321,21 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 
 ------------------------------------------------------
 
-#### Specifics
+> **`get_archives`** sample **request** with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `get_archives`  |
-| **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **Web API equivalent**| [`get_archives`](../agent-chat-web-api/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-archives)</sup> |
-| **Push message**| - |
-
-> A sample **request** payload
-
-```js
+```json
 {
+	"action": "get_archives",
+	"payload": {}
+}
+```
+
+<!-- > **`get_archives`** sample **request** with optional params
+
+```json
+{
+	"action": "get_archives",
+	"payload": {
 	"filters": {
 		"query": "search keyword",
 		"agent_ids": ["agent1@example.com"],
@@ -280,29 +357,14 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 	"pagination": {
 		"page": 1,
 		"limit": 25
+		}
 	}
 }
-```
+``` -->
 
-#### Request 
+> **`get_archives`** sample **response** 
 
-| Parameter                                        | Required | Data type     | Notes                               |
-| ----------------------------------------------------- | -------- | -------- | ----------------------------------- |
-| `filters`                                             | No       | `object` |                                     |
-| `filters.query`                                       | No       | `string` |                                     |
-| `filters.date_from`                                   | No       | `string` | `YYYY-MM-DD` format                 |
-| `filters.date_to`                                     | No       | `string` | `YYYY-MM-DD` format                 |
-| `filters.agent_ids`                                   | No       | `array`  | Array of agent IDs                  |
-| `filters.group_ids`                                   | No       | `array`  | Array of group IDs                  |
-| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                     |
-| `<filter_type>`									    | No       | `any`    |  __*__                              |
-| `pagination`                                          | No       | `object` |                                     |
-| `pagination.page`                                     | No       | `number` | Default is 1, min is 1, max is 1000 |
-| `pagination.limit`                                    | No       | `number` | Default is 25, min is 0, max is 100 |
-
-> A sample **response** payload
-
-```js
+```json
 {
 	"chats": [{
 		"chat": {
@@ -321,6 +383,34 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 	}
 }
 ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_archives`  |
+| **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
+| **Web API equivalent**| [`get_archives`](../agent-chat-web-api/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-archives)</sup> |
+| **Push message**| - |
+
+
+#### Request 
+
+| Parameter                                        | Required | Data type     | Notes                               |
+| ----------------------------------------------------- | -------- | -------- | ----------------------------------- |
+| `filters`                                             | No       | `object` |                                     |
+| `filters.query`                                       | No       | `string` |                                     |
+| `filters.date_from`                                   | No       | `string` | `YYYY-MM-DD` format                 |
+| `filters.date_to`                                     | No       | `string` | `YYYY-MM-DD` format                 |
+| `filters.agent_ids`                                   | No       | `array`  | Array of agent IDs                  |
+| `filters.group_ids`                                   | No       | `array`  | Array of group IDs                  |
+| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                     |
+| `<filter_type>`									    | No       | `any`    |  __*__                              |
+| `pagination`                                          | No       | `object` |                                     |
+| `pagination.page`                                     | No       | `number` | Default is 1, min is 1, max is 1000 |
+| `pagination.limit`                                    | No       | `number` | Default is 25, min is 0, max is 100 |
+
+
 __*)__
 `<filter_type>` can take the following values:
 
@@ -337,28 +427,21 @@ Starts a chat.
 
 -------------------------------------------------------------------------------------------
 
-#### Specifics
+> **`start_chat`** sample **request** with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `start_chat`  |
-| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**| [`start_chat`](../agent-chat-web-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#start-chat)</sup> |
-| **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
-
-__*)__ 
-When `chat.users` is defined, one of following scopes is required:
-
-- `chats--all:rw`
-- `chats--access:rw`
-- `chats--my:rw`
-
-#### Request
-
-> A sample **request** payload
-
-```js
+```json
 {
+	"action": "start_chat",
+	"payload": {}
+}
+```
+
+<!-- > **`start_chat`** sample **request** with optional params 
+
+```json
+{
+	"action": "start_chat",
+	"payload": {
 	"chat": {
 		"properties": {
 			"source": {
@@ -396,20 +479,11 @@ When `chat.users` is defined, one of following scopes is required:
 		"is_followed": true
 	},
 	"continuous": true
+	}
 }
-```
+``` -->
 
-| Parameters           | Required | Data type     | Notes                                                            |
-| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `chat`                   | No       | `object` |                                                                  |
-| `chat.properties`        | No       | `object` |                                                                  |
-| `chat.access`            | No       | `object` |                                                                  |
-| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
-| `chat.thread`            | No       | `object` |                                                                  |
-| `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
-| `chat.thread.properties` | No       | `object` |                                                                  |
-
-> A sample **response** payload
+> **`start_chat`** sample **response** 
 
 ```js
 {
@@ -425,16 +499,13 @@ When `chat.users` is defined, one of following scopes is required:
 }
 ```
 
-
-### `activate_chat`
-
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Action**   | `activate_chat`  |
+| **Action**   | `start_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent**|[`activate_chat`](../agent-chat-web-api/#activate-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#activate-chat)</sup>|
+| **Web API equivalent**| [`start_chat`](../agent-chat-web-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#start-chat)</sup> |
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -446,10 +517,40 @@ When `chat.users` is defined, one of following scopes is required:
 
 #### Request
 
-> A sample **request** payload
+| Parameters           | Required | Data type     | Notes                                                            |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
+| `chat`                   | No       | `object` |                                                                  |
+| `chat.properties`        | No       | `object` |                                                                  |
+| `chat.access`            | No       | `object` |                                                                  |
+| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer) |
+| `chat.thread`            | No       | `object` |                                                                  |
+| `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
+| `chat.thread.properties` | No       | `object` |                                                                  |
 
-```js
+
+### `activate_chat`
+
+
+> **`activate_chat`** sample **request** with required params only
+
+```json
 {
+	"action": "activate_chat",
+	"payload": {
+		 "chat": {
+            "id": "PWJ8Y4THAV"
+        }
+	}
+}
+```
+
+<!-- > **`activate_chat`** sample **request** with optional params 
+
+```json
+{
+	"request_id": "7676", 
+	"action": "activate_chat",
+	"payload": {
 	"chat": {
 		"id": "PJ0MRSHTDG",
 		"access": {
@@ -477,25 +578,15 @@ When `chat.users` is defined, one of following scopes is required:
 				...
 			},
 			"tags": ["bug_report"]
+			}
 		}
 	}
 }
-```
+``` -->
 
-| Request object           | Required | Type     | Notes                                                            |
-| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `chat`                   | Yes      | `object` |                                                                  |
-| `chat.id`                | Yes      | `string` | The ID of the chat, which will be activated.                     |
-| `chat.access`            | No       | `object` | Chat access to set, default to all agents                       |
-| `chat.properties`        | No       | `object` | Initial chat properties                                          |
-| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer).|
-| `chat.thread`            | No       | `object` |                                                                  |
-| `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+> **`activate_chat`** sample **response** 
 
-> A sample **response** payload
-
-```js
+```json
 {
 	"chat": {
 		"id": "PJ0MRSHTDG",
@@ -515,6 +606,38 @@ When `chat.users` is defined, one of following scopes is required:
 	}
 }
 ```
+
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `activate_chat`  |
+| __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
+| **Web API equivalent**|[`activate_chat`](../agent-chat-web-api/#activate-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#activate-chat)</sup>|
+| **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
+
+__*)__ 
+When `chat.users` is defined, one of following scopes is required:
+
+- `chats--all:rw`
+- `chats--access:rw`
+- `chats--my:rw`
+
+#### Request
+
+| Request object           | Required | Type     | Notes                                                            |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
+| `chat`                   | Yes      | `object` |                                                                  |
+| `chat.id`                | Yes      | `string` | The ID of the chat, which will be activated.                     |
+| `chat.access`            | No       | `object` | Chat access to set, default to all agents                       |
+| `chat.properties`        | No       | `object` | Initial chat properties                                          |
+| `chat.users`             | No       | `array`  | List of existing users. Only one user is allowed (type customer).|
+| `chat.thread`            | No       | `object` |                                                                  |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+
+
 
 ### `close_thread`
 

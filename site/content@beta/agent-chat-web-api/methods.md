@@ -13,6 +13,21 @@ weight: 60
 
 If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3"` header.
 
+> **Web API request format**
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.0/agent/action/<action> \
+  -H 'Content-Type: <content-type>' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "payload": {
+		// optional
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}'
+```
+
 #### Required headers
 
 | Header   |      Value      |  Notes |
@@ -88,19 +103,15 @@ curl -X POST \
 | **Webhook**| - |
 
 
-| Request object           | Required | Type     | Notes                                                            |
+| Parameter          | Required | Type     | Notes                                                            |
 | ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
-| `filters`                | No       | `object` |                                                                  |
-| `filters.query`    	   | No       | `string` | 												                    |
-| `filters.date_from`      | No       | `string` | `YYYY-MM-DD` format                 						        |
-| `filters.date_to`        | No       | `string` | `YYYY-MM-DD` format                           	                |
-| `filters.agent_ids`      | No       | `array`  | Array of agent IDs												|
-| `filters.group_ids`      | No       | `array`  | Array of group IDs                                               |
-| `filters.properties.<namespace>.<name>.<filter_type>`     | No       | `any`  | Initial chat events array         |
-| `include_active`     	   | No       | `bool`   | Defines if the returned chat summary includes active chats; default is `True`|
+| `filters`                | No       | `object` |  Mustn't change between requests for subsequent pages. Otherwise the behavior is undefined.|
+| `filters.include_active` | No       | `bool`   | Defines if the returned chat summary includes active chats; default is `True`|
+| `filters.properties.<namespace>.<name>.<filter_type>`   | No       | `any`  |             |
 | `pagination`			   | No       | `object` | 								                                    |
 | `pagination.page`		   | No       | `number` | 	Default is 1, min is 1, max is 1000		                        |
-| `pagination.limit`	   | No       | `number` | 	Default is 25, min is 0, max is 100                             |
+| `pagination.total`	   | No       | `number` | 	Total number of threads matching filters; Default is 25, min is 0, max is 100   |
+
 
 `filter_type` can take the following values:
 
@@ -110,7 +121,11 @@ curl -X POST \
 
 There's only one value allowed for a single property.
 
+#### Response
 
+| Parameter  | Data type     | Notes |
+| -------------- | -------- | ----- |
+| `found_chats`   | `string` | An estimated number. The real number of found chats can differ a little. |
 
 ### `get_chat_threads_summary`
 
