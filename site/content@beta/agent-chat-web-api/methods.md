@@ -470,7 +470,7 @@ When `chat.users` is defined, one of following scopes is required:
 
 ### `close_thread`
 
-Closes the thread. Nobody will be able to send any messages to this thread anymore.
+Closes the thread. Sending messages to this thread will no longer be possible. 
 
 ------------------------------------------------------------------------------------------------
 

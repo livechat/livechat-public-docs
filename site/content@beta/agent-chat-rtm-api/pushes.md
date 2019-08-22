@@ -8,6 +8,19 @@ weight: 70
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+> **The general push format**
+
+```json
+{
+	"request_id": "<request_id>", // optional, applies only to the requester
+	"action": "<action>",
+	"type": "push",
+	"payload": {
+		// optional payload
+	}
+}
+```
+
 |   |  |
 |-------|--------| 
 | **chats** | [`incoming_chat_thread`](#incoming-chat-thread) [`thread_closed`](#thread-closed) |

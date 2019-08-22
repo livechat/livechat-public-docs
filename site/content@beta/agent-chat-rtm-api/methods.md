@@ -58,7 +58,7 @@ It returns summaries of the chats an Agent has access to.
 
 --------------------------------------------------------------
 
-> `get_chats_summary` sample request with required params only
+> **`get_chats_summary`** sample **request** with required params only
 
 ```json
 {
@@ -67,7 +67,7 @@ It returns summaries of the chats an Agent has access to.
 }
 ```
 
-<!-- > `get_chats_summary` sample request with optional params
+<!-- > **`get_chats_summary`** sample **request** with optional params
 
 ```json
 {
@@ -101,11 +101,16 @@ It returns summaries of the chats an Agent has access to.
 }
 ```  -->
 
-> `get_chats_summary` sample **response** 
+> **`get_chats_summary`** sample **response** 
 
 ```json
 {
-	"chats": [{
+	"request_id": "<request_id>", // optional
+	"action": "get_chats_summary",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"chats": [{
 		"chat": {
 			"id": "PJ0MRSHTDG",
 			"users": [
@@ -119,6 +124,7 @@ It returns summaries of the chats an Agent has access to.
 	"pagination": {
 		"page": 1,
 		"total": 3 
+	}
 	}
 }
 ```
@@ -162,7 +168,7 @@ There's only one value allowed for a single property.
 
 ### `get_chat_threads_summary`
 
-> `get_chat_threads_summary` sample request with required params only
+> **`get_chat_threads_summary`** sample **request** with required params only
 
 ```json
 {
@@ -173,7 +179,7 @@ There's only one value allowed for a single property.
 }
 ```
 
-<!-- > `get_chat_threads_summary` sample request with optional params
+<!-- > **`get_chat_threads_summary`** sample **request** with optional params
 
 ```json
 {
@@ -183,15 +189,21 @@ There's only one value allowed for a single property.
 			"chat_id": "PJ0MRSHTDG",
 			"limit": 25,
 			"page_id": "MjpkZXNj"
-	}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
-> `get_chat_threads_summary` sample **response** 
+> **`get_chat_threads_summary`** sample **response** 
 
-```js 
+```json
 {
-	"threads_summary": [
+	"request_id": "<request_id>", // optional
+	"action": "get_chat_threads_summary",
+	"type": "response",
+	"success": true,
+	"payload": {
+			"threads_summary": [
             {
                 "id": "PT039ES4OG",
                 "order": 2,
@@ -206,6 +218,7 @@ There's only one value allowed for a single property.
         "found_threads": 7,
         "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
         "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
+	}
 }
 ```
 
@@ -241,7 +254,7 @@ It returns threads that the current agent has access to in a given chat.
 
 --------------------------------------------------------------------------------
 
-> `get_chat_threads` sample **request** with required params only
+> **`get_chat_threads`** sample **request** with required params only
 
 ```json
 {
@@ -252,7 +265,7 @@ It returns threads that the current agent has access to in a given chat.
 }
 ```
 
-<!-- > `get_chat_threads` sample **request** with optional params
+<!-- > **`get_chat_threads`** sample **request** with optional params
 
 ```json
 {
@@ -260,15 +273,21 @@ It returns threads that the current agent has access to in a given chat.
 	"payload": {
 		"chat_id": "PJ0MRSHTDG",
 		"thread_ids": ["K600PKZON8"]
-	}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
-> `get_chat_threads` sample **response** 
+> **`get_chat_threads`** sample **response** 
 
-```js
+```json
 {
-	"chat": {
+	"request_id": "<request_id>", // optional
+	"action": "get_chat_threads",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"chat": {
 		"id": "PJ0MRSHTDG",
 		"users": [
 			// array of "User" objects
@@ -291,6 +310,7 @@ It returns threads that the current agent has access to in a given chat.
 		"access": {
 			// "Access" object
 		}
+	}
 	}
 }
 ```
@@ -358,7 +378,8 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 		"page": 1,
 		"limit": 25
 		}
-	}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
@@ -366,21 +387,27 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 
 ```json
 {
-	"chats": [{
-		"chat": {
-			"id": "PJ0MRSHTDG",
-			"users": [
-				// array of "User" objects
-			],
-			"thread": {
-				// "Thread" object
+	"request_id": "<request_id>", // optional
+	"action": "get_archives",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"chats": [{
+			"chat": {
+				"id": "PJ0MRSHTDG",
+				"users": [
+					// array of "User" objects
+				],
+				"thread": {
+					// "Thread" object
+				}
 			}
+		}],
+		"pagination": {
+			"page": 1,
+			"total": 3 // this is total number of threads matching filters
 		}
-	}],
-	"pagination": {
-		"page": 1,
-		"total": 3 // this is total number of threads matching filters
-	}
+		}
 }
 ```
 
@@ -479,23 +506,30 @@ Starts a chat.
 		"is_followed": true
 	},
 	"continuous": true
-	}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
 > **`start_chat`** sample **response** 
 
-```js
+```json
 {
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"thread": {
-			// "Thread" object
+	"request_id": "<request_id>", // optional
+	"action": "start_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"chat": {
+			"id": "PJ0MRSHTDG",
+			"users": [
+				// array of "User" objects
+			],
+			"thread": {
+				// "Thread" object
+			}
 		}
-	}
+		}
 }
 ```
 
@@ -580,11 +614,24 @@ When `chat.users` is defined, one of following scopes is required:
 			"tags": ["bug_report"]
 			}
 		}
-	}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
 > **`activate_chat`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "<action>",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// optional
+	}
+}
+```
 
 ```json
 {
@@ -641,9 +688,47 @@ When `chat.users` is defined, one of following scopes is required:
 
 ### `close_thread`
 
-Closes the thread. Nobody will be able to send any messages to this thread anymore.
+Closes the thread. Sending messages to this thread will no longer be possible. 
 
 ------------------------------------------------------------------------------------------------
+
+> **`close_thread`** sample **request** with required params only
+
+```json
+{
+	"action": "close_thread",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG"
+	}
+}
+```
+
+<!-- > **`close_thread`** sample **request** with optional params 
+
+```json
+{
+	"request_id": "657", // optional
+	"action": "close_thread",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`close_thread`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "close_thread",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -656,27 +741,53 @@ Closes the thread. Nobody will be able to send any messages to this thread anymo
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-}
-```
-
 | Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
-
-#### Response
-
-No response payload.
 
 
 ### `follow_chat`
 Marks the chat as followed. All changes to the chat will be sent to the requester until the chat is reactivated or unfollowed. Chat members don't need to follow their chats as they should receive all chat pushes regardless of their follower status.
 
 --------------------------------------
+
+> **`follow_chat`** sample **request** with required params only
+
+```json
+{
+	"action": "follow_chat",
+	"payload": {
+		 "chat_id": "PW94SJTGW6"
+	}
+}
+```
+
+<!-- > **`follow_chat`** sample **request** with optional params 
+
+```json
+{
+	"request_id": "756", // optional
+	"action": "follow_chat",
+	"payload": {
+		 "chat_id": "PW94SJTGW6"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`follow_chat`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "follow_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"chat_id": "PW94SJTGW6"
+	}
+}
+```
 
 #### Specifics
 
@@ -692,27 +803,54 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-}
-```
-
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
 | `chat_id`      | Yes      | `string` |   |
 
-#### Response
-
-No response payload.
 
 
 ### `unfollow_chat`
 Removes the requester from the chat followers. After that, only key changes to the chat (like `transfer_chat` or `close_active_thread`) will be sent to the requester. Chat members cannot unfollow the chat.
 
 --------------------------------------
+
+> **`unfollow_chat`** sample **request** with required params only
+
+```json
+{
+	"action": "unfollow_chat",
+	"payload": {
+		 "chat_id": "PWF6BACIKO"
+	}
+}
+```
+
+<!-- > **`unfollow_chat`** sample **request** with optional params 
+
+```json
+{
+	"request_id": "4756", // optional
+	"action": "unfollow_chat",
+	"payload": {
+		 "chat_id": "PWF6BACIKO"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`unfollow_chat`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "unfollow_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"chat_id": "PWF6BACIKO"
+	}
+}
+```
 
 #### Specifics
 
@@ -725,27 +863,63 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-}
-```
-
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
 | `chat_id`      | Yes      | `string` |   |
-
-#### Response
-
-No response payload.
-
 
 
 ## chat access
 
 ### `grant_access`
+
+> **`grant_access`** sample **request** with required params only
+
+```json
+{
+	"action": "grant_access",
+	"payload": {
+		"resource": "chat",
+			"id": "PW94SJTGW6",
+			"access": {
+				"type": "group",
+				"id": 19
+       		 	}
+    	}
+	
+}
+```
+
+<!-- > **`grant_access`** sample **request** with optional params 
+```json
+{
+	"request_id": "680",
+	"payload": {
+		"resource": "chat",
+			"id": "PW94SJTGW6",
+			"access": {
+				"type": "group",
+				"id": 19
+       		 }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`grant_access`** sample **response**
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "grant_access",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
+#### Specifics
 
 |  |  |
 |-------|--------|
@@ -756,19 +930,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"resource": "chat",
-	"id": "PJ0MRSHTDG",
-	"access": {
-		"type": "group",
-		"id": 1
-	}
-}
-```
-
 | Parameter | Required | Data ype     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
@@ -777,12 +938,57 @@ No response payload.
 | `access.type`  | Yes      | `string` | `group` or `agent`   |
 | `access.id`    | Yes      | `number` |                      |
 
-#### Response
-
-No response payload.
 
 
 ### `revoke_access`
+
+> **`revoke_access`** sample **request** with required params only
+
+```json
+{
+	"action": "revoke_access",
+	"payload": {
+		"resource": "chat",
+        "id": "PW94SJTGW6",
+        "access": {
+            "type": "group",
+            "id": 19
+        }
+	}
+}
+```
+
+<!-- > **`revoke_access`** sample **request** with optional params
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "revoke_access",
+	"payload": {
+		"resource": "chat",
+        "id": "PW94SJTGW6",
+        "access": {
+            "type": "group",
+            "id": 19
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`revoke_access`** sample **response**
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "revoke_access",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -795,19 +1001,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"resource": "chat",
-	"id": "PJ0MRSHTDG",
-	"access": {
-		"type": "group",
-		"id": 1
-	}
-}
-```
-
 | Parameter | Required | Data type     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
@@ -816,12 +1009,57 @@ No response payload.
 | `access.type`  | Yes      | `string` | `group` or `agent`   |
 | `access.id`    | Yes      | `number` |                      |
 
-#### Response
-
-No response payload.
 
 
 ### `set_access`
+
+> **`set_access`** sample **request** with required params only
+
+```json
+{
+	"action": "set_access",
+	"payload": {
+		"resource": "chat",
+        "id": "PW94SJTGW6",
+        "access": {
+            "type": "group",
+            "id": 19
+        }
+	}
+}
+```
+
+<!-- > **`set_access`** sample **request** with optional params
+
+```json
+{
+	"request_id": "3456", // optional
+	"action": "set_access",
+	"payload": {
+		"resource": "chat",
+        "id": "PW94SJTGW6",
+        "access": {
+            "type": "group",
+            "id": 19
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`set_access`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "set_access",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response optional
+	}
+}
+```
 
 #### Specifics
 
@@ -835,19 +1073,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"resource": "chat",
-	"id": "PJ0MRSHTDG",
-	"access": {
-		"type": "group",
-		"id": 1
-	}
-}
-```
-
 | Request object | Required | Type     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
@@ -856,13 +1081,60 @@ No response payload.
 | `access.type`  | Yes      | `string` | `group` or `agent`   |
 | `access.id`    | Yes      | `number` |                      |
 
-#### Response
-
-No response payload.
-
 
 
 ### `transfer_chat`
+
+> **`transfer_chat`** sample **request** with required params only
+
+```json
+{
+	"action": "transfer_chat",
+	"payload": {
+		"chat_id": "PWF6BACIKO",
+        "target": {
+            "type": "group",
+            "ids": [
+                19
+            ]
+        }
+	}
+}
+```
+
+<!-- > **`transfer_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "3452", // optional
+	"action": "transfer_chat",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"target": {
+			"type":  "group",
+			"ids": [1]
+				},
+		"force": true
+			},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`transfer_chat`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "transfer_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
+#### Specifics
 
 |  |  |
 |-------|--------|
@@ -874,18 +1146,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"target": {
-		"type":  "group"
-		"ids": [1]
-	},
-	"force": true
-}
-```
 
 | Parameter | Required | Data ype     | Notes                                                                                                                 |
 | -------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -896,10 +1156,6 @@ No response payload.
 | `force`        | No       | `bool`   | If `true`, always transfers chat, otherwise fails when cannot assign any agent from requested groups, default `false` |
 
 
-#### Response
-
-No response payload.
-
 
 ## chat users
 
@@ -908,6 +1164,50 @@ No response payload.
 Adds user to chat. Is't forbidden to add more than one `customer` user type to chat.
 
 ------------------------------------------------------------------------------------------
+
+> **`add_user_to_chat`** sample **request** with required params only
+
+```json
+{
+	"action": "add_user_to_chat",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "user_id": "user@gmail.com",
+        "user_type": "agent"
+	}
+}
+```
+
+<!-- > **`add_user_to_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "3445", // optional
+	"action": "add_user_to_chat",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "user_id": "user@gmail.com",
+        "user_type": "agent"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`add_user_to_chat`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "add_user_to_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
+#### Specifics
 
 |  |  |
 |-------|--------|
@@ -918,15 +1218,6 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 
 #### Request
 
-> A sample request payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"user_id": "agent1@example.com",
-	"user_type": "agent"
-}
-```
 
 | Request object | Required | Type     | Notes                                     |
 | -------------- | -------- | -------- | ----------------------------------------- |
@@ -935,17 +1226,53 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 | `user_type`    | Yes      | `string` | Possible values: `agent` or `customer` |
 
 
-#### Response
-
-No response payload.
-
-
-
 ### `remove_user_from_chat`
 
 Removes user from chat. Removing `customer` user type is forbidden. It's always possible to remove the requester from chat.
 
 ------------------------------------------------------------------------------------------
+
+> **`remove_user_from_chat`** sample **request** with required params only
+
+```json
+{
+	"action": "remove_user_from_chat",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "user_id": "user@gmail.com",
+        "user_type": "agent"
+	}
+}
+```
+
+<!-- > **`remove_user_from_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "98464", // optional
+	"action": "remove_user_from_chat",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "user_id": "user@gmail.com",
+        "user_type": "agent"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`remove_user_from_chat`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "remove_user_from_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 |  |  |
@@ -955,15 +1282,6 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 | **Web API equivalent**|[`remove_user_from_chat`](../agent-chat-web-api/#remove-user-from-chat) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#remove-user-from-chat)</sup> |
 | **Push message**| [`chat_user_added`](#chat_user_added) |
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"user_id": "agent1@example.com",
-	"user_type": "agent"
-}
-```
 
 **Request payload**
 
@@ -973,21 +1291,62 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 | `user_id`      | Yes      | `string` |                                           |
 | `user_type`    | Yes      | `string` | possible values are `agent` or `customer` |
 
-#### Response
-
-No response payload.
-
-
-
-
-
-
-
-
 
 ## events
 
 ### `send_event`
+
+> **`send_event`** sample **request** with required params only
+
+```json
+{
+	"action": "send_event",
+	"payload": {
+        "chat_id": "PW94SJTGW6",
+        "event": {
+            "type": "message",
+            "text": "hello world",
+			"recipients": "all"
+		}
+	}
+}
+```
+
+<!-- > **`send_event`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "send_event",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"attach_to_last_thread": false,
+		"event": {
+			"type": "message",
+			"text": "hello world",
+			"recipients": "agents",
+			"custom_id": "31-0C-1C-07-DB-16"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`send_event`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "send_event",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"thread_id": "K600PKZON8",
+		"event": {
+			// the Event object
+	}
+	}
+}
+```
 
 #### Specifics
 
@@ -1001,20 +1360,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"attach_to_last_thread": false,
-	"event": {
-		"type": "message",
-		"text": "hello world",
-		"recipients": "agents",
-		"custom_id": "31-0C-1C-07-DB-16",
-	}
-}
-```
 
 | Parameters         | Required | Data type     | Notes                                                                            |
 | ----------------------- | -------- | -------- | -------------------------------------------------------------------------------- |
@@ -1024,18 +1369,57 @@ No response payload.
 | `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
 
 
-> A sample **response** payload
+### `send_rich_message_postback`
 
-```js
+> **`send_rich_message_postback`** sample **request** with required params only
+
+```json
 {
-	"thread_id": "K600PKZON8",
-	"event": {
-		// "Event" object
+	"action": "send_rich_message_postback",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+        "thread_id": "K600PKZON8",
+        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+        "postback": {
+            "id": "Method URL_yes",
+            "toggled": true
+        }
 	}
 }
 ```
 
-### `send_rich_message_postback`
+<!-- > **`send_rich_message_postback`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "send_rich_message_postback",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+        "thread_id": "K600PKZON8",
+        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+        "postback": {
+            "id": "Method URL_yes",
+            "toggled": true
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`send_rich_message_postback`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "send_rich_message_postback",
+	"type": "response",
+	"success": true,
+	"payload": {
+		//no response payload
+	}
+}
+```
 
 #### Specifics
 |  |  |
@@ -1049,20 +1433,6 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-	"postback": {
-		"id": "action_yes",
-		"toggled": true
-	}
-}
-```
-
 | Parameter | Required | Data type     | Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
 | `chat_id`       | Yes      | `string` |                              |
@@ -1072,21 +1442,61 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 | `postback.toggled`| Yes     | `bool`   | Postback toggled true/false |
 | `thread_id`     | Yes       | `string` | 						       |
 
-#### Response
-
-No response payload.
-
-
-
-
-
-
-
 
 ## properties (chat/thread/event)
 
 
 ### `update_chat_properties`
+
+> **`update_chat_properties`** sample **request** with required params only
+
+```json
+{
+	"action": "update_chat_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "score": 10,
+                "comment": "Thank you!"
+            }
+        }
+	}
+}
+```
+
+<!-- > **`update_chat_properties`** sample **request** with optional params
+
+```json
+{
+	"request_id": "93875", // optional
+	"action": "update_chat_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "score": 10,
+                "comment": "Thank you!"
+            }
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`update_chat_properties`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_chat_properties",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1099,32 +1509,63 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"properties": {
-		"rating": {
-			"score": 2,
-			"comment": "Very good, veeeery good"
-		},
-		...
-	}
-}
-```
-
 | Parameter | Required | Data type     | Notes                                           |
 | -------------- | -------- | -------- | ----------------------------------------------- |
 | `chat_id`      | Yes      | `string` | The id of the chat that you to set a property for.|
 | `properties`   | Yes      | `object` | Chat properties to set                          |
 
-#### Response
-
-No response payload.
-
 
 ### `delete_chat_properties`
+
+> **`delete_chat_properties`** sample **request** with required params only
+
+```json
+{
+	"action": "delete_chat_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": [
+                "score",
+                "comment"
+            ]
+        }
+	}
+}
+```
+
+<!-- > **`delete_chat_properties`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "delete_chat_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": [
+                "score",
+                "comment"
+            ]
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`delete_chat_properties`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "delete_chat_properties",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1138,29 +1579,67 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"properties": {
-		"rating": ["score", "comment"],
-		...
-	}
-}
-```
 
 | Parameter | Required | Data type     | Notes                                              |
 | -------------- | -------- | -------- | -------------------------------------------------- |
 | `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for |
 | `properties`   | Yes      | `object` | Chat properties to delete                          |
 
-#### Response
-
-No response payload.
 
 
 ### `update_chat_thread_properties`
+
+> **`update_chat_thread_properties`** sample **request** with required params only
+
+```json
+{
+	"action": "update_chat_thread_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "score": 10,
+                "comment": "Thank you!"
+            }
+        }
+	}
+}
+```
+
+<!-- > **`update_chat_thread_properties`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "update_chat_thread_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "score": 10,
+                "comment": "Thank you!"
+            }
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`update_chat_thread_properties`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_chat_thread_properties",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1173,21 +1652,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"properties": {
-		"rating": {
-			"score": 2,
-			"comment": "Very good, veeeery good"
-		},
-		...
-	}
-}
-```
 
 | Parameter | Required | Data type     | Notes                                             |
 | -------------- | -------- | -------- | ------------------------------------------------- |
@@ -1195,12 +1659,61 @@ No response payload.
 | `thread_id`    | Yes      | `string` | The id of the thread that you want to set properties for |
 | `properties`   | Yes      | `object` | Chat properties to set                            |
 
-#### Response
-
-No response payload.
 
 
 ### `delete_chat_thread_properties`
+
+> **`delete_chat_thread_properties`** sample **request** with required params only
+
+```json
+{
+	"action": "delete_chat_thread_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": [
+                "score",
+                "comment"
+            ]
+        }
+	}
+}
+```
+
+<!-- > **`delete_chat_thread_properties`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "delete_chat_thread_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": [
+                "score",
+                "comment"
+            ]
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`delete_chat_thread_properties`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "delete_chat_thread_properties",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1213,18 +1726,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"properties": {
-		"rating": ["score", "comment"],
-		...
-	}
-}
-```
 
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
@@ -1232,12 +1733,62 @@ No response payload.
 | `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
 | `properties`   | Yes      | `object` | Chat thread properties to delete                     |
 
-#### Response
-
-No response payload.
-
 
 ### `update_event_properties`
+
+> **`update_event_properties`** sample **request** with required params only
+
+```json
+{
+	"action": "update_event_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "event_id": "2_EW2WQSA8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "score": 10,
+                "comment": "Thank you!"
+            }
+        }
+	}
+}
+```
+
+<!-- > **`update_event_properties`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "update_event_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "event_id": "2_EW2WQSA8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "score": 10,
+                "comment": "Thank you!"
+            }
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`update_event_properties`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_event_properties",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1250,22 +1801,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "2_EW2WQSA8",
-	"properties": {
-		"rating": {
-			"score": 1,
-			"comment": "Very good, veeeery good"
-		},
-		...
-	}
-}
-```
 
 | Parameter | Required | Data type     | Notes                                             |
 | -------------- | -------- | -------- | ------------------------------------------------- |
@@ -1274,12 +1809,67 @@ No response payload.
 | `event_id`     | Yes      | `string` | Id of the event that you want to set properties for. |
 | `properties`   | Yes      | `object` | Chat properties to set                            |
 
-#### Response
-
-No response payload.
 
 
 ### `delete_event_properties`
+
+> **`delete_event_properties`** sample **request** with required params only
+
+```json
+{
+	"action": "delete_event_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "event_id": "2_EW2WQSA8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "rating": [
+                    "score",
+                    "comment"
+                ]
+            }
+        }
+	}
+}
+```
+
+<!-- > **`delete_event_properties`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "delete_event_properties",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "thread_id": "K600PKZON8",
+        "event_id": "2_EW2WQSA8",
+        "properties": {
+            "bb9e5b2f1ab480e4a715977b7b1b4279": {
+                "rating": [
+                    "score",
+                    "comment"
+                ]
+            }
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`delete_event_properties`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "delete_event_properties",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1292,20 +1882,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "2_EW2WQSA8",
-	"properties": {
-		"rating": ["score", "comment"],
-		...
-	}
-}
-```
-
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
 | `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
@@ -1313,14 +1889,51 @@ No response payload.
 | `event_id`     | Yes      | `string` | Id of the event that we want to delete property for  |
 | `properties`   | Yes      | `object` | Event properties to delete                           |
 
-#### Response
-
-No response payload.
-
 
 ## thread tags
 
 ### `tag_chat_thread`
+
+> **`tag_chat_thread`** sample **request** with required params only
+
+```json
+{
+	"action": "tag_chat_thread",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+		"thread_id": "PWS6GIKAKH",
+		"tag": "support"	}
+}
+```
+
+<!-- > **`tag_chat_thread`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "tag_chat_thread",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+		"thread_id": "PWS6GIKAKH",
+		"tag": "support"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`tag_chat_thread`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "tag_chat_thread",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1333,16 +1946,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"tag": "bug_report"
-}
-```
-
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
 | `chat_id`      | Yes      | `string` | Id of the chat that we want to add a tag to   		  |
@@ -1350,12 +1953,51 @@ No response payload.
 | `tag`    		 | Yes      | `string` | Tag name											  |
 
 
-#### Response
-
-No response payload.
-
 
 ### `untag_chat_thread`
+
+> **`untag_chat_thread`** sample **request** with required params only
+
+```json
+{
+	"action": "untag_chat_thread",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+		"thread_id": "PWS6GIKAKH",
+		"tag": "support"
+	}
+}
+```
+
+<!-- > **`untag_chat_thread`** sample **request** with optional params
+
+```json
+{
+	"request_id": "1245", // optional
+	"action": "untag_chat_thread",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+		"thread_id": "PWS6GIKAKH",
+		"tag": "support"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`untag_chat_thread`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "untag_chat_thread",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
 
 #### Specifics
 
@@ -1368,28 +2010,11 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"tag": "bug_report"
-}
-```
-
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
 | `chat_id`      | Yes      | `string` | Id of the chat that you want to remove the tag from   |
 | `thread_id`    | Yes      | `string` | Id of the thread that you want to remove the tag from |
 | `tag`    		 | Yes      | `string` | Tag name											  |
-
-
-#### Response
-
-No response payload.
-
-
 
 
 ## customers
@@ -1401,22 +2026,23 @@ It returns customers list.
 
 ---------------------------------------------------------------------------
 
-#### Specifics
+> **`get_customers`** sample **request** with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `get_customers`  |
-| __Required scopes__| `customers:ro`|
-| **Web API equivalent**| [`get_customers`](../agent-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-customers)</sup> |
-| **Push message**| - |
-
-#### Request
-
-> A sample **request** payload
-
-```js
+```json
 {
-	"filters": {
+	"action": "get_customers",
+	"payload": {}
+}
+```
+
+<!-- > **`get_customers`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "get_customers",
+	"payload": {
+		"filters": {
 		"country": {
 			"values": ["United States", "Poland"]
 		},
@@ -1428,20 +2054,40 @@ It returns customers list.
 		}
 	},
 	"page_id": "MTUxNzM5ODEzMTQ5Ng=="
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
-```
-> A sample **response** payload
+``` -->
 
-```js
+> **`get_customers`** sample **response** 
+
+```json
 {
-	"customers": [
-		// array of "User > Customer" objects
+	"request_id": "<request_id>", // optional
+	"action": "get_customers",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"customers": [
+		// an array of "User > Customer" objects
 	],
 	"total_customers": 2340,
 	"next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
 	"previous_page_id": "MTUxNzM5ODEzMTQ5Ng==" // optional
+	}
 }
 ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_customers`  |
+| __Required scopes__| `customers:ro`|
+| **Web API equivalent**| [`get_customers`](../agent-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get-customers)</sup> |
+| **Push message**| - |
+
+#### Request
 
 All parameters are optional.
 
@@ -1513,6 +2159,45 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 ### `create_customer`
 
+> **`create_customer`** sample **request** with required params only
+
+```json
+{
+	"action": "create_customer",
+	"payload": {}
+}
+```
+
+<!-- > **`create_customer`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "create_customer",
+	"payload": {
+		"email": "customer1@example.com",
+		"avatar": "https://domain.com/avatars/1.jpg",
+		"fields": {
+			"some_key": "some_value"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`create_customer`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "create_customer",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// "User > Customer" object
+	}
+}
+```
+
 #### Specifics
 
 |  |  |
@@ -1524,17 +2209,6 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"email": "customer1@example.com",
-	"avatar": "https://domain.com/avatars/1.jpg",
-	"fields": {
-		"some_key": "some_value"
-	}
-}
-```
 
 | Parameter | Required | Data type     | Notes                          |
 | -------------- | -------- | -------- | ------------------------------ |
@@ -1543,18 +2217,52 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 | `avatar`       | No       | `string` | url to customer avatar         |
 | `fields`       | No       | `object` | Map in `"key": "value"` format |
 
-> A sample **response** payload
 
-```js
+### `update_customer`
+
+> **`update_customer`** sample **request** with required params only
+
+```json
 {
-  // "User > Customer" object
+	"action": "update_customer",
+	"payload": {
+		"customer_id": "646d53b8-ba76-48bf-7ef1-f6d61ec4ec44",
+        "name": "John Doe"
+	}
 }
 ```
 
+<!-- > **`update_customer`** sample **request** with optional params
 
+```json
+{
+	"request_id": "13425", // optional
+	"action": "update_customer",
+	"payload": {
+		"customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
+		"name": "John Doe",
+		"avatar": "https://domain.com/avatars/1.jpg",
+		"fields": {
+			"score": "low"
+		}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
 
+> **`update_customer`** sample **response** 
 
-### `update_customer`
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_customer",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// "User > Customer" object
+	}
+}
+```
 
 #### Specifics
 
@@ -1567,18 +2275,6 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
-	"name": "John Doe",
-	"avatar": "https://domain.com/avatars/1.jpg",
-	"fields": {
-		"score": "low"
-	}
-}
-```
 
 | Parameter | Required | Data type     | Notes                          |
 | -------------- | -------- | -------- | ------------------------------ |
@@ -1590,19 +2286,56 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
 
-> A sample **response** payload
-
-```js
-{
-  // "User > Customer" object
-}
-```
 
 ### `ban_customer`
 
 Bans the customer for a specific period of time. It immediately disconnects all active sessions of this customer and does not accept new ones during the ban lifespan.
 
 ------------------------------------------------------------------------------------------------
+
+> **`ban_customer`** sample **request** with required params only
+
+```json
+{
+	"action": "ban_customer",
+	"payload": {
+		"customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
+        "ban": {
+            "days": 3
+        }
+	}
+}
+```
+
+<!-- > **`ban_customer`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "ban_customer",
+	"payload": {
+		"customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
+        "ban": {
+            "days": 3
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`ban_customer`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "ban_customer",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1615,27 +2348,11 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-	"ban": {
-		"days": 5
-	}
-}
-```
-
 | Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `customer_id`  | Yes      | `string` |       |
 | `ban`          | Yes      | `object` |       |
 | `ban.days`     | Yes      | `number` |       |
-
-#### Response
-
-No response payload.
-
 
 
 ## status
@@ -1645,53 +2362,48 @@ It returns current agent's initial state.
 
 ------------------------------------------------------
 
-#### Specifics
+> **`login`** sample **request** with required params only
 
-|  |  |
-|-------|--------|
-| **Action**   | `login`  |
-| **Required scopes** | - |
-| **Web API equivalent**| -|
-| **Push message**| - |
-
-> A sample **request** payload
-
-```js
+```json
 {
-	"push_notifications": {
-		"firebase_token": "JDa8813Ka92mmKda00dsdkAKDA0",
-		"platform": "ios"
+	"action": "login",
+	"payload": {
+		"token": "Bearer dal:S2V0s1fgTbfXmgthj4cZSA"
+		}
+	}
+}
+```
+
+<!-- > **`login`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "login",
+	"payload": {
+		"push_notifications": {
+			"firebase_token": "JDa8813Ka92mmKda00dsdkAKDA0",
+			"platform": "ios"
 	},
 	"application": {
 		"name": "SmartClient - Chrome",
 		"version": "4.1.2.1231 (57.0.2987.133)"
 	}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
 }
-```
+``` -->
 
-#### Request
+> **`login`** sample **response** 
 
-
-| Parameter                     | Required | Data type     | Notes                                                                                                                       |
-| ----------------------------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `token`                             | Yes      | `string` | SSO Token                                                      |
-| `timezone`                          | No       | `string` |                                                               |
-| `reconnect`                         | No       | `bool`   | Reconnecting sets status to last known state instead of default   |
-| `push_notifications`                | No       | `object` |                                                                        |
-| `push_notifications.firebase_token` | No       | `string` | Firebase device token to allow connecting this instance with existing push notification instance (to be seen as 1 instance) |
-| `push_notifications.platform`       | Yes      | `string` | OS platform; possible values:`ios`, `android`                            |
-| `application`                       | No       | `object` |                                                                        |
-| `application.name`                  | No       | `string` | Application name                                                       |
-| `application.version`               | No       | `string` | Application version                                                       |
-
-
-
-
-> A sample **response** payload
-
-```js
+```json
 {
-	"license": {
+	"request_id": "<request_id>", // optional
+	"action": "login",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"license": {
 		"id": "104130623",
 		"plan": "enterprise",
 		"expiration_timestamp": 1483433500,
@@ -1758,10 +2470,37 @@ It returns current agent's initial state.
 		},
 		"access": {
 			// "Access" object
-		}
-	}]
+			}
+		}]
+	}
 }
 ```
+
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `login`  |
+| **Required scopes** | - |
+| **Web API equivalent**| -|
+| **Push message**| - |
+
+
+#### Request
+
+
+| Parameter                     | Required | Data type     | Notes                                                                                                                       |
+| ----------------------------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `token`                             | Yes      | `string` | SSO Token                                                      |
+| `timezone`                          | No       | `string` |                                                               |
+| `reconnect`                         | No       | `bool`   | Reconnecting sets status to last known state instead of default   |
+| `push_notifications`                | No       | `object` |                                                                        |
+| `push_notifications.firebase_token` | No       | `string` | Firebase device token to allow connecting this instance with existing push notification instance (to be seen as 1 instance) |
+| `push_notifications.platform`       | Yes      | `string` | OS platform; possible values:`ios`, `android`                            |
+| `application`                       | No       | `object` |                                                                        |
+| `application.name`                  | No       | `string` | Application name                                                       |
+| `application.version`               | No       | `string` | Application version                                                       |
 
 
 #### Response
@@ -1774,6 +2513,44 @@ It returns current agent's initial state.
 
 ### `set_away_status`
 
+> **`set_away_status`** sample **request** with required params only
+
+```json
+{
+	"action": "set_away_status",
+	"payload": {
+		"away": true
+	}
+}
+```
+
+<!-- > **`set_away_status`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "set_away_status",
+	"payload": {
+		"away": true
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`set_away_status`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "set_away_status",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
 #### Specifics
 
 |  |  |
@@ -1785,21 +2562,10 @@ It returns current agent's initial state.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"away": true
-}
-```
 
 | Request object | Required | Type     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
 | `away`		 | Yes      | `bool`   |  				      |
-
-#### Response
-
-No response payload.
 
 
 
@@ -1808,6 +2574,48 @@ No response payload.
 Change firebase push notifications properties.
 
 -----------------------------------------------------------------------------
+
+> **`change_push_notifications`** sample **request** with required params only
+
+```json
+{
+	"action": "change_push_notifications",
+	"payload": {
+		"firebase_token": "8daDAD9dada8ja1JADA11",
+		"platform": "ios",
+		"enabled": true
+	}
+}
+```
+
+<!-- > **`change_push_notifications`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "change_push_notifications",
+	"payload": {
+		"firebase_token": "8daDAD9dada8ja1JADA11",
+		"platform": "ios",
+		"enabled": true
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`change_push_notifications`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "change_push_notifications",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1820,25 +2628,11 @@ Change firebase push notifications properties.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"firebase_token": "8daDAD9dada8ja1JADA11",
-	"platform": "ios",
-	"enabled": true
-}
-```
-
 | Parameter  | Required | Data type   | Notes                                                    |
 | ---------------- | -------- | ------ | -------------------------------------------------------- |
 | `firebase_token` | Yes      | string | Firebase device token                                    |
 | `platform`       | Yes      | string | OS platform, possible values:  `ios`, `android`          |
 | `enabled`        | Yes      | bool   | Enable or disable push notifications for requested token |
-
-#### Response
-
-No response payload.
 
 
 ### `update_agent`
@@ -1846,6 +2640,46 @@ No response payload.
 Updates agent properties.
 
 -----------------------------------------------------------------------------
+
+> **`update_agent`** sample **request** with required params only
+
+```json
+{
+	"action": "update_agent",
+	"payload": {
+		"agent_id": "user@gmail.com",
+        "routing_status": "accepting_chats"
+	}
+}
+```
+
+<!-- > **`update_agent`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "update_agent",
+	"payload": {
+		"agent_id": "user@gmail.com",
+        "routing_status": "accepting_chats"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`update_agent`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_agent",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1858,30 +2692,52 @@ Updates agent properties.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"routing_status": "accepting_chats"
-}
-```
 
 | Parameter  | Required | Data type     | Notes                                                     |
 | ---------------- | -------- | -------- | --------------------------------------------------------- |
 | `agent_id`       | No       | `string` | The current agent is used by default.                     |
 | `routing_status` | No       | `string` | Possible values: `accepting_chats`, `not_accepting_chats` |
 
-#### Response
-
-No response payload.
-
-
 
 ### `logout`
 
-logs out the agent
+Logs the Agent out 
 
 ------------------------------------------------------
+
+> **`logout`** sample **request** with required params only
+
+```json
+{
+	"action": "logout",
+	"payload": {}
+}
+```
+
+<!-- > **`logout`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "logout",
+	"payload": {},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`logout`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "logout",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 
@@ -1892,19 +2748,50 @@ logs out the agent
 | **Web API equivalent**| -|
 | **Push message**| - |
 
-#### Request
-
-No request payload.
-
-#### Response
-
-No response payload.
 
 
 ## other
 
-
 ### `update_last_seen_timestamp`
+
+> **`update_last_seen_timestamp`** sample **request** with required params only
+
+```json
+{
+	"action": "update_last_seen_timestamp",
+	"payload": {
+		 "chat_id": "PJ0MRSHTDG"
+	}
+}
+```
+
+<!-- > **`update_last_seen_timestamp`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "update_last_seen_timestamp",
+	"payload": {
+		 "chat_id": "PJ0MRSHTDG",
+		 "timestamp": 123456789
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`update_last_seen_timestamp`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_last_seen_timestamp",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"timestamp": 123456789
+	}
+}
+```
 
 #### Specifics
 
@@ -1918,14 +2805,6 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"timestamp": 123456789
-}
-```
 
 | Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
@@ -1933,17 +2812,48 @@ No response payload.
 | `timestamp`    | No       | `number` |       |
 
 
+### `send_typing_indicator`
 
-> A sample **response** payload
+> **`send_typing_indicator`** sample **request** with required params only
 
-```js
+```json
 {
-	"timestamp": 123456789
+	"action": "send_typing_indicator",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+        "is_typing": true
+	}
 }
 ```
 
+<!-- > **`send_typing_indicator`** sample **request** with optional params
 
-### `send_typing_indicator`
+```json
+{
+	"request_id": "125", // optional
+	"action": "send_typing_indicator",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"recipients": "all",
+		"is_typing": true
+		},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`send_typing_indicator`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "send_typing_indicator",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
 
 #### Specifics
 |  |  |
@@ -1955,25 +2865,12 @@ No response payload.
 
 #### Request
 
-> A sample **request** payload
-
-```js
-{
-	"chat_id": "PJ0MRSHTDG",
-	"recipients": "all",
-	"is_typing": true
-}
-```
-
 | Parameter | Required | Data type     | Notes                                                       |
 | -------------- | -------- | -------- | ----------------------------------------------------------- |
 | `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
 | `recipients`   | No       | `string` | `all` (default), `agents`                                   |
 | `is_typing`    | Yes      | `bool`   | Bool                                                        |
 
-#### Response
-
-No response payload.
 
 
 ### `multicast`
@@ -1984,6 +2881,91 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+> **`multicast`** sample **request** with required params only
+
+```json
+{
+	"action": "multicast",
+	"payload": {
+		"scopes": {
+            "agents": {
+                "all": true,
+                "ids": [
+                    "agent1@example.com",
+                    "agent2@example.com"
+                ],
+                "groups": [
+                    1,
+                    2
+                ]
+            },
+            "customers": {
+                "ids": [
+                    "b7eff798-f8df-4364-8059-649c35c9ed0c"
+                ]
+            }
+        },
+        "content": {
+            "example": {
+                "nested": "json"
+				}
+			}
+		}
+	}
+}
+```
+
+<!-- > **`multicast`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "multicast",
+	"payload": {
+		"scopes": {
+            "agents": {
+                "all": true,
+                "ids": [
+                    "agent1@example.com",
+                    "agent2@example.com"
+                ],
+                "groups": [
+                    1,
+                    2
+                ]
+            },
+            "customers": {
+                "ids": [
+                    "b7eff798-f8df-4364-8059-649c35c9ed0c"
+                ]
+            }
+        },
+        "content": {
+            "example": {
+                "nested": "json"
+				}
+			}
+		},
+		"type": "type1"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`multicast`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "multicast",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
 #### Specifics
 |  |  |
 |-------|--------|
@@ -1993,29 +2975,6 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 | **Push message**| [`incoming_multicast`](#incoming-multicast)|
 
 #### Request
-
-> A sample **request** payload
-
-```js
-{
-	"scopes": {
-		"agents": {
-			"all": true,
-			"ids": ["agent1@example.com", "agent2@example.com"],
-			"groups": [1, 2]
-		},
-		"customers": {
-			"ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
-		}
-	},
-	"content": {
-		"example": {
-			"nested": "json"
-		}
-	},
-	"type": "type1"
-}
-```
 
 | Parameter | Required | Data type     | Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
@@ -2037,9 +2996,6 @@ __*)__ `scopes` can take the following values:
 
 At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
 
-#### Response
-
-No response payload.
 
 
 
