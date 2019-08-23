@@ -841,7 +841,7 @@ curl -X POST \
   -d '{
     "payload": {
         "chat_id": "PW94SJTGW6",
-        "user_id": "orzechmc@gmail.com",
+        "user_id": "user@gmail.com",
         "user_type": "agent"
     }
 }'
@@ -1645,7 +1645,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "payload": {
-        "agent_id": "orzechmc@gmail.com",
+        "agent_id": "user@gmail.com",
         "routing_status": "accepting_chats"
     }
 }'
@@ -1770,15 +1770,15 @@ curl -X POST \
   -H 'Content-Type: multipart/form-data' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F payload= \
-  -F 'payload.image=@/Users/orzech/Downloads/we dont do that here.jpg'
+  -F 'payload.image=@/Users/MyAccount/Downloads/file.jpg'
   ```
 
 > **`upload_image`** sample response
 
 ```js
 {
-	"url": "https://cdn.livechat-static.com/api/file/lc/img/24434343/dmkslfmndsfgds6fsdfsdnfsd.png",
-	"path": "24434343/dmkslfmndsfgds6fsdfsdnfsd.png"
+	"url": "https://cdn.livechat-static.com/api/file/lc/img/24434343/file.jpg",
+	"path": "24434343/file.jpg"
 }
 ```
 

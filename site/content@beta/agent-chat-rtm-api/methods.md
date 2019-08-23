@@ -2497,7 +2497,7 @@ It returns current agent's initial state.
 | `reconnect`                         | No       | `bool`   | Reconnecting sets status to last known state instead of default   |
 | `push_notifications`                | No       | `object` |                                                                        |
 | `push_notifications.firebase_token` | No       | `string` | Firebase device token to allow connecting this instance with existing push notification instance (to be seen as 1 instance) |
-| `push_notifications.platform`       | Yes      | `string` | OS platform; possible values:`ios`, `android`                            |
+| `push_notifications.platform`       | Yes      | `string` | OS platform; possible values:`ios`, `android`. Required only when `push_notifications` is included.                            |
 | `application`                       | No       | `object` |                                                                        |
 | `application.name`                  | No       | `string` | Application name                                                       |
 | `application.version`               | No       | `string` | Application version                                                       |
