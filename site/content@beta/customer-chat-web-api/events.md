@@ -5,7 +5,7 @@ weight: 20
 # Events
 
 One of the data structures are **events**. They are sent to a chat via the `send_event` method. 
-Apart from events, there are also [properties](#property), [users](#user), [threads](#thread), and [other data structures](#other-data-structures). 
+Apart from events, there are also [properties](#property), [users](#user), and [other common structures](#other-common-structures). 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ These are the available **event types**:
 	"type": "file",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"timestamp": 1473433500, // generated server-side
-	"recipients": "all",
+	"recipients": "all", //
 	"properties": {
 		// "Properties" object
 	},
@@ -215,7 +215,9 @@ These are the available **event types**:
 
 ## System message
 
-```js
+> A sample **System message** event
+
+```json
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
 	"custom_id": "31-0C-1C-07-DB-16",
@@ -241,173 +243,43 @@ These are the available **event types**:
 | `system_message_type` | required |   -  |
 
 
-Here's the list of all system messages you might come across:
+Here's the list of all system messages you might come across as a Customer:
 
-
-#### `agent_added`
+#### `chat_transferred`
 |  Content    |  Generated when |
 |:-------------:|------:|
-|  _%initiator% added %agent% to the chat_ | agent was added to chat via `add_user_to_chat` request and is not the first agent ever in the chat |
+| _%initiator% transferred the chat to %targets%_ | chat was transferred via the `transfer_chat` request. |
 
-#### `agent_joined` 
+#### `customer_banned`
 |  Content    |  Generated when |
 |:-------------:|------:|
-| _%agent% joined the chat_  | agent added themselves to chat via `add_user_to_chat` request and is not the first agent ever in the chat |
-
-#### `agent_removed`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%initiator% removed %agent% from the chat_ | agent was removed from chat via the `remove_user_from_chat` request |
-
-#### `archived_customer_disconnected`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% left the chat_ | chat ended after customer left the website |
-
-#### `customer_added`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%initiator% added %customer% to the chat_ | customer was added to chat via `add_user_to_chat` request |
-
-#### `customer_removed`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%initiator% removed %customer% from the chat_ | customer was removed from chat via `remove_user_from_chat` request|
-
-#### `manual_archived_agent`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%agent% archived the chat_ | agent closed chat via close_thread request |
-
-#### `manual_archived_customer`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% archived the chat_ | customer closed chat via close_thread request |
-
-#### `rating.chat_commented`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% left the following comment: %comment%_ | chat was commented by customer |
-
-#### `rating.chat_rated`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% rated the chat as %score%_ | chat was rated by customer |
-
-#### `rating.chat_rating_canceled`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% canceled the chat rating_ | chat rating was cancelled by customer |
-
-#### `routing.archived_deleted`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _The chat was closed because %agent% account had been deleted_ | chat was archived after agent was removed from license, no other agent could be selected and queues were disabled |
-
-#### `routing.archived_disconnected`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _The chat was closed because %agent% had lost internet connection_ | chat was archived after agent unexpectedly loses connection, no other agent could be selected and queues were disabled |
+| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | chat ended because customer was banned via the `ban_customer` request. |
 
 #### `routing.archived_inactive`
 |  Content    |  Generated when |
 |:-------------:|------:|
 | _Chat archived due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time |
 
-#### `routing.archived_offline`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat archived due to no available agents_ | no agent could be selected after chat was placed in queue |
-
 #### `routing.archived_other`
 |  Content    |  Generated when |
 |:----------------:|------:|
 |  _The chat was closed_  | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled |
-
-#### `routing.archived_remotely_signed_out`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _The chat was closed because %agent% had been remotely signed out_ | chat was archived after agent was logged out, no other agent could be selected and queues were disabled |
-
-#### `routing.archived_signed_out` 
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _The chat was closed because %agent% had signed out_ | chat was archived after agent logged out, no other agent could be selected and queues were disabled |
-
-#### `routing.assigned_deleted`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% account had been deleted_ | chat was assigned to new agent after previous one was removed from license |
-
-#### `routing.assigned_disconnected`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% had lost internet connection_ | chat was assigned to new agent after previous one unexpectedly lost connection |
-
-#### `routing.assigned_inactive` 
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | chat was assigned to new agent after previous one failed to response in a timely manner |
 
 #### `routing.assigned_other`
 |  Content    |  Generated when |
 |:-------------:|------:|
 | _The chat was closed_ | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled |
 
-#### `routing.assigned_remotely_signed_out`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% had been remotely signed out_ | chat was assigned to new agent after previous one was logged out |
-
-#### `routing.assigned_signed_out`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat assigned to %addedAgent% because %removedAgent% had signed out_ | chat was assigned to new agent after previous one logged out |
-
 #### `routing.idle`
 |  Content    |  Generated when |
 |:-------------:|------:|
 | _Chat is idle due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time |
-
-#### `routing.unassigned_deleted`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Customer was queued because %agent% account has been deleted_ | chat was queued after agent was removed from license |
-
-#### `routing.unassigned_disconnected`
-|  Content    |  Generated when |
-|:-------------:|------:|
- _Customer was queued because %agent% had lost internet connection_ | chat was queued after agent unexpectedly lost connection |
-
-#### `routing.unassigned_other`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Chat is unassigned_ | chat was queued after agent was removed from chat for other reasons |
-
-#### `routing.unassigned_remotely_signed_out`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Customer was queued because %agent% had been remotely signed out_ | chat was queued after agent was logged out |
-
-#### `routing.unassigned_signed_out`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _Customer was queued because %agent% had signed out_ | chat was queued after agent logged out |
 
 #### `system_archived` 
 |  Content    |  Generated when |
 |:-------------:|------:|
 | _Chat archived_ | license was moved to another lc_serv instance while there were still active chats |
 
-#### `transcript_requested`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% requested the chat transcript to be sent to %email%_ | customer enables transcript |
-
-#### `transcript_sent`
-|  Content    |  Generated when |
-|:-------------:|------:|
-| _%customer% sent the chat transcript to %email%_ | achat ended with transcript enabled by customer |
 
 ## Rich message
 
