@@ -636,7 +636,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 |-------|--------|
 | **Action**   | `send_event`  |
 | **Web API equivalent**| [`send_event`](../customer-chat-web-api/#send_event)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send_event)</sup> |
-| **Push message**| [`incoming-_vent](#incoming-event) and [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
+| **Push message**| [`incoming_event](#incoming-event) and [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
 
