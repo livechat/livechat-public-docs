@@ -47,15 +47,12 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 |   |  |
 |-------|--------| 
-| **chats** | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`get_archives`](#get-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread) [`follow_chat`](#follow-chat)  [`unfollow_chat`](#unfollow-chat) |
-| **chat access** | [`grant_access`](#grant-access) [`revoke_access`](#revoke-access) [`set_access`](#set-access)  [`transfer_chat`](#transfer-chat) |
-| **chat users** | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)   | 
-| **events** | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) |
+| **chats** | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)  |
+| **events** | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek) |
 | **properties (chat/thread/event)** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties)|  
-| **thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread) | 
-| **customers** |  [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) |
-| **status** | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`update_agent`](#update-agent) [`set_away_status`](#set-away-status) [`logout`](#logout) |
-| **other** | [`update_last_seen_timestamp`](#update-last-seen-timestamp)  [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) | 
+| **customers** | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_fields`](#set-customer-fields) |
+| **status** | [`login`](#login) [`get_groups_status`](#get-groups-status)  |
+| **other** | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`update_last_seen_timestamp`](#update-last-seen-timestamp)   | 
 
 
 ## chats
@@ -217,11 +214,11 @@ It returns summaries of the chats an Agent has access to.
 
 #### Request
 
-| Parameter | Required | Data ype     | Notes |
+| Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
 | `offset`      | No      | `number` | Default is 0 |
-| `limit`      | No      | `number` | Defaul: 25, maximum: 100      |
+| `limit`      | No      | `number` | Default: 25, maximum: 100      |
 
 #### Response
 
@@ -230,46 +227,58 @@ It returns summaries of the chats an Agent has access to.
 | `threads_summary`   |  Sorted descendingly by `order` |     |
 
 
-### `get_groups_status`
+### `get_chat_threads`
 
-> **`get_groups_status`** sample **request** with required params only
+> **`get_chat_threads`** sample **request** with required params only
 
 ```json
 {
-	"action": "get_groups_status",
-	"payload": {}
+	"action": "get_chat_threads",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
+	}
 }
 ```
 
-<!-- > **`get_groups_status`** sample **request** with optional params
+<!-- > **`get_chat_threads`** sample **request** with optional params
 
 ```json
 {
-	"request_id": "12235", // optional
-	"action": "get_groups_status",
+	"request_id": "4125", // optional
+	"action": "get_chat_threads",
 	"payload": {
-		"groups": [1, 2, 3, 4]
+		"chat_id": "PJ0MRSHTDG",
+		"thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
 	},
 	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
-> **`get_groups_status`** sample **response** 
+> **`get_chat_threads`** sample **response** 
 
 ```json
 {
 	"request_id": "<request_id>", // optional
-	"action": "get_groups_status",
+	"action": "get_chat_threads",
 	"type": "response",
 	"success": true,
 	"payload": {
-		"groups_status": {
-
-		//1,2,3 are group ids, online/offline/online_for_queue are statuses of the groups
-
-		1: "online",
-		2: "offline",
-		3: "online_for_queue"
+		"chat": {
+			"id": "PJ0MRSHTDG",
+			"order": 343544565,
+			"users": [
+				// array of "User" objects
+			],
+			"properties": {
+				// "Properties" object
+			},
+			"access": {
+				// "Access" object
+			},
+			"threads": [
+				// array of "Thread" objects
+			]
 		}
 	}
 }
@@ -279,136 +288,16 @@ It returns summaries of the chats an Agent has access to.
 
 |  |  |
 |-------|--------|
-| **Action**   | `get_groups_status`  |
-| **Web API equivalent**| [`get_groups_status`](../customer-chat-web-api/#get_groups_status) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_groups_status)</sup> |
+| **Action**   | `get_chat_threads`  |
+| **Web API equivalent**| [`get_chat_threads`](../customer-chat-web-api/#get_chat_threads)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_chat_threads)</sup> |
 | **Push message**| - |
-
 
 #### Request
 
-| Parameter | Required | Data type     | Notes |
+| Parameter | Required | Data type     |  |
 | -------------- | -------- | -------- | ----- |
-| `all`      | No      | `bool` | If set to `true`, then you will get statuses for all groups.   |
-| `groups`   | No       | `array`  | Table of a group's ids |
-
-
-#### Response
-
-|    |      |  |
-| -------------- | -------- | ----- |
-| `Group Not Found`   |  If you send `group_id` of a group that doesn't exists, then this id won't be included in the resposne payload.  |     |
-
-
-### `get_predicted_agent`
-
-> **`get_predicted_agent`** sample **request** with required params only
-
-```json
-{
-	"action": "get_predicted_agent",
-	"payload": {}
-}
-```
-
-<!-- > **`get_predicted_agent`** sample **request** with optional params
-
-```json
-{
-	"action": "get_predicted_agent",
-	"payload": {},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`get_predicted_agent`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "get_predicted_agent",
-	"type": "response",
-	"success": true,
-	"payload": {
-	"agent": {
-        "id": "agent1@example.com",
-        "name": "Name",
-        "avatar": "https://example.avatar/example.com",
-        "is_bot": false,
-        "job_title": "support hero",
-        "type": "agent"
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `get_predicted_agent`  |
-| **Web API equivalent**| [`get_predicted_agent`](../customer-chat-web-api/#get_predicted_agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_predicted_agent)</sup> |
-| **Push message**| - |
-
-
-
-### `get_url_details`
-
-> **`get_url_details`** sample **request** with required params only
-
-```json
-{
-	"action": "get_url_details",
-	"payload": {	
-		"url": "https://livechatinc.com"
-	}
-}
-```
-
-<!-- > **`get_url_details`** sample **request** with optional params
-
-```json
-{
-	"action": "get_url_details",
-	"payload": {
-		"url": "https://livechatinc.com"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`get_url_details`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "get_url_details",
-	"type": "response",
-	"success": true,
-	"payload": {
-		"title": "LiveChat | Live Chat Software and Help Desk Software",
-		"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
-		"image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
-		"image_width": 200,
-		"image_height": 200,
-		"url": "https://livechatinc.com"
-		}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `get_url_details`  |
-| **Web API equivalent**| [`get_url_details`](../customer-chat-web-api/#get_url_details)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_url_details)</sup> |
-| **Push message**| - |
-
-
-#### Request 
-
-| Parameter                                        | Required | Data type     | Notes                               |
-| ----------------------------------------------------- | -------- | -------- | ----------------------------------- |
-| `url`                                             | Yes       | `string` |  Valid website URL                    |
-
+| `chat_id`      | Yes      | `string` |       |
+| `thread_ids`      | No      | `array` |   |
 
 
 ### `start_chat`
@@ -894,6 +783,66 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 | `sneak_peek_text` | Yes      | `string` | Sneak peek text |
 
 
+### `send_typing_indicator`
+
+> **`send_typing_indicator`** sample **request** with required params only
+
+```json
+{
+	"action": "send_typing_indicator",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+        "is_typing": true
+	}
+}
+```
+
+<!-- > **`send_typing_indicator`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "send_typing_indicator",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"recipients": "all",
+		"is_typing": true
+		},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`send_typing_indicator`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "send_typing_indicator",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
+#### Specifics
+|  |  |
+|-------|--------|
+| **Action**   | `send_typing_indicator`  |
+| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| **Web API equivalent**|[`send_typing_indicator`](../customer-chat-web-api/#send-typing-indicator) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send-typing-indicator)</sup> |
+| **Push message**| - |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                                                       |
+| -------------- | -------- | -------- | ----------------------------------------------------------- |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
+| `recipients`   | No       | `string` | `all` (default), `agents`                                   |
+| `is_typing`    | Yes      | `bool`   | Bool                                                        |
+
+
 
 ## properties (chat/thread/event)
 
@@ -966,6 +915,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 | `properties`   | Yes      | `object` | Chat properties to set                          |
 
 
+
 ### `delete_chat_properties`
 
 > **`delete_chat_properties`** sample **request** with required params only
@@ -1023,17 +973,21 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |  |  |
 |-------|--------|
 | **Action**   | `delete_chat_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
 | **Web API equivalent**| [`delete_chat_properties`](../customer-chat-web-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-chat-properties)</sup> |
 | **Push message**| [`chat_properties_deleted`](#chat-properties-deleted) |
 
+__*)__ 
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
 
 #### Request
 
 
 | Parameter | Required | Data type     | Notes                                              |
 | -------------- | -------- | -------- | -------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for |
+| `chat_id`      | Yes      | `string` | Id of the chat that you want to delete properties of |
 | `properties`   | Yes      | `object` | Chat properties to delete                          |
 
 
@@ -1170,17 +1124,22 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |  |  |
 |-------|--------|
 | **Action**   | `delete_chat_thread_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
 | **Web API equivalent**| [`delete_chat_thread_properties`](../customer-chat-web-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-chat-thread-properties)</sup> |
 | **Push message**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
+
+__*)__ 
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
 
 #### Request
 
 
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
-| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
+| `chat_id`      | Yes      | `string` | Id of the chat that you want to delete the properties of   |
+| `thread_id`    | Yes      | `string` | Id of the thread that you want to delete the properties of |
 | `properties`   | Yes      | `object` | Chat thread properties to delete                     |
 
 
@@ -1245,7 +1204,6 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |  |  |
 |-------|--------|
 | **Action**   | `update_event_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
 | **Web API equivalent**| [`update_event_properties`](../customer-chat-web-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-event-properties)</sup> |
 | **Push message**| [`event_properties_updated`](#event-properties-updated) |
 
@@ -1254,9 +1212,9 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 
 | Parameter | Required | Data type     | Notes                                             |
 | -------------- | -------- | -------- | ------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that you want to set properties for. |
-| `thread_id`    | Yes      | `string` | Id of the thread that you want to set properties for.|
-| `event_id`     | Yes      | `string` | Id of the event that you want to set properties for. |
+| `chat_id`      | Yes      | `string` | Id of the chat that you want to set properties for |
+| `thread_id`    | Yes      | `string` | Id of the thread that you want to set properties for|
+| `event_id`     | Yes      | `string` | Id of the event that you want to set properties for |
 | `properties`   | Yes      | `object` | Chat properties to set                            |
 
 
@@ -1326,273 +1284,28 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |  |  |
 |-------|--------|
 | **Action**   | `delete_event_properties`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
+| __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
 | **Web API equivalent**| [`delete_event_properties`](../customer-chat-web-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-event-properties)</sup> |
 | **Push message**| [`event_properties_deleted`](#event-properties-deleted) |
 
+__*)__ 
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
+
 #### Request
 
 | Parameter | Required | Data type     | Notes                                                |
 | -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete property for   |
-| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete property for |
-| `event_id`     | Yes      | `string` | Id of the event that we want to delete property for  |
+| `chat_id`      | Yes      | `string` | Id of the chat that we want to delete the properties of   |
+| `thread_id`    | Yes      | `string` | Id of the thread that we want to delete the properties of |
+| `event_id`     | Yes      | `string` | Id of the event that we want to delete the properties of  |
 | `properties`   | Yes      | `object` | Event properties to delete                           |
 
 
-## thread tags
-
-### `tag_chat_thread`
-
-> **`tag_chat_thread`** sample **request** with required params only
-
-```json
-{
-	"action": "tag_chat_thread",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"	}
-}
-```
-
-<!-- > **`tag_chat_thread`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "tag_chat_thread",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`tag_chat_thread`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "tag_chat_thread",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `tag_chat_thread`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**|[`tag_chat_thread`](../customer-chat-web-api/#tag-chat-thread) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#tag-chat-thread)</sup> |
-| **Push message**| [`chat_thread_tagged`](#chat-thread-tagged) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to add a tag to   		  |
-| `thread_id`    | Yes      | `string` | Id of the thread that we want to add a tag to 	 	  |
-| `tag`    		 | Yes      | `string` | Tag name											  |
-
-
-
-### `untag_chat_thread`
-
-> **`untag_chat_thread`** sample **request** with required params only
-
-```json
-{
-	"action": "untag_chat_thread",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-	}
-}
-```
-
-<!-- > **`untag_chat_thread`** sample **request** with optional params
-
-```json
-{
-	"request_id": "1245", // optional
-	"action": "untag_chat_thread",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`untag_chat_thread`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "untag_chat_thread",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `untag_chat_thread	`  |
-| __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **Web API equivalent**|[`untag_chat_thread`](../customer-chat-web-api/#untag-chat-thread) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#untag-chat-thread)</sup> |
-| **Push message**| [`chat_thread_untagged`](#chat-thread-untagged) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that you want to remove the tag from   |
-| `thread_id`    | Yes      | `string` | Id of the thread that you want to remove the tag from |
-| `tag`    		 | Yes      | `string` | Tag name											  |
 
 
 ## customers
-
-
-### `set_customer_fields`
-
-> **`set_customer_fields`** sample **request** with required params only
-
-```json
-{
-	"action": "set_customer_fields",
-	"payload": {
-		"fields": {
-		"company_size": "10-100"
-		}
-	}
-}
-```
-
-<!-- > **`set_customer_fields`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "set_customer_fields",
-	"payload": {
-		"fields": {
-		"company_size": "10-100"
-		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`set_customer_fields`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "set_customer_fields",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `set_customer_fields`  |
-| **Web API equivalent**| [`get_customers`](../customer-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get-customers)</sup> |
-| **Push message**| [`customer_updated`](#customer-updated) |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                          |
-| -------------- | -------- | -------- | ------------------------------ |
-| `fields`      | Yes       | `string` |  `key:value` object        |
-
-Users Agent and referrer are updated by default using the browser’s headers.
-
-
-
-### `update_customer_page`
-
-> **`update_customer_page`** sample **request** with required params only
-
-```json
-{
-	"action": "update_customer_page",
-	"payload": {
-		"url": "https://livechatinc.com/pricing"
-
-	}
-}
-```
-
-<!-- > **`update_customer_page`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_customer_page",
-	"payload": {
-			"url": "https://livechatinc.com/pricing",
-			"title": "Livechat - Pricing"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`update_customer_page`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "update_customer_page",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `update_customer_page`  |
-| **Web API equivalent**|- |
-| **Push message**| [`customer_page_updated`](#customer-page-updated) |
-
-Users Agent and referrer are updated by default using the browser’s headers.
-
-
-#### Request
-
-
-| Parameter | Required | Data type     | Notes                          |
-| -------------- | -------- | -------- | ------------------------------ |
-| `url`          | Yes       | `string` |                                |
-| `title`        | No       | `string` |                                |
-
 
 ### `update_customer`
 
@@ -1660,6 +1373,135 @@ Users Agent and referrer are updated by default using the browser’s headers.
 | `fields`       | No       | `object` | `"key": "value"` object |
 
 Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
+
+
+### `update_customer_page`
+
+> **`update_customer_page`** sample **request** with required params only
+
+```json
+{
+	"action": "update_customer_page",
+	"payload": {
+		"url": "https://livechatinc.com/pricing"
+
+	}
+}
+```
+
+<!-- > **`update_customer_page`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "update_customer_page",
+	"payload": {
+			"url": "https://livechatinc.com/pricing",
+			"title": "Livechat - Pricing"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`update_customer_page`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "update_customer_page",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `update_customer_page`  |
+| **Web API equivalent**|- |
+| **Push message**| [`customer_page_updated`](#customer-page-updated) |
+
+Users Agent and referrer are updated by default using the browser’s headers.
+
+
+#### Request
+
+
+| Parameter | Required | Data type     |                           |
+| -------------- | -------- | -------- | ------------------------------ |
+| `url`          | Yes       | `string` |                                |
+| `title`        | No       | `string` |                                |
+
+
+
+
+### `set_customer_fields`
+
+> **`set_customer_fields`** sample **request** with required params only
+
+```json
+{
+	"action": "set_customer_fields",
+	"payload": {
+		"fields": {
+		"company_size": "10-100"
+		}
+	}
+}
+```
+
+<!-- > **`set_customer_fields`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "set_customer_fields",
+	"payload": {
+		"fields": {
+		"company_size": "10-100"
+		}
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`set_customer_fields`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "set_customer_fields",
+	"type": "response",
+	"success": true,
+	"payload": {
+		// no response payload
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `set_customer_fields`  |
+| **Web API equivalent**| [`get_customers`](../customer-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get-customers)</sup> |
+| **Push message**| [`customer_updated`](#customer-updated) |
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                          |
+| -------------- | -------- | -------- | ------------------------------ |
+| `fields`      | Yes       | `string` |  `key:value` object        |
+
+Users Agent and referrer are updated by default using the browser’s headers.
+
+
+
+
 
 
 
@@ -1774,7 +1616,6 @@ It returns current agent's initial state.
 }
 ```
 
-
 #### Specifics
 
 |  |  |
@@ -1806,231 +1647,253 @@ It returns current agent's initial state.
 __*)__ We use `customer_side_storage` to keep some data on the client side. You should pass a map from the `customer_side_storage_updated` push payload to this field.
 
 
+### `get_groups_status`
 
-### `set_away_status`
-
-> **`set_away_status`** sample **request** with required params only
-
-```json
-{
-	"action": "set_away_status",
-	"payload": {
-		"away": true
-	}
-}
-```
-
-<!-- > **`set_away_status`** sample **request** with optional params
+> **`get_groups_status`** sample **request** with required params only
 
 ```json
 {
-	"request_id": "125", // optional
-	"action": "set_away_status",
-	"payload": {
-		"away": true
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`set_away_status`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "set_away_status",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `set_away_status`  |
-| __Required scopes__| `agents--my:rw`|
-| **Web API equivalent**| - |
-| **Push message**| - |
-
-#### Request
-
-
-| Request object | Required | Type     | Notes                |
-| -------------- | -------- | -------- | -------------------- |
-| `away`		 | Yes      | `bool`   |  				      |
-
-
-
-### `change_push_notifications`
-
-Change firebase push notifications properties.
-
------------------------------------------------------------------------------
-
-> **`change_push_notifications`** sample **request** with required params only
-
-```json
-{
-	"action": "change_push_notifications",
-	"payload": {
-		"firebase_token": "8daDAD9dada8ja1JADA11",
-		"platform": "ios",
-		"enabled": true
-	}
-}
-```
-
-<!-- > **`change_push_notifications`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "change_push_notifications",
-	"payload": {
-		"firebase_token": "8daDAD9dada8ja1JADA11",
-		"platform": "ios",
-		"enabled": true
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`change_push_notifications`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "change_push_notifications",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `change_push_notifications`  |
-| __Required scopes__| - |
-| **Web API equivalent**| - |
-| **Push message**| - |
-
-#### Request
-
-| Parameter  | Required | Data type   | Notes                                                    |
-| ---------------- | -------- | ------ | -------------------------------------------------------- |
-| `firebase_token` | Yes      | string | Firebase device token                                    |
-| `platform`       | Yes      | string | OS platform, possible values:  `ios`, `android`          |
-| `enabled`        | Yes      | bool   | Enable or disable push notifications for requested token |
-
-
-### `update_agent`
-
-Updates agent properties.
-
------------------------------------------------------------------------------
-
-> **`update_agent`** sample **request** with required params only
-
-```json
-{
-	"action": "update_agent",
-	"payload": {
-		"agent_id": "user@gmail.com",
-        "routing_status": "accepting_chats"
-	}
-}
-```
-
-<!-- > **`update_agent`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_agent",
-	"payload": {
-		"agent_id": "user@gmail.com",
-        "routing_status": "accepting_chats"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`update_agent`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "update_agent",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| **Action**   | `update_agent`  |
-| __Required scopes__| `agents--my:rw` `agents--all:rw`|
-| **Web API equivalent**|[`update_agent`](../customer-chat-web-api/#update-agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-agent)</sup> |
-| **Push message**| [`agent_updated`](#agent-updated)|
-
-#### Request
-
-
-| Parameter  | Required | Data type     | Notes                                                     |
-| ---------------- | -------- | -------- | --------------------------------------------------------- |
-| `agent_id`       | No       | `string` | The current agent is used by default.                     |
-| `routing_status` | No       | `string` | Possible values: `accepting_chats`, `not_accepting_chats` |
-
-
-### `logout`
-
-Logs the Agent out 
-
-------------------------------------------------------
-
-> **`logout`** sample **request** with required params only
-
-```json
-{
-	"action": "logout",
+	"action": "get_groups_status",
 	"payload": {}
 }
 ```
 
-<!-- > **`logout`** sample **request** with optional params
+<!-- > **`get_groups_status`** sample **request** with optional params
+
+```json
+{
+	"request_id": "12235", // optional
+	"action": "get_groups_status",
+	"payload": {
+		"groups": [1, 2, 3, 4]
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`get_groups_status`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "get_groups_status",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"groups_status": {
+
+		//1,2,3 are group ids, online/offline/online_for_queue are statuses of the groups
+
+		1: "online",
+		2: "offline",
+		3: "online_for_queue"
+		}
+	}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_groups_status`  |
+| **Web API equivalent**| [`get_groups_status`](../customer-chat-web-api/#get_groups_status) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_groups_status)</sup> |
+| **Push message**| - |
+
+
+#### Request
+
+| Parameter | Required | Data type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `all`      | No      | `bool` | If set to `true`, then you will get statuses for all groups.   |
+| `groups`   | No       | `array`  | Table of a group's ids |
+
+
+#### Response
+
+|    |      |  |
+| -------------- | -------- | ----- |
+| `Group Not Found`   |  If you send `group_id` of a group that doesn't exists, then this id won't be included in the resposne payload.  |     |
+
+
+
+
+
+
+## other
+
+### `get_form`
+
+> **`get_form`** sample **request** with required params only
+
+```json
+{
+	"action": "get_form",
+	"payload": {
+		"group_id": 0,
+		"type": "prechat"
+	}
+}
+```
+
+<!-- > **`get_form`** sample **request** with optional params
 
 ```json
 {
 	"request_id": "125", // optional
-	"action": "logout",
+	"action": "get_form",
+	"payload": {
+		"group_id": 0,
+		"type": "prechat"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`get_form`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "get_form",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"enabled": true,
+		"form": {
+			"id": "154417206262605962",
+			"fields": [{
+				"id": "154417206262601237",
+				"type": "header",
+				"label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+		}, {
+				"id": "154417206262603539",
+				"type": "name",
+				"label": "Name:",
+				"required": false
+		}, {
+				"id": "154417206262601584",
+				"type": "email",
+				"label": "E-mail:",
+				"required": false
+		}, {
+				"id": "154417206262602571",
+				"type": "radio",
+				"label": "Chat purpose:",
+				"required": false,
+				"options": [{
+					"id": "0",
+					"label": "Support",
+					"checked": false
+			}, {
+					"id": "1",
+					"label": "Sales",
+					"checked": false
+			}]
+		}, {
+				"id": "154417206262604640",
+				"type": "checkbox",
+				"label": "Company industry:",
+				"required": false,
+				"options": [{
+					"id": "0",
+					"label": "automotive",
+					"checked": false
+			}, {
+					"id": "1",
+					"label": "it",
+					"checked": false
+			}]
+		}, {
+				"id": "154417206262605324",
+				"type": "group_chooser",
+				"label": "Choose department",
+				"required": true,
+				"options": [{
+					"group_id": 0,
+					"label": "Finance",
+					"checked": false
+				}, {
+					"group_id": 1,
+					"label": "Marketing",
+					"checked": false
+			}]
+		}, {
+				"id": "154417206262607356",
+				"type": "rating",
+				"label": "How would you rate this chat?",
+				"comment_label": "Thank you for the rating! You can leave a comment in the box below:",
+				"required": false
+			}]
+		}
+	}
+}
+```
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_form`  |
+| **Web API equivalent**| [`get_form`](../customer-chat-web-api/#get_form) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_form)</sup> |
+| **Push message**| - |
+
+
+#### Request
+
+| Parameter | Required | Data type     | Notes |
+| -------------- | -------- | -------- | ----- |
+| `group_id`      | Yes   | `number` |  Id of the group from which you want the form |
+| `type`    | Yes     | `string` |  Form type. Possible values: `prechat` or `postchat`  |
+
+#### Response
+
+| Parameter | Notes |     |  |
+| -------------- | -------- | -------- | ----- |
+| `form`      | If form is disabled, the`form` object won't be returned in the response.      |  |       |
+| `headers`    | for headers (The field has no `answer` and is not sent in the `filled_form` event)    |  |       |
+| `name, email, question, textarea`  |  for open questions (text area)    |  |       |
+| `radio, select, checkbox`  | for single/multiple-choice questions     |  |       |
+| `group_chooser`    |  for group-choice questions    |  |       |
+| `rating`    | for rating  (The field isn't sent in the `filled_form` event.)    |  |       |
+
+
+### `get_predicted_agent`
+
+> **`get_predicted_agent`** sample **request** with required params only
+
+```json
+{
+	"action": "get_predicted_agent",
+	"payload": {}
+}
+```
+
+<!-- > **`get_predicted_agent`** sample **request** with optional params
+
+```json
+{
+	"action": "get_predicted_agent",
 	"payload": {},
 	"author_id": "<author_id>" // optional, applies only to bots
 }
 ``` -->
 
-> **`logout`** sample **response** 
+> **`get_predicted_agent`** sample **response** 
 
 ```json
 {
 	"request_id": "<request_id>", // optional
-	"action": "logout",
+	"action": "get_predicted_agent",
 	"type": "response",
 	"success": true,
 	"payload": {
-		// no response payload
+	"agent": {
+        "id": "agent1@example.com",
+        "name": "Name",
+        "avatar": "https://example.avatar/example.com",
+        "is_bot": false,
+        "job_title": "support hero",
+        "type": "agent"
 	}
 }
 ```
@@ -2039,14 +1902,70 @@ Logs the Agent out
 
 |  |  |
 |-------|--------|
-| **Action**   | `logout`  |
-| **Required scopes** | - |
-| **Web API equivalent**| -|
+| **Action**   | `get_predicted_agent`  |
+| **Web API equivalent**| [`get_predicted_agent`](../customer-chat-web-api/#get_predicted_agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_predicted_agent)</sup> |
+| **Push message**| - |
+
+### `get_url_details`
+
+> **`get_url_details`** sample **request** with required params only
+
+```json
+{
+	"action": "get_url_details",
+	"payload": {	
+		"url": "https://livechatinc.com"
+	}
+}
+```
+
+<!-- > **`get_url_details`** sample **request** with optional params
+
+```json
+{
+	"action": "get_url_details",
+	"payload": {
+		"url": "https://livechatinc.com"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
+> **`get_url_details`** sample **response** 
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "get_url_details",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"title": "LiveChat | Live Chat Software and Help Desk Software",
+		"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
+		"image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
+		"image_width": 200,
+		"image_height": 200,
+		"url": "https://livechatinc.com"
+		}
+}
+```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Action**   | `get_url_details`  |
+| **Web API equivalent**| [`get_url_details`](../customer-chat-web-api/#get_url_details)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_url_details)</sup> |
 | **Push message**| - |
 
 
+#### Request 
 
-## other
+| Parameter                                        | Required | Data type     | Notes                               |
+| ----------------------------------------------------- | -------- | -------- | ----------------------------------- |
+| `url`                                             | Yes       | `string` |  Valid website URL                    |
+
+
 
 ### `update_last_seen_timestamp`
 
@@ -2107,189 +2026,14 @@ Logs the Agent out
 | `timestamp`    | No       | `number` |       |
 
 
-### `send_typing_indicator`
-
-> **`send_typing_indicator`** sample **request** with required params only
-
-```json
-{
-	"action": "send_typing_indicator",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-        "is_typing": true
-	}
-}
-```
-
-<!-- > **`send_typing_indicator`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "send_typing_indicator",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"recipients": "all",
-		"is_typing": true
-		},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`send_typing_indicator`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "send_typing_indicator",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Action**   | `send_typing_indicator`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**|[`send_typing_indicator`](../customer-chat-web-api/#send-typing-indicator) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send-typing-indicator)</sup> |
-| **Push message**| - |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                       |
-| -------------- | -------- | -------- | ----------------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
-| `recipients`   | No       | `string` | `all` (default), `agents`                                   |
-| `is_typing`    | Yes      | `bool`   | Bool                                                        |
 
 
 
-### `multicast`
-
-This method was created for **chat-unrelated communication**. Messages sent using `multicast` are not being saved. 
-
-For example, it could be used in an app that sends notifications to Agents or Customers, when a certain condition is met (e.g. an important Customer started the chat).
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-> **`multicast`** sample **request** with required params only
-
-```json
-{
-	"action": "multicast",
-	"payload": {
-		"scopes": {
-            "agents": {
-                "all": true,
-                "ids": [
-                    "agent1@example.com",
-                    "agent2@example.com"
-                ],
-                "groups": [
-                    1,
-                    2
-                ]
-            },
-            "customers": {
-                "ids": [
-                    "b7eff798-f8df-4364-8059-649c35c9ed0c"
-                ]
-            }
-        },
-        "content": {
-            "example": {
-                "nested": "json"
-				}
-			}
-		}
-	}
-}
-```
-
-<!-- > **`multicast`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "multicast",
-	"payload": {
-		"scopes": {
-            "agents": {
-                "all": true,
-                "ids": [
-                    "agent1@example.com",
-                    "agent2@example.com"
-                ],
-                "groups": [
-                    1,
-                    2
-                ]
-            },
-            "customers": {
-                "ids": [
-                    "b7eff798-f8df-4364-8059-649c35c9ed0c"
-                ]
-            }
-        },
-        "content": {
-            "example": {
-                "nested": "json"
-				}
-			}
-		},
-		"type": "type1"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`multicast`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "multicast",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Action**   | `multicast`  |
-| __Required scopes__| `multicast:rw` |
-| **Web API equivalent**|[`multicast`](../customer-chat-web-api/#multicast) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#multicast)</sup> |
-| **Push message**| [`incoming_multicast`](#incoming-multicast)|
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                     |
-| -------------- | -------- | -------- | ------------------------- |
-| `scopes`       | Yes      | `object` | __*__                     |
-| `content`      | Yes      | `any`    | JSON message to be sent   |
-| `type`         | No       | `string` | Type of multicast message |
 
 
-__*)__ `scopes` can take the following values:
 
-  - `agents`:
 
-     - `all` (`bool` - includes all agents)
-     - `ids` (`[]string` - an array of agents' ids) 
-	 - `groups` (`[]string` - an array of groups' ids)
 
-  - `customers`: 
-   	- `ids` (`[]string` - an array of customer's ids)
-
-At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
 
 
 
