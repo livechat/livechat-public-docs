@@ -261,7 +261,6 @@ Here's the list of all system messages you might come across:
 |:-------------:|------:|
 | _%initiator% removed %agent% from the chat_ | agent was removed from chat via the `remove_user_from_chat` request. |
 
-
 #### `archived_customer_disconnected`
 |  Content    |  Generated when |
 |:-------------:|------:|

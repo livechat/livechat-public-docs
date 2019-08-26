@@ -264,10 +264,20 @@ Here's the list of all system messages you might come across:
 |:-------------:|------:|
 | _%customer% left the chat_ | chat ended after customer left the website |
 
+#### `chat_transferred`
+|  Content    |  Generated when |
+|:-------------:|------:|
+| _%initiator% transferred the chat to %targets%_ | chat was transferred via the `transfer_chat` request. |
+
 #### `customer_added`
 |  Content    |  Generated when |
 |:-------------:|------:|
 | _%initiator% added %customer% to the chat_ | customer was added to chat via `add_user_to_chat` request |
+
+#### `customer_banned`
+|  Content    |  Generated when |
+|:-------------:|------:|
+| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | chat ended because customer was banned via the `ban_customer` request. |
 
 #### `customer_removed`
 |  Content    |  Generated when |

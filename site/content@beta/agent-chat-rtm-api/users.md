@@ -7,8 +7,8 @@ weight: 40
 **Users** are another important data structure. Within this data structure type, we can distinguish:
 
 - [Agent](#agent)
-	* [Customer](#customer)
-- [My profile](#my-profile)
+	* [My profile](#my-profile)
+- [Customer](#customer)
 
 
 

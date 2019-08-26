@@ -135,7 +135,7 @@ It returns summaries of the chats an Agent has access to.
 |-------|--------|
 | **Action**   | `get_chats_summary`  |
 | __Required scopes *__| `chats--all:ro` `chats--access:ro` `chats--my:ro` |
-| **Web API equivalent**|[`activate_chat`](../agent-chat-web-api/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get_chats_summary)</sup>|
+| **Web API equivalent**|[`get_chats_summary`](../agent-chat-web-api/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../agent-chat-web-api/#get_chats_summary)</sup>|
 | **Push message**| - |
 
 #### Request
@@ -628,14 +628,7 @@ When `chat.users` is defined, one of following scopes is required:
 	"type": "response",
 	"success": true,
 	"payload": {
-		// optional
-	}
-}
-```
-
-```json
-{
-	"chat": {
+		"chat": {
 		"id": "PJ0MRSHTDG",
 		"users": [
 			// array of "User" objects
@@ -650,6 +643,7 @@ When `chat.users` is defined, one of following scopes is required:
 			// array of "Thread" objects
 		],
 		"is_followed": true
+	}
 	}
 }
 ```
