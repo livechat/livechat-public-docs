@@ -1496,7 +1496,9 @@ curl -X POST \
 
 ### `check_goals`
 
-Used to check goals when Customers are offline. You should call this method to provide goals parameters for server when the customers limit is reached. Works only for offline Customers.
+Customer can use this method to trigger checking if [goals](https://www.livechatinc.com/help/goals-set-up-and-use/) <sup>[![LiveChat Goals](link.svg)](https://www.livechatinc.com/help/goals-set-up-and-use/)</sup> were achieved. Then, Agents receive the information. You should call this method to provide goals parameters for the server when the customers limit is reached. Works only for offline Customers.
+
+------------------------------------------------------------------------------------------------------------------------------------
 
 > **`check_goals`** sample **request** with required params only
 
@@ -1549,7 +1551,7 @@ curl -X POST \
 |  |  |
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/check_goals`  |
-| **RTM API equivalent**| [`check_goals`](../customer-chat-rtm-api/#check_goals) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#check_goals)</sup> |
+| **RTM API equivalent**| - |
 | **Webhook**| - |
 
 #### Request
@@ -1653,7 +1655,7 @@ curl -X POST \
 
 ### `get_predicted_agent`
 
-Gets the predicted Agent - the one the Customer will chat with when the chat starts.
+Gets the predicted Agent - the one the Customer will chat with when the chat starts. To use this method, the Customer needs to be logged in, which can be done via the [`login`](../customer-chat-rtm-api/#login)<sup>[![LiveChat Login Method](link.svg)](../customer-chat-rtm-api/#login)</sup> method.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1706,6 +1708,10 @@ curl -X POST \
 | **Webhook**| - |
 
 ### `get_url_details`
+
+It returns info on a given URL.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
 
 > **`get_url_details`** sample **request** with required params only
 
