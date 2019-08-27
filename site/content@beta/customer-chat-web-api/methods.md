@@ -61,7 +61,7 @@ Every request to Customer Chat API needs to have the following query string para
 
 ### `get_chats_summary`
 
-It returns summaries of the chats a Customer has access to.
+It returns summaries of the chats a Customer participated in.
 
 --------------------------------------------------------------
 

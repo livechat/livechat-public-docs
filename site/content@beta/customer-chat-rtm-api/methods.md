@@ -59,7 +59,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 ### `get_chats_summary`
 
-It returns summaries of the chats an Agent has access to.
+It returns summaries of the chats a Customer participated in.
 
 --------------------------------------------------------------
 
@@ -1452,7 +1452,7 @@ Users Agent and referrer are updated by default using the browser’s headers.
 ## status
 
 ### `login`
-It returns current agent's initial state.
+It returns the initial state of the current Customer.
 
 ------------------------------------------------------
 
