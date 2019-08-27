@@ -5,7 +5,7 @@ weight: 20
 # Events
 
 One of the data structures are **events**. They are sent to a chat via the `send_event` method. 
-Apart from events, there are also [Properties](#properties), [Users](#users), and [other data structures](#other-common-structures). 
+Apart from events, there are also [properties](#properties), [users](#users), and [other common data structures](#other-common-structures). 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -180,6 +180,76 @@ These are the available **event types**:
 | `text` | required | max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages |
 
 
+## Rich message
+
+> A sample **Rich message** event
+
+```js
+{
+	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+	"custom_id": "31-0C-1C-07-DB-16",
+	"order": 1, // generated server-side
+	"type": "rich_message",
+	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"timestamp": 1473433500, // generated server-side
+	"recipients": "all",
+	"properties": {
+		// "Properties" object
+	},
+	"template_id": "cards",
+	"elements": [{
+		"title": "Lorem ipsum dolor.",
+		"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+		"image": {
+			"name": "image25.png",
+			"url": "https://domain.com/asdsfdsf.png",
+			"content_type": "image/png",
+			"size": 123444,
+			"width": 640,
+			"height": 480
+		},
+		"buttons": [{
+			"text": "yes",
+			"postback_id": "action_yes",
+			"user_ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
+		}, {
+			"text": "no",
+			"postback_id": "action_no",
+			"user_ids": []
+		}, {
+			"type": "phone",
+			"text": "value",
+			"value": "790034890",
+			"webview_height": "tall", // optional, one of compact, tall, full
+			"postback_id": "action_call",
+			"user_ids": []
+		}]
+	}, {
+		"title": "Lorem ipsum dolor 2."
+	}]
+}
+```
+
+**sending a rich message**
+
+----------------------------------
+
+
+| Field  |      Req./Opt.   |  Note |
+|----------|:-------------:|------:|
+| `custom_id` | optional |   -  |
+| `elements` |    optional  | can contain 1 - 10 `element` objects |
+| `elements.buttons` | optional | `buttons` can contain 1 - 11 `button` objects |
+| `elements.buttons.postback_id` | optional | Describes the action sent via `send_rich_message_postback`; multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.user_ids` | optional | describes users that sent the postback with `"toggled": true` |
+| `elements.image`| optional | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height` |
+| `elements.subtitle`| optional |  |
+| `elements.title`| optional |  |
+| `properties` | optional |   -  |
+| `recipients` |  required | possible values: `all` (default), `agents` |
+| `template_id` | ? | Describes how the event should be presented in an app. |
+
+
 ## Custom
 
 >  A sample **Custom** event
@@ -284,71 +354,3 @@ Here's the list of all system messages you might come across as a Customer:
 
 
 
-## Rich message
-
-> A sample **Rich message** event
-
-```js
-{
-	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "31-0C-1C-07-DB-16",
-	"order": 1, // generated server-side
-	"type": "rich_message",
-	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-	"timestamp": 1473433500, // generated server-side
-	"recipients": "all",
-	"properties": {
-		// "Properties" object
-	},
-	"template_id": "cards",
-	"elements": [{
-		"title": "Lorem ipsum dolor.",
-		"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-		"image": {
-			"name": "image25.png",
-			"url": "https://domain.com/asdsfdsf.png",
-			"content_type": "image/png",
-			"size": 123444,
-			"width": 640,
-			"height": 480
-		},
-		"buttons": [{
-			"text": "yes",
-			"postback_id": "action_yes",
-			"user_ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
-		}, {
-			"text": "no",
-			"postback_id": "action_no",
-			"user_ids": []
-		}, {
-			"type": "phone",
-			"text": "value",
-			"value": "790034890",
-			"webview_height": "tall", // optional, one of compact, tall, full
-			"postback_id": "action_call",
-			"user_ids": []
-		}]
-	}, {
-		"title": "Lorem ipsum dolor 2."
-	}]
-}
-```
-
-**sending a rich message**
-
-----------------------------------
-
-
-| Field  |      Req./Opt.   |  Note |
-|----------|:-------------:|------:|
-| `custom_id` | optional |   -  |
-| `elements` |    optional  | can contain 1 - 10 `element` objects |
-| `elements.buttons` | optional | `buttons` can contain 1 - 11 `button` objects |
-| `elements.buttons.postback_id` | optional | Describes the action sent via `send_rich_message_postback`; multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
-| `elements.buttons.user_ids` | optional | describes users that sent the postback with `"toggled": true` |
-| `elements.image`| optional | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height` |
-| `elements.subtitle`| optional |  |
-| `elements.title`| optional |  |
-| `properties` | optional |   -  |
-| `recipients` |  required | possible values: `all` (default), `agents` |
-| `template_id` | ? | Describes how the event should be presented in an app. |

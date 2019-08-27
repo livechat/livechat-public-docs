@@ -408,6 +408,10 @@ Starts a chat.
 
 ### `activate_chat`
 
+Used to restart an archived chat.
+
+-------------------------------------------------------------------------------------------------------------------
+
 
 > **`activate_chat`** sample **request** with required params only
 
@@ -781,66 +785,6 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 | -------------- | -------- | -------- | ----------------------------------------------- |
 | `chat_id`      | Yes      | `string` | The id of the chat that you to set a sneak peek to|
 | `sneak_peek_text` | Yes      | `string` | Sneak peek text |
-
-
-### `send_typing_indicator`
-
-> **`send_typing_indicator`** sample **request** with required params only
-
-```json
-{
-	"action": "send_typing_indicator",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-        "is_typing": true
-	}
-}
-```
-
-<!-- > **`send_typing_indicator`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "send_typing_indicator",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"recipients": "all",
-		"is_typing": true
-		},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
-> **`send_typing_indicator`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "send_typing_indicator",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Action**   | `send_typing_indicator`  |
-| __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **Web API equivalent**|[`send_typing_indicator`](../customer-chat-web-api/#send-typing-indicator) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send-typing-indicator)</sup> |
-| **Push message**| - |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                       |
-| -------------- | -------- | -------- | ----------------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
-| `recipients`   | No       | `string` | `all` (default), `agents`                                   |
-| `is_typing`    | Yes      | `bool`   | Bool                                                        |
 
 
 
@@ -1858,6 +1802,10 @@ __*)__ We use `customer_side_storage` to keep some data on the client side. You 
 
 
 ### `get_predicted_agent`
+
+Gets the predicted Agent - the one the Customer will chat with when the chat starts.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 > **`get_predicted_agent`** sample **request** with required params only
 

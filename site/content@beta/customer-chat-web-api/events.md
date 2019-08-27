@@ -5,7 +5,7 @@ weight: 20
 # Events
 
 One of the data structures are **events**. They are sent to a chat via the `send_event` method. 
-Apart from events, there are also [properties](#property), [users](#user), and [other common structures](#other-common-structures). 
+Apart from events, there are also [properties](#properties), [users](#users), and [other common data structures](#other-common-structures). 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 

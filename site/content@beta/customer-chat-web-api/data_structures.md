@@ -216,7 +216,7 @@ Property domain can be configured in two ways:
 - by defining a range with values, which are all allowed in the property. It works only for numeric types (e.g. a range from 1 to 3).
 
 
-## Thread
+## Threads
 
 > A sample **Thread** data structure
 

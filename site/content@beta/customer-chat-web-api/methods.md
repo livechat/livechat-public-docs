@@ -409,6 +409,10 @@ curl -X POST \
 
 ### `activate_chat`
 
+Used to restart an archived chat.
+
+-------------------------------------------------------------------------------------------------------------------
+
 
 > **`activate_chat`** sample **request** with required params only
 
@@ -829,65 +833,6 @@ curl -X POST \
 | -------------- | -------- | -------- | ----------------------------------------------- |
 | `chat_id`      | Yes      | `string` | The id of the chat that you to set a sneak peek to|
 | `sneak_peek_text` | Yes      | `string` | Sneak peek text |
-
-
-### `send_typing_indicator`
-
-> **`send_typing_indicator`** sample **request** with required params only
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/send_typing_indicator?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {
-      	"chat_id": "PJ0MRSHTDG",
-        "is_typing": true
-    }
-}'
-```
-
-<!-- > **`send_typing_indicator`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/send_typing_indicator?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {
-      	"chat_id": "PJ0MRSHTDG",
-        "is_typing": true
-    }
-}'
-``` -->
-
-> **`send_typing_indicator`** sample **response** payload
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
-
-#### Specifics
-|  |  |
-|-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/send_typing_indicator`  |
-| **RTM API equivalent**|[`send_typing_indicator`](../customer-chat-rtm-api/#send-typing-indicator) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#send-typing-indicator)</sup> |
-| **Webhook**| - |
-
-#### Request
-
-| Parameter | Required | Data type     | Notes                                                       |
-| -------------- | -------- | -------- | ----------------------------------------------------------- |
-| `chat_id`      | Yes      | `string` | Id of the chat that we want to send the typing indicator to |
-| `recipients`   | No       | `string` | `all` (default), `agents`                                   |
-| `is_typing`    | Yes      | `bool`   | Bool                                                        |
-
 
 
 ## properties (chat/thread/event)
@@ -1759,6 +1704,10 @@ curl -X POST \
 
 
 ### `get_predicted_agent`
+
+Gets the predicted Agent - the one the Customer will chat with when the chat starts.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 > **`get_predicted_agent`** sample **request** with required params only
 

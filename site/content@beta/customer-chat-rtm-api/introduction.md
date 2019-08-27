@@ -24,10 +24,10 @@ Also, the RTM API will be a better choice if you want to avoid time delays or pr
 
 ## Authentication
 
-**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flows](../authorization/#customer-authorization-flows)<sup>[![LiveChat Link](link.svg)](../authorization/#customer-authorization-flows)</sup>. Client must authorize himself by [logging in](#login) within 30 seconds, otherwise the connection will be closed.
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flows](https://developers.livechatinc.com/docs/authorization/)<sup>[![LiveChat Link](link.svg)](../authorization/#customer-authorization-flows)</sup>. Client must authorize himself by [logging in](#login) within 30 seconds, otherwise the connection will be closed.
 
 After successful authorization, client should **ping the server** each 15 seconds, otherwise the connection will be closed after about 30 seconds of inactivity. If the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2)<sup>[![LiveChat Link](link.svg)](https://tools.ietf.org/html/rfc6455#section-5.5.2)</sup> is unavailable (in web browsers), client should use a protocol message with the ping action. Until authorization is completed, ping is a no-op. 
 
-All authorization scopes are listed in the [Scopes](#scopes) section. If a method requires particular scopes, you'll find them included in the method description. 
+If a method requires particular authorization scopes, you'll find them included in the method description. 
 
 Given that the connection is continuosly maintained, you only need to authorize once. 

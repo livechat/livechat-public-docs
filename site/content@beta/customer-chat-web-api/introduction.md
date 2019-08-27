@@ -21,7 +21,7 @@ If you're wondering which API to use - Customer Chat **RTM API** or **Web API**,
 
 ## Authentication
 
-**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flows](../authorization/#customer-authorization-flows)<sup>[![LiveChat Link](link.svg)](../authorization/#customer-authorization-flows)</sup>. All authorization scopes are listed in the [Scopes](#scopes) section. If a method requires certain scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flows](https://developers.livechatinc.com/docs/authorization/)<sup>[![LiveChat Link](link.svg)](../authorization/#customer-authorization-flows)</sup>. If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
 
 ## Data centers
 
