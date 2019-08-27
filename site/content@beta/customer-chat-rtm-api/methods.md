@@ -1228,14 +1228,9 @@ __*)__
 |  |  |
 |-------|--------|
 | **Action**   | `delete_event_properties`  |
-| __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
 | **Web API equivalent**| [`delete_event_properties`](../customer-chat-web-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-event-properties)</sup> |
 | **Push message**| [`event_properties_deleted`](#event-properties-deleted) |
 
-__*)__ 
-
-- `chats.conversation--all:write` - write access for conversation data of all license chats
-- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
 
 #### Request
 
@@ -1259,7 +1254,7 @@ __*)__
 {
 	"action": "update_customer",
 	"payload": {
-		"customer_id": "646d53b8-ba76-48bf-7ef1-f6d61ec4ec44"
+		"name": "John Doe"
 	}
 }
 ```
@@ -1271,7 +1266,6 @@ __*)__
 	"request_id": "13425", // optional
 	"action": "update_customer",
 	"payload": {
-		"customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
 		"name": "John Doe",
 		"avatar": "https://domain.com/avatars/1.jpg",
 		"fields": {
@@ -1301,7 +1295,6 @@ __*)__
 |  |  |
 |-------|--------|
 | **Action**   | `update_customer`  |
-| __Required scopes__| `customers:rw`|
 | **Web API equivalent**| [`update_customer`](../customer-chat-web-api/#update-customer) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-customer)</sup> |
 | **Push message**| [`customer_updated`](#customer-updated) |
 
@@ -1310,13 +1303,12 @@ __*)__
 
 | Parameter | Required | Data type     | Notes                          |
 | -------------- | -------- | -------- | ------------------------------ |
-| `customer_id`  | Yes      | `string` | UUID v4 format is required     |
 | `name`         | No       | `string` |                                |
 | `email`        | No       | `string` |                                |
 | `avatar`       | No       | `string` | URL of the Customer's avatar         |
 | `fields`       | No       | `object` | `"key": "value"` object |
 
-Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
+At least one optional parameter needs to be included in the request payload. 
 
 
 ### `update_customer_page`
@@ -1565,7 +1557,6 @@ It returns the initial state of the current Customer.
 |  |  |
 |-------|--------|
 | **Action**   | `login`  |
-| **Required scopes** | - |
 | **Web API equivalent**| -|
 | **Push message**| - |
 
@@ -1698,79 +1689,31 @@ __*)__ We use `customer_side_storage` to keep some data on the client side. You 
 
 ```json
 {
-	"request_id": "<request_id>", // optional
-	"action": "get_form",
-	"type": "response",
-	"success": true,
-	"payload": {
-		"enabled": true,
-		"form": {
-			"id": "154417206262605962",
-			"fields": [{
-				"id": "154417206262601237",
-				"type": "header",
-				"label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
-		}, {
-				"id": "154417206262603539",
-				"type": "name",
-				"label": "Name:",
-				"required": false
-		}, {
-				"id": "154417206262601584",
-				"type": "email",
-				"label": "E-mail:",
-				"required": false
-		}, {
-				"id": "154417206262602571",
-				"type": "radio",
-				"label": "Chat purpose:",
-				"required": false,
-				"options": [{
-					"id": "0",
-					"label": "Support",
-					"checked": false
-			}, {
-					"id": "1",
-					"label": "Sales",
-					"checked": false
-			}]
-		}, {
-				"id": "154417206262604640",
-				"type": "checkbox",
-				"label": "Company industry:",
-				"required": false,
-				"options": [{
-					"id": "0",
-					"label": "automotive",
-					"checked": false
-			}, {
-					"id": "1",
-					"label": "it",
-					"checked": false
-			}]
-		}, {
-				"id": "154417206262605324",
-				"type": "group_chooser",
-				"label": "Choose department",
-				"required": true,
-				"options": [{
-					"group_id": 0,
-					"label": "Finance",
-					"checked": false
-				}, {
-					"group_id": 1,
-					"label": "Marketing",
-					"checked": false
-			}]
-		}, {
-				"id": "154417206262607356",
-				"type": "rating",
-				"label": "How would you rate this chat?",
-				"comment_label": "Thank you for the rating! You can leave a comment in the box below:",
-				"required": false
-			}]
-		}
-	}
+    "payload": {
+        "form": {
+            "id": "156630109416307809",
+            "fields": [
+                {
+                    "id": "15663010941630615",
+                    "type": "header",
+                    "label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+                },
+                {
+                    "id": "156630109416307759",
+                    "type": "name",
+                    "label": "Name:",
+                    "required": false
+                },
+                {
+                    "id": "15663010941630515",
+                    "type": "email",
+                    "label": "E-mail:",
+                    "required": false
+                }
+            ]
+        },
+        "enabled": true
+    }
 }
 ```
 #### Specifics

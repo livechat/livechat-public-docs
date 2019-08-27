@@ -1277,14 +1277,9 @@ curl -X POST \
 |  |  |
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/delete_event_properties`  |
-| __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
 | **RTM API equivalent**| [`delete_event_properties`](../customer-chat-rtm-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#delete-event-properties)</sup> |
 | **Webhook**| [`event_properties_deleted`](#event-properties-deleted) |
 
-__*)__ 
-
-- `chats.conversation--all:write` - write access for conversation data of all license chats
-- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
 
 #### Request
 
@@ -1309,7 +1304,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "customer_id": "646d53b8-ba76-48bf-7ef1-f6d61ec4ec44"
+      "name": "John Doe"
     }
 }'
 ```
@@ -1323,7 +1318,6 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
       "name": "John Doe",
       "avatar": "https://domain.com/avatars/1.jpg",
       "fields": {
@@ -1348,7 +1342,6 @@ curl -X POST \
 |  |  |
 |-------|--------|
 | **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/update_customer`  |
-| __Required scopes__| `customers:rw`|
 | **RTM API equivalent**| [`update_customer`](../customer-chat-rtm-api/#update-customer) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#update-customer)</sup> |
 | **Webhook**| [`customer_updated`](#customer-updated) |
 
@@ -1357,13 +1350,12 @@ curl -X POST \
 
 | Parameter | Required | Data type     | Notes                          |
 | -------------- | -------- | -------- | ------------------------------ |
-| `customer_id`  | Yes      | `string` | UUID v4 format is required     |
 | `name`         | No       | `string` |                                |
 | `email`        | No       | `string` |                                |
 | `avatar`       | No       | `string` | URL of the Customer's avatar         |
 | `fields`       | No       | `object` | `"key": "value"` object |
 
-Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
+At least one optional parameter needs to be included in the request payload. 
 
 
 ### `set_customer_fields`
@@ -1604,75 +1596,31 @@ curl -X POST \
 
 ```json
 {
-	"payload": {
-		"enabled": true,
-		"form": {
-			"id": "154417206262605962",
-			"fields": [{
-				"id": "154417206262601237",
-				"type": "header",
-				"label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
-		}, {
-				"id": "154417206262603539",
-				"type": "name",
-				"label": "Name:",
-				"required": false
-		}, {
-				"id": "154417206262601584",
-				"type": "email",
-				"label": "E-mail:",
-				"required": false
-		}, {
-				"id": "154417206262602571",
-				"type": "radio",
-				"label": "Chat purpose:",
-				"required": false,
-				"options": [{
-					"id": "0",
-					"label": "Support",
-					"checked": false
-			}, {
-					"id": "1",
-					"label": "Sales",
-					"checked": false
-			}]
-		}, {
-				"id": "154417206262604640",
-				"type": "checkbox",
-				"label": "Company industry:",
-				"required": false,
-				"options": [{
-					"id": "0",
-					"label": "automotive",
-					"checked": false
-			}, {
-					"id": "1",
-					"label": "it",
-					"checked": false
-			}]
-		}, {
-				"id": "154417206262605324",
-				"type": "group_chooser",
-				"label": "Choose department",
-				"required": true,
-				"options": [{
-					"group_id": 0,
-					"label": "Finance",
-					"checked": false
-				}, {
-					"group_id": 1,
-					"label": "Marketing",
-					"checked": false
-			}]
-		}, {
-				"id": "154417206262607356",
-				"type": "rating",
-				"label": "How would you rate this chat?",
-				"comment_label": "Thank you for the rating! You can leave a comment in the box below:",
-				"required": false
-			}]
-		}
-	}
+    "payload": {
+        "form": {
+            "id": "156630109416307809",
+            "fields": [
+                {
+                    "id": "15663010941630615",
+                    "type": "header",
+                    "label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+                },
+                {
+                    "id": "156630109416307759",
+                    "type": "name",
+                    "label": "Name:",
+                    "required": false
+                },
+                {
+                    "id": "15663010941630515",
+                    "type": "email",
+                    "label": "E-mail:",
+                    "required": false
+                }
+            ]
+        },
+        "enabled": true
+    }
 }
 ```
 #### Specifics
@@ -1695,7 +1643,7 @@ curl -X POST \
 
 | Parameter | Notes |     |  |
 | -------------- | -------- | -------- | ----- |
-| `form`      | If form is disabled, the`form` object won't be returned in the response.      |  |       |
+| `form`      | If form is disabled, the `form` object won't be returned in the response.      |  |       |
 | `headers`    | for headers (The field has no `answer` and is not sent in the `filled_form` event)    |  |       |
 | `name, email, question, textarea`  |  for open questions (text area)    |  |       |
 | `radio, select, checkbox`  | for single/multiple-choice questions     |  |       |
