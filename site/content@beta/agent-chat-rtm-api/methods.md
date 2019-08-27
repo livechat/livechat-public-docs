@@ -564,6 +564,10 @@ When `chat.users` is defined, one of following scopes is required:
 
 ### `activate_chat`
 
+Used to restart an archived chat.
+
+---------------------------------------------------------------------------
+
 
 > **`activate_chat`** sample **request** with required params only
 
@@ -2352,7 +2356,8 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 ## status
 
 ### `login`
-It returns current agent's initial state.
+
+It returns the initial state of the current Agent.
 
 ------------------------------------------------------
 

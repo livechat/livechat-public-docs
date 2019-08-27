@@ -398,6 +398,10 @@ When `chat.users` is defined, one of following scopes is required:
 
 ### `activate_chat`
 
+Used to restart an archived chat.
+
+-------------------------------------------------------------------------------
+
 > **`activate_chat`** sample request
 
 ```shell
