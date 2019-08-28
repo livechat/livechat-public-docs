@@ -718,11 +718,11 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PJ0MRSHTDG",
-        "thread_id": "K600PKZON8",
-        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-        "postback": {
-            "id": "Method URL_yes",
-            "toggled": true
+      "thread_id": "K600PKZON8",
+      "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+      "postback": {
+          "id": "Method URL_yes",
+          "toggled": true
         }
     }
 }'
@@ -851,10 +851,10 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
             }
         }
     }
@@ -920,10 +920,10 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
             ]
         }
     }
@@ -998,11 +998,11 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
             }
         }
     }
@@ -1019,11 +1019,11 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
             }
         }
     }
@@ -1071,11 +1071,11 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
             ]
         }
     }
@@ -1092,11 +1092,11 @@ curl -X POST \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
             ]
         }
     }
@@ -1224,7 +1224,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "chat_id": "PWLW03ICW7",
+        "chat_id": "PWLW03ICW7",
         "thread_id": "PWNWW5N6A8",
         "event_id": "PWNWW5N6A8_1",
         "properties": {
@@ -1246,7 +1246,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "chat_id": "PWLW03ICW7",
+        "chat_id": "PWLW03ICW7",
         "thread_id": "PWNWW5N6A8",
         "event_id": "PWNWW5N6A8_1",
         "properties": {
@@ -1709,7 +1709,7 @@ curl -X POST \
 
 ### `get_url_details`
 
-It returns info on a given URL.
+It returns the info on a given URL.
 
 -------------------------------------------------------------------------------------------------------------------------------------------------
 

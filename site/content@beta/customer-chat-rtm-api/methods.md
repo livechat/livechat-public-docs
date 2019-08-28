@@ -26,8 +26,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 	"action": "<action>",
 	"payload": {
 		// optional
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ```
 
@@ -83,8 +82,7 @@ It returns summaries of the chats a Customer participated in.
 		"offset": 0,
 		"limit": 25
 		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ```  -->
 
@@ -174,8 +172,7 @@ It returns summaries of the chats a Customer participated in.
 		"chat_id": "PJ0MRSHTDG",
 		"offset": 0,
 		"limit": 100
-		},
-	"author_id": "<author_id>" // optional, applies only to bots
+		}
 }
 ``` -->
 
@@ -250,8 +247,7 @@ It returns summaries of the chats a Customer participated in.
 	"payload": {
 		"chat_id": "PJ0MRSHTDG",
 		"thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -349,8 +345,7 @@ Starts a chat.
 		}
 	},
 	"continuous": true
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -462,8 +457,7 @@ Used to restart an archived chat.
 				}
 			}
 		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -544,8 +538,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 	"action": "close_thread",
 	"payload": {
 		"chat_id": "PJ0MRSHTDG"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -612,8 +605,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 			"text": "hello world",
 			"recipients": "agents",
 			"custom_id": "31-0C-1C-07-DB-16"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -629,7 +621,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 		"thread_id": "K600PKZON8",
 		"event": {
 			// the Event object
-	}
+		}
 	}
 }
 ```
@@ -690,8 +682,7 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
             "id": "Method URL_yes",
             "toggled": true
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -753,8 +744,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 	"payload": {
 		"chat_id": "PJ0MRSHTDG",
 		"sneak_peek_text": "hello world"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -784,7 +774,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 | Parameter | Required | Data type     | Notes                                           |
 | -------------- | -------- | -------- | ----------------------------------------------- |
 | `chat_id`      | Yes      | `string` | The id of the chat that you to set a sneak peek to|
-| `sneak_peek_text` | Yes      | `string` | Sneak peek text |
+| `sneak_peek_text` | Yes   | `string` | Sneak peek text |
 
 
 
@@ -824,8 +814,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
                 "comment": "Thank you!"
             }
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -893,8 +882,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
                 "comment"
             ]
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -971,8 +959,7 @@ __*)__
                 "comment": "Thank you!"
             }
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1044,8 +1031,7 @@ __*)__
                 "comment"
             ]
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1124,8 +1110,7 @@ __*)__
                 "comment": "Thank you!"
             }
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1204,8 +1189,7 @@ __*)__
                 ]
             }
         }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1271,8 +1255,7 @@ __*)__
 		"fields": {
 			"score": "low"
 		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1320,7 +1303,6 @@ At least one optional parameter needs to be included in the request payload.
 	"action": "update_customer_page",
 	"payload": {
 		"url": "https://livechatinc.com/pricing"
-
 	}
 }
 ```
@@ -1334,8 +1316,7 @@ At least one optional parameter needs to be included in the request payload.
 	"payload": {
 			"url": "https://livechatinc.com/pricing",
 			"title": "Livechat - Pricing"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1361,7 +1342,7 @@ At least one optional parameter needs to be included in the request payload.
 | **Web API equivalent**|- |
 | **Push message**| [`customer_page_updated`](#customer-page-updated) |
 
-Users Agent and referrer are updated by default using the browser’s headers.
+Agent and referrer are updated by default using the browser’s headers.
 
 
 #### Request
@@ -1400,8 +1381,7 @@ Users Agent and referrer are updated by default using the browser’s headers.
 		"fields": {
 		"company_size": "10-100"
 		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1433,10 +1413,7 @@ Users Agent and referrer are updated by default using the browser’s headers.
 | -------------- | -------- | -------- | ------------------------------ |
 | `fields`      | Yes       | `string` |  `key:value` object        |
 
-Users Agent and referrer are updated by default using the browser’s headers.
-
-
-
+Agent and referrer are updated by default using the browser’s headers.
 
 
 
@@ -1472,8 +1449,7 @@ It returns the initial state of the current Customer.
 		"customer_page": {
 			"url": "https://www.livechatinc.com/"
 		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1589,7 +1565,9 @@ __*)__ We use `customer_side_storage` to keep some data on the client side. You 
 ```json
 {
 	"action": "get_groups_status",
-	"payload": {}
+	"payload": {
+		"all": true
+	}
 }
 ```
 
@@ -1601,8 +1579,7 @@ __*)__ We use `customer_side_storage` to keep some data on the client side. You 
 	"action": "get_groups_status",
 	"payload": {
 		"groups": [1, 2, 3, 4]
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1653,9 +1630,6 @@ At least one optional parameter needs to be included in the request payload.
 
 
 
-
-
-
 ## other
 
 ### `get_form`
@@ -1681,8 +1655,7 @@ At least one optional parameter needs to be included in the request payload.
 	"payload": {
 		"group_id": 0,
 		"type": "prechat"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1765,8 +1738,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 ```json
 {
 	"action": "get_predicted_agent",
-	"payload": {},
-	"author_id": "<author_id>" // optional, applies only to bots
+	"payload": {}
 }
 ``` -->
 
@@ -1800,6 +1772,10 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 ### `get_url_details`
 
+It returns the info on a given URL.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
 > **`get_url_details`** sample **request** with required params only
 
 ```json
@@ -1818,8 +1794,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 	"action": "get_url_details",
 	"payload": {
 		"url": "https://livechatinc.com"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
@@ -1881,8 +1856,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 	"payload": {
 		 "chat_id": "PJ0MRSHTDG",
 		 "timestamp": 123456789
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	}
 }
 ``` -->
 
