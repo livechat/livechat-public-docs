@@ -42,7 +42,7 @@ To better understand the flow between services, watch a short video.
 
 
 <video loop width="750" height="500" style="height: auto;" controls>
-<source type="video/mp4" src="/beta-docs/platform-overview/images/simple_event_schema.mp4">
+<source type="video/mp4" src="/beta-docs/backend-apis/images/flow_apis.mp4">
 </video>
 
 
@@ -50,11 +50,11 @@ To better understand the flow between services, watch a short video.
 
 Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents who use the same license.  
 
-Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [Understanding chat routing](https://www.livechatinc.com/help/understanding-chat-routing/).
+Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [**Understanding chat routing**](https://www.livechatinc.com/help/understanding-chat-routing/).
 
 
 #### Router system messages
 
-While the chat changes its state, the router sends system messages. Read more about **system messages** in [Agent](#agent-system-messages) and [Customer](#customer-system-messages) Chat API.
+While the chat changes its state, the router sends system messages. Read more about **system messages** in [**Agent**](../agent-chat-rtm-api/#system-messages) and [**Customer**](#../customer-chat-rtm-api/#system-messages) Chat API.
 
 
