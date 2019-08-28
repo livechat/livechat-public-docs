@@ -1643,6 +1643,7 @@ __*)__ We use `customer_side_storage` to keep some data on the client side. You 
 | `all`      | No      | `bool` | If set to `true`, then you will get statuses for all groups.   |
 | `groups`   | No       | `array`  | Table of a group's ids |
 
+At least one optional parameter needs to be included in the request payload.
 
 #### Response
 

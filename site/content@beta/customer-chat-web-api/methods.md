@@ -423,7 +423,9 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "id": "PWJ8Y4THAV"
+      "chat": {
+            "id": "PWLW03ICW7"
+        }
     }
 }'
 ```
@@ -589,38 +591,38 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 > **`send_event`** sample **request** with required params only
 
-```json
-{
-	"action": "send_event",
-	"payload": {
-        "chat_id": "PW94SJTGW6",
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.0/customer/action/send_event?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "payload": {
+        "chat_id": "PWLW03ICW7",
         "event": {
             "type": "message",
             "text": "hello world",
-			"recipients": "all"
-		}
-	}
-}
+            "recipients": "all"
+        }
+    }
+}'
 ```
 
 <!-- > **`send_event`** sample **request** with optional params
 
-```json
-{
-	"request_id": "125", // optional
-	"action": "send_event",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"attach_to_last_thread": false,
-		"event": {
-			"type": "message",
-			"text": "hello world",
-			"recipients": "agents",
-			"custom_id": "31-0C-1C-07-DB-16"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.0/customer/action/send_event?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "payload": {
+        "chat_id": "PWLW03ICW7",
+        "event": {
+            "type": "message",
+            "text": "hello world",
+            "recipients": "all"
+        }
+    }
+}' -->
 
 > **`send_event`** sample **response** payload
 
@@ -663,8 +665,7 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
+  'https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F payload= \
@@ -711,7 +712,7 @@ __*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only 
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/send_rich_message_postback?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/send_rich_message_postback?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -784,7 +785,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/send_sneak_peek?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/send_sneak_peek?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -844,7 +845,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_chat_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -864,7 +865,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_chat_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -913,7 +914,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -933,7 +934,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -991,7 +992,7 @@ __*)__
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1012,7 +1013,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1064,7 +1065,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1085,7 +1086,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1142,18 +1143,18 @@ __*)__
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_event_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
+      "thread_id": "K600PKZON8",
+      "event_id": "2_EW2WQSA8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
             }
         }
     }
@@ -1164,18 +1165,18 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_event_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
       "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
+      "thread_id": "K600PKZON8",
+      "event_id": "2_EW2WQSA8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
             }
         }
     }
@@ -1218,21 +1219,19 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/delete_event_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
+      "chat_id": "PWLW03ICW7",
+        "thread_id": "PWNWW5N6A8",
+        "event_id": "PWNWW5N6A8_1",
         "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "rating": [
-                    "score",
-                    "comment"
-                ]
-            }
+            "rating": [
+                "score",
+                "comment"
+            ]
         }
     }
 }'
@@ -1242,21 +1241,19 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/delete_event_properties?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
+      "chat_id": "PWLW03ICW7",
+        "thread_id": "PWNWW5N6A8",
+        "event_id": "PWNWW5N6A8_1",
         "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "rating": [
-                    "score",
-                    "comment"
-                ]
-            }
+            "rating": [
+                "score",
+                "comment"
+            ]
         }
     }
 }'
@@ -1299,7 +1296,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_customer?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1313,7 +1310,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_customer?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1364,7 +1361,7 @@ At least one optional parameter needs to be included in the request payload.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/set_customer_fields?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1380,7 +1377,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/set_customer_fields?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1429,11 +1426,13 @@ Users Agent and referrer are updated by default using the browser’s headers.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_groups_status?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {}
+    "payload": {
+      "all": true
+    }
 }'
 ```
 
@@ -1441,7 +1440,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_groups_status?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1481,9 +1480,10 @@ curl -X POST \
 
 | Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
-| `all`      | No      | `bool` | If set to `true`, then you will get statuses for all groups.   |
+| `all`      | No      | `bool` | If set to `true`, then you will get statuses for all the groups.   |
 | `groups`   | No       | `array`  | Table of a group's ids |
 
+At least one optional parameter needs to be included in the request payload.
 
 #### Response
 
@@ -1504,7 +1504,7 @@ Customer can use this method to trigger checking if [goals](https://www.livechat
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/check_goals?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1512,7 +1512,7 @@ curl -X POST \
       "page_url": "https://mypage.com",
       "customer_fields": {
         "field1": "value1"
-	},
+	    },
 	    "group_id": 0
     }
 }'
@@ -1522,7 +1522,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/check_goals?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1530,7 +1530,7 @@ curl -X POST \
       "page_url": "https://mypage.com",
       "customer_fields": {
         "field1": "value1"
-	},
+	    },
 	    "group_id": 0
     }
 }'
@@ -1568,13 +1568,13 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_form?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "group_id": 0,
-		  "type": "prechat"
+        "group_id": 0,
+		    "type": "prechat"
     }
 }'
 ```
@@ -1583,13 +1583,13 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_form?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-      "group_id": 0,
-		  "type": "prechat"
+        "group_id": 0,
+		    "type": "prechat"
     }
 }'
 ``` -->
@@ -1663,7 +1663,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1675,7 +1675,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1717,7 +1717,7 @@ It returns info on a given URL.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_url_details?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1731,7 +1731,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_url_details?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1767,9 +1767,9 @@ curl -X POST \
 
 #### Request 
 
-| Parameter                                        | Required | Data type     | Notes                               |
+| Parameter     | Required | Data type     | Notes                               |
 | ----------------------------------------------------- | -------- | -------- | ----------------------------------- |
-| `url`                                             | Yes       | `string` |  Valid website URL                    |
+| `url`          | Yes       | `string` |  Valid website URL                    |
 
 
 
@@ -1779,7 +1779,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
@@ -1802,7 +1802,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp?license_id=<license_id> \
+  'https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
