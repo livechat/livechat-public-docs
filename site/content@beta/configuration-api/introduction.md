@@ -16,13 +16,6 @@ you should use the `api.livechatinc.com/configuration/action/<action>` URL, but 
 Authentication for Confiugration API is handled by access tokens. Find out how to get an access token from [Agent authorization flows](https://developers.livechatinc.com/beta-docs/authorization/#agent-authorization-flows)<sup>[![LiveChat Link](link.svg)](https://developers.livechatinc.com/beta-docs/authorization/#agent-authorization-flows)</sup>. If a method requires particular authorization scopes, you’ll find them included in the method description. Each request should contain the `Authorization: Bearer <your_access_token>` header.
 
 
-
-<!-- ```
-curl -v api.livechatinc.com/v3.0/configuration/action/get_bot_agent_details 
--H 'Authorization: Bearer <your_access_token>' 
--X POST -d '{"bot_agent_id":"9a1829e224aea210da3a3f46a7074e28"}'
-``` -->
-
 ## Data centers
 
 LiveChat system operates in two data centers: `dal` and `fra`. The default data center is `dal`.
@@ -35,8 +28,7 @@ Summing up, if the user token starts with `fra-`, you should add the `X-Region: 
 
 All configurations set by this API will have action in system after max 2 minutes. This delay will be removed in the future.
 
-<!-- ## Configuration API Endpoint
 
-Configuration API is available under URL `api.livechatinc.com/<version>/configuration/{endpoint}`. -->
+
 
 
