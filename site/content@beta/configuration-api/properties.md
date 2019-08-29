@@ -8,10 +8,10 @@ weight : 30
 
 ```js
 {
-    "properties": {
+    "<properties>": {
         "<namespace>": {    
-            "<property_name>": "<property_name_value>",    
-            "<property_name>": "<property_name_value>"      
+            "<property_name>": "<property_value>",    
+            "<property_name>": "<property_value>"      
         }
     }
 }
@@ -54,6 +54,19 @@ Property domain can be configured in two ways:
 - by defining a set of values explicitly allowed in this property (for example `[1, 2, 3]`).
 - by defining a range. All values within the range are allowed in this property. It works only for numeric types (for example a range from `1` to `3`).
 
+#### Test properties
+
+Each license has some test properties that you can use to play with properties.
+
+| Namespace | Property                    | Type               | Access                     |
+| --------- | --------------------------- | ------------------ | -------------------------- |
+| `test`    | `bool_property`             | `bool`             | rw for everyone everywhere |
+| `test`    | `int_property`              | `int`              | rw for everyone everywhere |
+| `test`    | `string_property`           | `string`           | rw for everyone everywhere |
+| `test`    | `tokenized_string_property` | `tokenized_string` | rw for everyone everywhere |
+
+The `tokenized_string` property is similar to the `string` type. The values of a `tokenized_string` are split in tokens to enable searching for each word separately.
+
 ## Methods
 
 ### `create_properties`
@@ -68,42 +81,42 @@ curl -X POST \
   -d '{
     "payload": {
         "greeting":{
-    "type":"string",
-    "locations":{
-      "chat":{
-        "access":{
-          "agent":{
-            "read":true,
-            "write":false
+            "type":"string",
+            "locations":{
+                "chat":{
+                  "access":{
+                    "agent":{
+                      "read":true,
+                      "write":false
+                    },
+                    "customer":{
+                        "read":true,
+                        "write":true
+                    }
+                  }
+                }
+              }
+            "domain": ["hello", "hi"]
+            },
+        "scoring":{
+          "type":"int",
+          "locations":{
+            "event":{
+              "access":{
+                "agent":{
+                  "read":true,
+                  "write":true
+                }
+              }
+            }
           },
-          "customer":{
-            "read":true,
-            "write":true
-          }
+        "range": {
+          "from": 0,
+          "to": 10
+            }
         }
-      }
     }
-    "domain": ["hello", "hi"]
-  },
-  "scoring":{
-    "type":"int",
-    "locations":{
-      "event":{
-        "access":{
-          "agent":{
-            "read":true,
-            "write":true
-          }
-        }
-      }
-    },
-    "range": {
-      "from": 0,
-      "to": 10
-    }
-  }
-    }
-		}'
+}'
 ```
 
 
