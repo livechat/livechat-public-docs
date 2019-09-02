@@ -492,7 +492,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `follow_chat`
@@ -532,7 +532,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -571,7 +571,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -619,7 +619,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `revoke_access`
@@ -662,7 +662,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `set_access`
@@ -706,7 +706,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `transfer_chat`
@@ -751,7 +751,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## chat users
@@ -796,7 +796,7 @@ Adds user to the chat. Is't forbidden to add more than one `customer` user type 
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 ### `remove_user_from_chat`
 
@@ -836,7 +836,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -980,7 +980,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## properties (chat/thread/event)
@@ -1024,7 +1024,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 ### `delete_chat_properties`
 
@@ -1065,7 +1065,7 @@ No response payload.
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -1110,7 +1110,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `delete_chat_thread_properties`
@@ -1153,7 +1153,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `update_event_properties`
@@ -1199,7 +1199,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `delete_event_properties`
@@ -1247,7 +1247,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## thread tags
@@ -1289,7 +1289,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `untag_chat_thread`
@@ -1328,7 +1328,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## customers
@@ -1565,7 +1565,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## status
@@ -1608,7 +1608,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -1690,7 +1690,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
