@@ -86,7 +86,7 @@ curl -X POST \
       }'
 ``` -->
 
-> **`get_chats_summary`** sample **response** payload
+> **`get_chats_summary`** sample **response** 
 
 ```json
 {
@@ -173,11 +173,10 @@ curl -X POST \
       }'
 ``` -->
 
-> **`get_chat_threads_summary`** sample **response** payload
+> **`get_chat_threads_summary`** sample **response** 
 
 ```json
 {
-	"payload": {
 		"threads_summary": [{
 			"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
 			"order": 2,
@@ -190,7 +189,6 @@ curl -X POST \
 		}
 	],
 		"total_threads": 4
-	}
 }
 ```
 
@@ -245,11 +243,10 @@ curl -X POST \
       }'
 ``` -->
 
-> **`get_chat_threads`** sample **response** payload
+> **`get_chat_threads`** sample **response** 
 
 ```json
 {
-	"payload": {
 		"chat": {
 			"id": "PJ0MRSHTDG",
 			"order": 343544565,
@@ -266,7 +263,6 @@ curl -X POST \
 				// array of "Thread" objects
 			]
 		}
-	}
 }
 ```
 
@@ -340,11 +336,10 @@ curl -X POST \
       }'
 ``` -->
 
-> **`start_chat`** sample **response** payload
+> **`start_chat`** sample **response** 
 
 ```json
 {
-	"payload": {
 		"chat": {
 		"id": "PJ0MRSHTDG",
 		"order": 343544565,
@@ -361,7 +356,6 @@ curl -X POST \
 			// "Thread" object
 				}
 			}
-		}
 }
 ```
 
@@ -450,15 +444,10 @@ curl -X POST \
       }'
 ```-->
 
-> **`activate_chat`** sample **response** payload
+> **`activate_chat`** sample **response** 
 
 ```json
 {
-	"request_id": "<request_id>", // optional
-	"action": "activate_chat",
-	"type": "response",
-	"success": true,
-	"payload": {
 		"chat": {
 		"id": "PJ0MRSHTDG",
 		"users": [
@@ -474,7 +463,6 @@ curl -X POST \
 			// array of "Thread" objects
 		]
 	      }
-  	}
 }
 ```
 
@@ -510,36 +498,16 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 > **`close_thread`** sample **request** with required params only
 
-```json
-{
-	"action": "close_thread",
-		"chat_id": "PJ0MRSHTDG"
-}
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/close_thread??license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "chat_id": "PWLW03ICW7"
+      }'
 ```
 
-<!-- > **`close_thread`** sample **request** with optional params 
-
-```json
-{
-	"request_id": "657", // optional
-	"action": "close_thread",
-	  "chat_id": "PJ0MRSHTDG"
-}
-``` -->
-
-> **`close_thread`** sample **response** 
-
-```json
-{
-	"request_id": "<request_id>", // optional
-	"action": "close_thread",
-	"type": "response",
-	"success": true,
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -554,6 +522,11 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | Parameter | Required | Data type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
+
+
+#### Response
+
+No response payload (`200 OK`).
 
 
 ## events
@@ -592,16 +565,14 @@ curl -X POST \
       }'   
 ``` -->
 
-> **`send_event`** sample **response** payload
+> **`send_event`** sample **response** 
 
 ```json
 {
-	"payload": {
 		"thread_id": "K600PKZON8",
 		"event": {
 			// the Event object
 	  }
-	}
 }
 ```
 
@@ -636,20 +607,16 @@ curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F payload.chat_id=PWJ8Y4THAV \
-  -F payload.require_active_thread=false \
-  -F 'payload.file=@/Users/MyAccount/Downloads/file.jpg'
+  -F chat_id=PWJ8Y4THAV \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
 ```
 
-> **`send_file`** sample **response** payload
+> **`send_file`** sample **response** 
 
 ```json
 {
-  "payload":
-      {
     "url": "https://cdn.livechat-static.com/api/file/lc/att/file.jpg"
-    }
 }
 ```
 
@@ -668,10 +635,10 @@ __*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only 
 
 | Parameter | Required | Data type     | Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload.chat_id`       | Yes       | `string` |  Id of the chat that you want to send the file to       |
-| `payload.file`      | Yes       | `binary` | maximum size: 10MB    	   |
-| `payload.custom_id`      | No       | `string` | 							   |
-| `payload.require_active_thread` | No       | `bool` | If set to `true`, it returns an error when all threads are inactive; Default: `false` |
+| `chat_id`       | Yes       | `string` |  Id of the chat that you want to send the file to       |
+| `file`      | Yes       | `binary` | maximum size: 10MB    	   |
+| `custom_id`      | No       | `string` | 							   |
+| `require_active_thread` | No       | `bool` | If set to `true`, it returns an error when all threads are inactive; Default: `false` |
 
 
 ### `send_rich_message_postback`
@@ -712,15 +679,7 @@ curl -X POST \
       }'
 ``` -->
 
-> **`send_rich_message_postback`** sample **response** payload
 
-```json
-{
-	"payload": {
-		//no response payload
-	}
-}
-```
 
 #### Specifics
 |  |  |
@@ -742,6 +701,9 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 | `postback.toggled`| Yes     | `bool`   | Postback toggled true/false |
 | `thread_id`     | Yes       | `string` | 						       |
 
+#### Response
+
+No response payload (`200 OK`).
 
 ### `send_sneak_peek`
 
@@ -772,15 +734,6 @@ curl -X POST \
       }'
 ``` -->
 
-> **`send_sneak_peek`** sample **response** payload 
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 |  |  |
@@ -795,6 +748,11 @@ curl -X POST \
 | -------------- | -------- | -------- | ----------------------------------------------- |
 | `chat_id`      | Yes      | `string` | The id of the chat that you to set a sneak peek to|
 | `sneak_peek_text` | Yes      | `string` | Sneak peek text |
+
+#### Response
+
+No response payload (`200 OK`).
+
 
 
 ## properties (chat/thread/event)
@@ -838,15 +796,7 @@ curl -X POST \
       }'
 ``` -->
 
-> **`update_chat_properties`** sample **response** payload
 
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -863,6 +813,9 @@ curl -X POST \
 | `chat_id`      | Yes      | `string` | The id of the chat that you to set a property for.|
 | `properties`   | Yes      | `object` | Chat properties to set                          |
 
+#### Response
+
+No response payload (`200 OK`).
 
 
 ### `delete_chat_properties`
@@ -903,15 +856,6 @@ curl -X POST \
       }'
 ``` -->
 
-> **`delete_chat_properties`** sample **response** 
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -936,9 +880,12 @@ __*)__
 | `properties`   | Yes      | `object` | Chat properties to delete                          |
 
 
+#### Response
+
+No response payload (`200 OK`).
+
 
 ### `update_chat_thread_properties`
-
 
 
 > **`update_chat_thread_properties`** sample **request** with required params only
@@ -979,15 +926,7 @@ curl -X POST \
       }'
 ``` -->
 
-> **`update_chat_thread_properties`** sample **response** payload
 
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -1006,6 +945,9 @@ curl -X POST \
 | `thread_id`    | Yes      | `string` | The id of the thread that you want to set properties for |
 | `properties`   | Yes      | `object` | Chat properties to set                            |
 
+#### Response
+
+No response payload (`200 OK`).
 
 
 ### `delete_chat_thread_properties`
@@ -1048,15 +990,6 @@ curl -X POST \
       }'
 ``` -->
 
-> **`delete_chat_thread_properties`** sample **response** 
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -1081,6 +1014,10 @@ __*)__
 | `thread_id`    | Yes      | `string` | Id of the thread that you want to delete the properties of |
 | `properties`   | Yes      | `object` | Chat thread properties to delete                     |
 
+
+#### Response
+
+No response payload (`200 OK`).
 
 ### `update_event_properties`
 
@@ -1124,15 +1061,6 @@ curl -X POST \
       }'
 ``` -->
 
-> **`update_event_properties`** sample **response** payload
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -1152,6 +1080,9 @@ curl -X POST \
 | `event_id`     | Yes      | `string` | Id of the event that you want to set properties for |
 | `properties`   | Yes      | `object` | Chat properties to set                            |
 
+#### Response
+
+No response payload (`200 OK`).
 
 
 ### `delete_event_properties`
@@ -1196,15 +1127,6 @@ curl -X POST \
       }'
 ``` -->
 
-> **`delete_event_properties`** sample **response** payload
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -1224,6 +1146,9 @@ curl -X POST \
 | `event_id`     | Yes      | `string` | Id of the event that we want to delete the properties of  |
 | `properties`   | Yes      | `object` | Event properties to delete                           |
 
+#### Response
+
+No response payload (`200 OK`).
 
 ## customers
 
@@ -1257,15 +1182,6 @@ curl -X POST \
       }'
 ```-->
 
-> **`update_customer`** sample **response** 
-
-```json
-{
-	"payload": {
-		// "User > Customer" object
-	}
-}
-```
 
 #### Specifics
 
@@ -1285,8 +1201,11 @@ curl -X POST \
 | `avatar`       | No       | `string` | URL of the Customer's avatar         |
 | `fields`       | No       | `object` | `"key": "value"` object |
 
-At least one optional parameter needs to be included in the request payload. 
+At least one optional parameter needs to be included in the request. 
 
+#### Response
+
+No response payload (`200 OK`).
 
 ### `set_customer_fields`
 
@@ -1318,15 +1237,6 @@ curl -X POST \
       }'
 ```-->
 
-> **`set_customer_fields`** sample **response** 
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
 
 #### Specifics
 
@@ -1344,7 +1254,9 @@ curl -X POST \
 
 Users Agent and referrer are updated by default using the browser’s headers.
 
+#### Response
 
+No response payload (`200 OK`).
 
 ## status
 
@@ -1375,11 +1287,10 @@ curl -X POST \
       }'
 ```-->
 
-> **`get_groups_status`** sample **response** payload
+> **`get_groups_status`** sample **response** 
 
 ```json
 {
-	"payload": {
 		"groups_status": {
 
 		//1,2,3 are group ids, online/offline/online_for_queue are statuses of the groups
@@ -1388,7 +1299,6 @@ curl -X POST \
 		2: "offline",
 		3: "online_for_queue"
 		}
-	}
 }
 ```
 
@@ -1408,13 +1318,17 @@ curl -X POST \
 | `all`      | No      | `bool` | If set to `true`, then you will get statuses for all the groups.   |
 | `groups`   | No       | `array`  | Table of a group's ids |
 
-At least one optional parameter needs to be included in the request payload.
+At least one optional parameter needs to be included in the request.
+
+#### Response
+
+No response payload (`200 OK`).
 
 #### Response
 
 |    |      |  |
 | -------------- | -------- | ----- |
-| `Group Not Found`   |  If you send `group_id` of a group that doesn't exists, then this id won't be included in the resposne payload.  |     |
+| `Group Not Found`   |  If you send `group_id` of a group that doesn't exists, then this id won't be included in the resposne.  |     |
 
 
 ## other
@@ -1457,16 +1371,6 @@ curl -X POST \
       }'
 ```
 
-> **`check_goals`** sample **response** 
-
-```json
-{
-	"payload": {
-		// no response payload
-	}
-}
-```
-
 #### Specifics
 
 |  |  |
@@ -1482,6 +1386,10 @@ curl -X POST \
 | `customer_fields`| Yes      | `string` |   |
 | `group_id`   | Yes       | `number`  |  |
 | `page_url`   | Yes       | `string`  |  |
+
+#### Response
+
+No response payload (`200 OK`).
 
 ### `get_form`
 
@@ -1511,35 +1419,33 @@ curl -X POST \
       }'
 ``` -->
 
-> **`get_form`** sample **response** payload
+> **`get_form`** sample **response** 
 
 ```json
 {
-    "payload": {
-        "form": {
-            "id": "156630109416307809",
-            "fields": [
-                {
-                    "id": "15663010941630615",
-                    "type": "header",
-                    "label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
-                },
-                {
-                    "id": "156630109416307759",
-                    "type": "name",
-                    "label": "Name:",
-                    "required": false
-                },
-                {
-                    "id": "15663010941630515",
-                    "type": "email",
-                    "label": "E-mail:",
-                    "required": false
-                }
-            ]
-        },
-        "enabled": true
-    }
+  "form": {
+      "id": "156630109416307809",
+      "fields": [
+          {
+              "id": "15663010941630615",
+              "type": "header",
+              "label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+          },
+          {
+              "id": "156630109416307759",
+              "type": "name",
+              "label": "Name:",
+              "required": false
+          },
+          {
+              "id": "15663010941630515",
+              "type": "email",
+              "label": "E-mail:",
+              "required": false
+          }
+      ]
+  },
+  "enabled": true
 }
 ```
 #### Specifics
@@ -1596,11 +1502,10 @@ curl -X POST \
   -d '{}'
 ``` -->
 
-> **`get_predicted_agent`** sample **response** payload
+> **`get_predicted_agent`** sample **response** 
 
 ```json
 {
-	"payload": {
 	"agent": {
         "id": "agent1@example.com",
         "name": "Name",
@@ -1608,7 +1513,6 @@ curl -X POST \
         "is_bot": false,
         "job_title": "support hero",
         "type": "agent"
-	}
 }
 ```
 
@@ -1650,18 +1554,16 @@ curl -X POST \
       }'
 ``` -->
 
-> **`get_url_details`** sample **response** payload
+> **`get_url_details`** sample **response**
 
 ```json
 {
-	"payload": {
-		"title": "LiveChat | Live Chat Software and Help Desk Software",
-		"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
-		"image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
-		"image_width": 200,
-		"image_height": 200,
-		"url": "https://livechatinc.com"
-		}
+	"title": "LiveChat | Live Chat Software and Help Desk Software",
+	"description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
+	"image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
+	"image_width": 200,
+	"image_height": 200,
+	"url": "https://livechatinc.com"
 }
 ```
 
@@ -1696,15 +1598,6 @@ curl -X POST \
       }'
 ```
 
-```json
-{
-	"action": "update_last_seen_timestamp",
-	"payload": {
-		 "chat_id": "PJ0MRSHTDG"
-	}
-}
-```
-
 <!-- > **`update_last_seen_timestamp`** sample **request** with optional params
 
 ```shell
@@ -1718,13 +1611,11 @@ curl -X POST \
       }'
 ``` -->
 
-> **`update_last_seen_timestamp`** sample **response** payload
+> **`update_last_seen_timestamp`** sample **response** 
 
 ```json
 {
-	"payload": {
 		"timestamp": 123456789
-	}
 }
 ```
 
