@@ -22,18 +22,17 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
         // payload
-
-  	"author_id": "<author_id>" // optional, applies only to bots
-    }'
+      }'
 ```
 
 #### Required headers
 
 | Header   |      Value      |  Notes |
 |----------|:-------------:|------:|
-| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for `send_file` and `upload_image` Method URL |
-| `Content-Type` |  `application/json`	    |   Valid for every Method URL except `send_file `and `upload_image` |
+| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for `send_file` and `upload_image` method |
+| `Content-Type` |  `application/json`	    |   Valid for every method except `send_file `and `upload_image` |
 | `Authorization` |  `Bearer <token>`	    |   Access token |
+| `X-Author-Id` |  `<bot_agent_id>`	    |   Valid only for Bot Agents |
 
 ---------------------------------------------------------------
 
@@ -904,10 +903,9 @@ curl -X POST \
   https://api.livechatinc.com/v3.1/agent/action/send_file \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F payload.chat_id=PWJ8Y4THAV \
-  -F payload.require_active_thread=false \
-  -F 'payload.file=@/Users/MyAccount/Downloads/file.jpg'
+  -F chat_id=PWJ8Y4THAV \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
   ```
 
 > **`send_file`** sample response 
@@ -933,11 +931,10 @@ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only
 
 | Parameter				 | 		Required | Data type| Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload`        				  | Yes  | `object` |                              |
-| `payload.chat_id`				  | Yes  | `string` | The id of the chat that you want to send the file to			   |
-| `payload.require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
-| `payload.custom_id` 			  | No   | `string` | Postback name of the button |
-| `payload.file`				  | Yes  | `binary`   | maximum size: 10 MB |
+| `chat_id`				  | Yes  | `string` | The id of the chat that you want to send the file to			   |
+| `require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
+| `custom_id` 			  | No   | `string` | Postback name of the button |
+| `file`				  | Yes  | `binary`   | maximum size: 10 MB |
 
 
 ### `send_rich_message_postback`
@@ -1707,8 +1704,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: multipart/form-data' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F 'payload.image=@/Users/MyAccount/Downloads/file.jpg'
+  -F 'image=@/Users/MyAccount/Downloads/file.jpg'
   ```
 
 > **`upload_image`** sample response
@@ -1732,8 +1728,7 @@ curl -X POST \
 
 | Parameter				 | 		Required | Data type| Notes                  |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload`        				  | Yes  | `object` |  maximum size: 10 MB   |
-| `payload.image`				  | Yes  | `binary` | maximum size: 10 MB    |
+| `image`				  | Yes  | `binary` | maximum size: 10 MB    |
 
 
 #### Response
