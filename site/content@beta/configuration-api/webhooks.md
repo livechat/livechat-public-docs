@@ -137,7 +137,7 @@ Webhooks notify you when events are triggered.
 
 | Object      | Notes                                   |
 | ----------- | --------------------------------------- |
-| `user_type` | possible values: `agent`, `customer`    |
+| `user_type` | Possible values: `agent`, `customer`    |
 
 
 #### `chat_user_removed`
@@ -167,7 +167,7 @@ Webhooks notify you when events are triggered.
 
 | Object      | Notes                                   |
 | ----------- | --------------------------------------- |
-| `user_type` | possible values: `agent`, `customer`    |
+| `user_type` | Possible values: `agent`, `customer`    |
 
 
 ### events
@@ -493,9 +493,18 @@ Webhooks notify you when events are triggered.
 
 ## Methods
 
-**The API endpoint**
+#### The Webhooks API enpoint
 
-`https://api.livechatinc.com/v3.0/configuration/action/<action>`
+| HTTP method  | Base URL |
+|-------|--------|
+| `POST`|`https://api.livechatinc.com/v3.0/customer/action/<action>`   |
+
+
+#### Required headers
+
+| Header   |      Value      |   |
+|----------|:-------------:|------:|
+| `Content-Type`	 |  `application/json`  |  |
 
 
 ### `register_webhook`
@@ -514,7 +523,7 @@ curl -X POST \
         "action": "thread_closed",
         "secret_key": "laudla991lamda0pnoaa0"  
             }
-		}'
+		  }'
 ```
 
 > **`register_webhook`** sample response payload
@@ -571,7 +580,7 @@ curl -X POST \
 
 ##### __**)__ `additional_data`
 
-| Possile value | Available for actions           |
+| Possible value | Available for actions           |
 | ------------- |:-------------:|
 | `access`     | `incoming_event`, `chat_user_added`      |
 | `chat_properties`      | All actions, except for `agent_status_changed` and `agent_deleted` |
@@ -590,7 +599,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {}
-		}'
+		  }'
 ```
 
 > **`get_webhooks_config`** sample response payload
@@ -636,7 +645,7 @@ curl -X POST \
     "payload": {
             "webhook_id": "pqi8oasdjahuakndw9nsad9na"
             }
-		}'
+		  }'
 ```
 
 #### Specifics
@@ -656,4 +665,4 @@ curl -X POST \
 
 #### Response
 
-No response payload
+No response payload (`200 OK`).

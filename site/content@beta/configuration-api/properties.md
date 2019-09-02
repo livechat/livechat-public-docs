@@ -69,6 +69,18 @@ The `tokenized_string` property is similar to the `string` type. The values of a
 
 ## Methods
 
+#### The Properties API enpoint
+
+| HTTP method  | Base URL |
+|-------|--------|
+| `POST`|`https://api.livechatinc.com/v3.0/configuration/action/<action>`   |
+
+#### Required headers
+
+| Header   |      Value      |   |
+|----------|:-------------:|------:|
+| `Content-Type`	 |  `application/json`  |  |
+
 ### `create_properties`
 
 > **`create_properties`** sample request
@@ -80,43 +92,41 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {
-        "greeting":{
-            "type":"string",
-            "locations":{
-                "chat":{
-                  "access":{
-                    "agent":{
-                      "read":true,
-                      "write":false
-                    },
-                    "customer":{
-                        "read":true,
-                        "write":true
+        "score": {
+            "type": "int",
+            "locations": {
+                "chat": {
+                    "access": {
+                        "agent": {
+                            "read": true,
+                            "write": true
+                        },
+                        "customer": {
+                            "read": true,
+                            "write": true
+                        }
                     }
-                  }
                 }
-              }
-            "domain": ["hello", "hi"]
-            },
-        "scoring":{
-          "type":"int",
-          "locations":{
-            "event":{
-              "access":{
-                "agent":{
-                  "read":true,
-                  "write":true
-                }
-              }
             }
-          },
-        "range": {
-          "from": 0,
-          "to": 10
-            }
-        }
-    }
-}'
+        },
+        "comment": {
+            "type": "string",
+            "locations": {
+                "chat": {
+                    "access": {
+                        "agent": {
+                            "read": true,
+                            "write": true
+                        },
+                        "customer": {
+                            "read": true,
+                            "write": true
+                           }
+                       }
+                   }
+               }
+           }
+        }'
 ```
 
 
@@ -130,7 +140,7 @@ curl -X POST \
 
 #### Response
 
-No response payload
+No response payload (`200 OK`).
 
 
 | Parameter                                                  | Required   | Data type              | Notes                                                                        |
@@ -161,7 +171,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "payload": {}
-	}'
+	    }'
 ```
 
 > **`get_property_configs`** sample response payload

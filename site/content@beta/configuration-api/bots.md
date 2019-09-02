@@ -4,7 +4,7 @@ weight : 20
 
 # Bot Agents
 
-Bot Agents enables writing integrations using the **Agent Chat API** - both [RTM](https://developers.livechatinc.com/beta-docs/agent-chat-rtm-api/) and [Web](https://developers.livechatinc.com/beta-docs/agent-chat-web-api/) - to communicate in chats as regular Agents.
+Bot Agents enables writing integrations using the **Agent Chat API** - both [RTM](https://developers.livechatinc.com/beta-docs/agent-chat-rtm-api-v3.1/) and [Web](https://developers.livechatinc.com/beta-docs/agent-chat-web-api-v3.1/) - to communicate in chats as regular Agents.
 A Bot Agent shares the SSO access token with the Agent who created the Bot. Each Bot Agent is a resource owned by an application in Developers Platform, identified by its own `client_id`. 
 
 Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as a Bot. 
@@ -12,44 +12,34 @@ Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as 
 
 ## Methods
 
-### `create_bot_agent`
+#### The Bot Agents API endpoint
 
+| HTTP method  | Base URL |
+|-------|--------|
+| `POST`|`https://api.livechatinc.com/v3.0/configuration/action/<action>`   |
+
+#### Required headers
+
+| Header   |      Value      |   |
+|----------|:-------------:|------:|
+| `Content-Type`	 |  `application/json`  |  |
+
+
+### `create_bot_agent`
 
 > **`create_bot_agent`** sample request
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/configuration/action/create_bot_agent \
-  -H 'Content-Type: application/json' \
+  https://api.livechatinc.com/v3.0/configuration/agents/create_bot_agent \
   -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "name": "John Doe",
-        "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
-        "status": "accepting chats",
-        "max_chats_count": 6,
-        "groups": [{
-        "id": 0,
-        "priority": "normal"
-    }, {
-        "id": 1,
-        "priority": "normal"
-    }, {
-        "id": 2,
-        "priority": "first"
-    }],
-    "webhooks": {
-      "url": "http://myservice.com/webhooks",
-      "secret_key": "JSauw0Aks8l-asAa",
-      "actions": [{
-        "name": "incoming_chat_thread"
-      },{
-        "name": "incoming_event",
-        "additional_data": ["chat_properties"]
-      }]
-    }
-    }
-		}'
+    payload {
+      "name": "Bot Name",
+      "status": "accepting chats"
+          }
+      }'
 ```
 
 > **`create_bot_agent`** sample response payload
@@ -67,42 +57,41 @@ curl -X POST \
 | **Method URL**   | `https://api.livechatinc.com/v3.0/configuration/action/create_bot_agent`  |
 | __Required scopes *__| `agents-bot--my:rw`  |
 
+#### Request
 
 | Request object                       | Type       | Required | Notes                                                                |
 | ------------------------------------ | ---------- | -------- | -------------------------------------------------------------------- |
-| `name`                               | `string`   | Yes      | display name                                                         |
-| `avatar`                             | `string`   | No       | avatar URL                                                           |
-| `status`                             | `string`   | Yes      | agent status                                                         |
-| `max_chats_count`                    | `int`      | No       | maximum incoming chats that can be routed to the agent, by default 6 |
-| `groups`                             | `object[]` | No       | groups the agent belongs to                                          |
-| `groups[].id`                        | `uint`     | Yes      | group ID                                                             |
-| `groups[].priority`                  | `string`   | Yes      | agent priority in group                                              |
-| `webhooks`                           | `object`   | No       | webhooks sent to the agent                                           |
-| `webhooks.url`                       | `string`   | Yes      | destination URL for webhooks                                         |
-| `webhooks.secret_key`                | `string`   | Yes      | secret sent in webhooks to verify webhook source                     |
-| `webhooks.actions`                   | `object[]` | Yes      | triggering actions                                                   |
-| `webhooks.actions[].name`            | `string`   | Yes      | triggering action name                                               |
-| `webhooks.actions[].filters`         | `object`   | No       | filters to check if webhook should be triggered                      |
-| `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhook                        |
+| `name`                               | `string`   | Yes      | Display name                                                         |
+| `status` __*__                       | `string`   | Yes      | Agent status                                                         |
+| `avatar`                             | `string`   | No       | Avatar URL                                                           |
+| `max_chats_count`                    | `int`      | No       | Max. number of incoming chats that can be routed to an Agent, default: 6 |
+| `groups`                             | `object[]` | No       | Groups an Agent belongs to                                          |
+| `groups[].id`                        | `uint`     | Yes      | Group ID; required only when `group`'s included.                     |
+| `groups[].priority` __**__           | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.    |
+| `webhooks`                           | `object`   | No       | Webhooks sent to the Agent; for more info on possible values and payload, see [Webhooks](#webhooks).     |
+| `webhooks.url`                       | `string`   | Yes      | Destination URL for webhooks; required only when `webhooks`'s included.       |
+| `webhooks.secret_key`                | `string`   | Yes      | Secret sent in webhooks to verify webhook's source; required only when `webhooks`'s included.  |
+| `webhooks.actions`                   | `object[]` | Yes      | Triggering actions; required only when `webhooks`'s included.  |
+| `webhooks.actions[].name`            | `string`   | Yes      | The name of the triggering action; required only when `webhooks`'s included. |
+| `webhooks.actions[].filters`         | `object`   | No       | Filters to check if a webhook should be triggered                      |
+| `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhooks                        |
+
+#### __*)__ `status`
+
+| Possible value | Notes           |
+| ------------- |:-------------:|
+| `accepting chats`  | Agent is logged in. The chat router routes incoming chats to the Agent.     |
+| `not accepting chats` | Agent is logged in, but the chat router doesn't route incoming chats to the Agent. |
+| `offline` | Agent isn't logged in.    |
 
 
-- `status` possible values:
-  - `accepting chats` - agent is logged in and chat router routes incoming chats
-    to them
-  - `not accepting chats` - agent is logged in but chat router does not route
-    incoming chats to them
-  - `offline` - agent is not logged in
-- `groups[].priority` possible values:
-  - `first` - the highest chat routing priority - agents with `first` priority
-    get chats before the others from that group, eg Bots can get chats before
-    normal agents.
-  - `normal` - the middle chat routing priority - agents with `normal` priority
-    get chats before the others with `last` priority when there are no agents
-    with `first` priority available with free slots in that group
-  - `last` - the lowest chat routing priority - agents with `last` priority get
-    chats when there are no agents with `first` or `normal` priority available
-    with free slots in that group
-- `webhooks` - go [here](#webhooks) for possible actions values and payloads.
+#### __**)__ `groups[].priority`
+
+| Possible value | Notes           |
+| ------------- |:-------------:|
+| `first`  | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
 
 
 
@@ -113,13 +102,13 @@ curl -X POST \
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.0/configuration/action/remove_bot_agent \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
-             }
-	    }'
+    payload {
+      "bot_agent_id": "505591fc9fc2d6e92798bed7d9d8f079"
+          }
+      }'
 ```
 
 
@@ -130,6 +119,7 @@ curl -X POST \
 | **Method URL**   | `https://api.livechatinc.com/v3.0/configuration/action/remove_bot_agent`  |
 | __Required scopes *__| `agents-bot--my:rw` `agents-bot--all:rw`  |
 
+#### Request
 
 | Parameter          | Required | Type     | Notes        |
 | ------------------ | -------- | -------- | ------------ |
@@ -138,7 +128,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -149,33 +139,14 @@ No response payload.
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.0/configuration/action/update_bot_agent \
-  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-         "id": "5c9871d5372c824cbf22d860a707a578",
-         "status": "accepting chats",
-         "max_chats_count": 6,
-         "webhooks": {
-         "url": "http://myservice.com/webhooks",
-         "secret_key": "JSauw0Aks8l-asAa",
-         "actions": [{
-           "name": "incoming_chat_thread",
-           "filters": {
-               "chat_properties": {
-                   "source": {
-                       "type": {
-                            "values": ["facebook", "twitter"]
-                        }
-                   }
-               }
-           }
-         },{
-           "name": "incoming_event"
-                }]
-            }
-        }
-	}'
+    payload {
+      "id": "ce54714e3d2b53adbfff09dbdbdd56e9",
+      "name": "New Bot Name"
+          }
+      }'
 ```
 
 #### Specifics
@@ -185,65 +156,62 @@ curl -X POST \
 | **Method URL**   | `https://api.livechatinc.com/v3.0/configuration/action/update_bot_agent`  |
 | __Required scopes *__| `agents-bot--my:rw`  |
 
+#### Request
 
-
-| Request object                       | Type       | Required | Notes                                                  |
+| Parameter                       | Required       | Data type | Notes                                                  |
 | ------------------------------------ | ---------- | -------- | ------------------------------------------------------ |
-| `id`                                 | `string`   | Yes      | bot agent ID                                           |
-| `name`                               | `string`   | No       | display name                                           |
-| `avatar`                             | `string`   | No       | avatar URL                                             |
-| `status`                             | `string`   | No       | agent status                                           |
-| `max_chats_count`                    | `int`      | No       | maximum incoming chats that can be routed to the agent |
-| `default_group_priority`             | `string`   | No       | Default routing priority for group without defined one |
-| `groups`                             | `object[]` | No       | groups the agent belongs to                            |
-| `groups[].id`                        | `uint`     | Yes      | group ID                                               |
-| `groups[].priority`                  | `string`   | Yes      | agent priority in group                                |
-| `webhooks`                           | `object`   | No       | webhooks sent to the agent                             |
-| `webhooks.url`                       | `string`   | Yes      | destination URL for webhooks                           |
-| `webhooks.secret_key`                | `string`   | Yes      | secret sent in webhooks to verify webhook source       |
-| `webhooks.actions`                   | `object[]` | Yes      | triggering actions                                     |
-| `webhooks.actions[].name`            | `string`   | Yes      | triggering action name                                 |
-| `webhooks.actions[].filters`         | `object`   | No       | filters to check if webhook should be triggered        |
-| `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhook          |
+| `id`                                 | Yes   | `string`      | Bot agent ID                                           |
+| `name`                               | No   | `string`       | Display name                                           |
+| `avatar`                             | No   | `string`       | Avatar URL                                             |
+| `status` __*__                       | No   | `string`       | Agent status                                           |
+| `max_chats_count`                    | No      | `int`       | Maximum incoming chats that can be routed to the Agent |
+| `groups`                             | No | `object[]`       | Groups the agent belongs to                            |
+| `groups[].id`                        |  Yes    | `uint`      | Group ID, required only when `groups`'s present.       |
+| `groups[].priority` __**__           | Yes   |  `string`     | Agent's priority in the group; required only when `groups`'s included.    |
+| `default_group_priority` __***__    |   No | `string`        | The default routing priority for a group without defined priority. |
+| `webhooks`                           | No   | `object`       | Webhooks sent to the Agent                             |
+| `webhooks.url`                       | Yes   | `string`      | Destination URL for webhooks; required only when `webhooks`'s present.|
+| `webhooks.secret_key`                | Yes   | `string`      | Secret sent in webhooks to verify webhook source; required when `webhooks`'s included. 
+| `webhooks.actions`                   | Yes | `object[]`      | Triggering actions; required only when `webhooks`'s included.|
+| `webhooks.actions[].name`            | Yes   | `string`      | The name of the triggering action; required only when `webhooks`'s included.|
+| `webhooks.actions[].filters`         | No   | `object`       | Filters to check if a webhook should be triggered.        |
+| `webhooks.actions[].additional_data` | No | `string[]`       | Additional data arriving with the webhook.          |
 
+#### __*)__ `status`
 
-- `status` possible values:
-  - `accepting chats` - agent is logged in and chat router routes incoming chats
-    to them
-  - `not accepting chats` - agent is logged in but chat router does not route
-    incoming chats to them
-  - `offline` - agent is not logged in
-- `groups[].priority` possible values:
-  - `first` - the highest chat routing priority - agents with `first` priority
-    get chats before the others from that group, eg Bots can get chats before
-    normal agents.
-  - `normal` - the middle chat routing priority - agents with `normal` priority
-    get chats before the others with `last` priority when there are no agents
-    with `first` priority available with free slots in that group
-  - `last` - the lowest chat routing priority - agents with `last` priority get
-    chats when there are no agents with `first` or `normal` priority available
-    with free slots in that group
-- `default_group_priority` possible values:
-  - `first` - Chats are assigned to bot before normal agents
-  - `normal` - Chats are assigned with the same priority as it would for normal agents
-  - `last` - If there is no agent available then, chat will be assigned to bot
-  - `supervisor` - Bot works as `supervisor` so he/she will not be assigned to any chats
-- `webhooks` - go [here](#webhooks) for possible actions values and payloads.
+| Possible value | Notes           |
+| ------------- |:-------------:|
+| `accepting chats`  | Agent is logged in. The chat router routes incoming chats to the Agent.     |
+| `not accepting chats` | Agent is logged in, but the chat router doesn't route incoming chats to the Agent. |
+| `offline` | Agent isn't logged in.    |
+
+#### __**)__ `groups[].priority`
+
+| Possible value | Notes           |
+| ------------- |:-------------:|
+| `first`  | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
+#### __***)__ `default_group_priority`
+
+| Possible value | Notes           |
+| ------------- |:-------------:|
+| `first`  | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+| `supervisor` | Bot works as `supervisor` so it will not be assigned to any chats.   |
 
 
 #### Response
 
-No response payload
+No response payload (`200 OK`).
 
-
-
-
-### Get Bot Agents
 
 ### `get_bot_agents`
 
 
-> **``** sample request
+> **`get_bot_agents`** sample request
 
 ```shell
 curl -X POST \
@@ -254,7 +222,7 @@ curl -X POST \
     "payload": {
         "all": false
         }
-	}'
+	  }'
 ```
 
 > **`get_bot_agents`** sample response payload
@@ -278,6 +246,8 @@ curl -X POST \
 | __Required scopes *__| `agents-bot--my:ro` `agents-bot--all:ro`  |
 
 
+#### Request
+
 | Parameter          | Required | Type     | Notes                                                            |
 | ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
 | `all`                |  No      | `bool` |  Get all Bot Agents, if `false` returns only caller's Bot Agents, default value is `false`|
@@ -297,8 +267,8 @@ curl -X POST \
   -d '{
     "payload": {
         "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
-        }
-	}'
+          }
+	    }'
 ```
 
 > **`get_bot_agent_details`** sample response payload
@@ -354,6 +324,7 @@ curl -X POST \
 | **Method URL**   | `https://api.livechatinc.com/v3.0/configuration/action/get_bot_agent_details`  |
 | __Required scopes *__| `agents-bot--my:ro` `agents-bot--all:ro`  |
 
+#### Request
 
 | Parameter          | Required | Type     | Notes                                                            |
 | ------------------------ | -------- | -------- | ---------------------------------------------------------------- |
