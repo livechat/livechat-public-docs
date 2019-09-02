@@ -9,22 +9,20 @@ weight: 50
 
 | HTTP method  | Base URL |
 |-------|--------|
-| `POST`|`https://api.livechatinc.com/v3.0/customer/action/<action>`   |
+| `POST`|`https://api.livechatinc.com/v3.1/customer/action/<action>`   |
 
-If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3"` header.
+If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
 
 > **Web API request format**
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-		// optional
-	}
-}'
+		    // payload
+      }'
 ```
 
 #### Required headers
@@ -69,27 +67,23 @@ It returns summaries of the chats a Customer participated in.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_chats_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-}'
+  -d '{}'
 ```
 
 <!-- > **`get_chats_summary`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_chats_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "offset": 0,
       "limit": 25
-	}
-}'
+      }'
 ``` -->
 
 > **`get_chats_summary`** sample **response** payload
@@ -135,8 +129,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_chats_summary`  |
-| **RTM API equivalent**|[`get_chats_summary`](../customer-chat-rtm-api/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get_chats_summary)</sup>|
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_chats_summary`  |
+| **RTM API equivalent**|[`get_chats_summary`](../customer-chat-rtm-api-v3.1/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get_chats_summary)</sup>|
 | **Webhook**| - |
 
 #### Request
@@ -156,32 +150,28 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_chat_threads_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
 		  "chat_id": "PJ0MRSHTDG"
-	}
-}'
+      }'
 ```
 
 
-> **`get_chat_threads_summary`** sample **request** with optional params
+<!-- > **`get_chat_threads_summary`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/get_chat_threads_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
       "offset": 0,
       "limit": 100
-	}
-}'
-```
+      }'
+``` -->
 
 > **`get_chat_threads_summary`** sample **response** payload
 
@@ -208,8 +198,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_chat_threads_summary`  |
-| **RTM API equivalent**| [`get_chat_threads_summary`](../customer-chat-rtm-api/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get-chat-threads-summary)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary`  |
+| **RTM API equivalent**| [`get_chat_threads_summary`](../customer-chat-rtm-api-v3.1/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get-chat-threads-summary)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -233,30 +223,26 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
 		  "thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
-      }
-}'
+      }'
 ```
 
 <!-- > **`get_chat_threads`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
 		  "thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
-      }
-}'
+      }'
 ``` -->
 
 > **`get_chat_threads`** sample **response** payload
@@ -288,8 +274,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_chat_threads`  |
-| **RTM API equivalent**| [`get_chat_threads`](../customer-chat-rtm-api/#get_chat_threads)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get_chat_threads)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_chat_threads`  |
+| **RTM API equivalent**| [`get_chat_threads`](../customer-chat-rtm-api-v3.1/#get_chat_threads)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get_chat_threads)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -310,53 +296,48 @@ Starts a chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-}'
+  -d '{}'
 ```
 
 <!-- > **`start_chat`** sample **request** with optional params 
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat": {
-		"access": {
-			"group_ids": [1]
-		},
-		"properties": {
-			"source": {
-				"type": "facebook"
-			}
-		},
-		"thread": {
-			"events": [{
-				"type": "message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there"
-			}, {
-				"type": "system_message",
-				"custom_id": "31-0C-1C-07-DB-16",
-				"text": "hello there"
-			}],
-			"properties": {
-				"source": {
-					"type": "facebook"
-				},
-				...
-			}
-		}
-	},
-	"continuous": true
-    }
-}'
+		    "access": {
+		      "group_ids": [1]
+		    },
+		  "properties": {
+		  	"source": {
+		  		"type": "facebook"
+		  	}
+		  },
+		  "thread": {
+		  	"events": [{
+		  		"type": "message",
+		  		"custom_id": "31-0C-1C-07-DB-16",
+		  		"text": "hello there"
+		  	}, {
+		  		"type": "system_message",
+		  		"custom_id": "31-0C-1C-07-DB-16",
+		  		"text": "hello there"
+		  	}],
+		  	"properties": {
+		  		"source": {
+		  			"type": "facebook"
+		    		}
+		    	}
+	      },
+      "continuous": true
+        }
+      }'
 ``` -->
 
 > **`start_chat`** sample **response** payload
@@ -388,8 +369,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/start_chat`  |
-| **RTM API equivalent**| [`start_chat`](../customer-chat-rtm-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#start-chat)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/start_chat`  |
+| **RTM API equivalent**| [`start_chat`](../customer-chat-rtm-api-v3.1/#start-chat)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#start-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 
@@ -418,16 +399,14 @@ Used to restart an archived chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat": {
             "id": "PWLW03ICW7"
-        }
-    }
-}'
+          }
+      }'
 ```
 
 
@@ -435,11 +414,10 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat": {
         "id": "PJ0MRSHTDG",
         "order": 343544565,
@@ -464,14 +442,12 @@ curl -X POST \
           "properties": {
             "source": {
               "type": "facebook"
-            },
-            ...
+                    }
+                  }
+                }
+              }
             }
-          }
-        }
-      }
-    }
-}'
+      }'
 ```-->
 
 > **`activate_chat`** sample **response** payload
@@ -506,8 +482,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/activate_chat`  |
-| **RTM API equivalent**|[`activate_chat`](../customer-chat-rtm-api/#activate-chat) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#activate-chat)</sup>|
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/activate_chat`  |
+| **RTM API equivalent**|[`activate_chat`](../customer-chat-rtm-api-v3.1/#activate-chat) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#activate-chat)</sup>|
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 
@@ -537,9 +513,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 ```json
 {
 	"action": "close_thread",
-	"payload": {
 		"chat_id": "PJ0MRSHTDG"
-	}
 }
 ```
 
@@ -549,10 +523,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 {
 	"request_id": "657", // optional
 	"action": "close_thread",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
+	  "chat_id": "PJ0MRSHTDG"
 }
 ``` -->
 
@@ -574,8 +545,8 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/close_thread`  |
-| **RTM API equivalent**| [`close_thread`](../customer-chat-rtm-api/#close-thread) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#close-thread)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/close_thread`  |
+| **RTM API equivalent**| [`close_thread`](../customer-chat-rtm-api-v3.1/#close-thread) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#close-thread)</sup> |
 | **Webhook**| [`incoming_event`](#incoming-event) and [`thread_closed`](#thread-closed)  |
 
 #### Request
@@ -593,36 +564,33 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/send_event?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/send_event?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PWLW03ICW7",
-        "event": {
-            "type": "message",
-            "text": "hello world",
-            "recipients": "all"
+      "chat_id": "PWLW03ICW7",
+      "event": {
+          "type": "message",
+          "text": "hello world",
+          "recipients": "all"
         }
-    }
-}'
+    }'
 ```
 
 <!-- > **`send_event`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/send_event?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/send_event?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PWLW03ICW7",
-        "event": {
-            "type": "message",
-            "text": "hello world",
-            "recipients": "all"
-        }
-    }
-}' -->
+      "chat_id": "PWLW03ICW7",
+      "event": {
+          "type": "message",
+          "text": "hello world",
+          "recipients": "all"
+          }
+      }'   
+``` -->
 
 > **`send_event`** sample **response** payload
 
@@ -641,8 +609,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/send_event`  |
-| **RTM API equivalent**| [`send_event`](../customer-chat-rtm-api/#send_event)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#send_event)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/send_event`  |
+| **RTM API equivalent**| [`send_event`](../customer-chat-rtm-api-v3.1/#send_event)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#send_event)</sup> |
 | **Webhook**| [`incoming_event`](#incoming-event) and [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
@@ -665,7 +633,7 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/<action>?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F payload= \
@@ -689,7 +657,7 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/send_file`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/send_file`  |
 | **RTM API equivalent**| - |
 | **Webhook**| [`incoming_event`](#incoming-event) or [`incoming_chat_thread`](#incoming-chat-thread) __*__|
 
@@ -712,40 +680,36 @@ __*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only 
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/send_rich_message_postback?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
       "thread_id": "K600PKZON8",
       "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
       "postback": {
           "id": "Method URL_yes",
           "toggled": true
-        }
-    }
-}'
+          }
+      }'
 ```
 
 <!-- > **`send_rich_message_postback`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/send_rich_message_postback?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
         "thread_id": "K600PKZON8",
         "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
         "postback": {
             "id": "Method URL_yes",
             "toggled": true
-        }
-    }
-}'
+          }
+      }'
 ``` -->
 
 > **`send_rich_message_postback`** sample **response** payload
@@ -761,8 +725,8 @@ curl -X POST \
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/send_rich_message_postback`  |
-| **RTM API equivalent**| [`send_rich_message_postback`](../customer-chat-rtm-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#send-rich-message-postback)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback`  |
+| **RTM API equivalent**| [`send_rich_message_postback`](../customer-chat-rtm-api-v3.1/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#send-rich-message-postback)</sup> |
 | **Webhook**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
 
 __*)__  `incoming_rich_message_postback` will be sent only for active threads.
@@ -785,30 +749,27 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/send_sneak_peek?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
 		  "sneak_peek_text": "hello world"
-    }
-}'
+          }
+      }'
 ```
 
 <!-- > **`send_sneak_peek`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/customer/action/send_sneak_peek?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
 		  "sneak_peek_text": "hello world"
-    }
-}'
+      }'
 ``` -->
 
 > **`send_sneak_peek`** sample **response** payload 
@@ -824,8 +785,8 @@ curl -X POST \
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/send_sneak_peek`  |
-| **RTM API equivalent**| [`send_sneak_peek`](../customer-chat-rtm-api/#send_sneak_peek)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#send_sneak_peek)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek`  |
+| **RTM API equivalent**| [`send_sneak_peek`](../customer-chat-rtm-api-v3.1/#send_sneak_peek)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#send_sneak_peek)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -845,40 +806,36 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_chat_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "properties": {
           "bb9e5b2f1ab480e4a715977b7b1b4279": {
               "score": 10,
               "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ```
 
 <!-- > **`update_chat_properties`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_chat_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
         "properties": {
             "bb9e5b2f1ab480e4a715977b7b1b4279": {
                 "score": 10,
                 "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ``` -->
 
 > **`update_chat_properties`** sample **response** payload
@@ -895,8 +852,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/update_chat_properties`  |
-| **RTM API equivalent**| [`update_chat_properties`](../customer-chat-rtm-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#update-chat-properties)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/update_chat_properties`  |
+| **RTM API equivalent**| [`update_chat_properties`](../customer-chat-rtm-api-v3.1/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#update-chat-properties)</sup> |
 | **Webhook**| [`chat_properties_updated`](#chat-properties-updated) |
 
 #### Request
@@ -914,40 +871,36 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "properties": {
           "bb9e5b2f1ab480e4a715977b7b1b4279": [
               "score",
               "comment"
-            ]
-        }
-    }
-}'
+              ]
+          }
+      }'
 ```
 
 <!-- > **`delete_chat_properties`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
         "properties": {
             "bb9e5b2f1ab480e4a715977b7b1b4279": [
                 "score",
                 "comment"
-            ]
-        }
-    }
-}'
+              ]
+          }
+      }'
 ``` -->
 
 > **`delete_chat_properties`** sample **response** 
@@ -964,9 +917,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/delete_chat_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties`  |
 | __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
-| **RTM API equivalent**| [`delete_chat_properties`](../customer-chat-rtm-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#delete-chat-properties)</sup> |
+| **RTM API equivalent**| [`delete_chat_properties`](../customer-chat-rtm-api-v3.1/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#delete-chat-properties)</sup> |
 | **Webhook**| [`chat_properties_deleted`](#chat-properties-deleted) |
 
 __*)__ 
@@ -992,42 +945,38 @@ __*)__
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
       "properties": {
           "bb9e5b2f1ab480e4a715977b7b1b4279": {
               "score": 10,
               "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ```
 
 <!-- > **`update_chat_thread_properties`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
       "properties": {
           "bb9e5b2f1ab480e4a715977b7b1b4279": {
               "score": 10,
               "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ``` -->
 
 > **`update_chat_thread_properties`** sample **response** payload
@@ -1044,8 +993,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/update_chat_thread_properties`  |
-| **RTM API equivalent**|[`update_chat_thread_properties`](../customer-chat-rtm-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#update-chat-thread-properties)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties`  |
+| **RTM API equivalent**|[`update_chat_thread_properties`](../customer-chat-rtm-api-v3.1/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#update-chat-thread-properties)</sup> |
 | **Webhook**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 #### Request
@@ -1065,42 +1014,38 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
       "properties": {
           "bb9e5b2f1ab480e4a715977b7b1b4279": [
               "score",
               "comment"
-            ]
-        }
-    }
-}'
+              ]
+          }
+      }'
 ```
 
 <!-- > **`delete_chat_thread_properties`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
       "properties": {
           "bb9e5b2f1ab480e4a715977b7b1b4279": [
               "score",
               "comment"
-            ]
-        }
-    }
-}'
+              ]
+          }
+      }'
 ``` -->
 
 > **`delete_chat_thread_properties`** sample **response** 
@@ -1117,9 +1062,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/delete_chat_thread_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties`  |
 | __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
-| **RTM API equivalent**| [`delete_chat_thread_properties`](../customer-chat-rtm-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#delete-chat-thread-properties)</sup> |
+| **RTM API equivalent**| [`delete_chat_thread_properties`](../customer-chat-rtm-api-v3.1/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#delete-chat-thread-properties)</sup> |
 | **Webhook**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
 
 __*)__ 
@@ -1143,11 +1088,10 @@ __*)__
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_event_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
       "event_id": "2_EW2WQSA8",
@@ -1155,21 +1099,19 @@ curl -X POST \
           "bb9e5b2f1ab480e4a715977b7b1b4279": {
               "score": 10,
               "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ```
 
 <!-- > **`update_event_properties`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_event_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
       "event_id": "2_EW2WQSA8",
@@ -1177,10 +1119,9 @@ curl -X POST \
           "bb9e5b2f1ab480e4a715977b7b1b4279": {
               "score": 10,
               "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ``` -->
 
 > **`update_event_properties`** sample **response** payload
@@ -1197,8 +1138,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/update_event_properties`  |
-| **RTM API equivalent**| [`update_event_properties`](../customer-chat-rtm-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#update-event-properties)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/update_event_properties`  |
+| **RTM API equivalent**| [`update_event_properties`](../customer-chat-rtm-api-v3.1/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#update-event-properties)</sup> |
 | **Webhook**| [`event_properties_updated`](#event-properties-updated) |
 
 #### Request
@@ -1219,44 +1160,40 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/delete_event_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-        "chat_id": "PWLW03ICW7",
-        "thread_id": "PWNWW5N6A8",
-        "event_id": "PWNWW5N6A8_1",
-        "properties": {
-            "rating": [
-                "score",
-                "comment"
+      "chat_id": "PWLW03ICW7",
+      "thread_id": "PWNWW5N6A8",
+      "event_id": "PWNWW5N6A8_1",
+      "properties": {
+          "rating": [
+              "score",
+              "comment"
             ]
         }
-    }
-}'
+    }'
 ```
 
 <!-- > **`delete_event_properties`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/delete_event_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-        "chat_id": "PWLW03ICW7",
-        "thread_id": "PWNWW5N6A8",
-        "event_id": "PWNWW5N6A8_1",
-        "properties": {
-            "rating": [
-                "score",
-                "comment"
-            ]
-        }
-    }
-}'
+      "chat_id": "PWLW03ICW7",
+      "thread_id": "PWNWW5N6A8",
+      "event_id": "PWNWW5N6A8_1",
+      "properties": {
+          "rating": [
+              "score",
+              "comment"
+              ]
+          }
+      }'
 ``` -->
 
 > **`delete_event_properties`** sample **response** payload
@@ -1273,8 +1210,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/delete_event_properties`  |
-| **RTM API equivalent**| [`delete_event_properties`](../customer-chat-rtm-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#delete-event-properties)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/delete_event_properties`  |
+| **RTM API equivalent**| [`delete_event_properties`](../customer-chat-rtm-api-v3.1/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#delete-event-properties)</sup> |
 | **Webhook**| [`event_properties_deleted`](#event-properties-deleted) |
 
 
@@ -1296,32 +1233,28 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_customer?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "name": "John Doe"
-    }
-}'
+      }'
 ```
 
 <!-- > **`update_customer`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_customer?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "name": "John Doe",
       "avatar": "https://domain.com/avatars/1.jpg",
       "fields": {
         "score": "low"
-      }
-    }
-}'
+          }
+      }'
 ```-->
 
 > **`update_customer`** sample **response** 
@@ -1338,8 +1271,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/update_customer`  |
-| **RTM API equivalent**| [`update_customer`](../customer-chat-rtm-api/#update-customer) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#update-customer)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/update_customer`  |
+| **RTM API equivalent**| [`update_customer`](../customer-chat-rtm-api-v3.1/#update-customer) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#update-customer)</sup> |
 | **Webhook**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -1361,32 +1294,28 @@ At least one optional parameter needs to be included in the request payload.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/set_customer_fields?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "fields": {
 		    "company_size": "10-100"
-		  }
-    }
-}'
+      		}
+      }'
 ```
 
 <!-- > **`set_customer_fields`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/set_customer_fields?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "fields": {
 		    "company_size": "10-100"
-		  }
-    }
-}'
+      		}
+      }'
 ```-->
 
 > **`set_customer_fields`** sample **response** 
@@ -1403,8 +1332,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/set_customer_fields`  |
-| **RTM API equivalent**| [`get_customers`](../customer-chat-rtm-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get-customers)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/set_customer_fields`  |
+| **RTM API equivalent**| [`get_customers`](../customer-chat-rtm-api-v3.1/#get-customers) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get-customers)</sup> |
 | **Webhook**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -1426,28 +1355,24 @@ Users Agent and referrer are updated by default using the browser’s headers.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_groups_status?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "all": true
-    }
-}'
+      }'
 ```
 
 <!-- > **`get_groups_status`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_groups_status?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "groups": [1, 2, 3, 4]
-    }
-}'
+      }'
 ```-->
 
 > **`get_groups_status`** sample **response** payload
@@ -1471,8 +1396,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_groups_status`  |
-| **RTM API equivalent**| [`get_groups_status`](../customer-chat-rtm-api/#get_groups_status) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get_groups_status)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_groups_status`  |
+| **RTM API equivalent**| [`get_groups_status`](../customer-chat-rtm-api-v3.1/#get_groups_status) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get_groups_status)</sup> |
 | **Webhook**| - |
 
 
@@ -1504,36 +1429,32 @@ Customer can use this method to trigger checking if [goals](https://www.livechat
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/check_goals?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "page_url": "https://mypage.com",
       "customer_fields": {
         "field1": "value1"
-	    },
+	      },
 	    "group_id": 0
-    }
-}'
+      }'
 ```
 
 > **`check_goals`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/check_goals?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "page_url": "https://mypage.com",
       "customer_fields": {
         "field1": "value1"
-	    },
+	      },
 	    "group_id": 0
-    }
-}'
+      }'
 ```
 
 > **`check_goals`** sample **response** 
@@ -1550,7 +1471,7 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/check_goals`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/check_goals`  |
 | **RTM API equivalent**| - |
 | **Webhook**| - |
 
@@ -1568,30 +1489,26 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_form?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-        "group_id": 0,
-		    "type": "prechat"
-    }
-}'
+      "group_id": 0,
+		  "type": "prechat"
+      }'
 ```
 
 <!-- > **`get_form`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_form?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-        "group_id": 0,
-		    "type": "prechat"
-    }
-}'
+      "group_id": 0,
+		  "type": "prechat"
+      }'
 ``` -->
 
 > **`get_form`** sample **response** payload
@@ -1629,8 +1546,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_form`  |
-| **RTM API equivalent**| [`get_form`](../customer-chat-rtm-api/#get_form) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get_form)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_form`  |
+| **RTM API equivalent**| [`get_form`](../customer-chat-rtm-api-v3.1/#get_form) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get_form)</sup> |
 | **Webhook**| - |
 
 
@@ -1655,7 +1572,7 @@ curl -X POST \
 
 ### `get_predicted_agent`
 
-Gets the predicted Agent - the one the Customer will chat with when the chat starts. To use this method, the Customer needs to be logged in, which can be done via the [`login`](../customer-chat-rtm-api/#login)<sup>[![LiveChat Login Method](link.svg)](../customer-chat-rtm-api/#login)</sup> method.
+Gets the predicted Agent - the one the Customer will chat with when the chat starts. To use this method, the Customer needs to be logged in, which can be done via the [`login`](../customer-chat-rtm-api-v3.1/#login)<sup>[![LiveChat Login Method](link.svg)](../customer-chat-rtm-api-v3.1/#login)</sup> method.
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1663,24 +1580,20 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-  }'
+  -d '{}'
 ```
 
 <!-- > **`get_predicted_agent`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-  }'
+  -d '{}'
 ``` -->
 
 > **`get_predicted_agent`** sample **response** payload
@@ -1703,8 +1616,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_predicted_agent`  |
-| **RTM API equivalent**| [`get_predicted_agent`](../customer-chat-rtm-api/#get_predicted_agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get_predicted_agent)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent`  |
+| **RTM API equivalent**| [`get_predicted_agent`](../customer-chat-rtm-api-v3.1/#get_predicted_agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get_predicted_agent)</sup> |
 | **Webhook**| - |
 
 ### `get_url_details`
@@ -1717,28 +1630,24 @@ It returns the info on a given URL.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_url_details?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "url": "https://livechatinc.com"
-    }
-}'
+      }'
 ```
 
 <!-- > **`get_url_details`** sample **request** with optional params
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/get_url_details?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "url": "https://livechatinc.com"
-    }
-}'
+      }'
 ``` -->
 
 > **`get_url_details`** sample **response** payload
@@ -1760,8 +1669,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/get_url_details`  |
-| **RTM API equivalent**| [`get_url_details`](../customer-chat-rtm-api/#get_url_details)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#get_url_details)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/get_url_details`  |
+| **RTM API equivalent**| [`get_url_details`](../customer-chat-rtm-api-v3.1/#get_url_details)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#get_url_details)</sup> |
 | **Webhook**| - |
 
 
@@ -1779,14 +1688,12 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_last_seen_timestamp?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG"
-    }
-}'
+      }'
 ```
 
 ```json
@@ -1802,15 +1709,13 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/update_last_seen_timestamp?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
       "chat_id": "PJ0MRSHTDG",
       "timestamp": 123456789
-    }
-}'
+      }'
 ``` -->
 
 > **`update_last_seen_timestamp`** sample **response** payload
@@ -1827,8 +1732,8 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/update_last_seen_timestamp`  |
-| **RTM API equivalent**| [`update_last_seen_timestamp`](../customer-chat-rtm-api/#update-last-seen-timestamp) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#update-last-seen-timestamp)</sup> |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/update_last_seen_timestamp`  |
+| **RTM API equivalent**| [`update_last_seen_timestamp`](../customer-chat-rtm-api-v3.1/#update-last-seen-timestamp) <sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#update-last-seen-timestamp)</sup> |
 | **Webhook**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
 
 

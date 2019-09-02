@@ -6,7 +6,7 @@ weight: 50
 # Methods
 
 #### The API endpoint
-`wss://api.livechatinc.com/v3.0/customer/rtm/ws`
+`wss://api.livechatinc.com/v3.1/customer/rtm/ws`
 
 ---------------------------------------------------------------
 
@@ -136,7 +136,7 @@ It returns summaries of the chats a Customer participated in.
 |  |  |
 |-------|--------|
 | **Action**   | `get_chats_summary`  |
-| **Web API equivalent**|[`get_chats_summary`](../customer-chat-web-api/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_chats_summary)</sup>|
+| **Web API equivalent**|[`get_chats_summary`](../customer-chat-web-api-v3.1/#get_chats_summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get_chats_summary)</sup>|
 | **Push message**| - |
 
 #### Request
@@ -206,7 +206,7 @@ It returns summaries of the chats a Customer participated in.
 |  |  |
 |-------|--------|
 | **Action**   | `get_chat_threads_summary`  |
-| **Web API equivalent**| [`get_chat_threads_summary`](../customer-chat-web-api/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get-chat-threads-summary)</sup> |
+| **Web API equivalent**| [`get_chat_threads_summary`](../customer-chat-web-api-v3.1/#get-chat-threads-summary) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get-chat-threads-summary)</sup> |
 | **Push message**| - |
 
 #### Request
@@ -285,7 +285,7 @@ It returns summaries of the chats a Customer participated in.
 |  |  |
 |-------|--------|
 | **Action**   | `get_chat_threads`  |
-| **Web API equivalent**| [`get_chat_threads`](../customer-chat-web-api/#get_chat_threads)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_chat_threads)</sup> |
+| **Web API equivalent**| [`get_chat_threads`](../customer-chat-web-api-v3.1/#get_chat_threads)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get_chat_threads)</sup> |
 | **Push message**| - |
 
 #### Request
@@ -383,7 +383,7 @@ Starts a chat.
 |  |  |
 |-------|--------|
 | **Action**   | `start_chat`  |
-| **Web API equivalent**| [`start_chat`](../customer-chat-web-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#start-chat)</sup> |
+| **Web API equivalent**| [`start_chat`](../customer-chat-web-api-v3.1/#start-chat)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#start-chat)</sup> |
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 
@@ -494,7 +494,7 @@ Used to restart an archived chat.
 |  |  |
 |-------|--------|
 | **Action**   | `activate_chat`  |
-| **Web API equivalent**|[`activate_chat`](../customer-chat-web-api/#activate-chat) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#activate-chat)</sup>|
+| **Web API equivalent**|[`activate_chat`](../customer-chat-web-api-v3.1/#activate-chat) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#activate-chat)</sup>|
 | **Push message**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 
@@ -561,7 +561,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 |  |  |
 |-------|--------|
 | **Action**   | `close_thread`  |
-| **Web API equivalent**| [`close_thread`](../customer-chat-web-api/#close-thread) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#close-thread)</sup> |
+| **Web API equivalent**| [`close_thread`](../customer-chat-web-api-v3.1/#close-thread) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#close-thread)</sup> |
 | **Push message**| [`incoming_event`](#incoming-event) and [`thread_closed`](#thread-closed)  |
 
 #### Request
@@ -631,7 +631,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 |  |  |
 |-------|--------|
 | **Action**   | `send_event`  |
-| **Web API equivalent**| [`send_event`](../customer-chat-web-api/#send_event)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send_event)</sup> |
+| **Web API equivalent**| [`send_event`](../customer-chat-web-api-v3.1/#send_event)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#send_event)</sup> |
 | **Push message**| [`incoming_event](#incoming-event) and [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
@@ -704,7 +704,7 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 |  |  |
 |-------|--------|
 | **Action**   | `send_rich_message_postback`  |
-| **Web API equivalent**| [`send_rich_message_postback`](../customer-chat-web-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send-rich-message-postback)</sup> |
+| **Web API equivalent**| [`send_rich_message_postback`](../customer-chat-web-api-v3.1/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#send-rich-message-postback)</sup> |
 | **Push message**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
 
 __*)__  `incoming_rich_message_postback` will be sent only for active threads.
@@ -766,7 +766,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |  |  |
 |-------|--------|
 | **Action**   | `send_sneak_peek`  |
-| **Web API equivalent**| [`send_sneak_peek`](../customer-chat-web-api/#send_sneak_peek)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#send_sneak_peek)</sup> |
+| **Web API equivalent**| [`send_sneak_peek`](../customer-chat-web-api-v3.1/#send_sneak_peek)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#send_sneak_peek)</sup> |
 | **Push message**| - |
 
 #### Request
@@ -837,7 +837,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |  |  |
 |-------|--------|
 | **Action**   | `update_chat_properties`  |
-| **Web API equivalent**| [`update_chat_properties`](../customer-chat-web-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-chat-properties)</sup> |
+| **Web API equivalent**| [`update_chat_properties`](../customer-chat-web-api-v3.1/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#update-chat-properties)</sup> |
 | **Push message**| [`chat_properties_updated`](#chat-properties-updated) |
 
 #### Request
@@ -906,7 +906,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 |-------|--------|
 | **Action**   | `delete_chat_properties`  |
 | __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
-| **Web API equivalent**| [`delete_chat_properties`](../customer-chat-web-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-chat-properties)</sup> |
+| **Web API equivalent**| [`delete_chat_properties`](../customer-chat-web-api-v3.1/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#delete-chat-properties)</sup> |
 | **Push message**| [`chat_properties_deleted`](#chat-properties-deleted) |
 
 __*)__ 
@@ -982,7 +982,7 @@ __*)__
 |  |  |
 |-------|--------|
 | **Action**   | `update_chat_thread_properties`  |
-| **Web API equivalent**|[`update_chat_thread_properties`](../customer-chat-web-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-chat-thread-properties)</sup> |
+| **Web API equivalent**|[`update_chat_thread_properties`](../customer-chat-web-api-v3.1/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#update-chat-thread-properties)</sup> |
 | **Push message**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 #### Request
@@ -1055,7 +1055,7 @@ __*)__
 |-------|--------|
 | **Action**   | `delete_chat_thread_properties`  |
 | __Required scopes*__| `chats.conversation--all:write` `chats.conversation--my:write`|
-| **Web API equivalent**| [`delete_chat_thread_properties`](../customer-chat-web-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-chat-thread-properties)</sup> |
+| **Web API equivalent**| [`delete_chat_thread_properties`](../customer-chat-web-api-v3.1/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#delete-chat-thread-properties)</sup> |
 | **Push message**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
 
 __*)__ 
@@ -1133,7 +1133,7 @@ __*)__
 |  |  |
 |-------|--------|
 | **Action**   | `update_event_properties`  |
-| **Web API equivalent**| [`update_event_properties`](../customer-chat-web-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-event-properties)</sup> |
+| **Web API equivalent**| [`update_event_properties`](../customer-chat-web-api-v3.1/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#update-event-properties)</sup> |
 | **Push message**| [`event_properties_updated`](#event-properties-updated) |
 
 #### Request
@@ -1212,7 +1212,7 @@ __*)__
 |  |  |
 |-------|--------|
 | **Action**   | `delete_event_properties`  |
-| **Web API equivalent**| [`delete_event_properties`](../customer-chat-web-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#delete-event-properties)</sup> |
+| **Web API equivalent**| [`delete_event_properties`](../customer-chat-web-api-v3.1/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#delete-event-properties)</sup> |
 | **Push message**| [`event_properties_deleted`](#event-properties-deleted) |
 
 
@@ -1278,7 +1278,7 @@ __*)__
 |  |  |
 |-------|--------|
 | **Action**   | `update_customer`  |
-| **Web API equivalent**| [`update_customer`](../customer-chat-web-api/#update-customer) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-customer)</sup> |
+| **Web API equivalent**| [`update_customer`](../customer-chat-web-api-v3.1/#update-customer) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#update-customer)</sup> |
 | **Push message**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -1404,7 +1404,7 @@ Agent and referrer are updated by default using the browser’s headers.
 |  |  |
 |-------|--------|
 | **Action**   | `set_customer_fields`  |
-| **Web API equivalent**| [`get_customers`](../customer-chat-web-api/#get-customers) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get-customers)</sup> |
+| **Web API equivalent**| [`get_customers`](../customer-chat-web-api-v3.1/#get-customers) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get-customers)</sup> |
 | **Push message**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -1609,7 +1609,7 @@ __*)__ We use `customer_side_storage` to keep some data on the client side. You 
 |  |  |
 |-------|--------|
 | **Action**   | `get_groups_status`  |
-| **Web API equivalent**| [`get_groups_status`](../customer-chat-web-api/#get_groups_status) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_groups_status)</sup> |
+| **Web API equivalent**| [`get_groups_status`](../customer-chat-web-api-v3.1/#get_groups_status) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get_groups_status)</sup> |
 | **Push message**| - |
 
 
@@ -1695,7 +1695,7 @@ At least one optional parameter needs to be included in the request payload.
 |  |  |
 |-------|--------|
 | **Action**   | `get_form`  |
-| **Web API equivalent**| [`get_form`](../customer-chat-web-api/#get_form) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_form)</sup> |
+| **Web API equivalent**| [`get_form`](../customer-chat-web-api-v3.1/#get_form) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get_form)</sup> |
 | **Push message**| - |
 
 
@@ -1767,7 +1767,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 |  |  |
 |-------|--------|
 | **Action**   | `get_predicted_agent`  |
-| **Web API equivalent**| [`get_predicted_agent`](../customer-chat-web-api/#get_predicted_agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_predicted_agent)</sup> |
+| **Web API equivalent**| [`get_predicted_agent`](../customer-chat-web-api-v3.1/#get_predicted_agent) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get_predicted_agent)</sup> |
 | **Push message**| - |
 
 ### `get_url_details`
@@ -1822,7 +1822,7 @@ It returns the info on a given URL.
 |  |  |
 |-------|--------|
 | **Action**   | `get_url_details`  |
-| **Web API equivalent**| [`get_url_details`](../customer-chat-web-api/#get_url_details)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#get_url_details)</sup> |
+| **Web API equivalent**| [`get_url_details`](../customer-chat-web-api-v3.1/#get_url_details)<sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#get_url_details)</sup> |
 | **Push message**| - |
 
 
@@ -1879,7 +1879,7 @@ It returns the info on a given URL.
 |  |  |
 |-------|--------|
 | **Action**   | `update_last_seen_timestamp`  |
-| **Web API equivalent**| [`update_last_seen_timestamp`](../customer-chat-web-api/#update-last-seen-timestamp) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api/#update-last-seen-timestamp)</sup> |
+| **Web API equivalent**| [`update_last_seen_timestamp`](../customer-chat-web-api-v3.1/#update-last-seen-timestamp) <sup>[![LiveChat Link](link.svg)](../customer-chat-web-api-v3.1/#update-last-seen-timestamp)</sup> |
 | **Push message**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
 
 
