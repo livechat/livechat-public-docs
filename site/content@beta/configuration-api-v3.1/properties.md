@@ -91,42 +91,40 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-        "score": {
-            "type": "int",
-            "locations": {
-                "chat": {
-                    "access": {
-                        "agent": {
-                            "read": true,
-                            "write": true
-                        },
-                        "customer": {
-                            "read": true,
-                            "write": true
-                        }
-                    }
-                }
-            }
-        },
-        "comment": {
-            "type": "string",
-            "locations": {
-                "chat": {
-                    "access": {
-                        "agent": {
-                            "read": true,
-                            "write": true
-                        },
-                        "customer": {
-                            "read": true,
-                            "write": true
-                           }
-                       }
-                   }
-               }
-           }
-        }'
+      "score": {
+          "type": "int",
+          "locations": {
+              "chat": {
+                  "access": {
+                      "agent": {
+                          "read": true,
+                          "write": true
+                      },
+                      "customer": {
+                          "read": true,
+                          "write": true
+                      }
+                  }
+              }
+          }
+      },
+      "comment": {
+          "type": "string",
+          "locations": {
+              "chat": {
+                  "access": {
+                      "agent": {
+                          "read": true,
+                          "write": true
+                      },
+                      "customer": {
+                          "read": true,
+                          "write": true
+                         }
+                     }
+                 }
+             }
+      }'
 ```
 
 
@@ -169,12 +167,10 @@ curl -X POST \
   https://api.livechatinc.com/v3.0/configuration/action/get_property_configs \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-	    }'
+  -d '{}'
 ```
 
-> **`get_property_configs`** sample response payload
+> **`get_property_configs`** sample response 
 
 ```js
 {

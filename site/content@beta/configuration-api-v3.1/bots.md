@@ -35,14 +35,12 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    payload {
       "name": "Bot Name",
       "status": "accepting chats"
-          }
       }'
 ```
 
-> **`create_bot_agent`** sample response payload
+> **`create_bot_agent`** sample response 
 
 ```js
 {
@@ -105,9 +103,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    payload {
       "bot_agent_id": "505591fc9fc2d6e92798bed7d9d8f079"
-          }
       }'
 ```
 
@@ -142,10 +138,8 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    payload {
       "id": "ce54714e3d2b53adbfff09dbdbdd56e9",
       "name": "New Bot Name"
-          }
       }'
 ```
 
@@ -219,13 +213,11 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
         "all": false
-        }
-	  }'
+	    }'
 ```
 
-> **`get_bot_agents`** sample response payload
+> **`get_bot_agents`** sample response 
 
 ```js
 {
@@ -265,13 +257,11 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
         "bot_agent_id": "5c9871d5372c824cbf22d860a707a578"
-          }
 	    }'
 ```
 
-> **`get_bot_agent_details`** sample response payload
+> **`get_bot_agent_details`** sample response 
 
 ```js
 {

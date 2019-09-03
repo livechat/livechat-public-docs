@@ -15,8 +15,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
-    // payload from push action
+  "payload": {
   },
   "additional_data": {
     "chat_properties": { //optional
@@ -51,7 +50,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat": {
 		"id": "PJ0MRSHTDG",
 		"users": [
@@ -85,7 +84,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
@@ -117,7 +116,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"user": {
@@ -149,7 +148,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"user_id": "agent1@example.com",
@@ -183,7 +182,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"event": {
@@ -207,7 +206,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
@@ -238,7 +237,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"properties": {
 		"rating": {
@@ -274,7 +273,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"properties": {
 		"rating": ["score", "comment"]
@@ -304,7 +303,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"properties": {
@@ -342,7 +341,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
 	"chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"properties": {
@@ -378,7 +377,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"tag": "bug_report"
@@ -400,7 +399,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "chat_id": "PJ0MRSHTDG",
 	"thread_id": "K600PKZON8",
 	"tag": "bug_report"
@@ -426,7 +425,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "agent_id":"5c9871d5372c824cbf22d860a707a578",
     "status": "accepting chats"
   },
@@ -453,7 +452,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
     "agent_id": "5c9871d5372c824cbf22d860a707a578"
   },
   "additional_data": {
@@ -477,7 +476,7 @@ Webhooks notify you when events are triggered.
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
   "action": "<action>",
-  "data": {
+  "payload": {
 	"user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"chat_id": "PJ0MRSHTDG",
     "timestamp": 123456789  
@@ -517,16 +516,14 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
         "url": "http://myservice.com/webhooks",
         "description": "Test webhook",
         "action": "thread_closed",
         "secret_key": "laudla991lamda0pnoaa0"  
-            }
 		  }'
 ```
 
-> **`register_webhook`** sample response payload
+> **`register_webhook`** sample response 
 
 ```js
     {
@@ -597,12 +594,10 @@ curl -X POST \
   https://api.livechatinc.com/v3.0/configuration/action/get_webhooks_config \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-		  }'
+  -d '{}'
 ```
 
-> **`get_webhooks_config`** sample response payload
+> **`get_webhooks_config`** sample response 
 
 ```js
 {
@@ -642,9 +637,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
             "webhook_id": "pqi8oasdjahuakndw9nsad9na"
-            }
 		  }'
 ```
 
