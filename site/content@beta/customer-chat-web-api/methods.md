@@ -31,8 +31,8 @@ curl -X POST \
 
 | Header   |      Value      |  Notes |
 |----------|:-------------:|------:|
-| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for the `send_file` method |
-| `Content-Type` |  `application/json`	    |   Valid for every method except for `send_file ` |
+| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for the `upload_file` method |
+| `Content-Type` |  `application/json`	    |   Valid for every method except for `upload_file ` |
 | `Authorization` |  `Bearer <token>`	    |   Access token |
 
 
@@ -50,7 +50,7 @@ Every request to Customer Chat API needs to have the following query string para
 |   |  |
 |-------|--------| 
 | **chats** | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)  |
-| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek) |
+| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek) |
 | **properties (chat/thread/event)** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties)|  
 | **customers** | [`update_customer`](#update-customer)  [`set_customer_fields`](#set-customer-fields) |
 | **status** | [`get_groups_status`](#get-groups-status)  |
@@ -162,12 +162,12 @@ curl -X POST \
   -d '{
     "payload": {
 		  "chat_id": "PJ0MRSHTDG"
-	}
-}'
+      	}
+      }'
 ```
 
 
-> **`get_chat_threads_summary`** sample **request** with optional params
+<!-- > **`get_chat_threads_summary`** sample **request** with optional params
 
 ```shell
 curl -X POST \
@@ -181,7 +181,7 @@ curl -X POST \
       "limit": 100
 	}
 }'
-```
+``` -->
 
 > **`get_chat_threads_summary`** sample **response** payload
 
@@ -661,6 +661,10 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 
 ### `send_file`
 
+Sends the file directly to the chat. Alternatively, you can send files via the `upload_file` method. The `send_file` method will soon be deprecated.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 > **`send_file`** sample **request** with required params only
 
 ```shell
@@ -693,7 +697,7 @@ curl -X POST \
 | **RTM API equivalent**| - |
 | **Webhook**| [`incoming_event`](#incoming-event) or [`incoming_chat_thread`](#incoming-chat-thread) __*__|
 
-__*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
+__*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only if the event starts a new thread.
 
 
 #### Request
@@ -705,6 +709,34 @@ __*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only 
 | `payload.custom_id`      | No       | `string` | 							   |
 | `payload.require_active_thread` | No       | `bool` | If set to `true`, it returns an error when all threads are inactive; Default: `false` |
 
+
+
+### `upload_file`
+
+Uploads a file to the server as a temporary file. It returns a URL, which expires after 24 hours. 
+
+------------------------------------------------------------------------------------------------------------------------
+
+> **`upload_file`** sample **request**
+
+> **`upload_file`** sample **response**
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/upload_file`  |
+| **RTM API equivalent**| - |
+| **Webhook**| [`incoming_event`](#incoming-event) __*__ |
+
+__*)__
+`incoming_event` returns a URL that never expires. 
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                     |
+| -------------- | -------- | -------- | ------------------------- |
+| `payload.file`      | Yes       | `binary` | maximum size: 10MB    	   |
 
 ### `send_rich_message_postback`
 
