@@ -30,3 +30,9 @@ LiveChat system operates in two data centers: `dal` and `fra`. The default data 
 All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
 
 Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with `dal-` you don’t have to specify the header.
+
+## Postman collection
+
+You can find all the requests from the **Customer Chat Web API v3.0** in Postman.
+
+<a href="https://www.getpostman.com/collections/07cbb1599d95db0c7d85" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>

@@ -44,6 +44,8 @@ Every request to Customer Chat API needs to have the following query string para
 |----------|:-------------:|------:|
 | `license_id`	 |  `integer`  | LiveChat account ID |
 
+<a href="https://www.getpostman.com/collections/07cbb1599d95db0c7d85" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
+
 ---------------------------------------------------------------
 
 
