@@ -48,7 +48,7 @@ Every request to Customer Chat API needs to have the following query string para
 |   |  |
 |-------|--------| 
 | **chats** | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)  |
-| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek) |
+| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek) |
 | **properties (chat/thread/event)** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties)|  
 | **customers** | [`update_customer`](#update-customer)  [`set_customer_fields`](#set-customer-fields) |
 | **status** | [`get_groups_status`](#get-groups-status)  |
@@ -340,22 +340,11 @@ curl -X POST \
 
 ```json
 {
-		"chat": {
-		"id": "PJ0MRSHTDG",
-		"order": 343544565,
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			// "Properties" object
-		},
-		"access": {
-			// "Access" object
-		},
-		"thread": {
-			// "Thread" object
-				}
-			}
+    "chat_id": "W54XYD1O",
+    "thread_id": "Z635Z9WH",
+    "event_ids": [
+      // array of Events ids
+    ]
 }
 ```
 
@@ -380,6 +369,15 @@ curl -X POST \
 | `chat.thread.events`     | No       | `array`  | Initial chat events array   |
 | `chat.thread.properties` | No       | `object` |                   Initial chat thread properties |
 | `continuous` 			   | No       | `bool`   | Starts chat as continuous (online group is not required), default: `false` |
+
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `chat_id` | `string` |
+| `thread_id` | `string` |
+| `event_ids`   | `[]string` |
+
 
 
 ### `activate_chat`
@@ -448,21 +446,10 @@ curl -X POST \
 
 ```json
 {
-		"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			// "Properties" object
-		},
-		"access": {
-			// "Access" object
-		},
-		"threads": [
-			// array of "Thread" objects
-		]
-	      }
+  "thread_id": "Z2HDF2F9D",
+  "event_ids": [
+    // array of Events ids
+  ]
 }
 ```
 
@@ -488,7 +475,12 @@ curl -X POST \
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
 | `continuous`             | No       | `bool`  | Set chat continuous mode. When unset leaves mode unchanged.|
 
+#### Response
 
+| Parameter  | Data type |
+|-------|--------|
+| `event_ids`   | `[]string` |
+| `thread_id` | `string` |
 
 ### `close_thread`
 
@@ -569,10 +561,7 @@ curl -X POST \
 
 ```json
 {
-		"thread_id": "K600PKZON8",
-		"event": {
-			// the Event object
-	  }
+    "event_id" : "Z587K8OP21"
 }
 ```
 
@@ -598,7 +587,20 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 | `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
 
 
+#### Response
+
+| Parameter   |      Data type      |  Notes |
+|----------|:-------------:|------:|
+| `event_id` |  string | Id of the created event object |
+
+
 ### `send_file`
+
+Sends the file directly to the chat.  
+
+**Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 > **`send_file`** sample **request** with required params only
 
@@ -639,6 +641,51 @@ __*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only 
 | `file`      | Yes       | `binary` | maximum size: 10MB    	   |
 | `custom_id`      | No       | `string` | 							   |
 | `require_active_thread` | No       | `bool` | If set to `true`, it returns an error when all threads are inactive; Default: `false` |
+
+
+### `upload_file`
+
+Uploads a file to the server as a temporary file. It returns a URL, which expires after 24 hours. 
+
+------------------------------------------------------------------------------------------------------------------------
+
+> **`upload_file`** sample **request**
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/send_file?license_id=<license_id>' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: multipart/form-data; boundary=--------------------------626049643947557285427720' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F chat_id=PXF9EA5UWA \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
+```
+
+> **`upload_file`** sample **response**
+
+```js
+{
+  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/file.jpg"
+}
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/upload_file`  |
+| **RTM API equivalent**| - |
+| **Webhook**| [`incoming_event`](#incoming-event) __*__ |
+
+__*)__
+`incoming_event` returns a URL that never expires. 
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                     |
+| -------------- | -------- | -------- | ------------------------- |
+| `file`      | Yes       | `binary` | maximum size: 10MB    	   |
 
 
 ### `send_rich_message_postback`
