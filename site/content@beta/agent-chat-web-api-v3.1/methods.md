@@ -42,7 +42,7 @@ curl -X POST \
 | **chats** | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`get_archives`](#get-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread) [`follow_chat`](#follow-chat)  [`unfollow_chat`](#unfollow-chat) |
 | **chat access** | [`grant_access`](#grant-access) [`revoke_access`](#revoke-access) [`set_access`](#set-access)   |
 | **chat users** | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat) | 
-| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`send_rich_message_postback`](#send-rich-message-postback)|
+| **events** | [`send_event`](#send-event) [`send_file`](#send-file) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)|
 | **properties (chat/thread/event)** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties)|  
 | **thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread) | 
 | **customers** | [`get_customers`](#get-customers) [`create_customer`](#create-customer)  [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)| 
@@ -896,6 +896,12 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 
 ### `send_file`
 
+Sends the file directly to the chat.  
+
+**Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
+
+------------------------------------------------------------------------------------------------------------------------
+
 > **`send_file`** sample request 
 
    ```shell
@@ -935,6 +941,51 @@ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only
 | `require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
 | `custom_id` 			  | No   | `string` | Postback name of the button |
 | `file`				  | Yes  | `binary`   | maximum size: 10 MB |
+
+
+### `upload_file`
+
+Uploads a file to the server as a temporary file. It returns a URL, which expires after 24 hours. 
+
+------------------------------------------------------------------------------------------------------------------------
+
+> **`upload_file`** sample **request**
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/agent/action/send_file' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: multipart/form-data; boundary=--------------------------626049643947557285427720' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F chat_id=PXF9EA5UWA \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
+```
+
+> **`upload_file`** sample **response**
+
+```js
+{
+  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/file.jpg"
+}
+  ```
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/upload_file`  |
+| **RTM API equivalent**| - |
+| **Webhook**| [`incoming_event`](#incoming-event) __*__ |
+
+__*)__
+`incoming_event` returns a URL that never expires. 
+
+#### Request
+
+| Parameter | Required | Data type     | Notes                     |
+| -------------- | -------- | -------- | ------------------------- |
+| `file`      | Yes       | `binary` | maximum size: 10MB    	   |
 
 
 ### `send_rich_message_postback`
