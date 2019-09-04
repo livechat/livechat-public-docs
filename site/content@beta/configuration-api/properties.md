@@ -81,6 +81,10 @@ The `tokenized_string` property is similar to the `string` type. The values of a
 |----------|:-------------:|------:|
 | `Content-Type`	 |  `application/json`  |  |
 
+<a href="https://www.getpostman.com/collections/b4e87c243f23fa1f4240" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### `create_properties`
 
 > **`create_properties`** sample request

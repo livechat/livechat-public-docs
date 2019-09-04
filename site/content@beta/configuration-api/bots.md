@@ -24,6 +24,10 @@ Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as 
 |----------|:-------------:|------:|
 | `Content-Type`	 |  `application/json`  |  |
 
+<a href="https://www.getpostman.com/collections/b4e87c243f23fa1f4240" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ### `create_bot_agent`
 

@@ -40,7 +40,6 @@ Webhooks notify you when events are triggered.
 
 ### chats
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `incoming_chat_thread`
 
@@ -106,7 +105,6 @@ Webhooks notify you when events are triggered.
 
 ### chat users
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `chat_user_added`
 
@@ -172,7 +170,6 @@ Webhooks notify you when events are triggered.
 
 ### events
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `incoming_event`
 
@@ -227,7 +224,6 @@ Webhooks notify you when events are triggered.
 
 ### properties
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `chat_properties_updated`
 
@@ -367,7 +363,6 @@ Webhooks notify you when events are triggered.
 
 ### thread tags
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `chat_thread_tagged`
 
@@ -415,7 +410,6 @@ Webhooks notify you when events are triggered.
 
 ### status
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `agent_status_changed`
 
@@ -466,7 +460,6 @@ Webhooks notify you when events are triggered.
 
 ### other
 
--------------------------------------------------------------------------------------------------------------------------
 
 #### `last_seen_timestamp_updated`
 
@@ -505,6 +498,10 @@ Webhooks notify you when events are triggered.
 | Header   |      Value      |   |
 |----------|:-------------:|------:|
 | `Content-Type`	 |  `application/json`  |  |
+
+<a href="https://www.getpostman.com/collections/b4e87c243f23fa1f4240" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 ### `register_webhook`

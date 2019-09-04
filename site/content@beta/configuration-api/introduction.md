@@ -28,6 +28,12 @@ Summing up, if the user token starts with `fra-`, you should add the `X-Region: 
 
 All configurations set by this API will have action in system after max 2 minutes. This delay will be removed in the future.
 
+## Postman collection
+
+You can find all the requests from the **Configuration API v3.0** in Postman.
+
+<a href="https://www.getpostman.com/collections/b4e87c243f23fa1f4240" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
+
 
 
 
