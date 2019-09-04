@@ -5,6 +5,10 @@ weight: 60
 
 # Methods
 
+#### Postman collection
+
+You can find all the requests from the **Agent Chat Web API v3.0** in [this Postman collection](https://documenter.getpostman.com/view/7214856/SVfUrmLY?version=latest).
+
 #### The API enpoint
 
 | HTTP method  | Base URL |
@@ -50,6 +54,7 @@ curl -X POST \
 | **customers** | [`get_customers`](#get-customers) [`create_customer`](#create-customer)  [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)| 
 | **status** | [`update_agent`](#update-agent) |
 | **other** |  [`upload_image`](#upload-image)  [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)| 
+
 
 ## chats
 
