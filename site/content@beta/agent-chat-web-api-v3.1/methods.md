@@ -342,15 +342,11 @@ curl -X POST \
 
 ```js
 {
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"thread": {
-			// "Thread" object
-		}
-	}
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "PGDGHT5G",
+  "event_ids": [
+    // array of events ids
+  ]
 }
 ```
 
@@ -382,6 +378,13 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
 | `chat.thread.properties` | No       | `object` |                                                                  |
 
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `chat_id`   |   `string`  |
+| `thread_id`   |   `string`  |
+| `event_ids`   |   `[]string`  |
 
 ### `activate_chat`
 
@@ -425,22 +428,10 @@ When `chat.users` is defined, one of following scopes is required:
 
 ```js
 {
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			// "Properties" object
-		},
-		"access": {
-			// "Access" object
-		},
-		"threads": [
-			// array of "Thread" objects
-		],
-		"is_followed": true
-	}
+  "thread_id": "Z8AGR5OUW",
+  "event_ids": [
+    // array of events ids
+  ]
 }
 ```
 
@@ -454,6 +445,13 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object` |                                                                  |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `event_ids`   |   `[]string`  |
+| `thread_id`   |   `string`  |
 
 
 
@@ -865,10 +863,7 @@ curl -X POST \
 
 ```js
 {
-	"thread_id": "K600PKZON8",
-	"event": {
-		// "Event" object
-	}
+	"event_id": "K600PKZON8"
 }
 ```
 
@@ -885,13 +880,18 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 
 #### Request
 
-| Parameters         | Required | Data type     | Notes                                                                            |
+| Parameter         | Required | Data type     | Notes                                                                            |
 | ----------------------- | -------- | -------- | -------------------------------------------------------------------------------- |
 | `chat_id`               | Yes      | `string` | Id of the chat that we want to send the message to                               |
 | `event`                 | Yes      | `object` | Event object                                                                     |
 | `attach_to_last_thread` | No       | `bool`   | If `true`, adds event to last thread, otherwise creates new one, default `false` |
 | `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
 
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `event_id`   |   `string`  |
 
 
 ### `send_file`
@@ -1508,7 +1508,7 @@ curl -X POST \
 
 ```js
 {
-  // "User > Customer" object
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
 }
 ```
 
