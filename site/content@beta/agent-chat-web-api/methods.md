@@ -37,7 +37,7 @@ curl -X POST \
 | `Content-Type` |  `application/json`	    |   Valid for every Method URL except `send_file `and `upload_image` |
 | `Authorization` |  `Bearer <token>`	    |   Access token |
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c44c78bef060739c9c88)
+<a href="https://app.getpostman.com/run-collection/c44c78bef060739c9c88" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
 
 ---------------------------------------------------------------
 

@@ -35,5 +35,5 @@ Summing up, if the user token starts with `fra-`, you should add the `X-Region: 
 
 You can find all the requests from the **Agent Chat Web API v3.0** in Postman.
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c44c78bef060739c9c88)
+<a href="https://app.getpostman.com/run-collection/c44c78bef060739c9c88" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
 
