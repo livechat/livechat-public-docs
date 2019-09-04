@@ -5,10 +5,6 @@ weight: 60
 
 # Methods
 
-#### Postman collection
-
-You can find all the requests from the **Agent Chat Web API v3.0** in [this Postman collection](https://documenter.getpostman.com/view/7214856/SVfUrmLY?version=latest).
-
 #### The API enpoint
 
 | HTTP method  | Base URL |
@@ -40,8 +36,14 @@ curl -X POST \
 | `Content-Type` |  `application/json`	    |   Valid for every Method URL except `send_file `and `upload_image` |
 | `Authorization` |  `Bearer <token>`	    |   Access token |
 
----------------------------------------------------------------
 
+#### Postman collection
+
+You can find all the requests from the **Agent Chat Web API v3.0** in Postman.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c44c78bef060739c9c88)
+
+---------------------------------------------------------------
 
 |   |  |
 |-------|--------| 

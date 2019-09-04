@@ -31,3 +31,9 @@ All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This pr
 
 Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with `dal-` you don’t have to specify the header.
 
+## Postman collection
+
+You can find all the requests from the **Agent Chat Web API v3.0** in Postman.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c44c78bef060739c9c88)
+
