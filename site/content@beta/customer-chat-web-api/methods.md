@@ -661,7 +661,9 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 
 ### `send_file`
 
-Sends the file directly to the chat. Alternatively, you can send files via the `upload_file` method. The `send_file` method will soon be deprecated.
+Sends the file directly to the chat.  
+
+**Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -719,7 +721,25 @@ Uploads a file to the server as a temporary file. It returns a URL, which expire
 
 > **`upload_file`** sample **request**
 
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.0/customer/action/send_file?license_id=<license_id>' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: multipart/form-data; boundary=--------------------------626049643947557285427720' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F payload= \
+  -F payload.chat_id=PXF9EA5UWA \
+  -F payload.require_active_thread=false \
+  -F 'payload.file=@/Users/MyAccount/Downloads/file.jpg'
+```
+
 > **`upload_file`** sample **response**
+
+```js
+{
+  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/file.jpg"
+}
+  ```
 
 #### Specifics
 
