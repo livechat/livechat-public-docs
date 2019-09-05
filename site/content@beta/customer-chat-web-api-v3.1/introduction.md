@@ -6,7 +6,7 @@ weight: 10
 
 ## Versioning
 
-This documentation describes the version **v3.0** of the **Customer Chat Web API**.
+This documentation describes the version **v3.1** of the **Customer Chat Web API**.
 
 ## What is Web API
 Web API is similar to REST API. Client can send a **request message** that results in getting a **response message**. It's also possible to get webhooks. 
@@ -16,12 +16,12 @@ If you're wondering which API to use - Customer Chat **RTM API** or **Web API**,
 
 **Web API** allows for building stateless integrations. The communication is done via **XHR requests**. The implementation is easier than with RTM API, but you need to take possible time delays into consideration.
 
-**Not what you're looking for?** Perhaps, you need to use [**Customer Chat RTM API**](../customer-chat-rtm-api)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api)</sup> instead.
+**Not what you're looking for?** Perhaps, you need to use [**Customer Chat RTM API**](../customer-chat-rtm-api-v3.1)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1)</sup> instead.
 
 
 ## Authentication
 
-**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flows](https://developers.livechatinc.com/docs/authorization/)<sup>[![LiveChat Link](link.svg)](../authorization/#customer-authorization-flows)</sup>. If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow)<sup>[![LiveChat Link](link.svg)](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow)</sup>. If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
 
 ## Data centers
 
