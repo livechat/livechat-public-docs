@@ -87,7 +87,7 @@ curl -X POST \
 	}],
 	"pagination": {
 		"page": 1,
-		"total": 3 // this is total number of threads matching filters
+		"total": 3 // total number of threads matching filters
 	}
 }
 ```
@@ -345,15 +345,11 @@ curl -X POST \
 
 ```js
 {
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"thread": {
-			// "Thread" object
-		}
-	}
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "PGDGHT5G",
+  "event_ids": [
+    // array of events ids
+  ]
 }
 ```
 
@@ -385,6 +381,13 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread.events`     | No       | `array`  | List of initial chat events                                      |
 | `chat.thread.properties` | No       | `object` |                                                                  |
 
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `chat_id`   |   `string`  |
+| `thread_id`   |   `string`  |
+| `event_ids`   |   `[]string`  |
 
 ### `activate_chat`
 
@@ -428,22 +431,10 @@ When `chat.users` is defined, one of following scopes is required:
 
 ```js
 {
-	"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			// "Properties" object
-		},
-		"access": {
-			// "Access" object
-		},
-		"threads": [
-			// array of "Thread" objects
-		],
-		"is_followed": true
-	}
+  "thread_id": "Z8AGR5OUW",
+  "event_ids": [
+    // array of events ids
+  ]
 }
 ```
 
@@ -457,6 +448,13 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object` |                                                                  |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                        |
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
+
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `event_ids`   |   `[]string`  |
+| `thread_id`   |   `string`  |
 
 
 
@@ -583,6 +581,10 @@ No response payload (`200 OK`).
 
 ### `grant_access`
 
+Grants access to a nw resource without overwriting the existing ones. 
+
+------------------------------------------------------------------------------
+
 > **`grant_access`** sample request 
 
   ```shell
@@ -615,10 +617,10 @@ curl -X POST \
 | Parameter | Required | Data ype     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
-| `id`           | Yes      | `string` | id of resource       |
+| `id`           | Yes      | `string` | Resource id          |
 | `access`       | Yes      | `object` |                      |
-| `access.type`  | Yes      | `string` | `group` or `agent`   |
-| `access.id`    | Yes      | `number` |                      |
+| `access.type`  | Yes      | `string` | `group`              |
+| `access.id`    | Yes      |   any    |                      |
 
 #### Response
 
@@ -669,6 +671,10 @@ No response payload (`200 OK`).
 
 
 ### `set_access`
+
+Grants access to a new resource overwriting the existing ones.
+
+--------------------------------------------------------------------------
 
 > **`set_access`** sample request 
 
@@ -868,10 +874,7 @@ curl -X POST \
 
 ```js
 {
-	"thread_id": "K600PKZON8",
-	"event": {
-		// "Event" object
-	}
+	"event_id": "K600PKZON8"
 }
 ```
 
@@ -888,13 +891,18 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 
 #### Request
 
-| Parameters         | Required | Data type     | Notes                                                                            |
+| Parameter         | Required | Data type     | Notes                                                                            |
 | ----------------------- | -------- | -------- | -------------------------------------------------------------------------------- |
 | `chat_id`               | Yes      | `string` | Id of the chat that we want to send the message to                               |
 | `event`                 | Yes      | `object` | Event object                                                                     |
 | `attach_to_last_thread` | No       | `bool`   | If `true`, adds event to last thread, otherwise creates new one, default `false` |
 | `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
 
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `event_id`   |   `string`  |
 
 
 ### `send_file`
@@ -903,7 +911,6 @@ Sends the file directly to the chat.
 
 **Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
 
---------------------------------------------------------------------------------------------------------------
 
 > **`send_file`** sample request 
 
@@ -956,14 +963,13 @@ Uploads a file to the server as a temporary file. It returns a URL, which expire
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/agent/action/upload_file' \
+  'https://api.livechatinc.com/v3.1/agent/action/send_file' \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: multipart/form-data; boundary=--------------------------626049643947557285427720' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F payload.chat_id=PXF9EA5UWA \
-  -F payload.require_active_thread=false \
-  -F 'payload.file=@/Users/MyAccount/Downloads/file.jpg'
+  -F chat_id=PXF9EA5UWA \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
 ```
 
 > **`upload_file`** sample **response**
@@ -978,7 +984,7 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/upload_file`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/upload_file`  |
 | **RTM API equivalent**| - |
 | **Webhook**| [`incoming_event`](#incoming-event) __*__ |
 
@@ -989,7 +995,7 @@ __*)__
 
 | Parameter | Required | Data type     | Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload.file`      | Yes       | `binary` | maximum size: 10MB    	   |
+| `file`      | Yes       | `binary` | maximum size: 10MB    	   |
 
 
 ### `send_rich_message_postback`
@@ -1512,7 +1518,7 @@ curl -X POST \
 
 ```js
 {
-  // "User > Customer" object
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
 }
 ```
 
