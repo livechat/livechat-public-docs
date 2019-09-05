@@ -8,4 +8,5 @@ type: "mobile-widget"
 compatible: true
 hideSearch: true
 weight: 10
+hidden: true
 ---

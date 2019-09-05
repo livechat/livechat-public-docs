@@ -5,6 +5,7 @@ weight: 60
 
 # Methods
 
+
 #### The API enpoint
 
 | HTTP method  | Base URL |
@@ -34,8 +35,9 @@ curl -X POST \
 | `Authorization` |  `Bearer <token>`	    |   Access token |
 | `X-Author-Id` |  `<bot_agent_id>`	    |   Valid only for Bot Agents |
 
----------------------------------------------------------------
+<a href="https://app.getpostman.com/run-collection/c44c78bef060739c9c88" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
 
+---------------------------------------------------------------
 
 |   |  |
 |-------|--------| 
@@ -48,6 +50,7 @@ curl -X POST \
 | **customers** | [`get_customers`](#get-customers) [`create_customer`](#create-customer)  [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)| 
 | **status** | [`update_agent`](#update-agent) |
 | **other** |  [`upload_image`](#upload-image)  [`update_last_seen_timestamp`](#update-last-seen-timestamp) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)| 
+
 
 ## chats
 
@@ -908,7 +911,6 @@ Sends the file directly to the chat.
 
 **Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
 
-------------------------------------------------------------------------------------------------------------------------
 
 > **`send_file`** sample request 
 

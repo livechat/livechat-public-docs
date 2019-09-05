@@ -75,7 +75,7 @@
   - [Event updated](#event-updated)
     </div>
 
-# Introduction to API
+# Using API
 
 This documentation describes version **v3.0** of customer-api.
 
@@ -143,9 +143,14 @@ Client must send query string param when connecting to RTM API:
 https://api.livechatinc.com/v3.0/customer/rtm/ws?license_id=123456789
 ```
 
+#### Authorization
+
+A client must authorize himself by [logging in](#login) in 30 seconds, otherwise the connection will be closed.
+
 #### Ping
 
-A client should ping the server each 15 seconds, otherwise the connection will be closed after about one minute of inactivity. If [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2) is unavailable (in web browsers), a client should use a protocol message with `ping` action.
+After successful authorization, client should ping the server each 15 seconds, otherwise the connection will be closed after about 30 seconds of inactivity. If [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2) is unavailable (in web browsers), a client should use a protocol message with `ping` action.
+Until authorization is completed, ping is a no-op.
 
 ### Messages format
 
@@ -357,8 +362,6 @@ When chat is archived `fields` field is not present.
 
 ### System message
 
-It cannot be sent by a user.
-
 ```js
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
@@ -366,9 +369,16 @@ It cannot be sent by a user.
 	"type": "system_message",
 	"timestamp": 1473433500, // generated server-side
 	"text": "hello there",
-	"system_message_type": "thread_archived"
+	"system_message_type": "thread_archived",
+	"text_vars": {
+		"var1": "value1"
+	}
 }
 ```
+
+- `recipients` can take the following values: `all` (default for system events), `agents` (for events sent via [Send event](#send-event))
+- `system_message_type` is required
+- `text_vars` is optional
 
 ### Annotation
 
@@ -672,6 +682,7 @@ An annotation does not create a new thread. It just adds an event to the last th
 | `users_limit_reached`   | users limit reached          | customers limit reached                                |
 | `wrong_product_version` | Wrong product version        |                                                        |
 | `license_not_found`     | License not found            | License with specified ID doesn't exist                |
+| `group_not_found`       | Group not found              | Requested group with given id could not be found       |
 
 \* `misdirected_request` error returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
@@ -740,6 +751,20 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 			"key1": "value1",
 			"key2": "value2"
 		},
+		"customer_groups": {
+			"monitoring": {
+				"id": 1,
+				"static_config_url": "/licence/1520/get_static_config.121.1808829.94.95.39446.4011.2385.398.160.552.58.337.44320.js",
+				"language_config_url": "/licence/1520/v2/localization.en.121.004b8e014f50ea0c6ad6227162f7d18f_40d391a9adcdbf190e62fcd21c865bf2.js"
+			},
+			"chats": {
+				"2": {
+					"chat_ids": ["PJ0MRSHTDG"],
+					"static_config_url": "/licence/1520/get_static_config.121.1808829.94.95.39446.4011.2385.398.160.552.58.337.44320.js",
+					"language_config_url": "/licence/1520/v2/localization.en.121.004b8e014f50ea0c6ad6227162f7d18f_40d391a9adcdbf190e62fcd21c865bf2.js"
+				}
+			}
+		}
 		"static_config_version": "3435.4545",
 		"predicted_agent": {
 			"id": "agent1@example.com",
@@ -757,7 +782,8 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 				"name": "Bart",
 				"type": "agent",
 				"avatar": "cdn.livechatinc.com/avatars/1.png",
-				"job_title": "Support Agent"
+				"job_title": "Support Agent",
+				"is_bot": false
 			},
 			"displayed_first_time": true
 		}
@@ -807,14 +833,14 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 		"last_event_per_type": { // last event of each type in chat
 			"message": {
 				"thread_id": "K600PKZON8",
-				"thread_order": 343544565,
+				"thread_order": 3,
 				"event": {
 					// "Event > Message" object
 				}
 			},
 			"system_message": {
 				"thread_id": "K600PKZON8",
-				"thread_order": 343544565,
+				"thread_order": 3,
 				"event": {
 					// "Event > System message" object
 				}
@@ -837,7 +863,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 | Request object | Required | Type     | Notes |
 | -------------- | -------- | -------- | ----- |
 | `chat_id`      | Yes      | `string` |       |
-| `thread_ids`   | Yes      | `string` |       |
+| `thread_ids`   | Yes      | `array`  |       |
 
 **Sample request payload**
 
@@ -854,6 +880,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 {
 	"chat": {
 		"id": "PJ0MRSHTDG",
+		"order": 343544565,
 		"users": [
 			// array of "User" objects
 		],
@@ -900,18 +927,20 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 {
 	"threads_summary": [{
 			"id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
-			"order": 129846129847,
+			"order": 2,
 			"total_events": 1
 		},
 		{
 			"id": "b0c22fdd-fb71-40b5-bfc6-a8a0bc3117f6",
-			"order": 129846129848,
+			"order": 1,
 			"total_events": 0
 		}
 	],
 	"total_threads": 4
 }
 ```
+
+\* `threads_summary` is sorted descending by `order`
 
 ## Get groups status
 
@@ -930,7 +959,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 ```js
 {
-	`groups`: [1, 2, 3]
+	"groups": [1, 2, 3, 4]
 }
 ```
 
@@ -946,6 +975,8 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 	}
 }
 ```
+
+**Group Not Found:** If you send `group_id` of group that does not exists, then this `id` won't be included in resposne payload, like `id` 4 in example above.
 
 ## Get predicted agent
 
@@ -1022,14 +1053,15 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 **Request payload**
 
-| Request object           | Required | Type     | Notes                                      |
-| ------------------------ | -------- | -------- | ------------------------------------------ |
-| `chat`                   | No       | `object` |                                            |
-| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents |
-| `chat.properties`        | No       | `object` | Initial chat properties                    |
-| `chat.thread`            | No       | `object` |                                            |
-| `chat.thread.events`     | No       | `array`  | Initial chat events array                  |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties             |
+| Request object           | Required | Type     | Notes                                                   |
+| ------------------------ | -------- | -------- | ------------------------------------------------------- |
+| `chat`                   | No       | `object` |                                                         |
+| `chat.access`            | No       | `object` | Chat access to set, defaults to all agents              |
+| `chat.properties`        | No       | `object` | Initial chat properties                                 |
+| `chat.thread`            | No       | `object` |                                                         |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                               |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties                          |
+| `continuous`             | No       | `bool`   | Start chat as continuous (online group is not required) |
 
 **Sample request payload**
 
@@ -1061,7 +1093,8 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 				...
 			}
 		}
-	}
+	},
+	"continuous": true
 }
 ```
 
@@ -1071,6 +1104,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 {
 	"chat": {
 		"id": "PJ0MRSHTDG",
+		"order": 343544565,
 		"users": [
 			// array of "User" objects
 		],
@@ -1111,6 +1145,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 {
 	"chat": {
 		"id": "PJ0MRSHTDG",
+		"order": 343544565,
 		"access": {
 			"group_ids": [1]
 		},
@@ -1162,7 +1197,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 }
 ```
 
-/\* `threads` array contains only newly created thread
+\* `threads` array contains only newly created thread
 
 ## Send event
 
@@ -1179,6 +1214,7 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 | `chat_id`               | Yes      | `string` | Id of the chat that we want to send the message to                               |
 | `event`                 | Yes      | `object` | Event object                                                                     |
 | `attach_to_last_thread` | No       | `bool`   | If `true`, adds event to last thread, otherwise creates new one, default `false` |
+| `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
 
 **Sample request payload**
 
@@ -1214,11 +1250,12 @@ We are using `customer_side_storage` to keep some data on client side. You shoul
 
 **Sample request (with payload)**
 
-| Request object      | Required | Notes                                           |
-| ------------------- | -------- | ----------------------------------------------- |
-| `payload.chat_id`   | Yes      | Id of the chat that we want to send the file to |
-| `payload.custom_id` | Yes      |                                                 |
-| `payload.file`      | Yes      | max 10MB                                        |
+| Request object                  | Required | Type     | Notes                                                                   |
+| ------------------------------- | -------- | -------- | ----------------------------------------------------------------------- |
+| `payload.chat_id`               | Yes      | `string` | Id of the chat that we want to send the file to                         |
+| `payload.require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false` |
+| `payload.custom_id`             | No       | `string` |                                                                         |
+| `payload.file`                  | Yes      | `binary` | max 10MB                                                                |
 
 - Content-Type header in form `Content-Type: multipart/form-data; boundary=<boundary>` is required.
 
@@ -1556,11 +1593,11 @@ Works only for offline customers.
 
 ```js
 {
-	`page_url`: "https://mypage.com",
-	`customer_fields`: {
+	"page_url": "https://mypage.com",
+	"customer_fields": {
 		"field1": "value1"
 	},
-	`group_id`: 0
+	"group_id": 0
 }
 ```
 
@@ -1789,6 +1826,7 @@ Server => Client methods are used for keeping the application state up-to-date. 
 {
 	"chat": {
 		"id": "PJ0MRSHTDG",
+		"order": 343544565,
 		"users": [
 			// array of "User" objects
 		],
@@ -1931,7 +1969,7 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ```js
 {
-	"reason": "misdirected_request",
+	"reason": "misdirected_connection",
 	"data": { // optional
 		"region": "fra"
 	}
@@ -1940,21 +1978,26 @@ Server => Client methods are used for keeping the application state up-to-date. 
 
 ### Possible reasons
 
-| Type                      | Notes                                                   |
-| ------------------------- | ------------------------------------------------------- |
-| `customer_banned`         | Customer has been banned                                |
-| `too_many_connections`    | Customer reached max number of connections              |
-| `license_not_found`       | License with specified ID doesn't exist                 |
-| `unsupported_version`     | Connecting to unsupported version of Customer API       |
-| `ping_timeout`            | Not receiving ping for some time from customer          |
-| `inactivity_timeout`      | Customer didn't chat nor did change page in past 30 min |
-| `internal_error`          | Internal error                                          |
-| `misdirected_request`     | Customer connected to server in wrong region            |
-| `access_token_expired`    | Access token life time has elapsed                      |
-| `product_version_changed` | Product version has changed                             |
+| Type                                | Notes                                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `customer_banned`                   | Customer has been banned                                                                    |
+| `too_many_connections`              | Customer reached max number of connections                                                  |
+| `too_many_unauthorized_connections` | Max number of unauthorized connections has been reached                                     |
+| `customer_temporarily_blocked`      | Customer tried connecting too often after `too_many_connections` error occurred             |
+| `license_not_found`                 | License with specified ID doesn't exist                                                     |
+| `unsupported_version`               | Connecting to unsupported version of Customer API                                           |
+| `connection_timeout`                | Not receiving ping for some time from client or connection was not authorized for some time |
+| `inactivity_timeout`                | Customer didn't chat nor did change page in past 30 min                                     |
+| `internal_error`                    | Internal error                                                                              |
+| `misdirected_connection`            | Customer connected to server in wrong region                                                |
+| `access_token_expired`              | Access token life time has elapsed                                                          |
+| `product_version_changed`           | Product version has changed                                                                 |
 
-\* Reason `misdirected_request` returns also correct `region` in optional `data` object.
+\* Reason `misdirected_connection` returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
+
+\* Reason `customer_temporarily_blocked` returns also correct `timeout` in optional `data` object.
+With this information client is able to figure out how much time customer should wait before attempting to reconnect again.
 
 ## Thread closed
 

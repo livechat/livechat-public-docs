@@ -1,5 +1,5 @@
 ---
-title: 'Customer API Guide'
+title: "Customer API Guide"
 weight: 1
 ---
 
