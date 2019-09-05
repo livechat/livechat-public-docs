@@ -8,8 +8,7 @@ Configuration API is a service for storing configuration of license. You can set
 
 ## Versioning
 
-There are several API versions available, for example: `v3.0` or `v3.1`. If you want to use the latest version,
-you should use the `api.livechatinc.com/configuration/action/<action>` URL, but it is not recommended.
+This documentation describes **the version 3.1** of the **Configuration API**.
 
 ## Authentication
 
