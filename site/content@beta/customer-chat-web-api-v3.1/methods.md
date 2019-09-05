@@ -29,8 +29,8 @@ curl -X POST \
 
 | Header   |      Value      |  Notes |
 |----------|:-------------:|------:|
-| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for the `send_file` method |
-| `Content-Type` |  `application/json`	    |   Valid for every method except for `send_file ` |
+| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for the `upload_file` method |
+| `Content-Type` |  `application/json`	    |   Valid for every method except for `upload_file ` |
 | `Authorization` |  `Bearer <token>`	    |   Access token |
 
 
@@ -41,6 +41,8 @@ Every request to Customer Chat API needs to have the following query string para
 | Parameter   |      Data type      |  Notes |
 |----------|:-------------:|------:|
 | `license_id`	 |  `integer`  | LiveChat account ID |
+
+<a href="https://www.getpostman.com/collections/07cbb1599d95db0c7d85" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
 
 ---------------------------------------------------------------
 
@@ -600,8 +602,6 @@ Sends the file directly to the chat.
 
 **Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
-
 > **`send_file`** sample **request** with required params only
 
 ```shell
@@ -630,7 +630,7 @@ curl -X POST \
 | **RTM API equivalent**| - |
 | **Webhook**| [`incoming_event`](#incoming-event) or [`incoming_chat_thread`](#incoming-chat-thread) __*__|
 
-__*)__ The `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
+__*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only if the event starts a new thread.
 
 
 #### Request
