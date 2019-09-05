@@ -1,18 +1,68 @@
+---
+weight: 20
+---
+
 # Scopes
 
-## Scopes list
-
-_NOTICE:_
+Scopes define the access to certain resources.
 
 - `ro` means read only
 - `rw` means read/write
-- all `rw` scopes contains `ro` privileges
-- all `all` scopes contains `access` privileges and `my` privileges
-- all `access` scopes contains `my` privileges
+- all `rw` scopes contain `ro` privileges
+- all `access` scopes contain `my` privileges
+- all `all` scopes contain `access` privileges and `my` privileges
 
-For more details check [here](../services/sso/typedef.go).
 
-### Chats scopes
+## Accessing chat 
+
+This chart shows every possible chats scenarios:
+
+- chats without my access and without my presence (`chats -A -P`)
+- chats with my access but without my presence (`chats +A -P`)
+- chats with my presence but without my access (`chats -A +P`)
+- chats with my access and with my presence (`chats +A +P`)
+
+![](./chats.png)
+
+The table shows scopes dependency of accessing chat:
+
+|          | `chats -A -P` | `chats +A -P` | `chats -A +P` | `chats +A +P` |
+| -------- | ------------- | ------------- | ------------- | ------------- |
+| `all`    | ✓             | ✓             | ✓             | ✓             |
+| `access` | -             | ✓             | ✓             | ✓             |
+| `my`     | -             | -             | ✓             | ✓             |
+
+## Accessing parts of chat 
+
+The table shows scopes dependency of accessing chat parts:
+
+|                           | meta data | conversation data |
+| ------------------------- | --------- | ----------------- |
+| `chats-*:rw`              | rw        | rw                |
+| `chats.conversation-*:rw` | ro        | rw                |
+| `chats-*:ro`              | ro        | ro                |
+
+## Scope types
+
+#### Agents scopes
+
+| Scope            | role          | Description                                            |
+| ---------------- | ------------- | ------------------------------------------------------ |
+| `agents--my:rw`  | normal        | Write permission for my profile configuration          |
+| `agents--all:rw` | administrator | Write permission for all agents profiles configuration |
+| `access_rules:ro` | administrator | Read permission for auto chat scopes configuration       |
+| `access_rules:rw` | administrator | Read/write permission for auto chat scopes configuration |
+
+#### Bot Agents scopes
+
+| Scope                | role          | Description                                                                      |
+| -------------------- | ------------- | -------------------------------------------------------------------------------- |
+| `agents-bot--my:ro`  | administrator | Read permission for bot agents configuration (only my bot agents)                |
+| `agents-bot--my:rw`  | administrator | Read/write permission for bot agents configuration (only my bot agents)          |
+| `agents-bot--all:ro` | administrator | Read permission for bot agents configuration (all in license)                    |
+| `agents-bot--all:rw` | administrator | Read/write permission for bot agents configuration (all in license, delete only) |
+
+#### Chats scopes
 
 | Scope                           | role          | Description                                                                                                                                                                           |
 | ------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -35,13 +85,7 @@ For more details check [here](../services/sso/typedef.go).
 
 _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because you have to join the chat to be able to write to it_
 
-### Multicast scopes
-
-| Scope          | role   | Description                                          |
-| -------------- | ------ | ---------------------------------------------------- |
-| `multicast:rw` | normal | Permission for multicast data to agents or customers |
-
-### Customers scopes
+#### Customers scopes
 
 | Scope              | role          | Description                                  |
 | ------------------ | ------------- | -------------------------------------------- |
@@ -50,21 +94,14 @@ _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because
 | `customers:ro`     | normal        | Read permission for customers                |
 | `customers:rw`     | normal        | Read/write permission for customers          |
 
-### Agents scopes
+#### Multicast scopes
 
-| Scope            | role          | Description                                            |
-| ---------------- | ------------- | ------------------------------------------------------ |
-| `agents--my:rw`  | normal        | Write permission for my profile configuration          |
-| `agents--all:rw` | administrator | Write permission for all agents profiles configuration |
+| Scope          | role   | Description                                          |
+| -------------- | ------ | ---------------------------------------------------- |
+| `multicast:rw` | normal | Permission for multicast data to agents or customers |
 
-### Agents scopes
 
-| Scope             | role          | Description                                              |
-| ----------------- | ------------- | -------------------------------------------------------- |
-| `access_rules:ro` | administrator | Read permission for auto chat scopes configuration       |
-| `access_rules:rw` | administrator | Read/write permission for auto chat scopes configuration |
-
-### Properties scopes
+#### Properties scopes
 
 | Scope                | role          | Description                                                                                  |
 | -------------------- | ------------- | -------------------------------------------------------------------------------------------- |
@@ -72,7 +109,7 @@ _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because
 | `properties--my:rw`  | administrator | Read/write permission for chat/thread/events properties configuration (only in my namespace) |
 | `properties--all:ro` | administrator | Read permission for chat/thread/events properties configuration (all in license)             |
 
-### Webhooks scopes
+#### Webhooks scopes
 
 | Scope              | role          | Description                                                                    |
 | ------------------ | ------------- | ------------------------------------------------------------------------------ |
@@ -81,40 +118,5 @@ _NOTICE: currently `chats.conversation--all:rw` allows joining chats too because
 | `webhooks--all:ro` | administrator | Read permission for webhooks configuration (all in license)                    |
 | `webhooks--all:rw` | administrator | Read/write permission for webhooks configuration (all in license, delete only) |
 
-### Bot agents scopes
 
-| Scope                | role          | Description                                                                      |
-| -------------------- | ------------- | -------------------------------------------------------------------------------- |
-| `agents-bot--my:ro`  | administrator | Read permission for bot agents configuration (only my bot agents)                |
-| `agents-bot--my:rw`  | administrator | Read/write permission for bot agents configuration (only my bot agents)          |
-| `agents-bot--all:ro` | administrator | Read permission for bot agents configuration (all in license)                    |
-| `agents-bot--all:rw` | administrator | Read/write permission for bot agents configuration (all in license, delete only) |
 
-## Which chats can i access?
-
-This chart shows every possible chats scenarios:
-
-- chats without my access and without my presence (`chats -A -P`)
-- chats with my access but without my presence (`chats +A -P`)
-- chats with my presence but without my access (`chats -A +P`)
-- chats with my access and with my presence (`chats +P +A`)
-
-![](./chats.png)
-
-The table shows scopes dependency of accessing chat:
-
-|          | `chats -A -P` | `chats +A -P` | `chats -A +P` | `chats +P +A` |
-| -------- | ------------- | ------------- | ------------- | ------------- |
-| `all`    | ✓             | ✓             | ✓             | ✓             |
-| `access` | -             | ✓             | ✓             | ✓             |
-| `my`     | -             | -             | ✓             | ✓             |
-
-## Which parts of chats can i access?
-
-The table shows scopes dependency of accessing chat parts:
-
-|                           | meta data | conversation data |
-| ------------------------- | --------- | ----------------- |
-| `chats-*:rw`              | rw        | rw                |
-| `chats.conversation-*:rw` | ro        | rw                |
-| `chats-*:ro`              | ro        | ro                |
