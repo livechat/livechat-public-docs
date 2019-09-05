@@ -870,6 +870,10 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 ### `grant_access`
 
+Grants access to a nw resource without overwriting the existing ones. 
+
+------------------------------------------------------------------------------
+
 > **`grant_access`** sample **request** with required params only
 
 ```json
@@ -1010,6 +1014,10 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 
 ### `set_access`
+
+Grants access to a new resource overwriting the existing ones.
+
+--------------------------------------------------------------------------
 
 > **`set_access`** sample **request** with required params only
 

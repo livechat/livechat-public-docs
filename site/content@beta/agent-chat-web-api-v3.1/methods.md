@@ -578,6 +578,10 @@ No response payload (`200 OK`).
 
 ### `grant_access`
 
+Grants access to a nw resource without overwriting the existing ones. 
+
+------------------------------------------------------------------------------
+
 > **`grant_access`** sample request 
 
   ```shell
@@ -664,6 +668,10 @@ No response payload (`200 OK`).
 
 
 ### `set_access`
+
+Grants access to a new resource overwriting the existing ones.
+
+--------------------------------------------------------------------------
 
 > **`set_access`** sample request 
 
