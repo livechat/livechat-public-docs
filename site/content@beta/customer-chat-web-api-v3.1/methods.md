@@ -342,22 +342,11 @@ curl -X POST \
 
 ```json
 {
-		"chat": {
-		"id": "PJ0MRSHTDG",
-		"order": 343544565,
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			// "Properties" object
-		},
-		"access": {
-			// "Access" object
-		},
-		"thread": {
-			// "Thread" object
-				}
-			}
+    "chat_id": "W54XYD1O",
+    "thread_id": "Z635Z9WH",
+    "event_ids": [
+      // array of Events ids
+    ]
 }
 ```
 
@@ -382,6 +371,15 @@ curl -X POST \
 | `chat.thread.events`     | No       | `array`  | Initial chat events array   |
 | `chat.thread.properties` | No       | `object` |                   Initial chat thread properties |
 | `continuous` 			   | No       | `bool`   | Starts chat as continuous (online group is not required), default: `false` |
+
+#### Response
+
+| Parameter  | Data type |
+|-------|--------|
+| `chat_id` | `string` |
+| `thread_id` | `string` |
+| `event_ids`   | `[]string` |
+
 
 
 ### `activate_chat`
@@ -450,21 +448,10 @@ curl -X POST \
 
 ```json
 {
-		"chat": {
-		"id": "PJ0MRSHTDG",
-		"users": [
-			// array of "User" objects
-		],
-		"properties": {
-			// "Properties" object
-		},
-		"access": {
-			// "Access" object
-		},
-		"threads": [
-			// array of "Thread" objects
-		]
-	      }
+  "thread_id": "Z2HDF2F9D",
+  "event_ids": [
+    // array of Events ids
+  ]
 }
 ```
 
@@ -490,7 +477,12 @@ curl -X POST \
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                   |
 | `continuous`             | No       | `bool`  | Set chat continuous mode. When unset leaves mode unchanged.|
 
+#### Response
 
+| Parameter  | Data type |
+|-------|--------|
+| `event_ids`   | `[]string` |
+| `thread_id` | `string` |
 
 ### `close_thread`
 
@@ -571,10 +563,7 @@ curl -X POST \
 
 ```json
 {
-		"thread_id": "K600PKZON8",
-		"event": {
-			// the Event object
-	  }
+    "event_id" : "Z587K8OP21"
 }
 ```
 
@@ -600,13 +589,18 @@ __*)__ `incoming_chat_thread` will be sent instead of `incoming_event` only if t
 | `require_active_thread` | No       | `bool`   | If `true`, returns error when all threads are inactive, default `false`          |
 
 
+#### Response
+
+| Parameter   |      Data type      |  Notes |
+|----------|:-------------:|------:|
+| `event_id` |  string | Id of the created event object |
+
+
 ### `send_file`
 
 Sends the file directly to the chat.  
 
 **Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 > **`send_file`** sample **request** with required params only
 
@@ -649,7 +643,6 @@ __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_even
 | `require_active_thread` | No       | `bool` | If set to `true`, it returns an error when all threads are inactive; Default: `false` |
 
 
-
 ### `upload_file`
 
 Uploads a file to the server as a temporary file. It returns a URL, which expires after 24 hours. 
@@ -660,14 +653,13 @@ Uploads a file to the server as a temporary file. It returns a URL, which expire
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.0/customer/action/send_file?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/send_file?license_id=<license_id>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: multipart/form-data; boundary=--------------------------626049643947557285427720' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F payload.chat_id=PXF9EA5UWA \
-  -F payload.require_active_thread=false \
-  -F 'payload.file=@/Users/MyAccount/Downloads/file.jpg'
+  -F chat_id=PXF9EA5UWA \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
 ```
 
 > **`upload_file`** sample **response**
@@ -682,7 +674,7 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/customer/action/upload_file`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/customer/action/upload_file`  |
 | **RTM API equivalent**| - |
 | **Webhook**| [`incoming_event`](#incoming-event) __*__ |
 
@@ -693,7 +685,8 @@ __*)__
 
 | Parameter | Required | Data type     | Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload.file`      | Yes       | `binary` | maximum size: 10MB    	   |
+| `file`      | Yes       | `binary` | maximum size: 10MB    	   |
+
 
 ### `send_rich_message_postback`
 
