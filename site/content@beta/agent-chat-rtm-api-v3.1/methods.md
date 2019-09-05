@@ -933,8 +933,8 @@ Removes the requester from the chat followers. After that, only key changes to t
 | `resource`     | Yes      | `string` | `chat` or `customer` |
 | `id`           | Yes      | `string` | id of resource       |
 | `access`       | Yes      | `object` |                      |
-| `access.type`  | Yes      | `string` | `group` or `agent`   |
-| `access.id`    | Yes      | `number` |                      |
+| `access.type`  | Yes      | `string` | `group` 		      |
+| `access.id`    | Yes      |    any   |                      |
 
 
 

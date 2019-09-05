@@ -84,7 +84,7 @@ curl -X POST \
 	}],
 	"pagination": {
 		"page": 1,
-		"total": 3 // this is total number of threads matching filters
+		"total": 3 // total number of threads matching filters
 	}
 }
 ```
@@ -610,10 +610,10 @@ curl -X POST \
 | Parameter | Required | Data ype     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
-| `id`           | Yes      | `string` | id of resource       |
+| `id`           | Yes      | `string` | Resource id          |
 | `access`       | Yes      | `object` |                      |
-| `access.type`  | Yes      | `string` | `group` or `agent`   |
-| `access.id`    | Yes      | `number` |                      |
+| `access.type`  | Yes      | `string` | `group`              |
+| `access.id`    | Yes      |   any    |                      |
 
 #### Response
 
