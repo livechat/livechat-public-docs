@@ -373,6 +373,63 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
 }
 ```
 
+# Webhook data structure
+
+## Webhook format
+
+```js
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<sekret_key>",
+  "action": "<action>",
+  "data": {
+    // payload from push action
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    }
+  }
+}
+```
+
+## Payload for actions derived from agent-api pushes:
+
+- [`incoming_chat_thread`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-chat-thread)
+- [`incoming_event`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-event)
+- [`last_seen_timestamp_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#last-seen-timestamp-updated)
+- [`thread_closed`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#thread-closed)
+- [`chat_properties_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-updated)
+- [`chat_thread_properties_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-updated)
+- [`chat_user_added`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-added)
+- [`chat_user_removed`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-chat-user-removed)
+
+## Payload for another actions:
+
+### `agent_status_changed`
+
+```js
+{
+    "agent_id":"5c9871d5372c824cbf22d860a707a578",
+    "status": "accepting chats"
+}
+```
+
+possible status values:
+
+- `accepting chats`
+- `not accepting chats`
+- `offline`
+
+### `agent_deleted`
+
+```js
+{
+    "agent_id": "5c9871d5372c824cbf22d860a707a578"
+}
+```
+
+
 # Webhooks
 
 ### Register webhook
@@ -549,61 +606,64 @@ Note: `tokenized_string` is similar to `string` type, except values of it are sp
 }
 ```
 
-# Webhooks data structure
 
-## Webhook format
+# Property data structure
+
+## Property format
+
+> Sample **properties**: 
 
 ```js
 {
-  "webhook_id": "<webhook_id>",
-  "secret_key": "<sekret_key>",
-  "action": "<action>",
-  "data": {
-    // payload from push action
-  },
-  "additional_data": {
-    "chat_properties": { //optional
-        // chat properties
+    "properties": {
+        "routing": {
+            "pinned": true,
+            "count": 3
+        }
     }
-  }
 }
 ```
 
-## Payload for actions derived from agent-api pushes:
+Properties are key-value storages. They can be set within a chat, a thread, or an event. 
 
-- [`incoming_chat_thread`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-chat-thread)
-- [`incoming_event`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#incoming-event)
-- [`last_seen_timestamp_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#last-seen-timestamp-updated)
-- [`thread_closed`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#thread-closed)
-- [`chat_properties_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-properties-updated)
-- [`chat_thread_properties_updated`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-thread-properties-updated)
-- [`chat_user_added`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-user-added)
-- [`chat_user_removed`](https://developers.livechatinc.com/beta-docs/agent-chat-api/#chat-chat-user-removed)
+In our example, `routing` is the namespace, while `pinned` and `count` are properties names.
 
-## Payload for another actions:
 
-### `agent_status_changed`
+## Configuration
 
-```js
-{
-    "agent_id":"5c9871d5372c824cbf22d860a707a578",
-    "status": "accepting chats"
-}
-```
+You can create properties within a license and configure them using the Configuration API. Properties are grouped in namespaces, which helps distinguishing which property belongs to a given integration. Your namespace is always named after your `application id`.
 
-possible status values:
+You can configure the property [type](#property-types), [location](#property-locations), and [domain](#property-domain).
 
-- `accepting chats`
-- `not accepting chats`
-- `offline`
+### Property types
 
-### `agent_deleted`
+There are four property types:
 
-```js
-{
-    "agent_id": "5c9871d5372c824cbf22d860a707a578"
-}
-```
+- `int` (int32)
+- `bool`
+- `string`
+- `tokenized_string`
+
+The `tokenized_string` type is a string split to tokens before indexing in our search engine. It can be useful for longer strings, such as messages. It should not be used for keywords.
+
+### Property locations
+
+Properties can be set for the following locations:
+
+- chat
+- thread
+- event
+
+You can configure access to properties within those locations. For example, you could create a property visible only to agents in a chat and thread, but not in an event. For more details, see [Properties](#properties).
+
+### Property domain
+
+The **property domain** is a set of values that a property can be assigned to.
+
+Property domain can be configured in two ways:
+
+- by defining a set of values explicitly allowed in this property (for example `[1, 2, 3]`).
+- by defining a range. All values within the range are allowed in this property. It works only for numeric types (for example a range from `1` to `3`).
 
 # Properties
 
@@ -755,3 +815,4 @@ Note: for more information about properties see [Properties Guide](https://devel
   ...
 }
 ```
+
