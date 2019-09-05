@@ -28,9 +28,7 @@ if (argv.baseURL && argv.output) {
     baseURL = `${baseURL}/${branch}`;
   }
 
-  const buildCommand = `(export HUGO_VERSION=0.31.1 NODE_ENV=production; webpack --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js && node_modules/hugo-bin/vendor/hugo version && node_modules/hugo-bin/vendor/hugo --baseURL=${baseURL} ${
-    argv.contentDir ? `--contentDir=${argv.contentDir}` : ""
-  } -d ${argv.output} -s site)`;
+  const buildCommand = `mkdir ../dist && mkdir ../dist/beta-docs && cp -r public ${argv.output}`;
 
   console.log(`> ${buildCommand}`);
   shell.exit(shell.exec(buildCommand).code);
