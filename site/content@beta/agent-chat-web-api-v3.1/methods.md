@@ -10,32 +10,30 @@ weight: 60
 
 | HTTP method  | Base URL |
 |-------|--------|
-| `POST`|`https://api.livechatinc.com/v3.0/agent/action/<action>`   |
+| `POST`|`https://api.livechatinc.com/v3.1/agent/action/<action>`   |
 
-If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3"` header.
+If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
 
 > **Web API request format**
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/<action> \
+  https://api.livechatinc.com/v3.1/agent/action/<action> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "payload": {
-		// optional
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}'
+        // payload
+      }'
 ```
 
 #### Required headers
 
 | Header   |      Value      |  Notes |
 |----------|:-------------:|------:|
-| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for `send_file` and `upload_image` Method URL |
-| `Content-Type` |  `application/json`	    |   Valid for every Method URL except `send_file `and `upload_image` |
+| `Content-Type`	 |  `multipart/form-data; boundary=<boundary>`  | Valid for `send_file` and `upload_image` method |
+| `Content-Type` |  `application/json`	    |   Valid for every method except `send_file `and `upload_image` |
 | `Authorization` |  `Bearer <token>`	    |   Access token |
+| `X-Author-Id` |  `<bot_agent_id>`	    |   Valid only for Bot Agents |
 
 <a href="https://app.getpostman.com/run-collection/c44c78bef060739c9c88" target="_blank"><img src="https://run.pstmn.io/button.svg"></a>
 
@@ -66,12 +64,10 @@ It returns summaries of the chats an Agent has access to.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/get_chats_summary \
+  https://api.livechatinc.com/v3.1/agent/action/get_chats_summary \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-    "payload": {}
-		}'
+  -d '{}'
 ```
 
 > **`get_chats_summary`** sample response
@@ -100,9 +96,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chats_summary`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/get_chats_summary`  |
 | __Required scopes *__| `chats--all:ro` `chats--access:ro` `chats--my:ro` |
-| **RTM API equivalent**| [`get_chats_summary`](../agent-chat-rtm-api/#get_chats_summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get_chats_summary)</sup> |
+| **RTM API equivalent**| [`get_chats_summary`](../agent-chat-rtm-api-v3.1/#get_chats_summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#get_chats_summary)</sup> |
 | **Webhook**| - |
 
 
@@ -136,15 +132,13 @@ There's only one value allowed for a single property.
 
   ```shell
   curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/get_chat_threads_summary \
+  https://api.livechatinc.com/v3.1/agent/action/get_chat_threads_summary \
    -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-	"payload": {
-		"chat_id": "PWJ8Y4THAV"
-    }
-}'
-  ```
+		  "chat_id": "PWJ8Y4THAV"
+      }'
+```
 
 > **`get_chat_threads_summary`** sample response
 
@@ -171,9 +165,9 @@ There's only one value allowed for a single property.
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads_summary`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/get_chat_threads_summary`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro` `chats--my:ro`|
-| **RTM API equivalent**| [`get_chat_threads_summary`](../agent-chat-rtm-api/#get-chat-threads-summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads-summary)</sup> |
+| **RTM API equivalent**| [`get_chat_threads_summary`](../agent-chat-rtm-api-v3.1/#get-chat-threads-summary)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#get-chat-threads-summary)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -202,14 +196,12 @@ It returns threads that the current agent has access to in a given chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/get_chat_threads \
+  https://api.livechatinc.com/v3.1/agent/action/get_chat_threads \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-	"payload": {
-		"chat_id": "PWJ8Y4THAV"
-    }
-}'
+		  "chat_id": "PWJ8Y4THAV"
+      }'
 ```
 
 > **`get_chat_threads`** sample response 
@@ -246,9 +238,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_chat_threads`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/get_chat_threads`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro`|
-| **RTM API equivalent**| [`get_chat_threads`](../agent-chat-rtm-api/#get-chat-threads)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-chat-threads)</sup> |
+| **RTM API equivalent**| [`get_chat_threads`](../agent-chat-rtm-api-v3.1/#get-chat-threads)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#get-chat-threads)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -271,22 +263,19 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 
 |  |  |
 |-------|--------|
-| **Method URL**    | `https://api.livechatinc.com/v3.0/agent/action/get_archives`  |
+| **Method URL**    | `https://api.livechatinc.com/v3.1/agent/action/get_archives`  |
 | **Required scopes** | `chats--all:ro` `chats--access:ro`|
-| **RTM API equivalent**| [`get_archives`](../agent-chat-rtm-api/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-archives)</sup> |
+| **RTM API equivalent**| [`get_archives`](../agent-chat-rtm-api-v3.1/#get-archives)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#get-archives)</sup> |
 | **Webhook**| - |
 
 > **`get_archives`** sample request 
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/get_archives \
+  https://api.livechatinc.com/v3.1/agent/action/get_archives \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
-  -d '{
-	"payload": {
-    }
-}'
+  -d '{}'
 ```
 
 #### Request 
@@ -346,12 +335,10 @@ Starts a chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/start_chat \
+  https://api.livechatinc.com/v3.1/agent/action/start_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
-  -d '{
-    "payload": {}
-}'
+  -d '{}'
 ```
 
 > **`start_chat`** sample response 
@@ -374,9 +361,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/start_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/start_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [`start_chat`](../agent-chat-rtm-api/#start-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#start-chat)</sup> |
+| **RTM API equivalent**| [`start_chat`](../agent-chat-rtm-api-v3.1/#start-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#start-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -409,25 +396,23 @@ Used to restart an archived chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/activate_chat \
+  https://api.livechatinc.com/v3.1/agent/action/activate_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat": {
-            "id": "PWJ8Y4THAV"
-        }
-    }
-}'
+      "chat": {
+          "id": "PWJ8Y4THAV"
+          }
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/activate_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/activate_chat`  |
 | __Required scopes *__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [`activate_chat`](../agent-chat-rtm-api/#activate-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#activate-chat)</sup> |
+| **RTM API equivalent**| [`activate_chat`](../agent-chat-rtm-api-v3.1/#activate-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#activate-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread) |
 
 __*)__ 
@@ -485,23 +470,21 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/close_thread \
+  https://api.livechatinc.com/v3.1/agent/action/close_thread \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PJ0MRSHTDG"
-    }
-}'
+      "chat_id": "PJ0MRSHTDG"
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/close_thread`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/close_thread`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`close_thread`](../agent-chat-rtm-api/#close-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#close-thread)</sup> |
+| **RTM API equivalent**| [`close_thread`](../agent-chat-rtm-api-v3.1/#close-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#close-thread)</sup> |
 | **Webhook**| [`thread_closed`](#thread-closed)  |
 
 #### Request
@@ -512,7 +495,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `follow_chat`
@@ -524,23 +507,21 @@ Marks the chat as followed. All changes to the chat will be sent to the requeste
 
   ```shell
   curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/follow_chat \
+  https://api.livechatinc.com/v3.1/agent/action/follow_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6"
-    }
-}'
-  ```
+      "chat_id": "PW94SJTGW6"
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/follow_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/follow_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`follow_chat`](../agent-chat-rtm-api/#follow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#follow-chat)</sup> |
+| **RTM API equivalent**| [`follow_chat`](../agent-chat-rtm-api-v3.1/#follow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#follow-chat)</sup> |
 | **Webhook**| [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__
@@ -554,7 +535,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -567,23 +548,21 @@ Removes the requester from the chat followers. After that, only key changes to t
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/unfollow_chat \
+  https://api.livechatinc.com/v3.1/agent/action/unfollow_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PWF6BACIKO"
-    }
-}'
+      "chat_id": "PWF6BACIKO"
+      }'
   ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/unfollow_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/unfollow_chat`  |
 | __Required scopes__| - |
-| **RTM API equivalent**| [`unfollow_chat`](../agent-chat-rtm-api/#unfollow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#unfollow-chat)</sup> |
+| **RTM API equivalent**| [`unfollow_chat`](../agent-chat-rtm-api-v3.1/#unfollow-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#unfollow-chat)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -595,7 +574,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -608,28 +587,26 @@ No response payload.
 
   ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/grant_access \
+  https://api.livechatinc.com/v3.1/agent/action/grant_access \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "resource": "chat",
-        "id": "PW94SJTGW6",
-        "access": {
-            "type": "group",
-            "id": 19
-        }
-    }
-}'
+      "resource": "chat",
+      "id": "PW94SJTGW6",
+      "access": {
+          "type": "group",
+          "id": 19
+          }
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/grant_access`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/grant_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`grant_access`](../agent-chat-rtm-api/#grant-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#grant-access)</sup> |
+| **RTM API equivalent**| [`grant_access`](../agent-chat-rtm-api-v3.1/#grant-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#grant-access)</sup> |
 | **Webhook**| [`access_granted`](#access-granted)|
 
 
@@ -645,7 +622,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `revoke_access`
@@ -654,28 +631,26 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/revoke_access \
+  https://api.livechatinc.com/v3.1/agent/action/revoke_access \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "resource": "chat",
-        "id": "PW94SJTGW6",
-        "access": {
-            "type": "group",
-            "id": 19
-        }
-    }
-}'
-  ```
+      "resource": "chat",
+      "id": "PW94SJTGW6",
+      "access": {
+          "type": "group",
+          "id": 19
+          }
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/revoke_access`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/revoke_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`revoke_access`](../agent-chat-rtm-api/#revoke-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#revoke-access)</sup> |
+| **RTM API equivalent**| [`revoke_access`](../agent-chat-rtm-api-v3.1/#revoke-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#revoke-access)</sup> |
 | **Webhook**| [`access_revoked`](#access-revoked)|
 
 #### Request
@@ -690,7 +665,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `set_access`
@@ -699,28 +674,26 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/set_access \
+  https://api.livechatinc.com/v3.1/agent/action/set_access \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "resource": "chat",
-        "id": "PW94SJTGW6",
-        "access": {
-            "type": "group",
-            "id": 19
-        }
-    }
-}'
+      "resource": "chat",
+      "id": "PW94SJTGW6",
+      "access": {
+          "type": "group",
+          "id": 19
+          }
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/set_access`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/set_access`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`set_access`](../agent-chat-rtm-api/#set-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#set-access)</sup> |
+| **RTM API equivalent**| [`set_access`](../agent-chat-rtm-api-v3.1/#set-access)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#set-access)</sup> |
 | **Webhook**| [`access_set`](#access-set)|
 
 
@@ -736,7 +709,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `transfer_chat`
@@ -745,29 +718,27 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/transfer_chat \
+  https://api.livechatinc.com/v3.1/agent/action/transfer_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PWF6BACIKO",
-        "target": {
-            "type": "group",
-            "ids": [
-                19
-            ]
-        }
-    }
-}'
-  ```
+      "chat_id": "PWF6BACIKO",
+      "target": {
+          "type": "group",
+          "ids": [
+              19
+              ]
+          }
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/transfer_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/transfer_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`transfer_chat`](../agent-chat-rtm-api/#transfer-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#transfer-chat)</sup> |
+| **RTM API equivalent**| [`transfer_chat`](../agent-chat-rtm-api-v3.1/#transfer-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#transfer-chat)</sup> |
 | **Webhook**| [`chat_transferred`](#chat-transferred)  |
 
 
@@ -783,14 +754,14 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## chat users
 
 ### `add_user_to_chat`
 
-Adds user to chat. Is't forbidden to add more than one `customer` user type to chat.
+Adds user to the chat. Is't forbidden to add more than one `customer` user type to the chat.
 
 ------------------------------------------------------------------------------------------
 
@@ -798,25 +769,23 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 
 ```shell
   curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/add_user_to_chat \
+  https://api.livechatinc.com/v3.1/agent/action/add_user_to_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "user_id": "agent@gmail.com",
-        "user_type": "agent"
-    }
-}'
+      "chat_id": "PW94SJTGW6",
+      "user_id": "agent@gmail.com",
+      "user_type": "agent"
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/add_user_to_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/add_user_to_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **RTM API equivalent**| [`add_user_to_chat`](../agent-chat-rtm-api/#add-user-to-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#add-user-to-chat)</sup> |
+| **RTM API equivalent**| [`add_user_to_chat`](../agent-chat-rtm-api-v3.1/#add-user-to-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#add-user-to-chat)</sup> |
 | **Webhook**| [`chat_user_added`](#chat_user_added) |
 
 #### Request
@@ -830,7 +799,7 @@ Adds user to chat. Is't forbidden to add more than one `customer` user type to c
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 ### `remove_user_from_chat`
 
@@ -842,24 +811,22 @@ Removes user from chat. Removing `customer` user type is forbidden. It's always 
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/remove_user_from_chat \
+  https://api.livechatinc.com/v3.1/agent/action/remove_user_from_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "user_id": "user@gmail.com",
-        "user_type": "agent"
-    }
-}'
-  ```
+      "chat_id": "PW94SJTGW6",
+      "user_id": "user@gmail.com",
+      "user_type": "agent"
+      }'
+```
 
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/remove_user_from_chat`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/remove_user_from_chat`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **RTM API equivalent**| [`remove_user_from_chat`](../agent-chat-rtm-api/#remove-user-from-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#remove-user-from-chat)</sup> |
+| **RTM API equivalent**| [`remove_user_from_chat`](../agent-chat-rtm-api-v3.1/#remove-user-from-chat)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#remove-user-from-chat)</sup> |
 | **Webhook**| [`chat_user_added`](#chat_user_added) |
 
 **Request payload**
@@ -872,7 +839,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -884,20 +851,18 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/send_event \
+  https://api.livechatinc.com/v3.1/agent/action/send_event \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "event": {
-            "type": "message",
-            "text": "hello world",
-            "recipients": "all"
-        }
-    }
-}'
-  ```
+      "chat_id": "PW94SJTGW6",
+      "event": {
+          "type": "message",
+          "text": "hello world",
+          "recipients": "all"
+          }
+      }'
+```
 
 > **`send_event`** sample response 
 
@@ -913,9 +878,9 @@ curl -X POST \
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_event`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/send_event`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent**| [`send_event`](../agent-chat-rtm-api/#send-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-event)</sup> |
+| **RTM API equivalent**| [`send_event`](../agent-chat-rtm-api-v3.1/#send-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#send-event)</sup> |
 | **Webhook**| [`incoming_event`](#incoming-event ) or [`incoming_chat_thread`](#incoming-chat-thread)__*__ |
 
 __*)__ The `incoming_chat_thread` webhook will be sent instead of `incoming_event `only if the event starts a new thread.
@@ -944,13 +909,12 @@ Sends the file directly to the chat.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/send_file \
+  https://api.livechatinc.com/v3.1/agent/action/send_file \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F payload.chat_id=PWJ8Y4THAV \
-  -F payload.require_active_thread=false \
-  -F 'payload.file=@/Users/MyAccount/Downloads/file.jpg'
+  -F chat_id=PWJ8Y4THAV \
+  -F require_active_thread=false \
+  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
   ```
 
 > **`send_file`** sample response 
@@ -964,7 +928,7 @@ curl -X POST \
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_file`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/send_file`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **RTM API equivalent**| - |
 | **Webhook**|[`incoming_chat_thread`](#incoming-chat-thread) or [`incoming_event`](#incoming-event )__*__ |
@@ -976,11 +940,10 @@ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only
 
 | Parameter				 | 		Required | Data type| Notes                     |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload`        				  | Yes  | `object` |                              |
-| `payload.chat_id`				  | Yes  | `string` | The id of the chat that you want to send the file to			   |
-| `payload.require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
-| `payload.custom_id` 			  | No   | `string` | Postback name of the button |
-| `payload.file`				  | Yes  | `binary`   | maximum size: 10 MB |
+| `chat_id`				  | Yes  | `string` | The id of the chat that you want to send the file to			   |
+| `require_active_thread` | No   | `bool` | If `true`, returns error when all threads are inactive; default: `false` |
+| `custom_id` 			  | No   | `string` | Postback name of the button |
+| `file`				  | Yes  | `binary`   | maximum size: 10 MB |
 
 
 ### `upload_file`
@@ -1035,28 +998,26 @@ __*)__
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback \
+  https://api.livechatinc.com/v3.1/agent/action/send_rich_message_postback \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PJ0MRSHTDG",
-        "thread_id": "K600PKZON8",
-        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-        "postback": {
-            "id": "Method URL_yes",
-            "toggled": true
-        }
-    }
-}'
-  ```
+      "chat_id": "PJ0MRSHTDG",
+      "thread_id": "K600PKZON8",
+      "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+      "postback": {
+          "id": "Method URL_yes",
+          "toggled": true
+          }
+      }'
+```
 
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_rich_message_postback`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/send_rich_message_postback`  |
 | __Required scopes__| `chats.conversation--my:rw` `chats.conversation--all:rw` |
-| **RTM API equivalent**| [`send_rich_message_postback`](../agent-chat-rtm-api/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-rich-message-postback)</sup> |
+| **RTM API equivalent**| [`send_rich_message_postback`](../agent-chat-rtm-api-v3.1/#send-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#send-rich-message-postback)</sup> |
 | **Webhook**| [`incoming_rich_message_postback`](#incoming-rich-message-postback)__*__|
 
 __*)__  `incoming_rich_message_postback` will be sent only for active threads.
@@ -1074,7 +1035,7 @@ __*)__  `incoming_rich_message_postback` will be sent only for active threads.
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## properties (chat/thread/event)
@@ -1086,29 +1047,27 @@ No response payload.
 
   ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/update_chat_properties \
+  https://api.livechatinc.com/v3.1/agent/action/update_chat_properties \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-    }
-}'
-  ```
+      "chat_id": "PW94SJTGW6",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
+              }
+          }
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/update_chat_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`update_chat_properties`](../agent-chat-rtm-api/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-properties)</sup> |
+| **RTM API equivalent**| [`update_chat_properties`](../agent-chat-rtm-api-v3.1/#update-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#update-chat-properties)</sup> |
 | **Webhook**| [`chat_properties_updated`](#chat-properties-updated) |
 
 #### Request
@@ -1120,37 +1079,35 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 ### `delete_chat_properties`
 
 > **`delete_chat_properties`** sample request 
 
-    ```shell
+```shell
   curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties \
+  https://api.livechatinc.com/v3.1/agent/action/delete_chat_properties \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
-            ]
-        }
-    }
-}'
+      "chat_id": "PW94SJTGW6",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
+              ]
+          }
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/delete_chat_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`delete_chat_properties`](../agent-chat-rtm-api/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-properties)</sup> |
+| **RTM API equivalent**| [`delete_chat_properties`](../agent-chat-rtm-api-v3.1/#delete-chat-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#delete-chat-properties)</sup> |
 | **Webhook**| [`chat_properties_deleted`](#chat-properties-deleted) |
 
 
@@ -1163,7 +1120,7 @@ No response payload.
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -1173,30 +1130,28 @@ No response payload.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties \
+  https://api.livechatinc.com/v3.1/agent/action/update_chat_thread_properties \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
         "chat_id": "PW94SJTGW6",
         "thread_id": "K600PKZON8",
         "properties": {
             "bb9e5b2f1ab480e4a715977b7b1b4279": {
                 "score": 10,
                 "comment": "Thank you!"
-            }
-        }
-    }
-}'
+              }
+          }
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_chat_thread_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/update_chat_thread_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`update_chat_thread_properties`](../agent-chat-rtm-api/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-chat-thread-properties)</sup> |
+| **RTM API equivalent**| [`update_chat_thread_properties`](../agent-chat-rtm-api-v3.1/#update-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#update-chat-thread-properties)</sup> |
 | **Webhook**| [`chat_thread_properties_updated`](#chat-thread-properties-updated) |
 
 #### Request
@@ -1210,7 +1165,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `delete_chat_thread_properties`
@@ -1219,30 +1174,28 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties \
+  https://api.livechatinc.com/v3.1/agent/action/delete_chat_thread_properties \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
-            ]
-        }
-    }
-}'
+      "chat_id": "PW94SJTGW6",
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
+              ]
+          }
+      }'
 ```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_chat_thread_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/delete_chat_thread_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`delete_chat_thread_properties`](../agent-chat-rtm-api/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-chat-thread-properties)</sup> |
+| **RTM API equivalent**| [`delete_chat_thread_properties`](../agent-chat-rtm-api-v3.1/#delete-chat-thread-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#delete-chat-thread-properties)</sup> |
 | **Webhook**| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) |
 
 #### Request
@@ -1255,7 +1208,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `update_event_properties`
@@ -1264,31 +1217,29 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/update_event_properties \
+  https://api.livechatinc.com/v3.1/agent/action/update_event_properties \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-    }
-}'
-  ```
+      "chat_id": "PW94SJTGW6",
+      "thread_id": "K600PKZON8",
+      "event_id": "2_EW2WQSA8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
+              }
+          }
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_event_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/update_event_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`update_event_properties`](../agent-chat-rtm-api/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-event-properties)</sup> |
+| **RTM API equivalent**| [`update_event_properties`](../agent-chat-rtm-api-v3.1/#update-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#update-event-properties)</sup> |
 | **Webhook**| [`event_properties_updated`](#event-properties-updated) |
 
 #### Request
@@ -1303,7 +1254,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `delete_event_properties`
@@ -1312,33 +1263,31 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/delete_event_properties \
+  https://api.livechatinc.com/v3.1/agent/action/delete_event_properties \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "rating": [
-                    "score",
-                    "comment"
-                ]
-            }
-        }
-    }
-}'
-  ```
+      "chat_id": "PW94SJTGW6",
+      "thread_id": "K600PKZON8",
+      "event_id": "2_EW2WQSA8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "rating": [
+                  "score",
+                  "comment"
+                  ]
+              }
+          }
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/delete_event_properties`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/delete_event_properties`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`delete_event_properties`](../agent-chat-rtm-api/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#delete-event-properties)</sup> |
+| **RTM API equivalent**| [`delete_event_properties`](../agent-chat-rtm-api-v3.1/#delete-event-properties)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#delete-event-properties)</sup> |
 | **Webhook**| [`event_properties_deleted`](#event-properties-deleted) |
 
 #### Request
@@ -1353,7 +1302,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## thread tags
@@ -1364,26 +1313,24 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread \
+  https://api.livechatinc.com/v3.1/agent/action/tag_chat_thread \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-    }
-}'
-  ```
+		  "chat_id": "PW94SJTGW6",
+		  "thread_id": "PWS6GIKAKH",
+		  "tag": "support"
+      }'
+```
 
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/tag_chat_thread`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/tag_chat_thread`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`tag_chat_thread`](../agent-chat-rtm-api/#tag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#tag-chat-thread)</sup> |
+| **RTM API equivalent**| [`tag_chat_thread`](../agent-chat-rtm-api-v3.1/#tag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#tag-chat-thread)</sup> |
 | **Webhook**| [`chat_thread_tagged`](#chat-thread-tagged) |
 
 #### Request
@@ -1397,7 +1344,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ### `untag_chat_thread`
@@ -1406,25 +1353,23 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread \
+  https://api.livechatinc.com/v3.1/agent/action/untag_chat_thread \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-    }
-}'
-  ```
+		  "chat_id": "PW94SJTGW6",
+		  "thread_id": "PWS6GIKAKH",
+		  "tag": "support"
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/untag_chat_thread	`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/untag_chat_thread	`  |
 | __Required scopes__| `chats--all:rw` `chats--access:rw` `chats--my:rw`|
-| **RTM API equivalent**| [`untag_chat_thread`](../agent-chat-rtm-api/#untag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#untag-chat-thread)</sup> |
+| **RTM API equivalent**| [`untag_chat_thread`](../agent-chat-rtm-api-v3.1/#untag-chat-thread)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#untag-chat-thread)</sup> |
 | **Webhook**| [`chat_thread_untagged`](#chat-thread-untagged) |
 
 #### Request
@@ -1438,7 +1383,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## customers
@@ -1453,13 +1398,11 @@ It returns customers list.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/get_customers \
+  https://api.livechatinc.com/v3.1/agent/action/get_customers \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
-  -d '{
-    "payload": {}
-}'
-  ```
+  -d '{}'
+```
 
 > **`get_customers`** sample response
 
@@ -1478,9 +1421,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/get_customers`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/get_customers`  |
 | __Required scopes__| `customers:ro`|
-| **RTM API equivalent**| [`get_customers`](../agent-chat-rtm-api/#get-customers)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#get-customers)</sup> |
+| **RTM API equivalent**| [`get_customers`](../agent-chat-rtm-api-v3.1/#get-customers)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#get-customers)</sup> |
 | **Webhook**| - |
 
 #### Request
@@ -1559,13 +1502,11 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/create_customer \
+  https://api.livechatinc.com/v3.1/agent/action/create_customer \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
-  -d '{
-    "payload": {}
-}'
-  ```
+  -d '{}'
+```
 
 > **`create_customer`** sample response
 
@@ -1579,9 +1520,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/create_customer`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/create_customer`  |
 | __Required scopes__| `customers:rw`|
-| **RTM API equivalent**| [`create_customer`](../agent-chat-rtm-api/#create-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#create-customer)</sup> |
+| **RTM API equivalent**| [`create_customer`](../agent-chat-rtm-api-v3.1/#create-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#create-customer)</sup> |
 | **Webhook**| [`customer_created`](#customer-created) |
 
 #### Request
@@ -1601,15 +1542,13 @@ curl -X POST \
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/update_customer \
+  https://api.livechatinc.com/v3.1/agent/action/update_customer \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "customer_id": "646d53b8-ba76-48bf-7ef1-f6d61ec4ec44",
-        "name": "John Doe"
-    }
-}'
+      "customer_id": "646d53b8-ba76-48bf-7ef1-f6d61ec4ec44",
+      "name": "John Doe"
+      }'
 ```
 
 > **`update_customer`** sample response 
@@ -1624,9 +1563,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_customer`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/update_customer`  |
 | __Required scopes__| `customers:rw`|
-| **RTM API equivalent**| [`update_customer`](../agent-chat-rtm-api/#update-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-customer)</sup> |
+| **RTM API equivalent**| [`update_customer`](../agent-chat-rtm-api-v3.1/#update-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#update-customer)</sup> |
 | **Webhook**| [`customer_updated`](#customer-updated) |
 
 #### Request
@@ -1651,26 +1590,24 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/ban_customer \
+  https://api.livechatinc.com/v3.1/agent/action/ban_customer \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
-        "ban": {
-            "days": 3
-        }
-    }
-}'
-  ```
+      "customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
+      "ban": {
+          "days": 3
+          }
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/ban_customer`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/ban_customer`  |
 | __Required scopes__| `customers.ban:rw` |
-| **RTM API equivalent**| [`ban_customer`](../agent-chat-rtm-api/#ban-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#ban-customer)</sup> |
+| **RTM API equivalent**| [`ban_customer`](../agent-chat-rtm-api-v3.1/#ban-customer)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#ban-customer)</sup> |
 | **Webhook**| [`customer_banned`](#customer-banned) |
 
 #### Request
@@ -1683,7 +1620,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 ## status
@@ -1699,24 +1636,22 @@ Updates agent properties.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/update_agent \
+  https://api.livechatinc.com/v3.1/agent/action/update_agent \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "agent_id": "user@gmail.com",
-        "routing_status": "accepting_chats"
-    }
-}'
-  ```
+      "agent_id": "user@gmail.com",
+      "routing_status": "accepting_chats"
+      }'
+```
 
 #### Specifics
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_agent`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/update_agent`  |
 | __Required scopes__| `agents--my:rw` `agents--all:rw`|
-| **RTM API equivalent**| [`update_agent`](../agent-chat-rtm-api/#update-agent)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-agent)</sup> |
+| **RTM API equivalent**| [`update_agent`](../agent-chat-rtm-api-v3.1/#update-agent)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#update-agent)</sup> |
 | **Webhook**| [`agent_updated`](#agent-updated)|
 
 #### Request
@@ -1728,7 +1663,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -1740,15 +1675,13 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp \
+  https://api.livechatinc.com/v3.1/agent/action/update_last_seen_timestamp \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PJ0MRSHTDG"
-    }
-}'
-  ```
+      "chat_id": "PJ0MRSHTDG"
+      }'
+```
 
 > **`update_last_seen_timestamp`** sample response 
 
@@ -1762,9 +1695,9 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/update_last_seen_timestamp`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/update_last_seen_timestamp`  |
 | __Required scopes__| `chats--access:ro` `chats--all:ro`|
-| **RTM API equivalent**| [`update_last_seen_timestamp`](../agent-chat-rtm-api/#update-last-seen-timestamp)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#update-last-seen-timestamp)</sup> |
+| **RTM API equivalent**| [`update_last_seen_timestamp`](../agent-chat-rtm-api-v3.1/#update-last-seen-timestamp)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#update-last-seen-timestamp)</sup> |
 | **Webhook**| [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)|
 
 
@@ -1784,23 +1717,21 @@ curl -X POST \
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator \
+  https://api.livechatinc.com/v3.1/agent/action/send_typing_indicator \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "chat_id": "PJ0MRSHTDG",
-        "is_typing": true
-    }
-}'
+      "chat_id": "PJ0MRSHTDG",
+      "is_typing": true
+      }'
 ```
 
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/send_typing_indicator`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/send_typing_indicator`  |
 | __Required scopes__| `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`|
-| **RTM API equivalent**| [`send_typing_indicator`](../agent-chat-rtm-api/#send-typing-indicator)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#send-typing-indicator)</sup> |
+| **RTM API equivalent**| [`send_typing_indicator`](../agent-chat-rtm-api-v3.1/#send-typing-indicator)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#send-typing-indicator)</sup> |
 | **Webhook**| - |
 
 
@@ -1814,7 +1745,7 @@ curl -X POST \
 
 #### Response
 
-No response payload.
+No response payload (`200 OK`).
 
 
 
@@ -1824,12 +1755,11 @@ No response payload.
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/upload_image \
+  https://api.livechatinc.com/v3.1/agent/action/upload_image \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: multipart/form-data' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F payload= \
-  -F 'payload.image=@/Users/MyAccount/Downloads/file.jpg'
+  -F 'image=@/Users/MyAccount/Downloads/file.jpg'
   ```
 
 > **`upload_image`** sample response
@@ -1844,7 +1774,7 @@ curl -X POST \
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/upload_image`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/upload_image`  |
 | __Required scopes__| - |
 | **RTM API equivalent**| - |
 | **Push message**| - |
@@ -1853,8 +1783,7 @@ curl -X POST \
 
 | Parameter				 | 		Required | Data type| Notes                  |
 | -------------- | -------- | -------- | ------------------------- |
-| `payload`        				  | Yes  | `object` |  maximum size: 10 MB   |
-| `payload.image`				  | Yes  | `binary` | maximum size: 10 MB    |
+| `image`				  | Yes  | `binary` | maximum size: 10 MB    |
 
 
 #### Response
@@ -1877,44 +1806,42 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 
    ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/agent/action/multicast \
+  https://api.livechatinc.com/v3.1/agent/action/multicast \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "payload": {
-        "scopes": {
-            "agents": {
-                "all": true,
-                "ids": [
-                    "agent1@example.com",
-                    "agent2@example.com"
-                ],
-                "groups": [
-                    1,
-                    2
-                ]
-            },
-            "customers": {
-                "ids": [
-                    "b7eff798-f8df-4364-8059-649c35c9ed0c"
-                ]
-            }
-        },
-        "content": {
-            "example": {
-                "nested": "json"
-            }
-        }
-    }
-}'
-  ```
+      "scopes": {
+          "agents": {
+              "all": true,
+              "ids": [
+                  "agent1@example.com",
+                  "agent2@example.com"
+              ],
+              "groups": [
+                  1,
+                  2
+              ]
+          },
+          "customers": {
+              "ids": [
+                  "b7eff798-f8df-4364-8059-649c35c9ed0c"
+                  ]
+              }
+          },
+      "content": {
+          "example": {
+              "nested": "json"
+              }
+          }
+      }'
+```
 
 #### Specifics
 |  |  |
 |-------|--------|
-| **Method URL**   | `https://api.livechatinc.com/v3.0/agent/action/multicast`  |
+| **Method URL**   | `https://api.livechatinc.com/v3.1/agent/action/multicast`  |
 | __Required scopes__| `multicast:rw` |
-| **RTM API equivalent**| [`multicast`](../agent-chat-rtm-api/#multicast)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#multicast)</sup> |
+| **RTM API equivalent**| [`multicast`](../agent-chat-rtm-api-v3.1/#multicast)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#multicast)</sup> |
 | **Webhook**| [`incoming_multicast`](#incoming-multicast)|
 
 #### Request
