@@ -2,6 +2,46 @@ import React from "react";
 import slugify from "slugify";
 import styled from "@emotion/styled";
 
+const generateSlug = text => {
+  const customId = text.match(/{#([A-Za-z0-9-]+)}/);
+
+  if (customId) {
+    return customId[1];
+  }
+  return slugify(text, { lower: true });
+};
+
+const isString = elem => typeof elem === "string";
+const isArrayOfStrings = obj =>
+  Array.isArray(obj) && obj.reduce((v, elem) => v && isString(elem));
+
+export const getId = children => {
+  let content = children;
+
+  const childrenOfChild = content.props && content.props.children;
+
+  if (isString(content)) {
+    return generateSlug(content);
+  }
+
+  if (isArrayOfStrings(content)) {
+    return generateSlug(content.reduce((str, elem) => (str += elem), ""));
+  }
+
+  if (childrenOfChild) {
+    return getId(childrenOfChild);
+  }
+
+  return "unhandled-header-content";
+};
+
+export const getText = children => {
+  if (typeof children !== "string") {
+    return children;
+  }
+  return children.replace(/{#[A-Za-z0-9-]+}/, "");
+};
+
 const HeadingLink = styled.a`
   color: inherit;
   text-decoration: none;
@@ -17,26 +57,6 @@ const HeadingLink = styled.a`
     }
   }
 `;
-
-export const getId = children => {
-  if (typeof children !== "string") {
-    return "fix-me";
-  }
-
-  const customId = children.match(/{#([A-Za-z0-9-]+)}/);
-  if (customId) {
-    return customId[1];
-  }
-
-  return slugify(children, { lower: true });
-};
-
-export const getText = children => {
-  if (typeof children !== "string") {
-    return children;
-  }
-  return children.replace(/{#[A-Za-z0-9-]+}/, "");
-};
 
 // dirty h1 => h2
 export default {
