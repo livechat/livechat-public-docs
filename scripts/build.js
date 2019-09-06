@@ -28,7 +28,7 @@ if (argv.baseURL && argv.output) {
     baseURL = `${baseURL}/${branch}`;
   }
 
-  const buildCommand = `npm run build && mkdir -p ${argv.output} && cp -r public/. ${argv.output}`;
+  const buildCommand = `PATH_PREFIX=${baseURL} npm run build && mkdir -p ${argv.output} && cp -r public/. ${argv.output}`;
 
   console.log(`> ${buildCommand}`);
   shell.exit(shell.exec(buildCommand).code);
