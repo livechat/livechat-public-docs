@@ -3,6 +3,15 @@ const path = require("path");
 
 const { createFilePath } = require("gatsby-source-filesystem");
 
+// gatsby-node.js
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    resolve: {
+      modules: [path.resolve(__dirname, "src"), "node_modules"]
+    }
+  });
+};
+
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
 
