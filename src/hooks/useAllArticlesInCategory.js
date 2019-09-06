@@ -39,7 +39,7 @@ export default category => {
       ...acc,
       [cur.subcategory]: {
         ...subcategoryMeta,
-        url: "/docs/" + category + "/" + cur.subcategory + "/",
+        url: "/" + category + "/" + cur.subcategory + "/",
         article: true,
         isSubcategory: true,
         items: [...rest, cur]

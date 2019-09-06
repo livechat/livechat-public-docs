@@ -63,13 +63,13 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
   const articles = useAllArticlesInCategory(category);
   const categories = useAllCategoriesMeta().map(item => ({
     ...item,
-    url: `/docs/${item.slug}/`
+    url: `/${item.slug}/`
   }));
 
   const menuItems = category ? articles : categories;
 
   const initialState = subcategory
-    ? [`/docs/${category}/${subcategory}/`, currentSlug]
+    ? [`/${category}/${subcategory}/`, currentSlug]
     : [currentSlug];
   const [activeUrls, setActiveUrls] = useState(initialState);
 
@@ -84,7 +84,7 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
   return (
     <Nav color={categoryMeta.color}>
       <NavHeader>
-        <Link to={"/docs/"} style={{ color: "inherit" }}>
+        <Link to={"/"} style={{ color: "inherit" }}>
           <PopperTooltip
             isVisible={true}
             placement={"bottom-start"}

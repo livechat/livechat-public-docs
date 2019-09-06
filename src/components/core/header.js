@@ -65,7 +65,7 @@ const activeLinkStyle = color => ({
 const MenuElement = ({ label, slug, color }) => (
   <MenuElementWrapper>
     <Link
-      to={`/docs/${slug}/`}
+      to={`/${slug}/`}
       partiallyActive
       css={linkStyle}
       activeStyle={activeLinkStyle(color)}
@@ -92,7 +92,7 @@ const Header = () => {
           />
         </a>
         <Link
-          to="/docs/"
+          to="/"
           css={css`
             color: white !important;
             text-decoration: none;

@@ -3,7 +3,7 @@ import { useStaticQuery, graphql } from "gatsby";
 export default () => {
   const categoryMeta = useStaticQuery(graphql`
     query getAllCategoriesMeta {
-      allDocsJson {
+      allContentJson {
         edges {
           node {
             categories {
@@ -20,7 +20,7 @@ export default () => {
         }
       }
     }
-  `).allDocsJson.edges[0].node.categories;
+  `).allContentJson.edges[0].node.categories;
 
   return categoryMeta ? categoryMeta : [];
 };
