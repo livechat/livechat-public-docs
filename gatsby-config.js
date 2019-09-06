@@ -6,6 +6,7 @@ module.exports = {
     description: "",
     author: "@livechat"
   },
+  pathPrefix: process.env.PATH_PREFIX || "/docs",
   plugins: [
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
