@@ -83,7 +83,6 @@ export const pageQuery = graphql`
       }
       frontmatter {
         title
-        color
         category
         subcategory
         slug
