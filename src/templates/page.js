@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
@@ -19,9 +19,12 @@ import {
   PageHeader
 } from "../components/core/components";
 
+// import { SluggerContext } from "../components/core/slugger";
+import { slugger } from "../components/core/slugger";
+
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
-import { useHeadingsOffsetMap } from "../hooks";
+
 const components = {
   ...DesignSystem,
   ...CodeBlocks,
@@ -37,8 +40,6 @@ export default ({ data: { mdx } }) => {
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
-
-  useHeadingsOffsetMap(".heading");
 
   return (
     <>
@@ -59,6 +60,7 @@ export default ({ data: { mdx } }) => {
               timeToRead={timeToRead}
               modifiedTime={modifiedTime}
             />
+
             <MDXProvider components={components}>
               <MDXRenderer>{body}</MDXRenderer>
             </MDXProvider>

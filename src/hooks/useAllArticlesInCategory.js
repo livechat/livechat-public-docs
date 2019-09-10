@@ -1,7 +1,33 @@
 import { useAllArticlesGroupedByCategory } from "./";
 import useCategoryMeta from "./useCategoryMeta";
 
-export default category => {
+const appendPathsToNodes = (items, path = []) => {
+  return items.map(item => {
+    return {
+      ...item,
+      path: [...path, item.url],
+      items: item.items
+        ? appendPathsToNodes(item.items, [...path, item.url])
+        : undefined
+    };
+  });
+};
+
+const generatePathsMap = (items, acc = {}) => {
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i];
+
+    acc = { ...acc, [item.url]: item.path };
+    if (item.items && item.url) {
+      acc = {
+        ...generatePathsMap(item.items, acc)
+      };
+    }
+  }
+  return acc;
+};
+
+export default (category, currentSlug) => {
   const byCategory = useAllArticlesGroupedByCategory().filter(item => {
     if (category) {
       return item.fieldValue === category;
@@ -9,7 +35,7 @@ export default category => {
     return item;
   })[0];
 
-  let result = byCategory.edges
+  let articles = byCategory.edges
     .map(({ node }) => ({
       id: node.id,
       url: node.frontmatter.slug || node.fields.slug,
@@ -20,6 +46,13 @@ export default category => {
       subcategory: node.frontmatter.subcategory,
       article: true
     }))
+    // keep toc only for current article
+    .map(item => {
+      if (item.url !== currentSlug) {
+        return { ...item, items: null };
+      }
+      return item;
+    })
     .sort(({ title: titleA }, { title: titleB }) =>
       titleA.localeCompare(titleB)
     )
@@ -28,7 +61,7 @@ export default category => {
   // this parts kind of tricky;
   // if you have an idea on how to
   // make it simple, fire away!
-  result = result.reduce((acc, cur) => {
+  articles = articles.reduce((acc, cur) => {
     const rest = acc[cur.subcategory] ? acc[cur.subcategory].items : [];
 
     const subcategoryMeta = useCategoryMeta(cur.category).items.filter(
@@ -48,7 +81,7 @@ export default category => {
   }, {});
 
   // squeezing the reduced object into array
-  result = Object.entries(result)
+  articles = Object.entries(articles)
     .map(item => {
       return { ...item[1] };
     })
@@ -59,5 +92,11 @@ export default category => {
       return [...acc, ...item.items];
     }, []);
 
-  return result;
+  // last piece of data: a flat array of url & paths,
+  // plus a getter for the path
+  articles = appendPathsToNodes(articles);
+  const pathsMap = generatePathsMap(articles);
+  const getArticlePath = url => pathsMap[url];
+
+  return [articles, getArticlePath];
 };
