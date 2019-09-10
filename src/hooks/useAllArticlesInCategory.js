@@ -1,6 +1,18 @@
 import { useAllArticlesGroupedByCategory } from "./";
 import useCategoryMeta from "./useCategoryMeta";
 
+const parentizeNodes = (items, path = []) => {
+  return items.map(item => {
+    return {
+      ...item,
+      path: [...path, item.url],
+      items: item.items
+        ? parentizeNodes(item.items, [...path, item.url])
+        : undefined
+    };
+  });
+};
+
 export default category => {
   const byCategory = useAllArticlesGroupedByCategory().filter(item => {
     if (category) {
@@ -58,6 +70,9 @@ export default category => {
       }
       return [...acc, ...item.items];
     }, []);
+
+  result = parentizeNodes(result);
+  // console.log(result);
 
   return result;
 };

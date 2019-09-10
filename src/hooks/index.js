@@ -30,4 +30,35 @@ export const useHeadingsOffsetMap = selector => {
   return offsetMap;
 };
 
-export const useScrollSpy = selector => {};
+export const useScrollSpy = (selector = ".heading", callback) => {
+  const [active, setActive] = useState("");
+
+  let options = {
+    rootMargin: "-60px 0px 0px",
+    threshold: 0
+  };
+
+  const observerCb = data => {
+    console.log(
+      "fired!",
+      data.filter(item => item && item.isIntersecting)
+      //   .map(item => {
+      //     setActive(item.target.id);
+      //     callback(item.target.id);
+      //   }),
+      // data
+    );
+    setActive();
+  };
+
+  let observer = new IntersectionObserver(observerCb, options);
+
+  useEffect(() => {
+    document
+      .querySelectorAll(selector)
+      .forEach(element => observer.observe(element));
+    // eslint-disable-next-line
+  }, []);
+
+  return active;
+};

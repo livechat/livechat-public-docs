@@ -193,7 +193,7 @@ export const MenuAnchorLink = styled.a`
 
 export const MenuElement = ({ url, title, onClick, active }) => (
   <Li onClick={onClick}>
-    {/#/.test(url) ? (
+    {/^#.*/.test(url) ? (
       <MenuAnchorLink href={url} active={active}>
         <HashtagIcon
           style={{ marginRight: "4px", marginTop: "1px", opacity: 0.6 }}

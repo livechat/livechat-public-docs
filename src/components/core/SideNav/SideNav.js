@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import {
   Nav,
   NavHeader,
@@ -11,41 +11,42 @@ import { HomeIcon, ChevronRight } from "../icons";
 import {
   useAllArticlesInCategory,
   useCategoryMeta,
-  useAllCategoriesMeta
+  useAllCategoriesMeta,
+  useScrollSpy
 } from "../../../hooks";
-import { getId, getText } from "../../extensions/Headings";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
 
-export const generateItemsTree = (items, depth = 0) => {
-  return items.map(item => {
-    const url = item.article ? item.url : `#${getId(item.title)}`;
-    const title = getText(item.title);
-    const newItem = { ...item, url, title };
-
-    if (item.items) {
-      return {
-        ...newItem,
-        items: generateItemsTree(item.items, depth + 1)
-      };
+const findActiveItem = (items, url) => {
+  if (items.length) {
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.url === url) {
+        console.log("hooray!", item.path);
+        return item.path;
+      }
+      if (item.items && item.items.length) {
+        return findActiveItem(item.items, url);
+      }
     }
-    return newItem;
-  });
+  }
 };
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
-    {items.map(({ title, url, items: itemsInside, isSubcategory }) => {
+    {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
       const activeItem =
         url === activeUrls[activeUrls.length - 1] && !isSubcategory;
+
       const activeSection = url === activeUrls[depth];
+
       return (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
-            url={url}
+            url={url || "#"}
             title={title}
             active={activeItem}
-            onClick={toggleState(url, depth)}
+            onClick={toggleState(url)}
           />
 
           {itemsInside && (
@@ -73,13 +74,22 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
     : [currentSlug];
   const [activeUrls, setActiveUrls] = useState(initialState);
 
-  const toggleState = (slug, depth) => () => {
-    let newArr = activeUrls.slice(0, depth);
-    newArr[depth] = slug;
-    return setActiveUrls(newArr);
+  const toggleState = path => () => {
+    console.log("find", menuItems, path, findActiveItem(menuItems, path));
+    setActiveUrls(findActiveItem(menuItems, path) || []);
   };
 
   const categoryMeta = useCategoryMeta(category);
+
+  const elo = useScrollSpy(".heading", url => {
+    // setActiveUrls(findActiveItem(menuItems, { url: url }).path);
+  });
+
+  useEffect(() => {
+    console.log("activeUrls", activeUrls);
+  }, [activeUrls]);
+
+  console.log({ menuItems });
 
   return (
     <Nav color={categoryMeta.color}>
@@ -104,7 +114,7 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
         {categoryMeta.title || "Home"}
       </NavHeader>
       <MenuWrapper>
-        {printItems(menuItems, toggleState, activeUrls)}
+        {printItems(menuItems, toggleState, activeUrls, undefined)}
       </MenuWrapper>
     </Nav>
   );
