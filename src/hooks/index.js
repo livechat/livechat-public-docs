@@ -47,17 +47,19 @@ export const useScrollSpy = (selector = ".heading", callback) => {
   };
 
   useEffect(() => {
-    console.log(active);
     callback(active[0]);
   }, [active]);
 
-  let observer = new IntersectionObserver(onObserve, options);
+  let observer = {};
+
+  if (!!(typeof window !== "undefined") && !"IntersectionObserver" in window) {
+    observer = new IntersectionObserver(onObserve, options);
+  }
 
   useEffect(() => {
     const elements = document.querySelectorAll(selector);
 
-    elements.forEach(element => observer.observe(element));
-    // return () => elements.forEach(element => observer.unobserve(element));
+    elements.forEach(element => observer.observe && observer.observe(element));
     // eslint-disable-next-line
   }, []);
 
