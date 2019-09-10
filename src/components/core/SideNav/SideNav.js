@@ -17,40 +17,30 @@ import {
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
 
-const findActiveItem = (items, url) => {
-  if (items.length) {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.url === url) {
-        console.log("hooray!", item.path);
-        return item.path;
-      }
-      if (item.items && item.items.length) {
-        return findActiveItem(item.items, url);
-      }
-    }
-  }
-};
+import { slugger } from "../slugger";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
     {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
-      const activeItem =
-        url === activeUrls[activeUrls.length - 1] && !isSubcategory;
+      const isActiveItem =
+        (activeUrls &&
+          url === activeUrls[activeUrls.length - 1] &&
+          !isSubcategory) ||
+        "";
 
-      const activeSection = url === activeUrls[depth];
+      const isActiveSection = url === activeUrls[depth];
 
       return (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
             url={url || "#"}
             title={title}
-            active={activeItem}
-            onClick={toggleState(url)}
+            active={isActiveItem}
+            onClick={toggleState(path)}
           />
 
           {itemsInside && (
-            <CollapsableSection expanded={activeSection}>
+            <CollapsableSection expanded={isActiveSection}>
               {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
             </CollapsableSection>
           )}
@@ -61,7 +51,11 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
 );
 
 const SideNav = ({ category, subcategory, currentSlug }) => {
-  const articles = useAllArticlesInCategory(category);
+  const [articles, getArticlePath] = useAllArticlesInCategory(
+    category,
+    currentSlug
+  );
+
   const categories = useAllCategoriesMeta().map(item => ({
     ...item,
     url: `/${item.slug}/`
@@ -69,27 +63,19 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
 
   const menuItems = category ? articles : categories;
 
-  const initialState = subcategory
+  const initialPath = subcategory
     ? [`/${category}/${subcategory}/`, currentSlug]
     : [currentSlug];
-  const [activeUrls, setActiveUrls] = useState(initialState);
 
-  const toggleState = path => () => {
-    console.log("find", menuItems, path, findActiveItem(menuItems, path));
-    setActiveUrls(findActiveItem(menuItems, path) || []);
-  };
+  const [activePath, setActivePath] = useState(initialPath);
+  const toggleState = path => () => setActivePath(path);
 
   const categoryMeta = useCategoryMeta(category);
 
-  const elo = useScrollSpy(".heading", url => {
-    // setActiveUrls(findActiveItem(menuItems, { url: url }).path);
-  });
+  useScrollSpy(".heading", url => setActivePath(getArticlePath(url) || []));
 
-  useEffect(() => {
-    console.log("activeUrls", activeUrls);
-  }, [activeUrls]);
-
-  console.log({ menuItems });
+  // a dirty hack for slugger
+  useEffect(() => slugger.reset(), []);
 
   return (
     <Nav color={categoryMeta.color}>
@@ -114,7 +100,7 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
         {categoryMeta.title || "Home"}
       </NavHeader>
       <MenuWrapper>
-        {printItems(menuItems, toggleState, activeUrls, undefined)}
+        {printItems(menuItems, toggleState, activePath, undefined)}
       </MenuWrapper>
     </Nav>
   );

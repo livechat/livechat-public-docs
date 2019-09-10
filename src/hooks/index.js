@@ -31,32 +31,33 @@ export const useHeadingsOffsetMap = selector => {
 };
 
 export const useScrollSpy = (selector = ".heading", callback) => {
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState([]);
 
   let options = {
-    rootMargin: "-60px 0px 0px",
+    rootMargin: "0px",
     threshold: 0
   };
 
-  const observerCb = data => {
-    console.log(
-      "fired!",
-      data.filter(item => item && item.isIntersecting)
-      //   .map(item => {
-      //     setActive(item.target.id);
-      //     callback(item.target.id);
-      //   }),
-      // data
-    );
-    setActive();
+  const onObserve = data => {
+    const intersecting = data.filter(item => item && item.isIntersecting);
+
+    if (intersecting.length > 0) {
+      setActive(intersecting.map(item => `#${item.target.id}`));
+    }
   };
 
-  let observer = new IntersectionObserver(observerCb, options);
+  useEffect(() => {
+    console.log(active);
+    callback(active[0]);
+  }, [active]);
+
+  let observer = new IntersectionObserver(onObserve, options);
 
   useEffect(() => {
-    document
-      .querySelectorAll(selector)
-      .forEach(element => observer.observe(element));
+    const elements = document.querySelectorAll(selector);
+
+    elements.forEach(element => observer.observe(element));
+    // return () => elements.forEach(element => observer.unobserve(element));
     // eslint-disable-next-line
   }, []);
 
