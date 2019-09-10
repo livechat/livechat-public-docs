@@ -33,33 +33,35 @@ export const useHeadingsOffsetMap = selector => {
 export const useScrollSpy = (selector = ".heading", callback) => {
   const [active, setActive] = useState([]);
 
-  let options = {
-    rootMargin: "0px",
-    threshold: 0
-  };
-
-  const onObserve = data => {
-    const intersecting = data.filter(item => item && item.isIntersecting);
-
-    if (intersecting.length > 0) {
-      setActive(intersecting.map(item => `#${item.target.id}`));
-    }
-  };
-
   useEffect(() => {
     callback(active[0]);
   }, [active]);
 
-  let observer = {};
-
-  if (!!(typeof window !== "undefined") && !"IntersectionObserver" in window) {
-    observer = new IntersectionObserver(onObserve, options);
-  }
-
   useEffect(() => {
-    const elements = document.querySelectorAll(selector);
+    if (!!(typeof window !== "undefined") && "IntersectionObserver" in window) {
+      let options = {
+        rootMargin: "0px",
+        threshold: 0
+      };
 
-    elements.forEach(element => observer.observe && observer.observe(element));
+      const onObserve = data => {
+        const intersecting = data.filter(item => item && item.isIntersecting);
+
+        if (intersecting.length > 0) {
+          setActive(intersecting.map(item => `#${item.target.id}`));
+        }
+      };
+
+      let observer = {};
+
+      observer = new IntersectionObserver(onObserve, options);
+
+      const elements = document.querySelectorAll(selector);
+
+      elements.forEach(
+        element => observer.observe && observer.observe(element)
+      );
+    }
     // eslint-disable-next-line
   }, []);
 
