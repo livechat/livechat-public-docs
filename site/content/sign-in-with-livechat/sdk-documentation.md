@@ -29,7 +29,7 @@ This method initiates the SDK and returns the `accountsSdk` object instance. It 
 
 * **linkLabel** – (optional, defaults to empty string) allows to change default _Sign in with LiveChat_ label with custom text.
 
-* **popupRoute** – (optional, defaults to empty string) it lets you change default popup's endpoint, possible values are:<br><br> - `''` (default) – empty string which will show sign-in view.<br><br> - `'signup' | 'signup/credentials'` – it will point user directly to the first step of sign-up.
+* **popupRoute** – (optional, defaults to empty string) it lets you change default popup's endpoint, possible values are:<br><br> • `''` (default) – empty string which will show sign-in view.<br><br> • `'signup'` – it will point user directly to the first step of sign-up.
 
 <aside class="notice"><code>accountsSdk</code> object exposes only one method: <code>init()</code>. All other methods must be called by the object instance returned by the <code>init()</code> method.</aside>
 
