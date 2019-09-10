@@ -52,7 +52,7 @@ export const useScrollSpy = (selector = ".heading", callback) => {
 
   let observer = {};
 
-  if (!"IntersectionObserver" in window) {
+  if (!!(typeof window !== "undefined") && !"IntersectionObserver" in window) {
     observer = new IntersectionObserver(onObserve, options);
   }
 
