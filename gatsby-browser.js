@@ -7,6 +7,6 @@ new SmoothScroll('a[href*="#"]', {
   offset: 120
 });
 
-export const onRouteUpdate = ({ location, prevLocation }) => {
+export const onRouteUpdate = () => {
   slugger.reset();
 };

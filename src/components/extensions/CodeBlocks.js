@@ -133,10 +133,10 @@ export const CodeSample = ({ path, children }) => {
   );
 };
 
-export const CodeResponse = ({ children }) => {
+export const CodeResponse = ({ title = "Response", children }) => {
   return (
     <CodeResponseWrapper>
-      <ResponseTopbar>Response</ResponseTopbar>
+      <ResponseTopbar>{title}</ResponseTopbar>
       <Body>{children}</Body>
     </CodeResponseWrapper>
   );
