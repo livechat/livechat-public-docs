@@ -129,6 +129,7 @@ Returns all tickets.
 | `source` | returns the tickets for the given source. Possible values: `lc2` (created from archives), `mail`, `facebook`, `agent-app-manual` (created manually), `chat-window` (created from ticket form) |
 | `tag` | returns the statistics for the specified tag |
 | `tagged` | `1/0`. If 1 is passed, returns the tickets with any tag. If 0 passed, returns the tickets with no tags |
+| `source_id` | returns the tickets for the given source ID (eg. related chat ID)
 
 
 #### Additional info:
