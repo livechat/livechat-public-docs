@@ -8,6 +8,7 @@ const HeadingLink = styled.a`
   position: relative;
   &:hover {
     color: inherit;
+    text-decoration: none;
     &:before {
       content: "#";
       position: absolute;
@@ -46,6 +47,11 @@ export const getText = children => {
   return children.replace(/{#[A-Za-z0-9-]+}/, "");
 };
 
+const H2 = styled.h2`
+  border-bottom: 1px solid #e0e4e9;
+  padding-bottom: 0.5em;
+`;
+
 const makeHeading = size => ({ children }) => {
   const id = getId(children);
   const className = "heading";
@@ -58,9 +64,9 @@ const makeHeading = size => ({ children }) => {
   switch (size) {
     case "h1":
       return (
-        <h2 {...props}>
+        <H2 {...props}>
           <Content />
-        </h2>
+        </H2>
       );
     case "h2":
       return (

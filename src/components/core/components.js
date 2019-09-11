@@ -169,6 +169,7 @@ export const MenuLink = styled(Link)`
   background-color: ${({ active }) =>
     active ? "rgba(var(--page-theme-color), 0.07);" : ""};
   &:hover {
+    text-decoration: none;
     color: rgb(var(--page-theme-color));
   }
 `;
@@ -187,6 +188,7 @@ export const MenuAnchorLink = styled.a`
   background-color: ${({ active }) =>
     active ? "rgba(var(--page-theme-color), 0.07);" : ""};
   &:hover {
+    text-decoration: none;
     color: rgb(var(--page-theme-color));
   }
 `;
