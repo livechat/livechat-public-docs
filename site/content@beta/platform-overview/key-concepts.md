@@ -229,8 +229,12 @@ Properties are simple key-value storages. They can be set within a chat, a threa
 {
     "properties": {
         "routing": {
-            "pinned": true,
-            "count": 3
+            "pinned": {
+	      "value: true
+	    },
+            "count": {
+	      "value": 3
+	    }
         }
     }
 }
