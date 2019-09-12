@@ -37,6 +37,13 @@ All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This pr
 
 Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with `dal-` you don’t have to specify the header.
 
+## Postman Collection
+
+You can find all the requests from the Customer Chat Web API v3.1 in Postman.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f662e946a19ab38492f7)
+
+
 # Events
 
 One of the data structures are **events**. They are sent to a chat via the `send_event` method.
@@ -53,11 +60,34 @@ These are the available **event types**:
 - [Custom](#custom)
 - [System message](#system-message)
 
+
 ## File
 
-> A sample **File** event
+<Section>
 
-```js
+<Text>
+
+File event informs about a file being uploaded.
+
+---
+
+| Field                                                 | Req./Opt. |                                                          Note |
+| ----------------------------------------------------- | :-------: | ------------------------------------------------------------: |
+| `content_type`                                        | required  | supported image types: `image/png`, `image/jpeg`, `image/gif` |
+| `custom_id`                                           | optional  |                                                             - |
+| `properties`                                          | optional  |                                                             - |
+| `recipients`                                          | required  |                    possible values: `all` (default), `agents` |
+| `system_message_type`                                 | required  |                                                             - |
+| `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                               only for images |
+
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample File event'}>
+
+```json
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
 	"custom_id": "31-0C-1C-07-DB-16",
@@ -65,7 +95,7 @@ These are the available **event types**:
 	"type": "file",
 	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
 	"timestamp": 1473433500, // generated server-side
-	"recipients": "all", //
+	"recipients": "all",
 	"properties": {
 		// "Properties" object
 	},
@@ -80,24 +110,41 @@ These are the available **event types**:
 }
 ```
 
-**informs about a file upload**
+</CodeResponse>
 
----
+</Code>
 
-| Field                                                 | Req./Opt. |                                                          Note |
-| ----------------------------------------------------- | :-------: | ------------------------------------------------------------: |
-| `content_type`                                        | required  | supported image types: `image/png`, `image/jpeg`, `image/gif` |
-| `custom_id`                                           | optional  |                                                             - |
-| `properties`                                          | optional  |                                                             - |
-| `recipients`                                          | required  |      can take the following values: `all` (default), `agents` |
-| `system_message_type`                                 | required  |                                                             - |
-| `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                               only for images |
+</Section>
+
 
 ## Filled form
 
-> A sample **Filled form** event
+<Section>
 
-```js
+<Text>
+
+
+Filled form event contains data from a form.
+
+---
+
+| Field                                   | Req./Opt |                                       Note |
+| --------------------------------------- | :------: | -----------------------------------------: |
+| `custom_id`                             | optional |                                          - |
+| `properties`                            | optional |                                          - |
+| `recipients`                            | required | possible values: `all` (default), `agents` |
+| `name`, `email`, `question`, `textarea` | optional |           for open questions (text answer) |
+| `radio`, `select`                       | optional |                for single-choice questions |
+| `checkbox`                              | optional |              for multiple-choice questions |
+| `group_chooser`                         | optional |                 for group-choice questions |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Filled form event'}>
+
+```json
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
 	"custom_id": "31-0C-1C-07-DB-16",
@@ -151,25 +198,40 @@ These are the available **event types**:
 }
 ```
 
-**an event containing data from a form**
+</CodeResponse>
 
----
+</Code>
 
-| Field                                   | Req./Opt |                                                     Note |
-| --------------------------------------- | :------: | -------------------------------------------------------: |
-| `custom_id`                             | optional |                                                        - |
-| `properties`                            | optional |                                                        - |
-| `recipients`                            | required | can take the following values: `all` (default), `agents` |
-| `name`, `email`, `question`, `textarea` | optional |                         for open questions (text answer) |
-| `radio`, `select`                       | optional |                              for single-choice questions |
-| `checkbox`                              | optional |                            for multiple-choice questions |
-| `group_chooser`                         | optional |                               for group-choice questions |
+</Section>
+
 
 ## Message
 
-> A sample **Message** event
+<Section>
 
-```js
+<Text>
+
+Message event contains text message to other chat users.
+
+---
+
+| Field            | Req./Opt. |                                                                                                                         Note |
+| ---------------- | :-------: | ---------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`      | optional  |                                                                                                                            - |
+| `postback`       | optional  |                                                                                                                            - |
+| `postback.type`  | required  |                                                                                 required only if `postback.value` is present |
+| `postback.value` | required  |                                                                                  required only if `postback.type` is present |
+| `properties`     | optional  |                                                                                                                            - |
+| `recipients`     | required  |                                                                                   possible values: `all` (default), `agents` |
+| `text`           | required  | max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Message event'}>
+
+```json
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
 	"custom_id": "31-0C-1C-07-DB-16",
@@ -192,25 +254,119 @@ These are the available **event types**:
 }
 ```
 
-**sending a text message to other chat users**
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+
+## Rich message
+
+<Section>
+
+<Text>
+
+Rich message event contains rich message data structure.
 
 ---
 
-| Field            | Req./Opt. |                                                                                                                         Note |
-| ---------------- | :-------: | ---------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`      | optional  |                                                                                                                            - |
-| `postback`       | optional  |                                                                                                                            - |
-| `postback.type`  | required  |                                                                                 required only if `postback.value` is present |
-| `postback.value` | required  |                                                                                  required only if `postback.type` is present |
-| `properties`     | optional  |                                                                                                                            - |
-| `recipients`     | required  |                                                                     can take the following values: `all` (default), `agents` |
-| `text`           | required  | max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages |
+| Field                          | Req./Opt. |                                                                                                                                                                                                                                            Note |
+| ------------------------------ | :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`                    | optional  |                                                                                                                                                                                                                                               - |
+| `elements`                     | optional  |                                                                                                                                                                                                            May contain 1 - 10 `element` objects |
+| `elements.buttons`             | optional  |                                                                                                                                                                                                   `buttons` may contain 1 - 11 `button` objects |
+| `elements.buttons.postback_id` | optional  | Describes the action sent via `send_rich_message_postback`; multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.user_ids`    | optional  |                                                                                                                                                                                   Describes users that sent the postback with `"toggled": true` |
+| `elements.image`               | optional  |                                                                                                                                                       `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height` |
+| `elements.subtitle`            | optional  |                                                                                                                                                                                                                                                 |
+| `elements.title`               | optional  |                                                                                                                                                                                                                                                 |
+| `properties`                   | optional  |                                                                                                                                                                                                                                               - |
+| `recipients`                   | required  |                                                                                                                                                                                                      Possible values: `all` (default), `agents` |
+| `template_id`                  | required  |                                                                                                                                                                                          Describes how the event should be presented in an app. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Message event'}>
+
+```json
+{
+	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+	"custom_id": "31-0C-1C-07-DB-16",
+	"order": 1, // generated server-side
+	"type": "rich_message",
+	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"timestamp": 1473433500, // generated server-side
+	"recipients": "all",
+	"properties": {
+		// "Properties" object
+	},
+	"template_id": "cards",
+	"elements": [{
+		"title": "Lorem ipsum dolor.",
+		"subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+		"image": {
+			"name": "image25.png",
+			"url": "https://domain.com/asdsfdsf.png",
+			"content_type": "image/png",
+			"size": 123444,
+			"width": 640,
+			"height": 480
+		},
+		"buttons": [{
+			"text": "yes",
+			"postback_id": "action_yes",
+			"user_ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
+		}, {
+			"text": "no",
+			"postback_id": "action_no",
+			"user_ids": []
+		}, {
+			"type": "phone",
+			"text": "value",
+			"value": "790034890",
+			"webview_height": "tall", // optional, one of compact, tall, full
+			"postback_id": "action_call",
+			"user_ids": []
+		}]
+	}, {
+		"title": "Lorem ipsum dolor 2."
+	}]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
 
 ## Custom
 
-> A sample **Custom** event
+<Section>
 
-```js
+<Text>
+
+Custom event is an event with customizable payload.
+
+---
+
+| Field        | Req./Opt. |                                       Note |
+| ------------ | :-------: | -----------------------------------------: |
+| `custom_id`  | optional  |                                          - |
+| `properties` | optional  |                                          - |
+| `recipients` | required  | possible values: `all` (default), `agents` |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Rich message event'}>
+
+```json
 {
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
 	"custom_id": "31-0C-1C-07-DB-16",
@@ -230,21 +386,35 @@ These are the available **event types**:
 }
 ```
 
-**an event with customizable payload**
+</CodeResponse>
 
----
+</Code>
 
-| Field        | Req./Opt. |                                                     Note |
-| ------------ | :-------: | -------------------------------------------------------: |
-| `custom_id`  | optional  |                                                        - |
-| `properties` | optional  |                                                        - |
-| `recipients` | required  | can take the following values: `all` (default), `agents` |
+</Section>
+
+
 
 ## System message
 
-**an event generated by the chat router**
+<Section>
 
-> A sample **System message** event
+<Text>
+
+System message event is a native system event sent in specific situations.
+
+---
+
+| Field                 | Req./Opt. |                                                                                                Note |
+| --------------------- | :-------: | --------------------------------------------------------------------------------------------------: |
+| `custom_id`           | optional  |                                                                                                   - |
+| `recipients`          | required  | possible values: `all` (default for system events), `agents` (for the events sent via `send_event`) |
+| `system_message_type` | required  |                                                                                                   - |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample System message event'}>
 
 ```json
 {
@@ -261,13 +431,11 @@ These are the available **event types**:
 }
 ```
 
----
+</CodeResponse>
 
-| Field                 | Req./Opt. |                                                                                                        Note |
-| --------------------- | :-------: | ----------------------------------------------------------------------------------------------------------: |
-| `custom_id`           | optional  |                                                                                                           - |
-| `recipients`          | required  | can take the following values: `all` (default for system events), `agents` (for events sent via send_event) |
-| `system_message_type` | required  |                                                                                                           - |
+</Code>
+
+</Section>
 
 Here's the list of all system messages you might come across as a Customer:
 
@@ -868,6 +1036,7 @@ curl -X POST \
 
 </Section>
 
+
 ## Available methods
 
 |                                    |                                                                                                                                                                                                                                                                                                                                                         |
@@ -878,6 +1047,8 @@ curl -X POST \
 | **Customers**                      | [`update_customer`](#update-customer) [`set_customer_fields`](#set-customer-fields)                                                                                                                                                                                                                                                                     |
 | **Status**                         | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                               |
 | **Other**                          | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`update_last_seen_timestamp`](#update-last-seen-timestamp)                                                                                                                                                                                 |
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f662e946a19ab38492f7)
 
 ## Chats
 
@@ -2813,14 +2984,14 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 
 |                                    |                                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **chats**                          | [`incoming_chat_thread`](#incoming-chat-thread) [`thread_closed`](#thread-closed)                                                                                                                                                                                                                                                                                   |
-| **chat access**                    | [`access_set`](#access-set)                                                                                                                                                                                                                                                                                                                                         |
-| **chat users**                     | [`chat_user_added`](#chat-user-added) [`chat_user_removed`](#chat-user-removed)                                                                                                                                                                                                                                                                                     |
-| **events**                         | [`incoming_event`](#incoming-event) [`event_updated`](#event-updated)[`incoming_rich_message_postback`](#incoming-rich-message-postback)                                                                                                                                                                                                                            |
-| **properties (chat/thread/event)** | [`chat_properties_updated`](#chat-properties-updated) [`chat_properties_deleted`](#chat-properties-deleted) [`chat_thread_properties_updated`](#chat-thread-properties-updated) [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) [`event_properties_updated`](#event-properties-updated) [`event_properties_deleted`](#event-properties-deleted) |
-| **other**                          | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)                                                                                                                                                                                                                                                                                                       |
+| **Chats**                          | [`incoming_chat_thread`](#incoming-chat-thread) [`thread_closed`](#thread-closed)                                                                                                                                                                                                                                                                                   |
+| **Chat access**                    | [`access_set`](#access-set)                                                                                                                                                                                                                                                                                                                                         |
+| **Chat users**                     | [`chat_user_added`](#chat-user-added) [`chat_user_removed`](#chat-user-removed)                                                                                                                                                                                                                                                                                     |
+| **Events**                         | [`incoming_event`](#incoming-event) [`event_updated`](#event-updated)[`incoming_rich_message_postback`](#incoming-rich-message-postback)                                                                                                                                                                                                                            |
+| **Properties**                      | [`chat_properties_updated`](#chat-properties-updated) [`chat_properties_deleted`](#chat-properties-deleted) [`chat_thread_properties_updated`](#chat-thread-properties-updated) [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) [`event_properties_updated`](#event-properties-updated) [`event_properties_deleted`](#event-properties-deleted) |
+| **Other**                          | [`last_seen_timestamp_updated`](#last-seen-timestamp-updated)                                                                                                                                                                                                                                                                                                       |
 
-## chats
+## Chats
 
 ### `incoming_chat_thread`
 
@@ -2879,7 +3050,7 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 | --------- | -------------------------------------------- |
 | `user_id` | Missing if a thread was closed by the router |
 
-## chat access
+## Chat access
 
 ### `access_set`
 
@@ -2911,7 +3082,7 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 | `resource` | Resource type |
 | `id`       | Resource id   |
 
-## chat users
+## Chat users
 
 ### `chat_user_added`
 
@@ -2967,7 +3138,7 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 | ----------- | ------------------------------------ |
 | `user_type` | Possible values: `agent`, `customer` |
 
-## events
+## Events
 
 ### `incoming_event`
 
@@ -3035,7 +3206,7 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 | **Action**          | `incoming_rich_message_postback`                                                                                                                                                              |
 | **Push equivalent** | [`incoming_rich_message_postback`](../customer-chat-rtm-api/#incoming-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api/#incoming-rich-message-postback)</sup> |
 
-## properties (chat/thread/event)
+## Properties
 
 ### `chat_properties_updated`
 
@@ -3225,7 +3396,7 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 | ------------ | -------------------------------------------------------------------------------------------------------------- |
 | `properties` | This is not a full `properties` object. This push shows only the properties, which have been recently updated. |
 
-## other
+## Other
 
 ### `last_seen_timestamp_updated`
 
