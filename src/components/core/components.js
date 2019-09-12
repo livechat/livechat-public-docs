@@ -35,8 +35,8 @@ export const CollapsableSection = ({ expanded, children }) => (
 
 export const Nav = styled.aside`
   --page-theme-color: ${({ color }) => color};
-  position: fixed;
-  left: -100px;
+  position: sticky;
+  // left: -100px;
   top: 60px;
   width: 250px;
 `;
