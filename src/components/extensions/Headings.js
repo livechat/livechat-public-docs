@@ -14,6 +14,7 @@ const HeadingLink = styled.a`
       position: absolute;
       font-weight: 300;
       left: -1em;
+      top: 1px;
       opacity: 0.3;
     }
   }
