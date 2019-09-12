@@ -36,10 +36,9 @@ export const CollapsableSection = ({ expanded, children }) => (
 export const Nav = styled.aside`
   --page-theme-color: ${({ color }) => color};
   position: sticky;
+  // left: -100px;
   top: 60px;
-  left: 0;
-  max-width: 300px;
-  border-right: 1px solid #e8e8e8;
+  width: 250px;
 `;
 
 export const NavHeader = styled.div`
@@ -100,35 +99,29 @@ export const Content = styled.article`
 
 export const MainWrapper = styled.div`
   padding-top: 60px;
-  display: grid;
-  grid-gap: 0 50px;
-
-  grid-template-columns:
-    [left] 260px
-    [middle] minmax(0, 2fr);
+  display: flex;
 
   @media (max-width: 1024px) {
-    grid-template-columns:
-      [left] 0
-      [middle] minmax(0, 1fr);
   }
 
   @media (max-width: 768px) {
-    grid-template-columns:
-      [left] 0
-      [middle] minmax(0, 1fr);
   }
 `;
 
 export const LeftColumn = styled.div`
-  grid-area: left;
   background-color: #f1f6f8;
+  border-right: 1px solid #e8e8e8;
+  position: relative;
+  width: 200px;
+
+  margin-right: 50px;
+  transition: width 0.5s ease-out;
+
   @media (max-width: 768px) {
     display: none;
   }
 `;
 export const MiddleColumn = styled.div`
-  grid-area: middle;
   max-width: 100%;
 `;
 
