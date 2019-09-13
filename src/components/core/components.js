@@ -36,8 +36,8 @@ export const CollapsableSection = ({ expanded, children }) => (
 
 const NavWrapper = styled.aside`
   --page-theme-color: ${({ color }) => color};
-  transition: margin 0.3s ease-out;
-  top: 60px;
+  transition: margin 0.3s ease-out, box-shadow 0.3s ease-out;
+  top: 0;
   background-color: #f1f6f8;
   border-right: 1px solid #e8e8e8;
 
@@ -45,11 +45,17 @@ const NavWrapper = styled.aside`
   z-index: 999;
   width: 250px;
   margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-230px")};
+  box-shadow: ${({ expanded = true }) =>
+    expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    position: sticky;
     top: 60px;
+  }
+
+  @media (min-width: 1024px) {
+    position: sticky;
     width: 250px;
+    box-shadow: none;
     margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-230px")};
   }
 `;
@@ -147,13 +153,15 @@ export const Content = styled.article`
 `;
 
 export const MainWrapper = styled.div`
-  padding: 60px 30px 0 0;
+  padding: 60px 15px 0 0;
   display: flex;
 
-  @media (max-width: 1024px) {
+  @media (min-width: 768px) {
+    padding: 60px 20px 0 0;
   }
 
-  @media (max-width: 768px) {
+  @media (min-width: 1024px) {
+    padding: 60px 30px 0 0;
   }
 `;
 
@@ -166,7 +174,7 @@ export const MiddleColumn = styled.div`
 `;
 
 export const MenuWrapper = styled.div`
-  height: calc(100vh - 120px);
+  height: 100vh;
   overflow-y: scroll;
   padding: 20px;
 `;

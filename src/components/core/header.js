@@ -8,12 +8,16 @@ import { css } from "@emotion/core";
 const HeaderWrapper = styled.div`
   background: #293462;
   height: 60px;
-  display: flex;
+  display: none;
   align-items: center;
   position: fixed;
   width: 100%;
   font-family: "Source Sans Pro";
   z-index: 99;
+  white-space: nowrap;
+  @media (min-width: 768px) {
+    display: flex;
+  }
 `;
 
 const LogoWrapper = styled.nav`
@@ -21,6 +25,14 @@ const LogoWrapper = styled.nav`
   font-size: 15px;
   margin: 0 20px;
   align-items: center;
+`;
+
+const MenuListWrapper = styled.div`
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+  overflow-x: auto;
 `;
 
 const MenuList = styled.ul`
@@ -102,11 +114,13 @@ const Header = () => {
           Platform Docs
         </Link>
       </LogoWrapper>
-      <MenuList>
-        {categories.map(({ color, title, slug }) => (
-          <MenuElement key={slug} color={color} label={title} slug={slug} />
-        ))}
-      </MenuList>
+      <MenuListWrapper>
+        <MenuList>
+          {categories.map(({ color, title, slug }) => (
+            <MenuElement key={slug} color={color} label={title} slug={slug} />
+          ))}
+        </MenuList>
+      </MenuListWrapper>
     </HeaderWrapper>
   );
 };

@@ -28,7 +28,7 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
           !isSubcategory) ||
         "";
 
-      const isActiveSection = url === activeUrls[depth];
+      const isActiveSection = activeUrls && url === activeUrls[depth];
 
       return (
         <Fragment key={`toc-${depth}-${url}`}>
