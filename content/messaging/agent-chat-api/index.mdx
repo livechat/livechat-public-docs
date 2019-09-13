@@ -35,7 +35,7 @@ LiveChat system operates in two data centers: `dal` and `fra`. The default data 
 
 All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
 
-Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with `dal-` you don’t have to specify the header.
+Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with `dal-`, you don’t have to specify the header.
 
 ## Postman collection
 
@@ -232,11 +232,11 @@ Filled form event contains data from a form.
 | --------------------------------------- | :------: | -------------------------------------------------------: |
 | `custom_id`                             | optional |                                                        - |
 | `properties`                            | optional |                                                        - |
-| `recipients`                            | required | can take the following values: `all` (default), `agents` |
-| `name`, `email`, `question`, `textarea` | optional |                         for open questions (text answer) |
-| `radio`, `select`                       | optional |                              for single-choice questions |
-| `checkbox`                              | optional |                            for multiple-choice questions |
-| `group_chooser`                         | optional |                               for group-choice questions |
+| `recipients`                            | required | Possible values: `all` (default), `agents` |
+| `name`, `email`, `question`, `textarea` | optional |                         For open questions (text answer) |
+| `radio`, `select`                       | optional |                              For single-choice questions |
+| `checkbox`                              | optional |                            For multiple-choice questions |
+| `group_chooser`                         | optional |                               For group-choice questions |
 
 </Text>
 <Code>
@@ -310,13 +310,13 @@ Message event contains a text message to other chat users.
 
 | Field            | Req./Opt. |                                                                                                                         Note |
 | ---------------- | :-------: | ---------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`      | optional  |                                                                                                                            - |
-| `postback`       | optional  |                                                                                                                            - |
-| `postback.type`  | required  |                                                                                 required only if `postback.value` is present |
-| `postback.value` | required  |                                                                                  required only if `postback.type` is present |
-| `properties`     | optional  |                                                                                                                            - |
-| `recipients`     | required  |                                                                     can take the following values: `all` (default), `agents` |
-| `text`           | required  | max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages |
+| `custom_id`      | optional  |                                                                                                                             |
+| `postback`       | optional  |                                                                                                                             |
+| `postback.type`  | required  |                                                                                 Required only if `postback.value` is present. |
+| `postback.value` | required  |                                                                                  Required only if `postback.type` is present. |
+| `properties`     | optional  |                                                                                                                             |
+| `recipients`     | required  |                                                                     Possible values: `all` (default), `agents` |
+| `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
 
 </Text>
 <Code>
@@ -357,19 +357,22 @@ Rich message event contains a rich message data structure.
 
 ---
 
-| Field                          | Req./Opt. |                                                                                                                                                                                                                                           Note |
-| ------------------------------ | :-------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`                    | optional  |                                                                                                                                                                                                                                              - |
-| `elements`                     | optional  |                                                                                                                                                                                                           can contain 1 - 10 `element` objects |
-| `elements.buttons`             | optional  |                                                                                                                                                                                                  `buttons` can contain 1 - 11 `button` objects |
-| `elements.buttons.postback_id` |     ?     | Describes the action sent via `send_rich_message_postback`; multiple buttons (even from different elements) can contain the same `postback_id`; calling `send_rich_message_postback` with this id will add a user to all those buttons at once |
-| `elements.buttons.user_ids`    |     ?     |                                                                                                                                                                                  describes users that sent the postback with `"toggled": true` |
-| `elements.image`               | optional  |                                                                                                                                                      `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height` |
-| `elements.subtitle`            | optional  |                                                                                                                                                                                                                                                |
-| `elements.title`               | optional  |                                                                                                                                                                                                                                                |
-| `properties`                   | optional  |                                                                                                                                                                                                                                              - |
-| `recipients`                   | required  |                                                                                                                                                                                       can take the following values: `all` (default), `agents` |
-| `template_id`                  | required     |                                                                                                                                                                                          describes how the event should be presented in an app |
+| Field                          | Req./Opt. |                                                                                                                                                                                                                                            Note |
+| ------------------------------ | :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`                    | optional  |                                                                                                                                                     |
+| `elements`                     | optional  | May contain 1 - 10 `element` objects. |
+| `elements.buttons`             | optional  | `buttons` may contain 1 - 11 `button` objects. |
+| `elements.buttons.postback_id` | required  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.text`  	     | required  | Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.buttons.type`  	     | required  | Required only if both `elements.buttons` and `elements.buttons.value` are present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.buttons.user_ids`    | required  | Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.buttons.value`       | required  | Required only if both `elements.buttons` and `elements.buttons.type` are present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.image`               | optional  | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
+| `elements.subtitle`            | optional  |                                                                                                                                                     |
+| `elements.title`               | optional  |                                                                                                                                                     |
+| `properties`                   | optional  |                                                                                                                                                     |
+| `recipients`                   | required  |  Possible values: `all` (default), `agents` |
+| `template_id`                  | required  |  Describes how the event should be presented in an app. |                                                                                                                                                                                         describes how the event should be presented in an app |
 
 </Text>
 <Code>
@@ -444,7 +447,7 @@ Custom event is an event with customizable payload.
 | ------------ | :-------: | -------------------------------------------------------: |
 | `custom_id`  | optional  |                                                        - |
 | `properties` | optional  |                                                        - |
-| `recipients` | required  | can take the following values: `all` (default), `agents` |
+| `recipients` | required  | Possible values: `all` (default), `agents` |
 
 </Text>
 <Code>
@@ -494,211 +497,211 @@ Here's the list of all system messages you might come across:
 
 |                 Content                 |                                                                                     Generated when |
 | :-------------------------------------: | -------------------------------------------------------------------------------------------------: |
-| _%initiator% added %agent% to the chat_ | agent was added to chat via `add_user_to_chat` request and is not the first agent ever in the chat |
+| _%initiator% added %agent% to the chat_ | Agent was added to chat via the `add_user_to_chat` request and is not the first Agent in that chat. |
 
 ### `agent_joined`
 
 |          Content          |                                                                                            Generated when |
 | :-----------------------: | --------------------------------------------------------------------------------------------------------: |
-| _%agent% joined the chat_ | agent added themselves to chat via `add_user_to_chat` request and is not the first agent ever in the chat |
+| _%agent% joined the chat_ | Agent added themselves to chat via the `add_user_to_chat` request, and is not the first Agent in the chat. |
 
 ### `agent_removed`
 
 |                   Content                   |                                                      Generated when |
 | :-----------------------------------------: | ------------------------------------------------------------------: |
-| _%initiator% removed %agent% from the chat_ | agent was removed from chat via the `remove_user_from_chat` request |
+| _%initiator% removed %agent% from the chat_ | Agent was removed from chat via the `remove_user_from_chat` request. |
 
 ### `archived_customer_disconnected`
 
 |          Content           |                             Generated when |
 | :------------------------: | -----------------------------------------: |
-| _%customer% left the chat_ | chat ended after customer left the website |
+| _%customer% left the chat_ | Chat ended after Customer left the website. |
 
 ### `chat_transferred`
 
 |                     Content                     |                                        Generated when |
 | :---------------------------------------------: | ----------------------------------------------------: |
-| _%initiator% transferred the chat to %targets%_ | chat was transferred via the `transfer_chat` request. |
+| _%initiator% transferred the chat to %targets%_ | Chat was transferred via the `transfer_chat` request. |
 
 ### `customer_added`
 
 |                  Content                   |                                            Generated when |
 | :----------------------------------------: | --------------------------------------------------------: |
-| _%initiator% added %customer% to the chat_ | customer was added to chat via `add_user_to_chat` request |
+| _%initiator% added %customer% to the chat_ | Customer was added to chat via the `add_user_to_chat` request. |
 
 ### `customer_banned`
 
 |                                   Content                                    |                                                         Generated when |
 | :--------------------------------------------------------------------------: | ---------------------------------------------------------------------: |
-| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | chat ended because customer was banned via the `ban_customer` request. |
+| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | Chat ended becaus Customer was banned via the `ban_customer` request. |
 
 ### `customer_removed`
 
 |                    Content                     |                                                     Generated when |
 | :--------------------------------------------: | -----------------------------------------------------------------: |
-| _%initiator% removed %customer% from the chat_ | customer was removed from chat via `remove_user_from_chat` request |
+| _%initiator% removed %customer% from the chat_ | Customer was removed from chat via the `remove_user_from_chat` request. |
 
 ### `manual_archived_agent`
 
 |           Content           |                             Generated when |
 | :-------------------------: | -----------------------------------------: |
-| _%agent% archived the chat_ | agent closed chat via close_thread request |
+| _%agent% archived the chat_ | Agent closed chat via the `close_thread` request. |
 
 ### `manual_archived_customer`
 
 |            Content             |                                Generated when |
 | :----------------------------: | --------------------------------------------: |
-| _%customer% archived the chat_ | customer closed chat via close_thread request |
+| _%customer% archived the chat_ | Customer closed chat via the `close_thread` request. |
 
 ### `rating.chat_commented`
 
 |                      Content                       |                 Generated when |
 | :------------------------------------------------: | -----------------------------: |
-| _%customer% left the following comment: %comment%_ | chat was commented by customer |
+| _%customer% left the following comment: %comment%_ | Chat was commented by Customer. |
 
 ### `rating.chat_rated`
 
 |                Content                 |             Generated when |
 | :------------------------------------: | -------------------------: |
-| _%customer% rated the chat as %score%_ | chat was rated by customer |
+| _%customer% rated the chat as %score%_ | Chat was rated by Customer. |
 
 ### `rating.chat_rating_canceled`
 
 |                Content                |                        Generated when |
 | :-----------------------------------: | ------------------------------------: |
-| _%customer% canceled the chat rating_ | chat rating was cancelled by customer |
+| _%customer% canceled the chat rating_ | Chat rating was cancelled by Customer. |
 
 ### `routing.archived_deleted`
 
 |                            Content                             |                                                                                                    Generated when |
 | :------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------: |
-| _The chat was closed because %agent% account had been deleted_ | chat was archived after agent was removed from license, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% account had been deleted_ | Chat was archived after Agent was removed from the license. No other Agent could be selected, and queues were disabled. |
 
 ### `routing.archived_disconnected`
 
 |                              Content                               |                                                                                                         Generated when |
 | :----------------------------------------------------------------: | ---------------------------------------------------------------------------------------------------------------------: |
-| _The chat was closed because %agent% had lost internet connection_ | chat was archived after agent unexpectedly loses connection, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% had lost internet connection_ | Chat was archived after Agent unexpectedly lost connection. No other Agent could be selected, and queues were disabled. |
 
 ### `routing.archived_inactive`
 
 |                         Content                         |                                   Generated when |
 | :-----------------------------------------------------: | -----------------------------------------------: |
-| _Chat archived due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time |
+| _Chat archived due to %duration% minutes of inactivity_ | No new messages were posted for an extended amount of time. |
 
 ### `routing.archived_offline`
 
 |                  Content                   |                                            Generated when |
 | :----------------------------------------: | --------------------------------------------------------: |
-| _Chat archived due to no available agents_ | no agent could be selected after chat was placed in queue |
+| _Chat archived due to no available agents_ | No Agent could be selected after chat was placed in the queue. |
 
 ### `routing.archived_other`
 
 |        Content        |                                                                                                                   Generated when |
 | :-------------------: | -------------------------------------------------------------------------------------------------------------------------------: |
-| _The chat was closed_ | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled |
+| _The chat was closed_ | Chat was archived after Agent was removed from chat for other reasons. No other Agent could be selected, and queues were disabled. |
 
 ### `routing.archived_remotely_signed_out`
 
 |                              Content                               |                                                                                          Generated when |
 | :----------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------: |
-| _The chat was closed because %agent% had been remotely signed out_ | chat was archived after agent was logged out, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% had been remotely signed out_ | Chat was archived after an Agent was logged out. No other Agent could be selected and queues were disabled. |
 
 ### `routing.archived_signed_out`
 
 |                       Content                        |                                                                                      Generated when |
 | :--------------------------------------------------: | --------------------------------------------------------------------------------------------------: |
-| _The chat was closed because %agent% had signed out_ | chat was archived after agent logged out, no other agent could be selected and queues were disabled |
+| _The chat was closed because %agent% had signed out_ | Chat was archived after Agent logged out. No other Agent could be selected, and queues were disabled. |
 
 ### `routing.assigned_deleted`
 
 |                                     Content                                     |                                                             Generated when |
 | :-----------------------------------------------------------------------------: | -------------------------------------------------------------------------: |
-| _Chat assigned to %addedAgent% because %removedAgent% account had been deleted_ | chat was assigned to new agent after previous one was removed from license |
+| _Chat assigned to %addedAgent% because %removedAgent% account had been deleted_ | Chat was assigned to a new Agent after the previous one was removed from the license. |
 
 ### `routing.assigned_disconnected`
 
 |                                       Content                                       |                                                                 Generated when |
 | :---------------------------------------------------------------------------------: | -----------------------------------------------------------------------------: |
-| _Chat assigned to %addedAgent% because %removedAgent% had lost internet connection_ | chat was assigned to new agent after previous one unexpectedly lost connection |
+| _Chat assigned to %addedAgent% because %removedAgent% had lost internet connection_ | Chat was assigned to a new Agent after the previous one unexpectedly lost connection. |
 
 ### `routing.assigned_inactive`
 
 |                                            Content                                            |                                                                          Generated when |
 | :-------------------------------------------------------------------------------------------: | --------------------------------------------------------------------------------------: |
-| _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | chat was assigned to new agent after previous one failed to response in a timely manner |
+| _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | Chat was assigned to a new Agent after the previous one failed to response in a timely manner. |
 
 ### `routing.assigned_other`
 
 |        Content        |                                                                                                                   Generated when |
 | :-------------------: | -------------------------------------------------------------------------------------------------------------------------------: |
-| _The chat was closed_ | chat was archived after agent was removed from chat for other reasons, no other agent could be selected and queues were disabled |
+| _The chat was closed_ | Chat was archived after Agent was removed from chat for other reasons. No other Agent could be selected, and queues were disabled. |
 
 ### `routing.assigned_remotely_signed_out`
 
 |                                       Content                                       |                                                   Generated when |
 | :---------------------------------------------------------------------------------: | ---------------------------------------------------------------: |
-| _Chat assigned to %addedAgent% because %removedAgent% had been remotely signed out_ | chat was assigned to new agent after previous one was logged out |
+| _Chat assigned to %addedAgent% because %removedAgent% had been remotely signed out_ | Chat was assigned to a new Agent after the previous one was logged out. |
 
 ### `routing.assigned_signed_out`
 
 |                                Content                                |                                               Generated when |
 | :-------------------------------------------------------------------: | -----------------------------------------------------------: |
-| _Chat assigned to %addedAgent% because %removedAgent% had signed out_ | chat was assigned to new agent after previous one logged out |
+| _Chat assigned to %addedAgent% because %removedAgent% had signed out_ | Chat was assigned to a new Agent after the previous one logged out. |
 
 ### `routing.idle`
 
 |                        Content                         |                                   Generated when |
 | :----------------------------------------------------: | -----------------------------------------------: |
-| _Chat is idle due to %duration% minutes of inactivity_ | no new messages were posted for a prolonged time |
+| _Chat is idle due to %duration% minutes of inactivity_ | No new messages were posted for an extended amount of time. |
 
 ### `routing.unassigned_deleted`
 
 |                            Content                             |                                       Generated when |
 | :------------------------------------------------------------: | ---------------------------------------------------: |
-| _Customer was queued because %agent% account has been deleted_ | chat was queued after agent was removed from license |
+| _Customer was queued because %agent% account has been deleted_ | Chat was queued after Agent was removed from the license. |
 
 ### `routing.unassigned_disconnected`
 
 |                              Content                               |                                           Generated when |
 | :----------------------------------------------------------------: | -------------------------------------------------------: |
-| _Customer was queued because %agent% had lost internet connection_ | chat was queued after agent unexpectedly lost connection |
+| _Customer was queued because %agent% had lost internet connection_ | Chat was queued after Agent unexpectedly lost connection. |
 
 ### `routing.unassigned_other`
 
 |       Content        |                                                      Generated when |
 | :------------------: | ------------------------------------------------------------------: |
-| _Chat is unassigned_ | chat was queued after agent was removed from chat for other reasons |
+| _Chat is unassigned_ | Chat was queued after Agent was removed from chat for other reasons. |
 
 ### `routing.unassigned_remotely_signed_out`
 
 |                              Content                               |                             Generated when |
 | :----------------------------------------------------------------: | -----------------------------------------: |
-| _Customer was queued because %agent% had been remotely signed out_ | chat was queued after agent was logged out |
+| _Customer was queued because %agent% had been remotely signed out_ | Chat was queued after Agent was logged out. |
 
 ### `routing.unassigned_signed_out`
 
 |                       Content                        |                         Generated when |
 | :--------------------------------------------------: | -------------------------------------: |
-| _Customer was queued because %agent% had signed out_ | chat was queued after agent logged out |
+| _Customer was queued because %agent% had signed out_ | Chat was queued after Agent logged out. |
 
 ### `system_archived`
 
 |     Content     |                                                                    Generated when |
 | :-------------: | --------------------------------------------------------------------------------: |
-| _Chat archived_ | license was moved to another lc_serv instance while there were still active chats |
+| _Chat archived_ | License was moved to another lc_serv instance while there were still active chats. |
 
 ### `transcript_requested`
 
 |                             Content                              |              Generated when |
 | :--------------------------------------------------------------: | --------------------------: |
-| _%customer% requested the chat transcript to be sent to %email%_ | customer enables transcript |
+| _%customer% requested the chat transcript to be sent to %email%_ | Customer enables transcript. |
 
 ### `transcript_sent`
 
 |                     Content                      |                                  Generated when |
 | :----------------------------------------------: | ----------------------------------------------: |
-| _%customer% sent the chat transcript to %email%_ | achat ended with transcript enabled by customer |
+| _%customer% sent the chat transcript to %email%_ | Chat ended with the chat transcript enabled by Customer. |
 
 </Text>
 <Code>
@@ -752,7 +755,7 @@ Here's the list of all system messages you might come across:
 
 | Field            | Req./Opt. |                                             Note |
 | ---------------- | :-------: | -----------------------------------------------: |
-| `routing_status` | optional  | returned only if the agent's currently logged in |
+| `routing_status` | optional  | Returned only if the Agent is currently logged in. |
 
 ### My profile
 
@@ -836,7 +839,7 @@ Here's the list of all system messages you might come across:
 | `customer_last_event_created_at` | optional  |                                       - |
 | `created_at`                     | optional  |                                       - |
 | `email`                          | optional  |                                       - |
-| `fields`                         | optional  | isn't present when the chat is archived |
+| `fields`                         | optional  | Is not present when the chat is archived. |
 | `name`                           | optional  |                                       - |
 | `last_seen_timestamp`            | optional  |                                       - |
 | `last_visit`                     | optional  |                                       - |
@@ -870,7 +873,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 | Field       | Req./Opt. |                                       Note |
 | ----------- | :-------: | -----------------------------------------: |
-| `group_ids` | required  | `group 0` means that all agents can see it |
+| `group_ids` | required  | `group 0` means that all agents can see it. |
 
 ## Chats
 
@@ -1028,8 +1031,8 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | Field               | Req./Opt. |                                                                        Note |
 | ------------------- | :-------: | --------------------------------------------------------------------------: |
 | `access`            | optional  |                                                                           - |
-| `active`            | required  | values: `true` (thread is still active) or `false`(thread no longer active) |
-| `events`            | optional  |                            doesn't exists if `restricted_access` is `true`) |
+| `active`            | required  | Possible values: `true` (thread is still active) or `false`(thread no longer active) |
+| `events`            | optional  |                           Doesn't exists if `restricted_access` is `true`. |
 | `properties`        | optional  |                                                                           - |
 | `restricted_access` | optional  |                                                                           - |
 
@@ -1047,8 +1050,8 @@ If you specify the API version in the URL, you don't have to include the optiona
 
 | Reqiured Header |                   Value                    |                                                       Notes |
 | --------------- | :----------------------------------------: | ----------------------------------------------------------: |
-| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |             Valid for `send_file` and `upload_image` method |
-| `Content-Type`  |             `application/json`             | Valid for every method except `send_file`and `upload_image` |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |             Valid for the `send_file` method |
+| `Content-Type`  |             `application/json`             | Valid for every method except for `send_file` |
 | `Authorization` |              `Bearer <token>`              |                                                Access token |
 | `X-Author-Id`   |              `<bot_agent_id>`              |                                   Valid only for Bot Agents |
 
@@ -1105,12 +1108,12 @@ It returns summaries of the chats an Agent has access to.
 
 | Parameter                                             | Required | Type     | Notes                                                                                      |
 | ----------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------ |
-| `filters`                                             | No       | `object` | Mustn't change between requests for subsequent pages. Otherwise the behavior is undefined. |
-| `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default is `True`              |
+| `filters`                                             | No       | `object` | Mustn't change between requests for subsequent pages. Otherwise, the behavior is undefined. |
+| `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `True`.              |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                            |
 | `pagination`                                          | No       | `object` |                                                                                            |
-| `pagination.page`                                     | No       | `number` | Default is 1, min is 1, max is 1000                                                        |
-| `pagination.total`                                    | No       | `number` | Total number of threads matching filters; Default is 25, min is 0, max is 100              |
+| `pagination.page`                                     | No       | `number` | Default: 1, minimum: 1, maximum: 1000                                                        |
+| `pagination.total`                                    | No       | `number` | Total number of threads that match filters; default: 25, minimum: 0, maximum: 100.              |
 
 `filter_type` can take the following values:
 
@@ -1124,7 +1127,7 @@ There's only one value allowed for a single property.
 
 | Parameter     | Data type | Notes                                                                    |
 | ------------- | --------- | ------------------------------------------------------------------------ |
-| `found_chats` | `string`  | An estimated number. The real number of found chats can differ a little. |
+| `found_chats` | `string`  | An estimated number. The real number of found chats can slightly differ. |
 
 ---
 
@@ -1190,7 +1193,7 @@ curl -X POST \
 | Parameter | Required | Data type | Notes                                                                                 |
 | --------- | -------- | --------- | ------------------------------------------------------------------------------------- |
 | `chat_id` | Yes      | `string`  |                                                                                       |
-| `order`   | No       | `string`  | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default) |
+| `order`   | No       | `string`  | Possible values: `asc` - oldest chats first and `desc` - newest chats first (default). |
 | `limit`   | No       | `number`  | Defaul: 10, maximum: 100                                                              |
 | `page_id` | No       | `string`  |                                                                                       |
 
@@ -1351,8 +1354,8 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     |                                     |
 | `<filter_type>`                                       | No       | `any`     | **\***                              |
 | `pagination`                                          | No       | `object`  |                                     |
-| `pagination.page`                                     | No       | `number`  | Default is 1, min is 1, max is 1000 |
-| `pagination.limit`                                    | No       | `number`  | Default is 25, min is 0, max is 100 |
+| `pagination.page`                                     | No       | `number`  | Default: 1, min: 1, max: 1000 |
+| `pagination.limit`                                    | No       | `number`  | Default: 25, min: 0, max: 100 |
 
 **\*)**
 `<filter_type>` can take the following values:
@@ -1436,9 +1439,9 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat`                   | No       | `object`  |                                                                  |
 | `chat.properties`        | No       | `object`  |                                                                  |
 | `chat.access`            | No       | `object`  |                                                                  |
-| `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type customer) |
+| `chat.users`             | No       | `array`   | The list of existing users. Only one user is allowed (type `customer`). |
 | `chat.thread`            | No       | `object`  |                                                                  |
-| `chat.thread.events`     | No       | `array`   | List of initial chat events                                      |
+| `chat.thread.events`     | No       | `array`   | The list of initial chat events.                                      |
 | `chat.thread.properties` | No       | `object`  |                                                                  |
 
 #### Response
@@ -1508,10 +1511,10 @@ When `chat.users` is defined, one of following scopes is required:
 | Parameter                | Required | Data type | Notes                                                            |
 | ------------------------ | -------- | --------- | ---------------------------------------------------------------- |
 | `chat`                   | Yes      | `object`  |                                                                  |
-| `chat.id`                | Yes      | `string`  | ID of the chat will be activated                                 |
-| `chat.access`            | No       | `object`  | Chat access to set, defaults to all agents                       |
+| `chat.id`                | Yes      | `string`  | ID of the chat that will be activated.                                 |
+| `chat.access`            | No       | `object`  | Chat access to set, default: all agents.                       |
 | `chat.properties`        | No       | `object`  | Initial chat properties                                          |
-| `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type customer) |
+| `chat.users`             | No       | `array`   | The list of existing users. Only one user is allowed (type `customer`). |
 | `chat.thread`            | No       | `object`  |                                                                  |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                        |
 | `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                   |
@@ -1624,7 +1627,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 #### Request
 
-| Parameter | Required | Data type | Notes |
+| Parameter | Required | Data type |  |
 | --------- | -------- | --------- | ----- |
 | `chat_id` | Yes      | `string`  |       |
 
@@ -1670,7 +1673,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 #### Request
 
-| Parameter | Required | Data type | Notes |
+| Parameter | Required | Data type |  |
 | --------- | -------- | --------- | ----- |
 | `chat_id` | Yes      | `string`  |       |
 
@@ -1721,7 +1724,7 @@ Grants access to a new resource without overwriting the existing ones.
 | Parameter     | Required | Data ype | Notes                |
 | ------------- | -------- | -------- | -------------------- |
 | `resource`    | Yes      | `string` | `chat` or `customer` |
-| `id`          | Yes      | `string` | Resource id          |
+| `id`          | Yes      | `string` | Resource Id          |
 | `access`      | Yes      | `object` |                      |
 | `access.type` | Yes      | `string` | `group`              |
 | `access.id`   | Yes      | any      |                      |
@@ -1774,7 +1777,7 @@ https://api.livechatinc.com/v3.1/agent/action/grant_access \
 | Parameter     | Required | Data type | Notes                |
 | ------------- | -------- | --------- | -------------------- |
 | `resource`    | Yes      | `string`  | `chat` or `customer` |
-| `id`          | Yes      | `string`  | id of resource       |
+| `id`          | Yes      | `string`  | Resource Id       |
 | `access`      | Yes      | `object`  |                      |
 | `access.type` | Yes      | `string`  | `group` or `agent`   |
 | `access.id`   | Yes      | `number`  |                      |
@@ -1883,11 +1886,11 @@ Transfers a chat to an Agent or a group.
 
 | Parameter     | Required | Data ype | Notes                                                                                                                 |
 | ------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| `chat_id`     | Yes      | `string` | id of resource                                                                                                        |
-| `target`      | No       | `object` | If missing, chat will be transferred within current group                                                             |
+| `chat_id`     | Yes      | `string` | Resource Id                                                                                                        |
+| `target`      | No       | `object` | If missing, chat will be transferred within the current group.                                                             |
 | `target.type` | Yes      | `string` | `group` or `agent`                                                                                                    |
 | `target.ids`  | Yes      | `array`  | `group` or `agent` ids array                                                                                          |
-| `force`       | No       | `bool`   | If `true`, always transfers chat, otherwise fails when cannot assign any agent from requested groups, default `false` |
+| `force`       | No       | `bool`   | If `true`, always transfers chats. Otherwise. fails when unable to assign any Agent from the requested groups; default `false`. |
 
 #### Response
 
@@ -1993,7 +1996,7 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 | -------------- | -------- | -------- | ----------------------------------------- |
 | `chat_id`      | Yes      | `string` |                                           |
 | `user_id`      | Yes      | `string` |                                           |
-| `user_type`    | Yes      | `string` | possible values are `agent` or `customer` |
+| `user_type`    | Yes      | `string` | Possible values are `agent` or `customer` |
 
 #### Response
 
@@ -2045,10 +2048,10 @@ Sends an [Event](#events) object.
 
 | Parameter               | Required | Data type | Notes                                                                            |
 | ----------------------- | -------- | --------- | -------------------------------------------------------------------------------- |
-| `chat_id`               | Yes      | `string`  | Id of the chat that we want to send the message to                               |
+| `chat_id`               | Yes      | `string`  | Id of the chat you want to send a message to.                               |
 | `event`                 | Yes      | `object`  | Event object                                                                     |
-| `attach_to_last_thread` | No       | `bool`    | If `true`, adds event to last thread, otherwise creates new one, default `false` |
-| `require_active_thread` | No       | `bool`    | If `true`, returns error when all threads are inactive, default `false`          |
+| `attach_to_last_thread` | No       | `bool`    | If `true`, adds event to last thread. Otherwise, creates a new one; default `false`. |
+| `require_active_thread` | No       | `bool`    | If `true`, returns an error when all threads are inactive; default `false`.          |
 
 #### Response
 
@@ -2115,10 +2118,10 @@ The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only
 
 | Parameter               | Required | Data type | Notes                                                                    |
 | ----------------------- | -------- | --------- | ------------------------------------------------------------------------ |
-| `chat_id`               | Yes      | `string`  | The id of the chat that you want to send the file to                     |
-| `require_active_thread` | No       | `bool`    | If `true`, returns error when all threads are inactive; default: `false` |
+| `chat_id`               | Yes      | `string`  | Id of the chat you want to send a file to.                     |
+| `require_active_thread` | No       | `bool`    | If `true`, returns error when all threads are inactive; default: `false`. |
 | `custom_id`             | No       | `string`  | Postback name of the button                                              |
-| `file`                  | Yes      | `binary`  | maximum size: 10 MB                                                      |
+| `file`                  | Yes      | `binary`  | Maximum size: 10 MB                                                      |
 
 </Text>
 <Code>
@@ -2280,7 +2283,7 @@ https://api.livechatinc.com/v3.1/agent/action/send_rich_message_postback \
 
 | Parameter    | Required | Data type | Notes                                              |
 | ------------ | -------- | --------- | -------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | The id of the chat that you to set a property for. |
+| `chat_id`    | Yes      | `string`  | Id of the chat you to set properties for. |
 | `properties` | Yes      | `object`  | Chat properties to set                             |
 
 #### Response
@@ -2331,8 +2334,8 @@ https://api.livechatinc.com/v3.1/agent/action/update_chat_properties \
 
 | Parameter    | Required | Data type | Notes                                              |
 | ------------ | -------- | --------- | -------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat that we want to delete property for |
-| `properties` | Yes      | `object`  | Chat properties to delete                          |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property of. |
+| `properties` | Yes      | `object`  | Chat properties to delete.                          |
 
 #### Response
 
@@ -2382,9 +2385,9 @@ No response payload (`200 OK`).
 
 | Parameter    | Required | Data type | Notes                                                    |
 | ------------ | -------- | --------- | -------------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | The id of the chat that you want to set properties for   |
-| `thread_id`  | Yes      | `string`  | The id of the thread that you want to set properties for |
-| `properties` | Yes      | `object`  | Chat properties to set                                   |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
+| `properties` | Yes      | `object`  | Chat properties to set.                                   |
 
 #### Response
 
@@ -2435,9 +2438,9 @@ curl -X POST \
 
 | Parameter    | Required | Data type | Notes                                                |
 | ------------ | -------- | --------- | ---------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat that we want to delete property for   |
-| `thread_id`  | Yes      | `string`  | Id of the thread that we want to delete property for |
-| `properties` | Yes      | `object`  | Chat thread properties to delete                     |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete properties of.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete properties of. |
+| `properties` | Yes      | `object`  | Chat thread properties to delete.                     |
 
 #### Response
 
@@ -2488,10 +2491,10 @@ https://api.livechatinc.com/v3.1/agent/action/delete_chat_thread_properties \
 
 | Parameter    | Required | Data type | Notes                                                 |
 | ------------ | -------- | --------- | ----------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat that you want to set properties for.   |
-| `thread_id`  | Yes      | `string`  | Id of the thread that you want to set properties for. |
-| `event_id`   | Yes      | `string`  | Id of the event that you want to set properties for.  |
-| `properties` | Yes      | `object`  | Chat properties to set                                |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
+| `event_id`   | Yes      | `string`  | Id of the event  you want to set properties for.  |
+| `properties` | Yes      | `object`  | Chat properties to set.                                |
 
 #### Response
 
@@ -2543,10 +2546,10 @@ https://api.livechatinc.com/v3.1/agent/action/update_event_properties \
 
 | Parameter    | Required | Data type | Notes                                                |
 | ------------ | -------- | --------- | ---------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat that we want to delete property for   |
-| `thread_id`  | Yes      | `string`  | Id of the thread that we want to delete property for |
-| `event_id`   | Yes      | `string`  | Id of the event that we want to delete property for  |
-| `properties` | Yes      | `object`  | Event properties to delete                           |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete property for. |
+| `event_id`   | Yes      | `string`  | Id of the event you want to delete property for.  |
+| `properties` | Yes      | `object`  | Event properties to delete.                           |
 
 #### Response
 
@@ -2602,8 +2605,8 @@ https://api.livechatinc.com/v3.1/agent/action/delete_event_properties \
 
 | Parameter   | Required | Data type | Notes                                         |
 | ----------- | -------- | --------- | --------------------------------------------- |
-| `chat_id`   | Yes      | `string`  | Id of the chat that we want to add a tag to   |
-| `thread_id` | Yes      | `string`  | Id of the thread that we want to add a tag to |
+| `chat_id`   | Yes      | `string`  | Id of the chat you want to add a tag to.   |
+| `thread_id` | Yes      | `string`  | Id of the thread you want to add a tag to. |
 | `tag`       | Yes      | `string`  | Tag name                                      |
 
 #### Response
@@ -2650,8 +2653,8 @@ https://api.livechatinc.com/v3.1/agent/action/tag_chat_thread \
 
 | Parameter   | Required | Data type | Notes                                                 |
 | ----------- | -------- | --------- | ----------------------------------------------------- |
-| `chat_id`   | Yes      | `string`  | Id of the chat that you want to remove the tag from   |
-| `thread_id` | Yes      | `string`  | Id of the thread that you want to remove the tag from |
+| `chat_id`   | Yes      | `string`  | Id of the chat you want to remove a tag from.   |
+| `thread_id` | Yes      | `string`  | Id of the thread you want to remove a tag from. |
 | `tag`       | Yes      | `string`  | Tag name                                              |
 
 #### Response
@@ -2705,7 +2708,7 @@ All parameters are optional.
 | Parameter                                                                      | Data type | Notes                     |
 | ------------------------------------------------------------------------------ | --------- | ------------------------- |
 | `page_id`                                                                      | `string`  |                           |
-| `limit`                                                                        | `number`  | Default: 10, Maximum: 100 |
+| `limit`                                                                        | `number`  | Default: 10, maximum: 100 |
 | `order` **\***                                                                 | `string`  | Default: `desc`           |
 | `filters`                                                                      | `object`  |                           |
 | `filters.country.<string_filter_type>` **\*\***                                | `object`  |                           |
@@ -2819,8 +2822,8 @@ Creates a new [Customer](#customer) user type.
 | --------- | -------- | --------- | ------------------------------ |
 | `name`    | No       | `string`  |                                |
 | `email`   | No       | `string`  |                                |
-| `avatar`  | No       | `string`  | url to customer avatar         |
-| `fields`  | No       | `object`  | Map in `"key": "value"` format |
+| `avatar`  | No       | `string`  | URL of the Customer's avatar         |
+| `fields`  | No       | `object`  | A map in the `"key": "value"` format |
 
 </Text>
 <Code>
@@ -2872,8 +2875,8 @@ Updates Customer's properties.
 | `customer_id` | Yes      | `string`  | UUID v4 format is required     |
 | `name`        | No       | `string`  |                                |
 | `email`       | No       | `string`  |                                |
-| `avatar`      | No       | `string`  | url to customer avatar         |
-| `fields`      | No       | `object`  | Map in `"key": "value"` format |
+| `avatar`      | No       | `string`  | URL of the Customer's avatar         |
+| `fields`      | No       | `object`  | A map in the `"key": "value"` format |
 
 Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
 
@@ -2925,7 +2928,7 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 #### Request
 
-| Parameter     | Required | Data type | Notes |
+| Parameter     | Required | Data type |  |
 | ------------- | -------- | --------- | ----- |
 | `customer_id` | Yes      | `string`  |       |
 | `ban`         | Yes      | `object`  |       |
@@ -2980,7 +2983,7 @@ Updates Agent's properties.
 
 | Parameter        | Required | Data type | Notes                                                     |
 | ---------------- | -------- | --------- | --------------------------------------------------------- |
-| `agent_id`       | No       | `string`  | The current agent is used by default.                     |
+| `agent_id`       | No       | `string`  | The current Agent is used by default.                     |
 | `routing_status` | No       | `string`  | Possible values: `accepting_chats`, `not_accepting_chats` |
 
 #### Response
@@ -3078,9 +3081,9 @@ https://api.livechatinc.com/v3.1/agent/action/update_last_seen_timestamp \
 
 | Parameter    | Required | Data type | Notes                                                       |
 | ------------ | -------- | --------- | ----------------------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat that we want to send the typing indicator to |
-| `recipients` | No       | `string`  | `all` (default), `agents`                                   |
-| `is_typing`  | Yes      | `bool`    | Bool                                                        |
+| `chat_id`    | Yes      | `string`  | Id of the chat that to send the typing indicator to. |
+| `recipients` | No       | `string`  | Default: `all`; `agents`                                   |
+| `is_typing`  | Yes      | `bool`    |                                                         |
 
 #### Response
 
@@ -3131,8 +3134,8 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 | Parameter | Required | Data type | Notes                     |
 | --------- | -------- | --------- | ------------------------- |
 | `scopes`  | Yes      | `object`  | **\***                    |
-| `content` | Yes      | `any`     | JSON message to be sent   |
-| `type`    | No       | `string`  | Type of multicast message |
+| `content` | Yes      | `any`     | A JSON message to be sent   |
+| `type`    | No       | `string`  | Multicast message type |
 
 **\*)** `scopes` can take the following values:
 
@@ -3262,7 +3265,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object    | Notes                                  |
 | --------- | -------------------------------------- |
-| `user_id` | Missing if thread was closed by router |
+| `user_id` | Missing if a thread was closed by the router. |
 
 ## chat access
 
@@ -3320,7 +3323,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | Object     | Notes         |
 | ---------- | ------------- |
 | `resource` | Resource type |
-| `id`       | Resource id   |
+| `id`       | Resource Id   |
 
 ### `access_set`
 
@@ -3378,7 +3381,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object      | Notes                                |
 | ----------- | ------------------------------------ |
-| `user_type` | possible values: `agent`, `customer` |
+| `user_type` | Possible values: `agent`, `customer` |
 
 ### `chat_user_removed`
 
@@ -3404,7 +3407,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object      | Notes                                |
 | ----------- | ------------------------------------ |
-| `user_type` | possible values: `agent`, `customer` |
+| `user_type` | Possible values: `agent`, `customer` |
 
 ## events
 
@@ -3474,7 +3477,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | **Action**          | `incoming_rich_message_postback`                                                                                                                                                        |
 | **Push equivalent** | [`incoming_rich_message_postback`](../agent-chat-rtm-api/#incoming-rich-message-postback)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#incoming-rich-message-postback)</sup> |
 
-## properties (chat/thread/event)
+## Properties 
 
 ### `chat_properties_updated`
 
@@ -3530,7 +3533,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object       | Notes                                                                                                             |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
 
 ### `chat_thread_properties_updated`
 
@@ -3565,7 +3568,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object       | Notes                                                                                                             |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
 
 ### `chat_thread_properties_deleted`
 
@@ -3594,7 +3597,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object       | Notes                                                                                                             |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+| `properties` | This is not a full `properties` object. This Webhook shows only the properties that have been recently updated. |
 
 ### `event_properties_updated`
 
@@ -3626,7 +3629,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object       | Notes                                                                                                             |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
 
 ### `event_properties_deleted`
 
@@ -3656,13 +3659,13 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 | Object       | Notes                                                                                                             |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
 
 #### Webhook payload
 
 | Object       | Notes                                                                                                             |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `properties` | This is not a full `properties` object. This Webhook shows only the properties, which have been recently updated. |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
 
 ## thread tags
 
@@ -3704,7 +3707,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | **Action**          | `chat_thread_untagged`                                                                                                                                |
 | **Push equivalent** | [`chat_thread_untagged`](../agent-chat-rtm-api/#chat-thread-tagged)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#chat-thread-tagged)</sup> |
 
-## customers
+## Customers
 
 ### `customer_created`
 
@@ -3725,7 +3728,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | **Action**          | `customer_created`                                                                                                                            |
 | **Push equivalent** | [`customer_created`](../agent-chat-rtm-api/#customer-created)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api/#customer-created)</sup> |
 
-## other
+## Other
 
 ### `last_seen_timestamp_updated`
 
@@ -3769,16 +3772,16 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | ----------------------- | ---------------------------- | --------------------------------------------------------- |
 | `internal`              | Internal server error        |                                                           |
 | `validation`            | Wrong format of request      |                                                           |
-| `authorization`         | Authorization error          | Agent is not allowed to perform action                    |
-| `authentication`        | Authentication error         | Invalid / expired access token                            |
-| `request_timeout`       | Request timed out            | Timeout threshold is 15 seconds                           |
+| `authorization`         | Authorization error          | Agent isn't allowed to perform the action.                    |
+| `authentication`        | Authentication error         | An invalid or expired access token.                            |
+| `request_timeout`       | Request timed out            | Timeout threshold is 15 seconds.                           |
 | `license_expired`       | License expired              |                                                           |
-| `unsupported_version`   | Unsupported version          | Unsupported version of protocol                           |
-| `misdirected_request`   | Wrong region                 | Client's request should be performed to another region    |
-| `entity_too_large`      | Upload limit exceeded (10MB) | Client's request is too large                             |
-| `wrong_product_version` | Wrong product version        | License is not LiveChat 3 (probably still LiveChat 2)     |
-| `license_not_found`     | License not found            | License with specified ID doesn't exist                   |
-| `requester_offline`     | Requester offline            | Method is only allowed for logged in agents (via RTM API) |
+| `unsupported_version`   | Unsupported version          | Unsupported protocol version.                            |
+| `misdirected_request`   | Wrong region                 | Client's request should be performed to another region.    |
+| `entity_too_large`      | Upload limit exceeded (10MB) | Client's request is too large.                             |
+| `wrong_product_version` | Wrong product version        | License is not LiveChat 3 (probably still LiveChat 2).     |
+| `license_not_found`     | License not found            | License with specified ID doesn't exist.                   |
+| `requester_offline`     | Requester offline            | The method is only allowed for logged in Agents (via RTM API). |
 
 \* `misdirected_request` error returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
