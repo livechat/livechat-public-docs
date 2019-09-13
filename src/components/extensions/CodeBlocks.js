@@ -114,14 +114,15 @@ const CodeWrapper = styled.div`
   flex-grow: 1;
 
   @media (min-width: 768px) {
-    flex-basis: 450px;
-    padding: 80px 30px 30px;
-    max-width: 450px;
+    flex-basis: 410px;
+    max-width: 410px;
+    padding: 80px 0 30px 25px;
   }
 
   @media (min-width: 1200px) {
     flex-basis: 600px;
     max-width: 600px;
+    padding: 80px 30px 30px;
   }
 `;
 
@@ -139,16 +140,20 @@ export const CodeSample = ({ path, children }) => {
 
   return (
     <CodeSampleWrapper>
-      <CodeSampleTopbar>
-        <code>{path}</code>
-        {count > 1 && (
-          <SelectLanguage onChange={e => setSample(e.target.value)}>
-            {childrenArray.map(children => (
-              <option key={children.props.label}>{children.props.label}</option>
-            ))}
-          </SelectLanguage>
-        )}
-      </CodeSampleTopbar>
+      {path && (
+        <CodeSampleTopbar>
+          <code>{path}</code>
+          {count > 1 && (
+            <SelectLanguage onChange={e => setSample(e.target.value)}>
+              {childrenArray.map(children => (
+                <option key={children.props.label}>
+                  {children.props.label}
+                </option>
+              ))}
+            </SelectLanguage>
+          )}
+        </CodeSampleTopbar>
+      )}
       <Body>{selectedChild}</Body>
     </CodeSampleWrapper>
   );
@@ -157,7 +162,7 @@ export const CodeSample = ({ path, children }) => {
 export const CodeResponse = ({ title = "Response", children }) => {
   return (
     <CodeResponseWrapper>
-      <ResponseTopbar>{title}</ResponseTopbar>
+      {title && <ResponseTopbar>{title}</ResponseTopbar>}
       <Body>{children}</Body>
     </CodeResponseWrapper>
   );
