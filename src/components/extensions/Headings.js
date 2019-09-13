@@ -53,6 +53,11 @@ const H2 = styled.h2`
   padding-bottom: 0.5em;
 `;
 
+const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`;
+
 const makeHeading = size => ({ children }) => {
   const id = getId(children);
   const className = "heading";
@@ -109,5 +114,10 @@ export default {
   h3: makeHeading("h3"),
   h4: makeHeading("h4"),
   h5: makeHeading("h5"),
-  h6: makeHeading("h6")
+  h6: makeHeading("h6"),
+  table: ({ children }) => (
+    <TableWrapper>
+      <table>{children}</table>
+    </TableWrapper>
+  )
 };

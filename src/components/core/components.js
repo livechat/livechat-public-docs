@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import posed from "react-pose";
 import styled from "@emotion/styled";
-import { HashtagIcon, ArticleIcon } from "./icons";
+import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { Link } from "gatsby";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
@@ -33,13 +34,61 @@ export const CollapsableSection = ({ expanded, children }) => (
   </Box>
 );
 
-export const Nav = styled.aside`
+const NavWrapper = styled.aside`
   --page-theme-color: ${({ color }) => color};
-  position: sticky;
-  // left: -100px;
+  transition: margin 0.3s ease-out;
   top: 60px;
+  background-color: #f1f6f8;
+  border-right: 1px solid #e8e8e8;
+
+  position: fixed;
+  z-index: 999;
   width: 250px;
+  margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-230px")};
+
+  @media (min-width: 768px) {
+    position: sticky;
+    top: 60px;
+    width: 250px;
+    margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-230px")};
+  }
 `;
+
+const NavSwitch = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: -15px;
+  top: 15px;
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 30px;
+  color: inherit;
+  transition: transform 0.3s ease-out;
+  transform: ${({ expanded = true }) => (expanded ? "rotate(180deg)" : "")};
+`;
+
+export const Nav = ({ children, ...rest }) => {
+  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
+  return (
+    <NavWrapper expanded={expanded} {...rest}>
+      <NavSwitch
+        href="#toggle-nav"
+        expanded={expanded}
+        onClick={e => {
+          e.preventDefault();
+          setExpanded(!expanded);
+        }}
+      >
+        <ChevronRight />
+      </NavSwitch>
+      {children}
+    </NavWrapper>
+  );
+};
 
 export const NavHeader = styled.div`
   padding: 20px 28px 10px;
@@ -80,7 +129,7 @@ export const Content = styled.article`
   display: grid;
   grid-gap: 0 30px;
 
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 800px) minmax(0, 1fr);
 
   & * {
     grid-column-start: 1;
@@ -98,7 +147,7 @@ export const Content = styled.article`
 `;
 
 export const MainWrapper = styled.div`
-  padding-top: 60px;
+  padding: 60px 30px 0 0;
   display: flex;
 
   @media (max-width: 1024px) {
@@ -109,17 +158,8 @@ export const MainWrapper = styled.div`
 `;
 
 export const LeftColumn = styled.div`
-  background-color: #f1f6f8;
-  border-right: 1px solid #e8e8e8;
   position: relative;
-  width: 200px;
-
   margin-right: 50px;
-  transition: width 0.5s ease-out;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
 `;
 export const MiddleColumn = styled.div`
   max-width: 100%;
