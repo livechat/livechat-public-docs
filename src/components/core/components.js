@@ -39,12 +39,12 @@ const NavWrapper = styled.aside`
   transition: margin 0.3s ease-out, box-shadow 0.3s ease-out;
   top: 0;
   background-color: #f1f6f8;
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid #dedede;
 
   position: fixed;
   z-index: 999;
-  width: 250px;
-  margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-230px")};
+  width: 300px;
+  margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-280px")};
   box-shadow: ${({ expanded = true }) =>
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
@@ -56,6 +56,7 @@ const NavWrapper = styled.aside`
     position: sticky;
     width: 250px;
     box-shadow: none;
+    border-right: 1px solid #e8e8e8;
     margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-230px")};
   }
 `;
@@ -171,12 +172,16 @@ export const LeftColumn = styled.div`
 `;
 export const MiddleColumn = styled.div`
   max-width: 100%;
+  padding-bottom: 30vh;
 `;
 
 export const MenuWrapper = styled.div`
-  height: 100vh;
+  height: calc(100vh - 59px);
   overflow-y: scroll;
   padding: 20px;
+  @media (min-width: 768px) {
+    height: calc(100vh - 120px);
+  }
 `;
 
 export const Ul = styled.ul`

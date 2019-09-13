@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
 
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
+import "../components/core/fonts.css";
 import "../components/core/layout.css";
 import "../components/core/prism.css";
 
@@ -18,9 +19,6 @@ import {
   Content,
   PageHeader
 } from "../components/core/components";
-
-// import { SluggerContext } from "../components/core/slugger";
-import { slugger } from "../components/core/slugger";
 
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
@@ -76,7 +74,7 @@ export const pageQuery = graphql`
     mdx(id: { eq: $id }) {
       id
       body
-      tableOfContents
+      tableOfContents(maxDepth: 3)
       timeToRead
       parent {
         ... on File {

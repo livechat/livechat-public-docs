@@ -14,14 +14,14 @@ const StickyWrapper = styled.div`
     max-width: 100%;
     overflow: auto;
     height: 100%;
-    border-radius: 8px;
+    border-radius: 6px;
     margin: 0;
   }
 `;
 
 const CodeResponseWrapper = styled.div`
   border: 1px solid #e8e8e8;
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: #f1f6f8;
   min-height: 0;
   display: flex;
@@ -39,7 +39,7 @@ const CodeResponseWrapper = styled.div`
 
 const CodeSampleWrapper = styled.div`
   border: 1px solid #e8e8e8;
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: #4f566b;
   color: white;
   margin: 0 0 20px;

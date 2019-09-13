@@ -9,7 +9,7 @@ export default () => {
           edges {
             node {
               id
-              tableOfContents
+              tableOfContents(maxDepth: 3)
               frontmatter {
                 slug
                 title
