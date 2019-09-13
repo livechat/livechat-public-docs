@@ -172,6 +172,8 @@ These are the available **event types**:
 
 File event informs about a file being uploaded.
 
+---
+
 | Field                                                 | Req./Opt. |                                                          Note |
 | ----------------------------------------------------- | :-------: | ------------------------------------------------------------: |
 | `content_type`                                        | required  | supported image types: `image/png`, `image/jpeg`, `image/gif` |
@@ -216,7 +218,9 @@ File event informs about a file being uploaded.
 <Section>
 <Text>
 
-Filled form event contains data from a form\*\*
+Filled form event contains data from a form.
+
+---
 
 | Field                                   | Req./Opt |                                                     Note |
 | --------------------------------------- | :------: | -------------------------------------------------------: |
@@ -294,7 +298,9 @@ Filled form event contains data from a form\*\*
 <Section>
 <Text>
 
-Message event contains text message to other chat users
+Message event contains a text message to other chat users.
+
+---
 
 | Field            | Req./Opt. |                                                                                                                         Note |
 | ---------------- | :-------: | ---------------------------------------------------------------------------------------------------------------------------: |
@@ -341,7 +347,9 @@ Message event contains text message to other chat users
 <Section>
 <Text>
 
-Rich message event contains rich message data structure
+Rich message event contains a rich message data structure.
+
+---
 
 | Field                          | Req./Opt. |                                                                                                                                                                                                                                           Note |
 | ------------------------------ | :-------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -422,7 +430,9 @@ Rich message event contains rich message data structure
 <Section>
 <Text>
 
-Custom event is an event with customizable payload
+Custom event is an event with customizable payload.
+
+---
 
 | Field        | Req./Opt. |                                                     Note |
 | ------------ | :-------: | -------------------------------------------------------: |
@@ -462,7 +472,9 @@ Custom event is an event with customizable payload
 <Section>
 <Text>
 
-System message event is native system event sent for specific occasions
+System message event is native system event sent in specific situations.
+
+---
 
 | Field                 | Req./Opt. |                                                                                                        Note |
 | --------------------- | :-------: | ----------------------------------------------------------------------------------------------------------: |
@@ -684,7 +696,7 @@ Here's the list of all system messages you might come across:
 
 </Text>
 <Code>
-<CodeResponse title={'Sample System event'}>
+<CodeResponse title={'Sample System message event'}>
 
 
 ```json
@@ -835,11 +847,10 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 - [Properties](#properties)
 - [Threads](#threads)
 
-<!-- A moze w tym miejscu zalinkowac Ban, Sneak peek, Typing Indicator, ktore beda opisane z metodach? -->
 
 ## Access
 
-> A sample **Access** data structure
+<CodeResponse title={'Sample Access data structure'}>
 
 ```json
 {
@@ -849,13 +860,17 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 }
 ```
 
+</CodeResponse>
+
 | Field       | Req./Opt. |                                       Note |
 | ----------- | :-------: | -----------------------------------------: |
 | `group_ids` | required  | `group 0` means that all agents can see it |
 
 ## Chats
 
-> A sample **Chat** data structure
+**Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_thread_summary` and `last_event_per_type`.
+
+<CodeResponse title={'Sample Chat data structure'}>
 
 ```json
 {
@@ -887,6 +902,8 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 }
 ```
 
+</CodeResponse>
+
 | Field        | Req./Opt. | Note |
 | ------------ | :-------: | ---: |
 | `properties` | optional  |      |
@@ -894,7 +911,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 ## Chat summary
 
-> A sample **Chat summary** data structure
+<CodeResponse title={'Sample Chat summary data structure'}>
 
 ```json
 {
@@ -943,101 +960,42 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 }
 ```
 
-**Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_thread_summary` and `last_event_per_type`.
+</CodeResponse>
 
----
+
 
 ## Properties
 
-> General format of **Properties**
+Properties are **key-value storages**. They can be set within a chat, a thread, or an event. You can read more about properties in the [Configuration API](https://developers.livechatinc.com/docs/management/configuration-api/#properties) document.
+
+
+<CodeResponse title={'Sample Properties data structure'}>
 
 ```json
 {
-	"<property_namespace>": {
-		"<property_name>": {
-			"value": <property_value> // <property_value> type depends on the property configuration
+	"properties": {
+		"rating": {   // <property_namespace>
+			"score": {  // <property_name>
+				"value": 1  // <property_value>
+			},
+			"comment": {
+				"value": "rated good!"
+			}
+		},
+		"routing": {
+			"idle": {
+				"value": false
+			}
 		}
 	}
 }
 ```
 
-```json
-{
-  "properties": {
-    "routing": {
-      // namespace
-      "pinned": true, // property name
-      "count": 3 // property name
-    }
-  }
-}
-```
-
-Properties are **key-value storages**. They can be set within a chat, a thread, or an event.
-
-Properties can be created within a license. They are grouped in `namespaces` to help distinguish which property belongs to a given integration. Your `namespace` is named after your `application id`.
-
-You can configure properties via the [Configuration API](../configuration-api/#properties). It's possible to configure:
-
-- [Property type](#property-type)
-- [Property location](#property-location)
-- [Property domain](#property-domain)
-
-### Property type
-
-There are the following property types:
-
-- int (int32)
-- bool
-- string
-- tokenized_string
-
-**`tokenized_string`** is a string split to tokens before indexing in our search engine. It can be useful for longer strings such as messages. It shouldn't be used for keywords.
-
-> Sample **Properties**
-
-```json
-{
-  "properties": {
-    "rating": {
-      "score": {
-        "value": 1
-      },
-      "comment": {
-        "value": "rated good!"
-      }
-    },
-    "routing": {
-      "idle": {
-        "value": false
-      }
-    }
-  }
-}
-```
-
-### Property location
-
-Properties can be set within the following locations:
-
-- chat
-- thread
-- event
-
-You can configure access to properties within those locations. You could, for example, create a property visible for agents within a chat and a thread, but not within an event. For more details, see [Configuration API](../configuration-api/#properties).
-
-### Property domain
-
-Property domain is a set of values that property can be assigned to.
-
-Property domain can be configured in two ways:
-
-- by explicitly defining a set of values allowed in this property (e.g. [1, 2, 3]).
-- by defining a range with values, which are all allowed in the property. It works only for numeric types (e.g. a range from 1 to 3).
+</CodeResponse>
 
 ## Thread
 
-> A sample **Thread** data structure
+<CodeResponse title={'Sample Thread data structure'}>
 
 ```json
 {
@@ -1059,13 +1017,16 @@ Property domain can be configured in two ways:
 }
 ```
 
+</CodeResponse>
+
 | Field               | Req./Opt. |                                                                        Note |
 | ------------------- | :-------: | --------------------------------------------------------------------------: |
 | `access`            | optional  |                                                                           - |
-| `active`            |     ?     | values: `true` (thread is still active) or `false`(thread no longer active) |
+| `active`            | required  | values: `true` (thread is still active) or `false`(thread no longer active) |
 | `events`            | optional  |                            doesn't exists if `restricted_access` is `true`) |
 | `properties`        | optional  |                                                                           - |
 | `restricted_access` | optional  |                                                                           - |
+
 
 <Section>
 <Text>
