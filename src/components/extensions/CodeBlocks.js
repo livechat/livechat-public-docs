@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 
-const CodeWrapper = styled.div`
-  max-width: 100%;
-  padding: 80px 30px 30px;
-  flex-grow: 1;
-`;
-
 const StickyWrapper = styled.div`
   position: sticky;
   top: 80px;
@@ -14,9 +8,11 @@ const StickyWrapper = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
+  max-width: 100%;
 
   pre {
-    max-width: 500px;
+    max-width: 100%;
+    overflow: auto;
     height: 100%;
     border-radius: 8px;
     margin: 0;
@@ -31,6 +27,7 @@ const CodeResponseWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 0 20px;
+  max-width: 100%;
 
   & .gatsby-highlight {
     min-height: 0;
@@ -46,6 +43,7 @@ const CodeSampleWrapper = styled.div`
   background-color: #4f566b;
   color: white;
   margin: 0 0 20px;
+  max-width: 100%;
 
   --code-color: #f5fbff;
   --code-background: #4f566b;
@@ -60,7 +58,8 @@ const CodeSampleTopbar = styled.div`
   border-radius: 8px 8px 0 0;
   color: #dee5e8;
   code {
-    font-size: 13px;
+    font-size: 12px;
+    max-width: 100%;
   }
 `;
 
@@ -77,6 +76,7 @@ const ResponseTopbar = styled.div`
 const Body = styled.div`
   min-height: 0;
   display: flex;
+  max-width: 100%;
 `;
 
 const SelectLanguage = styled.select`
@@ -94,17 +94,38 @@ const SelectLanguage = styled.select`
   white-space: nowrap;
 `;
 
-export const Sample = styled.div``;
+export const Sample = styled.div`
+  max-width: 100%;
+`;
 
 export const Section = styled.section`
   display: flex;
-  @media (max-width: 800px) {
+  max-width: 1400px;
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
 
+const CodeWrapper = styled.div`
+  width: 100%;
+  flex-basis: 100%;
+
+  flex-shrink: 0;
+  flex-grow: 1;
+
+  @media (min-width: 768px) {
+    flex-basis: 450px;
+    padding: 80px 30px 30px;
+    max-width: 450px;
+  }
+
+  @media (min-width: 1200px) {
+    flex-basis: 600px;
+    max-width: 600px;
+  }
+`;
+
 export const Text = styled.div`
-  max-width: 700px;
   flex-grow: 2;
 `;
 
