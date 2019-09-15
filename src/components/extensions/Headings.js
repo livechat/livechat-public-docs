@@ -104,6 +104,8 @@ const makeHeading = size => ({ children }) => {
           <Content />
         </h6>
       );
+    default:
+      return null;
   }
 };
 

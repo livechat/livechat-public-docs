@@ -35,6 +35,7 @@ export const useScrollSpy = (selector = ".heading", callback) => {
 
   useEffect(() => {
     callback(active[0]);
+    // eslint-disable-next-line
   }, [active]);
 
   useEffect(() => {
