@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";

@@ -101,6 +101,7 @@ export const Sample = styled.div`
 export const Section = styled.section`
   display: flex;
   max-width: 1400px;
+
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -120,14 +121,23 @@ const CodeWrapper = styled.div`
   }
 
   @media (min-width: 1200px) {
-    flex-basis: 600px;
-    max-width: 600px;
-    padding: 80px 30px 30px;
+    flex-basis: 460px;
+    max-width: 460px;
+    padding: 80px 0 30px 25px;
   }
 `;
 
 export const Text = styled.div`
   flex-grow: 2;
+  max-width: 100%;
+  overflow-x: auto;
+`;
+
+export const FixedTdWidth = styled.div`
+  th:first-child,
+  td:first-child {
+    width: 200px;
+  }
 `;
 
 export const CodeSample = ({ path, children }) => {
