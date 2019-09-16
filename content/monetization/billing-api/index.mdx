@@ -1,0 +1,361 @@
+---
+weight: 20
+category: "monetization"
+title: "LiveChat Billing API"
+tagline: "Set up payments and subscriptions for your apps."
+desc: "Make money with LiveChat Billing API."
+---
+
+# Introduction
+
+The LiveChat Billing API allows you to charge for your apps in the LiveChat Marketplace. Therefore, you can offer paid applications to over 22,000 LiveChat customers.
+
+The Billing API is a collective name for a subset of smaller APIs used for specific purposes (see the [APIs section](#2-apis) below for details).
+
+## Overview
+
+### Payment types
+
+The Billing API supports the following payment types:
+
+- direct charges (one-time charges)
+- subscriptions
+- per-usage payments (coming soon)
+
+### Additional options
+
+It also handles a set of features to facilitate the payment and accounting processes:
+
+- credit card processing
+- invoices - coming soon
+
+<aside class="note">
+  The customers can use their existing credit card from their LiveChat account;
+  there’s no need to re-renter the card details.
+</aside>
+
+# Getting started
+
+## Example apps
+
+### Billing Demo app
+
+A sample front-end app that implements Billing API to offer in-app payments.
+
+It's available on GitHub: [https://github.com/livechat/billing-demo](https://github.com/livechat/billing-demo)
+
+### Agent App Extension
+
+A sample LiveChat [Agent App Extension](https://docs.livechatinc.com/agent-app-extension) that offers in-app payment using Billing API.
+
+It's available on GitHub: [https://github.com/livechat/billing-demo-agent-app-extension](https://github.com/livechat/billing-demo-agent-app-extension)
+
+<img
+  class="framed"
+  src="../assets/images/billing-demo-in-app-payment.png"
+  width="500"
+/>
+
+# User guide
+
+## 1. Authorization
+
+The Billing API is based on the [LiveChat OAuth](https://docs.livechatinc.com/authorization/) authorization flow. All endpoints require access tokens, and some endpoints are limited by scope or client ID.
+
+## 2. APIS
+
+### 2.1. Direct Charges
+
+The Direct Charges API allows you to collect one-time fees.
+
+#### Use cases:
+
+- Collecting a single charge for an application in the Marketplace
+- Collecting in-app micropayments
+- Charging for additional features in the apps
+
+### 2.2. Ledger
+
+The Ledger API lets you manage the financial activity and balance. In other words, it will show you the purchase history and your earnings.
+
+#### Use cases:
+
+- Checking the balance
+- Checking the billing history
+
+### 2.3. Recurrent Charges
+
+The Recurrent Charges API handles periodic payments. For example, you can offer an app that costs \$10 per month.
+
+#### Use cases:
+
+- Viewing the subscriptions
+- Updating the subscriptions
+
+# Direct charges
+
+The Direct Charges API is a tool to collect one-time fees (also called "direct charges").
+
+## Statuses {#direct-charges-statuses}
+
+There are six possible direct charge statuses:
+
+| Status      | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| `pending`   | the charge has been created and is awaiting user interaction |
+| `accepted`  | the charge has been accepted by the user                     |
+| `declined`  | the charge has been declined by the user                     |
+| `processed` | the charge is being processed by a payment gateway           |
+| `failed`    | the charge could not be collected                            |
+| `success`   | the charge has been collected                                |
+
+## Flows {#direct-charges-flows}
+
+There are three possible direct charge flows:
+
+- `pending` -> `accepted` -> `processed` -> `failed`
+- `pending` -> `accepted` -> `processed` -> `success`
+- `pending` -> `declined`
+
+## Usage
+
+- Create a charge for a user (`POST /v1/direct_charge`) and redirect them to the `confirmation_url`.
+- After the user confirms or declines the charge, they will be redirected to `return_url` with charge `id` passed as a URL param.
+- Based on `id`, you can check charge status (`GET /v1/direct_charge/:ID`). If it is `accepted`, you must activate the charge (`PUT /v1/direct_charge/:ID/activate`).
+- After a while, our payment gateway will try to charge the user and it will automatically change the charge status to `success` or `failed`.
+
+<Section>
+
+<Text>
+
+## Direct charge object
+
+Here's the structure of a single direct charge object.
+
+Parameters description:
+
+- `price` - an integer defined in cents. Example: to charge \$99, set the `price` to 9900
+- `commission_percent` - a percentage fee deducted by LiveChat from the application price
+
+</Text>
+
+<Code>
+
+<CodeSample>
+
+<Sample>
+
+```json
+{
+  "id": "5deab95d-c0c9-4397-9593-436f533e83e5",
+
+  "buyer_license_id": 100008664,
+  "buyer_entity_id": "name@email.com",
+  "order_client_id": "1e2cb91de0b15e99a7f4502b900e907e",
+  "seller_client_id": "1e2cb91de0b15e99a7f4502b900e907e",
+
+  "name": "Extension",
+  "price": 100,
+  "quantity": 2,
+  "return_url": "https://application.com/path?id=5deab95d-c0c9-4397-9593-436f533e83e5&type=direct_charge",
+  "test": false,
+
+  "status": "pending",
+  "confirmation_url": "https://billing.livechatinc.com/?id=5deab95d-c0c9-4397-9593-436f533e83e5",
+  "commission_percent": 20,
+
+  "created_at": "2017-10-20T13:31:27Z",
+  "updated_at": "2017-10-23T13:27:45Z"
+}
+```
+
+</Sample>
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+
+## Scopes {#direct-charges-scopes}
+
+Direct Charges API requires `billing_manage` scope for all endpoints.
+
+If you want to use this API, you must create an app in Developers Console and check **"offer in-app payments"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `billing_manage` scope.
+
+## Endpoints {#direct-charges-endpoints}
+
+Base URL: `https://billing.livechatinc.com`
+
+- `POST /v1/direct_charge` - create a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional field: `test`
+- `GET /v1/direct_charge/:ID` - get the existing charge
+- `GET /v1/direct_charge` - create a paginated charges list (20 items per page) ordered by creation date. Optional fields: `page`, `status` (for filtering by status, returns `{"result:[OBJECT_1, ... , OBJECT_N]"}`)
+- `PUT /v1/direct_charge/:ID/activate` - activate the charge (the payment gateway starts processing it)
+
+# Ledger
+
+The Ledger API handles the financial activity and balance.
+
+## Entry object types
+
+- `collection` - the amount has beed added
+- `refund` - the amount has been deducted
+- `withdrawal` - the amount has been paid off
+
+<Section>
+
+<Text>
+
+## Ledger entry object
+
+This is the structure of a single Ledger entry object:
+
+</Text>
+
+<Code>
+
+<CodeSample>
+
+<Sample>
+
+```json
+{
+  "id": "50af517e-c5aa-4af3-93c2-e60d612c43eb",
+  "name": "app1",
+  "type": "collection",
+  "value": 160,
+  "created_at": "2017-11-20T15:48:13Z"
+}
+```
+
+</Sample>
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+## Scopes {#ledger-scopes}
+
+Ledger API requires `ledger_read` scope for all endpoints.
+
+If you want to use this API, you must create an app in Developers Console and check **"read developer’s financial activity and balance"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `ledger_read` scope.
+
+## Endpoints {#ledger-endpoints}
+
+Base URL: `https://billing.livechatinc.com`
+
+- `GET /v1/ledger` - returns the current ledger. It lists up to 20 entries, use `?page=X` for pagination. Required format: `{result: [LEDGER ENTRY 1, LEDGER ENTRY 2, ...]}`,
+- `GET /v1/ledger/balance` - returns the current ledger balance in cents. Format: `{"balance": 10}`
+
+---
+
+
+# Recurrent charges
+
+The Recurrent Charges API handles periodic payments. Once the payment is set up, a customer will be charged every month.
+
+## Statuses
+
+There are six possible recurrent charge statuses:
+
+| Status      | Description                                                      |
+| ----------- | ---------------------------------------------------------------- |
+| `pending`   | the charge has been created and is awaiting merchant interaction |
+| `accepted`  | the charge has been accepted by the merchant                     |
+| `declined`  | the charge has been declined by the merchant                     |
+| `active`    | the charge is being processed by a payment gateway               |
+| `frozen`    | the charge could not be collected                                |
+| `cancelled` | the charge has been cancelled                                    |
+
+## Flows
+
+There are three possible recurrent charge flows:
+
+- `pending` -> `accepted` -> `processed` -> `active` -> `cancelled`
+- `pending` -> `accepted` -> `processed` -> `active` -> `frozen`
+- `pending` -> `declined`
+
+<Section>
+
+<Text>
+
+## Recurrent charge object
+
+Here's the structure of a recurrent charge object.
+
+Parameters description:
+
+- `price` - an integer defined in cents. Example: to charge \$99, set the `price` to 9900
+- `seller_client_id` - client id which created a given charge (in most cases it's the Marketplace id or order client id)
+- `order_client_id` - client id of the application that is paid for
+- `order_entity_id` - client id author (the creator of an application)
+- `commission_percent` - a percentage fee deducted by LiveChat from the application price
+- `current_charge_at` - the date when the current settlement period started
+- `next_charge_at` - the date when the current settlement period ends
+
+</Text>
+
+<Code>
+
+<CodeSample>
+
+<Sample>
+
+```json
+  "id": "1c286f7a-aab8-4384-8e09-dc6749c550cd",
+  "buyer_license_id": 100006625,
+  "buyer_entity_id": "g.wyszynski+labs@livechatinc.com",
+
+  "seller_client_id": "1e2cb91de0b15e99a7f4502b900e907e",
+
+  "order_client_id": "e569d92213f62ec04cee2ee0f3b4f070",
+  "order_license_id": "12345",
+  "order_entity_id": "name@domain.com",
+
+  "name": "sub1",
+  "price": 1900,
+  "trial_days": 0,
+  "return_url": "http://localhost?id=1c286f7a-aab8-4384-8e09-dc6749c550cd",
+  "test": false,
+
+  "status": "pending",
+  "confirmation_url": "http://localhost:8000?id=1c286f7a-aab8-4384-8e09-dc6749c550cd&type=recurrent_charge",
+  "commission_percent": 20,
+
+  "trial_ends_at": null,
+  "cancelled_at": null,
+  "current_charge_at": null,
+  "next_charge_at": null,
+
+  "updated_at": "2017-11-29T10:57:26Z",
+  "created_at": "2017-11-29T10:57:26Z"
+
+```
+
+</Sample>
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+
+## Scope
+
+- `billing_manage` - for creating charges for your own client
+- `billing_admin` - for creating charges for other clients and for adjusting `commission_percent`
+
+## Endpoints
+
+All endpoints return a recurrent charge object.
+
+- `POST /v1/recurrent_charge` - create a new charge. Required fields: `name`, `price`, `return_url`. Optional fields: `test`, `trial_days`
+- `GET /v1/recurrent_charge/:ID` - get the existing charge
+- `PUT /v1/recurrent_charge/:ID/accept` - accept recurrent charge. The buyer must confirm the payment before the charge is collected
+- `PUT /v1/recurrent_charge/:ID/decline` - decline recurrent charge. The buyer can decline charge
+- `PUT /v1/recurrent_charge/:ID/activate` - activate recurrent charge
+- `PUT /v1/recurrent_charge/:ID/cancel` - cancel recurrent charge. Proportional refund is created when cancelled during the settlement period

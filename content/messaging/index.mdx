@@ -1,0 +1,168 @@
+---
+weight: 1
+category: "messaging"
+title: "Messaging Overview"
+tagline: "Interact with the chat as an agent or a customer."
+desc: "Interact with the chat as an agent or a customer. Configure the license properties and attach webhooks."
+---
+
+# Introduction
+
+This document is dedicated to a set of **Messaging APIs**, which consists of the **Agent Chat API**, **Customer Chat API**, and the **Configuration API**. It also explains some key concepts, such as the definition of a **chat** and a **thread**, **the flow between services**, or **chat routing**. Understanding them is a prerequisite to the efficient usage of our APIs.
+
+This document is a great starting point if you plan on using our APIs. You'll learn what use cases can be covered with each API. For hands-on examples, we encourage you to check the documentation specific to each API.
+
+## The API version
+
+This document describes **the latest API version: 3.1**.
+
+If you're looking for the previous versions of REST API, please refer to [**Configuration API V2**](/management/configuration-apiv2).
+
+# Key concepts
+
+## Chats and threads
+
+By looking at the chat structure, you notice that each **chat** is is divided into **threads**. Every thread contains **events**, for example sent messages. You can think of a **chat** as _**a whole conversation**_, while **threads** are separate _**conversation topics**_.
+
+![Chats and Threads](images/chat_threads.png "chats and threads")
+
+Consider the example of an online store. A customer starts a chat to ask about the shoes he bought. If he hasn't got any previous chat history, **a new chat is started**. Within this chat, **a new thread is created** (conversation topic). The messages he exchanges with the customer service assistant are received by the thread as **events**. After solving the problem, the customer says goodbye and closes the chat, which automatically **closes the thread**. Let's say the customer is rude and leaves without saying goodbye. In this case, the thread closes after 30 minutes of inactivity (time periods are configurable). The chat **doesn't end**, though.
+
+The next day, customer returns to ask about his other purchase. A new thread starts in the context of the chat, which has been **continuously open**. Each time customer returns and starts a new conversation topic, he needs to click **_start a chat_**. If we stuck to our naming convention, that would have to be **_start a thread_**, because this is what he actually does behind the scenes.
+
+A **message** is not the only event type, though. To check out other event types, see the [Events](#events) section.
+
+### Rules and conditions
+
+Here are some general rules, which summarize the previous section and add new info.
+
+1. When a new chat is started, **a new active thread** is created within this chat. New threads within a single chat are created on the server side.
+
+2. There's always **only one active thread**. Only the **last thread** can be the **active** one. Events are always added to the active thread.
+
+3. There can be time gaps between threads in a chat, but once a chat is started, it's **continuously open**.
+
+4. Messages are sent and delivered even when the recipient (both Customer and Agent) is **offline**.
+
+5. **Multiple Agents** can participate in a single chat.
+
+6. Every user can have **multiple concurrent chats**. Read how it applies to [Agents](#chatting-as-an-agent) and [Customers](#chatting-as-a-customer).
+
+7. The algorithm that decides how chats are distributed between Agents is called **routing**. It's documented in the [Routing](#routing) section.
+
+### The flow
+
+To better understand the flow between services, watch a short video.
+
+<video loop width="750" height="500" style="height: auto;" controls>
+  <source type="video/mp4" src="images/livechat-messaging-api-flow.mp4" />
+</video>
+
+## Chat routing
+
+Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents who use the same license.
+
+Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [**Understanding chat routing**](https://www.livechatinc.com/help/understanding-chat-routing/).
+
+### Router system messages
+
+While the chat changes its state, the router sends system messages. Read more about **system messages** in [**Agent**](../agent-chat-rtm-api/#system-messages) and [**Customer**](#../customer-chat-rtm-api/#system-messages) Chat API.
+
+# APIs Overview
+
+There are two primary Chat APIs:
+
+- **Agent Chat API**, which serves to join a chat as Agent.
+- **Customer Chat API**, which serves to join a chat as Customer.
+
+The separation of Chat APIs helps you decide which set of methods you should use. It depends on the role of the chat user. Want to join a chat as Agent? Refer to the Agent Chat API. Want to send messages as Customer? Use the Customer Chat API.
+
+To use both APIs, you need to be _authorized_. This topic is thoroughly explained in the [**Authorizing API calls**](../authorization) document.
+
+## RTM API vs. Web API
+
+Agent Chat API and Customer Chat API can be used either as **Real-Time Messaging APIs (RTM APIs)** or **Web APIs**.
+
+To learn about differences between these two API types, see the comparison below:
+
+|          **Characteristics**          |                                                                **RTM API**                                                                |                                                        **Web API**                                                        |
+| :-----------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------: |
+|          **connection type**          |                                                          stateful e.g. websocket                                                          |                                                stateless, via XHR requests                                                |
+| **finds out about state changes via** |                                                  [pushes](../agent-chat-rtm-api/pushes)                                                   |                                       [webhooks](<(../agent-chat-web-api/pushes)>)                                        |
+|              **used by**              |                                                          Agent App, Chat Widget                                                           |                                                external apps, integrations                                                |
+|           **documentation**           | [Agent Chat RTM API](../agent-chat-rtm-api/#when-to-use-rtm-api) & [Customer Chat RTM API](../customer-chat-api/#real-time-messaging-api) | [Agent Chat Web API](../agent-chat-web-api/#when-to-use-web-api) & [Customer Chat Web API](../customer-chat-api/#web-api) |
+
+If you're not sure, which implementation to choose, we suggest reading about particular APIs. You'll find the **When to use RTM/Web API** section in each document - refer to the table above for links.
+
+# Agent Chat API
+
+## Use cases
+
+The **Agent Chat API** allows for:
+
+- interactions with the chat as Agent (joining a chat, posting messages)
+- interact with the chat by Bot Agents (acting as Agents)
+- building a custom Agent App
+- browsing chat archives
+- banning Customers
+- and much more
+
+If you plan on using the **Agent Chat API** as **RTM API**, refer to [Agent Chat RTM API](../agent-chat-rtm-api). For the **Web API** usage, read the [Agent Chat Web API](../agent-chat-web-api) document.
+
+## Chatting as Agent
+
+The number of chats an Agent can participate in is not limited. It can be configured in the Agent App by the license Owner or Admin.
+
+# Customer Chat API
+
+## Use cases
+
+The **Customer Chat API** allows for:
+
+- interacting with the chat as Customer (join a chat, post messages)
+- building a custom Chat Widget
+- implementing new conversation channels (Facebook Messenger or Twitter)
+
+If you plan on using the **Customer Chat API** as **RTM API**, refer to [Customer Chat RTM API](../customer-chat-rtm-api). For the **Web API** usage, read the [Customer Chat Web API](../customer-chat-web-api) document.
+
+## Chatting as Customer
+
+By default, a Customer can only have one chat started, unless he chats with Agents who use different licences. The licence Owner or Admin can change that default value, modifying the `routing.max_customer_chats_count` property. However, in order to support this functionality, you would need to build a custom Chat Widget. For now, the LiveChat Chat Widget doesn't support it. You can build a Chat Widget from the ground up using the [Chat Widget Customer SDK](../customer-sdk/).
+
+Chats are continuous so Customers can always preview their chats' history. Yet, with **multiple concurrent chats** Customers can sort their chats out thematically, making sure they know what each chat is about.
+
+# Configuration API
+
+## Use cases
+
+The [**Configuration API**](../configuration-api) allows for:
+
+- storing license configurations
+- creating chat, thread, and event [properties](#properties)
+- managing [webhooks](#webhooks), for example registering and unregistering
+- managing [Bot Agents](#bot-agents), for example creating and removing
+
+In the near future, it will allow for groups configuration. For now, refer to [**Configuration API v2**](https://developers.livechatinc.com/docs/rest-api/) to manage groups properties.
+
+## Properties
+
+Properties are **key-value storages**. They can be set within a chat, a thread, or an event. You can create properties within a license and configure them using the [Configuration API](../configuration-api/). It's possible to configure the property [type](../configuration-api/#property-types), [location](../configuration-api/#property-locations), and [domain](../configuration-api/#property-domain).
+
+Refer to the [Configuration API](../configuration-api/) document to read more about the [property format](../configuration-api/#property-data-structure) and available [endpoints](../configuration-api/#properties).
+
+## Webhooks
+
+LiveChat provides a number of webhooks. You can manage them via the [Configuration API](../beta-docs/configuration-api/#webhooks).
+We can distinguish **global webhooks** and **bot-specific webhooks**. Once **global webhooks** are set up, you will always receive them. **Bot-specific** webhooks are strongly coupled with the bot's status (`accepting chats`, `not accepting chats`, `offline`). If the bot is offline, webhooks won't be received.
+
+## Bot Agents
+
+Bot Agents are similar to their human counterparts. They can join chats and post messages, but they also have a special feature: you can attach [webhooks](../configuration-api/#webhooks) to them.
+
+Bot Agents are created and managed via the [Configuration API](../configuration-api/#bot-agent). They communicate with the [Agent Chat API](../agent-chat-api/) by the [**Web API**](../agent-chat-api/#web-api) or [**websocket connection**](#rtm-api-vs-web-api).
+Bot Agents are authorized with the use of the Agent's token. Using Bot Agents requires sending the `author_id` property.
+They can listen to incoming webhooks (or pushes) and react to them.
+
+# Contact us
+
+If you still can't find the answer you're looking for, don't hesitate to contact us at <a href="mailto:developers@livechatinc.com">developers@livechatinc.com</a>! We're also open for you suggestions and feedback on the document itself.

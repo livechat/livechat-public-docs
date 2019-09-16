@@ -1,0 +1,3334 @@
+---
+weight: 20
+category: "management"
+title: "Configuration API v2"
+tagline: ""
+desc: "Create fully customized Reports, handle Agents data or manage Archives. LiveChat REST API allows you to interact with data in many ways."
+---
+
+# Introduction
+
+Welcome to the LiveChat API documentation!
+
+Our API provides a set of flexible tools which you can use to create new outstanding projects. We smile a bit more each time we see skilled developers unleash their creativity!
+
+Please note that this documentation refers to the **API version 2.0**.
+
+## Basic API usage
+
+Sample method call
+
+```bash
+curl -u LOGIN:API_KEY -H X-API-Version:VERSION URL
+```
+
+All LiveChat API requests start with `https://api.livechatinc.com/`.
+
+<aside class="notice">
+  Please note that all LiveChat API requests must use `HTTPS` protocol.
+</aside>
+
+The next segment of the URL path depends on the type of your request. For example, use: `https://api.livechatinc.com/agents` to get or modify the agents data.
+
+<aside class="notice">
+  All requests must have `X-API-VERSION` header set to the number of the version
+  that you'd like to use. The most recent version is 2.
+</aside>
+
+## Data centers
+
+LiveChat system operates in two data centers: `dal` and `fra`. The default data center is `dal`.
+
+All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
+
+For example: if the user token starts with `fra-`, you should add `X-Region: fra` header. If the token starts with `dal-` you don't have to specify the header.
+
+## Authentication
+
+Two common authentication methods are supported: **OAuth 2.0** and **API key**.
+
+### OAuth 2.0
+
+Example REST API call using OAuth 2.0 `access_token`:
+
+```bash
+  curl "https://api.livechatinc.com/agents" \
+  -H "Authorization: Bearer <your_access_token>" \
+  -H "X-API-Version: 2"
+```
+
+OAuth 2.0 authentication is the recommended way of authenticating to LiveChat API.
+
+It is the most secure way of making API calls. With this flow, you will get access only to some parts of LiveChat account, such as reading agents list. This is more secure than [API key flow](#api-key) which has always access to all LiveChat account data.
+
+To start using OAuth 2.0, please read a dedicated [Authorization](/docs/authorization) guide.
+
+### API key
+
+If your login is **john.doe@mycompany.com**, your API key is **c14b85863755158d7aa5cc4ba17f61cb** and you want to invoke the **agents** API method, your request will look like this:
+
+```bash
+  curl "https://api.livechatinc.com/agents" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "X-API-Version: 2"
+```
+
+If you want to build a private app that will run on your own server, you can skip the OAuth 2.0 flow and use the API key. Please note this flow of making API calls is less secure because the API key gives access to all LiveChat account data.
+
+With this authorization method, you will need to include your LiveChat login and `API_KEY` for each method call. You'll find the API key in [your LiveChat profile](https://my.livechatinc.com/agents/api-key).
+
+Authentication to the API occurs via [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication). Provide your `login` as the basic auth username and the `API_KEY` as the password. You must authenticate for all requests.
+
+All API requests must be made over HTTPS.
+
+## Data format
+
+The LiveChat API returns the data in the [JSON](http://en.wikipedia.org/wiki/JSON) format. Check out the following example.
+
+Sample agents list returned in the **JSON format**
+
+```json
+[
+  {
+    "name": "John Doe",
+    "permission": "owner",
+    "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+    "login": "john.doe@mycompany.com",
+    "status": "accepting chats"
+  },
+  ...
+]
+```
+
+## JSONP
+
+Sample **JSONP request**
+
+```bash
+curl -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb "https://api.livechatinc.com/agents?callback=example"
+```
+
+All requests made with HTTP GET are [JSONP](http://en.wikipedia.org/wiki/JSONP)-enabled. To use JSONP, append `callback=` and the name of your callback function to the request.
+
+Sample **JSONP response**
+
+```json
+[
+  {
+    "name": "John Doe",
+    "permission": "owner",
+    "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+    "login": "john.doe@mycompany.com",
+    "status": "accepting chats"
+  },
+  ...
+]
+```
+
+## Error handling
+
+The errors are returned using the standard HTTP error code syntax. In general, the codes in the 2xx range indicate success, the codes in the 4xx range indicate an error (incorrect or missing parameters, not authenticated etc.), and the codes in the 5xx range indicate an error with the LiveChat servers. Any additional info is included in the body of the return call, JSON-formatted.
+
+### HTTP status codes summary
+
+- `400` – The request is incorrect, please make sure that the passed arguments are matching the format in the method's documentation.
+- `401` – Unauthorized. You attempt to authenticate with an invalid username or API key.
+- `404` – Not Found. You attempt to request a resource which doesn't exist.
+- `500` – Internal Server Error. Something unexpected happened on our end. Please try again or contact our support.
+
+## Cross-domain
+
+All cross-domain API requests made by a web browser are denied for security reasons. It means that the browser-based requests are not allowed from 3rd party domains (including `localhost`).
+
+## LiveChat API libraries
+
+All API calls include an API key that can be easily stolen when making a request using a web browser. It means you should use backend languages for API requests. Here is a list of the ready-to-use libraries:
+
+- [PHP library for LiveChat API](https://github.com/livechat/api-client-php), hosted on Github.
+- [node.js library for LiveChat API](https://github.com/livechat/api-client-nodejs), hosted on Github.
+- [Ruby library for LiveChat API](https://github.com/cxz/livechat_client), hosted on Github.
+- [C# library for LiveChat API](https://github.com/livechat/api-client-csharp), hosted on Github.
+
+### External LiveChat API libraries
+
+- [R library for LiveChat API](https://github.com/lawwu/livechatR), hosted on Github.
+
+<aside class="notice">
+  Did you write your own library and want it listed here? Let us know!
+</aside>
+
+# Agents
+
+Use this API to **manage** your [Agents](https://www.livechatinc.com/kb/livechat-roles-owner-administrators-and-agents/) and to **get information** about their activities.
+
+| Methods                | Path                            |
+| ---------------------- | ------------------------------- |
+| `GET`, `POST`          | `/agents`                       |
+| `GET`, `PUT`, `DELETE` | `/agents/<LOGIN>`               |
+| `POST`                 | `/agents/<LOGIN>/reset_api_key` |
+
+<Section>
+<Text>
+
+## List all agents
+
+Returns all LiveChat agents list. Optional parameters:
+
+- `status` - returns the agents with one of the following statuses: `accepting chats`, `not accepting chats` or `offline`.
+
+Additional info:
+
+`status` can be: `accepting chats`, `not accepting chats` or `offline`.  
+`permission` can take the following values: `owner`, `administrator`, `normal`.
+
+</Text>
+<Code>
+<CodeSample path={`GET /agents`}>
+
+```bash
+curl "https://api.livechatinc.com/agents" \a
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+[
+  {
+    "name": "John Doe",
+    "permission": "owner",
+    "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+    "login": "john.doe@mycompany.com",
+    "status": "accepting chats"
+  },
+  ...
+]
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Get a single agent details
+
+Returns complete details of the agent for the given `LOGIN`.
+
+### Properties
+
+| Property          | Description                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `login`           | the agent's e-mail address                                                                                               |
+| `name`            | the agent's name                                                                                                         |
+| `login_status`    | possible values: `accepting chats`, `not accepting chats`; defines the default status for an agent right after the login |
+| `permission`      | possible values: `owner`, `administrator`, `normal`                                                                      |
+| `daily_summary`   | whether or not the agent receives a daily summary                                                                        |
+| `job_title`       | defaults to: `Support Agent`                                                                                             |
+| `avatar`          | path to the image on Amazon s3                                                                                           |
+| `notifications`   | whether or not the specific notification is enabled                                                                      |
+| `max_chats_count` | limit of the concurrent chats                                                                                            |
+| `groups[]`        | list of groups the agent is a member of                                                                                  |
+| `status`          | possible values: `accepting chats`, `not accepting chats`, `offline`; current status of an agent                         |
+| `last_logout`     | timestamp of the agent's last logout                                                                                     |
+| `api_key`         | the agent's API key (note: agents can access their own API keys only)                                                    |
+
+</Text>
+<Code>
+<CodeSample path={'GET https://api.livechatinc.com/agents/<LOGIN>'}>
+
+```bash
+curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "login": "john.doe@mycompany.com",
+  "name": "John Doe",
+  "login_status": "accepting chats",
+  "permission": "owner",
+  "daily_summary": 1,
+  "job_title": "Support Agent",
+  "avatar": "livechat.s3.amazonaws.com/1011121/all/avatars/bdd8924fcbcdbddbeaf60c19b238b0b0.jpg",
+  "notifications": {
+    "new_visitor": 1,
+    "returning_visitor": 1,
+    "queued_visitor": 1,
+    "visitor_is_typing": 0,
+    "new_goal": 1
+  },
+  "max_chats_count": 6,
+  "groups": [
+    {
+      "id": 1,
+      "name": "Sales"
+    },
+    {
+      "id": 2,
+      "name": "Technical Support"
+    }
+  ],
+  "status": "accepting chats",
+  "last_logout": 1358427204,
+  "api_key": "6ed8580f2cc160ce98d16389a0ede2c0"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Create a new agent
+
+Creates a new agent in your license.
+
+### Required properties
+
+| Property | Description                      |
+| -------- | -------------------------------- |
+| `login`  | must be a correct e-mail address |
+| `name`   | string                           |
+
+### Optional properties
+
+| Property          | Description                                                                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `job_title`       | defaults to: `Support Agent`                                                                                                                                |
+| `login_status`    | possible values: `accepting chats`, `not accepting chats`; defines the default status for an agent right after the login                                    |
+| `password`        | the minimum length is 5 (if not provided, an email with the activation link will be sent)                                                                   |
+| `permission`      | `administrator`, `normal` (default)                                                                                                                         |
+| `groups[]`        | list of group IDs                                                                                                                                           |
+| `notifications`   | object (required keys: `new_visitor`, `incoming_chat`, `returning_visitor`, `queued_visitor`, `visitor_is_typing`, `new_goal`, accepted values: `0` or `1`) |
+| `daily_summary`   | `0` or `1` (default)                                                                                                                                        |
+| `max_chats_count` | defaults to `6`                                                                                                                                             |
+
+</Text>
+<Code>
+<CodeSample path={`POST /agents`}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/agents" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "login":"jenny.doe@mycompany.com",
+        "name":"Jenny Doe",
+        "permission":"administrator",
+        "groups":[1,2]
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/agents" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "login=jenny.doe@mycompany.com&\
+name=Jenny+Doe&\
+permission=administrator&\
+groups[]=1&\
+groups[]=2&\"
+```
+
+</Sample>
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "login": "jenny.doe@mycompany.com",
+  "name": "Jenny Doe",
+  "login_status": "accepting chats",
+  "permission": "administrator",
+  "daily_summary": 1,
+  "job_title": "Support Agent",
+  "avatar": "livechat.s3.amazonaws.com/default/avatars/45bcb5f592dbf5aac8f88dcfd6bc937c.png",
+  "notifications": {
+    "new_visitor": 1,
+    "returning_visitor": 1,
+    "queued_visitor": 1,
+    "visitor_is_typing": 0,
+    "new_goal": 1
+  },
+  "max_chats_count": 6,
+  "groups": [
+    {
+      "id": 1,
+      "name": "Sales"
+    },
+    {
+      "id": 2,
+      "name": "Technical Support"
+    }
+  ],
+  "status": "offline",
+  "last_logout": 0,
+  "api_key": "441e519f755db8a51a4e232a31fe6249"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Update an agent
+
+Updates the specified agent by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
+
+### Optional properties
+
+| Property           | Description                                                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `job_title`        |                                                                                                                              |
+| `name`             |                                                                                                                              |
+| `login_status`     | possible values: `accepting chats`, `not accepting chats`; defines the default status for agent right after login            |
+| `password`         | the password you want to change                                                                                              | This can be either your own password or the password of another agent | It has to be at least 5 characters long |
+| `current_password` | when changing the password for yourself or for another agent, you need to provide your current password                      |
+| `permission`       | `administrator`, `normal` (default)                                                                                          |
+| `status`           | `accepting chats`, `not accepting chats`, `offline`                                                                          | - change agent's status or log agent out | Ignored when previous agent's status is `offline` |
+| `groups[]`         | list of group IDs                                                                                                            |
+| `notifications`    | object (allowed keys: `new_visitor`, `returning_visitor`, `queued_visitor`, `visitor_is_typing`, allowed values: `0` or `1`) |
+| `daily_summary`    | `0` or `1`                                                                                                                   |
+| `max_chats_count`  |                                                                                                                              |
+| `work_scheduler`   | available only for enterprise plan                                                                                           | Object with allowed keys: days of the week, e | g | `monday` | For each day of the week the valid keys are `start`, `end` or `enabled` | It is possible to pass all work scheduler keys at once | `start` and `end` should be passed in the 24h-hour clock format | `enable` accepted values are `1` or `0` |
+
+The properties which an agent can edit in their own profile, without being an administrator:
+
+- `password`
+- `name`
+- `job_title`
+- `daily_summary`
+- `notifications`
+- `login_status`
+- `status`
+
+</Text>
+<Code>
+<CodeSample path={`PUT /agents/<LOGIN>`}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -X PUT \
+  -d '{
+        "status":"not accepting chats",
+        "max_chats_count":2
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT \
+  -d "status=not+accepting+chats&\
+max_chats_count=2"
+```
+
+</Sample>
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "login": "jenny.doe@mycompany.com",
+  "name": "Jenny Doe",
+  "login_status": "not accepting chats",
+  "permission": "administrator",
+  "daily_summary": 1,
+  "job_title": "Support Agent",
+  "avatar": "livechat.s3.amazonaws.com/default/avatars/45bcb5f592dbf5aac8f88dcfd6bc937c.png",
+  "notifications": {
+    "new_visitor": 1,
+    "returning_visitor": 1,
+    "queued_visitor": 1,
+    "visitor_is_typing": 0,
+    "new_goal": 1
+  },
+  "max_chats_count": 2,
+  "work_scheduler":{
+    "sunday":{
+      "enabled":0,
+      "start":"11:00",
+      "end":"17:00"
+    },
+    "monday":{
+      "enabled":1,
+      "start":"09:00",
+      "end":"17:00"
+    },
+    ...
+    "saturday":{
+      "enabled":0,
+      "start":"09:00",
+      "end":"17:00"
+    }
+  },
+  "groups": [
+    {
+      "id": 1,
+      "name": "Sales"
+    },
+    {
+      "id": 2,
+      "name": "Technical Support"
+    }
+  ],
+  "status": "not accepting chats",
+  "last_logout": 0,
+  "api_key": "441e519f755db8a51a4e232a31fe6249",
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Reset an API key
+
+Resets the API key for an agent with a given `LOGIN`. The return format is the same as in the [update an agent](#update-an-agent) method.
+
+</Text>
+<Code>
+<CodeSample path={`POST /agents/<LOGIN>/reset_api_key`}>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com/reset_api_key" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X POST
+```
+
+</Sample>
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Remove an agent
+
+Removes an agent. Archived chats will not be removed, but all statistics will be lost. The agent will be notified by e-mail that the account has been deleted.
+
+</Text>
+
+<Code>
+
+<CodeSample path={`DELETE /agents/<LOGIN>`}>
+
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X DELETE
+```
+
+</Sample>
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "result": "jenny.doe@mycompany.com removed successfully"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+# Canned responses
+
+Use this method to **get a full list** of your [Canned responses](https://www.livechatinc.com/kb/canned-responses/) and to **modify them**.
+
+## Available paths {#canned-responses-available-paths}
+
+| Methods              | Path                                     |
+| -------------------- | ---------------------------------------- |
+| `GET`, `POST`        | `/canned_responses`                      |
+| `GET`, `PUT`, `POST` | `/canned_responses/<CANNED_RESPONSE_ID>` |
+
+<Section>
+<Text>
+
+## List all canned responses
+
+Returns the list of all currently set canned responses.
+
+### Optional parameters
+
+| Parameter                              | Description                                     |
+| -------------------------------------- | ----------------------------------------------- |
+| `group`                                | defaults to `0`                                 |
+| `modification_date`, `modification_by` | appear if the canned response has been modified |
+
+</Text>
+
+<Code>
+<CodeSample path={`GET /canned_responses`}>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/canned_responses?group=1" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "id": 3151,
+    "group": 1,
+    "text": "Can I help you with anything else?",
+    "creation_date": 1358257181,
+    "created_by": "john.doe@mycompany.com",
+    "tags": ["help", "else"]
+  },
+  {
+    "id": 3161,
+    "group": 1,
+    "text": "What product are you interested in?",
+    "creation_date": 1358257229,
+    "created_by": "john.doe@mycompany.com",
+    "modification_date": 1358864338,
+    "modified_by": "jenny.doe@mycompany.com",
+    "tags": ["product", "interest"]
+  },
+  {
+    "...": "..."
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get a single canned response
+
+`CANNED_RESPONSE_ID` is obtained from the [list of all canned responses](#list-all-canned-responses).
+
+### Attributes
+
+| Attribute       | Description                                         |
+| --------------- | --------------------------------------------------- |
+| `id`            | id of the canned response                           |
+| `group`         | id of the group that canned response is assigned to |
+| `text`          | canned response text                                |
+| `creation_date` | creation date timestamp                             |
+| `created_by`    | login of the canned response's author               |
+| `tags`          | an array of canned response's tags                  |
+
+</Text>
+
+<Code>
+
+<CodeSample path={`GET /canned_responses/<CANNED_RESPONSE_ID>`}>
+
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/canned_responses/3151" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 3151,
+  "group": 1,
+  "text": "Can I help you with anything else?",
+  "creation_date": 1358257181,
+  "created_by": "john.doe@mycompany.com",
+  "tags": ["help", "else"]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Create a new canned response
+
+Creates a new canned response.
+
+### Required properties
+
+| Property | Description             |
+| -------- | ----------------------- |
+| `text`   | response text           |
+| `tags`   | array of strings (tags) |
+
+### Optional properties
+
+| Property | Description   |
+| -------- | ------------- |
+| `group`  | defaults to 0 |
+
+</Text>
+
+<Code>
+
+<CodeSample path={`POST /canned_responses`}>
+
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/canned_responses" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "text":"Have a great day, goodbye.",
+        "tags": ["bye", "cu"]
+     }'
+```
+
+</Sample>
+
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/canned_responses" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "text=Have+a+great+day,+goodbye.&\
+tags[]=bye&\
+tags[]=cu"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 3181,
+  "group": 0,
+  "text": "Have a great day, goodbye.",
+  "creation_date": 1358866421,
+  "created_by": "john.doe@mycompany.com",
+  "tags": ["cu", "bye"]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Update a canned response
+
+Updates the specified canned response by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
+
+### Optional properties
+
+| Property | Description             |
+| -------- | ----------------------- |
+| `text`   | response text           |
+| `tags`   | array of strings (tags) |
+
+</Text>
+
+<Code>
+
+<CodeSample path={`PUT /canned_responses/<CANNED_RESPONSE_ID>`}>
+
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/canned_responses/3181" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT -d "tags[]=bye"
+```
+
+</Sample>
+
+<Sample label={'cURL'}>
+
+```
+curl "https://api.livechatinc.com/canned_responses" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -X PUT \
+  -d '{
+        "tags": ["bye"]
+     }'
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 3181,
+  "group": 0,
+  "text": "Have a great day, goodbye.",
+  "creation_date": 1358866421,
+  "created_by": "john.doe@mycompany.com",
+  "modification_date": 1358866813,
+  "modified_by": "john.doe@mycompany.com",
+  "tags": ["bye"]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Remove a canned response
+
+Removes a canned response with the given `CANNED_RESPONSE_ID`.
+
+</Text>
+
+<Code>
+
+<CodeSample path={`DELETE /canned_responses/<CANNED_RESPONSE_ID>`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/canned_responses/3181" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X DELETE
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "result": "Canned response removed successfully"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Goals
+
+This method allows you to **get information** about your [Goals](https://www.livechatinc.com/kb/goals-set-up-and-use/) and to **modify** them.
+
+## Available paths {#goals-available-paths}
+
+| Methods                | Path                                  |
+| ---------------------- | ------------------------------------- |
+| `GET`, `POST`          | `/goals`                              |
+| `GET`, `PUT`, `DELETE` | `/goals/<GOAL_ID>`                    |
+| `POST`                 | `/goals/<GOAL_ID>/mark_as_successful` |
+
+<Section>
+
+<Text>
+
+## List all goals
+
+Returns all currently set goals. The `active` parameter indicates whether a goal is enabled or not.
+
+### Optional parameters
+
+| Parameter | Description                                                          |
+| --------- | -------------------------------------------------------------------- |
+| `type`    | type of the goal: `custom_variable`, `url`, `api` or `sales_tracker` |
+
+</Text>
+
+<Code>
+
+<CodeSample path={`GET /goals`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/goals" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "id": 1041,
+    "name": "purchase",
+    "active": 1,
+    "type": "url"
+  },
+  {
+    "id": 1181,
+    "name": "nike shoes variable",
+    "active": 1,
+    "type": "custom_variable"
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get a single goal details
+
+Returns the goal details for the given `GOAL_ID`.
+
+### Attributes
+
+| Attribute | Description                        |
+| --------- | ---------------------------------- |
+| `id`      | id of the goal                     |
+| `name`    | goal name                          |
+| `active`  | whether or not the goal is enabled |
+| `type`    | type of the goal                   |
+
+### Additional info
+
+The `type` attribute can take the following values:
+
+- `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`.
+- `url` – with two additional parameters: `url` and `match_type` with possible values: `substring` (default), `exact`.
+- `api` – with no additional parameters.
+- `sales_tracker` – with seven additional parameters: `sales_tracker_id`, `value_type`, `value`, `currency`, `time_range`, `order_field_name` and `value_field_name`
+
+</Text>
+
+<Code>
+
+<CodeSample path={`GET /goals/<GOAL_ID`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/goals/1181" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 1181,
+  "name": "nike shoes variable",
+  "active": 1,
+  "type": "custom_variable",
+  "custom_variable_name": "nike_shoes",
+  "custom_variable_value": "true"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Mark a goal as successful
+
+The `GOAL_ID` is obtained from the [goals list](#list-all-goals).
+
+### Required parameters
+
+| Parameter    | Description                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `visitor_id` | obtained using the JavaScript API: [LC_API.get_visitor_id()](//developers.livechatinc.com/javascript-api#get-visitor-id) |
+
+Optionally you can store additional information about the goal. They can be only retrieved using the API.
+
+### Optional parameters
+
+| Parameter           | Example                                                        |
+| ------------------- | -------------------------------------------------------------- |
+| `order_id`          | `AP723HVCA721`                                                 |
+| `order_description` | `Nike shoes`                                                   |
+| `order_price`       | `199.00`, only the period is allowed as a separation character |
+| `order_currency`    | `USD`                                                          |
+
+</Text>
+
+<Code>
+
+<CodeSample path={`POST /goals/<GOAL_ID>/mark_as_successful`}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "visitor_id":"S1281361958.2238ee3bd3",
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "visitor_id=S1281361958.2238ee3bd3"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "result": "goal marked as successful"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Add a new goal
+
+Creates a new goal.
+
+### Required parameters
+
+| Parameter | Description      |
+| --------- | ---------------- |
+| `name`    | name of the goal |
+| `type`    | type of the goal |
+
+### Additional info
+
+The `type` can take the following values:
+
+- `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`. Both are required.
+- `url` – with two additional parameters: `url` (required) and `match_type` (optional) with possible values: `substring` (default), `exact`.
+- `api` – with no additional parameters.
+- `sales_tracker` – with optional parameters: `value_type` (possible values: `set`, `not_set`, `dynamic`), `value`, `currency`, `time_range`, `order_field_name`, `value_field_name` and `sales_tracker_id`
+
+The `active` parameter indicates whether the goal is active or not.
+
+</Text>
+
+<Code>
+
+<CodeSample path={`POST /goals`}>
+
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/goals" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"new goal",
+        "type":"url",
+        "url":"http://www.mystore.com/checkout/thank_you",
+        "match_type":"exact"
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/goals" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-VERSION:2 \
+  -d "name=new%20goal&\
+  type=url&\
+  url=http://www.mystore.com/checkout/thank_you&\
+  match_type=exact"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2231,
+  "name": "new goal",
+  "active": 1,
+  "type": "url",
+  "match_type": "exact",
+  "url": "http://www.mystore.com/checkout/thank_you"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Update a goal
+
+Updates the specified goal by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
+
+The `GOAL_ID` is obtained from the [goals list](#list-all-goals).
+
+### Optional parameters
+
+| Parameter | Description              |
+| --------- | ------------------------ |
+| `name`    | name of the goal         |
+| `type`    | type of the goal         |
+| `active`  | active state of the goal |
+
+### Additional info
+
+The `type` can take the following values:
+
+- `custom_variable` – with two additional parameters: `custom_variable_name`, `custom_variable_value`. Both are required.
+- `url` – with two additional parameters: `url` (required) and `match_type` (optional) with possible values: `substring` (default), `exact`.
+- `api` – with no additional parameters.
+- `sales_tracker` – with optional parameters: `order_field_name`, `value_field_name` and `sales_tracker_id`
+
+The `active` parameter indicates whether the goal is active or not.
+
+</Text>
+
+<Code>
+
+<CodeSample path={`PUT /goals/<GOAL_ID>`}>
+
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/goals/2231" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"new goal paused",
+        "active":0
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/goals/2231" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT -d "name=new%20goal%20paused&\
+  active=0"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2231,
+  "name": "new goal paused",
+  "active": 0,
+  "type": "url",
+  "match_type": "exact",
+  "url": "http://www.mystore.com/checkout/thank_you"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+## Remove a goal
+
+Removes a goal with the given `GOAL_ID`.
+
+</Text>
+<Code>
+
+<CodeSample path={`DELETE /goals/<GOAL_ID>`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/goals/2231" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X DELETE
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "result": "goal removed successfully"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Greetings
+
+You can use this method to create new and modify the existing [Greetings](https://www.livechatinc.com/kb/why-should-i-set-up-chat-greetings/). It can be also used to **look up Greetings data**.
+
+## Available paths {#greetings-available-paths}
+
+| Methods                 | Path                       |
+| ----------------------- | -------------------------- |
+| `GET`, `POST`           | `/greetings`               |
+| `GET`, `POST`, `DELETE` | `/greetings/<GREETING_ID>` |
+
+<Section>
+  
+<Text>
+
+## List all greetings
+
+Returns the list of all greetings.
+
+### Optional properties
+
+| Property | Description                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `group`  | Group number can be specified to get greetings from a given group. If not specified, all greetings will be returned |
+
+</Text>
+
+<Code>
+
+<CodeSample path={`GET /greetings`}>
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/greetings\
+  ?group=1" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "id": 2291,
+    "active": true,
+    "name": "Time on site: 5 sec",
+    "rules": [
+      {
+        "id": 8201,
+        "value": "5",
+        "type": "visit_time_site",
+        "operator": "equals",
+        "condition": "and"
+      }
+    ],
+    "properties": {
+      "active": "1",
+      "greeting-message_text": "Hello, how may I help you?"
+    }
+  },
+  {
+    "id": 2411,
+    "active": true,
+    "name": "Returning visitor",
+    "rules": [
+      {
+        "id": 8191,
+        "value": "2",
+        "type": "visits_number",
+        "operator": "greater_or_equal",
+        "condition": "and"
+      }
+    ],
+    "properties": {
+      "active": "1",
+      "greeting-message_text": "Hello again!"
+    }
+  }
+]
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+## Get a single greeting
+
+Returns the specified greeting.
+
+### Additional info:
+
+- `active` – Indicates whether the greeting is enabled or not
+- `rules` – Returns an array with all the rules for the specified greeting
+
+</Text>
+
+<Code>
+
+<CodeSample path={`GET /greetings/<GREETING_ID>`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/greetings/2411" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2411,
+  "active": true,
+  "name": "Returning visitor",
+  "rules": [
+    {
+      "id": 8191,
+      "value": "2",
+      "type": "visits_number",
+      "operator": "greater_or_equal",
+      "condition": "and"
+    }
+  ],
+  "properties": {
+    "active": "1",
+    "greeting-message_text": "Hello again!"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Create a new greeting
+
+Use this function to create a new greeting.
+
+### Required properties
+
+| Property | Description                                                                                                                      |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `name`   | greeting name displayed in the LiveChat settings (not visible to your website's visitors)                                        |
+| `rules`  | an array of conditions that must be met for the greeting to be displayed. Greeting rules are [documented below](#greeting-rules) |
+
+### Optional properties
+
+| Property | Description                                                              |
+| -------- | ------------------------------------------------------------------------ |
+| `group`  | creates a greeting displayed in a particular group only. Defaults to `0` |
+
+</Text>
+
+<Code>
+<CodeSample path={`POST /greetings`}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"my custom invitation",
+        "rules":[
+          {
+            "type":"visit_time_page",
+            "value":15,
+            "operator":"greater_than"
+          },
+          {
+            "type":"visits_number",
+            "value":2,
+            "operator":"greater_or_equal"
+          }
+        ]
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "name=my+custom+invitation&\
+rules[0][type]=visit_time_page&\
+rules[0][value]=15&\
+rules[0][operator]=greater_than&\
+rules[1][type]=visits_number&\
+rules[1][value]=2&\
+rules[1][operator]=greater_or_equal"
+```
+  
+</Sample>
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Greeting rules
+
+Greeting rules are the conditions that must be met for a greeting to be displayed.
+
+Each greeting rule can contain an `operator`. Here's a list of possible operators:
+
+- `equals`,
+- `doesnt_equal`,
+- `lower_than`,
+- `lower_or_equal`,
+- `greater_than`,
+- `greater_or_equal`,
+- `contains`,
+- `doesnt_contain`.
+
+The default value for `operator` is `equals`.
+
+And here's a list of the greeting rules that you can use:
+
+| Rule                | Description                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `visit_time_site`   | After a visitor has spent a certain amount of time on the site                                                      |
+| `visit_time_page`   | After a visitor has spent a certain amount of time on a page                                                        |
+| `url_current`       | For the visitors on specific pages                                                                                  |
+| `url_visited`       | When a visitor has visited specific pages                                                                           |
+| `pages_view_number` | For the visitors who have seen a page for a number of times                                                         |
+| `url_referrer`      | When the visitor has arrived from a referring page                                                                  |
+| `geolocation`       | For the visitors from specific countries or cities                                                                  |
+| `visits_number`     | For the returning visitors                                                                                          |
+| `search_keyword`    | When a visitor has searched for a specific keyword                                                                  |
+| `custom_variable`   | The greeting will be sent when the specified variable is met [documented below](#custom-variable)                   |
+| `url_funnel`        | The visitors who visit the specified sequence of websites will receive the greeting [documented below](#url-funnel) |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'/greetings'}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"my custom invitation",
+        "rules":[
+          {
+            "type":"visit_time_page",
+            "value":15,
+            "operator":"greater_than"
+          },
+          {
+            "type":"visits_number",
+            "value":2,
+            "operator":"greater_or_equal"
+          }
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "name=my+custom+invitation&\
+rules[0][type]=visit_time_page&\
+rules[0][value]=15&\
+rules[0][operator]=greater_than&\
+rules[1][type]=visits_number&\
+rules[1][value]=2&\
+rules[1][operator]=greater_or_equal"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2451,
+  "active": true,
+  "name": "my custom invitation",
+  "rules": [
+    {
+      "id": 8241,
+      "value": "2",
+      "type": "visits_number",
+      "operator": "greater_or_equal",
+      "condition": "and"
+    },
+    {
+      "id": 8251,
+      "value": "15",
+      "type": "visit_time_page",
+      "operator": "greater_than",
+      "condition": "and"
+    }
+  ],
+  "properties": {
+    "active": "1",
+    "greeting-message_text": "Hello, would you like to talk about our products?"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+### Custom variable
+
+The greeting will be sent when the specified variable is met.
+
+<aside class="notice">
+  When using the `custom_variable` greeting rule, you also need to provide
+  `variable_name` and `variable_value`. You also can add the optional `operator`
+  parameter (defaults to `equals`).
+</aside>
+
+</Text>
+
+<Code>
+
+<CodeSample>
+<Sample label={'cURL (JSON)'}>
+
+```
+curl "https://api.livechatinc.com/greetings\
+  ?group=1" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"custom variable type greeting",
+        "rules":[
+          {
+            "type":"custom_variable",
+            "variable_name":"my_custom_var",
+            "variable_value":"var_value"
+            "operator":"contains"
+          }
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings\
+  ?group=1" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "name=custom+variable+type+greeting&\
+rules[0][type]=custom_variable&\
+rules[0][variable_name]=my_custom_var&\
+rules[0][variable_value]=var_value&\
+rules[0][operator]=contains"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2431,
+  "active": true,
+  "name": "custom variable type greeting",
+  "rules": [
+    {
+      "id": 8221,
+      "type": "custom_variable",
+      "operator": "contains",
+      "condition": "and",
+      "variable_name": "my_custom_var",
+      "variable_value": "var_value"
+    }
+  ],
+  "properties": {
+    "active": "1",
+    "greeting-message_text": "Hello, would you like to talk about our products?"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### URL Funnel
+
+The visitors who have visited the specified sequence of pages will receive the greeting.
+
+<aside class="notice">
+  When using the `url_funnel` greeting rule, you need to provide the `urls`
+  variable. It is an array of objects with the required `url` parameter and the
+  optional `operator` parameter (defaults to: `equals`).
+</aside>
+
+</Text>
+
+<Code>
+<CodeSample>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"url funnel type greeting",
+        "rules":[
+          {
+            "type":"url_funnel",
+            "urls":[
+              {
+                "url":"mystore.com/shoes",
+                "operator":"equals"
+              },
+              {
+                "url":"cart",
+                "operator":"contains"
+              }
+            ]
+          }
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "name=url+funnel+type+greeting&\
+rules[0][type]=url_funnel&\
+rules[0][urls][0][url]=mystore.com/shoes&\
+rules[0][urls][0][operator]=equals&\
+rules[0][urls][1][url]=cart&\
+rules[0][urls][1][operator]=contains"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2441,
+  "active": true,
+  "name": "url funnel type greeting",
+  "rules": [
+    {
+      "id": 8231,
+      "type": "url_funnel",
+      "condition": "and",
+      "urls": [
+        {
+          "url": "mystore.com/shoes",
+          "operator": "equals"
+        },
+        {
+          "url": "cart",
+          "operator": "contains"
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "active": "1",
+    "greeting-message_text": "Hello, would you like to talk about our products?"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+## Greetings with multiple rules
+
+You can create a greeting that will have more than one rule.
+
+</Text>
+
+<Code>
+<CodeSample>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"my custom invitation",
+        "rules":[
+          {
+            "type":"visit_time_site",
+            "value":15
+          },
+          {
+            "type":"custom",
+            "variable_name":"empty_cart",
+            "variable_value":true
+          },
+          {
+            "type":"url_current",
+            "value":"shoes",
+            "operator":"contains"
+          }
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "name=my+custom+invitation&\
+rules[0][type]=visit_time_site&\
+rules[0][value]=15&\
+rules[1][type]=custom_variable&\
+rules[1][variable_name]=empty_cart&\
+rules[1][variable_value]=true&\
+rules[2][type]=url_current&\
+rules[2][value]=shoes&\
+rules[2][operator]=contains"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2471,
+  "active": true,
+  "name": "my custom invitation",
+  "rules": [
+    {
+      "id": 8261,
+      "type": "custom_variable",
+      "operator": "equals",
+      "condition": "and",
+      "variable_name": "empty_cart",
+      "variable_value": "true"
+    },
+    {
+      "id": 8271,
+      "value": "15",
+      "type": "visit_time_site",
+      "operator": "equals",
+      "condition": "and"
+    },
+    {
+      "id": 8281,
+      "value": "shoes",
+      "type": "url_current",
+      "operator": "contains",
+      "condition": "and"
+    }
+  ],
+  "properties": {
+    "active": "1",
+    "greeting-message_text": "Hello, would you like to talk about our products?"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+## Update a greeting
+
+You can change the previously created greetings using this request. The `GREETING_ID` is obtained from the list of [all greetings](#get-greetings).
+
+<Section>
+
+<Text>
+
+### Update greeting name or message
+
+Use this request to change the name or message of a greeting.
+
+</Text>
+
+<Code>
+  
+<CodeSample path={`PUT /greetings/<GREETING_ID>`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/greetings/2491" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT -d "name=athletic+shoes&\
+properties[greeting-message_text]=Hello"
+```
+
+</Sample>
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Activate and deactivate greetings
+
+Activate or deactivate a greeting using this request.
+
+</Text>
+
+<Code>
+
+<CodeSample path={`PUT /greetings/<GREETING_ID>`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/greetings/2491" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT -d "active=0"
+```
+
+</Sample>
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Change greetings rules
+
+Change the rules of your greetings with this request.
+
+</Text>
+
+<Code>
+
+<CodeSample path={`PUT /greetings/<GREETING_ID>`}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/greetings/2491"\
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT -d "rules[0][type]=custom_variable&\
+rules[0][variable_name]=athletic_shoes&\
+rules[0][variable_value]=true"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2491,
+  "active": false,
+  "name": "athletic shoes",
+  "rules": [
+    {
+      "id": 8371,
+      "type": "custom_variable",
+      "operator": "equals",
+      "condition": "and",
+      "variable_name": "athletic_shoes",
+      "variable_value": "true"
+    }
+  ],
+  "properties": {
+    "active": "0",
+    "greeting-message_text": "Hi, are you looking for some athletic shoes"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Remove a greeting
+
+Removes a greeting.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'DELETE https://api.livechatinc.com/greetings/<GREETING_ID>'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/greetings/2491" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X DELETE
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "ok": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Groups
+
+Use this method to get [Agent Groups](https://www.livechatinc.com/features/team-management/#Groups) data and also to **create new** and **modify the existing** Groups.
+
+## Available paths {#groups-available-paths}
+
+| Methods                | Path                 |
+| ---------------------- | -------------------- |
+| `GET`, `POST`          | `/groups`            |
+| `GET`, `PUT`, `DELETE` | `/groups/<GROUP_ID>` |
+
+<Section>
+
+<Text>
+
+## List all groups
+
+Returns all created groups.
+
+### Additional info:
+
+- `language` specifies the chat window language for the particular group.
+- `agents` list contains all members of the particular group. The group with id _0_ doesn't return the agents list because it always contains all agents from the license and it cannot be modified.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/groups'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/groups" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "id": 0,
+    "name": "All operators",
+    "language": "en",
+    "status": "accepting chats"
+  },
+  {
+    "id": 1,
+    "name": "Invoicing",
+    "language": "en",
+    "agents": ["jane.doe@mycompany.com"],
+    "status": "offline"
+  },
+  {
+    "id": 2,
+    "name": "Sales",
+    "language": "en",
+    "agents": ["john.doe@mycompany.com", "jenny.doe@mycompany.com"],
+    "status": "not accepting chats"
+  },
+  {
+    "id": 3,
+    "name": "Technical Support",
+    "language": "en",
+    "agents": ["john.doe@mycompany.com"],
+    "status": "accepting chats"
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get a single group details
+
+Returns group details for the given `GROUP_ID`.
+
+### Attributes
+
+| Attribute  | Description                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`       | id of the group                                                                                                                                                    |
+| `name`     | group name                                                                                                                                                         |
+| `language` | group language (defaults to English). See the [list of supported languages](http://www.livechatinc.com/kb/how-to-modify-chat-window-language/#supported-languages) |
+| `agents`   | an array of group members' logins                                                                                                                                  |
+| `status`   | current status of the group                                                                                                                                        |
+
+### Additional info:
+
+The `status` can take the following values:
+
+- `accepting chats` – when at least one agent from the group is logged in and has the `accepting chats` status.
+- `not accepting chats` – when at least one agent from the group is logged in but has the `not accepting chats` status.
+- `offline` – when all agents from the group are offline.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/groups/<GROUP_ID>'}>
+
+<Sample>
+
+```
+curl "https://api.livechatinc.com/groups/2" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2,
+  "name": "Sales",
+  "language": "en",
+  "agents": ["john.doe@mycompany.com", "jenny.doe@mycompany.com"],
+  "status": "accepting chats"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Create a new group
+
+Creates a new group in your license.
+
+### Required properties
+
+| Property | Description                                  |
+| -------- | -------------------------------------------- |
+| `name`   | group name                                   |
+| `agents` | an array of LiveChat users' logins (e-mails) |
+
+### Optional properties
+
+| Property   | Description                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `language` | group language (defaults to English). See the [list of supported languages](http://www.livechatinc.com/kb/how-to-modify-chat-window-language/#supported-languages) |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'POST https://api.livechatinc.com/groups'}>
+<Sample label={'cURL JSON'}>
+
+```bash
+curl "https://api.livechatinc.com/groups" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name": "Human Resources",
+        "agents": [
+          "jenny.doe@mycompany.com",
+          "john.doe@mycompany.com"
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/groups" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "name=Human+Resources&\
+agents[0]=jenny.doe@mycompany.com&\
+agents[1]=john.doe@mycompany.com"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 4,
+  "name": "Human Resources",
+  "language": "en",
+  "agents": ["jenny.doe@mycompany.com", "john.doe@mycompany.com"],
+  "status": "offline"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Update a group
+
+Updates the specified group by setting the values of the parameters passed. Any parameters not provided will be left unchanged.
+
+### Optional properties
+
+| Property   | Description                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `name`     | group name                                                                                                                   |
+| `language` | see the [list of supported languages](http://www.livechatinc.com/kb/how-to-modify-chat-window-language/#supported-languages) |
+| `agents`   | an array of LiveChat users' logins (e-mails)                                                                                 |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'PUT https://api.livechatinc.com/groups/<GROUP_ID>'}>
+<Sample label={'cURL JSON'}>
+
+```bash
+curl "https://api.livechatinc.com/groups/3" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 -X PUT \
+  -H Content-type:application/json \
+  -d '{
+        "name": "Quality Assurance",
+        "agents": [
+          "john.doe@mycompany.com",
+          "jane.doe@mycompany.com"
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/groups/3" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT \
+  -d "name=Quality+Assurance&\
+agents[0]=john.doe@mycompany.com&\
+agents[1]=jane.doe@mycompany.com"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 3,
+  "name": "Quality Assurance",
+  "language": "en",
+  "agents": ["john.doe@mycompany.com", "jane.doe@mycompany.com"],
+  "status": "offline"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Remove a group
+
+Removes a group with the given `GROUP_ID`.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'DELETE https://api.livechatinc.com/groups/<GROUP_ID>'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/groups/4" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X DELETE
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "result": "group removed successfully"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Status
+
+You can use this method to check whether your LiveChat is **online** or **offline**.
+
+## Available paths {#status-available-paths}
+
+| Methods | Path      |
+| ------- | --------- |
+| `GET`   | `/status` |
+
+<Section>
+
+<Text>
+
+## Get status
+
+Returns the current LiveChat status. Available return values: `online`, `offline`.
+
+### Optional parameters
+
+| Parameter | Description   |
+| --------- | ------------- |
+| `group`   | defaults to 0 |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/status'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/status/1" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "status": "online"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Tags
+
+Using this method, you will be able to **create** and **delete** [Tags](https://www.livechatinc.com/kb/tagging-chats-and-tickets/) in LiveChat. You can also use it to **learn more** about the performance of all your Tags.
+
+## Available paths {#tags-available-paths}
+
+| Methods       | Path          |
+| ------------- | ------------- |
+| `GET`, `POST` | `/tags`       |
+| `DELETE`      | `/tags/<TAG>` |
+
+<Section>
+
+<Text>
+
+## List all tags
+
+Returns tags from all groups.
+
+### Optional parameters
+
+| Parameter | Description                    |
+| --------- | ------------------------------ |
+| `group`   | returns tags from chosen group |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/tags'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/tags\
+      ?group=1" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "name": "sales",
+    "author": "john.doe@mycompany.com",
+    "creation_date": 1402989014,
+    "count": {
+      "inChats": 4,
+      "inTickets": 1
+    },
+    "group": 1
+  },
+  {
+    "name": "support",
+    "author": "john.doe@mycompany.com",
+    "creation_date": 1402991857,
+    "count": {
+      "inChats": 0,
+      "inTickets": 2
+    },
+    "group": 1
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Add a tag
+
+Adds a new tag. Note that only the owner and the admins are authorized to use this.
+
+### Required parameters
+
+| Parameter | Description                               |
+| --------- | ----------------------------------------- |
+| `author`  | agent login                               |
+| `tag`     | name of a tag                             |
+| `group`   | id of the group that tag will be added to |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'POST https://api.livechatinc.com/tags'}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/tags" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "tag":"support",
+        "author":"john.doe@mycompany.com",
+        "group":1
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/tags" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -d "tag=support&\
+author=john.doe@mycompany.com&\
+group=1"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "name": "support",
+  "author": "john.doe@mycompany.com",
+  "creation_date": 1402989014,
+  "count": {
+    "inChats": 0,
+    "inTickets": 0
+  },
+  "group": 1
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Delete a tag
+
+Deletes a tag from the chosen group. The agents will no longer be able to tag chats and tickets using this tag.
+
+<aside class="notice">
+  Deleting a tag will not remove it from the archived chats and tickets.
+</aside>
+
+### Required properties
+
+| Property | Description                                 |
+| -------- | ------------------------------------------- |
+| `tag`    | tag name                                    |
+| `group`  | id of the group that the tag is assigned to |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'DELETE https://api.livechatinc.com/tags/<TAG>'}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/tags/support" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 DELETE \
+  -H Content-type:application/json \
+  -d '{
+        "group":1
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/tags/support" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 DELETE \
+  -d "group=1"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "ok": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+---
+
+# Tickets
+
+Use this method to **get information** about a specific case or all [Ticket](https://www.livechatinc.com/kb/support-tickets-in-livechat/) of them. You also use it to **create new** Tickets or **update tags** for the existing Tickets.
+
+## Available paths {#tickets-available-paths}
+
+| Methods | Path                        |
+| ------- | --------------------------- |
+| `GET`   | `/tickets/<TICKET_ID>`      |
+| `POST`  | `/tickets`                  |
+| `PUT`   | `/tickets/<TICKET_ID>/tags` |
+
+<Section>
+
+<Text>
+
+## Get list of tickets
+
+Returns all tickets.
+
+### Optional parameters
+
+| Parameter         | Description                                                                                                                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `date_from`       | `YYYY-MM-DD`. Returns the tickets with any of their activities matching the date. Defaults to `the beginning of time`                                                                         |
+| `date_to`         | `YYYY-MM-DD`. Returns the tickets with any of their activities matching the date. Defaults to `today`                                                                                         |
+| `page`            | page number, defaults to 1                                                                                                                                                                    |
+| `assigned`        | if `0`, returns only the unassigned tickets. If `1`, returns only the tickets assigned to any agent                                                                                           |
+| `order`           | orders the tickets by date of the last ticket modification. Possible values: `desc`, `asc`. Defaults to `desc`                                                                                |
+| `status`          | not set by default. Possible values: `open`, `pending`, `solved` or `spam`                                                                                                                    |
+| `assignee`        | return the tickets assigned to the given agent's login                                                                                                                                        |
+| `query`           | return the tickets containing the query                                                                                                                                                       |
+| `requester[mail]` | returns the tickets assigned to the given requester                                                                                                                                           |
+| `group`           | returns the tickets for the given group                                                                                                                                                       |
+| `source`          | returns the tickets for the given source. Possible values: `lc2` (created from archives), `mail`, `facebook`, `agent-app-manual` (created manually), `chat-window` (created from ticket form) |
+| `tag`             | returns the statistics for the specified tag                                                                                                                                                  |
+| `tagged`          | `1/0`. If 1 is passed, returns the tickets with any tag. If 0 passed, returns the tickets with no tags                                                                                        |
+
+### Additional info:
+
+The results are divided into pages, each containing 25 tickets.
+
+`total` indicates the total number of tickets.  
+`pages` indicates the total number of pages.
+
+To access next pages of the results, use `?page=<PAGE>` parameter.  
+Please note that the first page's number is `1`, not `0`.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/tickets'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/tickets?\
+date_from=2013-11-15&\
+status=open" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "pages": 1,
+  "total": 15,
+  "tickets": [
+  {
+    "assignee": {
+      "id": "jane.doe@mycompany.com",
+      "name": "Jane Doe"
+    },
+    "events": [
+    {
+      "author": {
+        "id": "mary.brown@email.com",
+        "name": "Mary Brown",
+        "type": "client"
+      },
+      "date": 1384554260,
+      "is_private": false,
+      "message": "Hello,\n\nIt seems that my new shoes are broken. What can we do about this?",
+      "type": "message",
+      "source": {
+        "type": "mail"
+      }
+    }, {
+      "to": {
+        "id": "jane.doe@mycompany.com",
+        "name": "Jane Doe"
+      },
+      "author": {
+        "id": "john.doe@mycompany.com",
+        "name": "John Doe"
+      },
+      "date": 1384554270,
+      "type": "assignee_changed"
+    }, {
+      "message": "Jane, could you please find a moment to handle this customer's complaint?",
+      "is_private": true,
+      "author": {
+        "type": "agent",
+        "id": "john.doe@mycompany.com",
+        "name": "John Doe"
+      },
+      "date": 1384554322,
+      "type": "message",
+      "source": {
+        "type": "lc2"
+      }
+    }],
+    "id": "5FUED",
+    "requester": {
+      "mail": "mary.brown@email.com",
+      "name": "Mary Brown"
+    },
+    "groups": [0],
+    "status": "open",
+    "subject": "My new shoes are broken",
+    "modified": 1384790802,
+    "source": {
+      "type": "mail"
+    },
+    "opened": [{
+      "from": 1384554260
+    }],
+    "firstResponse": {}
+  },
+  "tags": [
+    "sales",
+    "support",
+    "feedback"
+  ],
+  (...)
+  ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get single ticket
+
+Returns a single ticket item for the given `TICKET_ID`.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/tickets/<TICKET_ID>'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/tickets/5FUED" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+> _The return format is the same as the single ticket item in [tickets list](#get-list-of-tickets)._
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Create a ticket
+
+Creates a new ticket.
+
+### Required parameters
+
+| Parameter         | Description               |
+| ----------------- | ------------------------- |
+| `message`         | requester's message       |
+| `requester[mail]` | requester's email address |
+
+### Optional parameters
+
+| Parameter         | Description                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| `requester[name]` | requester's name                                                                                  |
+| `assignee[id]`    | login of the agent that will be assigned to the ticket                                            |
+| `source[type]`    | source of the ticket. Possible values: `chat-window`, `mail` or `lc2`. Defaults to `lc2`          |
+| `source[url]`     | url of the website that the ticket was sent from. Applies only if `source[type]` is `chat-window` |
+| `subject`         | ticket subject. Defaults to `(no subject)`                                                        |
+| `group`           | list of groups. Must be an array with group IDs. Defaults to `[0]`                                |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'POST https://api.livechatinc.com/tickets'}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/tickets" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+      "subject":"I have a problem",
+      "message":"Hi,I have a problem with my shoes. Could you please advise?",
+      "requester":
+      {
+        "mail":"mary.brown@email.com",
+        "name":"Mary Brown"
+      }
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```
+curl "https://api.livechatinc.com/tickets" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2  \
+  -X POST -d "subject=I+have+a+problem&\
+  message=Hi,I+have+a+problem+with+my+shoes.+Could+you+please+advise?&\
+  requester[mail]=mary.brown@email.com&\
+  requester[name]=Mary+Brown"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+> _The return format is the same as the single ticket item in [tickets list](#get-tickets)._
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Update ticket tags
+
+Updates tags associated with the ticket.
+
+### Required parameters
+
+| Parameter | Description        |
+| --------- | ------------------ |
+| `tag`     | array of used tags |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'PUT https://api.livechatinc.com/tickets/<TICKET_ID>/tags'}>
+<Sample label={'cURL (JSON)'}>
+
+```
+curl "https://api.livechatinc.com/tickets/5FUED/tags" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "tag":["sales","support","feedback"]
+     }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/tickets/5FUED/tags" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 \
+  -X PUT \
+  -d "tag[]=sales&\
+tag[]=support&\
+tag[]=feedback"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "pages": 1,
+  "total": 15,
+  "tickets": [
+  {
+    "assignee": {
+      "id": "jane.doe@mycompany.com",
+      "name": "Jane Doe"
+    },
+    "events": [
+    {
+      "author": {
+        "id": "mary.brown@email.com",
+        "name": "Mary Brown",
+        "type": "client"
+      },
+      "date": 1384554260,
+      "is_private": false,
+      "message": "Hello,\n\nIt seems that my new shoes are broken. What can we do about this?",
+      "type": "message",
+      "source": {
+        "type": "mail"
+      }
+    }, {
+      "to": {
+        "id": "jane.doe@mycompany.com",
+        "name": "Jane Doe"
+      },
+      "author": {
+        "id": "john.doe@mycompany.com",
+        "name": "John Doe"
+      },
+      "date": 1384554270,
+      "type": "assignee_changed"
+    }, {
+      "message": "Jane, could you please find a moment to handle this customer's complaint?",
+      "is_private": true,
+      "author": {
+        "type": "agent",
+        "id": "john.doe@mycompany.com",
+        "name": "John Doe"
+      },
+      "date": 1384554322,
+      "type": "message",
+      "source": {
+        "type": "lc2"
+      }
+    }],
+    "id": "5FUED",
+    "requester": {
+      "mail": "mary.brown@email.com",
+      "name": "Mary Brown"
+    },
+    "groups": [0],
+    "status": "open",
+    "subject": "My new shoes are broken",
+    "modified": 1384790802,
+    "source": {
+      "type": "mail"
+    },
+    "opened": [{
+      "from": 1384554260
+    }],
+    "firstResponse": {}
+  },
+  "tags": [
+    "sales",
+    "support",
+    "feedback"
+  ],
+  (...)
+  ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Visitors
+
+You can use this method to get information about the real-time [Visitors](https://www.livechatinc.com/features/visitors-tracking/) on your website. You can also use it to **display additional information** about the visitors in the LiveChat app.
+
+## Available paths {#visitors-available-paths}
+
+| Methods | Path                             |
+| ------- | -------------------------------- |
+| `GET`   | `/visitors`                      |
+| `POST`  | `/visitors/<VISITOR_ID>/details` |
+
+<Section>
+
+<Text>
+
+## List all visitors
+
+Returns a list of the visitors on the pages with the tracking code installed.
+
+### Optional parameters
+
+| Parameter | Description                                                                                                                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `state`   | parameter determines what state the visitors are. Possible values: `chatting`, `queued`, `browsing`, `invited`, `refused invitation` or `chat closed`                                             |
+| `group[]` | parameter decides which group will be used for the listing. Use group numbers as values to select visitors only for the specified group                                                           |
+| `count`   | parameter will allow you to return the number of visitors (when the value is set to `1`) instead of all the available information (when it is set to `0`). The parameter is set to `0` by default |
+
+### Additional info:
+
+The possible `state` values returned without any filter are:
+
+- `browsing`
+- `chatting`
+- `logging into chat`
+- `queued`
+- `invited`
+- `refused invitation`
+- `chat closed`
+
+The possible `state` filter values are `chatting` and `queued`.
+
+`prechat_survey` parameter will be available only if the visitor is currently chatting.
+
+`custom_variables` parameter will be available only if the custom variables are defined in the tracking code.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GET https://api.livechatinc.com/visitors'}>
+
+<Sample>
+
+```bash
+curl "https://api.livechatinc.com/visitors?
+state=chatting&\
+group[]=0" \
+  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H X-API-Version:2 -g
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "browser": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36",
+    "chat": {
+      // (...)
+    },
+    "chat_id": "DL1G0UED4H",
+    "chat_start_time": "2017-02-16 12:54:26",
+    "chat_start_time_ts": 1487246066,
+    "chats": 1,
+    "custom_variables": [
+      {
+        "key": "empty_cart",
+        "value": "true"
+      }
+    ],
+    "city": "Greenville",
+    "country": "United States",
+    "country_code": "US",
+    "greetings_accepted": 1,
+    "greetings_all": 2,
+    "greetings_refused": 1,
+    "group": 102,
+    "host": "very-hosty.sl.us",
+    "id": "S148dea44981.d9443253fef2",
+    "invitation": "",
+    "ip": "8.8.8.8",
+    "language": "en",
+    "last_visit": "2017-02-16 12:36:21",
+    "last_visit_ts": 1487244981,
+    "latitude": "35.6127",
+    "longitude": "-77.3663",
+    "name": "Visitor",
+    "operators": [
+      // (...)
+    ],
+    "page_address": "https://docs.livechatinc.com/js-api/#on-chat-window-minimized",
+    "page_current": "https://docs.livechatinc.com/js-api/#on-chat-window-minimized",
+    "page_entered": "2017-02-16 12:36:21",
+    "page_entered_ts": 1487244981,
+    "page_time": "2017-02-16 12:39:12",
+    "page_time_ts": 1487245152,
+    "page_title": "LiveChat – Chat Window API (JS)",
+    "page_views": 16,
+    "prechat_survey": [
+      // (...)
+    ],
+    "queue_start_time": 46843480,
+    "referrer": "https://www.livechatinc.com/",
+    "region": "North Carolina",
+    "state": "chatting",
+    "timezone": "America/New_York",
+    "visit_path": [
+      {
+        "invitation": "Time on site: 30 sec",
+        "page": "https://developers.livechatinc.com/",
+        "time": "2017-02-16 12:36:21",
+        "time_ref": 1487244981,
+        "time_ts": 1487244981,
+        "title": "LiveChat Developers - REST API & Integrations"
+      },
+      {
+        "invitation": "",
+        "page": "https://docs.livechatinc.com/",
+        "time": "2017-02-16 12:38:33",
+        "time_ref": 1487245113,
+        "time_ts": 1487245113,
+        "title": "LiveChat Docs"
+      }
+      // (...)
+    ],
+    "visits": 3
+  }
+  // (...)
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Add custom visitor details
+
+Displays additional information about a visitor in LiveChat apps.
+
+For example, if you have your own database with some additional details about your users, you can query this database based on your visitor’s e-mail address, and display the data from your database for an agent during the chat.
+
+<img
+  src="https://www.livechatinc.com/wp-content/uploads/2013/02/visitor-details1.png"
+  width="300"
+  style="margin:30px 0"
+/>
+
+**Note:** this method can only be used along with the [Webhooks](/docs/build-integration/#webhooks). You should create a webhook with `chat_started` event that will be sent to your integration script. This script must read webhook's `license_id` and `token` params and include them in this API method call. See a sample integration in [Webhooks documentation](/docs/build-integration/#webhooks).
+
+### Required properties
+
+| Property     | Description                                                                                                                                                                                                                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `license_id` | sent by the webhook (read the note above)                                                                                                                                                                                                                                                              |
+| `token`      | sent by the webhook (read the note above)                                                                                                                                                                                                                                                              |
+| `id`         | descriptive ID your data set, for example: "my-app". It lets us group the data into one set and display many different data sets for single visitor. It should include only alphanumeric characters (letters, digits, punctuation marks)                                                               |
+| `fields`     | array of data objects that include `name` and `value` properties. This is the actual data that you have about your visitor. This data will be displayed to the agent during the chat. For the links you can also pass the anchor text. By adding `url` param, the value field would act as the anchor. |
+
+### Optional properties
+
+| Property | Description                                                                                                                                                                                                                                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `icon`   | address of the icon picture that will be displayed in the LiveChat app next to visitor’s data. It lets you group important information. `icon` should be a URL without the `http://` prefix. Your web server should support serving the icon file using https:// (SSL) protocol. The icon’s dimensions must be 64x64 px. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'POST https://api.livechatinc.com/visitors/<VISITOR_ID>/details'}>
+
+<Sample label={'cURL JSON'}>
+
+```bash
+curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "license_id":12345,
+        "token":"26132406c42c96ba61ed42689b70f719",
+        "id":"my-app",
+        "fields":[
+          {
+            "name":"Age",
+            "value":36
+          }
+        ]
+      }'
+```
+
+</Sample>
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/visitors/S1352647457.ac951bfe2e/details" \
+  -H X-API-Version:2
+  -d "license_id=12345&\
+token=26132406c42c96ba61ed42689b70f719&\
+id=my-app&\
+fields[0][name]=Age&\
+fields[0][value]=36"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "result": "Visitor details added"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
