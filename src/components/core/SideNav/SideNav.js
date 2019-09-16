@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import {
   Nav,
   NavHeader,
@@ -16,8 +16,6 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
-
-import { slugger } from "../slugger";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
@@ -72,10 +70,7 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
 
   const categoryMeta = useCategoryMeta(category);
 
-  useScrollSpy(".heading", url => setActivePath(getArticlePath(url) || []));
-
-  // a dirty hack for slugger
-  useEffect(() => slugger.reset(), []);
+  useScrollSpy(".heading", url => url && setActivePath(getArticlePath(url)));
 
   return (
     <Nav color={categoryMeta.color}>

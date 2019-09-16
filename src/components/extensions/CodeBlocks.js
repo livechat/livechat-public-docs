@@ -134,8 +134,8 @@ export const Text = styled.div`
 `;
 
 export const FixedTdWidth = styled.div`
-  th:first-child,
-  td:first-child {
+  th:first-of-type,
+  td:first-of-type {
     width: 200px;
   }
 `;
