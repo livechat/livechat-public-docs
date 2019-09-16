@@ -109,6 +109,9 @@ const Header = () => {
             color: white !important;
             text-decoration: none;
             font-weight: 600;
+            &:hover {
+              text-decoration: none;
+            }
           `}
         >
           Platform Docs
