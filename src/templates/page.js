@@ -22,6 +22,7 @@ import {
 
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
+import SEO from "../components/core/seo";
 
 const components = {
   ...DesignSystem,
@@ -34,13 +35,14 @@ export default ({ data: { mdx } }) => {
   const {
     body,
     timeToRead,
-    frontmatter: { title, category, subcategory, slug: customSlug },
+    frontmatter: { title, category, desc, subcategory, slug: customSlug },
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
 
   return (
     <>
+      <SEO desc={desc} title={title} />
       <Header />
       <MainWrapper>
         <LeftColumn>
@@ -83,6 +85,7 @@ export const pageQuery = graphql`
       }
       frontmatter {
         title
+        desc
         category
         subcategory
         slug
