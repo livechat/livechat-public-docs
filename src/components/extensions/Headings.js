@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
 
+import { LinkIcon } from "../core/icons";
+
 const HeadingLink = styled.a`
   color: inherit;
   text-decoration: none;
@@ -18,6 +20,37 @@ const HeadingLink = styled.a`
     }
   }
 `;
+
+const CodeLink = styled.a`
+  text-decoration: none;
+  svg {
+    vertical-align: middle;
+    margin-left: 2px;
+    margin-right: 4px;
+    color: var(--code-inline-color);
+  }
+  &:hover,
+  &:active {
+    text-decoration: none;
+    code {
+      background-color: #efe8e8;
+    }
+  }
+`;
+
+const A = ({ children, ...props }) => {
+  // hack for code-links
+  if (children.props && children.props.originalType === "code") {
+    return (
+      <CodeLink {...props}>
+        {children}
+        <LinkIcon />
+      </CodeLink>
+    );
+  }
+
+  return <a {...props}>{children}</a>;
+};
 
 export const getText = children => {
   if (typeof children !== "string") {
@@ -94,6 +127,7 @@ export default {
   h4: makeHeading("h4"),
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
+  a: A,
   table: ({ children }) => (
     <TableWrapper>
       <table>{children}</table>
