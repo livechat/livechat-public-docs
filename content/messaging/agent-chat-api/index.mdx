@@ -188,7 +188,7 @@ File event informs about a file being uploaded.
 | `properties`                                          | optional  |                                                             - |
 | `recipients`                                          | required  |      Possible values: `all` (default), `agents` |
 | `system_message_type`                                 | required  |                                                             - |
-| `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                               only for images |
+| `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                               Only for images |
 
 </Text>
 <Code>
@@ -1060,8 +1060,8 @@ If you specify the API version in the URL, you don't have to include the optiona
 
 | Reqiured Header |                   Value                    |                                                       Notes |
 | --------------- | :----------------------------------------: | ----------------------------------------------------------: |
-| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |             Valid for the `send_file` method |
-| `Content-Type`  |             `application/json`             | Valid for every method except for `send_file` |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |             Valid for the `upload_file` method |
+| `Content-Type`  |             `application/json`             | Valid for all methods except for `upload_file`  |
 | `Authorization` |              `Bearer <token>`              |                                                Access token |
 | `X-Author-Id`   |              `<bot_agent_id>`              |                                   Valid only for Bot Agents |
 
@@ -1089,7 +1089,7 @@ curl -X POST \
 | **Chats**       | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`get_archives`](#get-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
 | **Chat access** | [`grant_access`](#grant-access) [`revoke_access`](#revoke-access) [`set_access`](#set-access)                                                                                                                                                                                                                                                           |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                                               |
-| **Events**      | [`send_event`](#send-event) [`send_file`](#send-file) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                         |
+| **Events**      | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                         |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
@@ -1119,7 +1119,8 @@ It returns summaries of the chats an Agent has access to.
 | Parameter                                             | Required | Type     | Notes                                                                                      |
 | ----------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------ |
 | `filters`                                             | No       | `object` | Mustn't change between requests for subsequent pages. Otherwise, the behavior is undefined. |
-| `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `True`.              |
+| `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.              |
+| `filters.group_ids`                                   | No       | `array`  | Array of group IDs.              |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                            |
 | `pagination`                                          | No       | `object` |                                                                                            |
 | `pagination.page`                                     | No       | `number` | Default: 1, minimum: 1, maximum: 1000                                                        |
@@ -1360,7 +1361,7 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 | `filters.date_from`                                   | No       | `string`  | `YYYY-MM-DD` format                 |
 | `filters.date_to`                                     | No       | `string`  | `YYYY-MM-DD` format                 |
 | `filters.agent_ids`                                   | No       | `array`   | Array of agent IDs                  |
-| `filters.thread_ids`                                  | No       | `array`   | Array of thread ids. Cannot be used with other filters or pagination; max array size: 20. |
+| `filters.thread_ids`                                  | No       | `array`   | Array of thread IDs. Cannot be used with other filters or pagination; max array size: 20. |
 | `filters.group_ids`                                   | No       | `array`   | Array of group IDs                  |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     |                                     |
 | `<filter_type>`                                       | No       | `any`     | **\***                              |
@@ -1417,6 +1418,24 @@ curl -X POST \
 </CodeResponse>
 </Code>
 </Section>
+
+
+
+<!-- You can use `get_archives` to retrieve info on tags, goals, custom variables, and the queue. 
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/agent/action/get_archives \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "filters": {
+        "tags": {
+            "values": ["support"]
+        }
+    }
+  }'
+``` -->
 
 <Section>
 <Text>
@@ -1900,7 +1919,7 @@ Transfers a chat to an Agent or a group.
 | `chat_id`     | Yes      | `string` | Resource Id                                                                                                        |
 | `target`      | No       | `object` | If missing, chat will be transferred within the current group.                                                             |
 | `target.type` | Yes      | `string` | `group` or `agent`                                                                                                    |
-| `target.ids`  | Yes      | `array`  | `group` or `agent` ids array                                                                                          |
+| `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                          |
 | `force`       | No       | `bool`   | If `true`, always transfers chats. Otherwise. fails when unable to assign any Agent from the requested groups; default `false`. |
 
 #### Response
@@ -2051,9 +2070,8 @@ Sends an [Event](#events) object.
 | **Method URL**         | `https://api.livechatinc.com/v3.1/agent/action/send_event`                                                                            |
 | **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`                                              |
 | **RTM API equivalent** | [`send_event`](../agent-chat-rtm-api-v3.1/#send-event)<sup>[![LiveChat Link](link.svg)](../agent-chat-rtm-api-v3.1/#send-event)</sup> |
-| **Webhook**            | [`incoming_event`](#incoming-event) or [`incoming_chat_thread`](#incoming-chat-thread)**\***                                          |
+| **Webhook**            | [`incoming_event`](#incoming-event)                                        |
 
-**\*)** The `incoming_chat_thread` webhook will be sent instead of `incoming_event`only if the event starts a new thread.
 
 #### Request
 
@@ -2061,8 +2079,7 @@ Sends an [Event](#events) object.
 | ----------------------- | -------- | --------- | -------------------------------------------------------------------------------- |
 | `chat_id`               | Yes      | `string`  | Id of the chat you want to send a message to.                               |
 | `event`                 | Yes      | `object`  | Event object                                                                     |
-| `attach_to_last_thread` | No       | `bool`    | If `true`, adds event to last thread. Otherwise, creates a new one; default `false`. |
-| `require_active_thread` | No       | `bool`    | If `true`, returns an error when all threads are inactive; default `false`.          |
+| `attach_to_last_thread` | No       | `bool`    | If `true`, adds an event to last (inactive) thread. Otherwise, it doesn't creates a new one; default `false`. |
 
 #### Response
 
@@ -2102,64 +2119,6 @@ https://api.livechatinc.com/v3.1/agent/action/send_event \
 </Code>
 </Section>
 
-<Section>
-<Text>
-
-### Send File
-
-Sends a file directly to the chat.
-
-**Warning:** the `send_file` method is no longer recommended for use. Please use `upload_file` instead.
-
----
-
-#### Specifics
-
-|                        |                                                                                              |
-| ---------------------- | -------------------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/agent/action/send_file`                                    |
-| **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`     |
-| **RTM API equivalent** | -                                                                                            |
-| **Webhook**            | [`incoming_chat_thread`](#incoming-chat-thread) or [`incoming_event`](#incoming-event)**\*** |
-
-**\*)**
-The `incoming_chat_thread` webhook will be sent instead of `incoming_event` only if the event starts a new thread.
-
-#### Request
-
-| Parameter               | Required | Data type | Notes                                                                    |
-| ----------------------- | -------- | --------- | ------------------------------------------------------------------------ |
-| `chat_id`               | Yes      | `string`  | Id of the chat you want to send a file to.                     |
-| `require_active_thread` | No       | `bool`    | If `true`, returns error when all threads are inactive; default: `false`. |
-| `custom_id`             | No       | `string`  | Postback name of the button                                              |
-| `file`                  | Yes      | `binary`  | Maximum size: 10 MB                                                      |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-https://api.livechatinc.com/v3.1/agent/action/send_file \
--H 'Authorization: Bearer <your_access_token>' \
--H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
--F chat_id=PWJ8Y4THAV \
--F require_active_thread=false \
--F 'file=@/Users/MyAccount/Downloads/file.jpg'
-```
-
-</CodeSample>
-<CodeResponse>
-
-```json
-{
-  "url": "https://cdn.livechat-static.com/api/file/lc/att/file.jpg"
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
 
 <Section>
 <Text>
@@ -2193,13 +2152,11 @@ Uploads a file to the server as a temporary file. It returns a URL, which expire
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/agent/action/send_file' \
+  https://api.livechatinc.com/v3.1/agent/action/upload_file \
   -H 'Authorization: Bearer <your_access_token>' \
-  -H 'Content-Type: multipart/form-data; boundary=--------------------------626049643947557285427720' \
+  -H 'Content-Type: multipart/form-data; boundary=--------------------------210197025774705439685896' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F chat_id=PXF9EA5UWA \
-  -F require_active_thread=false \
-  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
+  -F file=@/Users/MyAccount/Desktop/image.png
 ```
 
 </CodeSample>
@@ -2207,7 +2164,7 @@ curl -X POST \
 
 ```json
 {
-  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/file.jpg"
+  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 }
 ```
 
@@ -3149,11 +3106,11 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 - `agents`:
 
   - `all` (`bool` - includes all agents)
-  - `ids` (`[]string` - an array of agents' ids)
-  - `groups` (`[]string` - an array of groups' ids)
+  - `ids` (`[]string` - an array of agents' IDs)
+  - `groups` (`[]string` - an array of groups' IDs)
 
 - `customers`:
-  - `ids` (`[]string` - an array of customer's ids)
+  - `ids` (`[]string` - an array of customer's IDs)
 
 At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
 
@@ -3216,7 +3173,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0ad7324b78c2b724d88e)
 
-## chats {methods-chats}
+## Chats 
 
 ### `incoming_chat_thread`
 
@@ -3274,7 +3231,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | --------- | -------------------------------------- |
 | `user_id` | Missing if a thread was closed by the router. |
 
-## chat access
+## Chat access
 
 ### `access_granted`
 
@@ -3360,7 +3317,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | `resource` | Resource type |
 | `id`       | Resource id   |
 
-## chat users
+## Chat users
 
 ### `chat_user_added`
 
@@ -3674,7 +3631,7 @@ Webhooks notify you when specific events are triggered. Webhook equivalents in A
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
 | `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
 
-## thread tags
+## Thread tags
 
 ### `chat_thread_tagged`
 
@@ -3795,5 +3752,5 @@ With this information client is able to figure out where he should be connected.
 
 # Contact us
 
-If you found a bug or a typo, you can't let us know directly on GitHub.
+If you found a bug or a typo, you can let us know directly on GitHub.
 In case of any questions or feedback, don't hesitate to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com). We'll be happy to hear from you!

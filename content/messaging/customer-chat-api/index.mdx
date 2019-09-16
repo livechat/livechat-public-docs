@@ -410,7 +410,7 @@ System message event is a native system event sent in specific situations.
 | Field                 | Req./Opt. |                                                                                                Note |
 | --------------------- | :-------: | --------------------------------------------------------------------------------------------------: |
 | `custom_id`           | optional  |                                                                                                   - |
-| `created_at`                            | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `created_at`          | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `recipients`          | required  | Possible values: `all` (default for system events), `agents` (for the events sent via `send_event`) |
 | `system_message_type` | required  |                                                                                                   - |
 
@@ -890,10 +890,10 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
 
 
-| Required header          |                   Value                    |                                         Notes |
+| Required header          |                   Value                    |                                Notes |
 | --------------- | :----------------------------------------: | --------------------------------------------: |
-| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |              Valid for the `send_file` method |
-| `Content-Type`  |             `application/json`             | Valid for every method except for `send_file` |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |              Valid for the `upload_file` method |
+| `Content-Type`  |             `application/json`             | Valid for every method except for `upload_file` |
 | `Authorization` |              `Bearer <token>`              |                                  Access token |
 
 Every request to Customer Chat API needs to have the following query string parameters.
@@ -930,7 +930,7 @@ curl -X POST \
 |                                    |                                                                                                                                                                                                                                                                                                                                                         |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**                          | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                 |
-| **Events**                         | [`send_event`](#send-event) [`send_file`](#send-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                 |
+| **Events**                         | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                 |
 | **Properties**                     | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Customers**                      | [`update_customer`](#update-customer) [`set_customer_fields`](#set-customer-fields)                                                                                                                                                                                                                                                                     |
 | **Status**                         | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                               |
@@ -1504,9 +1504,8 @@ curl -X POST \
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_event`                                                                               |
 | **RTM API equivalent** | [`send_event`](../customer-chat-rtm-api-v3.1/#send_event)<sup>[![LiveChat Link](link.svg)](../customer-chat-rtm-api-v3.1/#send_event)</sup> |
-| **Webhook**            | [`incoming_event`](#incoming-event) and [`incoming_chat_thread`](#incoming-chat-thread)**\***                                               |
+| **Webhook**            | [`incoming_event`](#incoming-event)                                                |
 
-**\*)** `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
 
 #### Request
 
@@ -1572,65 +1571,55 @@ curl -X POST \
       }'
 ``` -->
 
-<Section>
 
-<Text>
+### Upload File
 
-### Send File
+Uploads a file to the server as a temporary file. It returns a URL, which expires after 24 hours.
 
 ---
 
 #### Specifics
 
-|                        |                                                                                               |
-| ---------------------- | --------------------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_file`                                  |
-| **RTM API equivalent** | -                                                                                             |
-| **Webhook**            | [`incoming_event`](#incoming-event) or [`incoming_chat_thread`](#incoming-chat-thread) **\*** |
+|                        |                                                             |
+| ---------------------- | ----------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/upload_file` |
+| **RTM API equivalent** | -                                                           |
+| **Webhook**            | [`incoming_event`](#incoming-event) **\***                  |
 
-**\*)** The `incoming_chat_thread` will be sent instead of `incoming_event` only if the event starts a new thread.
+**\*)**
+`incoming_event` returns a URL that never expires.
 
 #### Request
 
-| Parameter               | Required | Data type | Notes                                                                                 |
-| ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------- |
-| `chat_id`               | Yes      | `string`  | Id of the chat you want to send the file to.                                      |
-| `file`                  | Yes      | `binary`  | Maximum size: 10MB                                                                    |
-| `custom_id`             | No       | `string`  |                                                                                       |
-| `require_active_thread` | No       | `bool`    | If set to `true`, it returns an error when all threads are inactive; default: `false`. |
+| Parameter | Required | Data type | Notes              |
+| --------- | -------- | --------- | ------------------ |
+| `file`    | Yes      | `binary`  | Maximum size: 10MB |
 
 </Text>
-
 <Code>
-
 <CodeSample path={'REQUEST'}>
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id>' \
+  https://api.livechatinc.com/v3.1/customer/action/upload_filelicense_id=<license_id> \
   -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: multipart/form-data; boundary=--------------------------210197025774705439685896' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
-  -F chat_id=PWJ8Y4THAV \
-  -F require_active_thread=false \
-  -F 'file=@/Users/MyAccount/Downloads/file.jpg'
+  -F file=@/Users/MyAccount/Desktop/image.png
 ```
 
 </CodeSample>
-
 <CodeResponse>
 
 ```json
 {
-  "url": "https://cdn.livechat-static.com/api/file/lc/att/file.jpg"
+  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
 }
 ```
 
 </CodeResponse>
-
 </Code>
-
 </Section>
-
 
 <Section>
 
@@ -2411,7 +2400,7 @@ curl -X POST \
 | Parameter | Required | Data type | Notes                                                            |
 | --------- | -------- | --------- | ---------------------------------------------------------------- |
 | `all`     | No       | `bool`    | If set to `true`, you will get statuses of all the groups. |
-| `groups`  | No       | `array`   | A table of groups' ids                                           |
+| `groups`  | No       | `array`   | A table of groups' IDs                                           |
 
 At least one optional parameter needs to be included in the request.
 
@@ -3304,5 +3293,5 @@ Webhooks notify you when specific events are triggered. Push equivalents in Agen
 
 # Contact us
 
-If you found a bug or a typo, you can't let us know directly on GitHub.
+If you found a bug or a typo, you can let us know directly on GitHub.
 In case of any questions or feedback, don't hesitate to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com). We'll be happy to hear from you!
