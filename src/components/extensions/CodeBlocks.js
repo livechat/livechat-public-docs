@@ -54,7 +54,7 @@ const CodeSampleTopbar = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 5px 15px;
-  background-color: #3c4150;
+  background-color: #383f54;
   border-radius: 8px 8px 0 0;
   color: #dee5e8;
   code {
