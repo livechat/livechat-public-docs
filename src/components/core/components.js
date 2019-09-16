@@ -243,17 +243,17 @@ export const MenuElement = ({ url, title, onClick, active }) => (
   <Li onClick={onClick}>
     {/^#.*/.test(url) ? (
       <MenuAnchorLink href={url} active={active}>
-        <HashtagIcon
-          style={{ marginRight: "4px", marginTop: "1px", opacity: 0.6 }}
-        />
+        <HashtagIcon style={{ marginTop: "1px", opacity: 0.6 }} />
+        &nbsp;
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
       // an ugly fix beneath (active ? 1 : 0)
       <MenuLink to={url} active={active ? 1 : 0}>
         <ArticleIcon
-          style={{ marginRight: "6px", marginBottom: "-2px", opacity: 0.6 }}
+          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
         />
+        &nbsp;
         <span>{title}</span>
       </MenuLink>
     )}

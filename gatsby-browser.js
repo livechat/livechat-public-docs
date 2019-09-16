@@ -5,3 +5,14 @@ new SmoothScroll('a[href*="#"]', {
   speedAsDuration: true,
   offset: 120
 });
+
+export const shouldUpdateScroll = ({
+  routerProps: { location },
+  getSavedScrollPosition
+}) => {
+  if (location.hash) {
+    return false;
+  }
+
+  return true;
+};
