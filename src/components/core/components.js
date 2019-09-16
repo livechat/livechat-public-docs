@@ -42,7 +42,7 @@ const NavWrapper = styled.aside`
   border-right: 1px solid #dedede;
 
   position: fixed;
-  z-index: 999;
+  z-index: 50;
   width: 300px;
   margin-left: ${({ expanded = true }) => (expanded ? "0px" : "-280px")};
   box-shadow: ${({ expanded = true }) =>

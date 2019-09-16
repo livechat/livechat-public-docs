@@ -1,9 +1,10 @@
-/** @jsx jsx */ import { jsx } from "@emotion/core";
+/** @jsx jsx */ import { jsx, keyframes } from "@emotion/core";
 import { Link } from "gatsby";
 import styled from "@emotion/styled";
-import { LiveChatLogo, CategoryIcon } from "./icons";
+import { LiveChatLogo, CategoryIcon, WarningIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
 import { css } from "@emotion/core";
+import { PopperTooltip } from "@livechat/design-system";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -14,7 +15,6 @@ const HeaderWrapper = styled.div`
   width: 100%;
   font-family: "Source Sans Pro";
   z-index: 99;
-  white-space: nowrap;
   @media (min-width: 768px) {
     display: flex;
   }
@@ -38,6 +38,7 @@ const MenuListWrapper = styled.div`
 const MenuList = styled.ul`
   list-style: none;
   display: flex;
+  align-items: center;
   margin: 0;
   padding: 0;
 `;
@@ -45,6 +46,7 @@ const MenuList = styled.ul`
 const MenuElementWrapper = styled.li`
   padding: 0;
   margin: 0 5px;
+  white-space: nowrap;
   a {
     padding: 14px;
     height: 60px;
@@ -63,6 +65,31 @@ const linkStyle = css`
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
   transition: color 60ms ease-out;
+`;
+
+const bounce = keyframes`
+  from, 20%, 53%, 80%, to {
+    transform: rotate(0);
+  }
+  20%, 23% {
+    transform: rotate(-5deg);
+  }
+  35% {
+    transform: rotate(12deg);
+  }
+  45% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(0);
+  }
+  90% {
+    transform: rotate(0);
+  }
+`;
+
+const animatedIcon = css`
+  animation: ${bounce} 2s ease-out infinite;
 `;
 
 const iconStyle = css`
@@ -88,6 +115,40 @@ const MenuElement = ({ label, slug, color }) => (
   </MenuElementWrapper>
 );
 
+const Warning = () => (
+  <PopperTooltip
+    isVisible={true}
+    placement={"bottom-start"}
+    triggerActionType={"hover"}
+    trigger={
+      <span>
+        <WarningIcon
+          width={18}
+          style={{ display: "block", color: "#f1bb15" }}
+          css={animatedIcon}
+        />
+      </span>
+    }
+    closeOnOutsideClick
+    zIndex={99999}
+  >
+    <div style={{ maxWidth: "320px" }}>
+      <p>
+        We're rolling out major changes to the documentation. Apologies for any
+        inconvenience! Please remember this documentation is marked as Beta and
+        is a subject to change.
+      </p>
+      <p style={{ marginBottom: "10px" }}>
+        If something's missing, please let us know at{" "}
+        <a href="mailto:developers@livechatinc.com" style={{ color: "white" }}>
+          developers@livechatinc.com
+        </a>
+        .
+      </p>
+    </div>
+  </PopperTooltip>
+);
+
 const Header = () => {
   const categories = useAllCategoriesMeta();
 
@@ -109,16 +170,18 @@ const Header = () => {
             color: white !important;
             text-decoration: none;
             font-weight: 600;
+            white-space: nowrap;
             &:hover {
               text-decoration: none;
             }
           `}
         >
-          Platform Docs
+          Platform Beta Docs
         </Link>
       </LogoWrapper>
       <MenuListWrapper>
         <MenuList>
+          <Warning />
           {categories.map(({ color, title, slug }) => (
             <MenuElement key={slug} color={color} label={title} slug={slug} />
           ))}
