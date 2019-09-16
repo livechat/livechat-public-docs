@@ -92,7 +92,7 @@ const Header = () => {
   const categories = useAllCategoriesMeta();
 
   return (
-    <HeaderWrapper>
+    <HeaderWrapper id="header">
       <LogoWrapper>
         <a href="/">
           <LiveChatLogo

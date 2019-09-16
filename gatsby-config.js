@@ -16,10 +16,17 @@ module.exports = {
         plugins: [`gatsby-remark-images`],
         gatsbyRemarkPlugins: [
           {
+            resolve: `gatsby-remark-copy-linked-files`
+          },
+          {
             resolve: `gatsby-remark-images`,
             options: {
               maxWidth: 800
             }
+          },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: { icon: false }
           },
           {
             resolve: `gatsby-remark-prismjs`,

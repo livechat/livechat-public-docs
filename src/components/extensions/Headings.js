@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { slugger } from "../core/slugger";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -20,27 +19,6 @@ const HeadingLink = styled.a`
   }
 `;
 
-const isString = elem => typeof elem === "string";
-const isArray = obj => Array.isArray(obj);
-
-export const getId = children => {
-  const childrenOfChild = children.props && children.props.children;
-
-  if (childrenOfChild) {
-    return getId(childrenOfChild);
-  }
-
-  if (isArray(children)) {
-    return children.map(item => getId(item)).join("-");
-  }
-
-  if (isString(children)) {
-    return slugger.slug(children);
-  }
-
-  return "unhandled-header-content";
-};
-
 export const getText = children => {
   if (typeof children !== "string") {
     return children;
@@ -58,49 +36,48 @@ const TableWrapper = styled.div`
   overflow-x: auto;
 `;
 
-const makeHeading = size => ({ children }) => {
-  const id = getId(children);
+const makeHeading = size => ({ children, ...props }) => {
   const className = "heading";
-  const props = { id, className };
+  const newProps = { ...props, className };
 
   const Content = () => (
-    <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
+    <HeadingLink href={`#${props.id}`}>{getText(children)}</HeadingLink>
   );
 
   switch (size) {
     case "h1":
       return (
-        <H2 {...props}>
+        <H2 {...newProps}>
           <Content />
         </H2>
       );
     case "h2":
       return (
-        <h3 {...props}>
+        <h3 {...newProps}>
           <Content />
         </h3>
       );
     case "h3":
       return (
-        <h4 {...props}>
+        <h4 {...newProps}>
           <Content />
         </h4>
       );
     case "h4":
       return (
-        <h5 {...props}>
+        <h5 {...newProps}>
           <Content />
         </h5>
       );
     case "h5":
       return (
-        <h6 {...props}>
+        <h6 {...newProps}>
           <Content />
         </h6>
       );
     case "h6":
       return (
-        <h6 {...props}>
+        <h6 {...newProps}>
           <Content />
         </h6>
       );
