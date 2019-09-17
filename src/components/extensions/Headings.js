@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 
 import { LinkIcon } from "../core/icons";
+import { Link } from "gatsby";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -69,6 +70,39 @@ const TableWrapper = styled.div`
   overflow-x: auto;
 `;
 
+const SectionGatsbyLink = styled(Link)`
+  font-weight: 600;
+  &:after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 1px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  }
+`;
+
+const SectionALink = styled.a`
+  font-weight: 600;
+  &:after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 1px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  }
+`;
+
+const SectionLink = ({ to, href, ...rest }) =>
+  to ? (
+    <SectionGatsbyLink to={to} {...rest} />
+  ) : (
+    <SectionALink href={href} target={"_blank"} {...rest} />
+  );
+
 const makeHeading = size => ({ children, ...props }) => {
   const className = "heading";
   const newProps = { ...props, className };
@@ -128,6 +162,7 @@ export default {
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
   a: A,
+  SectionLink,
   table: ({ children }) => (
     <TableWrapper>
       <table>{children}</table>
