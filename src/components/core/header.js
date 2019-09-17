@@ -101,17 +101,23 @@ const activeLinkStyle = color => ({
   color: "white"
 });
 
-const MenuElement = ({ label, slug, color }) => (
-  <MenuElementWrapper>
-    <Link
-      to={`/${slug}/`}
-      partiallyActive
-      css={linkStyle}
-      activeStyle={activeLinkStyle(color)}
-    >
-      <CategoryIcon category={slug} css={iconStyle} />
-      {label}
-    </Link>
+const MenuElement = ({ label, href, slug, color, ...props }) => (
+  <MenuElementWrapper {...props}>
+    {href ? (
+      <a href={href} css={linkStyle} target="_blank" rel="noopener noreferrer">
+        {label}
+      </a>
+    ) : (
+      <Link
+        to={`/${slug}/`}
+        partiallyActive
+        css={linkStyle}
+        activeStyle={activeLinkStyle(color)}
+      >
+        <CategoryIcon category={slug} css={iconStyle} />
+        {label}
+      </Link>
+    )}
   </MenuElementWrapper>
 );
 
@@ -135,12 +141,14 @@ const Warning = () => (
     <div style={{ maxWidth: "320px" }}>
       <p>
         We're rolling out major changes to the documentation. Apologies for any
-        inconvenience! Please remember this documentation is marked as Beta and
-        is a subject to change.
+        inconvenience!
       </p>
       <p style={{ marginBottom: "10px" }}>
-        If something's missing, please let us know at{" "}
-        <a href="mailto:developers@livechatinc.com" style={{ color: "white" }}>
+        If anything is missing, please let us know at{" "}
+        <a
+          href="mailto:developers@livechatinc.com"
+          style={{ color: "white", textDecoration: "underline" }}
+        >
           developers@livechatinc.com
         </a>
         .
@@ -176,7 +184,7 @@ const Header = () => {
             }
           `}
         >
-          Platform Beta Docs
+          Platform Docs
         </Link>
       </LogoWrapper>
       <MenuListWrapper>
@@ -185,6 +193,11 @@ const Header = () => {
           {categories.map(({ color, title, slug }) => (
             <MenuElement key={slug} color={color} label={title} slug={slug} />
           ))}
+          <MenuElement
+            label={"Developer Console"}
+            href={"/console/"}
+            style={{ alignSelf: "flex-end", marginLeft: "auto" }}
+          />
         </MenuList>
       </MenuListWrapper>
     </HeaderWrapper>

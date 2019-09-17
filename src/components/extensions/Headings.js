@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
+import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
 import { Link } from "gatsby";
 
@@ -69,6 +70,49 @@ const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
 `;
+
+const SectionBannerWrapper = styled.div`
+  background-color: #f1f6f8;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  margin-bottom: 2.5em;
+  border-radius: 8px;
+  flex-direction: column;
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+`;
+
+export const SectionColumn = styled.div`
+  min-width: 400px;
+  flex-shrink: 1;
+  padding: 2em;
+  h2 {
+    margin-top: 0;
+  }
+  .gatsby-resp-image-background-image,
+  img {
+    border-radius: 8px;
+  }
+`;
+
+const SectionBanner = ({ title, desc, to, children }) => (
+  <SectionBannerWrapper>
+    {children && (
+      <SectionColumn style={{ padding: 0 }}>
+        <Link to={to}>{children}</Link>
+      </SectionColumn>
+    )}
+    <SectionColumn>
+      <h2>{title}</h2>
+      <p>{desc}</p>
+      <Link to={to}>
+        <Button>Learn more</Button>
+      </Link>
+    </SectionColumn>
+  </SectionBannerWrapper>
+);
 
 const SectionGatsbyLink = styled(Link)`
   font-weight: 600;
@@ -162,6 +206,7 @@ export default {
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
   a: A,
+  SectionBanner,
   SectionLink,
   table: ({ children }) => (
     <TableWrapper>

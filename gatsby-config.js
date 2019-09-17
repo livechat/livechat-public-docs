@@ -3,11 +3,26 @@ const path = require("path");
 module.exports = {
   siteMetadata: {
     title: "LiveChat Platform Docs & API Reference",
-    description: "",
+    description:
+      "The LiveChat Platform offers much more than just a messaging tool. There's a number of possibilities that help you grow a business, which brings customer satisfaction.",
     author: "@livechat"
   },
   pathPrefix: process.env.PATH_PREFIX || "/docs",
   plugins: [
+    {
+      resolve: `gatsby-plugin-google-tagmanager`,
+      options: {
+        id:
+          process.env.NODE_ENV === "production" ? "GTM-M58RLCQ" : "GTM-5DVQQC",
+
+        // Include GTM in development.
+        // Defaults to false meaning GTM will only be loaded in production.
+        includeInDevelopment: false
+        // Specify optional GTM environment details.
+        // gtmAuth: "YOUR_GOOGLE_TAGMANAGER_ENVIROMENT_AUTH_STRING",
+        // gtmPreview: "YOUR_GOOGLE_TAGMANAGER_ENVIROMENT_PREVIEW_NAME",
+      }
+    },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
     {
