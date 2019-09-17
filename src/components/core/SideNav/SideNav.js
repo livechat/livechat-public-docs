@@ -56,7 +56,8 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
 
   const categories = useAllCategoriesMeta().map(item => ({
     ...item,
-    url: `/${item.slug}/`
+    url: `/${item.slug}/`,
+    items: null
   }));
 
   const menuItems = category ? articles : categories;
