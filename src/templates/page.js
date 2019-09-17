@@ -55,11 +55,13 @@ export default ({ data: { mdx } }) => {
         </LeftColumn>
         <MiddleColumn>
           <Content>
-            <PageHeader
-              title={title}
-              timeToRead={timeToRead}
-              modifiedTime={modifiedTime}
-            />
+            {title && (
+              <PageHeader
+                title={title}
+                timeToRead={timeToRead}
+                modifiedTime={modifiedTime}
+              />
+            )}
 
             <MDXProvider components={components}>
               <MDXRenderer>{body}</MDXRenderer>
