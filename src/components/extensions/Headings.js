@@ -5,6 +5,10 @@ import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
 import { Link } from "gatsby";
 
+import imgMessaging from "images/livechat-platform-messaging.png";
+import imgExtendUI from "images/livechat-platform-extend-interfaces.png";
+import imgDataReporting from "images/livechat-platform-data-reporting.png";
+
 const HeadingLink = styled.a`
   color: inherit;
   text-decoration: none;
@@ -85,23 +89,43 @@ const SectionBannerWrapper = styled.div`
 `;
 
 export const SectionColumn = styled.div`
-  min-width: 400px;
   flex-shrink: 1;
   padding: 2em;
   h2 {
     margin-top: 0;
   }
-  .gatsby-resp-image-background-image,
-  img {
-    border-radius: 8px;
+
+  @media (min-width: 480px) {
+    min-width: 400px;
   }
 `;
 
-const SectionBanner = ({ title, desc, to, children }) => (
+const StyledImage = styled.img`
+  display: block;
+  margin: 0;
+  max-width: 100%;
+`;
+
+const Image = ({ to }) => {
+  switch (to) {
+    case "/messaging/":
+      return <StyledImage src={imgMessaging} />;
+    case "/extend-ui/":
+      return <StyledImage src={imgExtendUI} />;
+    case "/data-reporting/":
+      return <StyledImage src={imgDataReporting} />;
+    default:
+      return null;
+  }
+};
+
+const SectionBanner = ({ title, desc, to, image }) => (
   <SectionBannerWrapper>
-    {children && (
+    {image && (
       <SectionColumn style={{ padding: 0 }}>
-        <Link to={to}>{children}</Link>
+        <Link to={to} style={{ display: "block" }}>
+          <Image to={to} />
+        </Link>
       </SectionColumn>
     )}
     <SectionColumn>
