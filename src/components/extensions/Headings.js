@@ -110,7 +110,7 @@ const Image = ({ to }) => {
   switch (to) {
     case "/messaging/":
       return <StyledImage src={imgMessaging} />;
-    case "/extend-ui/":
+    case "/extending-ui/":
       return <StyledImage src={imgExtendUI} />;
     case "/data-reporting/":
       return <StyledImage src={imgDataReporting} />;
