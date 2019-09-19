@@ -106,6 +106,14 @@ const StyledImage = styled.img`
   max-width: 100%;
 `;
 
+export const Warning = styled.div`
+  border: 1px solid #ffbb00;
+  border-radius: 6px;
+  padding: 1.5em 1.5em 0;
+  margin-bottom: 1.5em;
+  background-color: #ffd000;
+`;
+
 const Image = ({ to }) => {
   switch (to) {
     case "/messaging/":
@@ -230,6 +238,7 @@ export default {
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
   a: A,
+  Warning,
   SectionBanner,
   SectionLink,
   table: ({ children }) => (
