@@ -89,9 +89,7 @@ module.exports = {
         fonts: [`source sans pro\:400,500,600,700`],
         display: "swap"
       }
-    }
-    // this (optional) plugin enables Progressive Web App + Offline functionality
-    // To learn more, visit: https://gatsby.app/offline
-    // 'gatsby-plugin-offline',
+    },
+    `gatsby-plugin-sitemap`
   ]
 };
