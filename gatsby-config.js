@@ -91,6 +91,15 @@ module.exports = {
         display: "swap"
       }
     },
-    `gatsby-plugin-sitemap`
+    `gatsby-plugin-sitemap`,
+    {
+      resolve: `gatsby-plugin-algolia-docsearch`,
+      options: {
+        apiKey: "f53a424573adab20d04faa2db150c349", // required
+        indexName: "livechatinc", // required
+        inputSelector: "#search", // required
+        debug: true // (bool) Optional. Default `false`
+      }
+    }
   ]
 };
