@@ -91,15 +91,16 @@ module.exports = {
         display: "swap"
       }
     },
-    `gatsby-plugin-sitemap`,
-    {
-      resolve: `gatsby-plugin-algolia-docsearch`,
-      options: {
-        apiKey: "f53a424573adab20d04faa2db150c349", // required
-        indexName: "livechatinc", // required
-        inputSelector: "#search", // required
-        debug: false // (bool) Optional. Default `false`
-      }
-    }
+    `gatsby-plugin-sitemap`
+    // mutation observer doesn't really work for some reason here
+    // {
+    //   resolve: `gatsby-plugin-algolia-docsearch`,
+    //   options: {
+    //     apiKey: "f53a424573adab20d04faa2db150c349", // required
+    //     indexName: "livechatinc", // required
+    //     inputSelector: "#search", // required
+    //     debug: false // (bool) Optional. Default `false`
+    //   }
+    // }
   ]
 };
