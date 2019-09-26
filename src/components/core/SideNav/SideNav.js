@@ -5,9 +5,9 @@ import {
   MenuWrapper,
   Ul,
   CollapsableSection,
-  MenuElement,
-  SearchWrapper
+  MenuElement
 } from "../components";
+import { Search } from "../Search";
 import { HomeIcon, ChevronRight } from "../icons";
 import {
   useAllArticlesInCategory,
@@ -16,8 +16,7 @@ import {
   useScrollSpy
 } from "../../../hooks";
 import { Link } from "gatsby";
-import { PopperTooltip, Input } from "@livechat/design-system";
-import styled from "@emotion/styled";
+import { PopperTooltip } from "@livechat/design-system";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
@@ -49,11 +48,6 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
     })}
   </Ul>
 );
-
-const StyledInput = styled(Input)`
-  padding-left: 32px;
-  width: 100%;
-`;
 
 const SideNav = ({ category, subcategory, currentSlug }) => {
   const [articles, getArticlePath] = useAllArticlesInCategory(
@@ -102,15 +96,9 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
         <ChevronRight width={14} />
         {categoryMeta.title || "Home"}
       </NavHeader>
-      {/* <NavHeader>
-        <SearchWrapper>
-          <StyledInput
-            type="text"
-            id="search"
-            placeholder="Search the docs..."
-          />
-        </SearchWrapper>
-      </NavHeader> */}
+      <NavHeader>
+        <Search />
+      </NavHeader>
       <MenuWrapper>
         {printItems(menuItems, toggleState, activePath, undefined)}
       </MenuWrapper>

@@ -60,7 +60,6 @@ function SEO({ desc, lang, meta, keywords, title }) {
               )
               .concat(meta)}
           >
-            {" "}
             <script type="text/javascript">
               {`
     window.__lc = window.__lc || {};
@@ -70,21 +69,6 @@ function SEO({ desc, lang, meta, keywords, title }) {
       lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/staging/tracking.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
     })();
-    `}
-            </script>
-            <link
-              rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"
-            />
-            <script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
-            <script>
-              {`
-    docsearch({
-      apiKey: "f53a424573adab20d04faa2db150c349",
-      indexName: "livechatinc",
-      inputSelector: "#search",
-      debug: false
-    });
     `}
             </script>
           </Helmet>
