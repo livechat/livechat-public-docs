@@ -72,6 +72,21 @@ function SEO({ desc, lang, meta, keywords, title }) {
     })();
     `}
             </script>
+            <link
+              rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"
+            />
+            <script src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+            <script>
+              {`
+    docsearch({
+      apiKey: "f53a424573adab20d04faa2db150c349",
+      indexName: "livechatinc",
+      inputSelector: "#search",
+      debug: false
+    });
+    `}
+            </script>
           </Helmet>
         );
       }}
