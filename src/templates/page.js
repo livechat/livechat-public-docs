@@ -8,6 +8,7 @@ import "normalize.css";
 import "../components/core/fonts.css";
 import "../components/core/layout.css";
 import "../components/core/prism.css";
+import "../components/core/algolia.css";
 
 import SideNav from "../components/core/SideNav";
 import Header from "../components/core/header";
