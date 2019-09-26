@@ -102,7 +102,7 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
         <ChevronRight width={14} />
         {categoryMeta.title || "Home"}
       </NavHeader>
-      <NavHeader>
+      {/* <NavHeader>
         <SearchWrapper>
           <StyledInput
             type="text"
@@ -110,7 +110,7 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
             placeholder="Search the docs..."
           />
         </SearchWrapper>
-      </NavHeader>
+      </NavHeader> */}
       <MenuWrapper>
         {printItems(menuItems, toggleState, activePath, undefined)}
       </MenuWrapper>
