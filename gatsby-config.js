@@ -98,7 +98,7 @@ module.exports = {
         apiKey: "f53a424573adab20d04faa2db150c349", // required
         indexName: "livechatinc", // required
         inputSelector: "#search", // required
-        debug: true // (bool) Optional. Default `false`
+        debug: false // (bool) Optional. Default `false`
       }
     }
   ]
