@@ -38,7 +38,7 @@ Using any method from the Agent Chat, Customer Chat, and Configuration API requi
 
 ![LiveChat New App](images/create-app.png)
 
-Next, fill in the **Redirect URI whitelist** field and choose scopes. usually, each method has certain scopes you need to define to be able to use that method. 
+Next, fill in the **Redirect URI whitelist** field. **Redirect URI** is the address of your app that will receive the **access token** in a URL. using only this address one can acquire a token. You also need to choose the right scopes. Usually, each method has certain scopes you need to define to be able to use that method. 
 
 To get chat summaries, you'll need `chats--all:ro` and `chats--access:ro`, and `chats--my:ro`. You can check out method details in our [API documentation](../../../messaging/agent-chat-api/#get-chats-summary).
 
@@ -47,8 +47,6 @@ To get chat summaries, you'll need `chats--all:ro` and `chats--access:ro`, and `
 When it's all set, we can proceed with token generation. Make sure to have your **Client Id** and **Redirect URI** at hand.
 
 # Step 2 Acquiring the access token
-
-Everything you need to know about authorization can be found in [this document](../../../getting-started/authorization), so keep this source for future reference.
 
 Start by pasting your **Client Id** and **Redirect URI** in the following request:
 
@@ -68,29 +66,32 @@ https://accounts.livechatinc.com/
 &redirect_uri=https://my.livechatinc.com/
 ```
 
-Paste your request in the browser and don't miss the response. 
+Paste your request in the browser and copy the returned response. Make sure you're logged in to the exact same LiveChat account that was used to create the app in Developer Console. Otherwise, you'll be asked to log in first.
 
 ![LiveChat request](images/request.png)
-
-Important note: You have to be logged in to the exact LiveChat account that was used to create the app in Developers Console. If you are not logged in to LiveChat and enter the link, it will ask you to login first.
 
 
 Your access token will be returned in a long string:
 
 ![LiveChat response](images/response.png)
 
-and it contains lot of informations. For now you need only the part after *access_token=* and before *&expires_in*:
+It contains lots of information, but you need only the part between _**access_token=**_  and _**&expires_in**_:
 
 ```
 https://my.livechatinc.com/
-#access_token=dal%3ALW9Guwt8QMiPK6P6G8cSDw
+#access_token=dal%3AMpubEGdISJCCiFelap3Qtg
 &expires_in=28800
 ...
 ```
 
+If you ever get a token that contains **`%3A`**, change it to **`:`** (a colon). Normally, URL encoding replaces **`:`** with **`%3A`**. In that case, our token is the following:
+
+```shell
+dal:MpubEGdISJCCiFelap3Qtg
+```
 
 Managed to get your token? Great! You can now use it to authorize the request sent via <a href="https://developers.livechatinc.com/docs/messaging/agent-chat-api/" target="_blank">Agent Chat API</a> and <a href="https://developers.livechatinc.com/docs/management/configuration-api/" target="_blank">Configuration API</a>.
-
+By the way, everything you need to know about authorization can be found in [this document](../../../getting-started/authorization), so keep this source for future reference.
 
 # Step 3 Sending the request via Postman
 
@@ -106,15 +107,17 @@ POST https://api.livechatinc.com/v3.1/agent/action/get_chats_summary
 
 </CodeSample>
 
-After that we can head on to Authorization:
+After that, we can head to the **Authorization** tab:
 
 ![LiveChat Postman Authorization](images/authorization.png)
 
-Then move on to Headers and add *Content-Type* with value *application/json*:
+Then, go to **Headers** and add *Content-Type* with value *application/json*:
 
 ![LiveChat Postman Headers](images/headers.png)
 
-Last step before sending the request will be filling *Body* with our parameters. In case of `get_chats_summary`, you can send a basic request without specifying any parameters, like this:
+<img src="images/headers.png" />
+
+Last step before sending the request is filling in *Body* with parameters. In case of `get_chats_summary`, you can send a basic request without specifying any parameters, like this:
 
 <CodeSample>
 
