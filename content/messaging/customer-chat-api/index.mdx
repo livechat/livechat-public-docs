@@ -27,7 +27,9 @@ If you're wondering which API to use - Customer Chat **RTM API** or **Web API**,
 
 ## Authentication
 
-**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow) . If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow). Take note **it's not the same** token you would you for the Agent Chat or Configuration API. 
+
+If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
 
 ## Data centers
 
@@ -201,16 +203,16 @@ Filled form event contains data from a form.
 
 Message event contains text message to other chat users.
 
-| Field            | Req./Opt. |                                                                                                                          Note |
-| ---------------- | :-------: | ----------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`      | optional  |                                                                                                                             - |
-| `created_at`     | required  |                                                           Date & time format with a resolution of microseconds, `UTC string`. |
-| `postback`       | optional  |                                                                                                                             - |
-| `postback.type`  | required  |                                                                                 Required only if `postback.value` is present. |
-| `postback.value` | required  |                                                                                  Required only if `postback.type` is present. |
-| `properties`     | optional  |                                                                                                                             - |
-| `recipients`     | required  |                                                                                    Possible values: `all` (default), `agents` |
+| Field            | Req./Opt. |  Notes                                                              |
+| ---------------- | :-------: | ------------------------------------------------------------------: |
+| `created_at`     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`     | required  | Possible values: `all` (default), `agents`                          |
 | `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
+| `custom_id`      | optional  |                                                                     |
+| `postback`       | optional  | Appears in the message event only when triggered by a rich message. |
+| `postback.type`  | optional  | Required only if `postback.value` is present.                       |
+| `postback.value` | optional  | Required only if `postback.type` is present.                        |
+| `properties`     | optional  | The [properties](#properties) object                                |
 
 </Text>
 
@@ -254,23 +256,24 @@ Message event contains text message to other chat users.
 
 Rich message event contains rich message data structure.
 
-| Field                          | Req./Opt. |                                                                                                                                                                                                                                                                                            Note |
-| ------------------------------ | :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`                    | optional  |                                                                                                                                                                                                                                                                                                 |
-| `created_at`                   | required  |                                                                                                                                                                                                                             Date & time format with a resolution of microseconds, `UTC string`. |
-| `elements`                     | optional  |                                                                                                                                                                                                                                                           May contain 1 - 10 `element` objects. |
-| `elements.buttons`             | optional  |                                                                                                                                                                                                                                                  `buttons` may contain 1 - 11 `button` objects. |
-| `elements.buttons.postback_id` | required  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
-| `elements.buttons.text`        | required  |                                                                                                                                                                                  Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.type`        | required  |                                                                                                                                               Required only if both `elements.buttons` and `elements.buttons.value` are present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.user_ids`    | required  |                                                                                                                                                                                  Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.value`       | required  |                                                                                                                                                Required only if both `elements.buttons` and `elements.buttons.type` are present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.image`               | optional  |                                                                                                                                                                                                      `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
-| `elements.subtitle`            | optional  |                                                                                                                                                                                                                                                                                                 |
-| `elements.title`               | optional  |                                                                                                                                                                                                                                                                                                 |
-| `properties`                   | optional  |                                                                                                                                                                                                                                                                                                 |
-| `recipients`                   | required  |                                                                                                                                                                                                                                                      Possible values: `all` (default), `agents` |
-| `template_id`                  | required  |                                                                                                                                                                                                                                          Describes how the event should be presented in an app. |
+| Field                            | Req./Opt. | Notes                                                                |
+| -------------------------------- | :-------: | ------------------------------------------------------------------: |
+| `created_at`                     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`                     | required  | Possible values: `all` (default), `agents` |
+| `template_id`                    | required  | Describes how the event should be presented in an app. | describes how the event should be presented in an app |
+| `custom_id`                      | optional  |                                                                     |
+| `elements`                       | optional  | May contain 1 - 10 `element` objects.                               |
+| `elements.buttons`               | optional  | `buttons` may contain 1 - 11 `button` objects.                      |
+| `elements.buttons.postback_id`   | optional  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.text`          | optional  | Required only if `elements.buttons` is present.                     |
+| `elements.buttons.type`          | optional  | Required only if both `elements.buttons` and `elements.buttons.value` are present.  |
+| `elements.buttons.user_ids`      | optional  | Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.buttons.value`         | optional  | Required only if both `elements.buttons` and `elements.buttons.type` are present.  |
+| `elements.buttons.webview_height`| optional  | Possible values: `compact`, `full`, `tall`                                                                    |
+| `elements.image`                 | optional  | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
+| `elements.subtitle`              | optional  |                                                                     |
+| `elements.title`                 | optional  |                                                                     |
+| `properties`                     | optional  | The [properties](#properties) object                                |
 
 </Text>
 
@@ -317,7 +320,7 @@ Rich message event contains rich message data structure.
           "type": "phone",
           "text": "value",
           "value": "790034890",
-          "webview_height": "tall", // optional, one of compact, tall, full
+          "webview_height": "tall", 
           "postback_id": "action_call",
           "user_ids": []
         }
@@ -643,7 +646,7 @@ Here's the list of all system messages you might come across as a Customer:
     "custom field name": "custom field value"
   },
   "present": true,
-  "last_seen_timestamp": 1473433500
+  "events_seen_up_to": 1473433500
 }
 ```
 
@@ -665,7 +668,7 @@ Here's the list of all system messages you might come across as a Customer:
   "name": "Support Team",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "present": true,
-  "last_seen_timestamp": 1473433500
+  "events_seen_up_to": 1473433500
 }
 ```
 
@@ -876,9 +879,9 @@ If you specify the API version in the URL, you don't have to include the optiona
 | --------------- | :----------------------------------------: | ----------------------------------------------: |
 | `Content-Type`  | `multipart/form-data; boundary=<boundary>` |              Valid for the `upload_file` method |
 | `Content-Type`  |             `application/json`             | Valid for every method except for `upload_file` |
-| `Authorization` |              `Bearer <token>`              |                                    Access token |
+| `Authorization` |              `Bearer <token>`              | Customer access token. It's not the same token you would use for the Agent Chat or Configuration API. [Read more...](#authentication) |
 
-Every request to Customer Chat API needs to have the following query string parameters.
+Every request to Customer Chat API needs to have the following query string parameters:
 
 | Required parameter | Data type |               Notes |
 | ------------------ | :-------: | ------------------: |
@@ -894,9 +897,9 @@ Every request to Customer Chat API needs to have the following query string para
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
-		    // payload
+		  // payload
       }'
 ```
 
@@ -954,7 +957,7 @@ It returns [summaries](#chat-summary) of the chats a Customer participated in.
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
 ```
 
@@ -1014,7 +1017,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "offset": 0,
       "limit": 25
@@ -1059,7 +1062,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
 		  "chat_id": "PJ0MRSHTDG"
       }'
@@ -1099,7 +1102,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
       "offset": 0,
@@ -1138,7 +1141,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
 		  "thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
@@ -1205,6 +1208,14 @@ Starts a chat.
 | `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
+#### Response
+
+| Parameter   | Data type  | Notes |
+| ----------- | ---------- | ----- |
+| `chat_id`   | `string`   |       |
+| `thread_id` | `string`   |       |
+| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. | 
+
 </Text>
 
 <Code>
@@ -1215,7 +1226,7 @@ Starts a chat.
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
 ```
 
@@ -1225,22 +1236,8 @@ curl -X POST \
 
 ```json
 {
-  "chat": {
-    "id": "PJ0MRSHTDG",
-    "order": 343544565,
-    "users": [
-      // array of "User" objects
-    ],
-    "properties": {
-      // "Properties" object
-    },
-    "access": {
-      // "Access" object
-    },
-    "thread": {
-      // "Thread" object
-    }
-  }
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "PGDGHT5G"
 }
 ```
 
@@ -1256,7 +1253,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat": {
 		    "access": {
@@ -1317,6 +1314,13 @@ Used to restart an archived chat.
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                            |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
+#### Response
+
+| Parameter   | Data type  | Notes |
+| ----------- | ---------- | ----- |
+| `thread_id` | `string`   |       |
+| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array.|
+
 </Text>
 
 <Code>
@@ -1327,7 +1331,7 @@ Used to restart an archived chat.
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat": {
             "id": "PWLW03ICW7"
@@ -1341,21 +1345,7 @@ curl -X POST \
 
 ```json
 {
-  "chat": {
-    "id": "PJ0MRSHTDG",
-    "users": [
-      // array of "User" objects
-    ],
-    "properties": {
-      // "Properties" object
-    },
-    "access": {
-      // "Access" object
-    },
-    "threads": [
-      // array of "Thread" objects
-    ]
-  }
+  "thread_id": "Z8AGR5OUW"
 }
 ```
 
@@ -1371,7 +1361,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat": {
         "id": "PJ0MRSHTDG",
@@ -1441,7 +1431,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/close_thread??license_id=<license_id>' \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
         "chat_id": "PWLW03ICW7"
       }'
@@ -1503,10 +1493,7 @@ curl -X POST \
 
 ```json
 {
-  "thread_id": "K600PKZON8",
-  "event": {
-    // the Event object
-  }
+  "event_id": "K600PKZON8"
 }
 ```
 
@@ -1563,7 +1550,7 @@ Uploads a file to the server as a temporary file. It returns a URL that expires 
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/upload_filelicense_id=<license_id> \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -H 'Content-Type: multipart/form-data; boundary=--------------------------210197025774705439685896' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
   -F file=@/Users/MyAccount/Desktop/image.png
@@ -1623,7 +1610,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
       "thread_id": "K600PKZON8",
@@ -1647,7 +1634,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
         "thread_id": "K600PKZON8",
@@ -1694,7 +1681,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
 		  "sneak_peek_text": "hello world"
@@ -1714,7 +1701,7 @@ curl -X POST \
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
 		  "sneak_peek_text": "hello world"
@@ -1742,7 +1729,7 @@ curl -X POST \
 | Parameter    | Required | Data type | Notes                                     |
 | ------------ | -------- | --------- | ----------------------------------------- |
 | `chat_id`    | Yes      | `string`  | Id of the chat you to set a property for. |
-| `properties` | Yes      | `object`  | Chat properties to set.                   |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 #### Response
 
@@ -1758,7 +1745,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "properties": {
@@ -1782,7 +1769,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
         "properties": {
@@ -1819,7 +1806,7 @@ curl -X POST \
 | Parameter    | Required | Data type | Notes                                            |
 | ------------ | -------- | --------- | ------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete properties of. |
-| `properties` | Yes      | `object`  | Chat properties to delete.                       |
+| `properties` | Yes      | `object`  | Chat properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 #### Response
 
@@ -1835,7 +1822,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "properties": {
@@ -1859,7 +1846,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
         "properties": {
@@ -1891,7 +1878,7 @@ curl -X POST \
 | ------------ | -------- | --------- | ------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
-| `properties` | Yes      | `object`  | Chat properties to set.                          |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 #### Response
 
@@ -1907,7 +1894,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
@@ -1932,7 +1919,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
@@ -1971,7 +1958,7 @@ curl -X POST \
 | ------------ | -------- | --------- | ------------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete.                      |
+| `properties` | Yes      | `object`  | Chat thread properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 #### Response
 
@@ -1987,7 +1974,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
@@ -2012,7 +1999,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
@@ -2046,7 +2033,7 @@ curl -X POST \
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
 | `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.  |
-| `properties` | Yes      | `object`  | Chat properties to set.                          |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 #### Response
 
@@ -2062,7 +2049,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
@@ -2088,7 +2075,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
       "thread_id": "K600PKZON8",
@@ -2123,7 +2110,7 @@ curl -X POST \
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
 | `event_id`   | Yes      | `string`  | Id of the event you want to delete the properties of.  |
-| `properties` | Yes      | `object`  | Event properties to delete.                            |
+| `properties` | Yes      | `object`  | Event properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 #### Response
 
@@ -2139,7 +2126,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PWLW03ICW7",
       "thread_id": "PWNWW5N6A8",
@@ -2165,7 +2152,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PWLW03ICW7",
       "thread_id": "PWNWW5N6A8",
@@ -2220,7 +2207,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "name": "John Doe"
       }'
@@ -2238,7 +2225,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "name": "John Doe",
       "avatar": "https://domain.com/avatars/1.jpg",
@@ -2284,7 +2271,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "fields": {
 		    "company_size": "10-100"
@@ -2304,7 +2291,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "fields": {
 		    "company_size": "10-100"
@@ -2357,7 +2344,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "all": true
       }'
@@ -2391,7 +2378,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "groups": [1, 2, 3, 4]
       }'
@@ -2437,7 +2424,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "page_url": "https://mypage.com",
       "customer_fields": {
@@ -2459,7 +2446,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "page_url": "https://mypage.com",
       "customer_fields": {
@@ -2511,7 +2498,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "group_id": 0,
 		  "type": "prechat"
@@ -2562,7 +2549,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "group_id": 0,
 		  "type": "prechat"
@@ -2595,7 +2582,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
 ```
 
@@ -2628,7 +2615,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
 ``` -->
 
@@ -2664,7 +2651,7 @@ It returns the info on a given URL.
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "url": "https://livechatinc.com"
       }'
@@ -2697,7 +2684,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "url": "https://livechatinc.com"
       }'
@@ -2738,7 +2725,7 @@ No response payload (`200 OK`).
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
       "seen_up_to": "2017-10-12T15:19:21.010200Z"
@@ -2757,7 +2744,7 @@ curl -X POST \
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen?license_id=<license_id>' \
   -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
       "seen_up_to": "2017-10-12T15:19:21.010200Z"

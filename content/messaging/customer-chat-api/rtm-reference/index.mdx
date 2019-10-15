@@ -44,9 +44,11 @@ Given that the connection is continuosly maintained, you only need to authorize 
 LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
 
 For backend applications, you can specify the region in the request header. The mechanism is the same as in [Customer Chat Web API reference](../#data-centers). It doesn't work for frontend applications, though.
-Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL, as follows: 
+Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL. 
 
-`wss://api-fra.livechatinc.com/v3.1/customer/rtm/ws`
+**`fra`:** `wss://api-fra.livechatinc.com/v3.1/customer/rtm/ws`
+
+**`dal`:** `wss://api.livechatinc.com/v3.1/customer/rtm/ws`
 
 # Events
 
@@ -206,16 +208,16 @@ Filled form event contains data from a form.
 
 Message event contains text message to other chat users.
 
-| Field            | Req./Opt. |                                                                                                                          Note |
-| ---------------- | :-------: | ----------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`      | optional  |                                                                                                                             - |
-| `created_at`     | required  |                                                           Date & time format with a resolution of microseconds, `UTC string`. |
-| `postback`       | optional  |                                                                                                                             - |
-| `postback.type`  | required  |                                                                                 Required only if `postback.value` is present. |
-| `postback.value` | required  |                                                                                  Required only if `postback.type` is present. |
-| `properties`     | optional  |                                                                                                                             - |
-| `recipients`     | required  |                                                                                    Possible values: `all` (default), `agents` |
-| `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B). To send more, split text into several messages. |
+| Field            | Req./Opt. |  Notes                                                              |
+| ---------------- | :-------: | ------------------------------------------------------------------: |
+| `created_at`     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`     | required  | Possible values: `all` (default), `agents`                          |
+| `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
+| `custom_id`      | optional  |                                                                     |
+| `postback`       | optional  | Appears in the message event only when triggered by a rich message. |
+| `postback.type`  | optional  | Required only if `postback.value` is present.                       |
+| `postback.value` | optional  | Required only if `postback.type` is present.                        |
+| `properties`     | optional  | The [properties](#properties) object                                |
 
 </Text>
 
@@ -259,23 +261,24 @@ Message event contains text message to other chat users.
 
 Rich message event contains rich message data structure.
 
-| Field                          | Req./Opt. |                                                                                                                                                                                                                                                                                            Note |
-| ------------------------------ | :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`                    | optional  |                                                                                                                                                                                                                                                                                                 |
-| `created_at`                   | required  |                                                                                                                                                                                                                             Date & time format with a resolution of microseconds, `UTC string`. |
-| `elements`                     | optional  |                                                                                                                                                                                                                                                           May contain 1 - 10 `element` objects. |
-| `elements.buttons`             | optional  |                                                                                                                                                                                                                                                  `buttons` may contain 1 - 11 `button` objects. |
-| `elements.buttons.postback_id` | required  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
-| `elements.buttons.text`        | required  |                                                                                                                                                                                  Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.type`        | required  |                                                                                                                                               Required only if both `elements.buttons` and `elements.buttons.value` are present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.user_ids`    | required  |                                                                                                                                                                                  Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.value`       | required  |                                                                                                                                                Required only if both `elements.buttons` and `elements.buttons.type` are present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.image`               | optional  |                                                                                                                                                                                                      `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
-| `elements.subtitle`            | optional  |                                                                                                                                                                                                                                                                                                 |
-| `elements.title`               | optional  |                                                                                                                                                                                                                                                                                                 |
-| `properties`                   | optional  |                                                                                                                                                                                                                                                                                                 |
-| `recipients`                   | required  |                                                                                                                                                                                                                                                      Possible values: `all` (default), `agents` |
-| `template_id`                  | required  |                                                                                                                                                                                                                                          Describes how the event should be presented in an app. |
+| Field                            | Req./Opt. | Notes                                                                |
+| -------------------------------- | :-------: | ------------------------------------------------------------------: |
+| `created_at`                     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`                     | required  | Possible values: `all` (default), `agents` |
+| `template_id`                    | required  | Describes how the event should be presented in an app. | describes how the event should be presented in an app |
+| `custom_id`                      | optional  |                                                                     |
+| `elements`                       | optional  | May contain 1 - 10 `element` objects.                               |
+| `elements.buttons`               | optional  | `buttons` may contain 1 - 11 `button` objects.                      |
+| `elements.buttons.postback_id`   | optional  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.text`          | optional  | Required only if `elements.buttons` is present.                     |
+| `elements.buttons.type`          | optional  | Required only if both `elements.buttons` and `elements.buttons.value` are present.  |
+| `elements.buttons.user_ids`      | optional  | Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.buttons.value`         | optional  | Required only if both `elements.buttons` and `elements.buttons.type` are present.  |
+| `elements.buttons.webview_height`| optional  | Possible values: `compact`, `full`, `tall`                                                                    |
+| `elements.image`                 | optional  | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
+| `elements.subtitle`              | optional  |                                                                     |
+| `elements.title`                 | optional  |                                                                     |
+| `properties`                     | optional  | The [properties](#properties) object                                |
 
 </Text>
 
@@ -648,7 +651,7 @@ Here's the list of all system messages you might come across as a Customer:
     "custom field name": "custom field value"
   },
   "present": true,
-  "last_seen_timestamp": 1473433500
+  "events_seen_up_to": 1473433500
 }
 ```
 
@@ -670,7 +673,7 @@ Here's the list of all system messages you might come across as a Customer:
   "name": "Support Team",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "present": true,
-  "last_seen_timestamp": 1473433500
+  "events_seen_up_to": 1473433500
 }
 ```
 
@@ -1247,6 +1250,14 @@ Starts a chat.
 | `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
+#### Response
+
+| Parameter   | Data type  | Notes |
+| ----------- | ---------- | ----- |
+| `chat_id`   | `string`   |       |
+| `thread_id` | `string`   |       |
+| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. | 
+
 </Text>
 
 <Code>
@@ -1271,23 +1282,9 @@ Starts a chat.
   "type": "response",
   "success": true,
   "payload": {
-    "chat": {
-      "id": "PJ0MRSHTDG",
-      "order": 343544565,
-      "users": [
-        // array of "User" objects
-      ],
-      "properties": {
-        // "Properties" object
-      },
-      "access": {
-        // "Access" object
-      },
-      "thread": {
-        // "Thread" object
-      }
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "PGDGHT5G"
     }
-  }
 }
 ```
 
@@ -1364,6 +1361,13 @@ Used to restart an archived chat.
 | `chat.thread.properties` | No       | `object` | Initial chat thread properties                                            |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
+#### Response
+
+| Parameter   | Data type  | Notes |
+| ----------- | ---------- | ----- |
+| `thread_id` | `string`   |       |
+| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array.|
+
 </Text>
 
 <Code>
@@ -1392,21 +1396,7 @@ Used to restart an archived chat.
   "type": "response",
   "success": true,
   "payload": {
-    "chat": {
-      "id": "PJ0MRSHTDG",
-      "users": [
-        // array of "User" objects
-      ],
-      "properties": {
-        // "Properties" object
-      },
-      "access": {
-        // "Access" object
-      },
-      "threads": [
-        // array of "Thread" objects
-      ]
-    }
+    "thread_id": "Z8AGR5OUW"
   }
 }
 ```
@@ -1583,10 +1573,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
   "type": "response",
   "success": true,
   "payload": {
-    "thread_id": "K600PKZON8",
-    "event": {
-      // the Event object
-    }
+     "event_id": "K600PKZON8"
   }
 }
 ```
@@ -1796,7 +1783,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | Parameter    | Required | Data type | Notes                                     |
 | ------------ | -------- | --------- | ----------------------------------------- |
 | `chat_id`    | Yes      | `string`  | Id of the chat you to set a property for. |
-| `properties` | Yes      | `object`  | Chat properties to set.                   |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
 
@@ -1884,7 +1871,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | Parameter    | Required | Data type | Notes                                            |
 | ------------ | -------- | --------- | ------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete properties of. |
-| `properties` | Yes      | `object`  | Chat properties to delete.                       |
+| `properties` | Yes      | `object`  | Chat properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
 
@@ -1964,7 +1951,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | ------------ | -------- | --------- | ------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
-| `properties` | Yes      | `object`  | Chat properties to set.                          |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
 
@@ -2055,7 +2042,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | ------------ | -------- | --------- | ------------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete.                      |
+| `properties` | Yes      | `object`  | Chat thread properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
 
@@ -2138,7 +2125,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
 | `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.  |
-| `properties` | Yes      | `object`  | Chat properties to set.                          |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
 
@@ -2226,7 +2213,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
 | `event_id`   | Yes      | `string`  | Id of the event you want to delete the properties of.  |
-| `properties` | Yes      | `object`  | Event properties to delete.                            |
+| `properties` | Yes      | `object`  | Event properties to delete.  You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
 
