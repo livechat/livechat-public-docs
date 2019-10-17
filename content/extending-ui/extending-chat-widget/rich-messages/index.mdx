@@ -1,0 +1,267 @@
+---
+weight: 31
+category: "extending-ui"
+subcategory: "extending-chat-widget"
+title: "Rich Messages"
+tagline: "Enrich your messages."
+desc: "Engage better with your Customers using interactive and visually appealing Rich Messages."
+---
+
+# Introduction
+[Rich Messages](https://www.livechatinc.com/help/rich-messages/) are more than just plain text. These are interactive blocks, which with the use of images, buttons and text allow your Customers to get more details about your business, quickly send responses to your messages, make phone calls or even open small apps called [Moments](/extending-ui/extending-chat-widget/chat-widget-moments/).
+
+![LiveChat Rich Messages Placeholder](images/livechat-rich-messages.jpg)
+
+Rich Messages are also the core feature of our **ChatBot** integration. If you're not familiar with ChatBot, [this article](https://www.livechatinc.com/help/chatbots-explained/) will come in handy.
+
+# Rich Messages overview
+Rich Messages are built with three basic building blocks: text, image and buttons. Combining these together creates different opportunities. Following that, in LiveChat we have grouped them in the following categories.
+
+## Cards
+Cards are single message block, which can contain the image, title, subtitle and buttons:
+
+![Card Placeholder](images/card-placeholder.png)
+
+Neither of these elmements is mandatory, so one can create a card containing just image, just text or only buttons.
+
+## Carousels
+Carousels are combination of multiple cards:
+
+![Carousel Placeholder](images/carousel-placeholder.png)
+
+For example, by just showing a title and image, you can present multiple products in a more appealing way.
+
+## Quick replies
+Quick replies are different types of buttons - they are smaller, so that much more of them can fit in the screen:
+
+![Quick Replies Placeholder](images/quick-replies-placeholder.png)
+
+They might be useful when you want your user to choose one of the predefined responses.
+
+# Getting started
+As mentioned, Rich Messages are combination of basic building blocks. How do we know what to show then? We base that on the JSON object received through the [Customer Chat API](../../../messaging/customer-chat-api/#rich-message). Apart from the author and other, strictly related to messaging data, the core of the Rich Messages looks like that:
+
+<CodeSample>
+
+```json
+{
+	"template_id": "cards",
+	"elements": [{
+            "title": "Title",
+			"subtitle": "Subtitle",
+			"image": {
+                "name": "example.png",
+				"url": "https://example.org/image.png",
+                "content_type": "image/png",
+                "size": 1024,
+                "width": 640,
+                "height": 480
+			},
+			"buttons": [{
+				"type": "message",
+				"text": "text",
+				"postback_id": "send_message",
+				"user_ids": [],
+				"value": "text"
+			}]
+		}
+	]
+}
+```
+
+</CodeSample>
+
+This is how it would look like in the Chat Widget:
+
+![Getting Started Placeholder](images/getting-started-placeholder.png)
+
+Let's go through each of the elements:
+
+* `template_id` - defines how the Rich Message would be presented. Could be either `cards`, which covers both Cards and Carousels, or `quick_replies`, which corresponds to Quick Replies. This is a required parameter.
+* `elements` - optional, this is the array of elements incluced in the Rich Message, for example multiple cards. There can be maximum of 11 elements.
+* `elements.title` and `elements.subtitle` - both optional, displays the formatted text on Cards.
+* `elements.image` - optional, displays the image on the card. Can have the following optional parameters: `name`, `url`, `content_type`, `size`, `width`, `height`. 
+* `elements.buttons` - optional, array of the buttons displayed (maximum of 11). They can have to following parameters (all required if the `elements.buttons` is included):
+    * `elements.buttons.type` - defines the behavior after user clicks on the button. Might have the following values:
+        * `webview` - opens the [Moment](/extending-ui/extending-chat-widget/chat-widget-moments/),
+        * `message` - sends a message postback in the chat,
+        * `url` - opens given URL in the new tab,
+        * `phone` - allows the Customer to call the number given directly from the chat,
+    * `elements.buttons.postback_id` - description of the action sent,
+    * `elements.buttons.user_ids` - describes the user that sent the postback, can be empty,
+    * `elements.buttons.value` - defines what value should the button have, depending on its type: either a message to be sent, url to be opened in the Moment or in the new tab, or the phone number to call,
+    * `elements.buttons.webview_height` - required only if the `type` of the button is set to `webview`, defines the size of the Moment shown to the user. Might be set to `compact`, `full` or `tall`.
+
+Huge advantage of the fact that most of those parameters are optional is that it gives a lot of freedom and possibilities to unleash your creativity.
+
+# Usage examples
+Now, when the power of the Rich Messages is revealed, we can test out some of the opportunities it gives us.
+
+## Predefined answers to choose from
+Imagine that you ask your Customer the same questions over and over again, for which the answer does not require them to be especially creative. For example, if you run the support it might be "Which OS are you using?" - you would like to know whether it is a "Windows","MacOS" or "Other", so you can safely and easily guide them through the data gaining process. You can use the `quick_replies` to to that:
+
+<CodeSample>
+
+```json
+{
+	"template_id": "quick_replies",
+	"elements": [{
+            "title": "What OS are you using?",
+			"buttons": [{
+				"type": "message",
+				"text": "Windows",
+				"postback_id": "send_message",
+				"user_ids": [],
+				"value": "Windows"
+			},
+            {
+                "type": "message",
+				"text": "MacOS",
+				"postback_id": "send_message",
+				"user_ids": [],
+				"value": "MacOS"
+            },
+            {
+                "type": "message",
+				"text": "Other",
+				"postback_id": "send_message",
+				"user_ids": [],
+				"value": "Other"
+            }
+            ]
+		}
+	]
+}
+```
+
+</CodeSample>
+
+After sending, this would look like that in the Chat Widget:
+
+![Quick Replies Example Placeholder](images/qr-example-placeholder.png)
+
+Now, after user clicks the button, this would send the appriopriate message right in the Chat. Easy!
+
+## Leaving contact info
+
+Sometimes your process might require the Customers to call you. Sending them a number over and over again as text migth cause them some troubles, for example with copying it. Rich Messages might make that smooth for them as well:
+
+<CodeSample>
+
+```json
+{
+	"template_id": "cards",
+	"elements": [{
+            "title": "Support",
+            "subtitle": "Click 'Call' button to connect directly with our support. We work 24/7!",
+			"buttons": [{
+				"type": "phone",
+				"text": "Call",
+				"postback_id": "action_call",
+				"user_ids": [],
+				"value": "0123456789"
+			}
+            ]
+		}
+	]
+}
+```
+
+</CodeSample>
+
+This would display a card with the button opening their default phone application:
+
+![Phone Example Placeholder](images/phone-example-placeholder.png)
+
+## Showing off your products
+If you are running an online shop, there must be dozens of situations where Customers ask for your advice. With the use of Rich Messages, you can present your goods with links way more as a more attractive Carousel:
+
+<CodeSample>
+
+```json
+{
+	"template_id": "cards",
+	"elements": [{
+			"title": "Tomatoes",
+			"subtitle": "The tomato is the edible, often red, berry of the plant Solanum lycopersicum, commonly known as a tomato plant.",
+			"image": {
+				"url": "https://images.unsplash.com/photo-1517666005606-69dea9b54865"
+			},
+			"buttons": [{
+				"type": "url",
+				"text": "Open link",
+				"postback_id": "open_url",
+				"user_ids": [],
+				"value": "https://example.org/?product1"
+			}]
+		},
+		{
+			"title": "Cucumber",
+			"subtitle": "There are three main varieties of cucumber: slicing, pickling, and seedless. Within these varieties, several cultivars have been created.",
+			"image": {
+				"url": "https://images.unsplash.com/photo-1531170887152-6b21ba4ce8ae"
+			},
+			"buttons": [{
+				"type": "url",
+				"text": "Open link",
+				"postback_id": "open_url",
+				"user_ids": [],
+				"value": "https://example.org/?product2"
+			}]
+		}
+	]
+}
+```
+
+</CodeSample>
+
+Your Customer would see the following in the Widget:
+
+![Products Example Placeholder](images/products-example-placeholder.png)
+
+This way, they can visit product pages and review them much easier!
+
+## Sharing knowledge with your Customer
+[Moments](/extending-ui/extending-chat-widget/chat-widget-moments/) are powerful Apps, yet the `webview` can also contain static webstites. Let's assume, once again, that you run Support team and would like to share an article explaining simple steps to undertake:
+
+<CodeSample>
+
+```json
+{
+	"template_id": "cards",
+	"elements": [{
+			"title": "How to?",
+			"subtitle": "Let me guide you through the simple steps you should undartake.",
+			"buttons": [{
+				"type": "webview",
+				"text": "Open link",
+				"postback_id": "open_url",
+				"user_ids": [],
+				"value": "https://example.org/?how-to",
+                "webview_height": "full"
+			}]
+		}
+	]
+}
+```
+
+</CodeSample>
+
+That would show a simple Card with a button, which after being clicked on would open the article right in the Chat:
+
+![Webview Example Placeholder](images/webview-example-placeholder.png)
+
+# How to use Rich Messages in LiveChat?
+Currently there are several ways to use Rich Messages in the LiveChat.
+
+## ChatBot
+Rich Messages are very important feature of [ChatBot](https://www.livechatinc.com/chatbot/). They allow the Bot to connect easier with your Customers, making sure that they follow the interactions you thought of. With the [Rich Messages](https://www.livechatinc.com/help/rich-messages/) and easy configurator, Bot can make your Customer's chat a real pleasure.
+
+![Chatbot integration Placeholder](images/chatbot-integration-placeholder.png)
+
+## Agent App SDK
+Agent App SDK introduces the MessageBox integration. You can create your own application there, which will give your Agents a possiblity to send all the Rich Messages you want. Documentation is available [here](../../extending-agent-app/agent-app-sdk/#messagebox). Keep in mind that this would require some programming knowledge.
+
+## Agent Chat and Customer Chat APIs
+Both [Agent Chat API](../../../messaging/agent-chat-api/) and [Customer Chat API](../../../messaging/customer-chat-api/) handle Rich Messages. Whether you decide to build your own Chat or create your own Bot, you can make use of them.
+
