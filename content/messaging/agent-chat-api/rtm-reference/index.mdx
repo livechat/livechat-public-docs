@@ -182,7 +182,7 @@ File event informs about a file being uploaded.
 | `custom_id`                                           | optional  |                                                                   - |
 | `properties`                                          | optional  |                                                                   - |
 | `recipients`                                          | required  |                          Possible values: `all` (default), `agents` |
-| `system_message_type`                                 | required  |                                                                   - |
+| `url`                                                 | required  | Has to point to the LiveChat CDN.                                   |
 | `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                                     Only for images |
 
 </Text>
@@ -220,20 +220,21 @@ File event informs about a file being uploaded.
 <Section>
 <Text>
 
-Filled form event contains data from a form.
+Filled form event contains data from a form (prechat or postchat survey).
 
-| Field                                   | Req./Opt |                                                                Note |
+| Field                                   | Req./Opt |                                                               Notes |
 | --------------------------------------- | :------: | ------------------------------------------------------------------: |
-| `custom_id`                             | optional |                                                                     |
 | `created_at`                            | required | Date & time format with a resolution of microseconds, `UTC string`. |
-| `properties`                            | optional |                                                                     |
-| `recipients`                            | required |                          Possible values: `all` (default), `agents` |
-| `name`, `email`, `question`, `textarea` | optional |                                    For open questions (text answer) |
-| `radio`, `select`                       | optional |                                         For single-choice questions |
-| `checkbox`                              | optional |                                       For multiple-choice questions |
-| `group_chooser`                         | optional |                                          For group-choice questions |
+| `recipients`                            | required | Possible values: `all` (default), `agents` |
+| `checkbox`                              | optional | For multiple-choice questions |
+| `custom_id`                             | optional |                                                                     |
+| `email`, `name`, `question`, `textarea` | optional | For open questions (text answer) |
+| `group_chooser`                         | optional | For group-choice questions |    
+| `properties`                            | optional | The [Properties](#properties) object |
+| `radio`, `select`                       | optional | For single-choice questions |  
 
 </Text>
+
 <Code>
 <CodeResponse title={'Sample Filled form event'}>
 
@@ -736,7 +737,7 @@ Here's the list of all system messages you might come across:
   "name": "Support Team",
   "email": "agent1@example.com",
   "present": true,
-  "events_seen_up_to": 1473433500,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "routing_status": "accepting_chats"
 }
@@ -759,7 +760,7 @@ Here's the list of all system messages you might come across:
   "name": "Support Team",
   "email": "agent1@example.com",
   "present": true,
-  "events_seen_up_to": 1473433500,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "routing_status": "accepting_chats",
   "permission": "administrator"
@@ -817,7 +818,7 @@ Here's the list of all system messages you might come across:
   "customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
   "created_at": "2017-10-11T15:19:21.010200Z",
   "present": true, // optional, applies only to customer located in chat object
-  "events_seen_up_to": 1473433500 // optional, applies only to customer located in chat object
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z" 
 }
 ```
 
@@ -832,7 +833,7 @@ Here's the list of all system messages you might come across:
 | `email`                          | optional  |                                        - |
 | `fields`                         | optional  | Isn't present when the chat is archived. |
 | `name`                           | optional  |                                        - |
-| `last_seen_timestamp`            | optional  |                                        - |
+| `events_seen_up_to`              |           | RFC 3339 datetime string                 |
 | `last_visit`                     | optional  |                                        - |
 | `present`                        | optional  |                                        - |
 | `statistics`                     | optional  |                                        - |
@@ -1139,40 +1140,6 @@ There's only one value allowed for a single property.
 
 </CodeSample>
 
-<!-- > **`get_chats_summary`** sample **request** with optional params
-
-```json
-{
-	"request_id": "12345", // optional
-	"action": "get_chats_summary",
-	"payload": {
-		"filters": {
-		"query": "search keyword",
-		"agent_ids": ["agent1@example.com"],
-		"date_from": "2016-09-01",
-		"date_to": "2016-10-01",
-		"properties": {
-			"rating": {
-				"score": {
-					"values": [1]
-				}
-			},
-			"rating": {
-				"comment": {
-					"exists": true
-				}
-			}
-		}
-	},
-	"pagination": {
-		"page": 1,
-		"limit": 25
-				}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-```  -->
-
 <CodeResponse>
 
 ```json
@@ -1182,23 +1149,53 @@ There's only one value allowed for a single property.
   "type": "response",
   "success": true,
   "payload": {
-    "chats": [
-      {
-        "chat": {
-          "id": "PJ0MRSHTDG",
-          "users": [
-            // array of "User" objects
-          ],
-          "thread": {
-            // "Thread" object
-          }
-        }
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "total": 3
-    }
+    	"chats_summary": [{
+		    "id": "PJ0MRSHTDG",
+		    "users": [
+		    	// array of "User" objects
+		    ],
+		    "last_event_per_type": { // last event of each type in chat
+		    	"message": {
+		    		"thread_id": "K600PKZON8",
+		    		"thread_order": 3,
+		    		"event": {
+		    			// "restricted_access": true
+		    			// or
+		    			// "Event > Message" object
+		    		}
+		    	},
+		    	"system_message": {
+		    		"thread_id": "K600PKZON6",
+		    		"thread_order": 1,
+		    		"event": {
+		    			// "restricted_access": true
+		    			// or
+		    			// "Event > System message" object
+		    		}
+		    	},
+		    	...
+		    },
+		    "last_thread_summary": {
+		    	"id": "K600PKZON8",
+		    	"order": 3,
+		    	"timestamp": 1473433500,
+		    	"user_ids": ["agent1@example.com"],
+		    	"properites": {
+		    	// "Properites" object
+		    	},
+		    	"tags": ["bug_report"]
+		    },
+		    "properites": {
+		    	// "Properites" object
+		    },
+		    "access": {
+		    	// "Access" object
+		    },
+		    "is_followed": false
+	    }],
+	    "found_chats": 2340,
+	    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+	    "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
   }
 }
 ```
@@ -2704,7 +2701,7 @@ Sends an [Event](#events) object.
 | Parameter    | Required | Data type | Notes                                           |
 | ------------ | -------- | --------- | ----------------------------------------------- |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for. |
-| `properties` | Yes      | `object`  | Chat properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat properties to delete. |
 
 </Text>
 <Code>
@@ -2863,7 +2860,7 @@ Sends an [Event](#events) object.
 | ------------ | -------- | --------- | ------------------------------------------------- |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete property for. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat thread properties to delete. |
 
 </Text>
 <Code>
@@ -2943,7 +2940,7 @@ Sends an [Event](#events) object.
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
 | `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.  |
-| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat properties to set. |
 
 </Text>
 <Code>
@@ -4052,14 +4049,14 @@ Logs the Agent out.
 | **Action**             | `mark_events_as_seen`                                         |
 | **Required scopes**    | `chats--access:ro` `chats--all:ro`                            |
 | **Web API equivalent** | [`mark_events_as_seen`](../#mark-events-as-seen)              |
-| **Push message**       | [`last_seen_timestamp_updated`](#last_seen_timestamp_updated) |
+| **Push message**       | [`events_marked_as_seen`](#events_marked_as_seen) |
 
 #### Request
 
-| Parameter    | Required | Data type   |     |
-| ------------ | -------- | ----------- | --- |
-| `chat_id`    | Yes      | `string`    |     |
-| `seen_up_to` | Yes      | `UTC string`|
+| Parameter    | Required | Data type   | Notes |
+| ------------ | -------- | ----------- | ----- |
+| `chat_id`    | Yes      | `string`    |       |
+| `seen_up_to` | Yes      | `string`    | RFC 3339 date-time format |
 
 #### Response
 
@@ -4330,7 +4327,7 @@ Pushes are **server - client methods** used for keeping the application state up
 | **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
 | **Status**      | [`agent_updated`](#agent_updated) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
-| **Other**       | [`last_seen_timestamp_updated`](#last_seen_timestamp_updated) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
 
 ## Chats
 
@@ -5160,7 +5157,7 @@ With this piece of information, the client is able to figure out where it should
 | **Action**             | `incoming_sneak_peek` |
 | **Webhook equivalent** | -                     |
 
-### `last_seen_timestamp_updated`
+### `events_marked_as_seen`
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5168,7 +5165,7 @@ With this piece of information, the client is able to figure out where it should
 {
   "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
   "chat_id": "PJ0MRSHTDG",
-  "timestamp": 123456789
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
@@ -5178,8 +5175,8 @@ With this piece of information, the client is able to figure out where it should
 
 |                        |                                                                                     |
 | ---------------------- | ----------------------------------------------------------------------------------- |
-| **Action**             | `last_seen_timestamp_updated`                                                       |
-| **Webhook equivalent** | [`last_seen_timestamp_updated`](../#last_seen_timestamp_updated) |
+| **Action**             | `events_marked_as_seen`                                                       |
+| **Webhook equivalent** | [`events_marked_as_seen`](../#events_marked_as_seen) |
 
 ### `incoming_multicast`
 
