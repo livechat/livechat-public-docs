@@ -1,10 +1,15 @@
-/** @jsx jsx */ import { jsx, keyframes } from "@emotion/core";
-import { Link } from "gatsby";
+import { useState } from "react";
+/** @jsx jsx */ import { jsx, keyframes, css } from "@emotion/core";
+import { Link, navigate } from "gatsby";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon, WarningIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
-import { css } from "@emotion/core";
-import { PopperTooltip } from "@livechat/design-system";
+import {
+  PopperTooltip,
+  Dropdown,
+  DropdownList,
+  Button
+} from "@livechat/design-system";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -61,11 +66,23 @@ const MenuElementWrapper = styled.li`
   }
 `;
 
-const linkStyle = css`
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  transition: color 60ms ease-out;
+const linkCss = css`
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: none;
+    color: white;
+  }
 `;
+
+const linkStyle = {
+  borderTop: "4px solid transparent",
+  borderBottom: "4px solid transparent",
+  transition: "color 60ms ease-out"
+};
 
 const bounce = keyframes`
   from, 20%, 53%, 80%, to {
@@ -88,13 +105,11 @@ const bounce = keyframes`
   }
 `;
 
-const animatedIcon = css`
+const iconsCss = css`
   animation: ${bounce} 2s ease-out infinite;
 `;
 
-const iconStyle = css`
-  margin-right: 5px;
-`;
+const iconStyle = { marginRight: "5px" };
 
 const activeLinkStyle = color => ({
   borderBottom: `5px solid rgb(${color})`,
@@ -114,7 +129,7 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
         css={linkStyle}
         activeStyle={activeLinkStyle(color)}
       >
-        <CategoryIcon category={slug} css={iconStyle} />
+        <CategoryIcon category={slug} style={iconStyle} />
         {label}
       </Link>
     )}
@@ -131,7 +146,7 @@ const Warning = () => (
         <WarningIcon
           width={18}
           style={{ display: "block", color: "#f1bb15" }}
-          css={animatedIcon}
+          className={iconsCss}
         />
       </span>
     }
@@ -157,39 +172,86 @@ const Warning = () => (
   </PopperTooltip>
 );
 
+const firstItemStyle = {
+  marginBottom: "0",
+  borderTopLeftRadius: "5px",
+  borderTopRightRadius: "5px"
+};
+
+const lastItemStyle = {
+  marginBottom: "0",
+  borderBottomLeftRadius: "5px",
+  borderBottomRightRadius: "5px"
+};
+
 const Header = () => {
   const categories = useAllCategoriesMeta();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
+
+  const openDropdown = () => setShowDropdown(true);
+  const closeDropdown = () => setShowDropdown(false);
+  const setVersion = version => {
+    closeDropdown();
+    setSelectedItem(version);
+    navigate(`${window.location.pathname}/${version}`);
+  };
 
   return (
     <HeaderWrapper id="header">
       <LogoWrapper>
         <a href="/">
           <LiveChatLogo
-            css={css`
-              margin: 0 10px -6px 0;
-              display: block;
-            `}
+            style={{ margin: "0 10px -6px 0", display: "block" }}
             width={80}
           />
         </a>
-        <Link
-          to="/"
-          css={css`
-            color: white !important;
-            text-decoration: none;
-            font-weight: 600;
-            white-space: nowrap;
-            &:hover {
-              text-decoration: none;
-            }
-          `}
-        >
+        <Link to="/" css={linkCss}>
           Platform Docs
         </Link>
       </LogoWrapper>
+
       <MenuListWrapper>
         <MenuList>
           <Warning />
+          <div style={{ margin: "0 20px" }}>
+            <Dropdown
+              isVisible={showDropdown}
+              onClose={closeDropdown}
+              triggerRenderer={({ ref }) => (
+                <Button onClick={openDropdown} ref={ref}>
+                  {selectedItem || "Version"}
+                  <svg
+                    width="24px"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    fill="#424d57"
+                    style={{ marginLeft: "5px", marginRight: "-10px" }}
+                  >
+                    <path d="M7 10l5 5 5-5H7z"></path>
+                  </svg>
+                </Button>
+              )}
+            >
+              <DropdownList
+                items={[
+                  {
+                    itemId: 0,
+                    content: "v3.1",
+                    onItemSelect: () => setVersion("v3.1"),
+                    style: firstItemStyle
+                  },
+                  {
+                    itemId: 1,
+                    content: "v3.2",
+                    onItemSelect: () => setVersion("v3.2"),
+                    style: lastItemStyle
+                  }
+                ]}
+              />
+            </Dropdown>
+          </div>
+
           {categories.map(({ color, title, slug }) => (
             <MenuElement key={slug} color={color} label={title} slug={slug} />
           ))}
