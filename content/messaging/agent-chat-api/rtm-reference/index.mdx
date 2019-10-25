@@ -179,10 +179,11 @@ File event informs about a file being uploaded.
 | ----------------------------------------------------- | :-------: | ------------------------------------------------------------------: |
 | `content_type`                                        | required  |       Supported image types: `image/png`, `image/jpeg`, `image/gif` |
 | `created_at`                                          | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `type`                                                | required  | `file`                                                              |
 | `custom_id`                                           | optional  |                                                                   - |
 | `properties`                                          | optional  |                                                                   - |
 | `recipients`                                          | required  |                          Possible values: `all` (default), `agents` |
-| `system_message_type`                                 | required  |                                                                   - |
+| `url`                                                 | required  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/agent-chat-api/#upload-file).|
 | `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                                     Only for images |
 
 </Text>
@@ -194,14 +195,14 @@ File event informs about a file being uploaded.
   "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
   "custom_id": "31-0C-1C-07-DB-16",
   "type": "file",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "recipients": "all",
   "properties": {
     // "Properties" object
   },
   "name": "image25.png", // generated server-side
-  "url": "https://domain.com/asdsfdsf.png",
+  "url": "https://domain.com/image25.png",
   "thumbnail_url": "https://domain.com/thumbnail.png", // generated server-side
   "thumbnail2x_url": "https://domain.com/thumbnail2x.png", // generated server-side
   "content_type": "image/png", // generated server-side
@@ -220,20 +221,22 @@ File event informs about a file being uploaded.
 <Section>
 <Text>
 
-Filled form event contains data from a form.
+Filled form event contains data from a form (prechat or postchat survey).
 
-| Field                                   | Req./Opt |                                                                Note |
+| Field                                   | Req./Opt |                                                               Notes |
 | --------------------------------------- | :------: | ------------------------------------------------------------------: |
-| `custom_id`                             | optional |                                                                     |
 | `created_at`                            | required | Date & time format with a resolution of microseconds, `UTC string`. |
-| `properties`                            | optional |                                                                     |
-| `recipients`                            | required |                          Possible values: `all` (default), `agents` |
-| `name`, `email`, `question`, `textarea` | optional |                                    For open questions (text answer) |
-| `radio`, `select`                       | optional |                                         For single-choice questions |
-| `checkbox`                              | optional |                                       For multiple-choice questions |
-| `group_chooser`                         | optional |                                          For group-choice questions |
+| `recipients`                            | required | Possible values: `all` (default), `agents`                          |
+| `type`                                  | required | `filled_form`                                                       |
+| `checkbox`                              | optional | For multiple-choice questions                                       |
+| `custom_id`                             | optional |                                                                     |
+| `email`, `name`, `question`, `textarea` | optional | For open questions (text answer)                                    |
+| `group_chooser`                         | optional | For group-choice questions                                          |    
+| `properties`                            | optional | The [Properties](#properties) object                                |
+| `radio`, `select`                       | optional | For single-choice questions                                         |  
 
 </Text>
+
 <Code>
 <CodeResponse title={'Sample Filled form event'}>
 
@@ -242,7 +245,7 @@ Filled form event contains data from a form.
 	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
 	"custom_id": "31-0C-1C-07-DB-16",
 	"type": "filled_form",
-	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
 	"created_at": "2017-10-12T15:19:21.010200Z",  // generated server-side
 	"recipients": "all",
 	"properties": {
@@ -306,6 +309,7 @@ Message event contains a text message to other chat users.
 | `created_at`     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `recipients`     | required  | Possible values: `all` (default), `agents`                          |
 | `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
+| `type`           | required  | `message`                                                           |
 | `custom_id`      | optional  |                                                                     |
 | `postback`       | optional  | Appears in the message event only when triggered by a rich message. |
 | `postback.type`  | optional  | Required only if `postback.value` is present.                       |
@@ -321,7 +325,7 @@ Message event contains a text message to other chat users.
   "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
   "custom_id": "31-0C-1C-07-DB-16",
   "type": "message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "text": "hello there",
   "postback": {
@@ -353,7 +357,8 @@ Rich message event contains a rich message data structure.
 | -------------------------------- | :-------: | ------------------------------------------------------------------: |
 | `created_at`                     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `recipients`                     | required  | Possible values: `all` (default), `agents` |
-| `template_id`                    | required  | Describes how the event should be presented in an app. | describes how the event should be presented in an app |
+| `template_id`                    | required  | Describes how the event should be presented in an app.              |
+| `type`                           | required  | `rich_message`                                                      | 
 | `custom_id`                      | optional  |                                                                     |
 | `elements`                       | optional  | May contain 1 - 10 `element` objects.                               |
 | `elements.buttons`               | optional  | `buttons` may contain 1 - 11 `button` objects.                      |
@@ -377,7 +382,7 @@ Rich message event contains a rich message data structure.
   "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
   "custom_id": "31-0C-1C-07-DB-16",
   "type": "rich_message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "recipients": "all",
   "properties": {
@@ -437,10 +442,12 @@ Custom event is an event with customizable payload.
 
 | Field        | Req./Opt. |                                                                Note |
 | ------------ | :-------: | ------------------------------------------------------------------: |
+| `recipients` | required  |                          Possible values: `all` (default), `agents` |
+| `type`       | required  | `custom`                                                            |
 | `custom_id`  | optional  |                                                                     |
 | `created_at` | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `properties` | optional  |                                                                     |
-| `recipients` | required  |                          Possible values: `all` (default), `agents` |
+
 
 </Text>
 <Code>
@@ -451,7 +458,7 @@ Custom event is an event with customizable payload.
   "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
   "custom_id": "31-0C-1C-07-DB-16",
   "type": "custom",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "content": {
     "custom": {
@@ -476,12 +483,13 @@ Custom event is an event with customizable payload.
 
 System message event is native system event sent in specific situations.
 
-| Field                 | Req./Opt. |                                                                                          Note |
-| --------------------- | :-------: | --------------------------------------------------------------------------------------------: |
-| `custom_id`           | optional  |                                                                                             - |
-| `created_at`          | required  |                           Date & time format with a resolution of microseconds, `UTC string`. |
-| `recipients`          | required  | Possible values: `all` (default for system events), `agents` (for events sent via send_event) |
-| `system_message_type` | required  |                                                                                             - |
+| Field                 | Req./Opt. |                                                                                          Notes |
+| --------------------- | :-------: | ---------------------------------------------------------------------------------------------: |
+| `created_at`          | required  |                           Date & time format with a resolution of microseconds, `UTC string`.  |
+| `recipients`          | required  | Possible values: `all` (default for system events), `agents` (for events sent via `send_event`)|
+| `type`                | required  | `system_message`                                                                               |
+| `system_message_type` | required  |                                                                                                |
+| `custom_id`           | optional  |                                                                                                |
 
 Here's the list of all system messages you might come across:
 
@@ -736,7 +744,7 @@ Here's the list of all system messages you might come across:
   "name": "Support Team",
   "email": "agent1@example.com",
   "present": true,
-  "events_seen_up_to": 1473433500,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "routing_status": "accepting_chats"
 }
@@ -759,7 +767,7 @@ Here's the list of all system messages you might come across:
   "name": "Support Team",
   "email": "agent1@example.com",
   "present": true,
-  "events_seen_up_to": 1473433500,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "routing_status": "accepting_chats",
   "permission": "administrator"
@@ -817,7 +825,7 @@ Here's the list of all system messages you might come across:
   "customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
   "created_at": "2017-10-11T15:19:21.010200Z",
   "present": true, // optional, applies only to customer located in chat object
-  "events_seen_up_to": 1473433500 // optional, applies only to customer located in chat object
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z" 
 }
 ```
 
@@ -825,17 +833,17 @@ Here's the list of all system messages you might come across:
 
 | Field                            | Req./Opt. |                                     Note |
 | -------------------------------- | :-------: | ---------------------------------------: |
-| `agent_last_event_created_at`    | optional  |                                        - |
-| `avatar`                         | optional  |                                        - |
-| `customer_last_event_created_at` | optional  |                                        - |
-| `created_at`                     | optional  |                                        - |
-| `email`                          | optional  |                                        - |
+| `agent_last_event_created_at`    | optional  |                                          |
+| `avatar`                         | optional  |                                          |
+| `customer_last_event_created_at` | optional  |                                          |
+| `created_at`                     | optional  |                                          |
+| `email`                          | optional  |                                          |
 | `fields`                         | optional  | Isn't present when the chat is archived. |
-| `name`                           | optional  |                                        - |
-| `last_seen_timestamp`            | optional  |                                        - |
-| `last_visit`                     | optional  |                                        - |
-| `present`                        | optional  |                                        - |
-| `statistics`                     | optional  |                                        - |
+| `name`                           | optional  |                                          |
+| `events_seen_up_to`              | optional  | RFC 3339 datetime string                 |
+| `last_visit`                     | optional  |                                          |
+| `present`                        | optional  |                                          |
+| `statistics`                     | optional  |                                          |
 
 # Other common structures
 
@@ -1139,40 +1147,6 @@ There's only one value allowed for a single property.
 
 </CodeSample>
 
-<!-- > **`get_chats_summary`** sample **request** with optional params
-
-```json
-{
-	"request_id": "12345", // optional
-	"action": "get_chats_summary",
-	"payload": {
-		"filters": {
-		"query": "search keyword",
-		"agent_ids": ["agent1@example.com"],
-		"date_from": "2016-09-01",
-		"date_to": "2016-10-01",
-		"properties": {
-			"rating": {
-				"score": {
-					"values": [1]
-				}
-			},
-			"rating": {
-				"comment": {
-					"exists": true
-				}
-			}
-		}
-	},
-	"pagination": {
-		"page": 1,
-		"limit": 25
-				}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-```  -->
-
 <CodeResponse>
 
 ```json
@@ -1182,23 +1156,53 @@ There's only one value allowed for a single property.
   "type": "response",
   "success": true,
   "payload": {
-    "chats": [
-      {
-        "chat": {
-          "id": "PJ0MRSHTDG",
-          "users": [
-            // array of "User" objects
-          ],
-          "thread": {
-            // "Thread" object
-          }
-        }
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "total": 3
-    }
+    	"chats_summary": [{
+		    "id": "PJ0MRSHTDG",
+		    "users": [
+		    	// array of "User" objects
+		    ],
+		    "last_event_per_type": { // last event of each type in chat
+		    	"message": {
+		    		"thread_id": "K600PKZON8",
+		    		"thread_order": 3,
+		    		"event": {
+		    			// "restricted_access": true
+		    			// or
+		    			// "Event > Message" object
+		    		}
+		    	},
+		    	"system_message": {
+		    		"thread_id": "K600PKZON6",
+		    		"thread_order": 1,
+		    		"event": {
+		    			// "restricted_access": true
+		    			// or
+		    			// "Event > System message" object
+		    		}
+		    	},
+		    	...
+		    },
+		    "last_thread_summary": {
+		    	"id": "K600PKZON8",
+		    	"order": 3,
+		    	"timestamp": 1473433500,
+		    	"user_ids": ["agent1@example.com"],
+		    	"properites": {
+		    	// "Properites" object
+		    	},
+		    	"tags": ["bug_report"]
+		    },
+		    "properites": {
+		    	// "Properites" object
+		    },
+		    "access": {
+		    	// "Access" object
+		    },
+		    "is_followed": false
+	    }],
+	    "found_chats": 2340,
+	    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+	    "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
   }
 }
 ```
@@ -2457,7 +2461,7 @@ Sends an [Event](#events) object.
 | **Action**             | `send_event`                                                                             |
 | **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **Web API equivalent** | [`send_event`](../#send-event)                                                           |
-| **Push message**       | -                                                                                        |
+| **Push message**       | [`incoming_event`](#incoming_event)                                                                                        |
 
 #### Request
 
@@ -2704,7 +2708,7 @@ Sends an [Event](#events) object.
 | Parameter    | Required | Data type | Notes                                           |
 | ------------ | -------- | --------- | ----------------------------------------------- |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for. |
-| `properties` | Yes      | `object`  | Chat properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat properties to delete. |
 
 </Text>
 <Code>
@@ -2863,7 +2867,7 @@ Sends an [Event](#events) object.
 | ------------ | -------- | --------- | ------------------------------------------------- |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete property for. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat thread properties to delete. |
 
 </Text>
 <Code>
@@ -2943,7 +2947,7 @@ Sends an [Event](#events) object.
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
 | `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.  |
-| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat properties to set. |
 
 </Text>
 <Code>
@@ -4052,14 +4056,14 @@ Logs the Agent out.
 | **Action**             | `mark_events_as_seen`                                         |
 | **Required scopes**    | `chats--access:ro` `chats--all:ro`                            |
 | **Web API equivalent** | [`mark_events_as_seen`](../#mark-events-as-seen)              |
-| **Push message**       | [`last_seen_timestamp_updated`](#last_seen_timestamp_updated) |
+| **Push message**       | [`events_marked_as_seen`](#events_marked_as_seen) |
 
 #### Request
 
-| Parameter    | Required | Data type   |     |
-| ------------ | -------- | ----------- | --- |
-| `chat_id`    | Yes      | `string`    |     |
-| `seen_up_to` | Yes      | `UTC string`|
+| Parameter    | Required | Data type   | Notes |
+| ------------ | -------- | ----------- | ----- |
+| `chat_id`    | Yes      | `string`    |       |
+| `seen_up_to` | Yes      | `string`    | RFC 3339 date-time format |
 
 #### Response
 
@@ -4330,7 +4334,7 @@ Pushes are **server - client methods** used for keeping the application state up
 | **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
 | **Status**      | [`agent_updated`](#agent_updated) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
-| **Other**       | [`last_seen_timestamp_updated`](#last_seen_timestamp_updated) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
 
 ## Chats
 
@@ -5160,7 +5164,7 @@ With this piece of information, the client is able to figure out where it should
 | **Action**             | `incoming_sneak_peek` |
 | **Webhook equivalent** | -                     |
 
-### `last_seen_timestamp_updated`
+### `events_marked_as_seen`
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5168,7 +5172,7 @@ With this piece of information, the client is able to figure out where it should
 {
   "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
   "chat_id": "PJ0MRSHTDG",
-  "timestamp": 123456789
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
@@ -5178,8 +5182,8 @@ With this piece of information, the client is able to figure out where it should
 
 |                        |                                                                                     |
 | ---------------------- | ----------------------------------------------------------------------------------- |
-| **Action**             | `last_seen_timestamp_updated`                                                       |
-| **Webhook equivalent** | [`last_seen_timestamp_updated`](../#last_seen_timestamp_updated) |
+| **Action**             | `events_marked_as_seen`                                                       |
+| **Webhook equivalent** | [`events_marked_as_seen`](../#events_marked_as_seen) |
 
 ### `incoming_multicast`
 

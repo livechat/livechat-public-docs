@@ -71,10 +71,11 @@ File event informs about a file being uploaded.
 | ----------------------------------------------------- | :-------: | ------------------------------------------------------------------: |
 | `content_type`                                        | required  |       Supported image types: `image/png`, `image/jpeg`, `image/gif` |
 | `created_at`                                          | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `type`                                                | required  | `file`                                                              |
 | `custom_id`                                           | optional  |                                                                   - |
 | `properties`                                          | optional  |                                                                   - |
 | `recipients`                                          | required  |                          Possible values: `all` (default), `agents` |
-| `system_message_type`                                 | required  |                                                                   - |
+| `url`                                                 | required  |   Has to point to the LiveChat CDN.It's recommended to use the URL returned by [`upload_file`](#upload-file).|
 | `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                                     Only for images |
 
 </Text>
@@ -89,13 +90,13 @@ File event informs about a file being uploaded.
   "custom_id": "31-0C-1C-07-DB-16",
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "type": "file",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "recipients": "all",
   "properties": {
     // "Properties" object
   },
   "name": "image25.png", // generated server-side
-  "url": "https://domain.com/asdsfdsf.png",
+  "url": "https://domain.com/image25.png",
   "thumbnail_url": "https://domain.com/thumbnail.png", // generated server-side
   "thumbnail2x_url": "https://domain.com/thumbnail2x.png", // generated server-side
   "content_type": "image/png", // generated server-side
@@ -117,19 +118,20 @@ File event informs about a file being uploaded.
 
 <Text>
 
-Filled form event contains data from a form.
+Filled form event contains data from a form (prechat or postchat survey).
 
-| Field                                   | Req./Opt |                                                                Note |
+| Field                                   | Req./Opt |                                                               Notes |
 | --------------------------------------- | :------: | ------------------------------------------------------------------: |
-| `custom_id`                             | optional |                                                                   - |
 | `created_at`                            | required | Date & time format with a resolution of microseconds, `UTC string`. |
-| `properties`                            | optional |                                                                   - |
-| `recipients`                            | required |                          Possible values: `all` (default), `agents` |
-| `name`, `email`, `question`, `textarea` | optional |                                    For open questions (text answer) |
-| `radio`, `select`                       | optional |                                         For single-choice questions |
-| `checkbox`                              | optional |                                       For multiple-choice questions |
-| `group_chooser`                         | optional |                                          For group-choice questions |
-
+| `recipients`                            | required | Possible values: `all` (default), `agents` |
+| `type`                                  | required | `filled_form`                                                       |
+| `checkbox`                              | optional | For multiple-choice questions |
+| `custom_id`                             | optional |                                                                     |
+| `email`, `name`, `question`, `textarea` | optional | For open questions (text answer) |
+| `group_chooser`                         | optional | For group-choice questions |
+| `properties`                            | optional | The [Properties](#properties) object |
+| `radio`, `select`                       | optional | For single-choice questions |
+  
 </Text>
 
 <Code>
@@ -142,7 +144,7 @@ Filled form event contains data from a form.
 	"custom_id": "31-0C-1C-07-DB-16",
 	"created_at": "2017-10-12T15:19:21.010200Z",  // generated server-side
 	"type": "filled_form",
-	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
 	"recipients": "all",
 	"properties": {
 		// "Properties" object
@@ -208,6 +210,7 @@ Message event contains text message to other chat users.
 | `created_at`     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `recipients`     | required  | Possible values: `all` (default), `agents`                          |
 | `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
+| `type`           | required  | `message`                                                           |
 | `custom_id`      | optional  |                                                                     |
 | `postback`       | optional  | Appears in the message event only when triggered by a rich message. |
 | `postback.type`  | optional  | Required only if `postback.value` is present.                       |
@@ -226,7 +229,7 @@ Message event contains text message to other chat users.
   "custom_id": "31-0C-1C-07-DB-16",
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "type": "message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "text": "hello there",
   "postback": {
     "id": "action_call",
@@ -260,7 +263,8 @@ Rich message event contains rich message data structure.
 | -------------------------------- | :-------: | ------------------------------------------------------------------: |
 | `created_at`                     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `recipients`                     | required  | Possible values: `all` (default), `agents` |
-| `template_id`                    | required  | Describes how the event should be presented in an app. | describes how the event should be presented in an app |
+| `template_id`                    | required  | Describes how the event should be presented in an app. | 
+| `type`                           | required  | `rich_message`                                                      |
 | `custom_id`                      | optional  |                                                                     |
 | `elements`                       | optional  | May contain 1 - 10 `element` objects.                               |
 | `elements.buttons`               | optional  | `buttons` may contain 1 - 11 `button` objects.                      |
@@ -279,7 +283,7 @@ Rich message event contains rich message data structure.
 
 <Code>
 
-<CodeResponse title={'Sample Message event'}>
+<CodeResponse title={'Sample Rich message event'}>
 
 ```json
 {
@@ -287,7 +291,7 @@ Rich message event contains rich message data structure.
   "custom_id": "31-0C-1C-07-DB-16",
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "type": "rich_message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "recipients": "all",
   "properties": {
     // "Properties" object
@@ -349,16 +353,17 @@ Custom event is an event with customizable payload.
 
 | Field        | Req./Opt. |                                                                Note |
 | ------------ | :-------: | ------------------------------------------------------------------: |
+| `recipients` | required  |                          Possible values: `all` (default), `agents` |
+| `type`       | required  | `custom`                                                            |
 | `custom_id`  | optional  |                                                                   - |
 | `created_at` | required  | Date & time format with a resolution of microseconds, `UTC string`. |
 | `properties` | optional  |                                                                   - |
-| `recipients` | required  |                          Possible values: `all` (default), `agents` |
 
 </Text>
 
 <Code>
 
-<CodeResponse title={'Sample Rich message event'}>
+<CodeResponse title={'Sample Custom event'}>
 
 ```json
 {
@@ -366,7 +371,7 @@ Custom event is an event with customizable payload.
   "custom_id": "31-0C-1C-07-DB-16",
   "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "type": "custom",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
   "content": {
     "custom": {
       "nested": "json"
@@ -393,12 +398,13 @@ Custom event is an event with customizable payload.
 
 System message event is a native system event sent in specific situations.
 
-| Field                 | Req./Opt. |                                                                                                Note |
-| --------------------- | :-------: | --------------------------------------------------------------------------------------------------: |
-| `custom_id`           | optional  |                                                                                                   - |
-| `created_at`          | required  |                                 Date & time format with a resolution of microseconds, `UTC string`. |
-| `recipients`          | required  | Possible values: `all` (default for system events), `agents` (for the events sent via `send_event`) |
-| `system_message_type` | required  |                                                                                                   - |
+| Field                 | Req./Opt. |                                                                                          Notes |
+| --------------------- | :-------: | ---------------------------------------------------------------------------------------------: |
+| `created_at`          | required  |                           Date & time format with a resolution of microseconds, `UTC string`.  |
+| `recipients`          | required  | Possible values: `all` (default for system events), `agents` (for events sent via `send_event`)|
+| `type`                | required  | `system_message`                                                                               |
+| `system_message_type` | required  |                                                                                                |
+| `custom_id`           | optional  |                                                                                                |
 
 </Text>
 
@@ -646,16 +652,16 @@ Here's the list of all system messages you might come across as a Customer:
     "custom field name": "custom field value"
   },
   "present": true,
-  "events_seen_up_to": 1473433500
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
 </CodeResponse>
 
-| Field    | Req./Opt. | Note |
+| Field    | Req./Opt. |      |
 | -------- | :-------: | ---: |
-| `avatar` | optional  |    - |
-| `fields` | optional  |    - |
+| `avatar` | optional  |      |
+| `fields` | optional  |      |
 
 ## Agent
 
@@ -668,7 +674,7 @@ Here's the list of all system messages you might come across as a Customer:
   "name": "Support Team",
   "avatar": "cdn.livechatinc.com/avatars/1.png",
   "present": true,
-  "events_seen_up_to": 1473433500
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
@@ -918,7 +924,7 @@ curl -X POST \
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Customers**  | [`update_customer`](#update-customer) [`set_customer_fields`](#set-customer-fields)                                                                                                                                                                                                                                                                     |
 | **Status**     | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                               |
-| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen)                                                                                                                                                                                               |
+| **Other**      | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen)                                                                                                                                                                                               |
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/521935b4232b6f924644#?env%5BLiveChat%20Web%20API%5D=W3sia2V5IjoiYXBpX3ZlcnNpb24iLCJ2YWx1ZSI6InYzLjEiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjY2Vzc190b2tlbiIsInZhbHVlIjoiZGFsOlRMSjdRc3RYUXNTeHVWOGI1aDFSZmciLCJlbmFibGVkIjp0cnVlfV0=)
 
@@ -956,7 +962,7 @@ It returns [summaries](#chat-summary) of the chats a Customer participated in.
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
 ```
@@ -1016,7 +1022,7 @@ curl -X POST \
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "offset": 0,
@@ -1061,7 +1067,7 @@ curl -X POST \
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
 		  "chat_id": "PJ0MRSHTDG"
@@ -1096,20 +1102,6 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`get_chat_threads_summary`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PJ0MRSHTDG",
-      "offset": 0,
-      "limit": 100
-      }'
-``` -->
-
 <Section>
 
 <Text>
@@ -1139,8 +1131,8 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
+  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads?license_id=<license_id> \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
@@ -1224,7 +1216,7 @@ Starts a chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/start_chat?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
@@ -1246,44 +1238,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`start_chat`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat": {
-		    "access": {
-		      "group_ids": [1]
-		    },
-		  "properties": {
-		  	"source": {
-		  		"type": "facebook"
-		  	}
-		  },
-		  "thread": {
-		  	"events": [{
-		  		"type": "message",
-		  		"custom_id": "31-0C-1C-07-DB-16",
-		  		"text": "hello there"
-		  	}, {
-		  		"type": "system_message",
-		  		"custom_id": "31-0C-1C-07-DB-16",
-		  		"text": "hello there"
-		  	}],
-		  	"properties": {
-		  		"source": {
-		  			"type": "facebook"
-		    		}
-		    	}
-	      },
-      "continuous": true
-        }
-      }'
-``` -->
 
 <Section>
 
@@ -1329,7 +1283,7 @@ Used to restart an archived chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/activate_chat?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1354,46 +1308,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`activate_chat`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/<action>?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat": {
-        "id": "PJ0MRSHTDG",
-        "order": 343544565,
-        "access": {
-          "group_ids": [1]
-        },
-        "properties": {
-          "source": {
-            "type": "facebook"
-          }
-        },
-        "thread": {
-          "events": [{
-            "type": "message",
-            "custom_id": "31-0C-1C-07-DB-16",
-            "text": "hello there"
-          }, {
-            "type": "system_message",
-            "custom_id": "31-0C-1C-07-DB-16",
-            "text": "hello there"
-          }],
-          "properties": {
-            "source": {
-              "type": "facebook"
-                    }
-                  }
-                }
-              }
-            }
-      }'
-```-->
 
 <Section>
 
@@ -1429,7 +1343,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/close_thread??license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.1/customer/action/close_thread?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1549,7 +1463,7 @@ Uploads a file to the server as a temporary file. It returns a URL that expires 
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/upload_filelicense_id=<license_id> \
+  https://api.livechatinc.com/v3.1/customer/action/upload_file?license_id=<license_id> \
   -H 'Authorization: Bearer <customer_access_token>' \
   -H 'Content-Type: multipart/form-data; boundary=--------------------------210197025774705439685896' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
@@ -1609,7 +1523,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
@@ -1627,24 +1541,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`send_rich_message_postback`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PJ0MRSHTDG",
-        "thread_id": "K600PKZON8",
-        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-        "postback": {
-            "id": "Method URL_yes",
-            "toggled": true
-          }
-      }'
-``` -->
 
 <Section>
 
@@ -1680,7 +1576,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
@@ -1694,19 +1590,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`send_sneak_peek`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PJ0MRSHTDG",
-		  "sneak_peek_text": "hello world"
-      }'
-``` -->
 
 ## Properties
 
@@ -1744,7 +1627,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
@@ -1762,24 +1645,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`update_chat_properties`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-              }
-          }
-      }'
-``` -->
 
 <Section>
 
@@ -1806,7 +1671,7 @@ curl -X POST \
 | Parameter    | Required | Data type | Notes                                            |
 | ------------ | -------- | --------- | ------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete properties of. |
-| `properties` | Yes      | `object`  | Chat properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat properties to delete. |
 
 #### Response
 
@@ -1821,7 +1686,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
@@ -1839,24 +1704,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`delete_chat_properties`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
-              ]
-          }
-      }'
-``` -->
 
 <Section>
 
@@ -1878,7 +1725,7 @@ curl -X POST \
 | ------------ | -------- | --------- | ------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
-| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat properties to set. |
 
 #### Response
 
@@ -1893,7 +1740,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
@@ -1912,25 +1759,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`update_chat_thread_properties`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PW94SJTGW6",
-      "thread_id": "K600PKZON8",
-      "properties": {
-          "bb9e5b2f1ab480e4a715977b7b1b4279": {
-              "score": 10,
-              "comment": "Thank you!"
-              }
-          }
-      }'
-``` -->
 
 <Section>
 
@@ -1958,7 +1786,7 @@ curl -X POST \
 | ------------ | -------- | --------- | ------------------------------------------------------ |
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+| `properties` | Yes      | `object`  | Chat thread properties to delete. |
 
 #### Response
 
@@ -1973,7 +1801,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
@@ -1992,25 +1820,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`delete_chat_thread_properties`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PW94SJTGW6",
-      "thread_id": "K600PKZON8",
-      "properties": {
-          "bb9e5b2f1ab480e4a715977b7b1b4279": [
-              "score",
-              "comment"
-              ]
-          }
-      }'
-``` -->
 
 <Section>
 
@@ -2048,7 +1857,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PW94SJTGW6",
@@ -2068,26 +1877,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`update_event_properties`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PW94SJTGW6",
-      "thread_id": "K600PKZON8",
-      "event_id": "2_EW2WQSA8",
-      "properties": {
-          "bb9e5b2f1ab480e4a715977b7b1b4279": {
-              "score": 10,
-              "comment": "Thank you!"
-              }
-          }
-      }'
-``` -->
 
 <Section>
 
@@ -2125,7 +1914,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PWLW03ICW7",
@@ -2145,26 +1934,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`delete_event_properties`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PWLW03ICW7",
-      "thread_id": "PWNWW5N6A8",
-      "event_id": "PWNWW5N6A8_1",
-      "properties": {
-          "rating": [
-              "score",
-              "comment"
-              ]
-          }
-      }'
-``` -->
 
 ## Customers
 
@@ -2189,7 +1958,7 @@ curl -X POST \
 | `name`    | No       | `string`  |                                  |
 | `email`   | No       | `string`  |                                  |
 | `avatar`  | No       | `string`  | The URL of the Customer's avatar |
-| `fields`  | No       | `object`  | A `"key": "value"` object        |
+| `fields`  | No       | `object`  | `key: value` format        |
 
 At least one optional parameter needs to be included in the request.
 
@@ -2206,7 +1975,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "name": "John Doe"
@@ -2219,22 +1988,6 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`update_customer`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "name": "John Doe",
-      "avatar": "https://domain.com/avatars/1.jpg",
-      "fields": {
-        "score": "low"
-          }
-      }'
-```-->
-
 <Section>
 
 <Text>
@@ -2246,14 +1999,14 @@ curl -X POST \
 |                        |                                                                        |
 | ---------------------- | ---------------------------------------------------------------------- |
 | **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/set_customer_fields` |
-| **RTM API equivalent** | [`get_customers`](rtm-reference/#get-customers)                        |
+| **RTM API equivalent** | [`set_customer_fields`](rtm-reference/#set-customer-fields)                        |
 | **Webhook**            | [`customer_updated`](#customer_updated)                                |
 
 #### Request
 
-| Parameter | Required | Data type | Notes                |
+| Parameter | Required | Data type |  Notes              |
 | --------- | -------- | --------- | -------------------- |
-| `fields`  | Yes      | `string`  | A `key:value` object |
+| `fields`  | Yes      | `object`  | `key:value` format |
 
 Users Agent and referrer are updated by default using the browser’s headers.
 
@@ -2270,7 +2023,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "fields": {
@@ -2284,20 +2037,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`set_customer_fields`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "fields": {
-		    "company_size": "10-100"
-      		}
-      }'
-```-->
 
 ## Status
 
@@ -2322,7 +2061,7 @@ curl -X POST \
 | `all`     | No       | `bool`    | If set to `true`, you will get statuses of all the groups. |
 | `groups`  | No       | `array`   | A table of groups' IDs                                     |
 
-At least one optional parameter needs to be included in the request.
+One of the optional parameters needs to be included in the request.
 
 #### Response
 
@@ -2343,7 +2082,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "all": true
@@ -2372,18 +2111,6 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`get_groups_status`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "groups": [1, 2, 3, 4]
-      }'
-```-->
-
 ## Other
 
 <Section>
@@ -2404,9 +2131,9 @@ Customer can use this method to trigger checking if [goals](https://www.livechat
 
 #### Request
 
-| Parameter         | Required | Data type |     |
-| ----------------- | -------- | --------- | --- |
-| `customer_fields` | Yes      | `string`  |     |
+| Parameter         | Required | Data type |  Notes   |
+| ----------------- | -------- | --------- | -------- |
+| `customer_fields` | Yes      | `object`  | `key:value` format |
 | `group_id`        | Yes      | `number`  |     |
 | `page_url`        | Yes      | `string`  |     |
 
@@ -2423,15 +2150,15 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
-      "page_url": "https://mypage.com",
-      "customer_fields": {
-        "field1": "value1"
+        "page_url": "https://mypage.com",
+        "customer_fields": {
+            "field1": "value1"
 	      },
 	    "group_id": 0
-      }'
+}'
 ```
 
 </CodeSample>
@@ -2440,27 +2167,13 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`check_goals`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "page_url": "https://mypage.com",
-      "customer_fields": {
-        "field1": "value1"
-	      },
-	    "group_id": 0
-      }'
-``` -->
-
 <Section>
 
 <Text>
 
 ### Get Form
+
+Returns an empty ticket form of a <a href="https://www.livechatinc.com/help/chat-surveys/" target="_blank">prechat or postchat survey</a>.
 
 #### Specifics
 
@@ -2479,14 +2192,11 @@ curl -X POST \
 
 #### Response
 
-| Parameter                         | Notes                                                                              |     |     |
-| --------------------------------- | ---------------------------------------------------------------------------------- | --- | --- |
-| `form`                            | If form is disabled, the `form` object won't be returned in the response.          |     |     |
-| `headers`                         | For headers; the field has no `answer` and is not sent in the `filled_form` event. |     |     |
-| `name, email, question, textarea` | For open questions (text area)                                                     |     |     |
-| `radio, select, checkbox`         | For single/multiple-choice questions                                               |     |     |
-| `group_chooser`                   | For group-choice questions                                                         |     |     |
-| `rating`                          | For rating; the field isn't sent in the `filled_form` event.                       |     |     |
+| Parameter  | Notes |
+| ---------- | -------- | 
+| `enabled`  |  If `enabled: false`, the `form` object is not returned. Prechat/postchat survey disabled in the LiveChat Agent App UI. |
+| `header`   | For headers; the field has no `answer`, therefore is not sent in the [Filled form](#filled-form) event. |    
+| `rating`   | For rating; the field has no `answer`, therefore is not sent in the [Filled form](#filled-form) event. |
 
 </Text>
 
@@ -2497,7 +2207,7 @@ curl -X POST \
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "group_id": 0,
@@ -2543,19 +2253,6 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`get_form`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "group_id": 0,
-		  "type": "prechat"
-      }'
-```-->
-
 <Section>
 
 <Text>
@@ -2581,7 +2278,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
 ```
@@ -2608,16 +2305,6 @@ curl -X POST \
 </Code>
 
 </Section>
-
-<!-- > **`get_predicted_agent`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{}'
-``` -->
 
 <Section>
 
@@ -2650,7 +2337,7 @@ It returns the info on a given URL.
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "url": "https://livechatinc.com"
@@ -2678,18 +2365,6 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`get_url_details`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "url": "https://livechatinc.com"
-      }'
-``` -->
-
 <Section>
 
 <Text>
@@ -2702,14 +2377,14 @@ curl -X POST \
 | ---------------------- | ---------------------------------------------------------------------- |
 | **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen` |
 | **RTM API equivalent** | [`mark_events_as_seen`](rtm-reference/#mark-events-as-seen)            |
-| **Webhook**            | [`last_seen_timestamp_updated`](#last_seen_timestamp_updated)          |
+| **Webhook**            | [`events_marked_as_seen`](#events_marked_as_seen)          |
 
 #### Request
 
-| Parameter   | Required | Data type |     |
-| ----------- | -------- | --------- | --- |
-| `chat_id`   | Yes      | `string`  |     |
-| `timestamp` | No       | `number`  |     |
+| Parameter   | Required | Data type | Notes |
+| ----------- | -------- | --------- | ----- |
+| `chat_id`   | Yes      | `string`  |       |
+| `seen_up_to` | Yes      | `string`  | RFC 3339 date-time format|
 
 #### Response
 
@@ -2724,7 +2399,7 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   'https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
+  -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
@@ -2738,18 +2413,6 @@ curl -X POST \
 
 </Section>
 
-<!-- > **`mark_events_as_seen`** sample **request** with optional params
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen?license_id=<license_id>' \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "chat_id": "PJ0MRSHTDG",
-      "seen_up_to": "2017-10-12T15:19:21.010200Z"
-      }'
-``` -->
 
 # Webhooks
 
@@ -2762,7 +2425,7 @@ Webhooks notify you when specific events are triggered. Webhooks equivalents in 
 | **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
-| **Other**       | [`last_seen_timestamp_updated`](#last_seen_timestamp_updated)                                                                                                                                                                                                                                                                                                       |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                                       |
 
 ## Chats
 
@@ -3197,7 +2860,7 @@ Webhooks notify you when specific events are triggered. Webhooks equivalents in 
 
 ## Other
 
-### `last_seen_timestamp_updated`
+### `events_marked_as_seen`
 
 <CodeResponse title={'Sample webhook payload'}>
 
@@ -3205,8 +2868,7 @@ Webhooks notify you when specific events are triggered. Webhooks equivalents in 
 {
   "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
   "chat_id": "PJ0MRSHTDG",
-  "thread_id": "K600PKZON8",
-  "timestamp": 123456789
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
@@ -3216,8 +2878,8 @@ Webhooks notify you when specific events are triggered. Webhooks equivalents in 
 
 |                     |                                                                                        |
 | ------------------- | -------------------------------------------------------------------------------------- |
-| **Action**          | `last_seen_timestamp_updated`                                                          |
-| **Push equivalent** | [`last_seen_timestamp_updated`](rtm-reference/#last_seen_timestamp_updated) |
+| **Action**          | `events_marked_as_seen`                                                          |
+| **Push equivalent** | [`events_marked_as_seen`](rtm-reference/#events_marked_as_seen) |
 
 # Contact us
 
