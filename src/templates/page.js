@@ -41,8 +41,8 @@ export default ({ data: { mdx } }) => {
       category,
       desc,
       subcategory,
-      slug: customSlug
-      // apiVersion
+      slug: customSlug,
+      apiVersion: currentApiVersion
     },
     fields: { slug },
     parent: { modifiedTime }
@@ -59,6 +59,7 @@ export default ({ data: { mdx } }) => {
             currentTitle={title}
             category={category}
             subcategory={subcategory}
+            currentApiVersion={currentApiVersion}
           />
         </LeftColumn>
         <MiddleColumn>

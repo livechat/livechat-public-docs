@@ -27,7 +27,7 @@ const generatePathsMap = (items, acc = {}) => {
   return acc;
 };
 
-export default (category, currentSlug) => {
+export default (category, currentSlug, currentApiVersion) => {
   const byCategory = useAllArticlesGroupedByCategory().filter(item => {
     if (category) {
       return item.fieldValue === category;
@@ -47,8 +47,11 @@ export default (category, currentSlug) => {
       apiVersion: node.frontmatter.apiVersion,
       article: true
     }))
-    // filtering out non-default versions (dirty)
-    .filter(({ apiVersion }) => !apiVersion)
+    // filtering out non-current api versions (dirty)
+    .filter(
+      ({ apiVersion }) =>
+        apiVersion === currentApiVersion || apiVersion === null
+    )
     // keep toc only for current article
     .map(item => {
       if (item.url !== currentSlug) {
