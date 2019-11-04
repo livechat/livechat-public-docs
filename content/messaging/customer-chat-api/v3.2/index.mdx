@@ -1,0 +1,2427 @@
+---
+weight: 30
+category: "messaging"
+subcategory: "customer-chat-api"
+title: "Web API Reference"
+tagline: "Interact with the chat as a Customer."
+desc: "Use the Customer Chat Web API to interact as a Customer."
+apiVersion: 3.2
+---
+
+# Introduction
+
+## Versioning
+
+This document describes the **Customer Chat Web API v3.2**.
+
+## What is Web API
+
+Web API is similar to REST API. Client can send a **request message** that results in getting a **response message**. It's also possible to get webhooks.
+
+## When to use Web API
+
+If you're wondering which API to use - Customer Chat **RTM API** or **Web API**, keep on reading.
+
+**Web API** allows for building stateless integrations. The communication is done via **XHR requests**. The implementation is easier than with RTM API, but you need to take possible time delays into consideration.
+
+**Not what you're looking for?** Perhaps, you need to use [**Customer Chat RTM API**](rtm-reference) instead.
+
+## Authentication
+
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow). Take note **it's not the same** token you would you for the Agent Chat or Configuration API. 
+
+If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
+
+## Data centers
+
+LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
+
+All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
+
+Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with, `dal-` you don’t have to specify the header.
+
+## Postman Collection
+
+You can find all the requests from the Customer Chat Web API v3.1 in Postman. In our collection, we use [environment variables](https://learning.getpostman.com/docs/postman/environments_and_globals/manage_environments/) for the API version and the access token. Importing the collection from the link below downloads the **LiveChat Web API** environment as well. Remember to replace the sample token with your own.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/521935b4232b6f924644#?env%5BLiveChat%20Web%20API%5D=W3sia2V5IjoiYXBpX3ZlcnNpb24iLCJ2YWx1ZSI6InYzLjEiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjY2Vzc190b2tlbiIsInZhbHVlIjoiZGFsOlRMSjdRc3RYUXNTeHVWOGI1aDFSZmciLCJlbmFibGVkIjp0cnVlfV0=)
+
+# Events
+
+One of the data structures are **events**. They are sent to a chat via the `send_event` method.
+Apart from events, there are also [Properties](#properties), [Users](#users), and [Other common data structures](#other-common-structures).
+
+These are the available **event types**:
+
+- [File](#file)
+- [Filled form](#filled-form)
+- [Message](#message)
+- [Rich message](#rich-message)
+- [Custom](#custom)
+- [System message](#system-message)
+
+## File
+
+<Section>
+
+<Text>
+
+File event informs about a file being uploaded.
+
+| Field                                                 | Req./Opt. |                                                                Note |
+| ----------------------------------------------------- | :-------: | ------------------------------------------------------------------: |
+| `content_type`                                        | required  |       Supported image types: `image/png`, `image/jpeg`, `image/gif` |
+| `created_at`                                          | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `type`                                                | required  | `file`                                                              |
+| `custom_id`                                           | optional  |                                                                   - |
+| `properties`                                          | optional  |                                                                   - |
+| `recipients`                                          | required  |                          Possible values: `all` (default), `agents` |
+| `url`                                                 | required  |   Has to point to the LiveChat CDN.It's recommended to use the URL returned by [`upload_file`](#upload-file).|
+| `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                                     Only for images |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample File event'}>
+
+```json
+{
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "custom_id": "31-0C-1C-07-DB-16",
+  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
+  "type": "file",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+  "recipients": "all",
+  "properties": {
+    // "Properties" object
+  },
+  "name": "image25.png", // generated server-side
+  "url": "https://domain.com/image25.png",
+  "thumbnail_url": "https://domain.com/thumbnail.png", // generated server-side
+  "thumbnail2x_url": "https://domain.com/thumbnail2x.png", // generated server-side
+  "content_type": "image/png", // generated server-side
+  "size": 123444, // generated server-side
+  "width": 640, // generated server-side
+  "height": 480 // generated server-side
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Filled form
+
+<Section>
+
+<Text>
+
+Filled form event contains data from a form (prechat or postchat survey).
+
+| Field                                   | Req./Opt |                                                               Notes |
+| --------------------------------------- | :------: | ------------------------------------------------------------------: |
+| `created_at`                            | required | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`                            | required | Possible values: `all` (default), `agents` |
+| `type`                                  | required | `filled_form`                                                       |
+| `checkbox`                              | optional | For multiple-choice questions |
+| `custom_id`                             | optional |                                                                     |
+| `email`, `name`, `question`, `textarea` | optional | For open questions (text answer) |
+| `group_chooser`                         | optional | For group-choice questions |
+| `properties`                            | optional | The [Properties](#properties) object |
+| `radio`, `select`                       | optional | For single-choice questions |
+  
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Filled form event'}>
+
+```json
+{
+	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+	"custom_id": "31-0C-1C-07-DB-16",
+	"created_at": "2017-10-12T15:19:21.010200Z",  // generated server-side
+	"type": "filled_form",
+	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+	"recipients": "all",
+	"properties": {
+		// "Properties" object
+	},
+	"form_id": "1473433500211",
+	"fields": [{
+		"type": "name",
+		"id": "154417206262603539",
+		"label": "Your name",
+		"answer": "John Doe"
+	}, {
+		"type": "email",
+		"id": "154417206262601584",
+		"label": "Your email",
+		"answer": "customer1@example.com"
+	}, {
+		"type": "radio",
+		"id": "154417206262602571",
+		"label": "Chat purpose",
+		"answer": {
+				"id": "0",
+				"label": "Support"
+		}
+	}, {
+		"type": "checkbox",
+		"id": "154417206262604640",
+		"label": "Company industry",
+		"answers": [{
+			"id": "0"
+			"label": "automotive"
+		}, {
+			"id": "1"
+			"label": "it"
+		}]
+	}, {
+		"type": "group_chooser",
+		"id": "154417206262605324",
+		"label": "Choose department",
+		"answer": {
+			"group_id": 1,
+			"label": "Marketing"
+		}
+	}]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Message
+
+<Section>
+
+<Text>
+
+Message event contains text message to other chat users.
+
+| Field            | Req./Opt. |  Notes                                                              |
+| ---------------- | :-------: | ------------------------------------------------------------------: |
+| `created_at`     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`     | required  | Possible values: `all` (default), `agents`                          |
+| `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
+| `type`           | required  | `message`                                                           |
+| `custom_id`      | optional  |                                                                     |
+| `postback`       | optional  | Appears in the message event only when triggered by a rich message. |
+| `postback.type`  | optional  | Required only if `postback.value` is present.                       |
+| `postback.value` | optional  | Required only if `postback.type` is present.                        |
+| `properties`     | optional  | The [properties](#properties) object                                |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Message event'}>
+
+```json
+{
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "custom_id": "31-0C-1C-07-DB-16",
+  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
+  "type": "message",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+  "text": "hello there",
+  "postback": {
+    "id": "action_call",
+    "thread_id": "K600PKZON8",
+    "event_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
+    "type": "phone",
+    "value": "790034890"
+  },
+  "recipients": "all",
+  "properties": {
+    // "Properties" object
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Rich message
+
+<Section>
+
+<Text>
+
+Rich message event contains rich message data structure.
+
+| Field                            | Req./Opt. | Notes                                                                |
+| -------------------------------- | :-------: | ------------------------------------------------------------------: |
+| `created_at`                     | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `recipients`                     | required  | Possible values: `all` (default), `agents` |
+| `template_id`                    | required  | Describes how the event should be presented in an app. | 
+| `type`                           | required  | `rich_message`                                                      |
+| `custom_id`                      | optional  |                                                                     |
+| `elements`                       | optional  | May contain 1 - 10 `element` objects.                               |
+| `elements.buttons`               | optional  | `buttons` may contain 1 - 11 `button` objects.                      |
+| `elements.buttons.postback_id`   | optional  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
+| `elements.buttons.text`          | optional  | Required only if `elements.buttons` is present.                     |
+| `elements.buttons.type`          | optional  | Required only if both `elements.buttons` and `elements.buttons.value` are present.  |
+| `elements.buttons.user_ids`      | optional  | Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
+| `elements.buttons.value`         | optional  | Required only if both `elements.buttons` and `elements.buttons.type` are present.  |
+| `elements.buttons.webview_height`| optional  | Possible values: `compact`, `full`, `tall`                                                                    |
+| `elements.image`                 | optional  | `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
+| `elements.subtitle`              | optional  |                                                                     |
+| `elements.title`                 | optional  |                                                                     |
+| `properties`                     | optional  | The [properties](#properties) object                                |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Rich message event'}>
+
+```json
+{
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "custom_id": "31-0C-1C-07-DB-16",
+  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
+  "type": "rich_message",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+  "recipients": "all",
+  "properties": {
+    // "Properties" object
+  },
+  "template_id": "cards",
+  "elements": [
+    {
+      "title": "Lorem ipsum dolor.",
+      "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "image": {
+        "name": "image25.png",
+        "url": "https://domain.com/asdsfdsf.png",
+        "content_type": "image/png",
+        "size": 123444,
+        "width": 640,
+        "height": 480
+      },
+      "buttons": [
+        {
+          "text": "yes",
+          "postback_id": "action_yes",
+          "user_ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
+        },
+        {
+          "text": "no",
+          "postback_id": "action_no",
+          "user_ids": []
+        },
+        {
+          "type": "phone",
+          "text": "value",
+          "value": "790034890",
+          "webview_height": "tall", 
+          "postback_id": "action_call",
+          "user_ids": []
+        }
+      ]
+    },
+    {
+      "title": "Lorem ipsum dolor 2."
+    }
+  ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Custom
+
+<Section>
+
+<Text>
+
+Custom event is an event with customizable payload.
+
+| Field        | Req./Opt. |                                                                Note |
+| ------------ | :-------: | ------------------------------------------------------------------: |
+| `recipients` | required  |                          Possible values: `all` (default), `agents` |
+| `type`       | required  | `custom`                                                            |
+| `custom_id`  | optional  |                                                                   - |
+| `created_at` | required  | Date & time format with a resolution of microseconds, `UTC string`. |
+| `properties` | optional  |                                                                   - |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample Custom event'}>
+
+```json
+{
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "custom_id": "31-0C-1C-07-DB-16",
+  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
+  "type": "custom",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+  "content": {
+    "custom": {
+      "nested": "json"
+    }
+  },
+  "recipients": "all",
+  "properties": {
+    // "Properties" object
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## System message
+
+<Section>
+
+<Text>
+
+System message event is a native system event sent in specific situations.
+
+| Field                 | Req./Opt. |                                                                                          Notes |
+| --------------------- | :-------: | ---------------------------------------------------------------------------------------------: |
+| `created_at`          | required  |                           Date & time format with a resolution of microseconds, `UTC string`.  |
+| `recipients`          | required  | Possible values: `all` (default for system events), `agents` (for events sent via `send_event`)|
+| `type`                | required  | `system_message`                                                                               |
+| `system_message_type` | required  |                                                                                                |
+| `custom_id`           | optional  |                                                                                                |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample System message event'}>
+
+```json
+{
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "custom_id": "31-0C-1C-07-DB-16",
+  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
+  "type": "system_message",
+  "text": "hello there",
+  "system_message_type": "routing.assigned",
+  "text_vars": {
+    "agent": "John Doe"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<FixedTdWidth>
+
+Here's the list of all system messages you might come across as a Customer:
+
+### `agent_added`
+
+|                 Content                 |                                                                                      Generated when |
+| :-------------------------------------: | --------------------------------------------------------------------------------------------------: |
+| _%initiator% added %agent% to the chat_ | Agent was added to chat via the `add_user_to_chat` request and is not the first Agent in that chat. |
+
+### `agent_removed`
+
+|                   Content                   |                                                       Generated when |
+| :-----------------------------------------: | -------------------------------------------------------------------: |
+| _%initiator% removed %agent% from the chat_ | Agent was removed from chat via the `remove_user_from_chat` request. |
+
+### `archived_customer_disconnected`
+
+|          Content           |                              Generated when |
+| :------------------------: | ------------------------------------------: |
+| _%customer% left the chat_ | Chat ended after Customer left the website. |
+
+### `chat_transferred`
+
+|                     Content                     |                                        Generated when |
+| :---------------------------------------------: | ----------------------------------------------------: |
+| _%initiator% transferred the chat to %targets%_ | Chat was transferred via the `transfer_chat` request. |
+
+### `customer_added`
+
+|                  Content                   |                                                 Generated when |
+| :----------------------------------------: | -------------------------------------------------------------: |
+| _%initiator% added %customer% to the chat_ | Customer was added to chat via the `add_user_to_chat` request. |
+
+### `customer_banned`
+
+|                                   Content                                    |                                                        Generated when |
+| :--------------------------------------------------------------------------: | --------------------------------------------------------------------: |
+| _Chat archived because customer was banned by %agent% for %duration% day(s)_ | Chat ended becaus Customer was banned via the `ban_customer` request. |
+
+### `customer_removed`
+
+|                    Content                     |                                                          Generated when |
+| :--------------------------------------------: | ----------------------------------------------------------------------: |
+| _%initiator% removed %customer% from the chat_ | Customer was removed from chat via the `remove_user_from_chat` request. |
+
+### `manual_archived_agent`
+
+|           Content           |                                    Generated when |
+| :-------------------------: | ------------------------------------------------: |
+| _%agent% archived the chat_ | Agent closed chat via the `close_thread` request. |
+
+### `manual_archived_customer`
+
+|            Content             |                                       Generated when |
+| :----------------------------: | ---------------------------------------------------: |
+| _%customer% archived the chat_ | Customer closed chat via the `close_thread` request. |
+
+### `rating.chat_commented`
+
+|                      Content                       |                  Generated when |
+| :------------------------------------------------: | ------------------------------: |
+| _%customer% left the following comment: %comment%_ | Chat was commented by Customer. |
+
+### `rating.chat_rated`
+
+|                Content                 |              Generated when |
+| :------------------------------------: | --------------------------: |
+| _%customer% rated the chat as %score%_ | Chat was rated by Customer. |
+
+### `rating.chat_rating_canceled`
+
+|                Content                |                         Generated when |
+| :-----------------------------------: | -------------------------------------: |
+| _%customer% canceled the chat rating_ | Chat rating was cancelled by Customer. |
+
+### `routing.archived_deleted`
+
+|                            Content                             |                                                                                                          Generated when |
+| :------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------------: |
+| _The chat was closed because %agent% account had been deleted_ | Chat was archived after Agent was removed from the license. No other Agent could be selected, and queues were disabled. |
+
+### `routing.archived_disconnected`
+
+|                              Content                               |                                                                                                          Generated when |
+| :----------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------------: |
+| _The chat was closed because %agent% had lost internet connection_ | Chat was archived after Agent unexpectedly lost connection. No other Agent could be selected, and queues were disabled. |
+
+### `routing.archived_inactive`
+
+|                         Content                         |                                              Generated when |
+| :-----------------------------------------------------: | ----------------------------------------------------------: |
+| _Chat archived due to %duration% minutes of inactivity_ | No new messages were posted for an extended amount of time. |
+
+### `routing.archived_offline`
+
+|                  Content                   |                                                 Generated when |
+| :----------------------------------------: | -------------------------------------------------------------: |
+| _Chat archived due to no available agents_ | No Agent could be selected after chat was placed in the queue. |
+
+### `routing.archived_other`
+
+|        Content        |                                                                                                                     Generated when |
+| :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------: |
+| _The chat was closed_ | Chat was archived after Agent was removed from chat for other reasons. No other Agent could be selected, and queues were disabled. |
+
+### `routing.archived_remotely_signed_out`
+
+|                              Content                               |                                                                                              Generated when |
+| :----------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------: |
+| _The chat was closed because %agent% had been remotely signed out_ | Chat was archived after an Agent was logged out. No other Agent could be selected and queues were disabled. |
+
+### `routing.archived_signed_out`
+
+|                       Content                        |                                                                                        Generated when |
+| :--------------------------------------------------: | ----------------------------------------------------------------------------------------------------: |
+| _The chat was closed because %agent% had signed out_ | Chat was archived after Agent logged out. No other Agent could be selected, and queues were disabled. |
+
+### `routing.assigned_deleted`
+
+|                                     Content                                     |                                                                        Generated when |
+| :-----------------------------------------------------------------------------: | ------------------------------------------------------------------------------------: |
+| _Chat assigned to %addedAgent% because %removedAgent% account had been deleted_ | Chat was assigned to a new Agent after the previous one was removed from the license. |
+
+### `routing.assigned_disconnected`
+
+|                                       Content                                       |                                                                        Generated when |
+| :---------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------: |
+| _Chat assigned to %addedAgent% because %removedAgent% had lost internet connection_ | Chat was assigned to a new Agent after the previous one unexpectedly lost connection. |
+
+### `routing.assigned_inactive`
+
+|                                            Content                                            |                                                                                 Generated when |
+| :-------------------------------------------------------------------------------------------: | ---------------------------------------------------------------------------------------------: |
+| _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | Chat was assigned to a new Agent after the previous one failed to response in a timely manner. |
+
+### `routing.assigned_other`
+
+|        Content        |                                                                                                                     Generated when |
+| :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------: |
+| _The chat was closed_ | Chat was archived after Agent was removed from chat for other reasons. No other Agent could be selected, and queues were disabled. |
+
+### `routing.assigned_remotely_signed_out`
+
+|                                       Content                                       |                                                          Generated when |
+| :---------------------------------------------------------------------------------: | ----------------------------------------------------------------------: |
+| _Chat assigned to %addedAgent% because %removedAgent% had been remotely signed out_ | Chat was assigned to a new Agent after the previous one was logged out. |
+
+### `routing.assigned_signed_out`
+
+|                                Content                                |                                                      Generated when |
+| :-------------------------------------------------------------------: | ------------------------------------------------------------------: |
+| _Chat assigned to %addedAgent% because %removedAgent% had signed out_ | Chat was assigned to a new Agent after the previous one logged out. |
+
+### `routing.unassigned_deleted`
+
+|                            Content                             |                                            Generated when |
+| :------------------------------------------------------------: | --------------------------------------------------------: |
+| _Customer was queued because %agent% account has been deleted_ | Chat was queued after Agent was removed from the license. |
+
+### `routing.unassigned_disconnected`
+
+|                              Content                               |                                            Generated when |
+| :----------------------------------------------------------------: | --------------------------------------------------------: |
+| _Customer was queued because %agent% had lost internet connection_ | Chat was queued after Agent unexpectedly lost connection. |
+
+### `routing.unassigned_other`
+
+|       Content        |                                                       Generated when |
+| :------------------: | -------------------------------------------------------------------: |
+| _Chat is unassigned_ | Chat was queued after Agent was removed from chat for other reasons. |
+
+### `routing.unassigned_remotely_signed_out`
+
+|                              Content                               |                              Generated when |
+| :----------------------------------------------------------------: | ------------------------------------------: |
+| _Customer was queued because %agent% had been remotely signed out_ | Chat was queued after Agent was logged out. |
+
+### `routing.unassigned_signed_out`
+
+|                       Content                        |                          Generated when |
+| :--------------------------------------------------: | --------------------------------------: |
+| _Customer was queued because %agent% had signed out_ | Chat was queued after Agent logged out. |
+
+### `system_archived`
+
+|     Content     |                                                                     Generated when |
+| :-------------: | ---------------------------------------------------------------------------------: |
+| _Chat archived_ | License was moved to another lc_serv instance while there were still active chats. |
+
+### `transcript_requested`
+
+|                             Content                              |               Generated when |
+| :--------------------------------------------------------------: | ---------------------------: |
+| _%customer% requested the chat transcript to be sent to %email%_ | Customer enables transcript. |
+
+</FixedTdWidth>
+
+# Users
+
+**Users** are another important data structure. Within this data structure type, we can distinguish:
+
+- [Customer](#customer)
+- [Agent](#agent)
+
+## Customer
+
+<CodeResponse title={'Sample Customer data structure'}>
+
+```json
+{
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "type": "customer",
+  "name": "John Smith",
+  "email": "customer1@example.com",
+  "avatar": "https://domain.com/avatars/1.jpg",
+  "fields": {
+    "custom field name": "custom field value"
+  },
+  "present": true,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
+}
+```
+
+</CodeResponse>
+
+| Field    | Req./Opt. |      |
+| -------- | :-------: | ---: |
+| `avatar` | optional  |      |
+| `fields` | optional  |      |
+
+## Agent
+
+<CodeResponse title={'Sample Agent data structure'}>
+
+```json
+{
+  "id": "agent1@example.com",
+  "type": "agent",
+  "name": "Support Team",
+  "avatar": "cdn.livechatinc.com/avatars/1.png",
+  "present": true,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
+}
+```
+
+</CodeResponse>
+
+# Other common structures
+
+Apart from [Events](#events) and [Users](#users), there are also other common data structures you might work with. Those are:
+
+- [Access](#access)
+- [Chats](#chats)
+- [Chat summaries](#chat-summaries)
+- [Properties](#properties)
+- [Threads](#threads)
+
+## Access
+
+<CodeResponse title={'Sample Access data structure'}>
+
+```json
+{
+  "access": {
+    "group_ids": [1, 2]
+  }
+}
+```
+
+</CodeResponse>
+
+| Field       | Req./Opt. |                                        Note |
+| ----------- | :-------: | ------------------------------------------: |
+| `group_ids` | required  | `group 0` means that all agents can see it. |
+
+## Chats
+
+<CodeResponse title={'Sample Chat data structure'}>
+
+```json
+{
+  "id": "PJ0MRSHTDG",
+  "users": [
+    // array of "User" objects
+  ],
+  "threads": [
+    // optional
+    // "Thread" object
+  ],
+  "threads_summary": [
+    {
+      "thread_id": "K600PKZON8",
+      "order": 129846129847
+    },
+    {
+      "thread_id": "K600PKZON8",
+      "order": 129846129848
+    }
+  ],
+  "properites": {
+    // "Properites" object
+  },
+  "access": {
+    // "Access" object
+  },
+  "is_followed": true
+}
+```
+
+</CodeResponse>
+
+| Field        | Req./Opt. | Note |
+| ------------ | :-------: | ---: |
+| `properties` | optional  |      |
+| `access`     | optional  |      |
+
+## Chat summaries
+
+**Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_thread_summary` and `last_event_per_type`.
+
+<CodeResponse title={'Sample Chat summary data structure'}>
+
+```json
+{
+  "id": "PJ0MRSHTDG",
+  "users": [
+    // array of "User" objects
+  ],
+  "last_event_per_type": {
+    // last event of each type in chat
+    "message": {
+      "thread_id": "K600PKZON8",
+      "thread_order": 3,
+      "event": {
+        // "restricted_access": true
+        // or
+        // "Event > Message" object
+      }
+    },
+    "system_message": {
+      "thread_id": "K600PKZON6",
+      "thread_order": 1,
+      "event": {
+        // "restricted_access": true
+        // or
+        // "Event > System message" object
+      }
+    }
+    // ...
+  },
+  "last_thread_summary": {
+    "id": "K600PKZON8",
+    "order": 3,
+    "timestamp": 1473433500,
+    "user_ids": ["agent1@example.com"],
+    "properites": {
+      // "Properites" object
+    },
+    "tags": ["bug_report"]
+  },
+  "properites": {
+    // "Properites" object
+  },
+  "access": {
+    // "Access" object
+  },
+  "is_followed": false
+}
+```
+
+</CodeResponse>
+
+## Properties
+
+Properties are **key-value storages**. They can be set within a chat, a thread, or an event. You can read more about properties in the [Configuration API](/management/configuration-api/#properties) document.
+
+<CodeResponse title={'Sample Properties data structure'}>
+
+```json
+{
+  "properties": {
+    "rating": {
+      // <property_namespace>
+      "score": {
+        // <property_name>
+        "value": 1 // <property_value>
+      },
+      "comment": {
+        "value": "rated good!"
+      }
+    },
+    "routing": {
+      "idle": {
+        "value": false
+      }
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+## Threads
+
+<CodeResponse title={'Sample Thread data structure'}>
+
+```json
+{
+  "id": "K600PKZON8",
+  "timestamp": 1473433500,
+  "active": true,
+  "user_ids": ["agent1@example.com"],
+  "restricted_access": true,
+  "events": [
+    // array of "Event" objects
+  ],
+  "order": 112057129857,
+  "properties": {
+    // "Properties" object
+  },
+  "access": {
+    // "Access" object
+  }
+}
+```
+
+</CodeResponse>
+
+| Field               | Req./Opt. |                                                                                  Note |
+| ------------------- | :-------: | ------------------------------------------------------------------------------------: |
+| `access`            | optional  |                                                                                     - |
+| `active`            | required  | Possible values: `true` (thread is still active) or `false`(thread no longer active). |
+| `events`            | optional  |                                      Doesn't exists if `restricted_access` is `true`. |
+| `properties`        | optional  |                                                                                     - |
+| `restricted_access` | optional  |                                                                                     - |
+
+# Methods
+
+<Section>
+
+<Text>
+
+| HTTP method | The API endpoint                                            |
+| ----------- | ----------------------------------------------------------- |
+| `POST`      | `https://api.livechatinc.com/v3.1/customer/action/<action>` |
+
+If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
+
+| Required header |                   Value                    |                                           Notes |
+| --------------- | :----------------------------------------: | ----------------------------------------------: |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |              Valid for the `upload_file` method |
+| `Content-Type`  |             `application/json`             | Valid for every method except for `upload_file` |
+| `Authorization` |              `Bearer <token>`              | Customer access token. It's not the same token you would use for the Agent Chat or Configuration API. [Read more...](#authentication) |
+
+Every request to Customer Chat API needs to have the following query string parameters:
+
+| Required parameter | Data type |               Notes |
+| ------------------ | :-------: | ------------------: |
+| `license_id`       | `integer` | LiveChat account ID |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action?license_id=<license_id> \
+  -H 'Content-Type: <content-type>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+		  // payload
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+## Available methods
+
+|                |                                                                                                                                                                                                                                                                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**      | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                 |
+| **Events**     | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                             |
+| **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
+| **Customers**  | [`update_customer`](#update-customer) [`set_customer_fields`](#set-customer-fields)                                                                                                                                                                                                                                                                     |
+| **Status**     | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                               |
+| **Other**      | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen)                                                                                                                                                                                               |
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/521935b4232b6f924644#?env%5BLiveChat%20Web%20API%5D=W3sia2V5IjoiYXBpX3ZlcnNpb24iLCJ2YWx1ZSI6InYzLjEiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjY2Vzc190b2tlbiIsInZhbHVlIjoiZGFsOlRMSjdRc3RYUXNTeHVWOGI1aDFSZmciLCJlbmFibGVkIjp0cnVlfV0=)
+
+## Chats
+
+<Section>
+
+<Text>
+
+### Get Chats Summary
+
+It returns [summaries](#chat-summary) of the chats a Customer participated in.
+
+#### Specifics
+
+|                        |                                                                      |
+| ---------------------- | -------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_chats_summary` |
+| **RTM API equivalent** | [`get_chats_summary`](rtm-reference/#get-chats-summary)              |
+| **Webhook**            | -                                                                    |
+
+#### Request
+
+| Parameter | Required | Type     | Notes                    |
+| --------- | -------- | -------- | ------------------------ |
+| `offset`  | No       | `number` | Default: 0, maximum: 100 |
+| `limit`   | No       | `number` | Default: 10, maximum: 25 |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "chats_summary": [
+    {
+      "id": "123",
+      "order": 343544565,
+      "last_thread_id": "xyz",
+      "users": [
+        // array of "User" objects
+      ],
+      "properties": {
+        // "Properties" object
+      },
+      "access": {
+        // "Access" object
+      },
+      "last_event_per_type": {
+        // last event of each type in chat
+        "message": {
+          "thread_id": "K600PKZON8",
+          "thread_order": 3,
+          "event": {
+            // "Event > Message" object
+          }
+        },
+        "system_message": {
+          "thread_id": "K600PKZON8",
+          "thread_order": 3,
+          "event": {
+            // "Event > System message" object
+          }
+        }
+        // ...
+      }
+    }
+  ],
+  "total_chats": 20
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Chat Threads Summary
+
+#### Specifics
+
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary` |
+| **RTM API equivalent** | [`get_chat_threads_summary`](rtm-reference/#get-chat-threads-summary)       |
+| **Webhook**            | -                                                                           |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                     |
+| --------- | -------- | --------- | ------------------------- |
+| `chat_id` | Yes      | `string`  |                           |
+| `offset`  | No       | `number`  | Default: 0                |
+| `limit`   | No       | `number`  | Default: 25, maximum: 100 |
+
+#### Response
+
+| Parameter         | Notes                           |     |
+| ----------------- | ------------------------------- | --- |
+| `threads_summary` | Sorted descendingly by `order`. |     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+		  "chat_id": "PJ0MRSHTDG"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "threads_summary": [
+    {
+      "id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+      "order": 2,
+      "total_events": 1
+    },
+    {
+      "id": "b0c22fdd-fb71-40b5-bfc6-a8a0bc3117f6",
+      "order": 1,
+      "total_events": 0
+    }
+  ],
+  "total_threads": 4
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Chat Threads
+
+#### Specifics
+
+|                        |                                                                     |
+| ---------------------- | ------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_chat_threads` |
+| **RTM API equivalent** | [`get_chat_threads`](rtm-reference/#get-chat-threads)               |
+| **Webhook**            | -                                                                   |
+
+#### Request
+
+| Parameter    | Required | Data type |     |
+| ------------ | -------- | --------- | --- |
+| `chat_id`    | Yes      | `string`  |     |
+| `thread_ids` | No       | `array`   |     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads?license_id=<license_id> \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PJ0MRSHTDG",
+		  "thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "chat": {
+    "id": "PJ0MRSHTDG",
+    "order": 343544565,
+    "users": [
+      // array of "User" objects
+    ],
+    "properties": {
+      // "Properties" object
+    },
+    "access": {
+      // "Access" object
+    },
+    "threads": [
+      // array of "Thread" objects
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Start Chat
+
+Starts a chat.
+
+#### Specifics
+
+|                        |                                                               |
+| ---------------------- | ------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/start_chat` |
+| **RTM API equivalent** | [`start_chat`](rtm-reference/#start-chat)                     |
+| **Webhook**            | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread)               |
+
+#### Request
+
+| Parameters               | Required | Data type | Notes                                                                       |
+| ------------------------ | -------- | --------- | --------------------------------------------------------------------------- |
+| `chat`                   | No       | `object`  |                                                                             |
+| `chat.properties`        | No       | `object`  | Initial chat properties                                                     |
+| `chat.access`            | No       | `object`  | Chat access to set; default: all agents.                                    |
+| `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type `customer`).         |
+| `chat.thread`            | No       | `object`  |                                                                             |
+| `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
+| `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
+| `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
+
+#### Response
+
+| Parameter   | Data type  | Notes |
+| ----------- | ---------- | ----- |
+| `chat_id`   | `string`   |       |
+| `thread_id` | `string`   |       |
+| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. | 
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action/start_chat?license_id=<license_id> \
+  -H 'Content-Type: <content-type>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "PGDGHT5G"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Activate Chat
+
+Used to restart an archived chat.
+
+#### Specifics
+
+|                        |                                                                  |
+| ---------------------- | ---------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/activate_chat` |
+| **RTM API equivalent** | [`activate_chat`](rtm-reference/#activate-chat)                  |
+| **Webhook**            | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread)                  |
+
+#### Request
+
+| Request object           | Required | Type     | Notes                                                                     |
+| ------------------------ | -------- | -------- | ------------------------------------------------------------------------- |
+| `chat`                   | Yes      | `object` |                                                                           |
+| `chat.id`                | Yes      | `string` | ID of the chat that will be activated.                                    |
+| `chat.access`            | No       | `object` | Chat access to set; default: all agents.                                  |
+| `chat.properties`        | No       | `object` | Initial chat properties                                                   |
+| `chat.thread`            | No       | `object` |                                                                           |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                                                 |
+| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                            |
+| `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
+
+#### Response
+
+| Parameter   | Data type  | Notes |
+| ----------- | ---------- | ----- |
+| `thread_id` | `string`   |       |
+| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array.|
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action/activate_chat?license_id=<license_id> \
+  -H 'Content-Type: <content-type>' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat": {
+            "id": "PWLW03ICW7"
+          }
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "thread_id": "Z8AGR5OUW"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Close Thread
+
+Closes the thread. Sending messages to this thread will no longer be possible.
+
+#### Specifics
+
+|                        |                                                                           |
+| ---------------------- | ------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/close_thread`           |
+| **RTM API equivalent** | [`close_thread`](rtm-reference/#close-thread)                             |
+| **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event) and [`thread_closed`](/management/configuration-api/#thread_closed) |
+
+#### Request
+
+| Parameter | Required | Data type |       |
+| --------- | -------- | --------- | ----- |
+| `chat_id` | Yes      | `string`  |       |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/close_thread?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+        "chat_id": "PWLW03ICW7"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+## Events
+
+<Section>
+
+<Text>
+
+### Send Event
+
+#### Specifics
+
+|                        |                                                               |
+| ---------------------- | ------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_event` |
+| **RTM API equivalent** | [`send_event`](rtm-reference/#send-event)                     |
+| **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event)                           |
+
+#### Request
+
+| Parameters              | Required | Data type | Notes                                                                                   |
+| ----------------------- | -------- | --------- | --------------------------------------------------------------------------------------- |
+| `chat_id`               | Yes      | `string`  | Id of the chat that you to send a message to.                                           |
+| `event`                 | Yes      | `object`  | The event object                                                                        |
+| `attach_to_last_thread` | No       | `bool`    | If `true`, adds an event to last (inactive) thread. Otherwise, it doesn't creates a new one; default: `false`. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/send_event?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "chat_id": "PWLW03ICW7",
+      "event": {
+          "type": "message",
+          "text": "hello world",
+          "recipients": "all"
+        }
+    }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "event_id": "K600PKZON8"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<!-- > **`send_event`** sample **request** with optional params
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/send_event?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "chat_id": "PWLW03ICW7",
+      "event": {
+          "type": "message",
+          "text": "hello world",
+          "recipients": "all"
+          }
+      }'
+``` -->
+
+<Section>
+<Text>
+
+### Upload File
+
+Uploads a file to the server as a temporary file. It returns a URL that expires after 24 hours unless the URL is used in [`send_event`](#send-event).
+
+#### Specifics
+
+|                        |                                                                |
+| ---------------------- | -------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/upload_file` |
+| **RTM API equivalent** | -                                                              |
+| **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event) **\***                     |
+
+**\*)**
+`incoming_event` returns a URL that never expires.
+
+#### Request
+
+| Parameter | Required | Data type | Notes              |
+| --------- | -------- | --------- | ------------------ |
+| `file`    | Yes      | `binary`  | Maximum size: 10MB |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/customer/action/upload_file?license_id=<license_id> \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -H 'Content-Type: multipart/form-data; boundary=--------------------------210197025774705439685896' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -F file=@/Users/MyAccount/Desktop/image.png
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "url": "https://cdn.livechat-static.com/api/file/lc/att/8948324/45a3581b59a7295145c3825c86ec7ab3/image.png"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+### Send Rich Message Postback
+
+#### Specifics
+
+|                        |                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback` |
+| **RTM API equivalent** | [`send_rich_message_postback`](rtm-reference/#send-rich-message-postback)     |
+| **Webhook**            | [`incoming_rich_message_postback`](/management/configuration-api/#incoming_rich_message_postback)**\***     |
+
+**\*)** `incoming_rich_message_postback` will be sent only for active threads.
+
+#### Request
+
+| Parameter          | Required | Data type | Notes                               |
+| ------------------ | -------- | --------- | ----------------------------------- |
+| `chat_id`          | Yes      | `string`  |                                     |
+| `event_id`         | Yes      | `string`  |                                     |
+| `postback`         | Yes      | `object`  |                                     |
+| `postback.id`      | Yes      | `string`  | Postback name of the button         |
+| `postback.toggled` | Yes      | `bool`    | Postback toggled; `true` or `false` |
+| `thread_id`        | Yes      | `string`  |                                     |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PJ0MRSHTDG",
+      "thread_id": "K600PKZON8",
+      "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+      "postback": {
+          "id": "Method URL_yes",
+          "toggled": true
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Send Sneak Peek
+
+#### Specifics
+
+|                        |                                                                    |
+| ---------------------- | ------------------------------------------------------------------ |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek` |
+| **RTM API equivalent** | [`send_sneak_peek`](rtm-reference/#send-sneak-peek)                |
+| **Webhook**            | -                                                                  |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                      |
+| ----------------- | -------- | --------- | ------------------------------------------ |
+| `chat_id`         | Yes      | `string`  | Id of the chat you to set a sneak peek to. |
+| `sneak_peek_text` | Yes      | `string`  | Sneak peek text                            |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PJ0MRSHTDG",
+		  "sneak_peek_text": "hello world"
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+## Properties
+
+<Section>
+
+<Text>
+
+### Update Chat Properties
+
+#### Specifics
+
+|                        |                                                                           |
+| ---------------------- | ------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_chat_properties` |
+| **RTM API equivalent** | [`update_chat_properties`](rtm-reference/#update-chat-properties)         |
+| **Webhook**            | [`chat_properties_updated`](/management/configuration-api/#chat_properties_updated)                     |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                     |
+| ------------ | -------- | --------- | ----------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you to set a property for. |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PW94SJTGW6",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
+              }
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Chat Properties
+
+#### Specifics
+
+|                        |                                                                           |
+| ---------------------- | ------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties` |
+| **Required scopes\***  | `chats.conversation--all:write` `chats.conversation--my:write`            |
+| **RTM API equivalent** | [`delete_chat_properties`](rtm-reference/#delete-chat-properties)         |
+| **Webhook**            | [`chat_properties_deleted`](/management/configuration-api/#chat_properties_deleted)                     |
+
+**\*)**
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                            |
+| ------------ | -------- | --------- | ------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete properties of. |
+| `properties` | Yes      | `object`  | Chat properties to delete. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PW94SJTGW6",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
+              ]
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Chat Thread Properties
+
+#### Specifics
+
+|                        |                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties` |
+| **RTM API equivalent** | [`update_chat_thread_properties`](rtm-reference/#update-chat-thread-properties)  |
+| **Webhook**            | [`chat_thread_properties_updated`](/management/configuration-api/#chat_thread_properties_updated)              |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                            |
+| ------------ | -------- | --------- | ------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
+| `properties` | Yes      | `object`  | Chat properties to set. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PW94SJTGW6",
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
+              }
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Chat Thread Properties
+
+#### Specifics
+
+|                        |                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties` |
+| **Required scopes\***  | `chats.conversation--all:write` `chats.conversation--my:write`                   |
+| **RTM API equivalent** | [`delete_chat_thread_properties`](rtm-reference/#delete-chat-thread-properties)  |
+| **Webhook**            | [`chat_thread_properties_deleted`](/management/configuration-api/#chat_thread_properties_deleted)              |
+
+**\*)**
+
+- `chats.conversation--all:write` - write access for conversation data of all license chats
+- `chats.conversation--my:write` - write access for conversation data of chats the requester belongs to
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                  |
+| ------------ | -------- | --------- | ------------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
+| `properties` | Yes      | `object`  | Chat thread properties to delete. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PW94SJTGW6",
+      "thread_id": "K600PKZON8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": [
+              "score",
+              "comment"
+              ]
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Event Properties
+
+#### Specifics
+
+|                        |                                                                            |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_event_properties` |
+| **RTM API equivalent** | [`update_event_properties`](rtm-reference/#update-event-properties)        |
+| **Webhook**            | [`event_properties_updated`](/management/configuration-api/#event_properties_updated)                    |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                            |
+| ------------ | -------- | --------- | ------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
+| `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.  |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PW94SJTGW6",
+      "thread_id": "K600PKZON8",
+      "event_id": "2_EW2WQSA8",
+      "properties": {
+          "bb9e5b2f1ab480e4a715977b7b1b4279": {
+              "score": 10,
+              "comment": "Thank you!"
+              }
+          }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Event Properties
+
+#### Specifics
+
+|                        |                                                                            |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/delete_event_properties` |
+| **RTM API equivalent** | [`delete_event_properties`](rtm-reference/#delete-event-properties)        |
+| **Webhook**            | [`event_properties_deleted`](/management/configuration-api/#event_properties_deleted)                    |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                  |
+| ------------ | -------- | --------- | ------------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
+| `event_id`   | Yes      | `string`  | Id of the event you want to delete the properties of.  |
+| `properties` | Yes      | `object`  | Event properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PWLW03ICW7",
+      "thread_id": "PWNWW5N6A8",
+      "event_id": "PWNWW5N6A8_1",
+      "properties": {
+          "rating": [
+              "score",
+              "comment"
+            ]
+        }
+    }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+## Customers
+
+<Section>
+
+<Text>
+
+### Update Customer
+
+#### Specifics
+
+|                        |                                                                    |
+| ---------------------- | ------------------------------------------------------------------ |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_customer` |
+| **RTM API equivalent** | [`update_customer`](rtm-reference/#update-customer)                |
+| **Webhook**            | -                           |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                            |
+| --------- | -------- | --------- | -------------------------------- |
+| `name`    | No       | `string`  |                                  |
+| `email`   | No       | `string`  |                                  |
+| `avatar`  | No       | `string`  | The URL of the Customer's avatar |
+| `fields`  | No       | `object`  | `key: value` format        |
+
+At least one optional parameter needs to be included in the request.
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "name": "John Doe"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Set Customer Fields
+
+#### Specifics
+
+|                        |                                                                        |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/set_customer_fields` |
+| **RTM API equivalent** | [`set_customer_fields`](rtm-reference/#set-customer-fields)                        |
+| **Webhook**            | [`customer_updated`](/management/configuration-api/#customer_updated)                                |
+
+#### Request
+
+| Parameter | Required | Data type |  Notes              |
+| --------- | -------- | --------- | -------------------- |
+| `fields`  | Yes      | `object`  | `key:value` format |
+
+Users Agent and referrer are updated by default using the browser’s headers.
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "fields": {
+		    "company_size": "10-100"
+      		}
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+## Status
+
+<Section>
+
+<Text>
+
+### Get Groups Status
+
+#### Specifics
+
+|                        |                                                                      |
+| ---------------------- | -------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_groups_status` |
+| **RTM API equivalent** | [`get_groups_status`](rtm-reference/#get-groups-status)              |
+| **Webhook**            | -                                                                    |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                                                      |
+| --------- | -------- | --------- | ---------------------------------------------------------- |
+| `all`     | No       | `bool`    | If set to `true`, you will get statuses of all the groups. |
+| `groups`  | No       | `array`   | A table of groups' IDs                                     |
+
+One of the optional parameters needs to be included in the request.
+
+#### Response
+
+No response payload (`200 OK`).
+
+#### Response
+
+|                   |                                                                                                  |     |
+| ----------------- | ------------------------------------------------------------------------------------------------ | --- |
+| `Group Not Found` | If you send `group_id` of a group that doesn't exists, the id won't be included in the resposne. |     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "all": true
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "groups_status": {
+    //1,2,3 are group ids, online/offline/online_for_queue are statuses of the groups
+
+    1: "online",
+    2: "offline",
+    3: "online_for_queue"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Other
+
+<Section>
+
+<Text>
+
+### Check Goals
+
+Customer can use this method to trigger checking if [goals](https://www.livechatinc.com/help/goals-set-up-and-use/) were achieved. Then, Agents receive the information. You should call this method to provide goals parameters for the server when the customers limit is reached. Works only for offline Customers.
+
+#### Specifics
+
+|                        |                                                                |
+| ---------------------- | -------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/check_goals` |
+| **RTM API equivalent** | -                                                              |
+| **Webhook**            | -                                                              |
+
+#### Request
+
+| Parameter         | Required | Data type |  Notes   |
+| ----------------- | -------- | --------- | -------- |
+| `customer_fields` | Yes      | `object`  | `key:value` format |
+| `group_id`        | Yes      | `number`  |     |
+| `page_url`        | Yes      | `string`  |     |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+        "page_url": "https://mypage.com",
+        "customer_fields": {
+            "field1": "value1"
+	      },
+	    "group_id": 0
+}'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Form
+
+Returns an empty ticket form of a <a href="https://www.livechatinc.com/help/chat-surveys/" target="_blank">prechat or postchat survey</a>.
+
+#### Specifics
+
+|                        |                                                             |
+| ---------------------- | ----------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_form` |
+| **RTM API equivalent** | [`get_form`](rtm-reference/#get-form)                       |
+| **Webhook**            | -                                                           |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                               |
+| ---------- | -------- | --------- | --------------------------------------------------- |
+| `group_id` | Yes      | `number`  | Id of the group from which you want the form.       |
+| `type`     | Yes      | `string`  | Form type; possible values: `prechat` or `postchat` |
+
+#### Response
+
+| Parameter  | Notes |
+| ---------- | -------- | 
+| `enabled`  |  If `enabled: false`, the `form` object is not returned. Prechat/postchat survey disabled in the LiveChat Agent App UI. |
+| `header`   | For headers; the field has no `answer`, therefore is not sent in the [Filled form](#filled-form) event. |    
+| `rating`   | For rating; the field has no `answer`, therefore is not sent in the [Filled form](#filled-form) event. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "group_id": 0,
+		  "type": "prechat"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "form": {
+    "id": "156630109416307809",
+    "fields": [
+      {
+        "id": "15663010941630615",
+        "type": "header",
+        "label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
+      },
+      {
+        "id": "156630109416307759",
+        "type": "name",
+        "label": "Name:",
+        "required": false
+      },
+      {
+        "id": "15663010941630515",
+        "type": "email",
+        "label": "E-mail:",
+        "required": false
+      }
+    ]
+  },
+  "enabled": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Predicted Agent
+
+Gets the predicted Agent - the one the Customer will chat with when the chat starts. To use this method, the Customer needs to be logged in, which can be done via the [`login`](rtm-reference/#login) method.
+
+#### Specifics
+
+|                        |                                                                        |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent` |
+| **RTM API equivalent** | [`get_predicted_agent`](rtm-reference/#get-predicted-agent)            |
+| **Webhook**            | -                                                                      |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "agent": {
+    "id": "agent1@example.com",
+    "name": "Name",
+    "avatar": "https://example.avatar/example.com",
+    "is_bot": false,
+    "job_title": "support hero",
+    "type": "agent"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get URL Details
+
+It returns the info on a given URL.
+
+#### Specifics
+
+|                        |                                                                    |
+| ---------------------- | ------------------------------------------------------------------ |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_url_details` |
+| **RTM API equivalent** | [`get_url_details`](rtm-reference/#get-url-details)                |
+| **Webhook**            | -                                                                  |
+
+#### Request
+
+| Parameter | Required | Data type | Notes             |
+| --------- | -------- | --------- | ----------------- |
+| `url`     | Yes      | `string`  | Valid website URL |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "url": "https://livechatinc.com"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "title": "LiveChat | Live Chat Software and Help Desk Software",
+  "description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
+  "image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
+  "image_width": 200,
+  "image_height": 200,
+  "url": "https://livechatinc.com"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Mark Events As Seen
+
+#### Specifics
+
+|                        |                                                                        |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen` |
+| **RTM API equivalent** | [`mark_events_as_seen`](rtm-reference/#mark-events-as-seen)            |
+| **Webhook**            | [`events_marked_as_seen`](/management/configuration-api/#events_marked_as_seen)|
+
+#### Request
+
+| Parameter   | Required | Data type | Notes |
+| ----------- | -------- | --------- | ----- |
+| `chat_id`   | Yes      | `string`  |       |
+| `seen_up_to` | Yes     | `string`  | RFC 3339 date-time format|
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "chat_id": "PJ0MRSHTDG",
+      "seen_up_to": "2017-10-12T15:19:21.010200Z"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+# Webhooks
+
+Here's what you need to know about **webhooks**:
+
+- Webhooks notify you when specific events are triggered. 
+- They can be generated by both Web and RTM API actions. 
+- When using RTM API, you can be also notified about events with [pushes](/messaging/customer-chat-api/rtm-reference/#pushes).
+- Webhooks and pushes have similar payloads.
+
+You can create and manage webhooks via the [Configuration API](/management/configuration-api/#webhooks). Refer to this document to see the list of **available webhooks**, as well as **sample payloads**.
+
+
+# Contact us
+
+If you found a bug or a typo, you can let us know directly on GitHub.
+In case of any questions or feedback, don't hesitate to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com). We'll be happy to hear from you!
+
+</Text>
+
+</Section>

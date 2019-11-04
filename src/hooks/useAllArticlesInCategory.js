@@ -44,8 +44,11 @@ export default (category, currentSlug) => {
       items: node.tableOfContents.items,
       category: node.frontmatter.category,
       subcategory: node.frontmatter.subcategory,
+      apiVersion: node.frontmatter.apiVersion,
       article: true
     }))
+    // filtering out non-default versions (dirty)
+    .filter(({ apiVersion }) => !apiVersion)
     // keep toc only for current article
     .map(item => {
       if (item.url !== currentSlug) {

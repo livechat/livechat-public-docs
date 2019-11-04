@@ -38,7 +38,14 @@ export default ({ data: { mdx } }) => {
   const {
     body,
     timeToRead,
-    frontmatter: { title, category, desc, subcategory, slug: customSlug },
+    frontmatter: {
+      title,
+      category,
+      desc,
+      subcategory,
+      slug: customSlug
+      // apiVersion
+    },
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
@@ -94,6 +101,7 @@ export const pageQuery = graphql`
         category
         subcategory
         slug
+        apiVersion
       }
       fields {
         slug
