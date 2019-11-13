@@ -24,11 +24,13 @@ import {
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
+import RichMessagePreview  from "../vendors/rich-message-preview.min.js";
 
 const components = {
   ...DesignSystem,
   ...CodeBlocks,
   ...Headings,
+  RichMessagePreview,
   Link
 };
 
