@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { graphql, Link } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
@@ -12,6 +12,7 @@ import "../components/core/algolia.css";
 
 import SideNav from "../components/core/SideNav";
 import Header from "../components/core/header";
+import Version from "../components/core/Version";
 
 import {
   MainWrapper,
@@ -48,6 +49,8 @@ export default ({ data: { mdx } }) => {
     parent: { modifiedTime }
   } = mdx;
 
+  const [apiVersion, setApiVersion] = useState(3.1);
+
   return (
     <>
       <SEO desc={desc} title={title} />
@@ -59,10 +62,17 @@ export default ({ data: { mdx } }) => {
             currentTitle={title}
             category={category}
             subcategory={subcategory}
-            currentApiVersion={currentApiVersion}
+            currentApiVersion={apiVersion}
           />
         </LeftColumn>
         <MiddleColumn>
+          {currentApiVersion && (
+            <Version
+              setApiVersion={setApiVersion}
+              slug={slug}
+              subcategory={subcategory}
+            />
+          )}
           <Content>
             {title && (
               <PageHeader
