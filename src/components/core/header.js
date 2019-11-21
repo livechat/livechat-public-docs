@@ -1,15 +1,9 @@
-import { useState } from "react";
 /** @jsx jsx */ import { jsx, keyframes, css } from "@emotion/core";
-import { Link, navigate } from "gatsby";
+import { Link } from "gatsby";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon, WarningIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
-import {
-  PopperTooltip,
-  Dropdown,
-  DropdownList,
-  Button
-} from "@livechat/design-system";
+import { PopperTooltip } from "@livechat/design-system";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -172,30 +166,8 @@ const Warning = () => (
   </PopperTooltip>
 );
 
-const firstItemStyle = {
-  marginBottom: "0",
-  borderTopLeftRadius: "5px",
-  borderTopRightRadius: "5px"
-};
-
-const lastItemStyle = {
-  marginBottom: "0",
-  borderBottomLeftRadius: "5px",
-  borderBottomRightRadius: "5px"
-};
-
 const Header = () => {
   const categories = useAllCategoriesMeta();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedItem, setSelectedItem] = useState();
-
-  const openDropdown = () => setShowDropdown(true);
-  const closeDropdown = () => setShowDropdown(false);
-  const setVersion = version => {
-    closeDropdown();
-    setSelectedItem(version);
-    navigate(`${window.location.pathname}/${version}`);
-  };
 
   return (
     <HeaderWrapper id="header">
@@ -214,43 +186,6 @@ const Header = () => {
       <MenuListWrapper>
         <MenuList>
           <Warning />
-          <div style={{ margin: "0 20px" }}>
-            <Dropdown
-              isVisible={showDropdown}
-              onClose={closeDropdown}
-              triggerRenderer={({ ref }) => (
-                <Button onClick={openDropdown} ref={ref}>
-                  {selectedItem || "Version"}
-                  <svg
-                    width="24px"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    fill="#424d57"
-                    style={{ marginLeft: "5px", marginRight: "-10px" }}
-                  >
-                    <path d="M7 10l5 5 5-5H7z"></path>
-                  </svg>
-                </Button>
-              )}
-            >
-              <DropdownList
-                items={[
-                  {
-                    itemId: 0,
-                    content: "v3.1",
-                    onItemSelect: () => setVersion("v3.1"),
-                    style: firstItemStyle
-                  },
-                  {
-                    itemId: 1,
-                    content: "v3.2",
-                    onItemSelect: () => setVersion("v3.2"),
-                    style: lastItemStyle
-                  }
-                ]}
-              />
-            </Dropdown>
-          </div>
 
           {categories.map(({ color, title, slug }) => (
             <MenuElement key={slug} color={color} label={title} slug={slug} />
