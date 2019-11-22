@@ -12,7 +12,7 @@ import "../components/core/algolia.css";
 
 import SideNav from "../components/core/SideNav";
 import Header from "../components/core/header";
-import Version from "../components/core/Version";
+import Version from "../components/core/version";
 
 import {
   MainWrapper,
