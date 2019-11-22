@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { graphql, Link } from "gatsby";
+import React, { useState, useEffect } from "react";
+import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
 
@@ -26,6 +26,8 @@ import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
 
+import { api } from "../constant";
+
 const components = {
   ...DesignSystem,
   ...CodeBlocks,
@@ -49,7 +51,41 @@ export default ({ data: { mdx } }) => {
     parent: { modifiedTime }
   } = mdx;
 
-  const [apiVersion, setApiVersion] = useState(3.1);
+  const [selectedVersion, setSelectedVersion] = useState(api.stableVersion);
+
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    api.unstableVersions.some(e => {
+      if (pathname.includes(e)) {
+        setSelectedVersion(e);
+      }
+    });
+  }, []);
+
+  const redirectToVersion = version => {
+    setSelectedVersion(version);
+
+    const pathname = window.location.pathname;
+
+    if (!(selectedVersion === version)) {
+      if (selectedVersion === api.stableVersion) {
+        navigate(pathname.replace(subcategory, `${subcategory}/v${version}`));
+      } else {
+        if (version === api.stableVersion) {
+          navigate(
+            pathname.replace(`${subcategory}/v${selectedVersion}`, subcategory)
+          );
+        } else {
+          navigate(
+            pathname.replace(
+              `${subcategory}/v${selectedVersion}`,
+              `${subcategory}/v${version}`
+            )
+          );
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -59,18 +95,17 @@ export default ({ data: { mdx } }) => {
         <LeftColumn>
           <SideNav
             currentSlug={customSlug || slug}
-            currentTitle={title}
             category={category}
             subcategory={subcategory}
-            currentApiVersion={apiVersion}
+            currentApiVersion={selectedVersion}
+            selectedVersion={selectedVersion}
           />
         </LeftColumn>
         <MiddleColumn>
           {currentApiVersion && (
             <Version
-              setApiVersion={setApiVersion}
-              slug={slug}
-              subcategory={subcategory}
+              selectedVersion={selectedVersion}
+              redirectToVersion={redirectToVersion}
             />
           )}
           <Content>

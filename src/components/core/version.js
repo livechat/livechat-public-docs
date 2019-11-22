@@ -1,24 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { navigate } from "gatsby";
+import React, { useState } from "react";
+import styled from "@emotion/styled";
 import { Dropdown, DropdownList, Button } from "@livechat/design-system";
-// import { api } from "../../constant";
-
-export const api = {
-  stableVersion: 3.1,
-  unstableVersions: [3.2]
-};
-
-const firstItemStyle = {
-  marginBottom: "0",
-  borderTopLeftRadius: "5px",
-  borderTopRightRadius: "5px"
-};
-
-const lastItemStyle = {
-  marginBottom: "0",
-  borderBottomLeftRadius: "5px",
-  borderBottomRightRadius: "5px"
-};
+import { api } from "../../constant";
 
 const containerStyle = {
   marginTop: "10px",
@@ -32,46 +15,34 @@ const labelStyle = {
   marginRight: "10px"
 };
 
-const Version = ({ setApiVersion, subcategory }) => {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedVersion, setSelectedVersion] = useState(api.stableVersion);
+const StyledDropdownList = styled(DropdownList)`
+  .lc-dropdown__list-item:first-of-type {
+    margin-bottom: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
 
-  useEffect(() => {
-    const pathname = window.location.pathname;
-    api.unstableVersions.some(e => {
-      if (pathname.includes(e)) {
-        setSelectedVersion(e);
-      }
-    });
-  }, []);
+  .lc-dropdown__list-item:last-of-type {
+    margin-bottom: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+`;
+
+const Version = ({ redirectToVersion, selectedVersion }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const onDropdownHandle = version => {
+    redirectToVersion(version);
+  };
 
   const openDropdown = () => setShowDropdown(true);
   const closeDropdown = () => setShowDropdown(false);
-  const setVersion = version => {
-    closeDropdown();
-    setSelectedVersion(version);
-    setApiVersion(version);
 
-    const pathname = window.location.pathname;
-
-    if (!(selectedVersion === version)) {
-      if (selectedVersion === api.stableVersion) {
-        navigate(pathname.replace(subcategory, `${subcategory}/v${version}`));
-      } else {
-        if (version === api.stableVersion) {
-          navigate(
-            pathname.replace(`${subcategory}/v${selectedVersion}`, subcategory)
-          );
-        } else {
-          navigate(
-            pathname.replace(
-              `${subcategory}/v${selectedVersion}`,
-              `${subcategory}/v${version}`
-            )
-          );
-        }
-      }
-    }
+  const setContent = version => {
+    return version === api.stableVersion
+      ? `v${version} (stable)`
+      : `v${version}`;
   };
 
   return (
@@ -82,7 +53,12 @@ const Version = ({ setApiVersion, subcategory }) => {
         onClose={closeDropdown}
         triggerRenderer={({ ref }) => (
           <Button onClick={openDropdown} ref={ref}>
-            {selectedVersion || "Version"}
+            {selectedVersion}
+            {selectedVersion === api.stableVersion && (
+              <span style={{ fontWeight: 100, marginLeft: "3px" }}>
+                (stable)
+              </span>
+            )}
             <svg
               width="24px"
               height="24px"
@@ -95,21 +71,12 @@ const Version = ({ setApiVersion, subcategory }) => {
           </Button>
         )}
       >
-        <DropdownList
-          items={[
-            {
-              itemId: 0,
-              content: "v3.1",
-              onItemSelect: () => setVersion(3.1),
-              style: firstItemStyle
-            },
-            {
-              itemId: 1,
-              content: "v3.2",
-              onItemSelect: () => setVersion(3.2),
-              style: lastItemStyle
-            }
-          ]}
+        <StyledDropdownList
+          items={[3.1, 3.2].map((e, i) => ({
+            itemId: i,
+            content: setContent(e),
+            onItemSelect: () => onDropdownHandle(e)
+          }))}
         />
       </Dropdown>
     </div>
