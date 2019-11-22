@@ -18,7 +18,15 @@ import {
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
 
-const printItems = (items, toggleState, activeUrls, depth = 0) => (
+import { api } from "../../../constant";
+
+const printItems = (
+  items,
+  toggleState,
+  activeUrls,
+  depth = 0,
+  selectedVersion = null
+) => (
   <Ul>
     {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
       const isActiveItem =
@@ -32,7 +40,13 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
       return (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
-            url={url || "#"}
+            url={
+              selectedVersion
+                ? api.stableVersion === selectedVersion
+                  ? url || "#"
+                  : `${url}/v${selectedVersion}`
+                : url
+            }
             title={title}
             active={isActiveItem}
             onClick={toggleState(path)}
@@ -49,7 +63,13 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
   </Ul>
 );
 
-const SideNav = ({ category, subcategory, currentSlug, currentApiVersion }) => {
+const SideNav = ({
+  category,
+  subcategory,
+  currentSlug,
+  currentApiVersion,
+  selectedVersion
+}) => {
   const [articles, getArticlePath] = useAllArticlesInCategory(
     category,
     currentSlug,
@@ -101,7 +121,13 @@ const SideNav = ({ category, subcategory, currentSlug, currentApiVersion }) => {
         <Search />
       </NavHeader>
       <MenuWrapper>
-        {printItems(menuItems, toggleState, activePath, undefined)}
+        {printItems(
+          menuItems,
+          toggleState,
+          activePath,
+          undefined,
+          selectedVersion
+        )}
       </MenuWrapper>
     </Nav>
   );
