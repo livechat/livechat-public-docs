@@ -41,11 +41,9 @@ const printItems = (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
             url={
-              selectedVersion
-                ? api.stableVersion === selectedVersion
-                  ? url || "#"
-                  : `${url}/v${selectedVersion}`
-                : url
+              selectedVersion && !(api.stableVersion === selectedVersion)
+                ? `${url}/v${selectedVersion}`
+                : url || "#"
             }
             title={title}
             active={isActiveItem}
