@@ -36,15 +36,19 @@ const printItems = (
 
       const isActiveSection = activeUrls && url === activeUrls[depth];
 
+      let redirectUrl = url;
+
+      if (!title.includes("Overview")) {
+        redirectUrl =
+          selectedVersion && !(constants.api.stableVersion === selectedVersion)
+            ? `${url}/v${selectedVersion}`
+            : url || "#";
+      }
+
       return (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
-            url={
-              selectedVersion &&
-              !(constants.api.stableVersion === selectedVersion)
-                ? `${url}/v${selectedVersion}`
-                : url || "#"
-            }
+            url={redirectUrl}
             title={title}
             active={isActiveItem}
             onClick={toggleState(path)}
