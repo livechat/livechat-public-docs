@@ -78,8 +78,7 @@ const NavSwitch = styled.a`
   transform: ${({ expanded = true }) => (expanded ? "rotate(180deg)" : "")};
 `;
 
-export const Nav = ({ children, ...rest }) => {
-  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
+export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
   return (
     <NavWrapper expanded={expanded} {...rest}>
       <NavSwitch
@@ -121,7 +120,7 @@ export const PageDetails = styled.p`
 `;
 export const PageHeader = ({ title, timeToRead, modifiedTime }) => (
   <PageHeaderWrapper>
-    <h1>{title}</h1>
+    <h1>{title}asdfasdf</h1>
     <PageDetails>
       {timeToRead} minutes reading time &bull; last modified {modifiedTime}
     </PageDetails>
@@ -150,7 +149,7 @@ export const Content = styled.article`
 `;
 
 export const MainWrapper = styled.div`
-  padding: 60px 15px 0 0;
+  padding-right: 15px;
   display: flex;
 
   @media (min-width: 768px) {

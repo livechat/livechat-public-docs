@@ -25,7 +25,8 @@ import {
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
-import RichMessagePreview  from "../vendors/rich-message-preview.min.js";
+import RichMessagePreview from "../vendors/rich-message-preview.min.js";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 import constants from "../constant";
 
@@ -56,6 +57,8 @@ export default ({ data: { mdx } }) => {
   const [selectedVersion, setSelectedVersion] = useState(
     constants.api.stableVersion
   );
+
+  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -103,6 +106,8 @@ export default ({ data: { mdx } }) => {
             subcategory={subcategory}
             currentApiVersion={selectedVersion}
             selectedVersion={selectedVersion}
+            expanded={expanded}
+            setExpanded={setExpanded}
           />
         </LeftColumn>
         <MiddleColumn>
@@ -110,6 +115,7 @@ export default ({ data: { mdx } }) => {
             <Version
               selectedVersion={selectedVersion}
               redirectToVersion={redirectToVersion}
+              expanded={expanded}
             />
           )}
           <Content>
