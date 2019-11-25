@@ -98,7 +98,7 @@ export const Nav = ({ children, ...rest }) => {
 };
 
 export const NavHeader = styled.div`
-  padding: 20px 28px 10px;
+  padding: 15px 28px 15px;
   font-size: 14px;
   font-weight: 600;
   display: flex;
@@ -108,10 +108,6 @@ export const NavHeader = styled.div`
   svg {
     margin-right: 2px;
   }
-`;
-
-export const PageTitle = styled.h1`
-  margin 0;
 `;
 
 export const PageHeaderWrapper = styled.div`
@@ -125,7 +121,7 @@ export const PageDetails = styled.p`
 `;
 export const PageHeader = ({ title, timeToRead, modifiedTime }) => (
   <PageHeaderWrapper>
-    <PageTitle>{title}</PageTitle>
+    <h1>{title}</h1>
     <PageDetails>
       {timeToRead} minutes reading time &bull; last modified {modifiedTime}
     </PageDetails>

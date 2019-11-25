@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Dropdown, DropdownList, Button } from "@livechat/design-system";
-import { api } from "../../constant";
+import constants from "../../constant";
 
 const containerStyle = {
-  marginTop: "10px",
+  padding: "9px 10px 8px",
+  backgroundColor: "white",
+  borderBottom: "solid 1px #e8e8e8",
+  width: "100%",
+  position: "fixed",
+  zIndex: 40,
+  paddingBottom: "7px",
 
   ".label": {
     marginRight: "10px"
@@ -34,13 +40,14 @@ const Version = ({ redirectToVersion, selectedVersion }) => {
 
   const onDropdownHandle = version => {
     redirectToVersion(version);
+    setShowDropdown(false);
   };
 
   const openDropdown = () => setShowDropdown(true);
   const closeDropdown = () => setShowDropdown(false);
 
   const setContent = version => {
-    return version === api.stableVersion
+    return version === constants.api.stableVersion
       ? `v${version} (stable)`
       : `v${version}`;
   };
@@ -54,7 +61,7 @@ const Version = ({ redirectToVersion, selectedVersion }) => {
         triggerRenderer={({ ref }) => (
           <Button onClick={openDropdown} ref={ref}>
             {selectedVersion}
-            {selectedVersion === api.stableVersion && (
+            {selectedVersion === constants.api.stableVersion && (
               <span style={{ fontWeight: 100, marginLeft: "3px" }}>
                 (stable)
               </span>
@@ -72,7 +79,7 @@ const Version = ({ redirectToVersion, selectedVersion }) => {
         )}
       >
         <StyledDropdownList
-          items={[3.1, 3.2].map((e, i) => ({
+          items={constants.api.allVersions.map((e, i) => ({
             itemId: i,
             content: setContent(e),
             onItemSelect: () => onDropdownHandle(e)

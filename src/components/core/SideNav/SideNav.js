@@ -18,7 +18,7 @@ import {
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
 
-import { api } from "../../../constant";
+import constants from "../../../constant";
 
 const printItems = (
   items,
@@ -41,7 +41,8 @@ const printItems = (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
             url={
-              selectedVersion && !(api.stableVersion === selectedVersion)
+              selectedVersion &&
+              !(constants.api.stableVersion === selectedVersion)
                 ? `${url}/v${selectedVersion}`
                 : url || "#"
             }
