@@ -40,8 +40,6 @@ const StyledDropdownList = styled(DropdownList)`
 const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
-  console.log(expanded);
-
   const onDropdownHandle = version => {
     redirectToVersion(version);
     setShowDropdown(false);
