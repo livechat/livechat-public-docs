@@ -28,7 +28,7 @@ If you're wondering which API to use - Agent Chat **RTM API** or **Web API**, ke
 
 ## Authentication
 
-**Agent authentication** is handled by access tokens. Find out how to get an **access token** from [Agent authorization flows](/getting-started/authorization/#agent-authorization-flows). Take note **you won't be able to use this token** for the Customer Chat API. 
+**Agent authentication** is handled by access tokens. Find out how to get an **access token** from [Agent authorization flows](/getting-started/authorization/#agent-authorization-flows/). Take note **you won't be able to use this token** for the Customer Chat API. 
 
 All authorization scopes are listed in the [Scopes](#scopes) section. If a method requires certain scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
 
@@ -357,7 +357,7 @@ Message event contains a text message to other chat users.
 <Section>
 <Text>
 
-Rich message event contains a rich message data structure.
+Rich message event contains a rich message data structure. [Read more](/extending-ui/extending-chat-widget/rich-messages/) in a document dedicated to Rich messages.
 
 | Field                            | Req./Opt. | Notes                                                                |
 | -------------------------------- | :-------: | ------------------------------------------------------------------: |
@@ -1053,14 +1053,15 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | ----------- | -------------------------------------------------------- |
 | `POST`      | `https://api.livechatinc.com/v3.1/agent/action/<action>` |
 
-If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
 
-| Reqiured Header |                   Value                    |                                          Notes |
+| Header          |                   Value                    |                                          Notes |
 | --------------- | :----------------------------------------: | ---------------------------------------------: |
-| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |             Valid for the `upload_file` method |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` | Valid for the `upload_file` method             |
 | `Content-Type`  |             `application/json`             | Valid for all methods except for `upload_file` |
-| `Authorization` |              `Bearer <token>`              |                                   Access token |
-| `X-Author-Id`   |              `<bot_agent_id>`              |                      Valid only for Bot Agents |
+| `Authorization` |              `Bearer <token>`              | Access token                                   |
+| `X-Region`      |    `fra`                                   | Required for a license from Europe. [More info...](#data-centers) |
+| `X-Author-Id`   |              `<bot_agent_id>`              | Valid only for Bot Agents                      |
+| `X-API-Version` | API version, for example `3.1`             | You don't need this header if you specify API version in the URL. |
 
 </Text>
 <Code>
@@ -1136,7 +1137,7 @@ There's only one value allowed for a single property.
 
 | Parameter     | Data type | Notes                                                                    |
 | ------------- | --------- | ------------------------------------------------------------------------ |
-| `found_chats` | `string`  | An estimated number. The real number of found chats can slightly differ. |
+| `found_chats` | `number`  | An estimated number. The real number of found chats can slightly differ. |
 
 </Text>
 <Code>
@@ -1237,7 +1238,7 @@ curl -X POST \
 
 | Parameter       | Data type | Notes                       |
 | --------------- | --------- | --------------------------- |
-| `found_threads` | `string`  | Number of threads in a chat |
+| `found_threads` | `number`  | Number of threads in a chat |
 
 </Text>
 <Code>
@@ -1298,7 +1299,7 @@ It returns threads that the current Agent has access to in a given chat.
 
 #### Request
 
-| Parameter    | Required | Data type | Notes |
+| Parameter    | Required | Data type |  |
 | ------------ | -------- | --------- | ----- |
 | `chat_id`    | Yes      | `string`  |       |
 | `thread_ids` | No       | `array`   |       |
@@ -1751,7 +1752,7 @@ Grants access to a new resource without overwriting the existing ones.
 | **Method URL**         | `https://api.livechatinc.com/v3.1/agent/action/grant_access` |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw`            |
 | **RTM API equivalent** | [`grant_access`](rtm-reference/#grant-access)   |
-| **Webhook**            | [`access_granted`](/management/configuration-api/#access_granted)                          |
+| **Webhook**            | [`access_granted`](/management/configuration-api/#access_granted)|
 
 #### Request
 
@@ -1759,9 +1760,9 @@ Grants access to a new resource without overwriting the existing ones.
 | ------------- | -------- | -------- | -------------------- |
 | `resource`    | Yes      | `string` | `chat` or `customer` |
 | `id`          | Yes      | `string` | Resource Id          |
-| `access`      | Yes      | `object` |                      |
+| `access`      | Yes      | `object` | The entity that is granted access to the specified resource |
 | `access.type` | Yes      | `string` | `group`              |
-| `access.id`   | Yes      | any      |                      |
+| `access.id`   | Yes      | `number` |                   |
 
 #### Response
 
@@ -1802,7 +1803,7 @@ https://api.livechatinc.com/v3.1/agent/action/grant_access \
 | **Method URL**         | `https://api.livechatinc.com/v3.1/agent/action/revoke_access` |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw`             |
 | **RTM API equivalent** | [`revoke_access`](rtm-reference/#revoke-access)  |
-| **Webhook**            | [`access_revoked`](/management/configuration-api/#access_revoked)                           |
+| **Webhook**            | [`access_revoked`](/management/configuration-api/#access_revoked)|
 
 #### Request
 
@@ -1810,9 +1811,9 @@ https://api.livechatinc.com/v3.1/agent/action/grant_access \
 | ------------- | -------- | --------- | -------------------- |
 | `resource`    | Yes      | `string`  | `chat` or `customer` |
 | `id`          | Yes      | `string`  | Resource Id          |
-| `access`      | Yes      | `object`  |                      |
-| `access.type` | Yes      | `string`  | `group` or `agent`   |
-| `access.id`   | Yes      | `number`  |                      |
+| `access`      | Yes      | `object`  | The entity that loses access to the specified resource |
+| `access.type` | Yes      | `string`  | `group`              |
+| `access.id`   | Yes      | `number` |                    |
 
 #### Response
 
@@ -1846,7 +1847,7 @@ https://api.livechatinc.com/v3.1/agent/action/revoke_access \
 
 ### Set Access
 
-Grants access to a new resource overwriting the existing ones.
+Gives access to a new resource overwriting the existing ones.
 
 #### Specifics
 
@@ -1855,7 +1856,7 @@ Grants access to a new resource overwriting the existing ones.
 | **Method URL**         | `https://api.livechatinc.com/v3.1/agent/action/set_access` |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw`          |
 | **RTM API equivalent** | [`set_access`](rtm-reference/#set-access)     |
-| **Webhook**            | [`access_set`](/management/configuration-api/#access_set)                                |
+| **Webhook**            | [`access_set`](/management/configuration-api/#access_set)  |
 
 #### Request
 
@@ -1863,9 +1864,9 @@ Grants access to a new resource overwriting the existing ones.
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
 | `id`           | Yes      | `string` | resource id          |
-| `access`       | Yes      | `object` |                      |
-| `access.type`  | Yes      | `string` | `group` or `agent`   |
-| `access.id`    | Yes      | `number` |                      |
+| `access`       | Yes      | `object` | The entity that is given access to the specified resource|
+| `access.type`  | Yes      | `string` | `group`              |
+| `access.id`    | Yes      | `number` |                   |
 
 #### Response
 
@@ -3099,10 +3100,6 @@ https://api.livechatinc.com/v3.1/agent/action/multicast \
 </Code>
 </Section>
 
-<Section>
-
-<Text>
-
 # Webhooks
 
 Here's what you need to know about **webhooks**:
@@ -3114,12 +3111,48 @@ Here's what you need to know about **webhooks**:
 
 You can create and manage webhooks via the [Configuration API](/management/configuration-api/#webhooks). Refer to this document to see the list of **available webhooks**, as well as **sample payloads**.
 
+# Errors
+
+<CodeResponse title={'General error format'}>
+
+```json
+{
+  "error": {
+    "type": "misdirected_request",
+    "message": "Wrong region",
+    "data": {
+      // optional
+      "region": "dal"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Possible errors
+
+| Type                    | Default Message               | Notes                                                              |
+| ----------------------- | ----------------------------- | ------------------------------------------------------------------ |
+| `authentication`        | Authentication error          | An invalid or expired access token.                                |
+| `authorization`         | Authorization error           | User is not allowed to perform the action.                         |
+| `entity_too_large`      | Upload limit exceeded (10MB). | Client's request is too large.                                     |
+| `internal`              | Internal server error         |                                                                    |
+| `license_expired`       | License expired               | The end of license trial or subcription.                            |
+| `license_not_found`     | License not found             | License with the specified ID doesn't exist.                       |
+| `misdirected_request`__*__ | Wrong region                  | Client's request should be performed to another region.            |
+| `request_timeout`       | Request timed out             | Timeout threshold is 15 seconds.                                   |
+| `unsupported_version`   | Unsupported version           | Unsupported protocol version.                                      |
+| `validation`            | Wrong format of request       |                                                                    |
+| `wrong_product_version` | Wrong product version         | License is not LiveChat 3 (probably still LiveChat 2).             |
+
+__*)__ `misdirected_request` error returns also correct `region` in optional `data` object.
+With this information client is able to figure out where he should be connected.
+
 
 # Contact us
 
 If you found a bug or a typo, you can let us know directly on GitHub.
 In case of any questions or feedback, don't hesitate to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com). We'll be happy to hear from you!
 
-</Text>
 
-</Section>

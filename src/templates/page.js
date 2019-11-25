@@ -28,11 +28,13 @@ import SEO from "../components/core/seo";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 import constants from "../constant";
+import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 
 const components = {
   ...DesignSystem,
   ...CodeBlocks,
   ...Headings,
+  RichMessagePreview,
   Link
 };
 

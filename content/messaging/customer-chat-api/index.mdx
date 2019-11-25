@@ -28,7 +28,7 @@ If you're wondering which API to use - Customer Chat **RTM API** or **Web API**,
 
 ## Authentication
 
-**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow). Take note **it's not the same** token you would you for the Agent Chat or Configuration API. 
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](/getting-started/authorization/#customer-authorization-flow/). Take note **it's not the same** token you would you for the Agent Chat or Configuration API. 
 
 If a method requires particular authorization scopes, you'll find them included in the method description. Keep in mind that Web API requires authorization every time you make a request.
 
@@ -258,7 +258,7 @@ Message event contains text message to other chat users.
 
 <Text>
 
-Rich message event contains rich message data structure.
+Rich message event contains rich message data structure. [Read more](/extending-ui/extending-chat-widget/rich-messages/) in a document dedicated to Rich messages.
 
 | Field                            | Req./Opt. | Notes                                                                |
 | -------------------------------- | :-------: | ------------------------------------------------------------------: |
@@ -880,13 +880,13 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | ----------- | ----------------------------------------------------------- |
 | `POST`      | `https://api.livechatinc.com/v3.1/customer/action/<action>` |
 
-If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
-
-| Required header |                   Value                    |                                           Notes |
+|  Header         |                   Value                    |                                           Notes |
 | --------------- | :----------------------------------------: | ----------------------------------------------: |
 | `Content-Type`  | `multipart/form-data; boundary=<boundary>` |              Valid for the `upload_file` method |
 | `Content-Type`  |             `application/json`             | Valid for every method except for `upload_file` |
 | `Authorization` |              `Bearer <token>`              | Customer access token. It's not the same token you would use for the Agent Chat or Configuration API. [Read more...](#authentication) |
+| `X-Region`      |    `fra`                                   | Required for a license from Europe. [More info...](#data-centers) |
+| `X-API-Version` | API version, for example `3.1`             | You don't need this header if you specify API version in the URL. |
 
 Every request to Customer Chat API needs to have the following query string parameters:
 
@@ -2401,9 +2401,6 @@ curl -X POST \
 
 </Section>
 
-<Section>
-
-<Text>
 
 # Webhooks
 
@@ -2416,12 +2413,46 @@ Here's what you need to know about **webhooks**:
 
 You can create and manage webhooks via the [Configuration API](/management/configuration-api/#webhooks). Refer to this document to see the list of **available webhooks**, as well as **sample payloads**.
 
+# Errors
+
+<CodeResponse title={'General error format'}>
+
+```json
+{
+  "error": {
+    "type": "misdirected_request",
+    "message": "Wrong region",
+    "data": {
+      // optional
+      "region": "dal"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Possible errors
+
+| Type                        | Default Message               | Notes                                                              |
+| --------------------------- | ----------------------------- | ------------------------------------------------------------------ |
+| `authentication`            | Authentication error          | An invalid or expired access token.                                |
+| `authorization`             | Authorization error           | Agent is not allowed to perform the action.                        |
+| `entity_too_large`          | Upload limit exceeded (10MB). | Client's request is too large.                                     |
+| `internal`                  | Internal server error         |                                                                    |
+| `license_expired`           | License expired               | The end of license trial or subcription.                            |
+| `license_not_found`         | License not found             | License with the specified ID doesn't exist.                       |
+| `misdirected_request`__*__       | Wrong region                  | Client's request should be performed to another region.            |
+| `validation`                | Wrong format of request       |                                                                    |
+| `request_timeout`           | Request timed out             | Timeout threshold is 15 seconds.                                   |
+| `unsupported_version`       | Unsupported version           | Unsupported protocol version.                                      |
+| `wrong_product_version`     | Wrong product version         | License is not LiveChat 3 (probably still LiveChat 2).             |
+
+
+__*)__  `misdirected_request` error returns also correct `region` in optional `data` object.
+With this information client is able to figure out where he should be connected.
 
 # Contact us
 
 If you found a bug or a typo, you can let us know directly on GitHub.
 In case of any questions or feedback, don't hesitate to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com). We'll be happy to hear from you!
-
-</Text>
-
-</Section>
