@@ -79,6 +79,7 @@ Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as 
 | `status` __*__                       | `string`   | Yes      | Agent status                                                         |
 | `avatar`                             | `string`   | No       | Avatar URL                                                           |
 | `max_chats_count`                    | `int`      | No       | Max. number of incoming chats that can be routed to an Agent; default: 6. |
+| `default_group_priority` __***__     | `string`   | No       | The default routing priority for a group without defined priority. |
 | `groups`                             | `object[]` | No       | Groups an Agent belongs to.                                          |
 | `groups[].id`                        | `uint`     | Yes      | Group ID; required only when `group`'s included.                     |
 | `groups[].priority` __**__           | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.    |
@@ -93,20 +94,31 @@ Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as 
 
 __*__ The table below presents the possible values for the `status` parameter:
 
-| Possible value | Notes           |
-| ------------- |:-------------:|
-| `accepting chats`  | Agent is logged in. The chat router routes incoming chats to the Agent.     |
+| Possible value        | Notes                                                                              |
+| --------------------- |:----------------------------------------------------------------------------------:|
+| `accepting chats`     | Agent is logged in. The chat router routes incoming chats to the Agent.            |
 | `not accepting chats` | Agent is logged in, but the chat router doesn't route incoming chats to the Agent. |
-| `offline` | Agent isn't logged in.    |
+| `offline`             | Agent isn't logged in.                                                             |
 
 
 __**__ The table below presents the possible values for the `groups[].priority` parameter:
 
 | Possible value | Notes           |
-| ------------- |:-------------:|
-| `first`  | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
-| `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
-| `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+| -------------- |:---------------:|
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
+__***__ The table below presents the possible values for the `default_group_priority` parameter:
+
+| Possible values |  Notes        |
+| --------------- |:-------------:|
+| `first`         | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`        | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`          | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+| `supervisor`    | Bot works as `supervisor` so it will not be assigned to any chats.   |
+
+
 
 </Text>
 <Code>
@@ -194,26 +206,24 @@ curl -X POST \
 
 #### Request
 
-| Parameter                       | Required       | Data type | Notes                                                  |
-| ------------------------------------ | ---------- | -------- | ------------------------------------------------------ |
-| `id`                                 | Yes   | `string`      | Bot Agent ID                                           |
-| `name`                               | No   | `string`       | Display name                                           |
-| `avatar`                             | No   | `string`       | Avatar URL                                             |
-| `status` __*__                       | No   | `string`       | Agent status                                           |
-| `max_chats_count`                    | No      | `int`       | Maximum incoming chats that can be routed to an Agent. |
-| `groups`                             | No | `object[]`       | Groups an Agent belongs to                            |
-| `groups[].id`                        |  Yes    | `uint`      | Group ID, required only when `groups`'s present.       |
-| `groups[].priority` __**__           | Yes   |  `string`     | Agent's priority in the group; required only when `groups` is included.    |
-| `default_group_priority` __***__    |   No | `string`        | The default routing priority for a group without defined priority. |
-| `webhooks`                           | No   | `object`       | Webhooks sent to an Agent                             |
-| `webhooks.url`                       | Yes   | `string`      | Destination URL for webhooks; required only when `webhooks` is present.|
-| `webhooks.secret_key`                | Yes   | `string`      | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included. 
-| `webhooks.actions`                   | Yes | `object[]`      | [Triggering actions](#triggering-actions); required only when `webhooks` is included.|
-| `webhooks.actions[].name`            | Yes   | `string`      | The name of the triggering action; required only when `webhooks` is included.|
-| `webhooks.actions[].filters`         | No   | `object`       | Filters to check if a webhook should be triggered.        |
-| `webhooks.actions[].additional_data` | No | `string[]`       | Additional data arriving with the webhook.          |
-
-
+| Parameter                            | Required | Data type  | Notes                                                                                         |
+| ------------------------------------ | -------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `id`                                 | Yes      | `string`   | Bot Agent ID                                                                                  |
+| `name`                               | No       | `string`   | Display name                                                                                  |
+| `avatar`                             | No       | `string`   | Avatar URL                                                                                    |
+| `status` __*__                       | No       | `string`   | Agent status                                                                                  |
+| `max_chats_count`                    | No       | `int`      | Maximum incoming chats that can be routed to an Agent.                                        |
+| `groups`                             | No       | `object[]` | Groups an Agent belongs to                                                                    |
+| `groups[].id`                        | Yes      | `uint`     | Group ID, required only when `groups`'s present.                                              |
+| `groups[].priority` __**__           | Yes      |  `string`  | Agent's priority in the group; required only when `groups` is included.                       |
+| `default_group_priority` __***__     | No       | `string`   | The default routing priority for a group without defined priority.                            |
+| `webhooks`                           | No       | `object`   | Webhooks sent to an Agent                                                                     |
+| `webhooks.url`                       | Yes      | `string`   | Destination URL for webhooks; required only when `webhooks` is present.                       |
+| `webhooks.secret_key`                | Yes      | `string`   | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included. |
+| `webhooks.actions`                   | Yes      | `object[]` | [Triggering actions](#triggering-actions); required only when `webhooks` is included.         |
+| `webhooks.actions[].name`            | Yes      | `string`   | The name of the triggering action; required only when `webhooks` is included.                 |
+| `webhooks.actions[].filters`         | No       | `object`   | Filters to check if a webhook should be triggered.                                            |
+| `webhooks.actions[].additional_data` | No       | `string[]` | Additional data arriving with the webhook.                                                    |
 
 __*__ The table below presents the possible values for the `status` parameter:
 
