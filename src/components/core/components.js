@@ -69,7 +69,7 @@ const NavSwitch = styled.a`
   height: 30px;
   position: absolute;
   right: -15px;
-  top: 15px;
+  top: 14px;
   background-color: white;
   border: 1px solid #e8e8e8;
   border-radius: 30px;
