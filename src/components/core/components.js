@@ -109,6 +109,10 @@ export const NavHeader = styled.div`
   }
 `;
 
+export const PageTitle = styled.h1`
+  margin: 0;
+`;
+
 export const PageHeaderWrapper = styled.div`
   margin: 3em 0 1em;
   padding: 2em 0 1em;
@@ -120,7 +124,7 @@ export const PageDetails = styled.p`
 `;
 export const PageHeader = ({ title, timeToRead, modifiedTime }) => (
   <PageHeaderWrapper>
-    <h1>{title}asdfasdf</h1>
+    <PageTitle>{title}</PageTitle>
     <PageDetails>
       {timeToRead} minutes reading time &bull; last modified {modifiedTime}
     </PageDetails>
