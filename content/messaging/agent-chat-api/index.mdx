@@ -1047,6 +1047,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 <Text>
 
 # Methods
+Web API actions can generate webhooks, as well as pushes. However, pushes can be delivered only in the websocket transport. If you want to be notified about emitted events with webhooks, you need to [register](/management/configuration-api/#register-webhook) them first. 
 
 | HTTP method | The API enpoint                                          |
 | ----------- | -------------------------------------------------------- |
@@ -1384,11 +1385,15 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 | `filters.agent_ids`                                   | No       | `array`   | Array of agent IDs                                                                        |
 | `filters.thread_ids`                                  | No       | `array`   | Array of thread IDs. Cannot be used with other filters or pagination; max array size: 20. |
 | `filters.group_ids`                                   | No       | `array`   | Array of group IDs                                                                        |
-| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     |                                                                                           |
-| `<filter_type>`                                       | No       | `any`     | **\***                                                                                    |
+| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     | **\*** __described below__                                                                |    
+| `filters.tags.<filter_type>`                          | No       | `any`     |                                                                                           |
+| `filters.sales.<filter_type>`                         | No       | `any`     |                                                                                           |
+| `filters.goals.<filter_type>`                         | No       | `any`     |                                                                                           |
+| `filters.surveys.<survey>`                            | No       | `array`   | **\**** __described below__                                                               |
 | `pagination`                                          | No       | `object`  |                                                                                           |
 | `pagination.page`                                     | No       | `number`  | Default: 1, min: 1, max: 1000                                                             |
 | `pagination.limit`                                    | No       | `number`  | Default: 25, min: 0, max: 100                                                             |
+
 
 **\*)**
 `<filter_type>` can take the following values:
@@ -1398,6 +1403,11 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 - `exclude_values` (`type[]` - array with specific type for property: `string`, `int` or `bool`)
 
 There's only one value allowed for a single property.
+
+**\**)**
+`<survey>` contains the following fields:
+  * `type` (`string`) - allowed values: `pre_chat`, `post_chat`
+  * `answer_id` (`string`)
 
 </Text>
 <Code>
@@ -1418,15 +1428,9 @@ curl -X POST \
 {
   "chats": [
     {
-      "chat": {
-        "id": "PJ0MRSHTDG",
-        "users": [
-          // array of "User" objects
-        ],
-        "thread": {
-          // "Thread" object
-        }
-      }
+      "id": "PJ0MRSHTDG",
+      "users": [], // array of "User" objects
+      "thread": {} // "Thread" object
     }
   ],
   "pagination": {
@@ -1481,15 +1485,15 @@ When `chat.users` is defined, one of following scopes is required:
 
 #### Request
 
-| Parameters               | Required | Data type | Notes                                                                   |
-| ------------------------ | -------- | --------- | ----------------------------------------------------------------------- |
-| `chat`                   | No       | `object`  |                                                                         |
-| `chat.properties`        | No       | `object`  |                                                                         |
-| `chat.access`            | No       | `object`  |                                                                         |
-| `chat.users`             | No       | `array`   | The list of existing users. Only one user is allowed (type `customer`). |
-| `chat.thread`            | No       | `object`  |                                                                         |
-| `chat.thread.events`     | No       | `array`   | The list of initial chat events.                                        |
-| `chat.thread.properties` | No       | `object`  |                                                                         |
+| Parameters               | Required | Data type | Notes                                                                       |
+| ------------------------ | -------- | --------- | --------------------------------------------------------------------------- |
+| `chat`                   | No       | `object`  |                                                                             |
+| `chat.properties`        | No       | `object`  |                                                                             |
+| `chat.access`            | No       | `object`  |                                                                             |
+| `chat.users`             | No       | `array`   | The list of existing users. Only one user is allowed (type `customer`).     |
+| `chat.thread`            | No       | `object`  |                                                                             |
+| `chat.thread.events`     | No       | `array`   | The list of initial chat events.                                            |
+| `chat.thread.properties` | No       | `object`  |                                                                             |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
 #### Response
@@ -3103,12 +3107,11 @@ https://api.livechatinc.com/v3.1/agent/action/multicast \
 
 Here's what you need to know about **webhooks**:
 
-- Webhooks notify you when specific events are triggered. 
+- Webhooks notify you when specific events occur. 
 - They can be generated by both Web and RTM API actions. 
-- When using RTM API, you can be also notified about events with [pushes](/messaging/customer-chat-api/rtm-reference/#pushes).
+- When using RTM API, you can be also notified about events with [pushes](/messaging/agent-chat-api/rtm-reference/#pushes).
 - Webhooks and pushes have similar payloads.
-
-You can create and manage webhooks via the [Configuration API](/management/configuration-api/#webhooks). Refer to this document to see the list of **available webhooks**, as well as **sample payloads**.
+- To receive webhooks, you need to [register](/management/configuration-api/#register-webhook) them first. You can do it via the [Configuration API](/management/configuration-api/#webhooks). Refer to this document to see the list of **available webhooks**, as well as **sample payloads**.
 
 # Errors
 
