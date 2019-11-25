@@ -27,7 +27,7 @@ import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview  from "../vendors/rich-message-preview.min.js";
 
-import { api } from "../constant";
+import constants from "../constant";
 
 const components = {
   ...DesignSystem,
@@ -53,11 +53,13 @@ export default ({ data: { mdx } }) => {
     parent: { modifiedTime }
   } = mdx;
 
-  const [selectedVersion, setSelectedVersion] = useState(api.stableVersion);
+  const [selectedVersion, setSelectedVersion] = useState(
+    constants.api.stableVersion
+  );
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    api.unstableVersions.some(e => {
+    constants.api.unstableVersions.some(e => {
       if (pathname.includes(e)) {
         setSelectedVersion(e);
       }
@@ -70,10 +72,10 @@ export default ({ data: { mdx } }) => {
     const pathname = window.location.pathname;
 
     if (!(selectedVersion === version)) {
-      if (selectedVersion === api.stableVersion) {
+      if (selectedVersion === constants.api.stableVersion) {
         navigate(pathname.replace(subcategory, `${subcategory}/v${version}`));
       } else {
-        if (version === api.stableVersion) {
+        if (version === constants.api.stableVersion) {
           navigate(
             pathname.replace(`${subcategory}/v${selectedVersion}`, subcategory)
           );
