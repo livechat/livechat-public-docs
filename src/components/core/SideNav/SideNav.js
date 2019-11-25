@@ -17,7 +17,6 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
-
 import constants from "../../../constant";
 
 const printItems = (
@@ -67,7 +66,9 @@ const SideNav = ({
   subcategory,
   currentSlug,
   currentApiVersion,
-  selectedVersion
+  selectedVersion,
+  expanded,
+  setExpanded
 }) => {
   const [articles, getArticlePath] = useAllArticlesInCategory(
     category,
@@ -95,7 +96,11 @@ const SideNav = ({
   useScrollSpy(".heading", url => url && setActivePath(getArticlePath(url)));
 
   return (
-    <Nav color={categoryMeta.color}>
+    <Nav
+      color={categoryMeta.color}
+      expanded={expanded}
+      setExpanded={setExpanded}
+    >
       <NavHeader>
         <Link to={"/"} style={{ color: "inherit" }}>
           <PopperTooltip

@@ -3,19 +3,21 @@ import styled from "@emotion/styled";
 import { Dropdown, DropdownList, Button } from "@livechat/design-system";
 import constants from "../../constant";
 
-const containerStyle = {
-  padding: "9px 10px 8px",
+const containerStyle = (expanded = true) => ({
+  padding: "9px 10px 8px 50px",
   backgroundColor: "white",
   borderBottom: "solid 1px #e8e8e8",
-  width: "100%",
   position: "fixed",
+  width: "100%",
+  left: expanded ? "249px" : "0",
   zIndex: 40,
   paddingBottom: "7px",
+  transition: "left 0.3s ease-out",
 
   ".label": {
     marginRight: "10px"
   }
-};
+});
 
 const labelStyle = {
   marginRight: "10px"
@@ -35,8 +37,10 @@ const StyledDropdownList = styled(DropdownList)`
   }
 `;
 
-const Version = ({ redirectToVersion, selectedVersion }) => {
+const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+
+  console.log(expanded);
 
   const onDropdownHandle = version => {
     redirectToVersion(version);
@@ -53,7 +57,7 @@ const Version = ({ redirectToVersion, selectedVersion }) => {
   };
 
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle(expanded)}>
       <span style={labelStyle}>API version</span>
       <Dropdown
         isVisible={showDropdown}
