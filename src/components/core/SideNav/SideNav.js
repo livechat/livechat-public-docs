@@ -27,41 +27,44 @@ const printItems = (
   selectedVersion = null
 ) => (
   <Ul>
-    {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
-      const isActiveItem =
-        (activeUrls &&
-          url === activeUrls[activeUrls.length - 1] &&
-          !isSubcategory) ||
-        "";
+    {items.map(
+      ({ title, path, url, items: itemsInside, isSubcategory, apiVersion }) => {
+        const isActiveItem =
+          (activeUrls &&
+            url === activeUrls[activeUrls.length - 1] &&
+            !isSubcategory) ||
+          "";
 
-      const isActiveSection = activeUrls && url === activeUrls[depth];
+        const isActiveSection = activeUrls && url === activeUrls[depth];
 
-      let redirectUrl = url;
+        let redirectUrl = url;
 
-      if (!title.includes("Overview")) {
-        redirectUrl =
-          selectedVersion && !(constants.api.stableVersion === selectedVersion)
-            ? `${url}/v${selectedVersion}`
-            : url || "#";
+        if (apiVersion) {
+          redirectUrl =
+            selectedVersion &&
+            !(constants.api.stableVersion === selectedVersion)
+              ? `${url}/v${selectedVersion}/`
+              : url || "#";
+        }
+
+        return (
+          <Fragment key={`toc-${depth}-${url}`}>
+            <MenuElement
+              url={redirectUrl}
+              title={title}
+              active={isActiveItem}
+              onClick={toggleState(path)}
+            />
+
+            {itemsInside && (
+              <CollapsableSection expanded={isActiveSection}>
+                {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
+              </CollapsableSection>
+            )}
+          </Fragment>
+        );
       }
-
-      return (
-        <Fragment key={`toc-${depth}-${url}`}>
-          <MenuElement
-            url={redirectUrl}
-            title={title}
-            active={isActiveItem}
-            onClick={toggleState(path)}
-          />
-
-          {itemsInside && (
-            <CollapsableSection expanded={isActiveSection}>
-              {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
-            </CollapsableSection>
-          )}
-        </Fragment>
-      );
-    })}
+    )}
   </Ul>
 );
 

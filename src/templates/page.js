@@ -72,25 +72,28 @@ export default ({ data: { mdx } }) => {
   const redirectToVersion = version => {
     setSelectedVersion(version);
 
-    const pathname = window.location.pathname;
+    let currentSlug = customSlug || slug;
 
-    if (!(selectedVersion === version)) {
+    if (selectedVersion !== version) {
       if (selectedVersion === constants.api.stableVersion) {
-        navigate(pathname.replace(subcategory, `${subcategory}/v${version}`));
+        currentSlug = currentSlug.replace(
+          subcategory,
+          `${subcategory}/v${version}`
+        );
       } else {
         if (version === constants.api.stableVersion) {
-          navigate(
-            pathname.replace(`${subcategory}/v${selectedVersion}`, subcategory)
+          currentSlug = currentSlug.replace(
+            `${subcategory}/v${selectedVersion}`,
+            subcategory
           );
         } else {
-          navigate(
-            pathname.replace(
-              `${subcategory}/v${selectedVersion}`,
-              `${subcategory}/v${version}`
-            )
+          currentSlug = currentSlug.replace(
+            `${subcategory}/v${selectedVersion}`,
+            `${subcategory}/v${version}`
           );
         }
       }
+      navigate(currentSlug);
     }
   };
 

@@ -48,7 +48,7 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
   const openDropdown = () => setShowDropdown(true);
   const closeDropdown = () => setShowDropdown(false);
 
-  const setContent = version => {
+  const formatContent = version => {
     return version === constants.api.stableVersion
       ? `v${version} (stable)`
       : `v${version}`;
@@ -81,10 +81,11 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
         )}
       >
         <StyledDropdownList
-          items={constants.api.allVersions.map((e, i) => ({
+          items={constants.api.allVersions.map((v, i) => ({
             itemId: i,
-            content: setContent(e),
-            onItemSelect: () => onDropdownHandle(e)
+            content: formatContent(v),
+            onItemSelect: () => onDropdownHandle(v),
+            isSelected: v === selectedVersion
           }))}
         />
       </Dropdown>
