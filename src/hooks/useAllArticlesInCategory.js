@@ -81,6 +81,7 @@ export default (category, currentSlug, currentApiVersion) => {
         url: "/" + category + "/" + cur.subcategory + "/",
         article: true,
         isSubcategory: true,
+        apiVersion: cur.apiVersion,
         items: [...rest, cur]
       }
     };

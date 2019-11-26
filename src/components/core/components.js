@@ -3,7 +3,6 @@ import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { Link } from "gatsby";
-import useLocalStorage from "../../hooks/useLocalStorage";
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
