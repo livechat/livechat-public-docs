@@ -62,7 +62,7 @@ export default ({ data: { mdx } }) => {
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    constants.api.unstableVersions.some(e => {
+    constants.api.unstableVersions.forEach(e => {
       if (pathname.includes(e)) {
         setSelectedVersion(e);
       }
