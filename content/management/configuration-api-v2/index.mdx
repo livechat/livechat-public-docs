@@ -3974,6 +3974,24 @@ Check out our [webhooks tutorial](../../getting-started/guides/webhook-apps/) fo
 | `POST`   | `/webhooks`              |
 | `DELETE` | `/webhooks/<WEBHOOK_ID>` |
 
+
+<Warning>
+
+When your server receives a webhook from LiveChat, it should respond with **HTTP 200** response. Otherwise, LiveChat will retry sending the webhook to your service a number of times until it receives the correct **HTTP 200** response.
+
+The timeout is set to ~10 seconds. If we don't receive **HTTP 200** response within that time period,  we'll retry sending the webhook up to 10 times within 6 hours.
+
+</Warning>
+
+If your endpoint is responsible for both receiving data from our webhook and making further actions, like creating a record in a database, then the whole process may take longer than 10 seconds.
+In such a case, we believe,  the best solution would be to split your mechanism into 2 separate actions:
+
+1) Retrieving data from the LiveChat webhook (sending **HTTP 200** back to us immediately).
+
+2) Further processing of the data and passing it to other services.
+
+That would prevent situations in which the process takes longer than our webhook timeout and data isn't pushed from our side again.
+
 <Section>
 <Text>
 
