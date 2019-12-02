@@ -1398,15 +1398,19 @@ curl --request GET \
 
 - `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
 
+#### Query Parameters
+
+- `product` - **required** - product (`livechat` or `chatbot`)
+
 #### Body
 
 - `client_name` - **required** - client's full name
 - `client_email` - **required** - client's email address
-- `payment_origin` - **required** - who would manage subscription: `client` or `partner` (you)
-- `data_center` - database location: `dal` (USA) or `fra` (EU)
+- [_only for `livechat` product_] `payment_origin` - **required** - who would manage subscription: `client` or `partner` (you)
 - `purchase_order` - a custom parameter
-- `trial_duration` - only for the `client` payment origin - the number of days of a trial period (min. 14 - default, max. 60)
-- `coupon_id` - only for the `client` payment origin - the ID of the coupon assigned to a Partner (will apply a discount)
+- [_only for `livechat` product_] `data_center` - database location: `dal` (USA) or `fra` (EU)
+- [_only for `livechat` product_] `trial_duration` - only for the `client` payment origin - the number of days of a trial period (min. 14 - default, max. 60)
+- [_only for `livechat` product_] `coupon_id` - only for the `client` payment origin - the ID of the coupon assigned to a Partner (will apply a discount)
 
 #### Response
 
@@ -1414,7 +1418,7 @@ curl --request GET \
 - `400 - Bad Request` - missing or incorrect parameters
 - `401 - Unauthorized` - a missing or incorrect authorization header
 - `403 - Forbidden` - not allowed to use the given `coupon_id`
-- `409 - Conflict` - the given `client_email` already has a LiveChat license
+- `409 - Conflict` - the given `client_email` already has a license for specified `product`
 
 </Text>
 
@@ -1425,27 +1429,14 @@ curl --request GET \
 ```json
 {
   "license": "123",
+  "product": "livechat",
   "client_name": "Joe Doe",
   "client_email": "joe@example.com",
-  "purchase_order": "Test license",
-  "payment_origin": "partner",
-  "creation_timestamp": "2018-03-06 12:59:13",
-  "end_timestamp": "2018-04-05 11:59:12",
-  "conversations": 0,
-  "conversations_last_30_days": 0,
   "cc_added": false,
   "paid": false,
-  "recurrent": false,
-  "seats": 100,
-  "plan": "team",
-  "billing_cycle": "monthly",
-  "total_discount": 0,
-  "discount_percent": 20,
-  "total_commission": 0,
-  "commission_percent": 0,
-  "expired": false,
+  "payment_origin": "partner",
   "blocked": false,
-  "data_center": "dal"
+  "active": true
 }
 ```
 
@@ -1501,28 +1492,26 @@ curl --request GET \
   "result": [
     {
       "license": "123",
+      "product": "livechat",
       "client_name": "Joe Doe",
       "client_email": "joe@example.com",
-      "purchase_order": "Test license",
-      "payment_origin": "partner",
-      "creation_timestamp": "2018-03-06 12:59:13",
-      "end_timestamp": "2018-04-05 11:59:12",
-      "conversations": 0,
-      "conversations_last_30_days": 0,
       "cc_added": false,
       "paid": false,
-      "recurrent": false,
-      "seats": 100,
-      "plan": "team",
-      "billing_cycle": "monthly",
-      "total_discount": 0,
-      "discount_percent": 20,
-      "total_commission": 0,
-      "commission_percent": 0,
-      "expired": false,
+      "payment_origin": "partner",
       "blocked": false,
-      "data_center": "dal"
-    }
+      "active": true
+    },
+	{
+	  "license": "789",
+      "product": "chatbot",
+      "client_name": "John Doe",
+      "client_email": "john@example.com",
+      "cc_added": true,
+      "paid": true,
+      "payment_origin": "client",
+      "blocked": false,
+      "active": true
+	}
   ]
 }
 ```
@@ -1540,7 +1529,7 @@ curl --request GET \
 
 ## Get License Details
 
-`GET /v2/partners/solutions/licenses/<license_id>` - get the license details
+`GET /v2/partners/solutions/licenses/<product>/<license_id>` - get the license details
 
 #### Headers
 
@@ -1548,6 +1537,7 @@ curl --request GET \
 
 #### Path Parameters
 
+- `<product>` - **required** - product (`livechat` or `chatbot`)
 - `<license_id>` - **required** - license ID
 
 #### Response
@@ -1586,7 +1576,7 @@ curl --request GET \
   "conversations_last_30_days": 0,
   "cc_added": false,
   "paid": false,
-  "recurrent": false,
+  "ql": false,
   "seats": 100,
   "plan": "team",
   "billing_cycle": "monthly",
@@ -1594,7 +1584,7 @@ curl --request GET \
   "discount_percent": 20,
   "total_commission": 0,
   "commission_percent": 0,
-  "expired": false,
+  "active": false,
   "blocked": false,
   "data_center": "dal"
 }
