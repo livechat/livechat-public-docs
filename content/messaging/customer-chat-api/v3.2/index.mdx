@@ -40,11 +40,6 @@ All the LiveChat OAuth2.0 access tokens have a prefix: `dal-` or `fra-`. This pr
 
 Summing up, if the user token starts with `fra-`, you should add the `X-Region: fra` header. If the token starts with, `dal-` you don’t have to specify the header.
 
-## Postman Collection
-
-You can find all the requests from the Customer Chat Web API v3.1 in Postman. In our collection, we use [environment variables](https://learning.getpostman.com/docs/postman/environments_and_globals/manage_environments/) for the API version and the access token. Importing the collection from the link below downloads the **LiveChat Web API** environment as well. Remember to replace the sample token with your own.
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/521935b4232b6f924644#?env%5BLiveChat%20Web%20API%5D=W3sia2V5IjoiYXBpX3ZlcnNpb24iLCJ2YWx1ZSI6InYzLjEiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjY2Vzc190b2tlbiIsInZhbHVlIjoiZGFsOlRMSjdRc3RYUXNTeHVWOGI1aDFSZmciLCJlbmFibGVkIjp0cnVlfV0=)
 
 # Events
 
@@ -876,23 +871,23 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 <Text>
 
-| HTTP method | The API endpoint                                            |
-| ----------- | ----------------------------------------------------------- |
-| `POST`      | `https://api.livechatinc.com/v3.1/customer/action/<action>` |
+| HTTP method  | The API endpoint                                                   | Methods                                                                |
+| ------------ | ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| **POST**     | `https://api.livechatinc.com/v3.2/customer/action/<action>`        | All except for **Get License Properties** and **Get Group Properties** |
+| **GET**      | `https://api.livechatinc.com/v3.2/customer/public/action/<action>` | **Get License Properties** and **Get Group Properties**                |
 
-If you specify the API version in the URL, you don't have to include the optional `"X-API-Version: 3.1"` header.
+| Header          |                   Value                    | Notes                                                 |
+| --------------- | :----------------------------------------: | ----------------------------------------------------: |
+| `X-API-Version` | `3.2`                                      | Not needed if you sepcify the API version in the URL. |
+| `Content-Type`  | `multipart/form-data; boundary=<boundary>` | Valid for the **Upload File** method                  |
+| `Content-Type`  |             `application/json`             | Valid for every method except for **Upload File**     |
+| `Authorization` |              `Bearer <token>`              | Customer access token. It's not the same token you would use for the Agent Chat or Configuration API. Not needed for **Get License Properties** and **Get Group Properties**. [Read more...](#authentication)|
 
-| Required header |                   Value                    |                                           Notes |
-| --------------- | :----------------------------------------: | ----------------------------------------------: |
-| `Content-Type`  | `multipart/form-data; boundary=<boundary>` |              Valid for the `upload_file` method |
-| `Content-Type`  |             `application/json`             | Valid for every method except for `upload_file` |
-| `Authorization` |              `Bearer <token>`              | Customer access token. It's not the same token you would use for the Agent Chat or Configuration API. [Read more...](#authentication) |
+Every request to Customer Chat API needs to have the following **query string parameters**:
 
-Every request to Customer Chat API needs to have the following query string parameters:
-
-| Required parameter | Data type |               Notes |
-| ------------------ | :-------: | ------------------: |
-| `license_id`       | `integer` | LiveChat account ID |
+| Query string parameter | Data type | Notes               | Methods |
+| ---------------------- | :-------: | ------------------: | ------- |
+| `license_id`           | `integer` | LiveChat account ID | All     |
 
 </Text>
 
@@ -902,11 +897,11 @@ Every request to Customer Chat API needs to have the following query string para
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
-		  // payload
+		// payload
       }'
 ```
 
@@ -927,7 +922,6 @@ curl -X POST \
 | **Status**     | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                               |
 | **Other**      | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen)                                                                                                                                                                                               |
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/521935b4232b6f924644#?env%5BLiveChat%20Web%20API%5D=W3sia2V5IjoiYXBpX3ZlcnNpb24iLCJ2YWx1ZSI6InYzLjEiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImFjY2Vzc190b2tlbiIsInZhbHVlIjoiZGFsOlRMSjdRc3RYUXNTeHVWOGI1aDFSZmciLCJlbmFibGVkIjp0cnVlfV0=)
 
 ## Chats
 
@@ -943,7 +937,7 @@ It returns [summaries](#chat-summary) of the chats a Customer participated in.
 
 |                        |                                                                      |
 | ---------------------- | -------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_chats_summary` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_chats_summary` |
 | **RTM API equivalent** | [`get_chats_summary`](rtm-reference/#get-chats-summary)              |
 | **Webhook**            | -                                                                    |
 
@@ -962,7 +956,7 @@ It returns [summaries](#chat-summary) of the chats a Customer participated in.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/get_chats_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/get_chats_summary?license_id=<license_id> \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
@@ -1028,7 +1022,7 @@ curl -X POST \
 
 |                        |                                                                             |
 | ---------------------- | --------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_chat_threads_summary` |
 | **RTM API equivalent** | [`get_chat_threads_summary`](rtm-reference/#get-chat-threads-summary)       |
 | **Webhook**            | -                                                                           |
 
@@ -1054,7 +1048,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/get_chat_threads_summary?license_id=<license_id> \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1100,7 +1094,7 @@ curl -X POST \
 
 |                        |                                                                     |
 | ---------------------- | ------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_chat_threads` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_chat_threads` |
 | **RTM API equivalent** | [`get_chat_threads`](rtm-reference/#get-chat-threads)               |
 | **Webhook**            | -                                                                   |
 
@@ -1119,7 +1113,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/get_chat_threads?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/get_chat_threads?license_id=<license_id> \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1171,7 +1165,7 @@ Starts a chat.
 
 |                        |                                                               |
 | ---------------------- | ------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/start_chat` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/start_chat` |
 | **RTM API equivalent** | [`start_chat`](rtm-reference/#start-chat)                     |
 | **Webhook**            | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread)               |
 
@@ -1182,7 +1176,6 @@ Starts a chat.
 | `chat`                   | No       | `object`  |                                                                             |
 | `chat.properties`        | No       | `object`  | Initial chat properties                                                     |
 | `chat.access`            | No       | `object`  | Chat access to set; default: all agents.                                    |
-| `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type `customer`).         |
 | `chat.thread`            | No       | `object`  |                                                                             |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
 | `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
@@ -1204,7 +1197,7 @@ Starts a chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/start_chat?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/start_chat?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
@@ -1239,7 +1232,7 @@ Used to restart an archived chat.
 
 |                        |                                                                  |
 | ---------------------- | ---------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/activate_chat` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/activate_chat` |
 | **RTM API equivalent** | [`activate_chat`](rtm-reference/#activate-chat)                  |
 | **Webhook**            | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread)                  |
 
@@ -1271,7 +1264,7 @@ Used to restart an archived chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/activate_chat?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/activate_chat?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1309,7 +1302,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 |                        |                                                                           |
 | ---------------------- | ------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/close_thread`           |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/close_thread`           |
 | **RTM API equivalent** | [`close_thread`](rtm-reference/#close-thread)                             |
 | **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event) and [`thread_closed`](/management/configuration-api/#thread_closed) |
 
@@ -1331,7 +1324,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/close_thread?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/close_thread?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1357,7 +1350,7 @@ curl -X POST \
 
 |                        |                                                               |
 | ---------------------- | ------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_event` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/send_event` |
 | **RTM API equivalent** | [`send_event`](rtm-reference/#send-event)                     |
 | **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event)                           |
 
@@ -1377,7 +1370,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/send_event?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/send_event?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -d '{
       "chat_id": "PWLW03ICW7",
@@ -1409,7 +1402,7 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/send_event?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/send_event?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -d '{
       "chat_id": "PWLW03ICW7",
@@ -1432,7 +1425,7 @@ Uploads a file to the server as a temporary file. It returns a URL that expires 
 
 |                        |                                                                |
 | ---------------------- | -------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/upload_file` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/upload_file` |
 | **RTM API equivalent** | -                                                              |
 | **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event) **\***                     |
 
@@ -1451,7 +1444,7 @@ Uploads a file to the server as a temporary file. It returns a URL that expires 
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.1/customer/action/upload_file?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/upload_file?license_id=<license_id> \
   -H 'Authorization: Bearer <customer_access_token>' \
   -H 'Content-Type: multipart/form-data; boundary=--------------------------210197025774705439685896' \
   -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
@@ -1481,7 +1474,7 @@ curl -X POST \
 
 |                        |                                                                               |
 | ---------------------- | ----------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/send_rich_message_postback` |
 | **RTM API equivalent** | [`send_rich_message_postback`](rtm-reference/#send-rich-message-postback)     |
 | **Webhook**            | [`incoming_rich_message_postback`](/management/configuration-api/#incoming_rich_message_postback)**\***     |
 
@@ -1510,7 +1503,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/send_rich_message_postback?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/send_rich_message_postback?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1540,7 +1533,7 @@ curl -X POST \
 
 |                        |                                                                    |
 | ---------------------- | ------------------------------------------------------------------ |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/send_sneak_peek` |
 | **RTM API equivalent** | [`send_sneak_peek`](rtm-reference/#send-sneak-peek)                |
 | **Webhook**            | -                                                                  |
 
@@ -1563,7 +1556,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/send_sneak_peek?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/send_sneak_peek?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1591,7 +1584,7 @@ curl -X POST \
 
 |                        |                                                                           |
 | ---------------------- | ------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_chat_properties` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/update_chat_properties` |
 | **RTM API equivalent** | [`update_chat_properties`](rtm-reference/#update-chat-properties)         |
 | **Webhook**            | [`chat_properties_updated`](/management/configuration-api/#chat_properties_updated)                     |
 
@@ -1614,7 +1607,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_chat_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/update_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1644,7 +1637,7 @@ curl -X POST \
 
 |                        |                                                                           |
 | ---------------------- | ------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/delete_chat_properties` |
 | **Required scopes\***  | `chats.conversation--all:write` `chats.conversation--my:write`            |
 | **RTM API equivalent** | [`delete_chat_properties`](rtm-reference/#delete-chat-properties)         |
 | **Webhook**            | [`chat_properties_deleted`](/management/configuration-api/#chat_properties_deleted)                     |
@@ -1673,7 +1666,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/delete_chat_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1703,7 +1696,7 @@ curl -X POST \
 
 |                        |                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/update_chat_thread_properties` |
 | **RTM API equivalent** | [`update_chat_thread_properties`](rtm-reference/#update-chat-thread-properties)  |
 | **Webhook**            | [`chat_thread_properties_updated`](/management/configuration-api/#chat_thread_properties_updated)              |
 
@@ -1727,7 +1720,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/update_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1758,7 +1751,7 @@ curl -X POST \
 
 |                        |                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/delete_chat_thread_properties` |
 | **Required scopes\***  | `chats.conversation--all:write` `chats.conversation--my:write`                   |
 | **RTM API equivalent** | [`delete_chat_thread_properties`](rtm-reference/#delete-chat-thread-properties)  |
 | **Webhook**            | [`chat_thread_properties_deleted`](/management/configuration-api/#chat_thread_properties_deleted)              |
@@ -1788,7 +1781,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1819,7 +1812,7 @@ curl -X POST \
 
 |                        |                                                                            |
 | ---------------------- | -------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_event_properties` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/update_event_properties` |
 | **RTM API equivalent** | [`update_event_properties`](rtm-reference/#update-event-properties)        |
 | **Webhook**            | [`event_properties_updated`](/management/configuration-api/#event_properties_updated)                    |
 
@@ -1844,7 +1837,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_event_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/update_event_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1876,7 +1869,7 @@ curl -X POST \
 
 |                        |                                                                            |
 | ---------------------- | -------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/delete_event_properties` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/delete_event_properties` |
 | **RTM API equivalent** | [`delete_event_properties`](rtm-reference/#delete-event-properties)        |
 | **Webhook**            | [`event_properties_deleted`](/management/configuration-api/#event_properties_deleted)                    |
 
@@ -1901,7 +1894,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/delete_event_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/delete_event_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1923,6 +1916,121 @@ curl -X POST \
 
 </Section>
 
+<Section>
+
+<Text>
+
+### Get License Properties
+
+Returns the properties of a given license. It only returns the properties a Customer has access to.
+
+#### Specifics
+
+|                        |                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **HTTP Method**        | **GET**                                                                          |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/public/get_license_properties` |
+| **RTM API equivalent** | -                                                                                |
+| **Webhook**            | -                                                                                |
+
+#### Request
+
+| Query string parameter  | Required | Data type | Notes                                                  |
+| ----------------------- | -------- | --------- | ------------------------------------------------------ |
+| `license_id`            | Yes      | `number`  | Id of the license you want to return the properties of.|
+| `namespace`             | No       | `string`  | Property namespace to retrieve                         |
+| `name`                  | No       | `string`  | Property name                                          |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X GET \
+  'https://api.livechatinc.com/v3.2/customer/action/public/get_license_properties?license_id=123&namespace=58737b5829e65621a45d598aa6f2ed81&name=my_integer_property_name' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+    "namespace": "58737b5829e65621a45d598aa6f2ed81",
+    "properties": {
+        "my_integer_property_name": 123,
+    }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Group Properties
+
+Returns the properties of a given group. It only returns the properties a Customer has access to.
+
+#### Specifics
+
+|                        |                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **HTTP Method**        | **GET**                                                                          |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/public/get_group_properties`   |
+| **RTM API equivalent** | -                                                                                |
+| **Webhook**            | -                                                                                |
+
+#### Request
+
+| Query string parameter  | Required | Data type | Notes                                                  |
+| ----------------------- | -------- | --------- | ------------------------------------------------------ |
+| `license_id`            | Yes      | `number`  | Id of the license you want to return the properties of.|
+| `group_id`              | Yes      | `number`  | Id of the group you want to return the properties of.  |
+| `namespace`             | No       | `string`  | Property namespace to retrieve                         |
+| `name`                  | No       | `string`  | Property name                                          |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X GET \
+  'https://api.livechatinc.com/v3.2/customer/action/public/get_license_properties?license_id=123&group=10&namespace=58737b5829e65621a45d598aa6f2ed81&name=my_integer_property_name' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+    "namespace": "58737b5829e65621a45d598aa6f2ed81",
+    "properties": {
+        "my_integer_property_name": 123,
+    }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
 ## Customers
 
 <Section>
@@ -1935,7 +2043,7 @@ curl -X POST \
 
 |                        |                                                                    |
 | ---------------------- | ------------------------------------------------------------------ |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/update_customer` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/update_customer` |
 | **RTM API equivalent** | [`update_customer`](rtm-reference/#update-customer)                |
 | **Webhook**            | -                           |
 
@@ -1962,7 +2070,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/update_customer?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/update_customer?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1986,7 +2094,7 @@ curl -X POST \
 
 |                        |                                                                        |
 | ---------------------- | ---------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/set_customer_fields` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/set_customer_fields` |
 | **RTM API equivalent** | [`set_customer_fields`](rtm-reference/#set-customer-fields)                        |
 | **Webhook**            | [`customer_updated`](/management/configuration-api/#customer_updated)                                |
 
@@ -2010,7 +2118,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/set_customer_fields?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/set_customer_fields?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2021,6 +2129,55 @@ curl -X POST \
 ```
 
 </CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Customer
+
+Returns the info about the Customers themselves.
+
+#### Specifics
+
+|                        |                                                                        |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_customer`        |
+| **RTM API equivalent** | [`get_customer`](rtm-reference/#get-customer)            |
+| **Webhook**            | -                                                                      |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.2/customer/action/get_customer?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "name": "Customer Name",
+  "email": "customer1@example.com",
+  "type": "customer"
+}
+```
+
+</CodeResponse>
 
 </Code>
 
@@ -2038,7 +2195,7 @@ curl -X POST \
 
 |                        |                                                                      |
 | ---------------------- | -------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_groups_status` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_groups_status` |
 | **RTM API equivalent** | [`get_groups_status`](rtm-reference/#get-groups-status)              |
 | **Webhook**            | -                                                                    |
 
@@ -2069,7 +2226,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_groups_status?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/get_groups_status?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2113,7 +2270,7 @@ Customer can use this method to trigger checking if [goals](https://www.livechat
 
 |                        |                                                                |
 | ---------------------- | -------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/check_goals` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/check_goals` |
 | **RTM API equivalent** | -                                                              |
 | **Webhook**            | -                                                              |
 
@@ -2137,7 +2294,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/check_goals?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/check_goals?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2167,7 +2324,7 @@ Returns an empty ticket form of a <a href="https://www.livechatinc.com/help/chat
 
 |                        |                                                             |
 | ---------------------- | ----------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_form` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_form` |
 | **RTM API equivalent** | [`get_form`](rtm-reference/#get-form)                       |
 | **Webhook**            | -                                                           |
 
@@ -2194,7 +2351,7 @@ Returns an empty ticket form of a <a href="https://www.livechatinc.com/help/chat
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_form?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/get_form?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2253,7 +2410,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 |                        |                                                                        |
 | ---------------------- | ---------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_predicted_agent` |
 | **RTM API equivalent** | [`get_predicted_agent`](rtm-reference/#get-predicted-agent)            |
 | **Webhook**            | -                                                                      |
 
@@ -2265,7 +2422,7 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_predicted_agent?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/get_predicted_agent?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
@@ -2306,7 +2463,7 @@ It returns the info on a given URL.
 
 |                        |                                                                    |
 | ---------------------- | ------------------------------------------------------------------ |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/get_url_details` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_url_details` |
 | **RTM API equivalent** | [`get_url_details`](rtm-reference/#get-url-details)                |
 | **Webhook**            | -                                                                  |
 
@@ -2324,7 +2481,7 @@ It returns the info on a given URL.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/get_url_details?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/get_url_details?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2363,7 +2520,7 @@ curl -X POST \
 
 |                        |                                                                        |
 | ---------------------- | ---------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen` |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/mark_events_as_seen` |
 | **RTM API equivalent** | [`mark_events_as_seen`](rtm-reference/#mark-events-as-seen)            |
 | **Webhook**            | [`events_marked_as_seen`](/management/configuration-api/#events_marked_as_seen)|
 
@@ -2386,12 +2543,108 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.1/customer/action/mark_events_as_seen?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/mark_events_as_seen?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
       "chat_id": "PJ0MRSHTDG",
       "seen_up_to": "2017-10-12T15:19:21.010200Z"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Accept Greeting
+Accepts an incoming a greeting (an invitation to the chat). 
+
+#### Specifics
+
+|                        |                                                                        |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/accept_greeting`     |
+| **RTM API equivalent** | [`accept_greeting`](rtm-reference/#accept_greeting)                    |
+| **Webhook**            | -                                                                      |
+
+#### Request
+
+| Parameter    | Required | Data type   | Notes                                                      |
+| ------------ | -------- | ----------- | ---------------------------------------------------------- |
+| `greeting_id`| Yes      | `number`    | ID of the greeting configured within the license to accept.|
+| `unique_id`  | Yes      | `string`    | ID of the greeting to accept.                              |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.2/customer/action/accept_greeting?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "greeting_id": 7,
+      "unique_id": "Q10X0W041P"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Reject Greeting
+Rejects a greeting (an invitation to the chat). For example, Customers could reject greetings by minimalizing the chat widget with a greeting.
+
+#### Specifics
+
+|                        |                                                                    |
+| ---------------------- | ------------------------------------------------------------------ |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/reject_greeting` |
+| **RTM API equivalent** | [`reject_greeting`](rtm-reference/#reject_greeting)                |
+| **Webhook**            | -                                                                  |
+
+#### Request
+
+| Parameter    | Required | Data type   | Notes                         |
+| ------------ | -------- | ----------- | ----------------------------- |
+| `unique_id`  | Yes      | `string`    | ID of the greeting to reject. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.2/customer/action/accept_greeting?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+      "unique_id": "Q10X0W041P"
       }'
 ```
 

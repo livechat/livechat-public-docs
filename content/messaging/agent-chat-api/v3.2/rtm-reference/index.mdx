@@ -46,9 +46,9 @@ LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). Th
 For backend applications, you can specify the region in the request header. The mechanism is the same as in [Agent Chat Web API reference](../#data-centers). It doesn't work for frontend applications, though.
 Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL. 
 
-**`fra`:** `wss://api-fra.livechatinc.com/v3.1/agent/rtm/ws`
+**`fra`:** `wss://api-fra.livechatinc.com/v3.2/agent/rtm/ws`
 
-**`dal`:** `wss://api.livechatinc.com/v3.1/agent/rtm/ws`
+**`dal`:** `wss://api.livechatinc.com/v3.2/agent/rtm/ws`
 
 # Scopes
 
@@ -1040,7 +1040,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 <Section>
 <Text>
 
-| The API endpoint: `wss://api.livechatinc.com/v3.1/agent/rtm/ws` |     |
+| The API endpoint: `wss://api.livechatinc.com/v3.2/agent/rtm/ws` |     |
 | --------------------------------------------------------------- | --- |
 
 ## Available methods
@@ -1256,21 +1256,6 @@ There's only one value allowed for a single property.
 
 </CodeSample>
 
-<!-- > **`get_chat_threads_summary`** sample **request** with optional params
-
-```json
-{
-	"request_id": "23456", // optional
-	"action": "get_chat_threads_summary",
-	"payload": {
-			"chat_id": "PJ0MRSHTDG",
-			"limit": 25,
-			"page_id": "MjpkZXNj"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -1324,7 +1309,7 @@ It returns threads that the current Agent has access to in a given chat.
 | Parameter    | Required | Data ype |     |
 | ------------ | -------- | -------- | --- |
 | `chat_id`    | Yes      | `string` |     |
-| `thread_ids` | No       | `array`  |     |
+| `thread_ids` | Yes      | `array`  |     |
 
 </Text>
 <Code>
@@ -1340,19 +1325,6 @@ It returns threads that the current Agent has access to in a given chat.
 ```
 
 </CodeSample>
-
-<!-- > **`get_chat_threads`** sample **request** with optional params
-
-```json
-{
-	"action": "get_chat_threads",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"thread_ids": ["K600PKZON8"]
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -1371,16 +1343,6 @@ It returns threads that the current Agent has access to in a given chat.
       "threads": [
         // optional
         // "Thread" object
-      ],
-      "threads_summary": [
-        {
-          "thread_id": "K600PKZON8",
-          "order": 129846129847
-        },
-        {
-          "thread_id": "K600PKZON8",
-          "order": 129846129848
-        }
       ],
       "properites": {
         // "Properites" object
@@ -3498,23 +3460,6 @@ Apart from `customer_id`, which is a required parameter, you also need to includ
 
 </CodeSample>
 
-<!-- > **`update_customer`** sample **request** with optional params
-
-```json
-{
-	"request_id": "13425", // optional
-	"action": "update_customer",
-	"payload": {
-		"customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
-		"name": "John Doe",
-		"avatar": "https://domain.com/avatars/1.jpg",
-		"fields": {
-			"score": "low"
-		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3525,7 +3470,7 @@ Apart from `customer_id`, which is a required parameter, you also need to includ
   "type": "response",
   "success": true,
   "payload": {
-    // "User > Customer" object
+    // no response payload
   }
 }
 ```
@@ -3575,22 +3520,6 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 ```
 
 </CodeSample>
-
-<!-- > **`ban_customer`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "ban_customer",
-	"payload": {
-		"customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
-        "ban": {
-            "days": 3
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3660,7 +3589,6 @@ It returns the initial state of the current Agent.
 		"token": "Bearer dal:S2V0s1fgTbfXmgthj4cZSA"
 		}
 	}
-}
 ```
 
 </CodeSample>
@@ -4314,10 +4242,11 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 
 Here's what you need to know about **pushes**: 
 
-- They notify you when specific events are triggered. 
-- Available only in the websocket transport. 
-- Instead of pushes, Web API uses [webhooks](/messaging/agent-chat-api/#webhooks). 
-- RTM API actions can also trigger webhooks. 
+- They are generated primarily by RTM API actions, but also by Web API actions.
+- They notify you when specific events occur. 
+- Can be **delivered** only in the websocket transport. 
+- You don't need to register pushes to receive them. 
+- Their equivalents in Web API are [webhooks](/management/configuration-api/#webhooks). 
 - Pushes and webhooks have similar payloads.
 
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
@@ -4358,6 +4287,7 @@ Here's what you need to know about **pushes**:
 ## Chats
 
 ### `incoming_chat_thread`
+Informs about a new thread coming in the chat. The push payload contains not only the new thread, but the whole chat data structure. If the chat was started with some initial events, the thread object contains them.  
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4391,6 +4321,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread) |
 
 ### `thread_closed`
+Informs that a thread was closed. 
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4420,6 +4351,7 @@ Here's what you need to know about **pushes**:
 ## Chat access
 
 ### `access_granted`
+Informs that new, single access to a resource was granted. The existing access isn't overwritten. 
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4450,6 +4382,7 @@ Here's what you need to know about **pushes**:
 | `id`       | Resource id   |
 
 ### `access_revoked`
+Informs that access to a certain resource was revoked.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4480,6 +4413,7 @@ Here's what you need to know about **pushes**:
 | `id`       | Resource Id   |
 
 ### `access_set`
+Informs that new, single access to a resource was set. The existing access is overwritten.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4510,6 +4444,7 @@ Here's what you need to know about **pushes**:
 | `id`       | Resource Id   |
 
 ### `chat_transferred`
+Informs that a chat was transferred to a different group or to an Agent.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4541,6 +4476,7 @@ Here's what you need to know about **pushes**:
 ## Chat users
 
 ### `chat_user_added`
+Informs that a user (Customer or Agent) was added to a chat.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4571,6 +4507,7 @@ Here's what you need to know about **pushes**:
 | `user_type` | Possible values: `agent`, `customer` |
 
 ### `chat_user_removed`
+Informs that a user (Customer or Agent) was removed from a chat.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4601,6 +4538,7 @@ Here's what you need to know about **pushes**:
 ## Events
 
 ### `incoming_event`
+Informs about an incoming [event](#events) sent to a chat.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4624,6 +4562,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | [`incoming_event`](/management/configuration-api/#incoming_event) |
 
 ### `event_updated`
+Informs that an [event](#events) was updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4647,6 +4586,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | [`event_updated`](/management/configuration-api/#event_updated) |
 
 ### `incoming_rich_message_postback`
+Informs about an incoming [rich message](#rich-message) postback. The push payload contains the info on the postback itself, as well as the chat it was sent in.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4675,6 +4615,7 @@ Here's what you need to know about **pushes**:
 ## Properties
 
 ### `chat_properties_updated`
+Informs about those chat properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4711,6 +4652,7 @@ Here's what you need to know about **pushes**:
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `chat_properties_deleted`
+Informs about those chat properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4741,6 +4683,7 @@ Here's what you need to know about **pushes**:
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `chat_thread_properties_updated`
+Informs about those chat thread properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4778,6 +4721,7 @@ Here's what you need to know about **pushes**:
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `chat_thread_properties_deleted`
+Informs about those chat thread properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4809,6 +4753,7 @@ Here's what you need to know about **pushes**:
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `event_properties_updated`
+Informs about those event properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4843,6 +4788,7 @@ Here's what you need to know about **pushes**:
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `event_properties_deleted`
+Informs about those event properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4877,6 +4823,7 @@ Here's what you need to know about **pushes**:
 ## Thread tags
 
 ### `chat_thread_tagged`
+Informs that a chat thread was tagged.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4898,6 +4845,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | [`chat_thread_tagged`](/management/configuration-api/#chat_thread_tagged) |
 
 ### `chat_thread_untagged`
+Informs that a chat thread was untagged.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4921,6 +4869,7 @@ Here's what you need to know about **pushes**:
 ## Customers
 
 ### `customer_visit_started`
+Informs that a Customer entered the tracked website.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4953,6 +4902,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | -                        |
 
 ### `customer_created`
+Informs that a new Customer registered.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4960,6 +4910,13 @@ Here's what you need to know about **pushes**:
 {
   "customer": {
     // "User > Customer" object
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "created_at": "2019-11-14T14:27:24.410018Z",
+    "email": "customer1@example.com",
+    "avatar": "https://domain.com/avatars/1.jpg",
+    "fields": {
+        "some_key": "some_value"
+    }
   }
 }
 ```
@@ -4974,6 +4931,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | [`customer_created`](/management/configuration-api/#customer_created) |
 
 ### `customer_updated`
+Informs that Customer's data was updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5002,6 +4960,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | -                  |
 
 ### `customer_page_updated`
+Informs that a Customer changed the website - moved to another page of the website, for example by clicking a link.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5026,6 +4985,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | -                       |
 
 ### `customer_banned`
+Informs that a Customer was banned for a specified number of days.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5048,6 +5008,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | -                 |
 
 ### `customer_visit_ended`
+Informs that a Customer left the tracked website.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5071,6 +5032,7 @@ Here's what you need to know about **pushes**:
 ## Status
 
 ### `agent_updated`
+Informs that an Agent's status was updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5091,6 +5053,7 @@ Here's what you need to know about **pushes**:
 | **Webhook equivalent** | -               |
 
 ### `agent_disconnected`
+Informs that an Agent was disconnected. The payload contains the reason of Customer's disconnection.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5138,6 +5101,7 @@ With this piece of information, the client is able to figure out where it should
 ## Other
 
 ### `incoming_typing_indicator`
+Informs that one of the chat users is currently typing a message. The message hasn't been sent yet. The push payload contains the typing indicator object.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5145,8 +5109,10 @@ With this piece of information, the client is able to figure out where it should
 {
   "chat_id": "PJ0MRSHTDG",
   "thread_id": "K600PKZON8",
-  "typing_indicator": {
-    // "Typing indicator" object
+  "typing_indicator": {   
+    author_id: "d17cd570-11a9-45c0-45c0-1b020b7586dc",
+    recipients: "all",
+    timestamp: 1574245378
   }
 }
 ```
@@ -5161,6 +5127,7 @@ With this piece of information, the client is able to figure out where it should
 | **Webhook equivalent** | -                           |
 
 ### `incoming_sneak_peek`
+Informs about the message a Customer is currently typing. The push payload contains the sneak peek object.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5168,8 +5135,11 @@ With this piece of information, the client is able to figure out where it should
 {
   "chat_id": "PJ0MRSHTDG",
   "thread_id": "K600PKZON8",
-  "sneak_peek": {
-    // "Sneak peek" object
+  "sneak_peek": {   
+    author_id: "d17cd570-11a9-45c0-45c0-1b020b7586dc",
+    recipients: "all",
+    text: "Hello",
+    timestamp: 1574245378
   }
 }
 ```
@@ -5184,6 +5154,7 @@ With this piece of information, the client is able to figure out where it should
 | **Webhook equivalent** | -                     |
 
 ### `events_marked_as_seen`
+Informs that a user has seen events up to a specific time.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5205,6 +5176,7 @@ With this piece of information, the client is able to figure out where it should
 | **Webhook equivalent** | [`events_marked_as_seen`](/management/configuration-api/#events_marked_as_seen) |
 
 ### `incoming_multicast`
+Informs about messages sent via the `multicast` method or by the system. 
 
 <CodeResponse title={'Sample push payload'}>
 
