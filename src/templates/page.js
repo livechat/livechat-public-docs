@@ -108,7 +108,6 @@ export default ({ data: { mdx } }) => {
             category={category}
             subcategory={subcategory}
             currentApiVersion={selectedVersion}
-            selectedVersion={selectedVersion}
             expanded={expanded}
             setExpanded={setExpanded}
           />
