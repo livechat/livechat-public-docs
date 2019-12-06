@@ -32,13 +32,6 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
         activeUrls.includes(url) &&
         url.includes(activeUrls[depth]);
 
-      title === "Configuration API v3" &&
-        console.log({
-          "activeUrls[depth]": activeUrls[depth],
-          url,
-          isActiveSection
-        });
-
       let redirectUrl = url || "#";
       return (
         <Fragment key={`toc-${depth}-${url}`}>
