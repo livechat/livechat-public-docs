@@ -1,10 +1,10 @@
 ---
 weight: 32
-category: "extending-ui"
-subcategory: "extending-chat-widget"
-title: "New Chat Widget JS API"
-tagline: "Customize the behavior of the Chat Widget."
-desc: "Adjust the mechanics of the widget or leverage the API to pass additional details on the visitor."
+category: 'extending-ui'
+subcategory: 'extending-chat-widget'
+title: 'New Chat Widget JS API'
+tagline: 'Customize the behavior of the Chat Widget.'
+desc: 'Adjust the mechanics of the widget or leverage the API to pass additional details on the customer.'
 ---
 
 # Introduction
@@ -38,13 +38,15 @@ The `LiveChatWidget` object comes with four methods:
 - `get` makes it possible to fetch data
 
 Using these methods is based on passing the correct arguments in the following pattern:
+
 ```js
 LiveChatWidget.method('method', 'data')
 ```
+
 For example, if you would like to set your Customer's name to `John Doe`, this is how it would look like:
 
 ```js
-LiveChatWidget.call('set_visitor_name', 'John Doe')
+LiveChatWidget.call('set_customer_name', 'John Doe')
 ```
 
 # Methods
@@ -55,6 +57,7 @@ To change the visibility of the Chat Widget, you can use the following methods:
 - [Minimize](#minimize)
 - [Hide](#hide)
 - [Destroy](#destroy)
+- [Dismiss greeting](#dismiss-greeting)
 
 ## Maximize
 
@@ -63,7 +66,7 @@ Maximizes the Chat Widget.
 #### Example
 
 ```js
-LiveChatWidget.call("maximize");
+LiveChatWidget.call('maximize')
 ```
 
 ## Minimize
@@ -73,7 +76,7 @@ Minimizes the Chat Widget.
 #### Example
 
 ```js
-LiveChatWidget.call("minimize");
+LiveChatWidget.call('minimize')
 ```
 
 ## Hide
@@ -84,7 +87,7 @@ You will need to use either 'maximize' or 'minimze' API calls to show it afterwa
 #### Example
 
 ```js
-LiveChatWidget.call("hide");
+LiveChatWidget.call('hide')
 ```
 
 ## Destroy
@@ -95,7 +98,18 @@ It won't be available for further actions until the window is refreshed.
 #### Example
 
 ```js
-LiveChatWidget.call("destroy");
+LiveChatWidget.call('destroy')
+```
+
+## Dismiss greeting
+
+Dismisses currently displayed greeting.
+In order to dismiss certein greeting you can listen to [`new_event`](#on-new-event) or [`greeting_dismissed`](#on-greeting-dismissed) callbacks to know when greeting with specified `id` or `uniqueId` appears and disappears.
+
+#### Example
+
+```js
+LiveChatWidget.call('dismiss_greeting')
 ```
 
 # Getters
@@ -115,7 +129,7 @@ This includes Widget visibility and license availability.
 #### Example
 
 ```js
-LiveChatWidget.get("state");
+LiveChatWidget.get('state')
 ```
 
 #### Response
@@ -132,7 +146,7 @@ Returns a filtered list of customer data.
 #### Example
 
 ```js
-LiveChatWidget.get("customer_data");
+LiveChatWidget.get('customer_data')
 ```
 
 #### Response
@@ -155,18 +169,19 @@ Available setters:
 
 - [Set session variables](#set-session-variables)
 - [Update session variables](#update-session-variables)
-- [Set visitor name](#set-visitor-name)
-- [Set visitor email](#set-visitor-email)
+- [Set customer name](#set-customer-name)
+- [Set customer email](#set-customer-email)
 
 ## Set session variables
 
 Creates new session variables, or replaces the ones set previously.
 
 ```js
-LiveChatWidget.call("set_session_variables", {
-  username: "john.doe",
-  cart_value: "450"
-});
+LiveChatWidget.call('set_session_variables', {
+  username: 'john.doe',
+  cart_value: '450',
+  'order date': '05/21/2019',
+})
 ```
 
 ## Update session variables
@@ -177,30 +192,31 @@ Please note that the existing variables won't be replaced. The new session varia
 #### Example
 
 ```js
-LiveChatWidget.call("update_session_variables", {
-  username: "j.doe",
-  cart_value: "400"
-});
+LiveChatWidget.call('update_session_variables', {
+  username: 'j.doe',
+  cart_value: '400',
+  'order date': '06/15/2019',
+})
 ```
 
-## Set visitor name
+## Set customer name
 
-Sets the Visitor's name.
+Sets the Customer's name.
 
 #### Example
 
 ```js
-LiveChatWidget.call("set_visitor_name", "John Doe");
+LiveChatWidget.call('set_customer_name', 'John Doe')
 ```
 
-## Set visitor email
+## Set customer email
 
-Sets the Visitor's e-mail address.
+Sets the Customer's e-mail address.
 
 #### Example
 
 ```js
-LiveChatWidget.call("set_visitor_email", "john@example.com");
+LiveChatWidget.call('set_customer_email', 'john@example.com')
 ```
 
 # Callbacks
@@ -218,6 +234,8 @@ Available callbacks:
 - [On new event](#on-new-event)
 - [On form submitted](#on-form-submitted)
 - [On rating submitted](#on-rating-submitted)
+- [On greeting dismissed](#on-greeting-dismissed)
+- [On rich message button clicked](#on-rich-message-button-clicked)
 
 ## On ready
 
@@ -235,12 +253,12 @@ With this callback, you will receive the Chat Widget state and customer data as 
 function onReady(initialData) {
   // Chat Widget is ready
 
-  var state = initialData.state;
-  var customerData = initialData.customerData;
+  var state = initialData.state
+  var customerData = initialData.customerData
 }
 
-LiveChatWidget.on("ready", onReady);
-LiveChatWidget.off("ready", onReady);
+LiveChatWidget.on('ready', onReady)
+LiveChatWidget.off('ready', onReady)
 ```
 
 ## On availability changed
@@ -255,15 +273,15 @@ Availability has changed for the current group.
 
 ```js
 function onAvailabilityChanged(data) {
-  if (data.availability === "online") {
+  if (data.availability === 'online') {
     // we're available to chat!
   } else {
     // sadly, no agents are available at the moment.
   }
 }
 
-LiveChatWidget.on("availability_changed", onAvailabilityChanged);
-LiveChatWidget.off("availability_changed", onAvailabilityChanged);
+LiveChatWidget.on('availability_changed', onAvailabilityChanged)
+LiveChatWidget.off('availability_changed', onAvailabilityChanged)
 ```
 
 ## On visibility changed
@@ -280,17 +298,17 @@ This applies to both user actions like maximizing or minimizing the window as we
 ```js
 function onVisibilityChanged(data) {
   switch (data.visibility) {
-    case "maximized":
-      break;
-    case "minimized":
-      break;
-    case "hidden":
-      break;
+    case 'maximized':
+      break
+    case 'minimized':
+      break
+    case 'hidden':
+      break
   }
 }
 
-LiveChatWidget.on("visibility_changed", onVisibilityChanged);
-LiveChatWidget.off("visibility_changed", onVisibilityChanged);
+LiveChatWidget.on('visibility_changed', onVisibilityChanged)
+LiveChatWidget.off('visibility_changed', onVisibilityChanged)
 ```
 
 ## On customer status changed
@@ -311,23 +329,23 @@ This can be used to track the following info:
 ```js
 function onCustomerStatusChanged(data) {
   switch (data.status) {
-    case "queued":
+    case 'queued':
       // customer is in queue
-      break;
-    case "chatting":
+      break
+    case 'chatting':
       // customer is currently chatting
-      break;
-    case "invited":
+      break
+    case 'invited':
       // customer received an invitation but didn't start the chat
-      break;
-    case "browsing":
+      break
+    case 'browsing':
       // customer is in idle state, not queued, not chatting, and didn't receive an invitation
-      break;
+      break
   }
 }
 
-LiveChatWidget.on("customer_status_changed", onCustomerStatusChanged);
-LiveChatWidget.off("customer_status_changed", onCustomerStatusChanged);
+LiveChatWidget.on('customer_status_changed', onCustomerStatusChanged)
+LiveChatWidget.off('customer_status_changed', onCustomerStatusChanged)
 ```
 
 ## On new event
@@ -336,20 +354,45 @@ Called for both incoming and outgoing events.
 
 #### Payload
 
-| param       | type                                        | description            |
-| ----------- | ------------------------------------------- | ---------------------- |
-| timestamp   | `number`                                    | Event's send timestamp |
-| type        | `'message'` \| `'rich_message'` \| `'file'` | Event's type           |
-| author.id   | `string`                                    | Event's author id      |
-| author.type | `'customer'` \| `'agent'`                   | Event's author type    |
+| param                           | type                                        | description               |
+| ------------------------------- | ------------------------------------------- | ------------------------- |
+| timestamp                       | `number`                                    | Event's send timestamp    |
+| type                            | `'message'` \| `'rich_message'` \| `'file'` | Event's type              |
+| author.id                       | `string`                                    | Event's author id         |
+| author.type                     | `'customer'` \| `'agent'`                   | Event's author type       |
+| **If new event is a greeting:** |                                             |                           |
+| greeting.id                     | `number`                                    | Greeting's template id    |
+| greeting.uniqueId               | `string`                                    | Greeting's event uniqueId |
 
 ```js
 function onNewEvent(event) {
-  // do something
+  switch (event.type) {
+    case 'message':
+      // handle new message event
+      break
+
+    case 'rich_message':
+      // handle new rich_message event
+      break
+
+    case 'file':
+      // handle new file event
+      break
+
+    default:
+      break
+  }
+
+  if (event.greeting) {
+    // new event is a greeting
+    // greeting properties are available
+    var id = greeting.id
+    var uniqueId = greeting.uniqueId
+  }
 }
 
-LiveChatWidget.on("new_event", onNewEvent);
-LiveChatWidget.off("new_event", onNewEvent);
+LiveChatWidget.on('new_event', onNewEvent)
+LiveChatWidget.off('new_event', onNewEvent)
 ```
 
 ## On form submitted
@@ -358,22 +401,37 @@ Called after a form has been submitted in the chat.
 
 Payload:
 
-| param    | type                                      | description |
-| -------- | ----------------------------------------- | ----------- |
-| formType | `"prechat"` \| `"postchat"` \| `"ticket"` | Form's type |
+| param | type                                      | description |
+| ----- | ----------------------------------------- | ----------- |
+| type  | `"prechat"` \| `"postchat"` \| `"ticket"` | Form's type |
 
 ```js
-function onFormSubmitted(formType) {
-  // do something
+function onFormSubmitted(data) {
+  switch (data.type) {
+    case 'prechat':
+      // prechat submitted
+      break
+
+    case 'postchat':
+      // postchat submitted
+      break
+
+    case 'ticket':
+      // ticket submitted
+      break
+
+    default:
+      break
+  }
 }
 
-LiveChatWidget.on("form_submitted", onFormSubmitted);
-LiveChatWidget.off("form_submitted", onFormSubmitted);
+LiveChatWidget.on('form_submitted', onFormSubmitted)
+LiveChatWidget.off('form_submitted', onFormSubmitted)
 ```
 
 ## On rating submitted
 
-Called after the customer has rated the chat, or canceled the previous rating.
+Called after the customer has rated the chat, or canceled the previous rating
 
 #### Payload
 
@@ -386,8 +444,61 @@ function onRatingSubmitted(value) {
   // do something
 }
 
-LiveChatWidget.on("rating_submitted", onRatingSubmitted);
-LiveChatWidget.off("rating_submitted", onRatingSubmitted);
+LiveChatWidget.on('rating_submitted', onRatingSubmitted)
+LiveChatWidget.off('rating_submitted', onRatingSubmitted)
+```
+
+## On greeting dismissed
+
+Called after the greeting has been dismissed y customer or JS API
+
+#### Payload
+
+| param    | type     | description               |
+| -------- | -------- | ------------------------- |
+| id       | `number` | Greeting's template id    |
+| uniqueId | `string` | Greeting's event uniqueId |
+
+```js
+function onGreetingDismissed(greeting) {
+  // greeting has been dissmised
+  var id = greeting.id
+  var uniqieId = greeting.uniqieId
+}
+
+LiveChatWidget.on('greeting_dismissed', onGreetingDismissed)
+LiveChatWidget.off('greeting_dismissed', onGreetingDismissed)
+```
+
+## On rich message button clicked
+
+Called after the rich message button has been clicked by customer
+
+#### Payload
+
+| param                                      | type     | description                  |
+| ------------------------------------------ | -------- | ---------------------------- |
+| eventId                                    | `string` | Button's owner event's id    |
+| postbackId                                 | `string` | Clicked button's postback id |
+| **If button's owner event is a greeting:** |          |                              |
+| greeting.id                                | `number` | Greeting's template id       |
+| greeting.uniqueId                          | `string` | Greeting's event uniqueId    |
+
+```js
+function onRichMessageButtonClicked(data) {
+  // rich message button clicked
+  var eventId = data.eventId
+  var postbackId = data.postbackId
+
+  if (data.greeting) {
+    // clicked button belongs to greeting event
+    var greetingId = data.greeting.id
+    var greetingUniqieId = data.greeting.uniqieId
+  }
+}
+
+LiveChatWidget.on('greeting_dismissed', onGreetingDismissed)
+LiveChatWidget.off('greeting_dismissed', onGreetingDismissed)
 ```
 
 # Playground
@@ -405,18 +516,18 @@ Here you can find some example usage of the Chat Widget JavaScript API. They all
 Show the Chat Widget after 30 seconds and keep it open after reloading.
 
 ```js
-LiveChatWidget.on("visibility_changed", function(data) {
-  if (data.visibility === "maximized") {
-    localStorage.setItem("livechat_chat_visible", true);
+LiveChatWidget.on('visibility_changed', function(data) {
+  if (data.visibility === 'maximized') {
+    localStorage.setItem('livechat_chat_visible', true)
   }
-});
+})
 
-var isWidgetVisible = Boolean(localStorage.getItem("livechat_chat_visible"));
+var isWidgetVisible = Boolean(localStorage.getItem('livechat_chat_visible'))
 
 if (!isWidgetVisible) {
   setTimeout(function() {
-    LiveChatWidget.call("maximize");
-  }, 30000);
+    LiveChatWidget.call('maximize')
+  }, 30000)
 }
 ```
 
@@ -431,8 +542,8 @@ You can change the Widget visibility as described in our [Help Center](https://w
     <button id="chat-btn">Chat with us!</button>
     <script>
       var chatButton = document.getElementById('chat-btn')
-      chatButton.addEventListener('click', function(){" "}
-      {LiveChatWidget.call("maximize")})
+      chatButton.addEventListener('click', function(){' '}
+      {LiveChatWidget.call('maximize')})
     </script>
   </body>
 </html>
@@ -443,8 +554,8 @@ You can change the Widget visibility as described in our [Help Center](https://w
 Set the Customers name and email using their login and email.
 
 ```js
-var user = JSON.parse(localStorage.getItem("user"));
+var user = JSON.parse(localStorage.getItem('user'))
 
-LiveChatWidget.call("set_visitor_name", user.login);
-LiveChatWidget.call("set_visitor_email", user.email);
+LiveChatWidget.call('set_customer_name', user.login)
+LiveChatWidget.call('set_customer_email', user.email)
 ```
