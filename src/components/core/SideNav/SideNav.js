@@ -37,15 +37,7 @@ const printItems = (
 
         const isActiveSection = activeUrls && url === activeUrls[depth];
 
-        let redirectUrl = url;
-
-        if (apiVersion) {
-          redirectUrl =
-            selectedVersion &&
-            !(constants.api.stableVersion === selectedVersion)
-              ? `${url}/v${selectedVersion}/`
-              : url || "#";
-        }
+        let redirectUrl = url || "#";
 
         return (
           <Fragment key={`toc-${depth}-${url}`}>
@@ -55,7 +47,6 @@ const printItems = (
               active={isActiveItem}
               onClick={toggleState(path)}
             />
-
             {itemsInside && (
               <CollapsableSection expanded={isActiveSection}>
                 {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
