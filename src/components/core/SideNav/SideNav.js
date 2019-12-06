@@ -17,18 +17,11 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
-import constants from "../../../constant";
 
-const printItems = (
-  items,
-  toggleState,
-  activeUrls,
-  depth = 0,
-  selectedVersion = null
-) => (
+const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
     {items.map(
-      ({ title, path, url, items: itemsInside, isSubcategory, apiVersion }) => {
+      ({ title, path, url, items: itemsInside, isSubcategory, weight }) => {
         const isActiveItem =
           (activeUrls &&
             url === activeUrls[activeUrls.length - 1] &&
@@ -64,7 +57,6 @@ const SideNav = ({
   subcategory,
   currentSlug,
   currentApiVersion,
-  selectedVersion,
   expanded,
   setExpanded
 }) => {
@@ -123,13 +115,7 @@ const SideNav = ({
         <Search />
       </NavHeader>
       <MenuWrapper>
-        {printItems(
-          menuItems,
-          toggleState,
-          activePath,
-          undefined,
-          selectedVersion
-        )}
+        {printItems(menuItems, toggleState, activePath, undefined)}
       </MenuWrapper>
     </Nav>
   );
