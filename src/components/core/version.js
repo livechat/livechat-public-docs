@@ -4,7 +4,7 @@ import { Dropdown, DropdownList, Button } from "@livechat/design-system";
 import constants from "../../constant";
 
 const containerStyle = (expanded = true) => ({
-  padding: "9px 10px 8px 50px",
+  padding: "9px 10px 9px 50px",
   backgroundColor: "white",
   borderBottom: "solid 1px #e8e8e8",
   position: "fixed",
