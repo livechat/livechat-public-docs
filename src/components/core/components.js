@@ -96,7 +96,7 @@ export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
 };
 
 export const NavHeader = styled.div`
-  padding: 15px 28px 15px;
+  padding: 15px 28px 14px;
   font-size: 14px;
   font-weight: 600;
   display: flex;

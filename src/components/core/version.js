@@ -50,8 +50,8 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
 
   const formatContent = version => {
     return version === constants.api.stableVersion
-      ? `v${version} (stable)`
-      : `v${version}`;
+      ? `${version} (stable)`
+      : `${version}`;
   };
 
   return (

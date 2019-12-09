@@ -20,35 +20,35 @@ import { PopperTooltip } from "@livechat/design-system";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
-    {items.map(
-      ({ title, path, url, items: itemsInside, isSubcategory, weight }) => {
-        const isActiveItem =
-          (activeUrls &&
-            url === activeUrls[activeUrls.length - 1] &&
-            !isSubcategory) ||
-          "";
+    {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
+      const isActiveItem =
+        (activeUrls &&
+          url === activeUrls[activeUrls.length - 1] &&
+          !isSubcategory) ||
+        "";
 
-        const isActiveSection = activeUrls && url === activeUrls[depth];
+      const isActiveSection =
+        activeUrls &&
+        activeUrls.includes(url) &&
+        url.includes(activeUrls[depth]);
 
-        let redirectUrl = url || "#";
-
-        return (
-          <Fragment key={`toc-${depth}-${url}`}>
-            <MenuElement
-              url={redirectUrl}
-              title={title}
-              active={isActiveItem}
-              onClick={toggleState(path)}
-            />
-            {itemsInside && (
-              <CollapsableSection expanded={isActiveSection}>
-                {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
-              </CollapsableSection>
-            )}
-          </Fragment>
-        );
-      }
-    )}
+      let redirectUrl = url || "#";
+      return (
+        <Fragment key={`toc-${depth}-${url}`}>
+          <MenuElement
+            url={redirectUrl}
+            title={title}
+            active={isActiveItem}
+            onClick={toggleState(path)}
+          />
+          {itemsInside && (
+            <CollapsableSection expanded={isActiveSection}>
+              {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
+            </CollapsableSection>
+          )}
+        </Fragment>
+      );
+    })}
   </Ul>
 );
 
