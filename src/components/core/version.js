@@ -4,10 +4,10 @@ import { Dropdown, DropdownList, Button } from "@livechat/design-system";
 import constants from "../../constant";
 import { versionToString } from "../../utils";
 
-const containerStyle = (expanded = true) => ({
+const containerStyle = (expanded = true, stable) => ({
   padding: "9px 10px 8px 50px",
   backgroundColor: "white",
-  borderBottom: "solid 1px #e8e8e8",
+  borderBottom: `solid 1px ${stable ? "#e8e8e8" : ""}`,
   position: "fixed",
   width: "100%",
   left: expanded ? "249px" : "0",
@@ -69,8 +69,10 @@ const Version = ({
     .sort((a, b) => b - a)
     .map(e => versionToString(e));
 
+  const isStable = selectedVersion === constants.api.stableVersion;
+
   return (
-    <div style={containerStyle(expanded)}>
+    <div style={containerStyle(expanded, isStable)}>
       <span style={labelStyle}>API version</span>
       <Dropdown
         isVisible={showDropdown}
@@ -78,11 +80,10 @@ const Version = ({
         triggerRenderer={({ ref }) => (
           <Button onClick={openDropdown} ref={ref}>
             {selectedVersion}
-            {selectedVersion === constants.api.stableVersion && (
-              <span style={{ fontWeight: 100, marginLeft: "3px" }}>
-                (stable)
-              </span>
-            )}
+            <span style={{ fontWeight: 100, marginLeft: "3px" }}>
+              {isStable ? "(stable)" : "(dev preview)"}
+            </span>
+
             <svg
               width="24px"
               height="24px"
