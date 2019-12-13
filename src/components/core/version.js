@@ -61,7 +61,7 @@ const Version = ({
   const formatContent = version => {
     return version === constants.api.stableVersion
       ? `${version} (stable)`
-      : `${version}`;
+      : `${version} (dev preview)`;
   };
 
   const sortedArticleVersions = articleVersions

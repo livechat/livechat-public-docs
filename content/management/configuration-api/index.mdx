@@ -1904,49 +1904,46 @@ Informs that a user has seen events up to a specific time.
 
 | Request object                           | Required   | Data type  | Notes                                                                                                           |
 | ---------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `action`__*__                            | Yes        | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                              | 
-| `secret_key`                             | Yes        | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                              |
-| `url`                                    | Yes        | `string`   | Destination URL for the webhook                                                                                 |
-| `additional_data`__**__                  | No         | `[]string` | Additional data that will arrive with the webhook.                                                              |
-| `description`                            | No         | `string`   | Webhook description                                                                                             |
-| `filters`                                | No         | `object`   | Filters to check if a webhook should be triggered.                                                              |
-| `filters.author_type`                    | No         | `string`   | Possible values: `customer`, `agent`; allowed only for the `incoming_event` action.                             |
-| `filters.only_my_chats`                  | No         | `bool`     | `true` or `false`; triggers webhooks only for chats with the property `source.client_id` set to my `client_id`. |
-| `filters.chat_member_ids`                | No         | `object`   | Only one filter (`agents_any` or `agents_exclude`) is allowed.                                                  |
-| `filters.chat_member_ids.agents_any`     | No         | `[]string` | Array of Agents' ids; if any specified Agent is in the chat, the webhook will be triggered.                     |
-| `filters.chat_member_ids.agents_exclude` | No         | `[]string` | Array of Agents' ids; If any specified Agent is in the chat, the webhook will not be triggered.                 |
+| `action`__*__                            | yes        | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                              | 
+| `secret_key`                             | yes        | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                              |
+| `url`                                    | yes        | `string`   | Destination URL for the webhook                                                                                 |
+| `additional_data`                        | no         | `[]string` | Additional data arriving with the webhook. Value: `chat properties` (all actions except for `agent_status_changed`, `agent_deleted`, `customer_created`)|
+| `description`                            | no         | `string`   | Webhook description                                                                                             |
+| `filters`                                | no         | `object`   | Filters to check if a webhook should be triggered.                                                              |
+| `filters.author_type`                    | no         | `string`   | Possible values: `customer`, `agent`; allowed only for the `incoming_event` action.                             |
+| `filters.only_my_chats`                  | no         | `bool`     | `true` or `false`; triggers webhooks only for chats with the property `source.client_id` set to my `client_id`. |
+| `filters.chat_member_ids`                | no         | `object`   | Only one filter (`agents_any` or `agents_exclude`) is allowed.                                                  |
+| `filters.chat_member_ids.agents_any`     | no         | `[]string` | Array of Agents' ids; if any specified Agent is in the chat, the webhook will be triggered.                     |
+| `filters.chat_member_ids.agents_exclude` | no         | `[]string` | Array of Agents' ids; If any specified Agent is in the chat, the webhook will not be triggered.                 |
 
 #### Triggering actions
 
 __*__ The table below presents the possible values for the `action` parameter.
 
-| Possible action                   | Informs about                                                                                               | Available filters                                 |
-| --------------------------------- |:-----------------------------------------------------------------------------------------------------------:| -------------------------------------------------:|
-| `incoming_chat_thread`            | [`incoming_chat_thread`](/messaging/agent-chat-api/rtm-reference/#incoming_chat_thread)                     | `chat_member_ids`, `only_my_chats`                |
-| `incoming_event`                  | [`incoming_event`](/messaging/agent-chat-api/rtm-reference/#incoming_event)                                 | `chat_member_ids`, `author_type`, `only_my_chats` |
-| `incoming_rich_message_postback`  | [`incoming_rich_message_postback`](/messaging/agent-chat-api/rtm-reference/#incoming_rich_message_postback) | `chat_member_ids`, `only_my_chats`                |
-| `last_seen_timestamp_updated`     | [`last_seen_timestamp_updated`](/messaging/agent-chat-api/rtm-reference/#last_seen_timestamp_updated)       | `chat_member_ids`, `only_my_chats`                |
-| `thread_closed`                   | [`thread_closed`](/messaging/agent-chat-api/rtm-reference/#thread_closed)                                   | `chat_member_ids`, `only_my_chats`                |
-| `chat_properties_updated`         | [`chat_properties_updated`](/messaging/agent-chat-api/rtm-reference/#chat_properties_updated)               | `chat_member_ids`, `only_my_chats`                |
-| `chat_properties_deleted`         | [`chat_properties_deleted`](/messaging/agent-chat-api/rtm-reference/#chat_properties_deleted)               | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_properties_updated`  | [`chat_thread_properties_updated`](/messaging/agent-chat-api/rtm-reference/#chat_thread_properties_updated) | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_properties_deleted`  | [`chat_thread_properties_deleted`](/messaging/agent-chat-api/rtm-reference/#chat_thread_properties_deleted) | `chat_member_ids`, `only_my_chats`                |
-| `chat_user_added`                 | [`chat_user_added`](/messaging/agent-chat-api/rtm-reference/#chat_user_added)                               | `chat_member_ids`, `only_my_chats`                |
-| `chat_user_removed`               | [`chat_user_removed`](/messaging/agent-chat-api/rtm-reference/#chat_user_removed)                           | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_tagged`              | [`chat_thread_tagged`](/messaging/agent-chat-api/rtm-reference/#chat_thread_tagged)                         | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_untagged`            | [`chat_thread_untagged`](/messaging/agent-chat-api/rtm-reference/#chat_thread_untagged)                     | `chat_member_ids`, `only_my_chats`                |
-| `agent_status_changed`            | [`agent_updated`](/messaging/agent-chat-api/rtm-reference/#agent_updated)                                   | `chat_member_ids`                                 |
-| `agent_deleted`                   | An Agent's account being deleted from the license                                                           | `chat_member_ids`                                 |
-
-
-__*__ The table below presents the possible values for the `additional_data` parameter:
-
-| Possible value      | Available for actions                                              |
-| ------------------- |:------------------------------------------------------------------:|
-| `access`            | `incoming_event`, `chat_user_added`                                |
-| `chat_properties`   | All actions, except for `agent_status_changed` and `agent_deleted` |
-| `thread_id`         | `chat_user_added`                                                  |
-
+| Possible action                                                     | Available filters                                 |
+| ------------------------------------------------------------------- | -------------------------------------------------:|
+| [`incoming_chat_thread`](#incoming-chat-thread)                     | `chat_member_ids`, `only_my_chats`                |
+| [`thread_closed`](#thread-closed)                                   | `chat_member_ids`, `only_my_chats`                |
+| [`access_granted`](#access-granted)                                 | `chat_member_ids`, `only_my_chats`                |
+| [`access_revoked`](#access-revoked)                                 | `chat_member_ids`, `only_my_chats`                |
+| [`access_set`](#access-set)                                         | `chat_member_ids`, `only_my_chats`                |
+| [`chat_user_added`](#chat-user-added)                               | `chat_member_ids`, `only_my_chats`                |
+| [`chat_user_removed`](#chat-user-removed)                           | `chat_member_ids`, `only_my_chats`                |
+| [`incoming_event`](#incoming-event)                                 | `chat_member_ids`, `author_type`, `only_my_chats` |
+| [`event_updated`](#event-updated)                                   | `chat_member_ids`, `author_type`, `only_my_chats` |
+| [`incoming_rich_message_postback`](#incoming-rich-message-postback) | `chat_member_ids`, `only_my_chats`                |
+| [`chat_properties_updated`](#chat-properties-updated)               | `chat_member_ids`, `only_my_chats`                |
+| [`chat_properties_deleted`](#chat-properties-deleted)               | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_properties_updated`](#chat-thread-properties-updated) | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) | `chat_member_ids`, `only_my_chats`                |
+| [`event_properties_updated`](#event-properties-updated)             | `chat_member_ids`, `only_my_chats`                |
+| [`event_properties_deleted`](#event-properties-deleted)             | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_tagged`](#chat-thread-tagged)                         | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_untagged`](#chat-thread-untagged)                     | `chat_member_ids`, `only_my_chats`                |
+| [`agent_status_changed`](#agent-status-changed)                     | -                                                 |
+| [`agent_deleted`](#agent-deleted)                                   | `chat_member_ids`                                 |
+| [`customer_created`](#customer-created)                             | -                                                 |
+| [`events_marked_as_seen`](#events-marked-as-seen)                   | `chat_member_ids`, `only_my_chats`                |
 
 </Text>
 <Code>
