@@ -75,7 +75,6 @@ export default ({ data: { mdx, allMdx } }) => {
       const { title, apiVersion, subcategory, category } = curr;
 
       // NOTE: should improve using optional chaining
-
       if (!prev[category]) {
         prev[category] = {};
       }

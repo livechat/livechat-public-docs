@@ -6,8 +6,8 @@ import { versionToString } from "../../utils";
 
 const containerStyle = (expanded = true, stable) => ({
   padding: "9px 10px 8px 50px",
-  backgroundColor: "white",
-  borderBottom: `solid 1px ${stable ? "#e8e8e8" : ""}`,
+  backgroundColor: stable ? "white" : "#fdf4e8",
+  borderBottom: `solid 1px ${stable ? "#e8e8e8" : "#efa843"}`,
   position: "fixed",
   width: "100%",
   left: expanded ? "249px" : "0",
