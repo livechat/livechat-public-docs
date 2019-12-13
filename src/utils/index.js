@@ -12,3 +12,6 @@ export const setupDocsearch = () => {
     debug: false
   });
 };
+
+export const versionToString = number =>
+  Number.isInteger(number) ? `${number}.0` : `${number}`;

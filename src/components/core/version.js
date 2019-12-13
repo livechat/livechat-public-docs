@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Dropdown, DropdownList, Button } from "@livechat/design-system";
 import constants from "../../constant";
+import { versionToString } from "../../utils";
 
 const containerStyle = (expanded = true) => ({
   padding: "9px 10px 8px 50px",
@@ -24,6 +25,10 @@ const labelStyle = {
 };
 
 const StyledDropdownList = styled(DropdownList)`
+  .lc-dropdown__list-item {
+    margin-bottom: 0;
+  }
+
   .lc-dropdown__list-item:first-of-type {
     margin-bottom: 0;
     border-top-left-radius: 5px;
@@ -37,7 +42,12 @@ const StyledDropdownList = styled(DropdownList)`
   }
 `;
 
-const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
+const Version = ({
+  articleVersions,
+  redirectToVersion,
+  selectedVersion,
+  expanded
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const onDropdownHandle = version => {
@@ -53,6 +63,11 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
       ? `${version} (stable)`
       : `${version}`;
   };
+
+  const sortedArticleVersions = articleVersions
+    .map(e => parseFloat(e))
+    .sort((a, b) => b - a)
+    .map(e => versionToString(e));
 
   return (
     <div style={containerStyle(expanded)}>
@@ -81,11 +96,11 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
         )}
       >
         <StyledDropdownList
-          items={constants.api.allVersions.map((v, i) => ({
+          items={sortedArticleVersions.map((e, i) => ({
             itemId: i,
-            content: formatContent(v),
-            onItemSelect: () => onDropdownHandle(v),
-            isSelected: v === selectedVersion
+            content: formatContent(e),
+            onItemSelect: () => onDropdownHandle(e),
+            isSelected: e === selectedVersion
           }))}
         />
       </Dropdown>
