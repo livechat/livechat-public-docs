@@ -25,10 +25,10 @@ import {
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
+import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 import constants from "../constant";
-import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 
 const components = {
   ...DesignSystem,
@@ -38,7 +38,7 @@ const components = {
   Link
 };
 
-export default ({ data: { mdx } }) => {
+export default ({ data: { mdx, allMdx } }) => {
   const {
     body,
     timeToRead,
@@ -53,6 +53,42 @@ export default ({ data: { mdx } }) => {
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
+
+  const { edges } = allMdx;
+
+  const articlesVersions = edges
+    .map(e => {
+      const {
+        node: {
+          frontmatter: { title, category, subcategory, apiVersion }
+        }
+      } = e;
+
+      return {
+        title,
+        category,
+        subcategory,
+        apiVersion
+      };
+    })
+    .reduce((prev, curr) => {
+      const { title, apiVersion, subcategory, category } = curr;
+
+      // NOTE: should improve using optional chaining
+      if (!prev[category]) {
+        prev[category] = {};
+      }
+      if (!prev[category][subcategory]) {
+        prev[category][subcategory] = {};
+      }
+      if (!prev[category][subcategory][title]) {
+        prev[category][subcategory][title] = [apiVersion];
+      } else {
+        prev[category][subcategory][title].push(apiVersion);
+      }
+
+      return prev;
+    }, {});
 
   const [selectedVersion, setSelectedVersion] = useState(
     constants.api.stableVersion
@@ -115,6 +151,7 @@ export default ({ data: { mdx } }) => {
         <MiddleColumn>
           {currentApiVersion && (
             <Version
+              articleVersions={articlesVersions[category][subcategory][title]}
               selectedVersion={selectedVersion}
               redirectToVersion={redirectToVersion}
               expanded={expanded}
@@ -161,6 +198,20 @@ export const pageQuery = graphql`
       }
       fields {
         slug
+      }
+    }
+
+    allMdx(filter: { frontmatter: { apiVersion: { ne: null } } }) {
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            apiVersion
+            subcategory
+            category
+          }
+        }
       }
     }
   }

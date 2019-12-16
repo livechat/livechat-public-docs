@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Dropdown, DropdownList, Button } from "@livechat/design-system";
 import constants from "../../constant";
+import { versionToString } from "../../utils";
 
-const containerStyle = (expanded = true) => ({
+const containerStyle = (expanded = true, stable) => ({
   padding: "9px 10px 8px 50px",
-  backgroundColor: "white",
-  borderBottom: "solid 1px #e8e8e8",
+  backgroundColor: stable ? "white" : "#fdf4e8",
+  borderBottom: `solid 1px ${stable ? "#e8e8e8" : "#efa843"}`,
   position: "fixed",
   width: "100%",
   left: expanded ? "249px" : "0",
@@ -24,6 +25,10 @@ const labelStyle = {
 };
 
 const StyledDropdownList = styled(DropdownList)`
+  .lc-dropdown__list-item {
+    margin-bottom: 0;
+  }
+
   .lc-dropdown__list-item:first-of-type {
     margin-bottom: 0;
     border-top-left-radius: 5px;
@@ -37,7 +42,12 @@ const StyledDropdownList = styled(DropdownList)`
   }
 `;
 
-const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
+const Version = ({
+  articleVersions,
+  redirectToVersion,
+  selectedVersion,
+  expanded
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const onDropdownHandle = version => {
@@ -54,8 +64,15 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
       : `${version} (dev preview)`;
   };
 
+  const sortedArticleVersions = articleVersions
+    .map(e => parseFloat(e))
+    .sort((a, b) => b - a)
+    .map(e => versionToString(e));
+
+  const isStable = selectedVersion === constants.api.stableVersion;
+
   return (
-    <div style={containerStyle(expanded)}>
+    <div style={containerStyle(expanded, isStable)}>
       <span style={labelStyle}>API version</span>
       <Dropdown
         isVisible={showDropdown}
@@ -63,11 +80,10 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
         triggerRenderer={({ ref }) => (
           <Button onClick={openDropdown} ref={ref}>
             {selectedVersion}
-            {selectedVersion === constants.api.stableVersion && (
-              <span style={{ fontWeight: 100, marginLeft: "3px" }}>
-                (stable)
-              </span>
-            )}
+            <span style={{ fontWeight: 100, marginLeft: "3px" }}>
+              {isStable ? "(stable)" : "(dev preview)"}
+            </span>
+
             <svg
               width="24px"
               height="24px"
@@ -81,11 +97,11 @@ const Version = ({ redirectToVersion, selectedVersion, expanded }) => {
         )}
       >
         <StyledDropdownList
-          items={constants.api.allVersions.map((v, i) => ({
+          items={sortedArticleVersions.map((e, i) => ({
             itemId: i,
-            content: formatContent(v),
-            onItemSelect: () => onDropdownHandle(v),
-            isSelected: v === selectedVersion
+            content: formatContent(e),
+            onItemSelect: () => onDropdownHandle(e),
+            isSelected: e === selectedVersion
           }))}
         />
       </Dropdown>
