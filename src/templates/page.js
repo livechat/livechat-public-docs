@@ -28,7 +28,7 @@ import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-import constants from "../constant";
+import { API } from "../constant";
 
 const components = {
   ...DesignSystem,
@@ -57,12 +57,12 @@ export default ({ data: { mdx, allMdx } }) => {
   const { edges } = allMdx;
 
   const articlesVersions = edges
-    .map(e => {
+    .map(edge => {
       const {
         node: {
           frontmatter: { title, category, subcategory, apiVersion }
         }
-      } = e;
+      } = edge;
 
       return {
         title,
@@ -90,19 +90,19 @@ export default ({ data: { mdx, allMdx } }) => {
       return prev;
     }, {});
 
-  const [selectedVersion, setSelectedVersion] = useState(
-    constants.api.stableVersion
-  );
+  const [selectedVersion, setSelectedVersion] = useState(API.STABLE_VERSION);
 
   const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    constants.api.unstableVersions.forEach(e => {
-      if (pathname.includes(e)) {
-        setSelectedVersion(e);
+    API.ALL_VERSIONS.filter(version => version !== API.STABLE_VERSION).forEach(
+      version => {
+        if (pathname.includes(version)) {
+          setSelectedVersion(version);
+        }
       }
-    });
+    );
   }, []);
 
   const redirectToVersion = version => {
@@ -111,13 +111,13 @@ export default ({ data: { mdx, allMdx } }) => {
     let currentSlug = customSlug || slug;
 
     if (selectedVersion !== version) {
-      if (selectedVersion === constants.api.stableVersion) {
+      if (selectedVersion === API.STABLE_VERSION) {
         currentSlug = currentSlug.replace(
           subcategory,
           `${subcategory}/v${version}`
         );
       } else {
-        if (version === constants.api.stableVersion) {
+        if (version === API.STABLE_VERSION) {
           currentSlug = currentSlug.replace(
             `${subcategory}/v${selectedVersion}`,
             subcategory
@@ -136,7 +136,7 @@ export default ({ data: { mdx, allMdx } }) => {
   return (
     <>
       <SEO desc={desc} title={title} />
-      <Header />
+      <Header selectedVersion={selectedVersion} />
       <MainWrapper>
         <LeftColumn>
           <SideNav
@@ -148,7 +148,7 @@ export default ({ data: { mdx, allMdx } }) => {
             setExpanded={setExpanded}
           />
         </LeftColumn>
-        <MiddleColumn>
+        <MiddleColumn versionOffset={!!currentApiVersion}>
           {currentApiVersion && (
             <Version
               articleVersions={articlesVersions[category][subcategory][title]}

@@ -17,6 +17,7 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
+import { API } from "../../../constant";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
@@ -85,12 +86,17 @@ const SideNav = ({
 
   useScrollSpy(".heading", url => url && setActivePath(getArticlePath(url)));
 
+  const isStable = currentApiVersion === API.STABLE_VERSION;
+  const isLegacy = currentApiVersion === API.LEGACY_VERSION;
+
+  const navColor = isStable
+    ? "67, 132, 245"
+    : isLegacy
+    ? "209, 52, 91"
+    : "239, 168, 67";
+
   return (
-    <Nav
-      color={categoryMeta.color}
-      expanded={expanded}
-      setExpanded={setExpanded}
-    >
+    <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
       <NavHeader>
         <Link to={"/"} style={{ color: "inherit" }}>
           <PopperTooltip

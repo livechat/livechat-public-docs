@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon, WarningIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
 import { PopperTooltip } from "@livechat/design-system";
+import { getVersionColor } from "../../utils";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -166,8 +167,9 @@ const Warning = () => (
   </PopperTooltip>
 );
 
-const Header = () => {
+const Header = ({ selectedVersion }) => {
   const categories = useAllCategoriesMeta();
+  const tabColor = getVersionColor(selectedVersion);
 
   return (
     <HeaderWrapper id="header">
@@ -188,7 +190,12 @@ const Header = () => {
           <Warning />
 
           {categories.map(({ color, title, slug }) => (
-            <MenuElement key={slug} color={color} label={title} slug={slug} />
+            <MenuElement
+              key={slug}
+              color={tabColor}
+              label={title}
+              slug={slug}
+            />
           ))}
           <MenuElement
             label={"Developer Console"}
