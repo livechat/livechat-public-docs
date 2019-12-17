@@ -5,6 +5,7 @@ import { LiveChatLogo, CategoryIcon, WarningIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
 import { PopperTooltip } from "@livechat/design-system";
 import { getVersionColor } from "../../utils";
+import { API } from "../../constant";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -187,7 +188,7 @@ const Header = ({ selectedVersion }) => {
 
       <MenuListWrapper>
         <MenuList>
-          <Warning />
+          {selectedVersion === API.DEV_REVIEW_VERSION && <Warning />}
 
           {categories.map(({ color, title, slug }) => (
             <MenuElement

@@ -8,7 +8,7 @@ const Container = styled.div`
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid rgb(255, 255, 255);
   position: fixed;
-  top: 60px;
+  top: 0px;
   width: 100%;
   left: ${({ expanded }) => (expanded ? "249px" : "0")};
   z-index: 40;
@@ -17,12 +17,16 @@ const Container = styled.div`
   .label {
     margin-right: 10px;
   }
+
+  @media (min-width: 768px) {
+    top: 60px;
+  }
 `;
 
 const Content = styled.div`
-  padding: 9px 10px 8px 50px;
-  background-color: ${({ color }) => `rgba(${color}, 0.07)`};
-  border-bottom: ${({ color }) => `solid 1px rgba(${color}, 0.07)`};
+  padding: 9px 10px 7px 50px;
+  background-color: ${({ bgColor }) => `${bgColor}`};
+  border-bottom: ${({ borderColor }) => `solid 1px ${borderColor}`};
 `;
 
 const labelStyle = {
@@ -89,9 +93,19 @@ const Version = ({
 
   const versionColor = getVersionColor(selectedVersion);
 
+  // Extra case for stable version to match the sidebar colors
+  const isStable = selectedVersion === API.STABLE_VERSION;
+
   return (
     <Container expanded={expanded}>
-      <Content color={versionColor}>
+      <Content
+        bgColor={
+          isStable ? "rgb(241, 246, 248)" : `rgba(${versionColor}, 0.07)`
+        }
+        borderColor={
+          isStable ? "rgb(232, 232, 232)" : `rgba(${versionColor}, 0.07)`
+        }
+      >
         <span style={labelStyle}>API version</span>
         <Dropdown
           isVisible={showDropdown}
