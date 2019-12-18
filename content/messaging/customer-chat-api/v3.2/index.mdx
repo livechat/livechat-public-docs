@@ -62,22 +62,38 @@ These are the available **event types**:
 
 File event informs about a file being uploaded.
 
-| Field                                                 | Req./Opt. |                                                                                                        Note |
-| ----------------------------------------------------- | :-------: | ----------------------------------------------------------------------------------------------------------: |
-| `content_type`                                        | required  |                                               Supported image types: `image/png`, `image/jpeg`, `image/gif` |
-| `created_at`                                          | required  |                                         Date & time format with a resolution of microseconds, `UTC string`. |
-| `type`                                                | required  |                                                                                                      `file` |
-| `custom_id`                                           | optional  |                                                                                                           - |
-| `properties`                                          | optional  |                                                                                                           - |
-| `recipients`                                          | required  |                                                                  Possible values: `all` (default), `agents` |
-| `url`                                                 | required  | Has to point to the LiveChat CDN.It's recommended to use the URL returned by [`upload_file`](#upload-file). |
-| `width`, `height`, `thumbnail_url`, `thumbnail2x_url` | optional  |                                                                                             Only for images |
+### Request
+ 
+| Field                                                 | Required | Data type | Notes                                                               |
+| ----------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------: |
+| `custom_id`                                           | no       | `string`  |                                                                     |
+| `type`                                                | yes      | `string`  | `file`                                                              |
+| `recipients`                                          | yes      | `string`  | Possible values: `all` (default), `agents`                          |
+| `properties`                                          | no       | `object`  | [Properties](#properties)                                           |
+| `url`                                                 | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/customer-chat-api/#upload-file).|
+
+### Response
+
+| Field                               | Returned        | Notes                                                               |
+| ----------------------------------- | :-------------- | ------------------------------------------------------------------: |
+| `id`                                | always          |                                                                     |
+| `custom_id`                         | optionally      |                                                                     |
+| `created_at`                        | always          | Date & time format with a resolution of microseconds, `UTC string`. |
+| `type`                              | always          |                                                                     |
+| `author_id`                         | always          |                                                                     |
+| `recipients`                        | always          |                                                                     |
+| `properties`                        | optionally      |                                                                     |
+| `name`                              | always          |                                                                     |
+| `url`                               | always          |                                                                     |
+| `thumbnail_url`, `thumbnail2x_url`  | only for images |                                                                     |
+| `content_type`                      | always          |                                                                     |
+| `size`, `width`, `height`           | only for images |                                                                     |
 
 </Text>
 
 <Code>
 
-<CodeResponse title={'Sample File event'}>
+<CodeResponse title={'Sample File in response'}>
 
 ```json
 {
@@ -115,23 +131,36 @@ File event informs about a file being uploaded.
 
 Filled form event contains data from a form (prechat or postchat survey).
 
-| Field                                   | Req./Opt |                                                               Notes |
-| --------------------------------------- | :------: | ------------------------------------------------------------------: |
-| `created_at`                            | required | Date & time format with a resolution of microseconds, `UTC string`. |
-| `recipients`                            | required |                          Possible values: `all` (default), `agents` |
-| `type`                                  | required |                                                       `filled_form` |
-| `checkbox`                              | optional |                                       For multiple-choice questions |
-| `custom_id`                             | optional |                                                                     |
-| `email`, `name`, `question`, `textarea` | optional |                                    For open questions (text answer) |
-| `group_chooser`                         | optional |                                          For group-choice questions |
-| `properties`                            | optional |                                The [Properties](#properties) object |
-| `radio`, `select`                       | optional |                                         For single-choice questions |
+### Request
+
+| Field                   | Required | Data type  |  Notes                                                                    |
+| ------------------------| -------- | -----------| ------------------------------------------------------------------------- |
+| `custom_id`             | no       | `string`   |                                                                           |
+| `type`                  | yes      | `string`   | `filled_form`                                                             |
+| `recipients`            | yes      | `string`   | Possible values: `all` (default), `agents`                                |
+| `properties`            | no       | `object`   | [Properties](#properties)                                                 |
+| `form_id`               | ?        | `string`   |                                                                           |
+| `fields`                | yes      | `array`    | The fields a form contains. See [form fields](#form-fields) for details.  |
+
+### Response
+
+| Field                   | Returned    | Notes |
+| ------------------------| ----------- | ----- |
+| `id`                    | always      |       |
+| `custom_id`             | optionally  |       |
+| `created_at`            | always      | Date & time format with a resolution of microseconds, `UTC string`. |
+| `type`                  | always      |       |
+| `author_id`             | always      |       |
+| `recipients`            | always      |       |
+| `properties`            | optionally  |       |
+| `form_id`               | ?           |       |
+| `fields`                | always      | An array of [form fields](#form-fields) |
 
 </Text>
 
 <Code>
 
-<CodeResponse title={'Sample Filled form event'}>
+<CodeResponse title={'Sample Filled form in response'}>
 
 ```json
 {
@@ -200,23 +229,40 @@ Filled form event contains data from a form (prechat or postchat survey).
 
 Message event contains text message to other chat users.
 
-| Field            | Req./Opt. |                                                                                                                         Notes |
-| ---------------- | :-------: | ----------------------------------------------------------------------------------------------------------------------------: |
-| `created_at`     | required  |                                                           Date & time format with a resolution of microseconds, `UTC string`. |
-| `recipients`     | required  |                                                                                    Possible values: `all` (default), `agents` |
-| `text`           | required  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
-| `type`           | required  |                                                                                                                     `message` |
-| `custom_id`      | optional  |                                                                                                                               |
-| `postback`       | optional  |                                                           Appears in the message event only when triggered by a rich message. |
-| `postback.type`  | optional  |                                                                                 Required only if `postback.value` is present. |
-| `postback.value` | optional  |                                                                                  Required only if `postback.type` is present. |
-| `properties`     | optional  |                                                                                          The [properties](#properties) object |
+### Request
+
+| Field                 | Required| Data type | Notes                                                               |
+| --------------------- | ------- | --------- | ------------------------------------------------------------------  |
+| `custom_id`           | no      | `string`  |                                                                     |
+| `text`                | yes     | `string`  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
+| `type`                | yes     | `string`  | `message`                                                           |
+| `recipients`          | yes     | `string`  | Possible values: `all` (default), `agents`                          |
+| `properties`          | no      | `object`  | [Properties](#properties)                                           |
+
+### Response
+
+| Field                   | Returned    | Notes                                                                 |
+| ------------------------| ----------- | ----------------------------------------------------------------------|
+| `id`                    | always      |                                                                       |
+| `custom_id`             | optionally  |                                                                       |
+| `created_at`            | always      | Date & time format with a resolution of microseconds, `UTC string`.   |
+| `type`                  | always      | `message`                                                             |
+| `author_id`             | always      |                                                                       |
+| `text`                  | always      |                                                                       |
+| `postback`              | optionally  | Appears in a message only when triggered by a rich message.           |
+| `postback.id`           | optionally  |                                                                       |
+| `postback.thread_id`    | optionally  |                                                                       |
+| `postback.event_id`     | optionally  |                                                                       |
+| `postback.type`         | optionally  | Appears only if `postback.value` is present.                          |
+| `postback.value`        | optionally  | Appears only if `postback.type` is present.                           |
+| `recipients`            | always      |                                                                       |
+| `properties`            | optionally  | [Properties](#properties)                                             |
 
 </Text>
 
 <Code>
 
-<CodeResponse title={'Sample Message event'}>
+<CodeResponse title={'Sample Message in response'}>
 
 ```json
 {
@@ -683,6 +729,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 - [Access](#access)
 - [Chats](#chats)
 - [Chat summaries](#chat-summaries)
+- [Form fields](#form-fields)
 - [Properties](#properties)
 - [Threads](#threads)
 
@@ -800,6 +847,69 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 ```
 
 </CodeResponse>
+
+## Form fields
+
+A component of the [Filled form](#filled-form) event.
+
+| Field                   | Required | Data type               |  Notes                                                                                                   |
+| ------------------------| -------- | ----------------------- | -------------------------------------------------------------------------------------------------------: |
+| `fields`                | yes      | `array of objects`      | The fields a form contains.                                                                              |
+| `type`                  | yes      | `string`                | Possible values: `checkbox`, `email`, `name`, `question`, `textarea`, `group_chooser`, `radio`, `select` |
+| `id`                    | yes      | `string`                | Field id, for all field types                                                                            |
+| `label`                 | yes      | `string`                | Field label; for all field types                                                                         |
+| `answer`                | yes      | `any`                   | For all field types                                                                                      |
+| `answer.id`             | yes      | `string`                | Answer id; for all field types                                                                           |
+| `answer.label`          | yes      | `string`                | Answer label; for all field types                                                                        |
+| `answer.group_id`       | yes      | `number`                | For `group_chooser`                                                                                      |
+
+<CodeResponse>
+
+```json
+{
+	"fields": [{
+		"type": "name",
+		"id": "154417206262603539",
+		"label": "Your name",
+		"answer": "John Doe"
+	}, {
+		"type": "email",
+		"id": "154417206262601584",
+		"label": "Your email",
+		"answer": "customer1@example.com"
+	}, {
+		"type": "radio",
+		"id": "154417206262602571",
+		"label": "Chat purpose",
+		"answer": {
+				"id": "0",
+				"label": "Support"
+		}
+	}, {
+		"type": "checkbox",
+		"id": "154417206262604640",
+		"label": "Company industry",
+		"answers": [{
+			"id": "0"
+			"label": "automotive"
+		}, {
+			"id": "1"
+			"label": "it"
+		}]
+	}, {
+		"type": "group_chooser",
+		"id": "154417206262605324",
+		"label": "Choose department",
+		"answer": {
+			"group_id": 1,
+			"label": "Marketing"
+		}
+	}]
+}
+```
+
+</CodeResponse>
+
 
 ## Properties
 
@@ -1558,6 +1668,8 @@ curl -X POST \
 
 ### Send Sneak Peek
 
+Sends a sneak peek to a chat.
+
 #### Specifics
 
 |                        |                                                                    |
@@ -1570,7 +1682,7 @@ curl -X POST \
 
 | Parameter         | Required | Data type | Notes                                      |
 | ----------------- | -------- | --------- | ------------------------------------------ |
-| `chat_id`         | Yes      | `string`  | Id of the chat you to set a sneak peek to. |
+| `chat_id`         | Yes      | `string`  | Id of the chat to send a sneak peek to.    |
 | `sneak_peek_text` | Yes      | `string`  | Sneak peek text                            |
 
 #### Response
@@ -1589,9 +1701,8 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
-      "chat_id": "PJ0MRSHTDG",
-		  "sneak_peek_text": "hello world"
-          }
+        "chat_id": "PJ0MRSHTDG",
+        "sneak_peek_text": "hello world"
       }'
 ```
 
@@ -2581,6 +2692,13 @@ curl -X POST \
 ### Accept Greeting
 
 Marks an incoming greeting as seen.
+
+**How it's implemented in LiveChat:**
+
+The Chat Widget uses this method to inform that a Customer has seen a greeting. Based on that, the Reports section displays the greetings 
+that were actually seen by Customers, not all the sent greetings. If a Customer started a chat from a greeting, but the **Accept Method** wasn't executed,
+the greeting is still counted as seen in Reports.
+
 
 #### Specifics
 
