@@ -1044,7 +1044,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
-| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`update_agent`](#update-agent) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                                   |
+| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                                   |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)                                                                                                                                                                                                                               |
 
 </Text>
@@ -3738,25 +3738,25 @@ Change the firebase push notifications properties.
 <Section>
 <Text>
 
-### Update Agent
+### Set Routing Status
 
-Updates Agent's properties.
+Changes the status of an Agent or a Bot Agent.
 
 #### Specifics
 
-|                        |                                    |
-| ---------------------- | ---------------------------------- |
-| **Action**             | `update_agent`                     |
-| **Required scopes**    | `agents--my:rw` `agents--all:rw`   |
-| **Web API equivalent** | [`update_agent`](../#update-agent) |
-| **Push message**       | [`agent_updated`](#agent_updated)  |
+|                        |                                                                            |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Action**             | `set_routing_status`                                                       |
+| **Required scopes**    | `agents--my:rw` `agents--all:rw` (for Agents); `agents-bot--my:rw` `agents-bot--all:rw` (for Bot Agents)|
+| **Web API equivalent** | [`set_routing_status`](../#set-routing-status)                             |
+| **Push message**       | [`routing_status_set`](#routing_status_set)  |
 
 #### Request
 
-| Parameter        | Required | Data type | Notes                                                     |
-| ---------------- | -------- | --------- | --------------------------------------------------------- |
-| `agent_id`       | No       | `string`  | The current Agent is used by default.                     |
-| `routing_status` | No       | `string`  | Possible values: `accepting_chats`, `not_accepting_chats` |
+| Parameter  | Required | Data type| Notes                                                            |
+| -----------| -------- | -------- | ---------------------------------------------------------------- |
+| `status`   |   Yes    | `string` | For Agents: `accepting_chats` or `not_accepting_chats`; for Bot Agents: `accepting_chats`, `not_accepting_chats`, or `offline` | 
+| `agent_id` |   No     | `string` | If not specified, the requester's status will be updated.        | 
 
 </Text>
 <Code>
@@ -3764,36 +3764,22 @@ Updates Agent's properties.
 
 ```json
 {
-  "action": "update_agent",
+  "action": "set_routing_status",
   "payload": {
-    "agent_id": "agent1@example.com",
-    "routing_status": "accepting_chats"
+    "status": "accepting_chats",
+    "agent_id": "agent1@example.com"
   }
 }
 ```
 
 </CodeSample>
 
-<!-- > **`update_agent`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_agent",
-	"payload": {
-		"agent_id": "agent1@example.com",
-        "routing_status": "accepting_chats"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "update_agent",
+  "action": "set_routing_status",
   "type": "response",
   "success": true,
   "payload": {
@@ -4151,7 +4137,7 @@ Here's what you need to know about **pushes**:
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
-| **Status**      | [`agent_updated`](#agent_updated) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
 | **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
 
 </Text>
@@ -4923,15 +4909,15 @@ Informs that a Customer left the tracked website.
 
 ## Status
 
-### `agent_updated`
-Informs that an Agent's status was updated.
+### `routing_status_set`
+Informs that an Agent's or Bot Agent's status was changed.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
   "agent_id": "agent1@example.com",
-  "routing_status": "accepting_chats"
+  "status": "accepting_chats"
 }
 ```
 
@@ -4939,10 +4925,10 @@ Informs that an Agent's status was updated.
 
 #### Specifics
 
-|                        |                 |
-| ---------------------- | --------------- |
-| **Action**             | `agent_updated` |
-| **Webhook equivalent** | -               |
+|                        |                      |
+| ---------------------- | -------------------- |
+| **Action**             | `routing_status_set` |
+| **Webhook equivalent** | [`routing_status_set`](/management/configuration-api/#routing_status_set)|
 
 ### `agent_disconnected`
 Informs that an Agent was disconnected. The payload contains the reason of Customer's disconnection.

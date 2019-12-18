@@ -1074,7 +1074,7 @@ curl -X POST \
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
-| **Status**      | [`update_agent`](#update-agent)                                                                                                                                                                                                                                                                                                                         |
+| **Status**      | [`set_routing_status`](#set-routing-status)                                                                                                                                                                                                                                                                                                                         |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)                                                                                                                                                                                                                               |
 
 ## Chats
@@ -2942,25 +2942,25 @@ https://api.livechatinc.com/v3.2/agent/action/ban_customer \
 <Section>
 <Text>
 
-### Update Agent
+### Set Routing Status
 
-Updates Agent's properties.
+Changes the status of an Agent or a Bot Agent.
 
 #### Specifics
 
-|                        |                                                              |
-| ---------------------- | ------------------------------------------------------------ |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/agent/action/update_agent` |
-| **Required scopes**    | `agents--my:rw` `agents--all:rw`                             |
-| **RTM API equivalent** | [`update_agent`](rtm-reference/#update-agent)                |
-| **Webhook**            | -                                                            |
+|                        |                                                                           |
+| ---------------------- | ------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/agent/action/set_routing_status`        |
+| **Required scopes**    | `agents--my:rw` `agents--all:rw` (for Agents); `agents-bot--my:rw` `agents-bot--all:rw` (for Bot Agents)|
+| **RTM API equivalent** | [`set_routing_status`](/v3.2/rtm-reference/#set-routing-status)                 |
+| **Webhook**            | [`routing_status_set`](/management/configuration-api/v3.2/#routing_status_set) |
 
 #### Request
 
-| Parameter        | Required | Data type | Notes                                                     |
-| ---------------- | -------- | --------- | --------------------------------------------------------- |
-| `agent_id`       | No       | `string`  | The current Agent is used by default.                     |
-| `routing_status` | No       | `string`  | Possible values: `accepting_chats`, `not_accepting_chats` |
+| Parameter  | Required | Data type| Notes                                                            |
+| -----------| -------- | -------- | ---------------------------------------------------------------- |
+| `status`   |   Yes    | `string` | For Agents: `accepting_chats` or `not_accepting_chats`; for Bot Agents: `accepting_chats`, `not_accepting_chats`, or `offline` | 
+| `agent_id` |   No     | `string` | If not specified, the requester's status will be updated.        | 
 
 #### Response
 
@@ -2972,12 +2972,12 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-https://api.livechatinc.com/v3.2/agent/action/update_agent \
+https://api.livechatinc.com/v3.2/agent/action/set_routing_status \
 -H 'Authorization: Bearer <your_access_token>' \
 -H 'Content-Type: application/json' \
 -d '{
-   "agent_id": "agent1@example.com",
-   "routing_status": "accepting_chats"
+   "status": "accepting_chats",
+   "agent_id": "agent1@example.com"
    }'
 ```
 

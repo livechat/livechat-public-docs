@@ -71,12 +71,11 @@ Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as 
 | Request object                       | Type       | Required | Notes                                                                |
 | ------------------------------------ | ---------- | -------- | -------------------------------------------------------------------- |
 | `name`                               | `string`   | Yes      | Display name                                                         |
-| `status` __*__                       | `string`   | Yes      | Agent status                                                         |
 | `avatar`                             | `string`   | No       | Avatar URL                                                           |
 | `max_chats_count`                    | `int`      | No       | Max. number of incoming chats that can be routed to an Agent; default: 6. |
 | `groups`                             | `object[]` | No       | Groups an Agent belongs to.                                          |
 | `groups[].id`                        | `uint`     | Yes      | Group ID; required only when `group`'s included.                     |
-| `groups[].priority` __**__           | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.    |
+| `groups[].priority` __*__            | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.    |
 | `webhooks`                           | `object`   | No       | Webhooks sent to the Agent; for more info on possible values and payload, see [Webhooks](#webhooks).     |
 | `webhooks.url`                       | `string`   | Yes      | Destination URL for webhooks; required only when `webhooks` is included.       |
 | `webhooks.secret_key`                | `string`   | Yes      | Secret sent in webhooks to verify webhook's source; required only when `webhooks`'s included.  |
@@ -85,23 +84,13 @@ Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as 
 | `webhooks.actions[].filters`         | `object`   | No       | Filters to check if a webhook should be triggered.                      |
 | `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhooks.                        |
 
+__*__ The table below presents the possible values for the `groups[].priority` parameter:
 
-__*__ The table below presents the possible values for the `status` parameter:
-
-| Possible value | Notes           |
-| ------------- |:-------------:|
-| `accepting chats`  | Agent is logged in. The chat router routes incoming chats to the Agent.     |
-| `not accepting chats` | Agent is logged in, but the chat router doesn't route incoming chats to the Agent. |
-| `offline` | Agent isn't logged in.    |
-
-
-__**__ The table below presents the possible values for the `groups[].priority` parameter:
-
-| Possible value | Notes           |
-| ------------- |:-------------:|
-| `first`  | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
-| `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
-| `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+| Possible value | Notes         |
+| -------------  |:-------------:|
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
 
 </Text>
 
@@ -115,8 +104,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-      "name": "Bot Name",
-      "status": "accepting chats"
+      "name": "Bot Name"
       }'
 ```
 
@@ -194,42 +182,30 @@ curl -X POST \
 
 |  |  |
 |-------|--------|
-| Method URL   | `https://api.livechatinc.com/v3.2/configuration/action/update_bot_agent`  |
-| Required scopes| `agents-bot--my:rw`  |
+| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/update_bot_agent`  |
+| Required scopes| `agents-bot--my:rw` `agents-bot--all:rw` (to update other Bot Agents within the same license) |
 
 #### Request
 
-| Parameter                       | Required       | Data type | Notes                                                  |
-| ------------------------------------ | ---------- | -------- | ------------------------------------------------------ |
-| `id`                                 | Yes   | `string`      | Bot Agent ID                                           |
-| `name`                               | No   | `string`       | Display name                                           |
-| `avatar`                             | No   | `string`       | Avatar URL                                             |
-| `status` __*__                       | No   | `string`       | Agent status                                           |
-| `max_chats_count`                    | No      | `int`       | Maximum incoming chats that can be routed to an Agent. |
-| `groups`                             | No | `object[]`       | Groups an Agent belongs to                            |
-| `groups[].id`                        |  Yes    | `uint`      | Group ID, required only when `groups`'s present.       |
-| `groups[].priority` __**__           | Yes   |  `string`     | Agent's priority in the group; required only when `groups` is included.    |
-| `default_group_priority` __***__    |   No | `string`        | The default routing priority for a group without defined priority. |
-| `webhooks`                           | No   | `object`       | Webhooks sent to an Agent                             |
-| `webhooks.url`                       | Yes   | `string`      | Destination URL for webhooks; required only when `webhooks` is present.|
-| `webhooks.secret_key`                | Yes   | `string`      | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included. 
-| `webhooks.actions`                   | Yes | `object[]`      | [Triggering actions](#triggering-actions); required only when `webhooks` is included.|
-| `webhooks.actions[].name`            | Yes   | `string`      | The name of the triggering action; required only when `webhooks` is included.|
-| `webhooks.actions[].filters`         | No   | `object`       | Filters to check if a webhook should be triggered.        |
-| `webhooks.actions[].additional_data` | No | `string[]`       | Additional data arriving with the webhook.          |
+| Parameter                            | Required | Data type | Notes                                                                                          |
+| ------------------------------------ | -------- | --------- | ---------------------------------------------------------------------------------------------- |
+| `id`                                 | Yes      | `string`  | Bot Agent ID                                                                                   |
+| `name`                               | No       | `string`  | Display name                                                                                   |
+| `avatar`                             | No       | `string`  | Avatar URL                                                                                     |
+| `max_chats_count`                    | No       | `int`     | Maximum incoming chats that can be routed to an Agent.                                         |
+| `groups`                             | No       | `object[]`| Groups an Agent belongs to                                                                     |                                        
+| `groups[].id`                        | Yes      | `uint`    | Group ID, required only when `groups`'s present.                                               |
+| `groups[].priority` __*__            | Yes      | `string`  | Agent's priority in the group; required only when `groups` is included.                        |
+| `default_group_priority` __**__      | No       | `string`  | The default routing priority for a group without defined priority.                             |
+| `webhooks`                           | No       | `object`  | Webhooks sent to an Agent                                                                      |
+| `webhooks.url`                       | Yes      | `string`  | Destination URL for webhooks; required only when `webhooks` is present.                        |
+| `webhooks.secret_key`                | Yes      | `string`  | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included.  |
+| `webhooks.actions`                   | Yes      | `object[]`| [Triggering actions](#triggering-actions); required only when `webhooks` is included.          |
+| `webhooks.actions[].name`            | Yes      | `string`  | The name of the triggering action; required only when `webhooks` is included.                  |
+| `webhooks.actions[].filters`         | No       | `object`  | Filters to check if a webhook should be triggered.                                             |
+| `webhooks.actions[].additional_data` | No       | `string[]`| Additional data arriving with the webhook.                                                     |
 
-
-
-__*__ The table below presents the possible values for the `status` parameter:
-
-| Possible values | Notes |
-| ------------- |:-------------:|
-| `accepting chats`  | Agent is logged in. The chat router routes incoming chats to the Agent.     |
-| `not accepting chats` | Agent is logged in, but the chat router doesn't route incoming chats to the Agent. |
-| `offline` | Agent isn't logged in.    |
-
-
-__**__ The table below presents the possible values for the `groups[].priority` parameter:
+__*__ The table below presents the possible values for the `groups[].priority` parameter:
 
 | Possible values | Notes: |
 | ------------- |:-------------:|
@@ -238,7 +214,7 @@ __**__ The table below presents the possible values for the `groups[].priority` 
 | `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
 
 
-__***__ The table below presents the possible values for the `default_group_priority` parameter:
+__**__ The table below presents the possible values for the `default_group_priority` parameter:
 
 | Possible values |  Notes   |
 | ------------- |:-------------:|
@@ -1077,7 +1053,7 @@ Here's what you need to know about **webhooks**:
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                           |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
-| **Status**      | [`agent_status_changed`](#agent_status_changed) [`agent_deleted`](#agent_deleted)| 
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_deleted`](#agent_deleted)| 
 | **Customers**   | [`customer_created`](#customer_created)                                                                                                                                                                                                                                                                                                                             |
 | **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`follow_up_requested`](#follow_up_requested)                                                                                                                                                                                                                                                                     |
 
@@ -2082,21 +2058,21 @@ Informs that a chat thread was untagged.
 
 <Text>
 
-### `agent_status_changed`
-Informs that an Agent's status changed.
+### `routing_status_set`
+Informs that an Agent's or Bot Agent's status has changed.
 
 #### Specifics
 
-|                     |                                                           |
-| ------------------- | --------------------------------------------------------- |
-| **Action**          | `agent_status_changed`                                          |
-| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/rtm-reference/#agent_status_changed)|
+|                        |                                                           |
+| ---------------------- | --------------------------------------------------------- |
+| **Action**             | `routing_status_set`                                          |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/rtm-reference/#routing_status_set)|
 
 #### Webhook payload
 
 | Object      | Notes                                  |
 | ----------- | -------------------------------------- |
-| `status`   | Possible values: `accepting chats`, `not accepting chats`, `offline` | 
+| `status`    | Possible values: `accepting chats`, `not accepting chats`, `offline` (for Bot Agents only) | 
 
 </Text>
 
@@ -2108,7 +2084,7 @@ Informs that an Agent's status changed.
 {
   "webhook_id": "<webhook_id>",
   "secret_key": "<secret_key>",
-  "action": "agent_status_changed",
+  "action": "routing_status_set",
   "license_id": 104130623,
   "payload": {
     "agent_id":"agent1@example.com",
@@ -2359,29 +2335,29 @@ __*__ The table below presents the possible values for the `action` parameter.
 
 | Possible action                                                     | Available filters                                 |
 | ------------------------------------------------------------------- | -------------------------------------------------:|
-| [`incoming_chat_thread`](#incoming-chat-thread)                     | `chat_member_ids`, `only_my_chats`                |
-| [`thread_closed`](#thread-closed)                                   | `chat_member_ids`, `only_my_chats`                |
-| [`access_granted`](#access-granted)                                 | `chat_member_ids`, `only_my_chats`                |
-| [`access_revoked`](#access-revoked)                                 | `chat_member_ids`, `only_my_chats`                |
-| [`access_set`](#access-set)                                         | `chat_member_ids`, `only_my_chats`                |
-| [`chat_user_added`](#chat-user-added)                               | `chat_member_ids`, `only_my_chats`                |
-| [`chat_user_removed`](#chat-user-removed)                           | `chat_member_ids`, `only_my_chats`                |
-| [`incoming_event`](#incoming-event)                                 | `chat_member_ids`, `author_type`, `only_my_chats` |
-| [`event_updated`](#event-updated)                                   | `chat_member_ids`, `author_type`, `only_my_chats` |
-| [`incoming_rich_message_postback`](#incoming-rich-message-postback) | `chat_member_ids`, `only_my_chats`                |
-| [`chat_properties_updated`](#chat-properties-updated)               | `chat_member_ids`, `only_my_chats`                |
-| [`chat_properties_deleted`](#chat-properties-deleted)               | `chat_member_ids`, `only_my_chats`                |
-| [`chat_thread_properties_updated`](#chat-thread-properties-updated) | `chat_member_ids`, `only_my_chats`                |
-| [`chat_thread_properties_deleted`](#chat-thread-properties-deleted) | `chat_member_ids`, `only_my_chats`                |
-| [`event_properties_updated`](#event-properties-updated)             | `chat_member_ids`, `only_my_chats`                |
-| [`event_properties_deleted`](#event-properties-deleted)             | `chat_member_ids`, `only_my_chats`                |
-| [`chat_thread_tagged`](#chat-thread-tagged)                         | `chat_member_ids`, `only_my_chats`                |
-| [`chat_thread_untagged`](#chat-thread-untagged)                     | `chat_member_ids`, `only_my_chats`                |
-| [`agent_status_changed`](#agent-status-changed)                     | -                                                 |
-| [`agent_deleted`](#agent-deleted)                                   | `chat_member_ids`                                 |
-| [`customer_created`](#customer-created)                             | -                                                 |
-| [`events_marked_as_seen`](#events-marked-as-seen)                   | `chat_member_ids`, `only_my_chats`                |
-| [`follow_up_requested`](#follow-up-requested)                       | `chat_member_ids`, `only_my_chats`                |
+| [`incoming_chat_thread`](#incoming_chat_thread)                     | `chat_member_ids`, `only_my_chats`                |
+| [`thread_closed`](#thread_closed)                                   | `chat_member_ids`, `only_my_chats`                |
+| [`access_granted`](#access_granted)                                 | `chat_member_ids`, `only_my_chats`                |
+| [`access_revoked`](#access_revoked)                                 | `chat_member_ids`, `only_my_chats`                |
+| [`access_set`](#access_set)                                         | `chat_member_ids`, `only_my_chats`                |
+| [`chat_user_added`](#chat_user_added)                               | `chat_member_ids`, `only_my_chats`                |
+| [`chat_user_removed`](#chat_user_removed)                           | `chat_member_ids`, `only_my_chats`                |
+| [`incoming_event`](#incoming_event)                                 | `chat_member_ids`, `author_type`, `only_my_chats` |
+| [`event_updated`](#event_updated)                                   | `chat_member_ids`, `author_type`, `only_my_chats` |
+| [`incoming_rich_message_postback`](#incoming_rich_message_postback) | `chat_member_ids`, `only_my_chats`                |
+| [`chat_properties_updated`](#chat_properties_updated)               | `chat_member_ids`, `only_my_chats`                |
+| [`chat_properties_deleted`](#chat_properties_deleted)               | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_properties_updated`](#chat_thread_properties_updated) | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) | `chat_member_ids`, `only_my_chats`                |
+| [`event_properties_updated`](#event_properties_updated)             | `chat_member_ids`, `only_my_chats`                |
+| [`event_properties_deleted`](#event_properties_deleted)             | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_tagged`](#chat_thread_tagged)                         | `chat_member_ids`, `only_my_chats`                |
+| [`chat_thread_untagged`](#chat_thread_untagged)                     | `chat_member_ids`, `only_my_chats`                |
+| [`routing_status_set`](#routing_status_set)                         | -                                                 |
+| [`agent_deleted`](#agent_deleted)                                   | `chat_member_ids`, `agent_ids`                    |
+| [`customer_created`](#customer_created)                             | -                                                 |
+| [`events_marked_as_seen`](#events_marked_as_seen)                   | `chat_member_ids`, `only_my_chats`                |
+| [`follow_up_requested`](#follow_up_requested)                       | `chat_member_ids`, `only_my_chats`                |
 
 </Text>
 
