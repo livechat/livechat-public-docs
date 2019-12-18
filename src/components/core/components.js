@@ -171,8 +171,6 @@ export const LeftColumn = styled.div`
 export const MiddleColumn = styled.div`
   max-width: 100%;
   padding-bottom: 30vh;
-
-  ${({ versionOffset }) => (versionOffset ? "margin-top: 56px" : "")};
 `;
 
 export const MenuWrapper = styled.div`
