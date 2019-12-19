@@ -148,7 +148,7 @@ export default ({ data: { mdx, allMdx } }) => {
             setExpanded={setExpanded}
           />
         </LeftColumn>
-        <MiddleColumn>
+        <MiddleColumn versionOffset={!!currentApiVersion}>
           {currentApiVersion && (
             <Version
               articleVersions={articlesVersions[category][subcategory][title]}

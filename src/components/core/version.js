@@ -7,12 +7,12 @@ import { versionToString, getVersionColor } from "../../utils";
 const Container = styled.div`
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid rgb(255, 255, 255);
-  position: sticky;
+  position: fixed;
   top: 0px;
-  width: 100vw;
+  width: 100%;
+  left: ${({ expanded }) => (expanded ? "249px" : "0")};
   z-index: 40;
   transition: left 0.3s ease-out;
-  margin-left: -50px;
 
   .label {
     margin-right: 10px;
