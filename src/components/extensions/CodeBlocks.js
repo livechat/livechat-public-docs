@@ -42,7 +42,7 @@ const CodeSampleWrapper = styled.div`
   border-radius: 6px;
   background-color: #4f566b;
   color: white;
-  margin: 0 0 20px;
+  margin: 56px 0 20px 0;
   max-width: 100%;
 
   --code-color: #f5fbff;

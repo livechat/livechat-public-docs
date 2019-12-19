@@ -137,14 +137,13 @@ const Version = ({
         </Dropdown>
 
         <span style={versionInfoStyle}>
-          {selectedVersion === API.STABLE_VERSION ? (
-            ``
-          ) : selectedVersion === API.LEGACY_VERSION ? (
+          {selectedVersion === API.LEGACY_VERSION && (
             <span>
               This version covers only some functionalities of the Configuration
-              API. For the rest, refer to the Configuration API v3.1.
+              API. For the rest, refer to v3.1.
             </span>
-          ) : (
+          )}
+          {selectedVersion === API.DEV_REVIEW_VERSION && (
             <span>
               This is the <strong>developer preview</strong> version of our API.
               Keep in mind it might be <strong>subject to change</strong>.
