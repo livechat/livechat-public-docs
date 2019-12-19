@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const StickyWrapper = styled.div`
   position: sticky;
-  top: 80px;
+  top: 136px;
   max-height: calc(100vh - 110px);
   min-height: 0;
   display: flex;
@@ -42,7 +42,7 @@ const CodeSampleWrapper = styled.div`
   border-radius: 6px;
   background-color: #4f566b;
   color: white;
-  margin: 56px 0 20px 0;
+  margin: 0 0 20px;
   max-width: 100%;
 
   --code-color: #f5fbff;
