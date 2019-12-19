@@ -1,22 +1,31 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Dropdown, DropdownList, Button } from "@livechat/design-system";
+import {
+  Dropdown,
+  DropdownList,
+  Button,
+  PopperTooltip
+} from "@livechat/design-system";
 import { API } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
+import { WarningIcon } from "./icons";
 
 const Container = styled.div`
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid rgb(255, 255, 255);
-  position: fixed;
+  position: sticky;
   top: 0px;
-  width: 100%;
-  left: ${({ expanded }) => (expanded ? "249px" : "0")};
+  right: 0;
+  left: 0;
   z-index: 40;
   transition: left 0.3s ease-out;
 
   .label {
     margin-right: 10px;
   }
+
+  margin-left: -50px;
+  margin-right: -30px;
 
   @media (min-width: 768px) {
     top: 60px;
@@ -27,14 +36,20 @@ const Content = styled.div`
   padding: 9px 10px 7px 50px;
   background-color: ${({ bgColor }) => `${bgColor}`};
   border-bottom: ${({ borderColor }) => `solid 1px ${borderColor}`};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const DesktopNote = styled.div`
+  @media (max-width: 720px) {
+    display: none;
+  }
 `;
 
 const labelStyle = {
   marginRight: "10px"
-};
-
-const versionInfoStyle = {
-  marginLeft: "10px"
 };
 
 const StyledDropdownList = styled(DropdownList)`
@@ -55,12 +70,54 @@ const StyledDropdownList = styled(DropdownList)`
   }
 `;
 
-const Version = ({
-  articleVersions,
-  redirectToVersion,
-  selectedVersion,
-  expanded
-}) => {
+const Warning = ({ selectedVersion, versionColor }) => (
+  <PopperTooltip
+    isVisible={true}
+    placement={"bottom-center"}
+    triggerActionType={"hover"}
+    trigger={
+      <span>
+        <WarningIcon
+          width={18}
+          style={{
+            color: `rgba(${versionColor}, 1)`,
+            margin: "0 7px 2px",
+            verticalAlign: "middle"
+          }}
+        />
+      </span>
+    }
+    closeOnOutsideClick
+    zIndex={99999}
+  >
+    <div style={{ maxWidth: "320px" }}>
+      {selectedVersion === API.LEGACY_VERSION && (
+        <p>
+          This version covers only some functionalities of the Configuration
+          API. For the rest, refer to v3.1.
+        </p>
+      )}
+      {selectedVersion === API.DEV_REVIEW_VERSION && (
+        <p>
+          This is the <strong>developer preview</strong> version of our API.
+          Keep in mind it might be <strong>subject to change</strong>.
+        </p>
+      )}
+      <p style={{ marginBottom: "10px" }}>
+        If you have any questions, please let us know at{" "}
+        <a
+          href="mailto:developers@livechatinc.com"
+          style={{ color: "white", textDecoration: "underline" }}
+        >
+          developers@livechatinc.com
+        </a>
+        .
+      </p>
+    </div>
+  </PopperTooltip>
+);
+
+const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const onDropdownHandle = version => {
@@ -97,7 +154,7 @@ const Version = ({
   const isStable = selectedVersion === API.STABLE_VERSION;
 
   return (
-    <Container expanded={expanded}>
+    <Container>
       <Content
         bgColor={
           isStable ? "rgb(241, 246, 248)" : `rgba(${versionColor}, 0.07)`
@@ -106,50 +163,54 @@ const Version = ({
           isStable ? "rgb(232, 232, 232)" : `rgba(${versionColor}, 0.07)`
         }
       >
-        <span style={labelStyle}>API version</span>
-        <Dropdown
-          isVisible={showDropdown}
-          onClose={closeDropdown}
-          triggerRenderer={({ ref }) => (
-            <Button onClick={openDropdown} ref={ref}>
-              {formatVersion(selectedVersion)}
-
-              <svg
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                fill="#424d57"
-                style={{ marginLeft: "5px", marginRight: "-10px" }}
-              >
-                <path d="M7 10l5 5 5-5H7z"></path>
-              </svg>
-            </Button>
-          )}
-        >
-          <StyledDropdownList
-            items={sortedArticleVersions.map((version, i) => ({
-              itemId: i,
-              content: formatVersion(version),
-              onItemSelect: () => onDropdownHandle(version),
-              isSelected: version === selectedVersion
-            }))}
-          />
-        </Dropdown>
-
-        <span style={versionInfoStyle}>
+        <DesktopNote>
           {selectedVersion === API.LEGACY_VERSION && (
-            <span>
-              This version covers only some functionalities of the Configuration
-              API. For the rest, refer to v3.1.
-            </span>
+            <span>You are browsing legacy version of the API.</span>
           )}
           {selectedVersion === API.DEV_REVIEW_VERSION && (
             <span>
-              This is the <strong>developer preview</strong> version of our API.
-              Keep in mind it might be <strong>subject to change</strong>.
+              You are browsing a developer preview version of the API.
             </span>
           )}
-        </span>
+        </DesktopNote>
+
+        <div>
+          {!isStable && (
+            <Warning
+              selectedVersion={selectedVersion}
+              versionColor={versionColor}
+            />
+          )}
+          <span style={labelStyle}>API version</span>
+          <Dropdown
+            isVisible={showDropdown}
+            onClose={closeDropdown}
+            triggerRenderer={({ ref }) => (
+              <Button onClick={openDropdown} ref={ref}>
+                {formatVersion(selectedVersion)}
+
+                <svg
+                  width="24px"
+                  height="24px"
+                  viewBox="0 0 24 24"
+                  fill="#424d57"
+                  style={{ marginLeft: "5px", marginRight: "-10px" }}
+                >
+                  <path d="M7 10l5 5 5-5H7z"></path>
+                </svg>
+              </Button>
+            )}
+          >
+            <StyledDropdownList
+              items={sortedArticleVersions.map((version, i) => ({
+                itemId: i,
+                content: formatVersion(version),
+                onItemSelect: () => onDropdownHandle(version),
+                isSelected: version === selectedVersion
+              }))}
+            />
+          </Dropdown>
+        </div>
       </Content>
     </Container>
   );

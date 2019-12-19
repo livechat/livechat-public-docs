@@ -1,11 +1,9 @@
-/** @jsx jsx */ import { jsx, keyframes, css } from "@emotion/core";
+/** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { Link } from "gatsby";
 import styled from "@emotion/styled";
-import { LiveChatLogo, CategoryIcon, WarningIcon } from "./icons";
+import { LiveChatLogo, CategoryIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
-import { PopperTooltip } from "@livechat/design-system";
 import { getVersionColor } from "../../utils";
-import { API } from "../../constant";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -80,31 +78,6 @@ const linkStyle = {
   transition: "color 60ms ease-out"
 };
 
-const bounce = keyframes`
-  from, 20%, 53%, 80%, to {
-    transform: rotate(0);
-  }
-  20%, 23% {
-    transform: rotate(-5deg);
-  }
-  35% {
-    transform: rotate(12deg);
-  }
-  45% {
-    transform: rotate(-4deg);
-  }
-  50% {
-    transform: rotate(0);
-  }
-  90% {
-    transform: rotate(0);
-  }
-`;
-
-const iconsCss = css`
-  animation: ${bounce} 2s ease-out infinite;
-`;
-
 const iconStyle = { marginRight: "5px" };
 
 const activeLinkStyle = color => ({
@@ -132,42 +105,6 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
   </MenuElementWrapper>
 );
 
-const Warning = () => (
-  <PopperTooltip
-    isVisible={true}
-    placement={"bottom-start"}
-    triggerActionType={"hover"}
-    trigger={
-      <span>
-        <WarningIcon
-          width={18}
-          style={{ display: "block", color: "#f1bb15" }}
-          className={iconsCss}
-        />
-      </span>
-    }
-    closeOnOutsideClick
-    zIndex={99999}
-  >
-    <div style={{ maxWidth: "320px" }}>
-      <p>
-        We're rolling out major changes to the documentation. Apologies for any
-        inconvenience!
-      </p>
-      <p style={{ marginBottom: "10px" }}>
-        If anything is missing, please let us know at{" "}
-        <a
-          href="mailto:developers@livechatinc.com"
-          style={{ color: "white", textDecoration: "underline" }}
-        >
-          developers@livechatinc.com
-        </a>
-        .
-      </p>
-    </div>
-  </PopperTooltip>
-);
-
 const Header = ({ selectedVersion }) => {
   const categories = useAllCategoriesMeta();
   const tabColor = getVersionColor(selectedVersion);
@@ -188,9 +125,7 @@ const Header = ({ selectedVersion }) => {
 
       <MenuListWrapper>
         <MenuList>
-          {selectedVersion === API.DEV_REVIEW_VERSION && <Warning />}
-
-          {categories.map(({ color, title, slug }) => (
+          {categories.map(({ title, slug }) => (
             <MenuElement
               key={slug}
               color={tabColor}

@@ -154,7 +154,6 @@ export default ({ data: { mdx, allMdx } }) => {
               articleVersions={articlesVersions[category][subcategory][title]}
               selectedVersion={selectedVersion}
               redirectToVersion={redirectToVersion}
-              expanded={expanded}
             />
           )}
           <Content>
