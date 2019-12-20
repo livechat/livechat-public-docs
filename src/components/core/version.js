@@ -136,8 +136,8 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
           {version === API.STABLE_VERSION
             ? `(stable)`
             : version === API.LEGACY_VERSION
-            ? `(legacy)`
-            : `(dev preview)`}
+              ? `(legacy)`
+              : `(dev preview)`}
         </span>
       </>
     );
@@ -165,11 +165,11 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
       >
         <DesktopNote>
           {selectedVersion === API.LEGACY_VERSION && (
-            <span>You are browsing legacy version of the API.</span>
+            <span>You are browsing the legacy version of the API.</span>
           )}
           {selectedVersion === API.DEV_REVIEW_VERSION && (
             <span>
-              You are browsing a developer preview version of the API.
+              You are browsing the developer preview version of the API.
             </span>
           )}
         </DesktopNote>

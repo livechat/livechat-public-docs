@@ -170,6 +170,7 @@ export const MiddleColumn = styled.div`
   padding-bottom: 30vh;
   position: relative;
   margin-left: 50px;
+  width: 100%;
 `;
 
 export const MenuWrapper = styled.div`
@@ -245,14 +246,14 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      // an ugly fix beneath (active ? 1 : 0)
-      <MenuLink to={url} active={active ? 1 : 0}>
-        <ArticleIcon
-          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-        />
-        &nbsp;
+        // an ugly fix beneath (active ? 1 : 0)
+        <MenuLink to={url} active={active ? 1 : 0}>
+          <ArticleIcon
+            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+          />
+          &nbsp;
         <span>{title}</span>
-      </MenuLink>
-    )}
+        </MenuLink>
+      )}
   </Li>
 );
