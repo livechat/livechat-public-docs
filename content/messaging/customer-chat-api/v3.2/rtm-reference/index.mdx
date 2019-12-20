@@ -5,14 +5,14 @@ subcategory: "customer-chat-api"
 title: "RTM API Reference"
 tagline: "Interact with the chat as a Customer."
 desc: "Use the Customer Chat Web API to interact as a Customer."
-apiVersion: "3.1"
+apiVersion: "3.2"
 ---
 
 # Introduction
 
 ## Versioning
 
-This document describes the **Customer Chat Real-Time Messaging API v3.1**.
+This document describes the **Customer Chat Real-Time Messaging API v3.2**.
 
 ## What is RTM API
 
@@ -32,7 +32,7 @@ Also, the RTM API will be a better choice if you want to avoid time delays or pr
 
 ## Authentication
 
-**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](/getting-started/authorization/#customer-authorization-flow/) within 30 seconds, otherwise the connection will be closed.
+**Customer authentication** is handled by access tokens. Find out how to get an **access token** from [Customer authorization flow](https://developers.livechatinc.com/beta-docs/authorization/#customer-authorization-flow) within 30 seconds, otherwise the connection will be closed.
 
 After successful authorization, client should **ping the server** each 15 seconds, otherwise the connection will be closed after about 30 seconds of inactivity. If the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2), client should use a protocol message with the ping action. Until authorization is completed, ping is a no-op.
 
@@ -71,7 +71,7 @@ These are the available **event types**:
 
 <Text>
 
-File event informs about a file being uploaded.
+The **File** event informs about an uploaded file.
 
 ### Request
  
@@ -102,7 +102,7 @@ File event informs about a file being uploaded.
 
 <Code>
 
-<CodeResponse title={'Sample File in response'}>
+<CodeResponse title={'sample file in response'}>
 
 ```json
 {
@@ -137,7 +137,7 @@ File event informs about a file being uploaded.
 
 <Text>
 
-Filled form event contains data from a form (prechat or postchat survey).
+The **Filled form** event contains data from a form (prechat or postchat survey).
 
 ### Request
 
@@ -166,7 +166,7 @@ Filled form event contains data from a form (prechat or postchat survey).
 
 <Code>
 
-<CodeResponse title={'Sample Filled form in response'}>
+<CodeResponse title={'sample filled form in response'}>
 
 ```json
 {
@@ -232,7 +232,7 @@ Filled form event contains data from a form (prechat or postchat survey).
 
 <Text>
 
-Message event contains text message to other chat users.
+The **Message** event contains text message to other chat users.
 
 ### Request
 
@@ -265,7 +265,7 @@ Message event contains text message to other chat users.
 
 <Code>
 
-<CodeResponse title={'Sample Message in response'}>
+<CodeResponse title={'sample message in response'}>
 
 ```json
 {
@@ -344,7 +344,7 @@ Rich message event contains rich message data structure. [Read more](/extending-
       "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "image": {
         "name": "image25.png",
-        "url": "https://domain.com/asdsfdsf.png",
+        "url": "https://domain.com/image25.png",
         "content_type": "image/png",
         "size": 123444,
         "width": 640,
@@ -686,7 +686,7 @@ Here's the list of all system messages you might come across as a Customer:
   "type": "customer",
   "name": "John Smith",
   "email": "customer1@example.com",
-  "avatar": "https://domain.com/avatars/1.jpg",
+  "avatar": "https://domain.com/avatar.png",
   "fields": {
     "custom field name": "custom field value"
   },
@@ -713,7 +713,7 @@ Here's the list of all system messages you might come across as a Customer:
   "id": "agent1@example.com",
   "type": "agent",
   "name": "Support Team",
-  "avatar": "cdn.livechatinc.com/avatars/1.png",
+  "avatar": "https://domain.com/avatar.png",
   "present": true,
   "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
@@ -918,22 +918,12 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 ```json
 {
   "properties": {
-    "rating": {
+    "0805e283233042b37f460ed8fbf22160": {
       // <property_namespace>
-      "score": {
-        // <property_name>
-        "value": 1 // <property_value>
-      },
-      "comment": {
-        "value": "rated good!"
-      }
-    },
-    "routing": {
-      "idle": {
-        "value": false
-      }
+      "string_property": "string value"
+        // <property_name> : <property_value>
+        }
     }
-  }
 }
 ```
 
@@ -974,7 +964,6 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | `restricted_access` | optional  |                                                                                       |
 
 # Methods
-In the websocket transport, actions generate [pushes](#pushes). RTM API actions can also trigger [webhooks](/management/configuration-api/#webhooks), but they need to be registered first. 
 
 #### The API endpoint
 
@@ -997,9 +986,9 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 | **Chats**      | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                 |
 | **Events**     | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                           |
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
-| **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_fields`](#set-customer-fields)                                                                                                                                                                                                                     |
+| **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_fields`](#set-customer-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                     |
 | **Status**     | [`login`](#login) [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                             |
-| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen)                                                                                                                                                                                               |
+| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                                                                                              |
 
 </Text>
 
@@ -1264,7 +1253,7 @@ It returns [summaries](#chat-summaries) of the chats a Customer participated in.
   "type": "response",
   "success": true,
   "payload": {
-        "chat": {
+       "chat": {
         "id": "PJ0MRSHTDG",
         "order": 1576569422,
         "threads": [
@@ -1325,6 +1314,19 @@ It returns [summaries](#chat-summaries) of the chats a Customer participated in.
 
 </Section>
 
+<!-- > **`get_chat_threads`** sample **request** with optional params
+
+```json
+{
+	"request_id": "4125", // optional
+	"action": "get_chat_threads",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
+	}
+}
+``` -->
+
 <Section>
 
 <Text>
@@ -1348,6 +1350,7 @@ Starts a chat.
 | `chat`                   | No       | `object`  |                                                                             |
 | `chat.properties`        | No       | `object`  | Initial chat properties                                                     |
 | `chat.access`            | No       | `object`  | Chat access to set, default: all agents.                                    |
+| `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type `customer`).         |
 | `chat.thread`            | No       | `object`  |                                                                             |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
 | `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
@@ -1775,6 +1778,24 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 </Section>
 
+<!-- > **`send_rich_message_postback`** sample **request** with optional params
+
+```json
+{
+	"request_id": "125", // optional
+	"action": "send_rich_message_postback",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+        "thread_id": "K600PKZON8",
+        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+        "postback": {
+            "id": "Method URL_yes",
+            "toggled": true
+        }
+	}
+}
+``` -->
+
 <Section>
 
 <Text>
@@ -1836,19 +1857,6 @@ Sends a sneak peek to a chat.
 
 </Section>
 
-<!-- > **`send_sneak_peek`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "send_sneak_peek",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"sneak_peek_text": "hello world"
-	}
-}
-``` -->
-
 ## Properties
 
 <Section>
@@ -1882,14 +1890,13 @@ Sends a sneak peek to a chat.
 {
   "action": "update_chat_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
+    "chat_id": "Q1GZ3FNAT9",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "score": 10,
-        "comment": "Thank you!"
-      }
+        "0805e283233042b37f460ed8fbf22160": {
+            "string_property": "Chat property value updated by Customer"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -1914,24 +1921,6 @@ Sends a sneak peek to a chat.
 </Code>
 
 </Section>
-
-<!-- > **`update_chat_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "93875", // optional
-	"action": "update_chat_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-	}
-}
-``` -->
 
 <Section>
 
@@ -1970,11 +1959,13 @@ Sends a sneak peek to a chat.
 {
   "action": "delete_chat_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
+    "chat_id": "Q1GZ3FNAT9",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": ["score", "comment"]
+        "0805e283233042b37f460ed8fbf22160": [
+            "string_property"
+            ]
+        }
     }
-  }
 }
 ```
 
@@ -2032,15 +2023,14 @@ Sends a sneak peek to a chat.
 {
   "action": "update_chat_thread_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
+    "chat_id": "Q1GZ3FNAT9",
+	  "thread_id": "Q1GZ3FNAU9",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "score": 10,
-        "comment": "Thank you!"
-      }
+        "0805e283233042b37f460ed8fbf22160": {
+            "string_property": "Chat thread property value updated by Customer"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -2065,25 +2055,6 @@ Sends a sneak peek to a chat.
 </Code>
 
 </Section>
-
-<!-- > **`update_chat_thread_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_chat_thread_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-	}
-}
-``` -->
 
 <Section>
 
@@ -2123,12 +2094,14 @@ Sends a sneak peek to a chat.
 {
   "action": "delete_chat_thread_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
+    "chat_id": "Q1GZ3FNAT9",
+    "thread_id": "Q1GZ3FNAU9",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": ["score", "comment"]
+        "0805e283233042b37f460ed8fbf22160": [
+            "string_property"
+            ]
+        }
     }
-  }
 }
 ```
 
@@ -2187,16 +2160,15 @@ Sends a sneak peek to a chat.
 {
   "action": "update_event_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
-    "event_id": "2_EW2WQSA8",
+    "chat_id": "Q1GZ3FNAT9",
+    "thread_id": "Q1GZ3FNAU9",
+    "event_id": "Q1GZ3FNAU9_1",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "score": 10,
-        "comment": "Thank you!"
-      }
+        "0805e283233042b37f460ed8fbf22160": {
+          "string_property": "Event property value updated by Customer"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -2226,7 +2198,7 @@ Sends a sneak peek to a chat.
 
 <Text>
 
-### Delete Event Properties
+## Delete Event Properties
 
 #### Specifics
 
@@ -2255,15 +2227,15 @@ Sends a sneak peek to a chat.
 {
   "action": "delete_event_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
-    "event_id": "2_EW2WQSA8",
+    "chat_id": "Q1GZ3FNAT9",
+    "thread_id": "Q1GZ3FNAU9",
+    "event_id": "Q1GZ3FNAU9_1",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "rating": ["score", "comment"]
-      }
+        "0805e283233042b37f460ed8fbf22160": [
+            "string_property"
+            ]
+        }
     }
-  }
 }
 ```
 
@@ -2289,27 +2261,6 @@ Sends a sneak peek to a chat.
 
 </Section>
 
-<!-- > **`delete_event_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "delete_event_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "rating": [
-                    "score",
-                    "comment"
-                ]
-            }
-        }
-	}
-}
-``` -->
 
 ## Customers
 
@@ -2364,7 +2315,7 @@ At least one optional parameter needs to be included in the request payload.
   "type": "response",
   "success": true,
   "payload": {
-    // "User > Customer" object
+    // no response payload
   }
 }
 ```
@@ -2374,22 +2325,6 @@ At least one optional parameter needs to be included in the request payload.
 </Code>
 
 </Section>
-
-<!-- > **`update_customer`** sample **request** with optional params
-
-```json
-{
-	"request_id": "13425", // optional
-	"action": "update_customer",
-	"payload": {
-		"name": "John Doe",
-		"avatar": "https://domain.com/avatars/1.jpg",
-		"fields": {
-			"score": "low"
-		}
-	}
-}
-``` -->
 
 <Section>
 
@@ -2450,19 +2385,6 @@ Agent and referrer are updated by default using the browser’s headers.
 </Code>
 
 </Section>
-
-<!-- > **`update_customer_page`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_customer_page",
-	"payload": {
-			"url": "https://livechatinc.com/pricing",
-			"title": "Livechat - Pricing"
-	}
-}
-``` -->
 
 <Section>
 
@@ -2525,19 +2447,60 @@ Agent and referrer are updated by default using the browser’s headers.
 
 </Section>
 
-<!-- > **`set_customer_fields`** sample **request** with optional params
+<Section>
+
+<Text>
+
+### Get Customer
+
+Returns the info about the Customer requesting it.
+
+#### Specifics
+
+|                        |                                    |
+| ---------------------- | ---------------------------------- |
+| **Action**             | `get_customer`                     |
+| **Web API equivalent** | [`get_customer`](../#get-customer) |
+| **Push message**       | -                                  |
+
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
 
 ```json
 {
-	"request_id": "125", // optional
-	"action": "set_customer_fields",
-	"payload": {
-		"fields": {
-		"company_size": "10-100"
-		}
-	}
+  "action": "get_customer",
+  "payload": {}
 }
-``` -->
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "get_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "name": "Customer Name",
+    "email": "customer1@example.com",
+    "type": "customer"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
 
 ## Status
 
@@ -2588,7 +2551,6 @@ It returns the initial state of the current Customer.
 	"payload": {
 		"token": "Bearer dal:S2V0s1fgTbfXmgthj4cZSA"
 		}
-	}
 }
 ```
 
@@ -2648,18 +2610,19 @@ It returns the initial state of the current Customer.
 			"id": "agent1@example.com",
 			"name": "Bart",
 			"type": "agent",
-			"avatar": "cdn.livechatinc.com/avatars/1.png",
+			"avatar": "https://domain.com/avatar.png",
 			"job_title": "Support Agent"
 		},
 		"greeting": {
+      "accepted": true, // Customer has seen the greeting
 			"id": 342543723,
 			"unique_id": "e35a4fb4106d87e550fe1af480639058",
 			"text": "some message",
 			"agent": {
 				"id": "agent1@example.com",
-				"name": "Bart",
+				"name": "Agent Name",
 				"type": "agent",
-				"avatar": "cdn.livechatinc.com/avatars/1.png",
+				"avatar": "https://domain.com/avatar.png",
 				"job_title": "Support Agent",
 				"is_bot": false
 			},
@@ -2675,22 +2638,6 @@ It returns the initial state of the current Customer.
 </Code>
 
 </Section>
-
-<!-- > **`login`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "login",
-	"payload": {
-		"token": "Bearer p-cjQcfhTqego5I48WeAPw",
-		"group_id": 1,
-		"customer_page": {
-			"url": "https://www.livechatinc.com/"
-		}
-	}
-}
-``` -->
 
 <Section>
 
@@ -2853,19 +2800,6 @@ Returns an empty ticket form of a <a href="https://www.livechatinc.com/help/chat
 
 </Section>
 
-<!-- > **`get_form`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "get_form",
-	"payload": {
-		"group_id": 0,
-		"type": "prechat"
-	}
-}
-``` -->
-
 <Section>
 
 <Text>
@@ -2922,15 +2856,6 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 </Section>
 
-<!-- > **`get_predicted_agent`** sample **request** with optional params
-
-```json
-{
-	"action": "get_predicted_agent",
-	"payload": {}
-}
-``` -->
-
 <Section>
 
 <Text>
@@ -2981,7 +2906,7 @@ It returns the info on a given URL.
   "payload": {
     "title": "LiveChat | Live Chat Software and Help Desk Software",
     "description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
-    "image_url": "s3.eu-central-1.amazonaws.com/labs-fraa-livechat-thumbnails/96979c3552cf3fa4ae326086a3048d9354c27324.png",
+    "image_url": "https://domain.com/image.png",
     "image_width": 200,
     "image_height": 200,
     "url": "https://livechatinc.com"
@@ -2994,17 +2919,6 @@ It returns the info on a given URL.
 </Code>
 
 </Section>
-
-<!-- > **`get_url_details`** sample **request** with optional params
-
-```json
-{
-	"action": "get_url_details",
-	"payload": {
-		"url": "https://livechatinc.com"
-	}
-}
-``` -->
 
 <Section>
 
@@ -3057,6 +2971,130 @@ No response payload (`200 OK`).
 
 <Text>
 
+### Accept Greeting
+
+Marks an incoming greeting as seen.
+
+**How it's implemented in LiveChat:**
+
+The Chat Widget uses this method to inform that a Customer has seen a greeting. Based on that, the Reports section displays the greetings 
+that were actually seen by Customers, not all the sent greetings. If a Customer started a chat from a greeting, but the **Accept Method** wasn't executed,
+the greeting is still counted as seen in Reports.
+
+#### Specifics
+
+|                        |                                              |
+| ---------------------- | -------------------------------------------- |
+| **Action**             | `accept_greeting`                            |
+| **Web API equivalent** | [`accept_greeting`](../#accept-greeting)     |
+| **Push message**       | -  |
+
+#### Request
+
+| Parameter    | Required | Data type   | Notes                                                      |
+| ------------ | -------- | ----------- | ---------------------------------------------------------- |
+| `greeting_id`| Yes      | `number`    | ID of the greeting configured within the license to accept.|
+| `unique_id`  | Yes      | `string`    | ID of the greeting to accept. You can get it from the [`incoming_greeting`](#incoming_greeting) push. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+    "action": "accept_greeting",
+    "payload": {
+        "greeting_id": 7,
+        "unique_id": "Q10X0W041P"
+    }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+    "request_id": "<request_id>", // optional
+    "action": "accept_greeting",
+    "type": "response",
+    "payload": {
+      // no response payload
+    },
+    "success": true
+}
+```
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Cancel Greeting
+Cancels a greeting (an invitation to the chat). For example, Customers could cancel greetings by minimizing the chat widget with a greeting.
+
+#### Specifics
+
+|                        |                                              |
+| ---------------------- | -------------------------------------------- |
+| **Action**             | `cancel_greeting`                            |
+| **Web API equivalent** | [`cancel_greeting`](../#cancel-greeting)     |
+| **Push message**       | [`greeting_canceled`](#greeting_canceled)  |
+
+#### Request
+
+| Parameter    | Required | Data type   | Notes                         |
+| ------------ | -------- | ----------- | ----------------------------- |
+| `unique_id`  | Yes      | `string`    | ID of the greeting to cancel. You can get it from the [`incoming_greeting`](#incoming_greeting) push. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "cancel_greeting",
+    "payload": {
+        "unique_id": "Q10X0W041P"
+    }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "cancel_greeting",
+  "type": "response",
+  "payload": {
+    // no response payload
+  },
+  "success": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
 # Pushes
 
 Here's what you need to know about **pushes**:
@@ -3071,13 +3109,13 @@ Here's what you need to know about **pushes**:
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`incoming_chat_thread`](#incoming_chat_thread) [`thread_closed`](#thread_closed)                                                                                                                                                                                                                                                                                   |
-| **Chat access** | [`access_set`](#access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                                                                                                 |
+| **Chat access** | [`access_set`](#access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                                                                                               |
 | **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Customers**   | [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_side_storage_updated`](#customer_side_storage_updated)                                                                                                                                                                                                         |
 | **Status**      | [`customer_disconnected`](#customer_disconnected)                                                                                                                                                                                                                                                                                                                   |
-| **Other**       | [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                 |
+| **Other**       | [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_greeting`](#incoming_greeting) [`greeting_canceled`](#greeting_canceled)                                                                                                                           |
 
 
 </Text>
@@ -3312,13 +3350,11 @@ Informs about an incoming [event](#events) sent to a chat.
       "type": "message",
       "properties": {
           "0805e283233042b37f460ed8fbf22160": {
-              "string_property": {
-                "value": "string value"
-              }
+              "string_property": "string value"
           }
       },
       "text": "Hello",
-      "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+      "author_id": "b5657aff-34dd-32e1-98160d54666df9d8"
   }
 }
 ```
@@ -3392,18 +3428,13 @@ Informs about those chat properties that were updated.
 
 ```json
 {
-  "chat_id": "PJ0MRSHTDG",
+  "chat_id": "Q1GZ3FNAT9",
   "properties": {
-    "rating": {
-      "score": {
-        "value": 1
-      },
-      "comment": {
-        "value": "Very good!"
-      }
-    }
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Chat property value updated by Customer"
+        },
     // ...
-  }
+    }
 }
 ```
 
@@ -3429,12 +3460,11 @@ Informs about those chat properties that were deleted.
 
 ```json
 {
-	"chat_id": "PJ0MRSHTDG",
+	"chat_id": "Q1GZ3FNAT9",
 	"properties": {
-		"rating": ["score", "comment"]
+		"0805e283233042b37f460ed8fbf22160": ["string_property"]
 		},
-		// ...
-	}
+	// ...
 }
 ```
 
@@ -3460,19 +3490,14 @@ Informs about those chat thread properties that were updated.
 
 ```json
 {
-  "chat_id": "PJ0MRSHTDG",
-  "thread_id": "K600PKZON8",
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
   "properties": {
-    "rating": {
-      "value": {
-        "value": 1
-      },
-      "comment": {
-        "value": "Very good!"
-      }
-    }
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Chat thread property value updated by Customer" 
+        },
     // ...
-  }
+    }
 }
 ```
 
@@ -3498,13 +3523,12 @@ Informs about those chat thread properties that were deleted.
 
 ```json
 {
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
+	"chat_id": "Q1GZ3FNAT9",
+	"thread_id": "Q1GZ3FNAU9",
 	"properties": {
-		"rating": ["score", "comment"]
+		"0805e283233042b37f460ed8fbf22160": ["string_property"]
 		},
-		// ...
-	}
+	// ...
 }
 ```
 
@@ -3530,16 +3554,14 @@ Informs about those event properties that were updated.
 
 ```json
 {
-  "chat_id": "PJ0MRSHTDG",
-  "thread_id": "K600PKZON8",
-  "event_id": "2_E2WDHA8A",
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "event_id": "Q1GZ3FNAU9_1",
   "properties": {
-    "rating": {
-      "comment": {
-        "value": "Very good!"
-      }
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Event property value updated by Customer"
+        }
     }
-  }
 }
 ```
 
@@ -3565,14 +3587,13 @@ Informs about those event properties that were deleted.
 
 ```json
 {
-	"chat_id": "PJ0MRSHTDG",
-	"thread_id": "K600PKZON8",
-	"event_id": "2_E2WDHA8A",
+	"chat_id": "Q1GZ3FNAT9",
+	"thread_id": "Q1GZ3FNAU9",
+	"event_id": "Q1GZ3FNAU9_1",
 	"properties": {
-		"rating": ["score", "comment"]
+		"0805e283233042b37f460ed8fbf22160": ["string_property"]
 		},
-		// ...
-	}
+	// ...
 }
 ```
 
@@ -3803,40 +3824,79 @@ Informs that a user has seen events up to a specific time.
 | **Action**             | `events_marked_as_seen`                                                          |
 | **Webhook equivalent** | [`events_marked_as_seen`](/management/configuration-api/#events_marked_as_seen) |
 
-# Errors
+### `incoming_greeting`
+Informs about an incoming [greeting](https://www.livechatinc.com/help/why-should-i-set-up-chat-greetings/).
 
-<CodeResponse title={'General error format'}>
+<CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "error": {
-    "type": "misdirected_request",
-    "message": "Wrong region",
-    "data": {
-      // optional
-      "region": "dal"
+  "action": "incoming_greeting",
+    "type": "push",
+    "payload": {
+        "id": 7,
+        "unique_id": "Q10O0N5B5D",
+        "text": "Hello, would you like to talk about our products?",
+        "displayed_first_time": true,
+        "agent": {
+            "name": "Agent Name",
+            "id": "b5657aff34dd32e198160d54666df9d8",
+            "avatar": "https://domain.com/image25.png",
+            "job_title": "Support Agent",
+            "is_bot": false
+        }
     }
-  }
 }
 ```
 
 </CodeResponse>
 
-#### Possible errors
+#### Specifics
 
-| Type                              | Default Message                   | Notes                                                                                                       |
-| --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `authentication`                  | Authentication error              | An invalid or expired access token.                                                                         |
-| `authorization`                   | Authorization error               | User is not allowed to perform the action.                                                                  |
-| `internal`                        | Internal server error             |                                                                                                             |
-| `license_expired`                 | License expired                   | The end of license trial or subcription.                                                                    |
-| `pending_requests_limit_reached`  | Requests&nbsp;limit&nbsp;reached  | The limit of pending requests within one websocket connection has been reached. The limit is 10.            |
-| `request_timeout`                 | Request timed out                 | Timeout threshold is 15 seconds.                                                                            |
-| `users_limit_reached`             | Users limit reached               | Displayed on the attempt of logging in. The limit of online Customers for a given license has been reached. |
-| `unsupported_version`             | Unsupported version               | Unsupported protocol version.                                                                               |
-| `validation`                      | Wrong format of request           |                                                                                                             |
-| `wrong_product_version`           | Wrong product version             | License is not LiveChat 3 (probably still LiveChat 2).                                                      |
+|                        |                      |
+| ---------------------- | ---------------------|
+| **Action**             | `incoming_greeting`  |
+| **Webhook equivalent** | -                    |
 
+#### Push payload
+
+| Object                 | Notes                                                       |
+| ---------------------- | ----------------------------------------------------------- |
+| `id`                   | ID of the greeting configured within the license.           |
+| `unique_id`            | ID of the greeting that was generated, sent, and cancelled. |
+| `text`                 | Greeting text                                               |
+| `displayed_first_time` | `true` if the greeting was generated for the first time.    |
+| `agent`                | Info about the Agent who sent the greeting.                 |
+
+### `greeting_canceled`
+Informs about a greeting rejected by the Customer.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "action": "greeting_canceled",
+    "type": "push",
+    "payload": {
+      "unique_id": "Q10O0N5B5D"
+    } 
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                      |
+| ---------------------- | ---------------------|
+| **Action**             | `greeting_canceled` |
+| **Webhook equivalent** | -                    |
+
+#### Push payload
+
+| Object      | Notes                                                       |
+| ----------- | ----------------------------------------------------------- |
+| `unique_id` | ID of the greeting that was generated, sent, and rejected.  |
 
 # Contact us
 

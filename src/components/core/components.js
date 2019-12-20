@@ -3,7 +3,6 @@ import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { Link } from "gatsby";
-import useLocalStorage from "../../hooks/useLocalStorage";
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
@@ -69,7 +68,7 @@ const NavSwitch = styled.a`
   height: 30px;
   position: absolute;
   right: -15px;
-  top: 15px;
+  top: 14px;
   background-color: white;
   border: 1px solid #e8e8e8;
   border-radius: 30px;
@@ -78,8 +77,7 @@ const NavSwitch = styled.a`
   transform: ${({ expanded = true }) => (expanded ? "rotate(180deg)" : "")};
 `;
 
-export const Nav = ({ children, ...rest }) => {
-  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
+export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
   return (
     <NavWrapper expanded={expanded} {...rest}>
       <NavSwitch
@@ -98,7 +96,7 @@ export const Nav = ({ children, ...rest }) => {
 };
 
 export const NavHeader = styled.div`
-  padding: 20px 28px 10px;
+  padding: 15px 28px 14px;
   font-size: 14px;
   font-weight: 600;
   display: flex;
@@ -111,7 +109,7 @@ export const NavHeader = styled.div`
 `;
 
 export const PageTitle = styled.h1`
-  margin 0;
+  margin: 0;
 `;
 
 export const PageHeaderWrapper = styled.div`
@@ -154,7 +152,7 @@ export const Content = styled.article`
 `;
 
 export const MainWrapper = styled.div`
-  padding: 60px 15px 0 0;
+  padding-right: 15px;
   display: flex;
 
   @media (min-width: 768px) {
@@ -166,13 +164,13 @@ export const MainWrapper = styled.div`
   }
 `;
 
-export const LeftColumn = styled.div`
-  position: relative;
-  margin-right: 50px;
-`;
+export const LeftColumn = styled.div``;
 export const MiddleColumn = styled.div`
   max-width: 100%;
   padding-bottom: 30vh;
+  position: relative;
+  margin-left: 50px;
+  width: 100%;
 `;
 
 export const MenuWrapper = styled.div`
@@ -248,14 +246,14 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      // an ugly fix beneath (active ? 1 : 0)
-      <MenuLink to={url} active={active ? 1 : 0}>
-        <ArticleIcon
-          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-        />
-        &nbsp;
+        // an ugly fix beneath (active ? 1 : 0)
+        <MenuLink to={url} active={active ? 1 : 0}>
+          <ArticleIcon
+            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+          />
+          &nbsp;
         <span>{title}</span>
-      </MenuLink>
-    )}
+        </MenuLink>
+      )}
   </Li>
 );

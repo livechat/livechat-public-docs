@@ -17,6 +17,7 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
+import { API } from "../../../constant";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
@@ -27,17 +28,20 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
           !isSubcategory) ||
         "";
 
-      const isActiveSection = activeUrls && url === activeUrls[depth];
+      const isActiveSection =
+        activeUrls &&
+        activeUrls.includes(url) &&
+        url.includes(activeUrls[depth]);
 
+      let redirectUrl = url || "#";
       return (
         <Fragment key={`toc-${depth}-${url}`}>
           <MenuElement
-            url={url || "#"}
+            url={redirectUrl}
             title={title}
             active={isActiveItem}
             onClick={toggleState(path)}
           />
-
           {itemsInside && (
             <CollapsableSection expanded={isActiveSection}>
               {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
@@ -49,10 +53,18 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => (
   </Ul>
 );
 
-const SideNav = ({ category, subcategory, currentSlug }) => {
+const SideNav = ({
+  category,
+  subcategory,
+  currentSlug,
+  currentApiVersion,
+  expanded,
+  setExpanded
+}) => {
   const [articles, getArticlePath] = useAllArticlesInCategory(
     category,
-    currentSlug
+    currentSlug,
+    currentApiVersion
   );
 
   const categories = useAllCategoriesMeta().map(item => ({
@@ -74,8 +86,17 @@ const SideNav = ({ category, subcategory, currentSlug }) => {
 
   useScrollSpy(".heading", url => url && setActivePath(getArticlePath(url)));
 
+  const isStable = currentApiVersion === API.STABLE_VERSION;
+  const isLegacy = currentApiVersion === API.LEGACY_VERSION;
+
+  const navColor = isStable
+    ? "67, 132, 245"
+    : isLegacy
+    ? "209, 52, 91"
+    : "239, 168, 67";
+
   return (
-    <Nav color={categoryMeta.color}>
+    <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
       <NavHeader>
         <Link to={"/"} style={{ color: "inherit" }}>
           <PopperTooltip
