@@ -1183,8 +1183,8 @@ curl -X POST \
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
-| **Status**      | [`set_routing_status`](#set-routing-status)                                                                                                                                                                                                                                                                                                                         |
-| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)                                                                                                                                                                                                                               |
+| **Status**      | [`set_routing_status`](#set-routing-status)                                                                                                                                                                                                                                                                                                             |
+| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_agents_chat_load`](#get-agents-chat-load)                                                                                                                                                                               |
 
 ## Chats
 
@@ -3261,6 +3261,81 @@ https://api.livechatinc.com/v3.2/agent/action/multicast \
 ```
 
 </CodeSample>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Get Agents Chat Load
+
+It returns a **chat load** - the total number of active chats an Agent has. Agent's chats from **all groups** are taken into account.
+
+The `group_ids` parameter, which you need to specify in the request, works as a filter. To understand it better, consider the following situation. 
+
+1. You specify `"group_ids" : [0, 1, 2, 3]` in your request.
+2. The method checks which Agents from these groups are currently accepting chats. 
+3. Then, it calculates the chat loads for each of those Agents. 
+4. Chat loads (active chats per Agent) are returned.
+
+If you look at the sample request and response, you'll notice that the chat load for **agent1@example.com** is 5. There are several possible scenarios:
+- **agent1** had 5 chats in one of the groups.
+- **agent1** had 3 chat in one group and 2 chats in another.
+- other combinations
+
+Another possibility is that **agent1** had 1 chat in each group and 1 chat in **group 4**. Even though this group wasn't specified in the request, chats from all groups are added up when calculating an Agent's chat load.
+
+If there was **agent3** having chats in **groups 4 and 5**, but you would only request **groups 0, 1, 2, 3**, you wouldn't get the chat load for this Agent.
+
+
+#### Specifics
+
+|                        |                                                                       |
+| ---------------------- | --------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/agent/action/get_agents_chat_load`  |
+| **Required scopes**    | -                                                                     |
+| **RTM API equivalent** | [`get_agents_chat_load`](rtm-reference/#get-agents-chat-load)         |
+| **Webhook**            | -                                                                     |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                |
+| ------------ | -------- | --------- | ---------------------------------------------------- |
+| `group_ids`  | Yes      | `array`   | Groups in which you want to search for Agents        |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.2/agent/action/get_agents_chat_load \
+-H 'Authorization: Bearer <your_access_token>' \
+-H 'Content-Type: application/json' \
+-d '{
+    "group_ids": [0,1,2,3]
+    }'
+```
+
+</CodeSample>
+<CodeResponse path={'RESPONSE'}>
+
+```shell
+{
+	"chat_loads": [
+		{
+			"agent_id": "agent1@example.com",
+			"active_chats": 5
+		},
+		{
+			"agent_id": "agent2@example.com",
+			"active_chats": 1
+		}
+	]
+}
+```
+
+</CodeResponse>
 </Code>
 </Section>
 
