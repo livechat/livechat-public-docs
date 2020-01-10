@@ -25,10 +25,14 @@ const Container = styled.div`
   }
 
   margin-left: -50px;
-  margin-right: -30px;
+  margin-right: -20px;
 
   @media (min-width: 768px) {
     top: 60px;
+  }
+
+  @media (min-width: 1024px) {
+    margin-right: -30px;
   }
 `;
 
@@ -132,12 +136,12 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
     return (
       <>
         <span>{version}</span>
-        <span style={{ fontWeight: 100, marginLeft: "3px" }}>
+        <span style={{ marginLeft: "3px" }}>
           {version === API.STABLE_VERSION
             ? `(stable)`
             : version === API.LEGACY_VERSION
-              ? `(legacy)`
-              : `(dev preview)`}
+            ? `(legacy)`
+            : `(dev preview)`}
         </span>
       </>
     );
@@ -185,6 +189,7 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
           <Dropdown
             isVisible={showDropdown}
             onClose={closeDropdown}
+            placement={"bottom-end"}
             triggerRenderer={({ ref }) => (
               <Button onClick={openDropdown} ref={ref}>
                 {formatVersion(selectedVersion)}
