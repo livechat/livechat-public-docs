@@ -16,6 +16,7 @@ export default () => {
                 weight
                 category
                 subcategory
+                apiVersion
               }
               fields {
                 slug

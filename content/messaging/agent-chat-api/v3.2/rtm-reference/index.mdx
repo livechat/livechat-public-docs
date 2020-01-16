@@ -5,14 +5,14 @@ subcategory: "agent-chat-api"
 title: "RTM API Reference"
 tagline: "Interact with the chat as an Agent."
 desc: "Build powerful LiveChat integrations with an open messaging protocol. Use the Agent Chat RTM API to send messages, manage access and properties."
-apiVersion: "3.1"
+apiVersion: "3.2"
 ---
 
 # Introduction
 
 ## Versioning
 
-This documentation describes the **Agent Chat Real-Time Messaging API v3.1**.
+This documentation describes the **Agent Chat Real-Time Messaging API v3.2**.
 
 ## What is RTM API
 
@@ -46,9 +46,9 @@ LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). Th
 For backend applications, you can specify the region in the request header. The mechanism is the same as in [Agent Chat Web API reference](../#data-centers). It doesn't work for frontend applications, though.
 Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL. 
 
-**`fra`:** `wss://api-fra.livechatinc.com/v3.1/agent/rtm/ws`
+**`fra`:** `wss://api-fra.livechatinc.com/v3.2/agent/rtm/ws`
 
-**`dal`:** `wss://api.livechatinc.com/v3.1/agent/rtm/ws`
+**`dal`:** `wss://api.livechatinc.com/v3.2/agent/rtm/ws`
 
 # Scopes
 
@@ -1089,22 +1089,12 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 ```json
 {
   "properties": {
-    "rating": {
+    "0805e283233042b37f460ed8fbf22160": {
       // <property_namespace>
-      "score": {
-        // <property_name>
-        "value": 1 // <property_value>
-      },
-      "comment": {
-        "value": "rated good!"
-      }
-    },
-    "routing": {
-      "idle": {
-        "value": false
-      }
+      "string_property": "string value"
+        // <property_name> : <property_value>
+        }
     }
-  }
 }
 ```
 
@@ -1146,12 +1136,10 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 # Methods
 
-In the websocket transport, actions generate [pushes](#pushes). RTM API actions can also trigger [webhooks](/management/configuration-api/#webhooks), but they need to be registered first. 
-
 <Section>
 <Text>
 
-| The API endpoint: `wss://api.livechatinc.com/v3.1/agent/rtm/ws` |     |
+| The API endpoint: `wss://api.livechatinc.com/v3.2/agent/rtm/ws` |     |
 | --------------------------------------------------------------- | --- |
 
 ## Available methods
@@ -1165,7 +1153,7 @@ In the websocket transport, actions generate [pushes](#pushes). RTM API actions 
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
-| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`update_agent`](#update-agent) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                                   |
+| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                                   |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)                                                                                                                                                                                                                               |
 
 </Text>
@@ -1244,7 +1232,7 @@ There's only one value allowed for a single property.
 
 | Parameter     | Data type | Notes                                                                     |
 | ------------- | --------- | ------------------------------------------------------------------------- |
-| `found_chats` | `number`  | An estimated number. The real number of found chats can slightly differ . |
+| `found_chats` | `string`  | An estimated number. The real number of found chats can slightly differ . |
 
 </Text>
 <Code>
@@ -1331,8 +1319,8 @@ There's only one value allowed for a single property.
   }
 }
 ```
-</CodeResponse>
 
+</CodeResponse>
 </Code>
 </Section>
 
@@ -1363,7 +1351,7 @@ There's only one value allowed for a single property.
 
 | Parameter       | Data type | Notes                           |
 | --------------- | --------- | ------------------------------- |
-| `found_threads` | `number`  | The number of threads in a chat |
+| `found_threads` | `string`  | The number of threads in a chat |
 
 </Text>
 <Code>
@@ -1379,21 +1367,6 @@ There's only one value allowed for a single property.
 ```
 
 </CodeSample>
-
-<!-- > **`get_chat_threads_summary`** sample **request** with optional params
-
-```json
-{
-	"request_id": "23456", // optional
-	"action": "get_chat_threads_summary",
-	"payload": {
-			"chat_id": "PJ0MRSHTDG",
-			"limit": 25,
-			"page_id": "MjpkZXNj"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -1448,7 +1421,7 @@ It returns threads that the current Agent has access to in a given chat.
 | Parameter    | Required | Data ype |     |
 | ------------ | -------- | -------- | --- |
 | `chat_id`    | Yes      | `string` |     |
-| `thread_ids` | No       | `array`  |     |
+| `thread_ids` | Yes      | `array`  |     |
 
 </Text>
 <Code>
@@ -1458,7 +1431,8 @@ It returns threads that the current Agent has access to in a given chat.
 {
   "action": "get_chat_threads",
   "payload": {
-    "chat_id": "PJ0MRSHTDG"
+    "chat_id": "PJ0MRSHTDG",
+    "thread_ids": ["K600PKZON8"]
   }
 }
 ```
@@ -1474,43 +1448,56 @@ It returns threads that the current Agent has access to in a given chat.
   "type": "response",
   "success": true,
   "payload": {
-    {
-    "chat": {
-        "id": "PWJ8Y4THAV",
+        "chat": {
+        "id": "PJ0MRSHTDG",
+        "order": 1576569422,
+        "threads": [
+            {
+                "id": "K600PKZON8",
+                "active": true,
+                "user_ids": [
+                    "b7eff798-f8df-4364-8059-649c35c9ed0c",
+                    "bbb67d600796e9f277e360e842418833"
+                ],
+                "events": [
+                    {
+                        "id": "Q20N9CKRX2_1",
+                        "created_at": "2019-12-17T07:57:41.512000Z",
+                        "type": "message",
+                        "text": "Hello",
+                        "author_id": "bbb67d600796e9f277e360e842418833"
+                    }
+                ],
+                "order": 1,
+                "properties": {
+                  // "Property" object
+                },
+                "access": {
+                    "group_ids": [0]
+                }
+            }
+        ],
         "users": [
             {
                 "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
                 "type": "customer",
-                "present": true,
-                "created_at": "2019-12-17T08:53:20.693553+01:00",
-                "statistics": {
-                    "chats_count": 1,
-                    // ...
-                },
-                "agent_last_event_created_at": "2019-12-17T09:04:05.239000+01:00"
+                "present": true
             },
             {
-                "id": "agent1@example.com",
+                "id": "bbb67d600796e9f277e360e842418833",
                 "name": "Agent Name",
-                "email": "agent1@example.com",
                 "type": "agent",
                 "present": true,
-                "avatar": "https://domain.com/avatar.jpg"
+                "avatar": "https://domain.com/avatar.jpg",
+                "job_title": "Support Agent"
             }
         ],
-        "threads_summary": [
-            {
-                "thread_id": "Q20N9CKRX2",
-                "order": 1
-            }
-        ],
-        "properties": {
-          // "Property" object
-        },
         "access": {
             "group_ids": [0]
         },
-        "is_followed": true
+        "properties": {
+          // "Property" object
+        }
     }
   }
 }
@@ -1549,11 +1536,8 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 | `filters.agent_ids`                                   | No       | `array`   | Array of agent IDs                                                                        |
 | `filters.thread_ids`                                  | No       | `array`   | Array of thread IDs. Cannot be used with other filters or pagination; max array size: 20. |
 | `filters.group_ids`                                   | No       | `array`   | Array of group IDs                                                                        |
-| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     | **\*** __described below__                                                                |    
-| `filters.tags.<filter_type>`                          | No       | `any`     |                                                                                           |
-| `filters.sales.<filter_type>`                         | No       | `any`     |                                                                                           |
-| `filters.goals.<filter_type>`                         | No       | `any`     |                                                                                           |
-| `filters.surveys.<survey>`                            | No       | `array`   | **\**** __described below__                                                               |
+| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     |                                                                                           |
+| `<filter_type>`                                       | No       | `any`     | **\***                                                                                    |
 | `pagination`                                          | No       | `object`  |                                                                                           |
 | `pagination.page`                                     | No       | `number`  | Default: 1, min: 1, max: 1000                                                             |
 | `pagination.limit`                                    | No       | `number`  | Default: 25, min: 0, max: 100                                                             |
@@ -1566,11 +1550,6 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 - `exclude_values` (`type[]` - array with specific type for property: `string`, `int` or `bool`)
 
 There's only one value allowed for a single property.
-
-**\**)**
-`<survey>` contains the following fields:
-  * `type` (`string`) - allowed values: `pre_chat`, `post_chat`
-  * `answer_id` (`string`)
 
 </Text>
 <Code>
@@ -1639,13 +1618,8 @@ There's only one value allowed for a single property.
               ],
               "order": 1,
               "properties": {
-                  "routing": {
-                      "continuous": {
-                          "value": false
-                      },
-                      "idle": {
-                          "value": false
-                      }
+                  "0805e283233042b37f460ed8fbf22160": {
+                    "string_property": "string value"
                   }
               },
               "access": {
@@ -1955,6 +1929,19 @@ Closes a thread. Sending messages to this thread will no longer be possible.
 
 </CodeSample>
 
+<!-- > **`close_thread`** sample **request** with optional params
+
+```json
+{
+	"request_id": "657", // optional
+	"action": "close_thread",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
 <CodeResponse>
 
 ```json
@@ -2013,6 +2000,19 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 </CodeSample>
 
+<!-- > **`follow_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "756", // optional
+	"action": "follow_chat",
+	"payload": {
+		 "chat_id": "PW94SJTGW6"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
 <CodeResponse>
 
 ```json
@@ -2068,6 +2068,19 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 </CodeSample>
 
+<!-- > **`unfollow_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "4756", // optional
+	"action": "unfollow_chat",
+	"payload": {
+		 "chat_id": "PWF6BACIKO"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
 <CodeResponse>
 
 ```json
@@ -2110,9 +2123,9 @@ Grants access to a new resource without overwriting the existing ones.
 | ------------- | -------- | -------- | -------------------- |
 | `resource`    | Yes      | `string` | `chat` or `customer` |
 | `id`          | Yes      | `string` | Resource Id          |
-| `access`      | Yes      | `object` | The entity that is granted access to the specified resource |
+| `access`      | Yes      | `object` |                      |
 | `access.type` | Yes      | `string` | `group`              |
-| `access.id`   | Yes      | `number` |                      |
+| `access.id`   | Yes      | any      |                      |
 
 </Text>
 <Code>
@@ -2133,6 +2146,22 @@ Grants access to a new resource without overwriting the existing ones.
 ```
 
 </CodeSample>
+
+<!-- > **`grant_access`** sample **request** with optional params
+```json
+{
+	"request_id": "680",
+	"payload": {
+		"resource": "chat",
+			"id": "PW94SJTGW6",
+			"access": {
+				"type": "group",
+				"id": 19
+       		 }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
 
 <CodeResponse>
 
@@ -2172,9 +2201,9 @@ Grants access to a new resource without overwriting the existing ones.
 | ------------- | -------- | --------- | -------------------- |
 | `resource`    | Yes      | `string`  | `chat` or `customer` |
 | `id`          | Yes      | `string`  | Resource Id          |
-| `access`      | Yes      | `object`  | The entity that loses access to the specified resource |
-| `access.type` | Yes      | `string`  | `group`              |
-| `access.id`   | Yes      | `number` |                    |
+| `access`      | Yes      | `object`  |                      |
+| `access.type` | Yes      | `string`  | `group` or `agent`   |
+| `access.id`   | Yes      | `number`  |                      |
 
 </Text>
 <Code>
@@ -2195,6 +2224,24 @@ Grants access to a new resource without overwriting the existing ones.
 ```
 
 </CodeSample>
+
+<!-- > **`revoke_access`** sample **request** with optional params
+
+```json
+{
+	"request_id": "<request_id>", // optional
+	"action": "revoke_access",
+	"payload": {
+		"resource": "chat",
+        "id": "PW94SJTGW6",
+        "access": {
+            "type": "group",
+            "id": 19
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
 
 <CodeResponse>
 
@@ -2219,7 +2266,7 @@ Grants access to a new resource without overwriting the existing ones.
 
 ### Set Access
 
-Gives access to a new resource overwriting the existing ones.
+Grants access to a new resource overwriting the existing ones.
 
 #### Specifics
 
@@ -2236,9 +2283,9 @@ Gives access to a new resource overwriting the existing ones.
 | -------------- | -------- | -------- | -------------------- |
 | `resource`     | Yes      | `string` | `chat` or `customer` |
 | `id`           | Yes      | `string` | Resource Id          |
-| `access`       | Yes      | `object` | The entity that is given access to the specified resource |
-| `access.type`  | Yes      | `string` | `group`              |
-| `access.id`    | Yes      | `number` |                   |
+| `access`       | Yes      | `object` |                      |
+| `access.type`  | Yes      | `string` | `group` or `agent`   |
+| `access.id`    | Yes      | `number` |                      |
 
 </Text>
 <Code>
@@ -2259,6 +2306,24 @@ Gives access to a new resource overwriting the existing ones.
 ```
 
 </CodeSample>
+
+<!-- > **`set_access`** sample **request** with optional params
+
+```json
+{
+	"request_id": "3456", // optional
+	"action": "set_access",
+	"payload": {
+		"resource": "chat",
+        "id": "PW94SJTGW6",
+        "access": {
+            "type": "group",
+            "id": 19
+        }
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
 
 <CodeResponse>
 
@@ -2323,6 +2388,24 @@ Transfers a chat to an Agent or a group.
 
 </CodeSample>
 
+<!-- > **`transfer_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "3452", // optional
+	"action": "transfer_chat",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"target": {
+			"type":  "group",
+			"ids": [1]
+				},
+		"force": true
+			},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
 <CodeResponse>
 
 ```json
@@ -2383,6 +2466,21 @@ Adds a user to the chat. You can't add more than one `customer` user type to the
 ```
 
 </CodeSample>
+
+<!-- > **`add_user_to_chat`** sample **request** with optional params
+
+```json
+{
+	"request_id": "3445", // optional
+	"action": "add_user_to_chat",
+	"payload": {
+		"chat_id": "PW94SJTGW6",
+        "user_id": "agent1@example.com",
+        "user_type": "agent"
+	},
+	"author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
 
 <CodeResponse>
 
@@ -2655,37 +2753,17 @@ Sends an [Event](#events) object.
 {
   "action": "update_chat_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
+    "chat_id": "Q1VZR7AJCE",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "score": 10,
-        "comment": "Thank you!"
-      }
+        "0805e283233042b37f460ed8fbf22160": {
+            "string_property": "Chat property value updated by Agent"
+            }
+        }
     }
-  }
 }
 ```
 
 </CodeSample>
-
-<!-- > **`update_chat_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "93875", // optional
-	"action": "update_chat_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -2734,34 +2812,17 @@ Sends an [Event](#events) object.
 {
   "action": "delete_chat_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
+    "chat_id": "Q1VZR7AJCE",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": ["score", "comment"]
+        "0805e283233042b37f460ed8fbf22160": [
+            "string_property"
+            ]
+        }
     }
-  }
 }
 ```
 
 </CodeSample>
-
-<!-- > **`delete_chat_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "delete_chat_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
-            ]
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -2811,39 +2872,18 @@ Sends an [Event](#events) object.
 {
   "action": "update_chat_thread_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
+    "chat_id": "Q1WZ073OA7",
+    "thread_id": "Q1WZ073OB7",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "score": 10,
-        "comment": "Thank you!"
-      }
+        "0805e283233042b37f460ed8fbf22160": {
+            "string_property": "Chat thread property value updated by Agent"
+            }
+        }
     }
-  }
 }
 ```
 
 </CodeSample>
-
-<!-- > **`update_chat_thread_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_chat_thread_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -2893,36 +2933,18 @@ Sends an [Event](#events) object.
 {
   "action": "delete_chat_thread_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
-    "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": ["score", "comment"]
+     "chat_id": "Q1WZ073OA7",
+     "thread_id": "Q1WZ073OB7",
+     "properties": {
+        "0805e283233042b37f460ed8fbf22160": [
+            "string_property"
+            ]
+        }
     }
-  }
 }
 ```
 
 </CodeSample>
-
-<!-- > **`delete_chat_thread_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "delete_chat_thread_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": [
-                "score",
-                "comment"
-            ]
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -2973,41 +2995,19 @@ Sends an [Event](#events) object.
 {
   "action": "update_event_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
-    "event_id": "2_EW2WQSA8",
+    "chat_id": "Q1GZ3FNAT9",
+    "thread_id": "Q1GZ3FNAU9",
+    "event_id": "Q1GZ3FNAU9_1",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "score": 10,
-        "comment": "Thank you!"
-      }
+        "0805e283233042b37f460ed8fbf22160": {
+          "string_property": "Event property value updated by Agent"
+            }
+        }
     }
-  }
 }
 ```
 
 </CodeSample>
-
-<!-- > **`update_event_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "update_event_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "score": 10,
-                "comment": "Thank you!"
-            }
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3058,42 +3058,19 @@ Sends an [Event](#events) object.
 {
   "action": "delete_event_properties",
   "payload": {
-    "chat_id": "PW94SJTGW6",
-    "thread_id": "K600PKZON8",
-    "event_id": "2_EW2WQSA8",
+    "chat_id": "Q16ZSBGX3J",
+    "thread_id": "Q16ZSBGX4J",
+    "event_id": "Q16ZSBGX4J_1",
     "properties": {
-      "bb9e5b2f1ab480e4a715977b7b1b4279": {
-        "rating": ["score", "comment"]
-      }
+        "0805e283233042b37f460ed8fbf22160": [
+            "string_property"
+            ]
+        }
     }
-  }
 }
 ```
 
 </CodeSample>
-
-<!-- > **`delete_event_properties`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "delete_event_properties",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-        "thread_id": "K600PKZON8",
-        "event_id": "2_EW2WQSA8",
-        "properties": {
-            "bb9e5b2f1ab480e4a715977b7b1b4279": {
-                "rating": [
-                    "score",
-                    "comment"
-                ]
-            }
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3513,23 +3490,6 @@ Apart from `customer_id`, which is a required parameter, you also need to includ
 
 </CodeSample>
 
-<!-- > **`update_customer`** sample **request** with optional params
-
-```json
-{
-	"request_id": "13425", // optional
-	"action": "update_customer",
-	"payload": {
-		"customer_id": "d4efab70-984f-40ee-aa09-c9cc3c4b0882",
-		"name": "John Doe",
-		"avatar": "https://domain.com/avatars/1.jpg",
-		"fields": {
-			"score": "low"
-		}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3540,7 +3500,7 @@ Apart from `customer_id`, which is a required parameter, you also need to includ
   "type": "response",
   "success": true,
   "payload": {
-    // "User > Customer" object
+    // no response payload
   }
 }
 ```
@@ -3590,22 +3550,6 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 ```
 
 </CodeSample>
-
-<!-- > **`ban_customer`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "ban_customer",
-	"payload": {
-		"customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
-        "ban": {
-            "days": 3
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3675,30 +3619,9 @@ It returns the initial state of the current Agent.
 		"token": "Bearer dal:S2V0s1fgTbfXmgthj4cZSA"
 		}
 	}
-}
 ```
 
 </CodeSample>
-
-<!-- > **`login`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "login",
-	"payload": {
-		"push_notifications": {
-			"firebase_token": "JDa8813Ka92mmKda00dsdkAKDA0",
-			"platform": "ios"
-	},
-	"application": {
-		"name": "SmartClient - Chrome",
-		"version": "4.1.2.1231 (57.0.2987.133)"
-	}
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3755,24 +3678,16 @@ It returns the initial state of the current Agent.
           "order": 12417249812721,
           "properties": {
             "routing": {
-              "idle": {
-                "value": false
-              },
-              "unassigned": {
-                "value": false
-              }
+              "idle": false,
+              "unassigned": false
             }
             // ...
           }
         },
         "properties": {
           "routing": {
-            "idle": {
-              "value": false
-            },
-            "unassigned": {
-              "value": false
-            }
+            "idle": false,
+            "unassigned": false
           }
           // ...
         },
@@ -3932,25 +3847,25 @@ Change the firebase push notifications properties.
 <Section>
 <Text>
 
-### Update Agent
+### Set Routing Status
 
-Updates Agent's properties.
+Changes the status of an Agent or a Bot Agent.
 
 #### Specifics
 
-|                        |                                    |
-| ---------------------- | ---------------------------------- |
-| **Action**             | `update_agent`                     |
-| **Required scopes**    | `agents--my:rw` `agents--all:rw`   |
-| **Web API equivalent** | [`update_agent`](../#update-agent) |
-| **Push message**       | [`agent_updated`](#agent_updated)  |
+|                        |                                                                            |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Action**             | `set_routing_status`                                                       |
+| **Required scopes**    | for Agents: `agents--my:rw` `agents--all:rw`; for Bot Agents: `agents-bot--my:rw` `agents-bot--all:rw`|
+| **Web API equivalent** | [`set_routing_status`](../#set-routing-status)                             |
+| **Push message**       | [`routing_status_set`](#routing_status_set)  |
 
 #### Request
 
-| Parameter        | Required | Data type | Notes                                                     |
-| ---------------- | -------- | --------- | --------------------------------------------------------- |
-| `agent_id`       | No       | `string`  | The current Agent is used by default.                     |
-| `routing_status` | No       | `string`  | Possible values: `accepting_chats`, `not_accepting_chats` |
+| Parameter  | Required | Data type| Notes                                                            |
+| -----------| -------- | -------- | ---------------------------------------------------------------- |
+| `status`   |   Yes    | `string` | For Agents: `accepting_chats` or `not_accepting_chats`; for Bot Agents: `accepting_chats`, `not_accepting_chats`, or `offline` | 
+| `agent_id` |   No     | `string` | If not specified, the requester's status will be updated.        | 
 
 </Text>
 <Code>
@@ -3958,10 +3873,10 @@ Updates Agent's properties.
 
 ```json
 {
-  "action": "update_agent",
+  "action": "set_routing_status",
   "payload": {
-    "agent_id": "uagent1@example.com",
-    "routing_status": "accepting_chats"
+    "status": "accepting_chats",
+    "agent_id": "agent1@example.com"
   }
 }
 ```
@@ -3973,7 +3888,7 @@ Updates Agent's properties.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "update_agent",
+  "action": "set_routing_status",
   "type": "response",
   "success": true,
   "payload": {
@@ -4331,7 +4246,7 @@ Here's what you need to know about **pushes**:
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
-| **Status**      | [`agent_updated`](#agent_updated) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
 | **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
 
 </Text>
@@ -4372,8 +4287,8 @@ Informs about a new thread coming in the chat. The push payload contains not onl
       // array of "User" objects
     ],
     "properties": {
-      "source": {
-        "type": "facebook"
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "string value"
       }
       // ...
     },
@@ -4626,9 +4541,7 @@ Informs about an incoming [event](#events) sent to a chat.
       "type": "message",
       "properties": {
           "0805e283233042b37f460ed8fbf22160": {
-              "string_property": {
-                "value": "string value"
-              }
+              "string_property": "string value"
           }
       },
       "text": "Hello",
@@ -4709,12 +4622,8 @@ Informs about those chat properties that were updated.
   "chat_id": "PJ0MRSHTDG",
   "properties": {
     "rating": {
-      "score": {
-        "value": 1
-      },
-      "comment": {
-        "value": "Very good, veeeery good"
-      }
+      "score": 1,
+      "comment": "Well done!"
     }
     // ...
   }
@@ -4749,7 +4658,6 @@ Informs about those chat properties that were deleted.
 		},
 		// ...
 	}
-}
 ```
 
 </CodeResponse>
@@ -4778,12 +4686,8 @@ Informs about those chat thread properties that were updated.
   "thread_id": "K600PKZON8",
   "properties": {
     "rating": {
-      "value": {
-        "value": 1
-      },
-      "comment": {
-        "value": "Very good, veeeery good"
-      }
+      "score": 1,
+      "comment": "Well done!"
     }
     // ...
   }
@@ -4849,9 +4753,8 @@ Informs about those event properties that were updated.
   "event_id": "2_E2WDHA8A",
   "properties": {
     "rating": {
-      "comment": {
-        "value": "goooood"
-      }
+      "score": 1,
+      "comment": "Well done!"
     }
   }
 }
@@ -4887,7 +4790,6 @@ Informs about those event properties that were deleted.
 		},
 		// ...
 	}
-}
 ```
 
 </CodeResponse>
@@ -5116,15 +5018,15 @@ Informs that a Customer left the tracked website.
 
 ## Status
 
-### `agent_updated`
-Informs that an Agent's status was updated.
+### `routing_status_set`
+Informs that an Agent's or Bot Agent's status was changed.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
   "agent_id": "agent1@example.com",
-  "routing_status": "accepting_chats"
+  "status": "accepting_chats"
 }
 ```
 
@@ -5132,10 +5034,10 @@ Informs that an Agent's status was updated.
 
 #### Specifics
 
-|                        |                 |
-| ---------------------- | --------------- |
-| **Action**             | `agent_updated` |
-| **Webhook equivalent** | -               |
+|                        |                      |
+| ---------------------- | -------------------- |
+| **Action**             | `routing_status_set` |
+| **Webhook equivalent** | [`routing_status_set`](/management/configuration-api/v3.2/#routing_status_set)|
 
 ### `agent_disconnected`
 Informs that an Agent was disconnected. The payload contains the reason of Customer's disconnection.
@@ -5295,10 +5197,9 @@ Informs about messages sent via the `multicast` method or by the system.
 | `content`   | Yes      |       |
 | `type`      | No       |       |
 
-
 # Errors
 
-<CodeResponse title={'General error format'}>
+<CodeResponse title={'Format of error payload'}>
 
 ```json
 {
@@ -5317,21 +5218,23 @@ Informs about messages sent via the `multicast` method or by the system.
 
 #### Possible errors
 
-| Type                             | Default Message               | Notes                                                              |
-| -------------------------------- | ----------------------------- | ------------------------------------------------------------------ |
-| `authentication`                 | Authentication error          | An invalid or expired access token.                                |
-| `authorization`                  | Authorization error           | User is not allowed to perform the action.                         |
-| `internal`                       | Internal server error         |                                                                    |
-| `license_expired`                | License expired               | The end of license trial or subcription.                            |
-| `pending_requests_limit_reached` | Requests limit reached        | The limit of pending requests within one websocket connection has been reached. The limit is 10.|
-| `requester_already_offline`      | Requester offline             | The method is only allowed for the logged in Agents (via RTM API). |
-| `requester_awaiting_approval`    | Requester&nbsp;awaiting&nbsp;approval   | A new Agent hasn't been approved by the license owner yet.     |
-| `request_timeout`                | Request timed out             | Timeout threshold is 15 seconds.                                    |
-| `requester_suspended`            | Requester suspended           | The rights of a given Agent have been withdrawn by the license owner.|
-| `validation`                     | Wrong format of request       |                                                                    |
-| `wrong_product_version`          | Wrong product version         | License is not LiveChat 3 (probably still LiveChat 2).             |
-| `seats_limit_exceeded`           | Seats limit exceeded          | Displayed on the attempt of logging in. All seats within a given license are already taken.|
+| Type                    | Default Message              | Notes                                                              |
+| ----------------------- | ---------------------------- | ------------------------------------------------------------------ |
+| `internal`              | Internal server error        |                                                                    |
+| `validation`            | Wrong format of request      |                                                                    |
+| `authorization`         | Authorization error          | Agent is not allowed to perform the action.                        |
+| `authentication`        | Authentication error         | An invalid or expired access token.                                |
+| `request_timeout`       | Request timed out            | Timeout threshold is 15 seconds                                    |
+| `license_expired`       | License expired              |                                                                    |
+| `unsupported_version`   | Unsupported version          | Unsupported protocol version.                                      |
+| `misdirected_request`   | Wrong region                 | Client's request should be performed to another region.            |
+| `entity_too_large`      | Upload limit exceeded (10MB) | Client's request is too large.                                     |
+| `wrong_product_version` | Wrong product version        | License is not LiveChat 3 (probably still LiveChat 2).             |
+| `license_not_found`     | License not found            | License with the specified ID doesn't exist.                       |
+| `requester_offline`     | Requester offline            | The method is only allowed for the logged in Agents (via RTM API). |
 
+\* `misdirected_request` error returns also correct `region` in optional `data` object.
+With this information client is able to figure out where he should be connected.
 
 # Contact us
 

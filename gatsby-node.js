@@ -14,8 +14,8 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       ],
       // react requires a single instance, this allows npm linking packages depending on react (by forcing local copy of react packages)
       alias: {
-        'react': require.resolve('react'),
-        'react-dom': require.resolve('react-dom'),
+        react: require.resolve("react"),
+        "react-dom": require.resolve("react-dom")
       }
     }
   });

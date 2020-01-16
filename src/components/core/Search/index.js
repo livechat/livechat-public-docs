@@ -5,7 +5,6 @@ import { Input } from "@livechat/design-system";
 import { setupDocsearch } from "../../../utils";
 
 export const SearchWrapper = styled.div`
-  margin-bottom: 10px;
   position: relative;
 
   &:before {

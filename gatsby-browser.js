@@ -7,7 +7,7 @@ window.docsearch = docsearch;
 new SmoothScroll('a[href*="#"]', {
   speed: 160,
   speedAsDuration: true,
-  offset: 120
+  offset: 50
 });
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
