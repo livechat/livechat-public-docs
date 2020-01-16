@@ -1154,7 +1154,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
 | **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                       |
-| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_active_chat_count`](#get-active-chat-count)                                                                                                                                                                               |
+| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_agents_for_transfer`](#get-agents-for-transfer)                                                                                                                                                                               |
 
 </Text>
 <Code>
@@ -4173,30 +4173,24 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 <Section>
 <Text>
 
-### Get Active Chat Count
+### Get Agents For Transfer
 
-It returns the **total number** of active chats an Agent has. Agent's chats from **all groups** are taken into account.
-
-The `group_ids` parameter, which you need to specify in the request, works as a filter. To understand it better, consider the following situation. 
-
-1. You specify `"group_ids" : [0, 1, 2, 3]` in your request.
-2. The method checks which Agents from these groups are currently accepting chats. 
-3. Then, it calculates the number of active chats for each of those Agents. 
+It returns Agents to whom you could transfer a chat. Agents are sorted ascendingly by the total number of active chats they have. Offline Agents aren't returned.
 
 #### Specifics
 
-|                        |                                                       |
-| ---------------------- | ----------------------------------------------------- |
-| **Action**             | `get_active_chat_count`                                |
-| **Required scopes**    | -                                                     |
-| **Web API equivalent** | [`get_active_chat_count`](../#get-active-chat-count)    |
-| **Push message**       | -                                                     |
+|                        |                                                         |
+| ---------------------- | ------------------------------------------------------- |
+| **Action**             | `get_agents_for_transfer`                               |
+| **Required scopes**    | -                                                       |
+| **Web API equivalent** | [`get_agents_for_transfer`](../#get-agents-for-transfer)|
+| **Push message**       | -                                                       |
 
 #### Request
 
-| Parameter    | Required | Data type | Notes                                             |
-| ------------ | -------- | --------- | ------------------------------------------------- |
-| `group_ids`  | Yes      | `array`   | Groups in which you want to search for Agents     |
+| Parameter  | Required | Data type | Notes                                   |
+| ---------- | -------- | --------- | --------------------------------------- |
+| `chat_id`  | Yes      | `string`  | The ID of the chat you want to transfer |
 
 
 </Text>
@@ -4205,9 +4199,9 @@ The `group_ids` parameter, which you need to specify in the request, works as a 
 
 ```json
 {
-  "action": "get_active_chat_count",
+  "action": "get_agents_for_transfer",
   "payload": {
-     "group_ids": [0,1,2,3]
+     "chat_id": "PWJ8Y4THAV"
   }
 }
 ```
@@ -4219,18 +4213,18 @@ The `group_ids` parameter, which you need to specify in the request, works as a 
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_active_chat_count",
+  "action": "get_agents_for_transfer",
   "type": "response",
   "success": true,
   "payload":  
     [
 	  	{
 			"agent_id": "agent1@example.com",
-			"active_chats": 5
+			"active_chats": 2
 		  },
 		  {
 			"agent_id": "agent2@example.com",
-			"active_chats": 1
+			"active_chats": 5
 		  }
   	]
 }
