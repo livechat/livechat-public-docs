@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
+import SmoothScroll from "smooth-scroll";
 
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
@@ -103,6 +104,19 @@ export default ({ data: { mdx, allMdx } }) => {
         }
       }
     );
+  }, []);
+
+  useLayoutEffect(() => {
+    if (window.location.hash) {
+      const anchor = document.querySelector(window.location.hash);
+      const scroll = new SmoothScroll();
+
+      scroll.animateScroll(anchor, null, {
+        offset: 210,
+        speedAsDuration: true,
+        speed: 200
+      });
+    }
   }, []);
 
   const redirectToVersion = version => {
