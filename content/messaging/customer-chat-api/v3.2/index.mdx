@@ -301,7 +301,7 @@ Rich message event contains rich message data structure. [Read more](/extending-
 | `elements.buttons`                | optional  |                                                                                                                                                                                                                                                  `buttons` may contain 1 - 11 `button` objects. |
 | `elements.buttons.postback_id`    | optional  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
 | `elements.buttons.text`           | optional  |                                                                                                                                                                                                                                                 Required only if `elements.buttons` is present. |
-| `elements.buttons.type`           | optional  |                                                                                                                                                                                                              Required only if both `elements.buttons` and `elements.buttons.value` are present. |
+| `elements.buttons.type`           | optional  |                                                                          Required only if both `elements.buttons` and `elements.buttons.value` are present. Possible values: `webview`, `message`, `url`, `phone`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started)|
 | `elements.buttons.user_ids`       | optional  |                                                                                                                                                                                  Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
 | `elements.buttons.value`          | optional  |                                                                                                                                                                                                               Required only if both `elements.buttons` and `elements.buttons.type` are present. |
 | `elements.buttons.webview_height` | optional  |                                                                                                                                                                                                                                                      Possible values: `compact`, `full`, `tall` |
@@ -2268,6 +2268,15 @@ Returns the info about the Customer requesting it.
 | **RTM API equivalent** | [`get_customer`](rtm-reference/#get-customer)                   |
 | **Webhook**            | -                                                               |
 
+#### Response
+
+|          |                                                      |
+| ---------| ---------------------------------------------------- |
+| `name`   | [Customer's](#customer) name. Returned only if set.  |
+| `email`  | [Customer's](#customer) email. Returned only if set. |
+| `avatar` | [Customer's](#customer) avatar. Returned only if set.|
+| `fields` | Custom fields. Returned only if set.                 |
+
 </Text>
 
 <Code>
@@ -2289,7 +2298,13 @@ curl -X POST \
 ```json
 {
   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "type": "customer"
+  "type": "customer", 
+  "name": "Customer Name", // optional
+  "email": "customer1@example.com", // optional
+  "avatar": "https://domain.com/avatars/1.jpg", // optional
+  "fields": {
+    "custom field name": "custom field value"
+      } // optional
 }
 ```
 
@@ -2790,6 +2805,41 @@ Here's what you need to know about **webhooks**:
 - Webhooks and pushes have similar payloads.
 
 You can create and manage webhooks via the [Configuration API](/management/configuration-api/#webhooks). Refer to this document to see the list of **available webhooks**, as well as **sample payloads**.
+
+# Errors
+
+<CodeResponse title={'General error format'}>
+
+```json
+{
+  "error": {
+    "type": "misdirected_request",
+    "message": "Wrong region",
+    "data": {
+      // optional
+      "region": "dal"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Possible errors
+
+| Type                              | Default Message                   | Notes                                                                                                       |
+| --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `authentication`                  | Authentication error              | An invalid or expired access token.                                                                         |
+| `authorization`                   | Authorization error               | User is not allowed to perform the action.                                                                  |
+| `internal`                        | Internal server error             |                                                                                                             |
+| `license_expired`                 | License expired                   | The end of license trial or subcription.                                                                    |
+| `pending_requests_limit_reached`  | Requests&nbsp;limit&nbsp;reached  | The limit of pending requests within one websocket connection has been reached. The limit is 10.            |
+| `request_timeout`                 | Request timed out                 | Timeout threshold is 15 seconds.                                                                            |
+| `users_limit_reached`             | Users limit reached               | Displayed on the attempt of logging in. The limit of online Customers for a given license has been reached. |
+| `unsupported_version`             | Unsupported version               | Unsupported protocol version.                                                                               |
+| `validation`                      | Wrong format of request           |                                                                                                             |
+| `wrong_product_version`           | Wrong product version             | License is not LiveChat 3 (probably still LiveChat 2).                                                      |
+
 
 # Contact us
 
