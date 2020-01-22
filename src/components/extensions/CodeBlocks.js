@@ -40,13 +40,13 @@ const CodeResponseWrapper = styled.div`
 const CodeSampleWrapper = styled.div`
   border: 1px solid #e8e8e8;
   border-radius: 6px;
-  background-color: #4f566b;
+  background-color: #505671;
   color: white;
   margin: 0 0 20px;
   max-width: 100%;
 
   --code-color: #f5fbff;
-  --code-background: #4f566b;
+  --code-background: #505671;
   --code-string-color: #56d4bc;
 `;
 
