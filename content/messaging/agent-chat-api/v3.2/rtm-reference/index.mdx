@@ -1153,8 +1153,8 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
-| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                                   |
-| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast)                                                                                                                                                                                                                               |
+| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                       |
+| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_agents_for_transfer`](#get-agents-for-transfer)                                                                                                                                                                               |
 
 </Text>
 <Code>
@@ -1214,7 +1214,7 @@ It returns [summaries](#chat-summaries) of the chats an Agent has access to.
 | ----------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------- |
 | `filters`                                             | No       | `object` | Mustn't change between requests for subsequent pages. Otherwise, the behavior is undefined. |
 | `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.                |
-| `filters.group_ids`                                   | No       | `array`  | Array of group IDs.                                                                         |
+| `filters.group_ids`                                   | No       | `array`  | Array of group IDs. Max array size: 200                                                     |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                             |
 | `order`                                               | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default)          |
 | `limit`                                               | No       | `number` | Default: 10, maximum: 100                                                                    |
@@ -1539,7 +1539,7 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 | `filters.date_to`                                     | No       | `string`  | `YYYY-MM-DD` format                                                                       |
 | `filters.agent_ids`                                   | No       | `array`   | Array of agent IDs                                                                        |
 | `filters.thread_ids`                                  | No       | `array`   | Array of thread IDs. Cannot be used with other filters or pagination; max array size: 20. |
-| `filters.group_ids`                                   | No       | `array`   | Array of group IDs                                                                        |
+| `filters.group_ids`                                   | No       | `array`   | Array of group IDs. Max array size: 200                                                   |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     |                                                                                           |
 | `<filter_type>`                                       | No       | `any`     | **\***                                                                                    |
 | `pagination`                                          | No       | `object`  |                                                                                           |
@@ -4004,7 +4004,7 @@ No response payload (`200 OK`).
 | ---------------------- | ---------------------------------------------------------------------------------------- |
 | **Action**             | `send_typing_indicator`                                                                  |
 | **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent** | [`send_typing_indicator`](../#send_typing_indicator)                                     |
+| **Web API equivalent** | [`send_typing_indicator`](../#send-typing-indicator)                                     |
 | **Push message**       | -                                                                                        |
 
 #### Request
@@ -4030,21 +4030,6 @@ No response payload (`200 OK`).
 ```
 
 </CodeSample>
-
-<!-- > **`send_typing_indicator`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "send_typing_indicator",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"recipients": "all",
-		"is_typing": true
-		},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -4141,43 +4126,6 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 
 </CodeSample>
 
-<!-- > **`multicast`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "multicast",
-	"payload": {
-		"scopes": {
-            "agents": {
-                "all": true,
-                "ids": [
-                    "agent1@example.com",
-                    "agent2@example.com"
-                ],
-                "groups": [
-                    1,
-                    2
-                ]
-            },
-            "customers": {
-                "ids": [
-                    "b7eff798-f8df-4364-8059-649c35c9ed0c"
-                ]
-            }
-        },
-        "content": {
-            "example": {
-                "nested": "json"
-				}
-			}
-		},
-		"type": "type1"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -4189,6 +4137,74 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
   "payload": {
     // no response payload
   }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Get Agents For Transfer
+
+It returns the Agents you can transfer a chat to. Agents are sorted ascendingly by the total number of active chats they have. Note that:
+
+- The method only returns Agents with statuses **online** and **not accepting chats**. Offline Agents aren't returned.
+- Only chats **with Customers** are taken into account in `total_active_chats`.
+
+
+#### Specifics
+
+|                        |                                                         |
+| ---------------------- | ------------------------------------------------------- |
+| **Action**             | `get_agents_for_transfer`                               |
+| **Required scopes**    | -                                                       |
+| **Web API equivalent** | [`get_agents_for_transfer`](../#get-agents-for-transfer)|
+| **Push message**       | -                                                       |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                   |
+| ---------- | -------- | --------- | --------------------------------------- |
+| `chat_id`  | Yes      | `string`  | The ID of the chat you want to transfer |
+
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_agents_for_transfer",
+  "payload": {
+     "chat_id": "PJ0MRSHTDG"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "get_agents_for_transfer",
+  "type": "response",
+  "success": true,
+  "payload":  
+    [
+	  	{
+			"agent_id": "agent1@example.com",
+			"active_chats": 2
+		  },
+		  {
+			"agent_id": "agent2@example.com",
+			"active_chats": 5
+		  }
+  	]
 }
 ```
 
