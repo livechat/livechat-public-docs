@@ -219,9 +219,9 @@ The **File** event informs about an uploaded file.
     // "Properties" object
   },
   "name": "image25.png", // generated server-side
-  "url": "https://domain.com/image25.png",
-  "thumbnail_url": "https://domain.com/thumbnail.png", // generated server-side
-  "thumbnail2x_url": "https://domain.com/thumbnail2x.png", // generated server-side
+  "url": "https://example.com/image25.png",
+  "thumbnail_url": "https://example.com/thumbnail.png", // generated server-side
+  "thumbnail2x_url": "https://example.com/thumbnail2x.png", // generated server-side
   "content_type": "image/png", // generated server-side
   "size": 123444, // generated server-side
   "width": 640, // generated server-side
@@ -411,7 +411,7 @@ Rich message event contains a rich message data structure. [Read more](/extendin
 | `elements.buttons`               | optional  | `buttons` may contain 1 - 11 `button` objects.                      |
 | `elements.buttons.postback_id`   | optional  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
 | `elements.buttons.text`          | optional  | Required only if `elements.buttons` is present.                     |
-| `elements.buttons.type`          | optional  | Required only if both `elements.buttons` and `elements.buttons.value` are present.  |
+| `elements.buttons.type`          | optional  | Required only if both `elements.buttons` and `elements.buttons.value` are present. Possible values: `webview`, `message`, `url`, `phone`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started) |
 | `elements.buttons.user_ids`      | optional  | Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
 | `elements.buttons.value`         | optional  | Required only if both `elements.buttons` and `elements.buttons.type` are present.  |
 | `elements.buttons.webview_height`| optional  | Possible values: `compact`, `full`, `tall`                                                                    |
@@ -442,7 +442,7 @@ Rich message event contains a rich message data structure. [Read more](/extendin
       "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "image": {
         "name": "image25.png",
-        "url": "https://domain.com/asdsfdsf.png",
+        "url": "https://example.com/asdsfdsf.png",
         "content_type": "image/png",
         "size": 123444,
         "width": 640,
@@ -833,7 +833,7 @@ Here's the list of all system messages you might come across:
   "type": "customer",
   "name": "John Smith",
   "email": "customer1@example.com",
-  "avatar": "domain.com/avatars/1.png",
+  "avatar": "example.com/avatars/1.png",
   "last_visit": {
     "started_at": "2017-10-12T15:19:21.010200Z",
     "referrer": "http://www.google.com/",
@@ -1216,9 +1216,9 @@ It returns [summaries](#chat-summaries) of the chats an Agent has access to.
 | `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.                |
 | `filters.group_ids`                                   | No       | `array`  | Array of group IDs.                                                                         |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                             |
-| `pagination`                                          | No       | `object` |                                                                                             |
-| `pagination.page`                                     | No       | `number` | Default: 1, minimum: 1, maximum: 1000                                                       |
-| `pagination.total`                                    | No       | `number` | The total number of threads that match filters; default: 25, min: 0, max: 100.              |
+| `order`                                               | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default)          |
+| `limit`                                               | No       | `number` | Default: 10, maximum: 100                                                                    |
+| `page_id`                                             | No       | `string` |                                                                                             |
 
 `filter_type` can take the following values:
 
@@ -1232,7 +1232,9 @@ There's only one value allowed for a single property.
 
 | Parameter     | Data type | Notes                                                                     |
 | ------------- | --------- | ------------------------------------------------------------------------- |
-| `found_chats` | `string`  | An estimated number. The real number of found chats can slightly differ . |
+| `found_chats` | `number`  | An estimated number. The real number of found chats can slightly differ. |
+| `next_page_id`    | `string`  | In relation to `page_id` specified in the request. |
+| `previous_page_id`| `string`  | In relation to `page_id` specified in the request. |
 
 </Text>
 <Code>
@@ -1314,9 +1316,9 @@ There's only one value allowed for a single property.
             "order": 1575892853242000,
             "is_followed": true
              }
-         }
-      ]
-  }
+      ],
+      "found_chats": 4
+    }
 }
 ```
 
@@ -1344,14 +1346,16 @@ There's only one value allowed for a single property.
 | --------- | -------- | -------- | ---------------------------------------------------------------------------------- |
 | `chat_id` | Yes      | `string` |                                                                                    |
 | `order`   | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default) |
-| `limit`   | No       | `number` | Defaul: 10, maximum: 100                                                           |
+| `limit`   | No       | `number` | Default: 10, maximum: 100                                                           |
 | `page_id` | No       | `string` |                                                                                    |
 
 #### Response
 
 | Parameter       | Data type | Notes                           |
 | --------------- | --------- | ------------------------------- |
-| `found_threads` | `string`  | The number of threads in a chat |
+| `found_threads` | `number`  | The number of threads in a chat |
+| `next_page_id`    | `string`  | In relation to `page_id` specified in the request. |
+| `previous_page_id`| `string`  | In relation to `page_id` specified in the request. |
 
 </Text>
 <Code>
@@ -1488,7 +1492,7 @@ It returns threads that the current Agent has access to in a given chat.
                 "name": "Agent Name",
                 "type": "agent",
                 "present": true,
-                "avatar": "https://domain.com/avatar.jpg",
+                "avatar": "https://example.com/avatar.jpg",
                 "job_title": "Support Agent"
             }
         ],
@@ -1594,7 +1598,7 @@ There's only one value allowed for a single property.
                   "email": "agent1@example.com",
                   "type": "agent",
                   "present": false,
-                  "avatar": "https://domain.com/avatar.jpg"
+                  "avatar": "https://example.com/avatar.jpg"
               }
           ],
           "thread": {
@@ -2361,7 +2365,7 @@ Transfers a chat to an Agent or a group.
 | **Action**             | `transfer_chat`                                   |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
 | **Web API equivalent** | [`transfer_chat`](../#transfer-chat)              |
-| **Push message**       | [`chat_transferred`](#chat_transferred)           |
+| **Push message**       | [`chat_transferred`](#chat_transferred-1)         |
 
 #### Request
 
@@ -3317,6 +3321,13 @@ There's only one value allowed for a single filter.
 
 Dates are represented in ISO 8601 format with microseconds resolution, e.g. `2017-10-12T15:19:21.010200+01:00` in specific timezone or `2017-10-12T14:19:21.010200Z` in UTC.
 
+#### Response
+
+| Parameter         | Data type | Notes                                              |
+| ----------------- | --------- | -------------------------------------------------- |
+| `next_page_id`    | `string`  | In relation to `page_id` specified in the request. |
+| `previous_page_id`| `string`  | In relation to `page_id` specified in the request. |
+
 </Text>
 <Code>
 <CodeSample path={'REQUEST'}>
@@ -3329,30 +3340,6 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 ```
 
 </CodeSample>
-
-<!-- > **`get_customers`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "get_customers",
-	"payload": {
-		"filters": {
-		"country": {
-			"values": ["United States", "Poland"]
-		},
-		"visits_count": {
-			"gte": 20
-		},
-		"created_at": {
-			"gte": "2017-10-12T15:19:21.010200+01:00"
-		}
-	},
-	"page_id": "MTUxNzM5ODEzMTQ5Ng=="
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3414,23 +3401,6 @@ Creates a new [Customer](#customer) user type.
 ```
 
 </CodeSample>
-
-<!-- > **`create_customer`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "create_customer",
-	"payload": {
-		"email": "customer1@example.com",
-		"avatar": "https://domain.com/avatars/1.jpg",
-		"fields": {
-			"some_key": "some_value"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-	}
-}
-``` -->
 
 <CodeResponse>
 
@@ -4904,7 +4874,7 @@ Informs that a new Customer registered.
     "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
     "created_at": "2019-11-14T14:27:24.410018Z",
     "email": "customer1@example.com",
-    "avatar": "https://domain.com/avatars/1.jpg",
+    "avatar": "https://example.com/avatars/1.jpg",
     "fields": {
         "some_key": "some_value"
     }
@@ -4931,7 +4901,7 @@ Informs that Customer's data was updated.
   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
   "name": "John Doe",
   "email": "john@doe.me",
-  "avatar": "https://domain.com/avatars/1.jpg",
+  "avatar": "https://example.com/avatars/1.jpg",
   "type": "customer",
   "present": false,
   "banned": false,
@@ -5222,20 +5192,20 @@ Informs about messages sent via the `multicast` method or by the system.
 
 #### Possible errors
 
-| Type                    | Default Message              | Notes                                                              |
-| ----------------------- | ---------------------------- | ------------------------------------------------------------------ |
-| `internal`              | Internal server error        |                                                                    |
-| `validation`            | Wrong format of request      |                                                                    |
-| `authorization`         | Authorization error          | Agent is not allowed to perform the action.                        |
-| `authentication`        | Authentication error         | An invalid or expired access token.                                |
-| `request_timeout`       | Request timed out            | Timeout threshold is 15 seconds                                    |
-| `license_expired`       | License expired              |                                                                    |
-| `unsupported_version`   | Unsupported version          | Unsupported protocol version.                                      |
-| `misdirected_request`   | Wrong region                 | Client's request should be performed to another region.            |
-| `entity_too_large`      | Upload limit exceeded (10MB) | Client's request is too large.                                     |
-| `wrong_product_version` | Wrong product version        | License is not LiveChat 3 (probably still LiveChat 2).             |
-| `license_not_found`     | License not found            | License with the specified ID doesn't exist.                       |
-| `requester_offline`     | Requester offline            | The method is only allowed for the logged in Agents (via RTM API). |
+| Type                             | Default Message               | Notes                                                              |
+| -------------------------------- | ----------------------------- | ------------------------------------------------------------------ |
+| `authentication`                 | Authentication error          | An invalid or expired access token.                                |
+| `authorization`                  | Authorization error           | User is not allowed to perform the action.                         |
+| `internal`                       | Internal server error         |                                                                    |
+| `license_expired`                | License expired               | The end of license trial or subcription.                            |
+| `pending_requests_limit_reached` | Requests limit reached        | The limit of pending requests within one websocket connection has been reached. The limit is 10.|
+| `requester_already_offline`      | Requester offline             | The method is only allowed for the logged in Agents (via RTM API). |
+| `requester_awaiting_approval`    | Requester&nbsp;awaiting&nbsp;approval   | A new Agent hasn't been approved by the license owner yet.     |
+| `request_timeout`                | Request timed out             | Timeout threshold is 15 seconds.                                    |
+| `requester_suspended`            | Requester suspended           | The rights of a given Agent have been withdrawn by the license owner.|
+| `validation`                     | Wrong format of request       |                                                                    |
+| `wrong_product_version`          | Wrong product version         | License is not LiveChat 3 (probably still LiveChat 2).             |
+| `seats_limit_exceeded`           | Seats limit exceeded          | Displayed on the attempt of logging in. All seats within a given license are already taken.|
 
 \* `misdirected_request` error returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.
