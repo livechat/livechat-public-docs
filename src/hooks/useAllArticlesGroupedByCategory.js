@@ -3,7 +3,7 @@ import { useStaticQuery, graphql } from "gatsby";
 export default () => {
   return useStaticQuery(graphql`
     query getAllArticlesGroupedByCategory {
-      allMdx {
+      allMdx(filter: { frontmatter: { hidden: { ne: true } } }) {
         group(field: frontmatter___category) {
           fieldValue
           edges {
@@ -17,6 +17,7 @@ export default () => {
                 category
                 subcategory
                 apiVersion
+                hidden
               }
               fields {
                 slug
