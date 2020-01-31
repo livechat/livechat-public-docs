@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
@@ -103,6 +103,18 @@ export default ({ data: { mdx, allMdx } }) => {
         }
       }
     );
+  }, []);
+
+  useLayoutEffect(() => {
+    const hash = window.location.hash;
+
+    if (hash) {
+      const selector = document.querySelector(hash);
+      if (selector) {
+        selector.scrollIntoView();
+        window.scrollBy(0, -100);
+      }
+    }
   }, []);
 
   const redirectToVersion = version => {
