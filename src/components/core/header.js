@@ -1,9 +1,11 @@
+import { useContext } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { Link } from "gatsby";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
 import { getVersionColor } from "../../utils";
+import { VersionContext } from "../../contexts/version";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -105,9 +107,12 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
   </MenuElementWrapper>
 );
 
-const Header = ({ selectedVersion }) => {
+const Header = () => {
+  const { items: versions, selected: selectedVersion } = useContext(
+    VersionContext
+  );
   const categories = useAllCategoriesMeta();
-  const tabColor = getVersionColor(selectedVersion);
+  const tabColor = getVersionColor(selectedVersion, versions);
 
   return (
     <HeaderWrapper id="header">
