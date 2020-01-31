@@ -29,15 +29,36 @@ Agent Chat RTM API enables communication in real time. It supports pushes like `
 Also, the RTM API will be a better choice if you want to avoid time delays or presume significant traffic.
 **Not what you're looking for?** Perhaps, you need to use [**Agent Chat Web API**](..) instead.
 
-## Authentication
+## Access
 
-**Agent authentication** is handled by access tokens. Find out how to get an **access token** from [Agent authorization flows](/getting-started/authorization/#agent-authorization-flows). Client must authorize himself by [logging in](#login) within 30 seconds, otherwise the connection will be closed.
+The basics on authorization, server pinging, and scopes in the Agent Chat RTM API.
 
-After successful authorization, client should **ping the server** each 15 seconds, otherwise the connection will be closed after about 30 seconds of inactivity. If the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2) is unavailable (in web browsers), client should use a protocol message with the ping action. Until authorization is completed, ping is a no-op.
+### Authorization
+**Agent authorization** is handled with access tokens. Find out how to get an **access token** from [Agent authorization flows](/getting-started/authorization/#agent-authorization-flows). You need to authorize within 30 seconds from establishing the connection. Otherwise, the connection will be closed. Given that the connection is continuosly maintained, you only need to authorize once.
 
-All authorization scopes are listed in the [Scopes](#scopes) section. If a method requires particular scopes, you'll find them included in the method description.
+### Server pinging
+After successful authorization, the client needs to **ping the server** every 15 seconds. Otherwise, the connection will be closed after about 30 seconds of inactivity. Until authorization is completed, ping is a no-op.
 
-Given that the connection is continuosly maintained, you only need to authorize once.
+Use one of these 2 ways of pinging the server:
+
+- **Protocol message with the ping action**
+
+For web applications and backend integrations (e.g. in Python, Go). Send the following request every 15 seconds:
+```
+{
+  "action": "ping",
+  "payload": {}
+}
+```
+
+After pinging the server, the client will receive a response with the `ping` action. Thanks to that, the client can make sure the connection is still alive. 
+
+- **The control frame ping in the websocket protocol**
+
+For backend integrations; unavailable in web browsers. Read more about the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2).
+
+### Scopes
+All authorization scopes are listed in the [Scopes](#scopes-1) section. If a method requires particular authorization scopes, you'll find them included in the method description.
 
 ## Data centers
 
