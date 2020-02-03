@@ -16,12 +16,12 @@ Please let us know if you have any thoughts on making this collection complete. 
 
 ## Versioning
 
-API documentation is versioned. Currently we are using version `3.1` as `stable`, `3.2` as `dev preview` and `2.0` as `legacy`. This versioning is **default** for all articles which aren't grouped.
+The API documentation is versioned. Currently, we are using version `3.1` as `stable`, `3.2` as `dev preview` and `2.0` as `legacy`. This versioning is **default** for all articles which aren't grouped.
 
 ### Grouping versions
 
-You can create different set of versions for your `subcategories`.
-If your article is using different than **default** you can create a custom group of versions. In order to do that you need to add your versions scheme into `/src/contant/index.js` e.g.
+You can create a different set of versions for your `subcategories`.
+If your article isn't using the **default** versioning, you can create a custom group of versions. In order to do that, you need to add your versions scheme into `/src/contant/index.js` e.g.
 
 ```js
 export const VERSIONS_GROUPS = {
@@ -43,7 +43,7 @@ weight: 30
 versionGroup: "foo"
 ```
 
-The last step is to add the `versionGroup` and the specified `version` inside your article. Please also remember to add the `versionGroup` (you don't need to specify `version` if you don't need to) to all the siblings.
+The last step is to add the `versionGroup` and the specified `version` inside your article. Please, also remember to add `versionGroup` to all the siblings (all documents within the same subcategory). You don't have to specify `version` for them, but `versionGroup` is required. 
 
 ## Development
 
