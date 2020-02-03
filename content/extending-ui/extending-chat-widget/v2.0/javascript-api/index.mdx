@@ -24,7 +24,18 @@ This API works only with the [new Chat Widget](https://developers.livechatinc.co
 
 The API is accessed through the `LiveChatWidget` object.
 It is being initialized within the LiveChat tracking code, which is used to install our Chat Widget on your site.
-If you haven't installed the code yet, you can find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code).
+If you haven't installed the code yet, you can  either find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code) or copy it from here (remember to replace `<LICENSE_NUMBER>` with your license number):
+
+```html
+<!-- Start of LiveChat (www.livechatinc.com) code -->
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = <LICENSE_NUMBER>;
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+</script>
+<noscript><a href="https://www.livechatinc.com/chat-with/<LICENSE_NUMBER>/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+<!-- End of LiveChat code -->
+```
 
 The API requires the newest version of the code snippet (≥2.0). If you had installed the code a while ago and the API presented here doesn't work, you should either update the code or use the [old version of JS API](https://developers.livechatinc.com/docs/js-api/#introduction). You can check the current version of your snippet by calling the `scriptTagVersion` function:
 
@@ -59,7 +70,7 @@ To change the visibility of the Chat Widget, you can use the following methods:
 - [Minimize](#minimize)
 - [Hide](#hide)
 - [Destroy](#destroy)
-- [Dismiss greeting](#dismiss-greeting)
+- [Hide greeting](#hide-greeting)
 
 ## Maximize
 
@@ -103,15 +114,15 @@ It won't be available for further actions until the window is refreshed.
 LiveChatWidget.call('destroy')
 ```
 
-## Dismiss greeting
+## Hide greeting
 
-It dismisses the currently displayed greeting.
-In order to dismiss particular greeting you can listen to [`new_event`](#on-new-event) or [`greeting_dismissed`](#on-greeting-dismissed) callbacks to know when greeting with specified `id` or `uniqueId` appears and disappears accordingly.
+It hides the currently displayed greeting.
+In order to hide particular greeting you can listen to [`new_event`](#on-new-event) or [`greeting_hidden`](#on-greeting-hidden) callbacks to know when greeting with specified `id` or `uniqueId` appears and disappears accordingly.
 
 #### Example
 
 ```js
-LiveChatWidget.call('dismiss_greeting')
+LiveChatWidget.call('hide_greeting')
 ```
 
 # Getters
@@ -468,9 +479,9 @@ LiveChatWidget.on('rating_submitted', onRatingSubmitted)
 LiveChatWidget.off('rating_submitted', onRatingSubmitted)
 ```
 
-## On greeting dismissed
+## On greeting displayed
 
-It is called after the greeting has been dismissed by the customer or [`dismiss_greeting`](#dismiss-greeting) method.
+It is called after the greeting has been displayed to the customer.
 
 #### Payload
 
@@ -480,14 +491,36 @@ It is called after the greeting has been dismissed by the customer or [`dismiss_
 | uniqueId | `string` | Greeting's event uniqueId |
 
 ```js
-function onGreetingDismissed(greeting) {
-  // greeting has been dissmised
+function onGreetingDisplayed(greeting) {
+  // greeting has been displayed
   var id = greeting.id
   var uniqueId = greeting.uniqueId
 }
 
-LiveChatWidget.on('greeting_dismissed', onGreetingDismissed)
-LiveChatWidget.off('greeting_dismissed', onGreetingDismissed)
+LiveChatWidget.on('greeting_displayed', onGreetingDisplayed)
+LiveChatWidget.off('greeting_displayed', onGreetingDisplayed)
+```
+
+## On greeting hidden
+
+It is called after the greeting has been cancelled by the customer or [`hide_greeting`](#hide-greeting) method.
+
+#### Payload
+
+| param    | type     | description               |
+| -------- | -------- | ------------------------- |
+| id       | `number` | Greeting's template id    |
+| uniqueId | `string` | Greeting's event uniqueId |
+
+```js
+function onGreetingHidden(greeting) {
+  // greeting has been hidden
+  var id = greeting.id
+  var uniqueId = greeting.uniqueId
+}
+
+LiveChatWidget.on('greeting_hidden', onGreetingHidden)
+LiveChatWidget.off('greeting_hidden', onGreetingHidden)
 ```
 
 ## On rich message button clicked
