@@ -107,7 +107,7 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
           API. For the rest, refer to v3.1.
         </p>
       )}
-      {selectedVersion === versions.DEV_REVIEW_VERSION && (
+      {selectedVersion === versions.DEV_PREVIEW_VERSION && (
         <p>
           This is the <strong>developer preview</strong> version of our API.
           Keep in mind it might be <strong>subject to change</strong>.
@@ -180,7 +180,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
           {selectedVersion === versions.LEGACY_VERSION && (
             <span>You are browsing the legacy version of the API.</span>
           )}
-          {selectedVersion === versions.DEV_REVIEW_VERSION && (
+          {selectedVersion === versions.DEV_PREVIEW_VERSION && (
             <span>
               You are browsing the developer preview version of the API.
             </span>
