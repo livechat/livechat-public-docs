@@ -12,7 +12,7 @@ import "../components/core/algolia.css";
 
 import SideNav from "../components/core/SideNav";
 import Header from "../components/core/header";
-import Version from "../components/core/version";
+import Version, { getVersionsByGroup } from "../components/core/version";
 
 import {
   MainWrapper,
@@ -27,8 +27,7 @@ import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 import useLocalStorage from "../hooks/useLocalStorage";
-
-import { API } from "../constant";
+import { VersionProvider } from "../contexts/version";
 
 const components = {
   ...DesignSystem,
@@ -48,12 +47,14 @@ export default ({ data: { mdx, allMdx } }) => {
       desc,
       subcategory,
       slug: customSlug,
-      apiVersion: currentApiVersion
+      apiVersion: currentApiVersion,
+      versionGroup
     },
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
 
+  const versions = getVersionsByGroup(versionGroup);
   const { edges } = allMdx;
 
   const articlesVersions = edges
@@ -90,19 +91,23 @@ export default ({ data: { mdx, allMdx } }) => {
       return prev;
     }, {});
 
-  const [selectedVersion, setSelectedVersion] = useState(API.STABLE_VERSION);
+  const [selectedVersion, setSelectedVersion] = useState(
+    versions.STABLE_VERSION
+  );
 
   const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   useEffect(() => {
     const pathname = window.location.pathname;
-    API.ALL_VERSIONS.filter(version => version !== API.STABLE_VERSION).forEach(
-      version => {
-        if (pathname.includes(version)) {
-          setSelectedVersion(version);
-        }
+
+    versions.ALL_VERSIONS.filter(
+      version => version !== versions.STABLE_VERSION
+    ).forEach(version => {
+      if (pathname.includes(version)) {
+        setSelectedVersion(version);
       }
-    );
+    });
+    // eslint-disable-next-line
   }, []);
 
   useLayoutEffect(() => {
@@ -123,13 +128,13 @@ export default ({ data: { mdx, allMdx } }) => {
     let currentSlug = customSlug || slug;
 
     if (selectedVersion !== version) {
-      if (selectedVersion === API.STABLE_VERSION) {
+      if (selectedVersion === versions.STABLE_VERSION) {
         currentSlug = currentSlug.replace(
           subcategory,
           `${subcategory}/v${version}`
         );
       } else {
-        if (version === API.STABLE_VERSION) {
+        if (version === versions.STABLE_VERSION) {
           currentSlug = currentSlug.replace(
             `${subcategory}/v${selectedVersion}`,
             subcategory
@@ -145,27 +150,32 @@ export default ({ data: { mdx, allMdx } }) => {
     }
   };
 
+  const versionContext = {
+    selected: selectedVersion,
+    items: versions
+  };
+
   return (
-    <>
+    <VersionProvider value={versionContext}>
       <SEO desc={desc} title={title} />
-      <Header selectedVersion={selectedVersion} />
+      <Header />
       <MainWrapper>
         <LeftColumn>
           <SideNav
             currentSlug={customSlug || slug}
             category={category}
             subcategory={subcategory}
-            currentApiVersion={selectedVersion}
             expanded={expanded}
             setExpanded={setExpanded}
+            versions={versions}
           />
         </LeftColumn>
         <MiddleColumn>
           {currentApiVersion && (
             <Version
               articleVersions={articlesVersions[category][subcategory][title]}
-              selectedVersion={selectedVersion}
               redirectToVersion={redirectToVersion}
+              group={versionGroup}
             />
           )}
           <Content>
@@ -183,7 +193,7 @@ export default ({ data: { mdx, allMdx } }) => {
           </Content>
         </MiddleColumn>
       </MainWrapper>
-    </>
+    </VersionProvider>
   );
 };
 
@@ -206,6 +216,7 @@ export const pageQuery = graphql`
         subcategory
         slug
         apiVersion
+        versionGroup
       }
       fields {
         slug

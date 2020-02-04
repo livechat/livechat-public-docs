@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
 import {
   Dropdown,
@@ -6,9 +6,15 @@ import {
   Button,
   PopperTooltip
 } from "@livechat/design-system";
-import { API } from "../../constant";
+import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
 import { WarningIcon } from "./icons";
+import { VersionContext } from "../../contexts/version";
+
+export const getVersionsByGroup = group =>
+  group && VERSIONS_GROUPS[group]
+    ? VERSIONS_GROUPS[group]
+    : VERSIONS_GROUPS.DEFAULT;
 
 const Container = styled.div`
   background-color: rgb(255, 255, 255);
@@ -74,7 +80,7 @@ const StyledDropdownList = styled(DropdownList)`
   }
 `;
 
-const Warning = ({ selectedVersion, versionColor }) => (
+const Warning = ({ selectedVersion, versionColor, versions }) => (
   <PopperTooltip
     isVisible={true}
     placement={"bottom-center"}
@@ -95,13 +101,13 @@ const Warning = ({ selectedVersion, versionColor }) => (
     zIndex={99999}
   >
     <div style={{ maxWidth: "320px" }}>
-      {selectedVersion === API.LEGACY_VERSION && (
+      {selectedVersion === versions.LEGACY_VERSION && (
         <p>
           This version covers only some functionalities of the Configuration
           API. For the rest, refer to v3.1.
         </p>
       )}
-      {selectedVersion === API.DEV_REVIEW_VERSION && (
+      {selectedVersion === versions.DEV_PREVIEW_VERSION && (
         <p>
           This is the <strong>developer preview</strong> version of our API.
           Keep in mind it might be <strong>subject to change</strong>.
@@ -121,8 +127,11 @@ const Warning = ({ selectedVersion, versionColor }) => (
   </PopperTooltip>
 );
 
-const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
+const Version = ({ articleVersions, redirectToVersion }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const { items: versions, selected: selectedVersion } = useContext(
+    VersionContext
+  );
 
   const onDropdownHandle = version => {
     redirectToVersion(version);
@@ -137,9 +146,9 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
       <>
         <span>{version}</span>
         <span style={{ marginLeft: "3px" }}>
-          {version === API.STABLE_VERSION
+          {version === versions.STABLE_VERSION
             ? `(stable)`
-            : version === API.LEGACY_VERSION
+            : version === versions.LEGACY_VERSION
             ? `(legacy)`
             : `(dev preview)`}
         </span>
@@ -152,10 +161,10 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
     .sort((a, b) => b - a)
     .map(e => versionToString(e));
 
-  const versionColor = getVersionColor(selectedVersion);
+  const versionColor = getVersionColor(selectedVersion, versions);
 
   // Extra case for stable version to match the sidebar colors
-  const isStable = selectedVersion === API.STABLE_VERSION;
+  const isStable = selectedVersion === versions.STABLE_VERSION;
 
   return (
     <Container>
@@ -168,10 +177,10 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
         }
       >
         <DesktopNote>
-          {selectedVersion === API.LEGACY_VERSION && (
+          {selectedVersion === versions.LEGACY_VERSION && (
             <span>You are browsing the legacy version of the API.</span>
           )}
-          {selectedVersion === API.DEV_REVIEW_VERSION && (
+          {selectedVersion === versions.DEV_PREVIEW_VERSION && (
             <span>
               You are browsing the developer preview version of the API.
             </span>
@@ -183,6 +192,7 @@ const Version = ({ articleVersions, redirectToVersion, selectedVersion }) => {
             <Warning
               selectedVersion={selectedVersion}
               versionColor={versionColor}
+              versions={versions}
             />
           )}
           <span style={labelStyle}>API version</span>

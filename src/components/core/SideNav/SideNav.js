@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useContext } from "react";
 import {
   Nav,
   NavHeader,
@@ -17,7 +17,8 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
-import { API } from "../../../constant";
+import { VersionContext } from "../../../contexts/version";
+import { getVersionColor } from "../../../utils";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (
   <Ul>
@@ -57,14 +58,16 @@ const SideNav = ({
   category,
   subcategory,
   currentSlug,
-  currentApiVersion,
   expanded,
   setExpanded
 }) => {
+  const { items: versions, selected: selectedVersion } = useContext(
+    VersionContext
+  );
   const [articles, getArticlePath] = useAllArticlesInCategory(
     category,
     currentSlug,
-    currentApiVersion
+    selectedVersion
   );
 
   const categories = useAllCategoriesMeta().map(item => ({
@@ -86,14 +89,7 @@ const SideNav = ({
 
   useScrollSpy(".heading", url => url && setActivePath(getArticlePath(url)));
 
-  const isStable = currentApiVersion === API.STABLE_VERSION;
-  const isLegacy = currentApiVersion === API.LEGACY_VERSION;
-
-  const navColor = isStable
-    ? "67, 132, 245"
-    : isLegacy
-    ? "209, 52, 91"
-    : "239, 168, 67";
+  const navColor = getVersionColor(selectedVersion, versions);
 
   return (
     <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
