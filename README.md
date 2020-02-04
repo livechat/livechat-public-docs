@@ -33,7 +33,7 @@ export const VERSIONS_GROUPS = {
   }
 ```
 
-Then inside the subcategory root `index.mdx` file you must specify the newly created group in the frontmatter section e.g.
+Then inside the subcategory root `index.mdx` file, you must specify the newly created group in the frontmatter section e.g.
 
 ```
 ---
