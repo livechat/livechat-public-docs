@@ -37,8 +37,6 @@ export const setupDocsearch = () => {
         });
 
         window.location.href = suggestion.url;
-        // console.log("input", input.getVal());
-        // console.log("suggestion", suggestion);
       }
     }
   });
