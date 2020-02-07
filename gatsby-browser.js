@@ -1,5 +1,6 @@
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import docsearch from "docsearch.js/dist/cdn/docsearch.min.js";
+import { setupAmplitude } from "./src/utils";
 
 window.docsearch = docsearch;
 
@@ -10,3 +11,5 @@ if (typeof window !== "undefined") {
     offset: 100
   });
 }
+
+setupAmplitude();

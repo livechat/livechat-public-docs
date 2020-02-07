@@ -1,3 +1,19 @@
+import amplitude from "amplitude-js";
+
+export const setupAmplitude = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  amplitude.getInstance().init("656f6573a88e63d3dc2ce32e33ef8284");
+};
+
+export const logAmplitudeEvent = (name, properties) => {
+  if (amplitude) {
+    amplitude.getInstance().logEvent(name, properties);
+  }
+};
+
 export const setupDocsearch = () => {
   if (
     typeof window === "undefined" ||
@@ -9,7 +25,21 @@ export const setupDocsearch = () => {
     apiKey: "f53a424573adab20d04faa2db150c349",
     indexName: "livechatinc",
     inputSelector: "#search",
-    debug: false
+    debug: false,
+    handleSelected: function(input, event, suggestion, datasetNumber, context) {
+      if (
+        context.selectionMethod === "click" ||
+        context.selectionMethod === "enterKey"
+      ) {
+        logAmplitudeEvent("User selected suggestion", {
+          url: suggestion.url
+        });
+
+        window.location.href = suggestion.url;
+        // console.log("input", input.getVal());
+        // console.log("suggestion", suggestion);
+      }
+    }
   });
 };
 

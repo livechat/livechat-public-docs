@@ -99,6 +99,7 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
         partiallyActive
         css={linkStyle}
         activeStyle={activeLinkStyle(color)}
+        onClick={() => console.log("foo", slug)}
       >
         <CategoryIcon category={slug} style={iconStyle} />
         {label}
