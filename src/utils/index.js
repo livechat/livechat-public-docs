@@ -26,13 +26,14 @@ export const setupDocsearch = () => {
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
-    handleSelected: function(input, event, suggestion, datasetNumber, context) {
+    handleSelected: function (input, event, suggestion, datasetNumber, context) {
       if (
         context.selectionMethod === "click" ||
         context.selectionMethod === "enterKey"
       ) {
-        logAmplitudeEvent("User selected suggestion", {
-          url: suggestion.url
+        logAmplitudeEvent("User selected suggestion and input", {
+          url: suggestion.url,
+          input: input.getVal()
         });
 
         window.location.href = suggestion.url;
