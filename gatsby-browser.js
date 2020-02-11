@@ -8,7 +8,7 @@ if (typeof window !== "undefined") {
   require("smooth-scroll")('a[href*="#"]', {
     speed: 160,
     speedAsDuration: true,
-    offset: 100
+    offset: 140
   });
   setupAmplitude();
 }
