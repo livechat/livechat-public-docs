@@ -1380,6 +1380,7 @@ curl --request GET \
 - [Create License](#create-license)
 - [Get Solution Licenses](#get-solution-licenses)
 - [Get License Details](#get-license-details)
+- [Update License Details](#update-license-details)
 - [Get License Operators](#get-license-operators)
 - [Get License's Invoices](#get-license-invoices)
 - [Get License's Invoice PDF](#get-license-invoice-pdf)
@@ -1409,7 +1410,7 @@ curl --request GET \
 
 #### Body
 
-- `client_name` - **required** - client's full name
+- `client_name` - **required** - client's full name (min. 5 characters)
 - `client_email` - **required** - client's email address
 - [_only for `livechat` product_] `payment_origin` - **required** - who would manage subscription: `client` or `partner` (you)
 - `purchase_order` - a custom parameter
@@ -1435,13 +1436,14 @@ curl --request GET \
 {
   "license": "123",
   "product": "livechat",
+  "creation_timestamp": "2020-02-11 13:18:53",
+  "end_timestamp": "2020-02-25 13:18:53",
   "client_name": "Joe Doe",
   "client_email": "joe@example.com",
   "cc_added": false,
   "paid": false,
   "payment_origin": "partner",
-  "blocked": false,
-  "active": true
+  "status": "trial"
 }
 ```
 
@@ -1548,7 +1550,7 @@ curl --request GET \
 #### Response
 
 - `200 - OK` - success, see the example on the right
-- `400 - Bad Request` - missing or incorrect `license_id` parameter
+- `400 - Bad Request` - missing or incorrect parameters
 - `401 - Unauthorized` - a missing or incorrect authorization header
 - `404 - Not Found` - license not found
 
@@ -1560,7 +1562,7 @@ curl --request GET \
 
 ```sh
 curl --request GET \
-	--url https://api.livechatinc.com/v2/partners/solutions/licenses/123 \
+	--url https://api.livechatinc.com/v2/partners/solutions/licenses/livechat/123 \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -1589,9 +1591,8 @@ curl --request GET \
   "discount_percent": 20,
   "total_commission": 0,
   "commission_percent": 0,
-  "active": false,
-  "blocked": false,
-  "data_center": "dal"
+  "data_center": "dal",
+  "status": "expired"
 }
 ```
 
@@ -1606,9 +1607,58 @@ curl --request GET \
 
 <Text>
 
+## Update License Details
+
+`PUT /v2/partners/solutions/licenses/<product>/<license_id>` - update the license details
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `<product>` - **required** - product (`livechat` or `chatbot`)
+- `<license_id>` - **required** - license ID
+
+#### Body
+
+- `client_name` - client's full name (min. 5 characters)
+- `purchase_order` - a custom parameter
+
+#### Response
+
+- `204 - No Content` - success
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+- `404 - Not Found` - license not found
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```sh
+curl --request PUT \
+	--url https://api.livechatinc.com/v2/solutions/licenses/livechat/123 \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>' \
+	--data 'client_name=Jane Doe'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+
+<Section>
+
+<Text>
+
 ## Get License Operators
 
-`GET /v2/partners/solutions/licenses/<license_id>/operators` - get the list of operators
+`GET /v2/partners/solutions/licenses/livechat/<license_id>/operators` - get the list of LiveChat license's operators
 
 #### Headers
 
@@ -1633,7 +1683,7 @@ curl --request GET \
 
 ```sh
 curl --request GET \
-	--url https://api.livechatinc.com/v2/partners/solutions/licenses/123/operators \
+	--url https://api.livechatinc.com/v2/partners/solutions/licenses/livechat/123/operators \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -1849,7 +1899,7 @@ curl --request GET \
 
 ## Create Subscription
 
-`POST /v2/partners/solutions/licenses/<license_id>/subscription` - create a new subscription
+`POST /v2/partners/solutions/licenses/livechat/<license_id>/subscription` - create a new subscription for LiveChat license
 
 #### Headers
 
@@ -1885,7 +1935,7 @@ curl --request GET \
 
 ## Update Subscription
 
-`PUT /v2/partners/solutions/licenses/<license_id>/subscription` - update a subscription
+`PUT /v2/partners/solutions/licenses/livechat/<license_id>/subscription` - update a subscription for LiveChat license
 
 #### Headers
 
@@ -1920,7 +1970,7 @@ curl --request GET \
 
 ## Close Subscription
 
-`DELETE /v2/partners/solutions/licenses/<license_id>/subscription` - close a subscription
+`DELETE /v2/partners/solutions/licenses/livechat/<license_id>/subscription` - close a subscription for LiveChat license
 
 #### Headers
 
@@ -1954,7 +2004,7 @@ curl --request GET \
 
 ## Update License Billing
 
-`PUT /v2/partners/solutions/licenses/<license_id>/billing` - update the subscription billing information
+`PUT /v2/partners/solutions/licenses/livechat/<license_id>/billing` - update the subscription billing information for LiveChat license
 
 #### Headers
 
@@ -1986,7 +2036,7 @@ curl --request GET \
 
 ## Transfer License
 
-`POST /v2/partners/solutions/licenses/<license_id>/transfer` - transfer a license to the client
+`POST /v2/partners/solutions/licenses/livechat/<license_id>/transfer` - transfer a LiveChat license to the client
 
 #### Headers
 
@@ -2018,7 +2068,7 @@ curl --request GET \
 ```sh
 curl --request POST \
 	--url https://api.livechatinc.com/v2/partners/solutions/licenses/transfer \
-	--data 'new_owner=joe@doe.com&password=mysecretpassword'
+	--data 'new_owner=joe@doe.com&password=mysecretpassword' \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
