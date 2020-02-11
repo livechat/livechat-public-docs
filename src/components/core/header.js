@@ -101,7 +101,7 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
           css={linkStyle}
           activeStyle={activeLinkStyle(color)}
           onClick={() => logAmplitudeEvent('Tab selected from top menu', {
-            slug: slug
+            slug
           })}
         >
           <CategoryIcon category={slug} style={iconStyle} />
