@@ -1632,18 +1632,6 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 </Section>
 
-<!-- > **`close_thread`** sample **request** with optional params
-
-```json
-{
-	"request_id": "657", // optional
-	"action": "close_thread",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG"
-	}
-}
-``` -->
-
 ## Events
 
 <Section>
@@ -1652,13 +1640,15 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 ### Send Event
 
+Sends an [Event](#events) object. Use this method to send a message by specifing the [Message](#message) event type in the request. 
+
 #### Specifics
 
-|                        |                                                           |
-| ---------------------- | --------------------------------------------------------- |
-| **Action**             | `send_event`                                              |
-| **Web API equivalent** | [`send_event`](../#send-event) |
-| **Push message**       | [`incoming_event`](#incoming_event)                       |
+|                        |                                                           
+| ---------------------- | --------------------------------------------------------- 
+| **Action**             | `send_event`                                              
+| **Web API equivalent** | [`send_event`](../#send-event) 
+| **Push message**       | [`incoming_event`](#incoming_event)                       
 
 #### Request
 
@@ -3314,7 +3304,9 @@ Informs that a chat was transferred to a different group or to an Agent.
 ## Chat users
 
 ### `chat_user_added`
-Informs that a user (Customer or Agent) was added to a chat.
+Informs that a user (Customer or Agent) was added to a chat. 
+
+This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](/messaging/agent-chat-api/v3.2/rtm-reference/#send-event) method.  
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3761,26 +3753,27 @@ Informs that a Customer was disconnected. The payload contains the reason of Cus
 
 #### Possible reasons
 
-| Type                                 | Notes                                                                                                                                |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `access_token_expired`               | Access token lifetime has elapsed.                                                                                                   |
-| `connection_timeout`                 | Has not received [`ping`](#authentication) from the client for some time, or it's been too long since the connection was authorized. |
-| `customer_banned`                    | Customer has been banned.                                                                                                            |
-| `customer_temporarily_blocked`**\*** | Customer tried reconnecting too many times after the `too_many_connections` error had occurred.                                      |
-| `inactivity_timeout`                 | Customer didn't chat or change the page in the past 30 minutes.                                                                      |
-| `internal_error`                     | Internal error                                                                                                                       |
-| `license_not_found`                  | The license with the specified ID doesn't exist.                                                                                     |
-| `misdirected_connection` **\*\***    | Customer connected to a server in the wrong region.                                                                                  |
-| `product_version_changed`            | The product version has changed.                                                                                                     |
-| `too_many_connections`               | Customer has reached the maximum number of connections.                                                                              |
-| `too_many_unauthorized_connections`  | The maximum number of unauthorized connections has been reached.                                                                     |
-| `unsupported_version`                | Connecting to an unsupported version of the Customer Chat API.                                                                       |
+| Type                                 | Notes                                                                                                                                
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ 
+| `access_token_expired`               | Access token lifetime has elapsed.                                                                                                   
+| `connection_timeout`                 | Has not received [`ping`](#authentication) from the client for some time, or it's been too long since the connection was authorized. 
+| `customer_banned`                    | Customer has been banned.                                                                                                            
+| `customer_temporarily_blocked`**\*** | Customer tried reconnecting too many times after the `too_many_connections` error had occurred.                                         
+| `inactivity_timeout`                 | Customer didn't chat or change the page in the past 30 minutes.                                                                      
+| `internal`                           | Internal error                                                                                                                       
+| `license_not_found`                  | The license with the specified ID doesn't exist.                                                                                     
+| `misdirected_connection` **\*\***    | Customer connected to a server in the wrong region.                                                                                  
+| `product_version_changed`            | The product version has changed.                                                                                                     
+| `too_many_connections`               | Customer has reached the maximum number of connections.                                                                              
+| `too_many_unauthorized_connections`  | The maximum number of unauthorized connections has been reached.                                                                     
+| `unsupported_version`                | Connecting to an unsupported version of the Customer Chat API.                                                                       
 
 **\*)**
-The `misdirected_connection` reason can also return the correct region in an optional data object. With this piece of information, client is able to figure out where it should be connected.
+The `customer_temporarily_blocked` reason can also return the correct timeout in an optional data object. With this piece of information, client is able to figure out how much time a customer should wait before attempting to reconnect again.
 
 **\*\*)**
-The `customer_temporarily_blocked` reason can also return the correct timeout in an optional data object. With this piece of information, client is able to figure out how much time a customer should wait before attempting to reconnect again.
+The `misdirected_connection` reason can also return the correct region in an optional data object. With this piece of information, client is able to figure out where it should be connected.
+
 
 ## Other
 
@@ -3988,23 +3981,37 @@ Informs about a greeting rejected by the Customer. Also, the push is sent when a
 
 </CodeResponse>
 
+<Section>
+
+<Text>
+
 #### Possible errors
 
-| Type                              | Default Message                   | Notes                                                                                                       |
-| --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `authentication`                  | Authentication error              | An invalid or expired access token.                                                                         |
-| `authorization`                   | Authorization error               | User is not allowed to perform the action.                                                                  |
-| `internal`                        | Internal server error             |                                                                                                             |
-| `license_expired`                 | License expired                   | The end of license trial or subcription.                                                                    |
-| `pending_requests_limit_reached`  | Requests&nbsp;limit&nbsp;reached  | The limit of pending requests within one websocket connection has been reached. The limit is 10.            |
-| `request_timeout`                 | Request timed out                 | Timeout threshold is 15 seconds.                                                                            |
-| `users_limit_reached`             | Users limit reached               | Displayed on the attempt of logging in. The limit of online Customers for a given license has been reached. |
-| `unsupported_version`             | Unsupported version               | Unsupported protocol version.                                                                               |
-| `validation`                      | Wrong format of request           |                                                                                                             |
-| `wrong_product_version`           | Wrong product version             | License is not LiveChat 3 (probably still LiveChat 2).                                                      |
+| Type                              | Default Message                   | Notes                                                                                                       
+| --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------- 
+| `authentication`                  | Authentication error              | An invalid or expired access token.                                                                         
+| `authorization`                   | Authorization error               | User is not allowed to perform the action.                                                                  
+| `customer_banned`                 | Customer is banned                | The customer had been banned.       
+| `greeting_not_found`              | Greeting not found                |         
+| `group_not_found`                 | Group not found                   |
+| `group_offline`                   | Group is offline                  | Thrown in response to [Get Predicted Agent](#get-predicted-agent).   
+| `group_unavailable`               | No agent available for group      | Thrown in response to [Get Predicted Agent](#get-predicted-agent). The group is online, but there are no available Agents. 
+| `groups_offline`                  | Groups offline                    | 
+| `internal`                        | Internal server error             |                                                                                                             
+| `license_expired`                 | License expired                   | The end of license trial or subcription.                                                                    
+| `pending_requests_limit_reached`  | Requests limit reached            | The limit of pending requests within one websocket connection has been reached. The limit is 10.            
+| `request_timeout`                 | Request timed out                 | Timeout threshold is 15 seconds.                                                                            
+| `users_limit_reached`             | Users limit reached               | Displayed on the attempt of logging in. The limit of online Customers for a given license has been reached. 
+| `unsupported_version`             | Unsupported version               | Unsupported protocol version.                                                                               
+| `validation`                      | Wrong format of request           |                                                                                                             
+| `wrong_product_version`           | Wrong product version             | License is not LiveChat 3 (probably still LiveChat&nbsp;2).                                                      
 
+</Text>
+
+</Section>
 
 # Contact us
 
 If you found a bug or a typo, you can let us know directly on GitHub.
 In case of any questions or feedback, don't hesitate to contact us at [developers@livechatinc.com](mailto:developers@livechatinc.com). We'll be happy to hear from you!
+
