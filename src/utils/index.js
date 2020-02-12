@@ -5,7 +5,7 @@ export const setupAmplitude = () => {
     return;
   }
 
-  amplitude.getInstance().init("656f6573a88e63d3dc2ce32e33ef8284");
+  amplitude.getInstance().init(process.env.GATSBY_APP_AMPLITUDE_KEY);
 };
 
 export const logAmplitudeEvent = (name, properties) => {
@@ -22,7 +22,7 @@ export const setupDocsearch = () => {
     return;
   }
   window.docsearch({
-    apiKey: "f53a424573adab20d04faa2db150c349",
+    apiKey: process.env.GATSBY_ALGOLIA_API_KEY,
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
@@ -31,7 +31,7 @@ export const setupDocsearch = () => {
         context.selectionMethod === "click" ||
         context.selectionMethod === "enterKey"
       ) {
-        logAmplitudeEvent("User selected suggestion and input", {
+        logAmplitudeEvent("Suggestion selected, input entered", {
           url: suggestion.url,
           input: input.getVal()
         });

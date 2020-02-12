@@ -91,7 +91,7 @@ const activeLinkStyle = color => ({
 const MenuElement = ({ label, href, slug, color, ...props }) => (
   <MenuElementWrapper {...props}>
     {href ? (
-      <a href={href} css={linkStyle} onClick={() => logAmplitudeEvent('Link to Developer Console clicked', {})} target="_blank" rel="noopener noreferrer">
+      <a href={href} css={linkStyle} onClick={() => logAmplitudeEvent('External link clicked', { href })} target="_blank" rel="noopener noreferrer">
         {label}
       </a>
     ) : (
@@ -100,7 +100,7 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
           partiallyActive
           css={linkStyle}
           activeStyle={activeLinkStyle(color)}
-          onClick={() => logAmplitudeEvent('Tab selected from top menu', {
+          onClick={() => logAmplitudeEvent('Top menu tab clicked', {
             slug
           })}
         >
