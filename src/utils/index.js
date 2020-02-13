@@ -1,4 +1,5 @@
 import amplitude from "amplitude-js";
+import { navigate } from "gatsby";
 
 export const setupAmplitude = () => {
   if (typeof window === "undefined") {
@@ -36,7 +37,8 @@ export const setupDocsearch = () => {
           input: input.getVal()
         });
 
-        window.location.href = suggestion.url;
+        // removes the hardcoded path from Algolia
+        navigate(suggestion.url.replace('https://developers.livechatinc.com/docs/', ''))
       }
     }
   });
