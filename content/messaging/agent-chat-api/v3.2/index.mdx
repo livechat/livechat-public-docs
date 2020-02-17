@@ -1188,9 +1188,9 @@ curl -X POST \
 | **Events**      | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                   |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                                                           |
+| **Customers**   | [`get_customer`](#get-customer) [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                           |
 | **Status**      | [`set_routing_status`](#set-routing-status)                                                                                                                                                                                                                                                                                                             |
-| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_agents_for_transfer`](#get-agents-for-transfer)                                                                                                                                                                               |
+| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_agents_for_transfer`](#get-agents-for-transfer)                                                                                                                                                                         |
 
 ## Chats
 
@@ -2796,6 +2796,119 @@ https://api.livechatinc.com/v3.2/agent/action/untag_chat_thread \
 </Section>
 
 ## Customers
+
+<Section>
+<Text>
+
+### Get Customer
+
+Returns the info about the Customer with a given `customer_id`.
+
+#### Specifics
+
+|                        |                                               |
+| ---------------------- | --------------------------------------------- |
+| **Action**             | `get_customer`                                |
+| **Required scopes**    | `customers:ro`                                |
+| **RTM API equivalent** | [`get_customer`](rtm-reference/#get-customer) |
+| **Push message**       | -                                             |
+
+#### Request
+
+| Parameter     | Required | Data type | Notes |
+| ------------- | -------- | --------- | ----- |
+| `customer_id` | Yes      | string    |       |
+
+#### Response
+
+| Parameter    | Data type | Notes                                                                                                                             |
+| ------------ | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | string    | [Customer's](#customer) ID.                                                                                                       |
+| `type`       | string    | `customer`                                                                                                                        |
+| `name`       | string    | Customer's name. Returned only if set.                                                                                            |
+| `email`      | string    | Customer's email. Returned only if set.                                                                                           |
+| `avatar`     | string    | Customer's avatar. Returned only if set.                                                                                          |
+| `created_at` | string    | Specifies when the customer's identity was created.                                                                               |
+| `fields`     | object    | Custom fields. Ephemeral. Returned only if set.                                                                                   |
+| `statistics` | object    | Counters for started threads, opened pages, etc.                                                                                  |
+| `last_visit` | object    | Geolocation and opened pages from the customer's most recent online visit. Returned only if the customer logged in at least once. |
+| `chat_ids`   | []string  | IDs of a customer's chats. Returned only if the customer had at least one chat.                                                   |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.2/agent/action/get_customer \
+-H 'Authorization: Bearer <your_access_token>' \
+-H 'Content-Type: application/json' \
+-d '{
+      "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+    }'
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "type": "customer",
+  "created_at": "2017-10-11T15:19:21.010200Z",
+  "name": "John Smith",
+  "email": "customer1@example.com",
+  "avatar": "example.com/avatars/1.jpg",
+  "fields": {
+    "custom field name": "custom field value"
+  },
+  "last_visit": {
+    "started_at": "2017-10-12T15:19:21.010200Z",
+    "referrer": "http://www.google.com/",
+    "ip": "194.181.146.130",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+    "geolocation": {
+      "latitude": "-14.6973803",
+      "longitude": "-75.1266898",
+      "country": "Poland",
+      "country_code": "PL",
+      "region": "Dolnoslaskie",
+      "city": "Wroclaw",
+      "timezone": "Europe/Warsaw"
+    },
+    "last_pages": [
+      {
+        "opened_at": "2017-10-12T15:19:21.010200Z",
+        "url": "https://www.livechatinc.com/",
+        "title": "LiveChat - Homepage"
+      },
+      {
+        "opened_at": "2017-10-12T15:19:21.010200Z",
+        "url": "https://www.livechatinc.com/tour",
+        "title": "LiveChat - Tour"
+      }
+    ]
+  },
+  "statistics": {
+    "chats_count": 3,
+    "threads_count": 9,
+    "visits_count": 5,
+    "page_views_count": 1337,
+    "greetings_shown_count": 69,
+    "greetings_accepted_count": 42
+  },
+  "__priv_lc2_customer_id": "S1525771305.dafea66e5c", // old, lc2 customer_id
+  "agent_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+  "customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+  "chat_ids": [
+      "PWJ8Y4THAV"
+  ]
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
 
 <Section>
 <Text>
