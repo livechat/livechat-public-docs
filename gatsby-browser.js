@@ -10,6 +10,5 @@ if (typeof window !== "undefined") {
     speedAsDuration: true,
     offset: 100
   });
+  setupAmplitude();
 }
-
-setupAmplitude();
