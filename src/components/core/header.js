@@ -6,6 +6,7 @@ import { LiveChatLogo, CategoryIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
 import { getVersionColor } from "../../utils";
 import { VersionContext } from "../../contexts/version";
+import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
   background: #293462;
@@ -90,20 +91,23 @@ const activeLinkStyle = color => ({
 const MenuElement = ({ label, href, slug, color, ...props }) => (
   <MenuElementWrapper {...props}>
     {href ? (
-      <a href={href} css={linkStyle} target="_blank" rel="noopener noreferrer">
+      <a href={href} css={linkStyle} onClick={() => logAmplitudeEvent('External link clicked', { href })} target="_blank" rel="noopener noreferrer">
         {label}
       </a>
     ) : (
-      <Link
-        to={`/${slug}/`}
-        partiallyActive
-        css={linkStyle}
-        activeStyle={activeLinkStyle(color)}
-      >
-        <CategoryIcon category={slug} style={iconStyle} />
-        {label}
-      </Link>
-    )}
+        <Link
+          to={`/${slug}/`}
+          partiallyActive
+          css={linkStyle}
+          activeStyle={activeLinkStyle(color)}
+          onClick={() => logAmplitudeEvent('Top menu tab clicked', {
+            slug
+          })}
+        >
+          <CategoryIcon category={slug} style={iconStyle} />
+          {label}
+        </Link>
+      )}
   </MenuElementWrapper>
 );
 

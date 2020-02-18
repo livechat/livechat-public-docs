@@ -10,6 +10,7 @@ import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
 import { WarningIcon } from "./icons";
 import { VersionContext } from "../../contexts/version";
+import { logAmplitudeEvent } from "../../utils/index";
 
 export const getVersionsByGroup = group =>
   group && VERSIONS_GROUPS[group]
@@ -83,7 +84,7 @@ const StyledDropdownList = styled(DropdownList)`
 const Warning = ({ selectedVersion, versionColor, versions }) => (
   <PopperTooltip
     isVisible={true}
-    placement={"bottom-center"}
+    placement={"bottom"}
     triggerActionType={"hover"}
     trigger={
       <span>
@@ -149,8 +150,8 @@ const Version = ({ articleVersions, redirectToVersion }) => {
           {version === versions.STABLE_VERSION
             ? `(stable)`
             : version === versions.LEGACY_VERSION
-            ? `(legacy)`
-            : `(dev preview)`}
+              ? `(legacy)`
+              : `(dev preview)`}
         </span>
       </>
     );
@@ -220,7 +221,10 @@ const Version = ({ articleVersions, redirectToVersion }) => {
               items={sortedArticleVersions.map((version, i) => ({
                 itemId: i,
                 content: formatVersion(version),
-                onItemSelect: () => onDropdownHandle(version),
+                onItemSelect: () => {
+                  logAmplitudeEvent('Version selected', { version: selectedVersion })
+                  return onDropdownHandle(version)
+                },
                 isSelected: version === selectedVersion
               }))}
             />
