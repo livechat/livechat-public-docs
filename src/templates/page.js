@@ -116,7 +116,6 @@ export default ({ data: { mdx, allMdx } }) => {
     if (hash) {
       const selector = document.querySelector(hash);
       if (selector) {
-        // console.log("here");
         selector.scrollIntoView();
         window.scrollBy(0, -140);
       }
