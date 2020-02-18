@@ -1,5 +1,10 @@
-import amplitude from "amplitude-js";
 import { navigate } from "gatsby";
+
+let amplitude;
+
+if (typeof window !== "undefined") {
+  amplitude = require("amplitude-js");
+}
 
 export const setupAmplitude = () => {
   if (typeof window === "undefined") {
@@ -27,7 +32,7 @@ export const setupDocsearch = () => {
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
-    handleSelected: function (input, event, suggestion, datasetNumber, context) {
+    handleSelected: function(input, event, suggestion, datasetNumber, context) {
       if (
         context.selectionMethod === "click" ||
         context.selectionMethod === "enterKey"
@@ -38,7 +43,9 @@ export const setupDocsearch = () => {
         });
 
         // removes the hardcoded path from Algolia
-        navigate(suggestion.url.replace('https://developers.livechatinc.com/docs/', ''))
+        navigate(
+          suggestion.url.replace("https://developers.livechatinc.com/docs/", "")
+        );
       }
     }
   });
