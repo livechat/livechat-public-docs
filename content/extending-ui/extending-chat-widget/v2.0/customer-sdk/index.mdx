@@ -93,8 +93,16 @@ as a "Web app (frontend, eg. JavaScript)" type. Then, you have to pass the confi
 ## Use the API
 
 Now run the `init` function with the configuration, replacing `LICENSE_NUMBER`
-with your LiveChat license number. The function will return the customerSDK
-instance:
+with your LiveChat license number.
+
+It also accepts some optional arguments:
+
+| shape       | type    | default |
+| ----------- | ------- | ------- |
+| autoConnect | boolean | true    |
+| group       | number  |         |
+
+The function will return the customerSDK instance:
 
 ```js
 const customerSDK = CustomerSDK.init({
@@ -243,6 +251,86 @@ You can read more about the Key Concepts of the LiveChat Messaging in the [Messa
 
 ## Methods
 
+### acceptGreeting
+
+You can use this method to inform that a Customer has seen a greeting. Based on that, the Reports section displays the greetings that were actually seen by Customers, not all the sent greetings. If a Customer started a chat from a greeting, but the Accept Method wasn't executed, the greeting is still counted as seen in Reports.
+
+As arguments to this method you should use `uniqueId` & `greetingId` received in [`incoming_greeting`](./events.md#incoming_greeting) or [`connected`](./events.md#connected) event.
+
+```js
+customerSDK
+  .acceptGreeting('Q10X0W041P', 7)
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments  | type   |
+| ---------- | ------ |
+| uniqueId   | string |
+| greetingId | number |
+
+#### Errors
+
+- `GREETING_NOT_FOUND` - given `uniqueId` could not be found on the server
+
+### activateChat
+
+Activates an archived chat.
+
+```js
+customerSDK
+  .activateChat('OU0V0P0OWT', {
+    events: [],
+  })
+  .then(chat => {
+    console.log(chat)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments                   | type    | description                                                                                                 |
+| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| chatId                      | string  |                                                                                                             |
+| data.continuous             | boolean | optional                                                                                                    |
+| data.chat.access            | Access  | optional                                                                                                    |
+| data.chat.properties        | object  | optional                                                                                                    |
+| data.chat.thread.events     | Event[] | optional, you can pass initial events here which are going to become part of the created thread immediately |
+| data.chat.thread.properties | object  | optional                                                                                                    |
+
+#### Errors
+
+- `CHAT_ALREADY_ACTIVE` - this chat is already active so you can't activate it again.
+- `GROUPS_OFFLINE` - a group in which the chat would have been started is offline. Can happen for licenses without continuous chats enabled.
+
+### cancelRate
+
+Cancels rate-related thread properties.
+
+```js
+customerSDK
+  .cancelRate('ON0X0R0L67', ['score', 'comment'])
+  .then(response => {
+    console.log(response)
+  })
+  .catch(() => {
+    console.log(error)
+  })
+```
+
+#### Errors
+
+- `MISSING_CHAT_THREAD` - This means that the chat that was supposed to have its rate canceled is empty and has no threads and because of that this cannot be done.
+
 ### closeThread
 
 ```js
@@ -268,6 +356,106 @@ Returned value:
 | ------- | ------- |
 | success | boolean |
 
+### connect
+
+Starts connecting to our servers. This is needed when:
+
+- `autoConnect: false` has been passed to the `init` method,
+- or when you get disconnected with a reason suspending reconnection attempts (such as `inactivity_timeout`)
+
+### deleteChatProperties
+
+Deletes given properties from a chat.
+
+```js
+customerSDK
+  .deleteChatProperties('ON0X0R0L67', {
+    property_namespace: ['sample'],
+  })
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments  | type   | description                                     |
+| ---------- | ------ | ----------------------------------------------- |
+| chat       | string | id of the chat you want to delete properties of |
+| properties | object | chat properties to delete                       |
+
+Returned value:
+
+| shape   | type    |
+| ------- | ------- |
+| success | boolean |
+
+### deleteChatThreadProperties
+
+Deletes given properties from a chat thread.
+
+```js
+customerSDK
+  .deleteChatThreadProperties('ON0X0R0L67', 'OS0C0W0Z1B', {
+    property_namespace: ['sample'],
+  })
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments  | type   | description                                       |
+| ---------- | ------ | ------------------------------------------------- |
+| chat       | string | id of the chat you want to delete properties of   |
+| thread     | string | id of the thread you want to delete properties of |
+| properties | object | properties to be deleted                          |
+
+Returned value:
+
+| shape   | type    |
+| ------- | ------- |
+| success | boolean |
+
+### deleteEventProperties
+
+Deletes given properties from an event.
+
+```js
+customerSDK
+  .deleteEventProperties('ON0X0R0L67', 'OS0C0W0Z1B', 'Q50W0A0P0Y', {
+    property_namespace: ['sample'],
+  })
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments  | type   | description                                       |
+| ---------- | ------ | ------------------------------------------------- |
+| chat       | string | id of the chat you want to delete properties of   |
+| thread     | string | id of the thread you want to delete properties of |
+| event      | string | id of the event you want to delete properties of  |
+| properties | object | properties to be deleted                          |
+
+Returned value:
+
+| shape   | type    |
+| ------- | ------- |
+| success | boolean |
+
 ### destroy
 
 This method clears any held resources, removes all listeners and
@@ -286,7 +474,7 @@ customerSDK.disconnect()
 
 ### getChatHistory
 
-This method facilitates loading more history events. You need to
+This method facilitates loading more history threads events. You need to
 get access to the `history` object for certain chat by calling this method. The
 returned `history` object has only one method, `next`, which gives you a promise
 of `{ done, value }` pair.
@@ -435,11 +623,99 @@ Returned value:
 |                |          | totalEvents | number |
 | totalThreads   | number   |             |        |
 
+### getCustomer
+
+Returns the info about the Customer requesting it.
+
+```js
+customerSDK
+  .getCustomer()
+  .then(customer => {
+    console.log(customer)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Returned value:
+
+| shape  | type       | description          |
+| ------ | ---------- | -------------------- |
+| type   | 'customer' |                      |
+| id     | string     |                      |
+| name   | string     | returned only if set |
+| email  | string     | returned only if set |
+| avatar | string     | returned only if set |
+| fields | object     | returned only if set |
+
+### getForm
+
+This method allows to fetch a form template for a given group and form type.
+
+```js
+customerSDK
+  .getForm(0, 'prechat')
+  .then(response => {
+    if (response.enabled) {
+      // prechat form is enabled for this group in the configurator
+      console.log(response.form)
+    }
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments | type                              |
+| --------- | --------------------------------- |
+| group     | number                            |
+| type      | 'prechat', 'postchat' or 'ticket' |
+
+Returned value:
+
+| shape   | type    | shape  | type     | description                                 |
+| ------- | ------- | ------ | -------- | ------------------------------------------- |
+| enabled | boolean |        |          |                                             |
+| form    | object  |        |          | available only when a given form is enabled |
+|         |         | id     | string   |                                             |
+|         |         | fields | object[] |                                             |
+
+### getGroupsStatus
+
+Returns availability statuses of the requested groups.
+
+```js
+customerSDK
+  .getGroupsStatus([3, 10])
+  .then(statusMap => {
+    console.log(`Status of the group 3: ${statusMap[3]}`)
+    console.log(`Status of the group 10: ${statusMap[10]}`)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments | type     |                                                          |
+| --------- | -------- | -------------------------------------------------------- |
+| groups    | number[] | optional, if omitted statuses of all groups are returned |
+
+Returned value:
+
+| shape     | type   | description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| statusMap | object | a map of group numbers to availability statuses |
+
 ### getPredictedAgent
 
 ```js
 customerSDK
-  .getPredictedAgent()
+  .getPredictedAgent(0)
   .then(agent => {
     console.log(agent)
   })
@@ -447,6 +723,63 @@ customerSDK
     console.log(error)
   })
 ```
+
+Arguments:
+
+| arguments | type   | description |
+| --------- | ------ | ----------- |
+| group     | number | optional    |
+
+#### Errors
+
+- `GROUP_OFFLINE` - the requested group is offline and predicted agent can't be returned for it.
+- `GROUP_UNAVAILABLE` - there are no available slots in the requested group, so a predicted agent can't be returned for it, but if you call `startChat` or `activateChat` appropriately you are most likely to end up in the queue.
+
+### getUrlDetails
+
+It returns the info on a given URL.
+
+```js
+customerSDK
+  .getUrlDetails('https://www.livechatinc.com')
+  .then(urlDetails => {
+    if (urlDetails.title) {
+      console.log(`The title of requested URL is: ${urlDetails.title}`)
+    }
+    if (urlDetails.description) {
+      console.log(
+        `The description of requested URL is: ${urlDetails.description}`,
+      )
+    }
+    if (urlDetails.image) {
+      console.log(
+        `The preview image of requested URL is available under: ${urlDetails.image.url}`,
+      )
+      console.log(`Its width is: ${urlDetails.image.width}`)
+      console.log(`Its height is: ${urlDetails.image.height}`)
+    }
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments | type   |
+| --------- | ------ |
+| url       | string |
+
+Returned value:
+
+| shape        | type   | description                         |
+| ------------ | ------ | ----------------------------------- |
+| url          | string |                                     |
+| title        | string | optional                            |
+| description  | string | optional                            |
+| image.url    | string | available only if image is returned |
+| image.width  | number | available only if image is returned |
+| image.height | number | available only if image is returned |
 
 ### off
 
@@ -459,6 +792,34 @@ This method subscribes to emitted events which are described [here](#events).
 ### once
 
 This method subscribes to emitted events which are described [here](#events) and unsubscribes immediately after the callback gets called.
+
+### markEventsAsSeen
+
+Marks events as seen by the current customer up to the given date.
+
+```js
+customerSDK
+  .markEventsAsSeen('ON0X0R0L67', '2017-10-12T15:19:21.010200Z')
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments | type   | description                                                                          |
+| --------- | ------ | ------------------------------------------------------------------------------------ |
+| chat      | string | id of the chat in which you want to mark events as seen                              |
+| seenUpTo  | string | RFC 3339 date-time format, you should use event's `createdAt` value as this argument |
+
+Returned value:
+
+| shape   | type    |
+| ------- | ------- |
+| success | boolean |
 
 ### rateChat
 
@@ -491,6 +852,35 @@ Returned value:
 | ----- | ------ | ------------------ |
 | id    | string | Created event's id |
 
+#### Errors
+
+- `MISSING_CHAT_THREAD` - the chat that was supposed to be rated is empty and has no threads and because of that it cannot be rated.
+
+### rejectGreeting
+
+Rejects a greeting (an invitation to the chat). For example, Customers could reject greetings by clicking close icon on the displayed greeting.
+
+```js
+customerSDK
+  .rejectGreeting('Q10X0W041P')
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments | type   | description |
+| --------- | ------ | ----------- |
+| uniqueId  | string |             |
+
+#### Errors
+
+- `GREETING_NOT_FOUND` - given `uniqueId` could not be found on the server
+
 ### sendEvent
 
 ```js
@@ -520,61 +910,6 @@ Arguments:
 | meta      |                    |         |                       | optional |
 |           | attachToLastThread | boolean | optional              |
 
-### sendFile
-
-This method is a little bit special - it returns regular `then`/`catch` methods
-of a Promise **and** a `cancel` method which you can use to abort the upload of
-the file. It also lets you pass `onProgress` callback function. Keep in mind
-that the maximum accepted file size is 10 MB.
-
-```js
-customerSDK
-  .sendFile(
-    'ON0X0R0L67',
-    {
-      file,
-      customId, // optional
-    },
-    {
-      onProgress: progress => console.log(`upload progress: ${progress}`),
-    },
-  )
-  .then(response => {
-    console.log(response.url)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Arguments:
-
-| arguments | shape      | type     | description                                                                   |
-| --------- | ---------- | -------- | ----------------------------------------------------------------------------- |
-| chat      |            | string   | Destination chat's id                                                         |
-| data      |            |          |                                                                               |
-|           | file       | Blob     |                                                                               |
-|           | customId   | string   | Optional customId for the event                                               |
-| spec      |            |          |                                                                               |
-|           | onProgress | function | This callback function will receive a progress value - number between 0 and 1 |
-
-Returned value:
-
-| shape | type   |
-| ----- | ------ |
-| url   | string |
-
-In React Native instead of passing a blob you need to pass an object of
-[such shape](https://github.com/facebook/react-native/blob/56fef9b6225ffc1ba87f784660eebe842866c57d/Libraries/Network/FormData.js#L34-L38):
-
-```js
-const file = {
-  uri: uriFromCameraRoll,
-  type: 'image/jpeg', // optional
-  name: 'photo.jpg', // optional
-}
-```
-
 ### sendPostback
 
 ```js
@@ -601,6 +936,72 @@ Arguments:
 | postback  |         |         |                                 |
 |           | id      | string  | Postback button's id            |
 |           | toggled | boolean | Postback toggled (default true) |
+
+### sendTicketForm
+
+Can be used to send a filled ticket form.
+
+```js
+customerSDK
+  .sendTicketForm(
+    {
+      type: 'filled_form',
+      formId: '',
+      fields: [
+        {
+          type: 'subject',
+          id: '0',
+          label: 'Subject:',
+          answer: 'Order number 123',
+        },
+        {
+          type: 'email',
+          id: '1',
+          label: 'Your email:',
+          answer: 'john.doe@example.com',
+        },
+        {
+          type: 'checkbox',
+          id: '2',
+          label: 'Question:',
+          answers: [
+            { id: '0', label: 'First answer' },
+            { id: '1', label: 'Second answer' },
+          ],
+        },
+        {
+          type: 'textarea',
+          id: '3',
+          label: 'Your message:',
+          answer:
+            'Could I get a status update on this order? Have you already shipped it?',
+        },
+      ],
+    },
+    10,
+  )
+  .then(response => {
+    console.log(`Created a ticket with ID: ${response.id}`)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments         | type              | description |
+| ----------------- | ----------------- | ----------- |
+| filledForm.type   | 'filled_form'     |             |
+| filledForm.formId | string            |             |
+| filledForm.fields | FilledFormField[] |             |
+| group             | number            | optional    |
+
+Returned value:
+
+| shape | type   | description              |
+| ----- | ------ | ------------------------ |
+| id    | string | id of the created ticket |
 
 ### setCustomerFields
 
@@ -659,6 +1060,11 @@ Arguments:
 |               | scope  |          |                    |
 |               | events | events[] |                    |
 
+#### Errors
+
+- `CHAT_LIMIT_REACHED` - the maximum limit of chats per customer has been reached and it's not possible to start a new one. You should activate one of the existing ones. By default the limit is 1.
+- `GROUPS_OFFLINE` - a group in which the chat would have been started is offline. Can happen for licenses that don't allow customers to chat during their unavailability.
+
 ### updateChatProperties
 
 ```js
@@ -679,10 +1085,10 @@ customerSDK
 
 Arguments:
 
-| arguments  | shape | type   | description |
-| ---------- | ----- | ------ | ----------- |
-| chat       |       | string |             |
-| properties |       |        |             |
+| arguments  | type   | description                                     |
+| ---------- | ------ | ----------------------------------------------- |
+| chat       | string | id of the chat you want to update properties of |
+| properties | object |
 
 ### updateChatThreadProperties
 
@@ -704,11 +1110,11 @@ customerSDK
 
 Arguments:
 
-| arguments  | shape | type   | description |
-| ---------- | ----- | ------ | ----------- |
-| chat       |       | string |             |
-| thread     |       | string |             |
-| properties |       |        |             |
+| arguments  | type   | description                                       |
+| ---------- | ------ | ------------------------------------------------- |
+| chat       | string | id of the chat you want to update properties of   |
+| thread     | string | id of the thread you want to update properties of |
+| properties | object |
 
 ### updateCustomer
 
@@ -750,11 +1156,18 @@ Arguments:
 |           | url   | string |             |
 |           | title | string |             |
 
-### updateLastSeenTimestamp
+### updateEventProperties
+
+Updates given properties on an event.
 
 ```js
+const properties = {
+  property_namespace: {
+    sample: 'property',
+  },
+}
 customerSDK
-  .updateLastSeenTimestamp('ON0X0R0L67', 1500646701447)
+  .updateEventProperties('ON0X0R0L67', 'OS0C0W0Z1B', 'Q50W0A0P0Y', properties)
   .then(response => {
     console.log(response)
   })
@@ -765,22 +1178,236 @@ customerSDK
 
 Arguments:
 
-| arguments | type   | description |
-| --------- | ------ | ----------- |
-| chat      | string |             |
-| timestamp | number | optional    |
+| arguments  | type   | description                                       |
+| ---------- | ------ | ------------------------------------------------- |
+| chat       | string | id of the chat you want to update properties of   |
+| thread     | string | id of the thread you want to update properties of |
+| event      | string | id of the event you want to update properties of  |
+| properties | object |                                                   |
+
+### uploadFile
+
+This method is a little bit special - it returns both a `promise` and a `cancel` which you can use to abort the upload of
+the file. It also lets you pass `onProgress` callback function. Keep in mind that the maximum accepted file size is 10 MB.
+
+```js
+const { promise, cancel } = customerSDK.uploadFile(
+  'ON0X0R0L67',
+  {
+    file,
+    customId, // optional
+  },
+  {
+    onProgress: progress => console.log(`upload progress: ${progress}`),
+  },
+)
+
+document.getElementById('cancel-upload').onclick = () => {
+  cancel()
+}
+
+promise
+  .then(response => {
+    console.log(response.url)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Arguments:
+
+| arguments | shape      | type     | description                                                                   |
+| --------- | ---------- | -------- | ----------------------------------------------------------------------------- |
+| chat      |            | string   | Destination chat's id                                                         |
+| data      |            |          |                                                                               |
+|           | file       | Blob     |                                                                               |
+|           | customId   | string   | Optional customId for the event                                               |
+| spec      |            |          |                                                                               |
+|           | onProgress | function | This callback function will receive a progress value - number between 0 and 1 |
 
 Returned value:
 
-| shape     | type   |
-| --------- | ------ |
-| timestamp | number |
+| shape | type   |
+| ----- | ------ |
+| url   | string |
+
+In React Native instead of passing a blob you need to pass an object of
+[such shape](https://github.com/facebook/react-native/blob/56fef9b6225ffc1ba87f784660eebe842866c57d/Libraries/Network/FormData.js#L34-L38):
+
+```js
+const file = {
+  uri: uriFromCameraRoll,
+  type: 'image/jpeg', // optional
+  name: 'photo.jpg', // optional
+}
+```
 
 ## Events
 
 You can listen for emitted events by subscribing to them (using
 [on method](#on)) with your custom JavaScript function. For example, your
 function can be executed every time a message has been received.
+
+### access_set
+
+Informs that new, single access to a resource was set. The existing access is overwritten.
+
+```js
+customerSDK.on('access_set', ({ resource, id, access }) => {
+  console.log(resource)
+  console.log(id)
+  console.log(access)
+})
+```
+
+Payload:
+
+| shape    | type   | description |
+| -------- | ------ | ----------- |
+| resource | string |             |
+| id       | string |             |
+| access   | object |             |
+
+### availability_updated
+
+```js
+customerSDK.on('availability_updated', ({ availability }) => {
+  console.log(availability)
+})
+```
+
+Payload:
+
+| shape        | type   | description           |
+| ------------ | ------ | --------------------- |
+| availability | string | 'online' or 'offline' |
+
+### chat_properties_deleted
+
+Informs about those chat properties that were deleted.
+
+```js
+customerSDK.on('chat_properties_deleted', ({ chat, properties }) => {
+  console.log(chat)
+  console.log(properties)
+})
+```
+
+Payload:
+
+| shape      | type   | description     |
+| ---------- | ------ | --------------- |
+| chat       | string | Chat's id       |
+| properties | object | Chat properties |
+
+### chat_properties_updated
+
+```js
+customerSDK.on('chat_properties_updated', payload => {
+  console.log(payload.chat)
+  console.log(payload.properties)
+})
+```
+
+Payload:
+
+| shape      | type   | description     |
+| ---------- | ------ | --------------- |
+| chat       | string | Chat's id       |
+| properties | object | Chat properties |
+
+### chat_thread_properties_deleted
+
+Informs about those chat thread properties that were deleted.
+
+```js
+customerSDK.on(
+  'chat_thread_properties_deleted',
+  ({ chat, thread, properties }) => {
+    console.log(chat)
+    console.log(thread)
+    console.log(properties)
+  },
+)
+```
+
+Payload:
+
+| shape      | type   | description            |
+| ---------- | ------ | ---------------------- |
+| chat       | string | Chat's id              |
+| thread     | string | Thread's id            |
+| properties | object | Chat thread properties |
+
+### chat_thread_properties_updated
+
+```js
+customerSDK.on('chat_thread_properties_updated', payload => {
+  console.log(payload.chat)
+  console.log(payload.thread)
+  console.log(payload.properties)
+})
+```
+
+Payload:
+
+| shape      | type   | description       |
+| ---------- | ------ | ----------------- |
+| chat       | string | Chat's id         |
+| thread     | string | Thread's id       |
+| properties | object | Thread properties |
+
+### chat_transferred
+
+Informs that a chat was transferred to a different group or to an agent.
+
+```js
+customerSDK.on('chat_transferred', payload => {
+  // TODO: trying to understand how this works
+})
+```
+
+Payload:
+
+| shape | type | description |
+| ----- | ---- | ----------- |
+| -     | -    | -           |
+
+### chat_user_added
+
+Informs that a user was added to a chat.
+
+```js
+customerSDK.on('chat_user_added', ({ user, chat, present }) => {
+  console.log({ user, chat, present })
+})
+```
+
+Payload:
+
+| shape   | type    | description |
+| ------- | ------- | ----------- |
+| user    | object  | User        |
+| chat    | string  | Chat's ID   |
+| present | boolean |             |
+
+### chat_user_removed
+
+Informs that a user was removed from a chat.
+
+```js
+customerSDK.on('chat_user_removed', ({ userId, chat }) => {
+  console.log({ userId, chat })
+})
+```
+
+Payload:
+
+| shape  | type   | description |
+| ------ | ------ | ----------- |
+| userId | string | User's ID   |
+| chat   | string | Chat's ID   |
 
 ### connected
 
@@ -822,6 +1449,30 @@ customerSDK.on('connection_lost', () => {
 
 This event doesn't carry any additional payload.
 
+### connection_recovered
+
+It informs that Customer SDK has recovered from "unstable" connection state. It's always preceeded by [`"connection_unstable"`](#connection_unstable) event.
+
+```js
+customerSDK.on('connection_recovered', () => {
+  console.log('connection_recovered')
+})
+```
+
+This event doesn't carry any additional payload.
+
+### connection_unstable
+
+It informs that Customer SDK has detected that connection quality is poor. It doesn't mean that it has disconnected from the server just yet.
+
+```js
+customerSDK.on('connection_unstable', () => {
+  console.log('connection_unstable')
+})
+```
+
+This event doesn't carry any additional payload.
+
 ### customer_id
 
 ```js
@@ -836,60 +1487,145 @@ Payload:
 | -------- | ------ |
 | id       | string |
 
+### customer_page_updated
+
+Informs that a Customer changed the website - moved to another page of the website, for example by clicking on a link.
+
+```js
+customerSDK.on('customer_page_updated', ({ url, title, timestamp }) => {
+  console.log(url)
+  console.log(title)
+  console.log(timestamp)
+})
+```
+
+Payload:
+
+| shape     | type   |                                                      |
+| --------- | ------ | ---------------------------------------------------- |
+| url       | string | URL on which the Customer currently is.              |
+| title     | string | Title of the website on which Customer currently is. |
+| timestamp | string | Timestamp of the latest change.                      |
+
+### customer_updated
+
+Informs that Customer's data was updated.
+
+```js
+customerSDK.on('customer_updated', payload => {
+  if (payload.name) {
+    console.log(`Name got updated to: ${payload.name}`)
+  }
+  if (payload.email) {
+    console.log(`Email got updated to: ${payload.email}`)
+  }
+  if (payload.avatar) {
+    console.log(`Avatar got updated to: ${payload.avatar}`)
+  }
+  if (payload.fields) {
+    console.log(`Fields got updated:`)
+    console.log(payload.fields)
+  }
+})
+```
+
+Payload:
+
+| shape  | type   |                                                            |
+| ------ | ------ | ---------------------------------------------------------- |
+| name   | string | Updated name of the customer, available only if updated.   |
+| email  | string | Updated email of the customer, available only if updated.  |
+| avatar | string | Updated avatar of the customer, available only if updated. |
+| fields | string | Updated fields of the customer, available only if updated. |
+
 ### disconnected
 
 ```js
-customerSDK.on('disconnected', reason => {
+customerSDK.on('disconnected', ({ reason }) => {
   console.log(reason)
 })
 ```
 
 Payload:
 
-| argument | type   | description |
-| -------- | ------ | ----------- |
-| reason   | string | Optional    |
+| shape  | type   | description                                           |
+| ------ | ------ | ----------------------------------------------------- |
+| reason | string | [./errors.md#disconnection-reasons](Possible reasons) |
 
-### chat_properties_updated
+### event_properties_deleted
+
+Informs about those event properties that were deleted.
 
 ```js
-customerSDK.on('chat_properties_updated', payload => {
-  console.log(payload.chat)
-  console.log(payload.properties)
+customerSDK.on(
+  'event_properties_deleted',
+  ({ chat, thread, event, properties }) => {
+    console.log(chat)
+    console.log(thread)
+    console.log(event)
+    console.log(properties)
+  },
+)
+```
+
+Payload:
+
+| shape      | type   | description      |
+| ---------- | ------ | ---------------- |
+| chat       | string | Chat's id        |
+| thread     | string | Thread's id      |
+| event      | string | Event's id       |
+| properties | object | Event properties |
+
+### event_properties_updated
+
+Informs about those event properties that were updated.
+
+```js
+customerSDK.on(
+  'event_properties_updated',
+  ({ chat, thread, event, properties }) => {
+    console.log(chat)
+    console.log(thread)
+    console.log(event)
+    console.log(properties)
+  },
+)
+```
+
+Payload:
+
+| shape      | type   | description      |
+| ---------- | ------ | ---------------- |
+| chat       | string | Chat's id        |
+| thread     | string | Thread's id      |
+| event      | string | Event's id       |
+| properties | object | Event properties |
+
+### event_updated
+
+Informs that an event was updated.
+
+```js
+customerSDK.on('event_updated', ({ chat, thread, event }) => {
+  console.log(chat)
+  console.log(thread)
+  console.log(event)
 })
 ```
 
 Payload:
 
-| shape      | type   | description     |
-| ---------- | ------ | --------------- |
-| chat       | string | Chat's id       |
-| properties | object | Chat properties |
+| shape  | type   | description         |
+| ------ | ------ | ------------------- |
+| chat   | string | Chat's id           |
+| thread | string | Thread's id         |
+| event  | object | Whole updated event |
 
-### chat_thread_properties_updated
-
-```js
-customerSDK.on('chat_thread_properties_updated', payload => {
-  console.log(payload.chat)
-  console.log(payload.thread)
-  console.log(payload.properties)
-})
-```
-
-Payload:
-
-| shape      | type   | description       |
-| ---------- | ------ | ----------------- |
-| chat       | string | Chat's id         |
-| thread     | string | Thread's id       |
-| properties | object | Thread properties |
-
-### incoming_chat_thread
-
-### last_seen_timestamp_updated
+### events_marked_as_seen
 
 ```js
-customerSDK.on('last_seen_timestamp_updated', payload => {
+customerSDK.on('events_marked_as_seen', payload => {
   console.log(payload.chat)
   console.log(payload.user)
   console.log(payload.timestamp)
@@ -903,6 +1639,26 @@ Payload:
 | chat      | string | Chat's id   |
 | user      | string | User's id   |
 | timestamp | number |             |
+
+### incoming_chat_thread
+
+Informs about a new thread coming in the chat. The push payload contains not only the new thread, but the whole chat data structure. If the chat was started with some initial events, the thread object contains them.
+
+```js
+customerSDK.on('incoming_chat_thread', payload => {
+  console.log(payload.chat)
+})
+```
+
+Payload:
+
+| shape           | type     | description                          |
+| --------------- | -------- | ------------------------------------ |
+| chat.id         | string   | Chat's id                            |
+| chat.access     | object   | Chat's initial access                |
+| chat.users      | object[] | Users objects referenced in the chat |
+| chat.properties | object   | Chat properties                      |
+| chat.thread     | object   | Thread                               |
 
 ### incoming_event
 
@@ -927,54 +1683,53 @@ Payload:
 | type  | string | Event's type     |
 | ...   |        | Other properties |
 
-### user_data
+### incoming_greeting
+
+Informs about an incoming greeting.
 
 ```js
-customerSDK.on('user_data', user => {
-  console.log(user)
-})
-```
-
-User:
-
-| shape | type | description |
-| ----- | ---- | ----------- |
-|       |      |             |
-
-### chat_user_added
-
-Informs that a user was added to a chat.
-
-```js
-customerSDK.on('chat_user_added', ({ user, chat, present }) => {
-  console.log({ user, chat, present })
+customerSDK.on('incoming_greeting', payload => {
+  console.log(
+    `Received a greeting with "${payload.text}" text content from ${payload.agent.name} agent.`,
+  )
 })
 ```
 
 Payload:
 
-| shape   | type    | description |
-| ------- | ------- | ----------- |
-| user    | object  | User        |
-| chat    | string  | Chat's ID   |
-| present | boolean |             |
+| shape              | type    | description                                                         |
+| ------------------ | ------- | ------------------------------------------------------------------- |
+| id                 | number  | Greeting's id                                                       |
+| text               | string  | Greeting's text content                                             |
+| uniqueId           | string  | Greeting's unique ID                                                |
+| displayedFirstTime | boolean | Boolean indicator if the greeting was generated for the first time. |
+| accepted           | boolean | Chat properties                                                     |
+| agent              | object  | User                                                                |
 
-### chat_user_removed
+### incoming_rich_message_postback
 
-Informs that a user was removed from a chat.
+Informs about an incoming greeting.
 
 ```js
-customerSDK.on('chat_user_removed', ({ userId, chat }) => {
-  console.log({ userId, chat })
+customerSDK.on('incoming_rich_message_postback', payload => {
+  console.log(payload.user)
+  console.log(payload.chat)
+  console.log(payload.thread)
+  console.log(payload.event)
+  console.log(payload.postback)
 })
 ```
 
 Payload:
 
-| shape  | type   | description |
-| ------ | ------ | ----------- |
-| userId | string | User's ID   |
-| chat   | string | Chat's ID   |
+| shape            | type    | description                                          |
+| ---------------- | ------- | ---------------------------------------------------- |
+| user             | number  | User who has sent a rich message postback            |
+| chat             | string  | id of the chat in which the postback has been sent   |
+| thread           | string  | id of the thread in which the postback has been sent |
+| event            | boolean | id of the event for which the postback has been sent |
+| postback.id      | boolean | id of the sent postback                              |
+| postback.toggled | boolean | boolean indicating if the postback has been toggled  |
 
 ### incoming_typing_indicator
 
@@ -1016,19 +1771,133 @@ Payload:
 | ----- | ------ | ----------- |
 | chat  | string | Chat's id   |
 
-### availability_updated
+### user_data
 
 ```js
-customerSDK.on('availability_updated', ({ availability }) => {
-  console.log(availability)
+customerSDK.on('user_data', user => {
+  console.log(user)
 })
 ```
 
-Payload:
+User:
 
-| shape        | type   | description           |
-| ------------ | ------ | --------------------- |
-| availability | string | 'online' or 'offline' |
+| shape | type | description |
+| ----- | ---- | ----------- |
+|       |      |             |
+
+## Disconnection reasons and errors
+
+### Disconnection reasons
+
+Most of the disconnection reasons can be treated as errors, that's why they are described in more details in this section.
+
+```js
+customerSDK.on('disconnected', ({ reason }) => {
+  switch (reason) {
+    case 'access_token_expired':
+      // handle particular disconnection reasons
+      break
+    // ...
+    default:
+  }
+})
+```
+
+#### access_token_expired
+
+Access token lifetime has elapsed. Customer SDK will fetch a new token and reconnect to the server on its own. This is emitted to the user for informational purposes, so, for example, a reconnection bar can be displayed.
+
+#### customer_banned
+
+Customer has been banned.
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+#### customer_temporarily_blocked
+
+Customer tried reconnecting too many times after the `"too_many_connections"` error had occurred.
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+#### identity_mismatch
+
+The identity of the customer has changed between reconnects. This might happen if cookies can't be persisted in the browser.
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+#### inactivity_timeout
+
+Customer didn't chat or change the page in the past 30 minutes. Customer SDK **won't** try to reconnect on its own after receiving this. You should implement a reconnect login on your own, preferably you should only try to connect again when you detect a clear intention of chatting from your user.
+
+#### internal_error
+
+Internal error. Customer SDK will try to reconnect on its own.
+
+#### license_not_found
+
+The license with the specified ID doesn't exist. You should check the options passed to the Customer SDK and make sure that the license parameter is correct.
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+#### misdirected_connection
+
+You have connected to a server in the wrong region. Customer SDK will reconnect to the correct region on its own, but to avoid this problem altogether you should provide correct `region` parameter when initializing the SDK. This is emitted to the user for informational purposes, so, for example, a reconnection bar can be displayed.
+
+#### too_many_connections
+
+Customer has reached the maximum number of connections. This normally shouldn't happen if you don't open too many concurrent connections being the same customer.
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+#### too_many_unauthorized_connections
+
+The maximum number of unauthorized connections has been reached. This error can only be received immediately after you try to connect to our servers when there are too many pending (unauthorized) connections. Once you get authorized, you stay that way and Customer SDK will try to reconnect on its own.
+
+#### unsupported_version
+
+Connecting to an unsupported version of the Customer Chat API. You should upgrade your Customer SDK version.
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+#### users_limit_reached
+
+The maximum number of concurrently connected customers has been reached. This can only be received immediately after we try to connect to our servers because once you get authorized, you stay that way. The limit is different for each plan and you can check what it is on our [pricing page](https://www.livechatinc.com/pricing/).
+
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
+
+### Errors
+
+This is the list of common error codes, you can receive them for all available methods which perform API calls. This means that those can happen for methods returning promises and because we wrap API calls with promise interface, those are available on thrown Error objects under the `code` property and can be caught using regular promise `catch` method.
+
+There are also some per-method error codes which are not described below, but rather they are mentioned under particular methods which can fail with them.
+
+#### CONNECTION_LOST
+
+All in-flight requests fail with this one when when the network connection gets lost.
+
+#### CUSTOMER_BANNED
+
+Customer has been banned.
+
+#### GROUP_NOT_FOUND
+
+Can be received in response to any request which accepts a group somewhere in its payload.
+
+#### INTERNAL
+
+Internal error.
+
+#### PENDING_REQUESTS_LIMIT_REACHED
+
+This is rate-limiting error, you have sent out too many requests in a quick succession which had not yet a chance to resolve.
+
+#### REQUEST_TIMEOUT
+
+The request has timed out.
+
+#### VALIDATION
+
+Wrong format of request, for example a string sent in the place of a number.
 
 # Changelog
 
