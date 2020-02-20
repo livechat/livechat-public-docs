@@ -458,9 +458,8 @@ Returned value:
 
 ### destroy
 
-This method clears any held resources, removes all listeners and
-disconnects from the network. After using this method you won't be able to use
-the destroyed SDK's instance.
+This method clears any held resources, removes all listeners and disconnects from the network.
+After using this method you won't be able to use the destroyed SDK's instance.
 
 ```js
 customerSDK.destroy()
@@ -474,21 +473,18 @@ customerSDK.disconnect()
 
 ### getChatHistory
 
-This method facilitates loading more history threads events. You need to
-get access to the `history` object for certain chat by calling this method. The
-returned `history` object has only one method, `next`, which gives you a promise
-of `{ done, value }` pair.
+This method facilitates loading more historical threads' events.
+You need to get access to the `history` object for a certain chat by calling this method.
+The returned `history` object has only one method, `next`, which gives you a `Promise` with a `{ done, value }` object.
 
 - `done` - indicates if there is anything more to load
-- `value` - it's an array of loaded events
+- `value` - an array of threads, each containing an array of its events
 
-You can keep calling `history.next()` multiple times to load more and more
-history events (useful for infinite scroll feature). Keep in mind, though,
-that you generally shouldn't call `next` while the history is being loaded - we
-queue those requests so the previous one must resolve before we proceed with the
-next one.
+You can keep calling `history.next()` multiple times to load previous history events, which are going to be grouped into threads and might require merging with already loaded events.
+This is useful for implementing an infinite scroll or otherwise showing archival chat's to your customer.
+Keep in mind, though, that you generally shouldn't call `next` while the history is being loaded - we queue those requests so the previous one must resolve before we proceed with the next one.
 
-Such structure like our `history` object is called an **async iterator**.
+Such a structure like our `history` object is called an **async iterator**.
 
 ```js
 let wholeChatHistoryLoaded = false
@@ -500,7 +496,11 @@ history.next().then(result => {
     wholeChatHistoryLoaded = true
   }
 
-  const events = result.value
+  const threads = result.value
+  const events = threads
+    .map(thread => thread.events || [])
+    .reduce((acc, current) => acc.concat(current), [])
+
   console.log(events)
 })
 ```
@@ -586,8 +586,8 @@ Returned value:
 
 ### getChatThreadsSummary
 
-In most cases you do not need to use this method directly. If you want to load
-more events, consider using [`getChatHistory`](#getchathistory).
+Returns a summary of your chat threads, including the total count of threads, a list of id's and number of events in each thread.
+In most cases you will not need to use this method directly, instead consider using [`getChatHistory`](#getchathistory).
 
 ```js
 customerSDK
@@ -676,12 +676,12 @@ Arguments:
 
 Returned value:
 
-| shape   | type    | shape  | type     | description                                 |
-| ------- | ------- | ------ | -------- | ------------------------------------------- |
-| enabled | boolean |        |          |                                             |
-| form    | object  |        |          | available only when a given form is enabled |
-|         |         | id     | string   |                                             |
-|         |         | fields | object[] |                                             |
+| shape       | type     | description                                 |
+| ----------- | -------- | ------------------------------------------- |
+| enabled     | boolean  |                                             |
+| form        | object   | available only when a given form is enabled |
+| form.id     | string   |                                             |
+| form.fields | object[] |                                             |
 
 ### getGroupsStatus
 
@@ -823,14 +823,16 @@ Returned value:
 
 ### rateChat
 
+Sends a chat rating and comment for the most recent chat thread.
+
 ```js
 customerSDK
   .rateChat('ON0X0R0L67', {
-    value: 'good',
+    score: 1,
     comment: 'Agent helped me a lot!',
   })
-  .then(rating => {
-    console.log(rating)
+  .then(() => {
+    console.log('Rating has been set')
   })
   .catch(error => {
     console.log(error)
@@ -839,18 +841,18 @@ customerSDK
 
 Arguments:
 
-| arguments | shape   | type   | description           |
-| --------- | ------- | ------ | --------------------- |
-| chat      |         |        | Destination chat's id |
-| rating    |         |        |                       |
-|           | score   | 0 or 1 | Rating value          |
-|           | comment | string | Optional comment      |
+| arguments      | type   | description                                               |
+| -------------- | ------ | --------------------------------------------------------- |
+| chat           |        | Destination chat's id                                     |
+| rating         |        |                                                           |
+| rating.score   | 0 or 1 | Rating value - 0 for a bad rating and 1 for a good rating |
+| rating.comment | string | Optional comment                                          |
 
 Returned value:
 
-| shape | type   |                    |
-| ----- | ------ | ------------------ |
-| id    | string | Created event's id |
+| type    | description                                     |
+| ------- | ----------------------------------------------- |
+| Promise | Promise resolving with a constant success value |
 
 #### Errors
 
@@ -901,14 +903,13 @@ customerSDK
 
 Arguments:
 
-| arguments | shape              | type    | description           |
-| --------- | ------------------ | ------- | --------------------- |
-| chat      |                    | string  | Destination chat's id |
-| event     |                    |         |                       |
-|           | type               | string  | Type of the event     |
-|           | ...                |         | Other properties      |
-| meta      |                    |         |                       | optional |
-|           | attachToLastThread | boolean | optional              |
+| arguments               | type    | description           |
+| ----------------------- | ------- | --------------------- |
+| chat                    | string  | Destination chat's id |
+| event                   |         |                       |
+| event.type              | string  | Type of the event     |
+| meta                    |         | optional              |
+| meta.attachToLastThread | boolean | optional              |
 
 ### sendPostback
 
@@ -928,14 +929,14 @@ customerSDK
 
 Arguments:
 
-| arguments | shape   | type    | description                     |
-| --------- | ------- | ------- | ------------------------------- |
-| chat      |         | string  | Postback chat's id              |
-| thread    |         | string  | Postback thread's id            |
-| event     |         | string  | Postback event's id             |
-| postback  |         |         |                                 |
-|           | id      | string  | Postback button's id            |
-|           | toggled | boolean | Postback toggled (default true) |
+| arguments        | type    | description                     |
+| ---------------- | ------- | ------------------------------- |
+| chat             | string  | Postback chat's id              |
+| thread           | string  | Postback thread's id            |
+| event            | string  | Postback event's id             |
+| postback         |         |                                 |
+| postback.id      | string  | Postback button's id            |
+| postback.toggled | boolean | Postback toggled (default true) |
 
 ### sendTicketForm
 
@@ -1005,7 +1006,8 @@ Returned value:
 
 ### setCustomerFields
 
-This method doesn't return a promise. It sends the request if the SDK is connected or queues the update to be performed once the connection gets established.
+This method doesn't return a promise.
+It sends the request if the SDK is connected or queues the update to be performed once the connection gets established.
 
 ```js
 customerSDK.setCustomerFields({
@@ -1022,9 +1024,9 @@ Arguments:
 
 ### setSneakPeek
 
-This method doesn't return a promise. It just sets the internal sneak peek
-value. It will be sent to the server only if the target chat is active and only
-once per 2 seconds (it's [throttled](https://lodash.com/docs/4.17.4#throttle)).
+This method doesn't return a promise.
+It can be used to update the [sneak peek](https://www.livechatinc.com/blog/customer-message-sneak-peak/) in the agent application.
+It will be sent to the server only if the target chat is active and only once per 2 seconds (it's [throttled](https://lodash.com/docs/4.17.4#throttle)).
 
 ```js
 customerSDK.setSneakPeek('ON0X0R0L67', 'what is the price for your ')
@@ -1054,11 +1056,11 @@ customerSDK
 
 Arguments:
 
-| arguments     | shape  | type     | description        |
-| ------------- | ------ | -------- | ------------------ |
-| specification |        |          | For advanced usage |
-|               | scope  |          |                    |
-|               | events | events[] |                    |
+| arguments            | type     | description        |
+| -------------------- | -------- | ------------------ |
+| specification        |          | For advanced usage |
+| specification.scope  |          |                    |
+| specification.events | events[] |                    |
 
 #### Errors
 
@@ -1132,12 +1134,12 @@ customerSDK.updateCustomer(properties)
 
 Arguments:
 
-| arguments  | shape  | type   | description                              |
-| ---------- | ------ | ------ | ---------------------------------------- |
-| properties |        |        |                                          |
-|            | name   | string | Optional name                            |
-|            | email  | string | Optional email                           |
-|            | fields | object | Optionl custom fields with string values |
+| arguments         | type   | description                               |
+| ----------------- | ------ | ----------------------------------------- |
+| properties        |        |                                           |
+| properties.name   | string | Optional name                             |
+| properties.email  | string | Optional email                            |
+| properties.fields | object | Optional custom fields with string values |
 
 ### updateCustomerPage
 
@@ -1150,11 +1152,11 @@ customerSDK.updateCustomerPage({
 
 Arguments:
 
-| arguments | shape | type   | description |
-| --------- | ----- | ------ | ----------- |
-| page      |       |        |             |
-|           | url   | string |             |
-|           | title | string |             |
+| arguments  | type   | description |
+| ---------- | ------ | ----------- |
+| page       |        |             |
+| page.url   | string |             |
+| page.title | string |             |
 
 ### updateEventProperties
 
@@ -1187,8 +1189,8 @@ Arguments:
 
 ### uploadFile
 
-This method is a little bit special - it returns both a `promise` and a `cancel` which you can use to abort the upload of
-the file. It also lets you pass `onProgress` callback function. Keep in mind that the maximum accepted file size is 10 MB.
+This method returns both a `promise` and a `cancel`. You can use `cancel` to abort the upload of the file.
+It also lets you pass `onProgress` callback function. Keep in mind that the maximum accepted file size is 10 MB.
 
 ```js
 const { promise, cancel } = customerSDK.uploadFile(
@@ -1217,14 +1219,14 @@ promise
 
 Arguments:
 
-| arguments | shape      | type     | description                                                                   |
-| --------- | ---------- | -------- | ----------------------------------------------------------------------------- |
-| chat      |            | string   | Destination chat's id                                                         |
-| data      |            |          |                                                                               |
-|           | file       | Blob     |                                                                               |
-|           | customId   | string   | Optional customId for the event                                               |
-| spec      |            |          |                                                                               |
-|           | onProgress | function | This callback function will receive a progress value - number between 0 and 1 |
+| arguments       | type     | description                                                                   |
+| --------------- | -------- | ----------------------------------------------------------------------------- |
+| chat            | string   | Destination chat's id                                                         |
+| data            |          |                                                                               |
+| data.file       | Blob     |                                                                               |
+| data.customId   | string   | Optional customId for the event                                               |
+| spec            |          |                                                                               |
+| spec.onProgress | function | This callback function will receive a progress value - number between 0 and 1 |
 
 Returned value:
 
@@ -1245,9 +1247,8 @@ const file = {
 
 ## Events
 
-You can listen for emitted events by subscribing to them (using
-[on method](#on)) with your custom JavaScript function. For example, your
-function can be executed every time a message has been received.
+You can listen for emitted events by subscribing to them (using the [on method](#on)) with your custom JavaScript function.
+For example, your function can be executed every time a message has been received.
 
 ### access_set
 
@@ -1370,9 +1371,13 @@ customerSDK.on('chat_transferred', payload => {
 
 Payload:
 
-| shape | type | description |
-| ----- | ---- | ----------- |
-| -     | -    | -           |
+| shape       | type               | description |
+| ----------- | ------------------ | ----------- |
+| chatId      | string             |             |
+| threadId    | string             |             |
+| requesterId | string             |             |
+| type        | 'agent' \| 'group' |             |
+| ids         | string[]           |             |
 
 ### chat_user_added
 
@@ -1662,7 +1667,8 @@ Payload:
 
 ### incoming_event
 
-Informs about an incoming event sent to a chat. You should distinguish received events by their types.
+Informs about an incoming event sent to a chat.
+You should distinguish received events by their types.
 
 ```js
 customerSDK.on('incoming_event', ({ chat, event }) => {
@@ -1733,7 +1739,9 @@ Payload:
 
 ### incoming_typing_indicator
 
-Informs that one of the chat users is currently typing a message. The message hasn't been sent yet. The push payload contains the typing indicator object.
+Informs that one of the chat users is currently typing a message.
+The message hasn't been sent yet.
+The push payload contains the typing indicator object.
 
 ```js
 customerSDK.on('incoming_typing_indicator', payload => {
@@ -1779,11 +1787,26 @@ customerSDK.on('user_data', user => {
 })
 ```
 
-User:
+Customer user:
 
-| shape | type | description |
-| ----- | ---- | ----------- |
-|       |      |             |
+| shape  | type           | description |
+| ------ | -------------- | ----------- |
+| type   | 'customer'     |             |
+| id     | string         |             |
+| name   | string         | optional    |
+| email  | string         | optional    |
+| avatar | string         | optional    |
+| fields | CustomerFields |             |
+
+Agent user:
+
+| shape    | type    | description |
+| -------- | ------- | ----------- |
+| type     | 'agent' |             |
+| id       | string  |             |
+| name     | string  |             |
+| avatar   | string  |             |
+| jobTitle | string  |             |
 
 ## Disconnection reasons and errors
 
