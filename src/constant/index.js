@@ -11,3 +11,5 @@ export const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["1.0", "2.0"]
   }
 };
+
+export const SCROLL_OFFSET = 130;
