@@ -86,25 +86,25 @@ If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://codesandbox.io/s/rm3prxw88n).
 
 <div class="callout type-warning">For the time being you need to register your application in the <a href="https://developers.livechatinc.com/console" target="_blank">Developers Console</a>
-as a "Web app (frontend, eg. JavaScript)" type. Then, you have to pass the configured <code>redirectUri</code> to the <code>init</code>, along with the regular required properties (<code>license</code> and <code>clientId</code>).</div>
+as a "Web app (frontend, eg. JavaScript)" type. Then, you have to pass the configured <code>redirectUri</code> to the <code>init</code>, along with the regular required properties (<code>licenseId</code> and <code>clientId</code>).</div>
 
 ## Use the API
 
-Now run the `init` function with the configuration, replacing `LICENSE_NUMBER`
-with your LiveChat license number.
+Now run the `init` function with the configuration, replacing `LICENSE_ID`
+with your LiveChat license ID.
 
-It also accepts some optional arguments:
+It also accepts some optional parameters:
 
-| shape       | type    | default |
+| parameters  | type    | default |
 | ----------- | ------- | ------- |
 | autoConnect | boolean | true    |
-| group       | number  |         |
+| groupId     | number  |         |
 
 The function will return the Customer SDK instance:
 
 ```js
 const customerSDK = CustomerSDK.init({
-  license: LICENSE_NUMBER,
+  licenseId: LICENSE_ID,
   clientId: CLIENT_ID,
 })
 ```
@@ -151,7 +151,7 @@ import { init } from '@livechat/customer-sdk'
 export default class App extends React.Component {
   componentDidMount() {
     const customerSDK = init({
-      license: LICENSE_NUMBER,
+      licenseId: LICENSE_ID,
       clientId: CLIENT_ID,
       redirectUri: REDIRECT_URI,
     })
@@ -271,7 +271,10 @@ As arguments to this method you should use `uniqueId` & `greetingId` received in
 
 ```js
 customerSDK
-  .acceptGreeting('Q10X0W041P', 7)
+  .acceptGreeting({
+    greetingId: 7,
+    uniqueId: 'Q10X0W041P',
+  })
   .then(response => {
     console.log(response)
   })
@@ -284,8 +287,8 @@ Parameters:
 
 | parameters | type   |
 | ---------- | ------ |
-| uniqueId   | string |
 | greetingId | number |
+| uniqueId   | string |
 
 ### Errors
 
@@ -297,8 +300,13 @@ Activates an archived chat.
 
 ```js
 customerSDK
-  .activateChat('OU0V0P0OWT', {
-    events: [],
+  .activateChat({
+    chat: {
+      id: 'OU0V0P0OWT',
+      thread: {
+        events: [],
+      },
+    },
   })
   .then(chat => {
     console.log(chat)
@@ -312,8 +320,8 @@ Parameters:
 
 | parameters                  | type    | description                                                                                                 |
 | --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| chatId                      | string  |                                                                                                             |
 | data.continuous             | boolean | optional                                                                                                    |
+| data.chat.id                | string  |                                                                                                             |
 | data.chat.access            | Access  | optional                                                                                                    |
 | data.chat.properties        | object  | optional                                                                                                    |
 | data.chat.thread.events     | Event[] | optional, you can pass initial events here which are going to become part of the created thread immediately |
@@ -323,6 +331,33 @@ Parameters:
 
 - `CHAT_ALREADY_ACTIVE` - this chat is already active, and you can't activate it again.
 - `GROUPS_OFFLINE` - a group in the targeted chat is offline. It can happen for licenses without continuous chats enabled.
+
+## cancelGreeting
+
+Cancels a greeting (an invitation to the chat). For example, Customers could cancel greetings by clicking close icon on the displayed greeting.
+
+```js
+customerSDK
+  .cancelGreeting({
+    uniqueId: 'Q10X0W041P',
+  })
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type   |
+| ---------- | ------ |
+| uniqueId   | string |
+
+### Errors
+
+- `GREETING_NOT_FOUND` - given `uniqueId` could not be found on the server
 
 ## cancelRate
 
@@ -873,31 +908,6 @@ Returned value:
 
 - `MISSING_CHAT_THREAD` - the targeted chat cannot be rated because it has no threads.
 
-## rejectGreeting
-
-Rejects a greeting (an invitation to the chat). For example, Customers could reject greetings by clicking the close icon on the displayed greeting.
-
-```js
-customerSDK
-  .rejectGreeting('Q10X0W041P')
-  .then(response => {
-    console.log(response)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type   |
-| ---------- | ------ |
-| uniqueId   | string |
-
-### Errors
-
-- `GREETING_NOT_FOUND` - given `uniqueId` could not be found on the server
-
 ## sendEvent
 
 Sends an provided object as a event with specified type.
@@ -1044,18 +1054,21 @@ Parameters:
 
 Doesn't return a promise.
 You can use it to update the [sneak peek](https://www.livechatinc.com/blog/customer-message-sneak-peak/) in the agent application.
-It is sent to the server only if the target chat is active and only once per 2 seconds (it's [throttled](https://lodash.com/docs/4.17.4#throttle)).
+It is sent to the server only if the target chat is active.
 
 ```js
-customerSDK.setSneakPeek('ON0X0R0L67', 'what is the price for your ')
+customerSDK.setSneakPeek({
+  chatId: 'ON0X0R0L67',
+  sneakPeekText: 'what is the price for your ',
+})
 ```
 
 Parameters:
 
-| parameters | type   | description                              |
-| ---------- | ------ | ---------------------------------------- |
-| chat       | string | destination chat id                      |
-| text       | string | message preview broadcasted to the agent |
+| parameters    | type   | description                              |
+| ------------- | ------ | ---------------------------------------- |
+| chatId        | string | destination chat id                      |
+| sneakPeekText | string | message preview broadcasted to the agent |
 
 ## startChat
 
@@ -1065,7 +1078,11 @@ In order to activate previously started chat use [`activateChat`](#activateChat)
 ```js
 customerSDK
   .startChat({
-    events: [],
+    chat: {
+      thread: {
+        events: [],
+      },
+    },
   })
   .then(chat => {
     console.log(chat)
