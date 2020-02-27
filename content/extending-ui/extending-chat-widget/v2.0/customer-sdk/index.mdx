@@ -122,9 +122,12 @@ or execute [methods](#methods):
 ```js
 const chatId = 'OU0V0P0OWT'
 customerSDK
-  .sendEvent(chatId, {
-    type: 'message',
-    text: 'Hi!',
+  .sendEvent({
+    chatId,
+    event: {
+      type: 'message',
+      text: 'Hi!',
+    },
   })
   .then(response => {
     console.log(response)
@@ -365,7 +368,10 @@ Cancels rate-related thread properties.
 
 ```js
 customerSDK
-  .cancelRate('ON0X0R0L67', ['score', 'comment'])
+  .cancelRate({
+    chatId: 'ON0X0R0L67',
+    properties: ['score', 'comment'],
+  })
   .then(response => {
     console.log(response)
   })
@@ -382,7 +388,7 @@ customerSDK
 
 ```js
 customerSDK
-  .closeThread('ON0X0R0L67')
+  .closeThread({ chatId: 'ON0X0R0L67' })
   .then(response => {
     console.log(response)
   })
@@ -395,7 +401,7 @@ Parameters:
 
 | parameters | type   | description                               |
 | ---------- | ------ | ----------------------------------------- |
-| chat       | string | chat id in which thread should get closed |
+| chatId     | string | chat id in which thread should get closed |
 
 Returned value:
 
@@ -416,8 +422,11 @@ Deletes given properties from a chat.
 
 ```js
 customerSDK
-  .deleteChatProperties('ON0X0R0L67', {
-    property_namespace: ['sample'],
+  .deleteChatProperties({
+    chatId: 'ON0X0R0L67',
+    properties: {
+      property_namespace: ['sample'],
+    },
   })
   .then(response => {
     console.log(response)
@@ -446,8 +455,12 @@ Deletes given properties from a chat thread.
 
 ```js
 customerSDK
-  .deleteChatThreadProperties('ON0X0R0L67', 'OS0C0W0Z1B', {
-    property_namespace: ['sample'],
+  .deleteChatThreadProperties({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    properties: {
+      property_namespace: ['sample'],
+    },
   })
   .then(response => {
     console.log(response)
@@ -461,8 +474,8 @@ Parameters:
 
 | parameters | type   | description                                             |
 | ---------- | ------ | ------------------------------------------------------- |
-| chat       | string | id of the chat of which properties you want to delete   |
-| thread     | string | id of the thread of which properties you want to delete |
+| chatId     | string | id of the chat of which properties you want to delete   |
+| threadId   | string | id of the thread of which properties you want to delete |
 | properties | object | properties to be deleted                                |
 
 Returned value:
@@ -477,8 +490,13 @@ Deletes given properties from an event.
 
 ```js
 customerSDK
-  .deleteEventProperties('ON0X0R0L67', 'OS0C0W0Z1B', 'Q50W0A0P0Y', {
-    property_namespace: ['sample'],
+  .deleteEventProperties({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    eventId: 'Q50W0A0P0Y',
+    properties: {
+      property_namespace: ['sample'],
+    },
   })
   .then(response => {
     console.log(response)
@@ -492,9 +510,9 @@ Parameters:
 
 | parameters | type   | description                                             |
 | ---------- | ------ | ------------------------------------------------------- |
-| chat       | string | id of the chat of which properties you want to delete   |
-| thread     | string | id of the thread of which properties you want to delete |
-| event      | string | id of the event of which properties you want to delete  |
+| chatId     | string | id of the chat of which properties you want to delete   |
+| threadId   | string | id of the thread of which properties you want to delete |
+| eventId    | string | id of the event of which properties you want to delete  |
 | properties | object | properties to be deleted                                |
 
 Returned value:
@@ -538,7 +556,7 @@ Such a structure like our `history` object is called an **async iterator**.
 ```js
 let wholeChatHistoryLoaded = false
 
-const history = customerSDK.getChatHistory('OU0V0P0OWT')
+const history = customerSDK.getChatHistory({ chatId: 'OU0V0P0OWT' })
 
 history.next().then(result => {
   if (result.done) {
@@ -556,9 +574,9 @@ history.next().then(result => {
 
 Parameters:
 
-| parameters | type   | description                          |
-| ---------- | ------ | ------------------------------------ |
-| chat       | string | chat id of requested history object. |
+| parameters | type   | description                         |
+| ---------- | ------ | ----------------------------------- |
+| chatId     | string | chat id of requested history object |
 
 ## getChatsSummary
 
@@ -579,11 +597,10 @@ customerSDK
 
 Parameters:
 
-| parameters | properties | type   | default | max |
-| ---------- | ---------- | ------ | ------- | --- |
-| pagination |            |        |         |     |
-|            | offset     | number | 0       |     |
-|            | limit      | number | 10      | 25  |
+| parameters | type   | default | max |
+| ---------- | ------ | ------- | --- |
+| offset     | number | 0       |     |
+| limit      | number | 10      | 25  |
 
 Returned value:
 
@@ -605,22 +622,33 @@ Returns a list of threads objects for specfied threads ids.
 If you want to load more events, consider using [`getChatHistory`](#getchathistory).
 
 ```js
-const threads = ["OS0C0W0Z1B", "OS0I0M0J0G", "OT01080705", "OT0E02082U", "OT0E08040G"]
-customerSDK.getChatThreads("ON0X0R0L67", threads)
-    .then(threads => {
-        console.log(threads)
-    })
-    .catch(error => {
-        console.log(rror
-    })
+const threadIds = [
+  'OS0C0W0Z1B',
+  'OS0I0M0J0G',
+  'OT01080705',
+  'OT0E02082U',
+  'OT0E08040G',
+]
+
+customerSDK
+  .getChatThreads({
+    chatId: 'ON0X0R0L67',
+    threadIds,
+  })
+  .then(threads => {
+    console.log(threads)
+  })
+  .catch(error => {
+    console.log(error)
+  })
 ```
 
 Parameters:
 
 | parameters | type     |
 | ---------- | -------- |
-| chat       | string   |
-| threads    | string[] |
+| chatId     | string   |
+| threadIds  | string[] |
 
 Returned value:
 
@@ -640,7 +668,8 @@ If you want to load more threads summary consider using [`getChatHistory`](#getc
 
 ```js
 customerSDK
-  .getChatThreadsSummary('ON0X0R0L67', {
+  .getChatThreadsSummary({
+    chatId: 'ON0X0R0L67',
     offset: 0,
     limit: 10,
   })
@@ -655,12 +684,11 @@ customerSDK
 
 Parameters:
 
-| parameters | properties | type   | default | max  |
-| ---------- | ---------- | ------ | ------- | ---- |
-| chat       |            | string |         |      |
-| pagination |            |        |         |      |
-|            | offset     | number | 0       |      |
-|            | limit      | number | 25      | 1000 |
+| parameters | type   | default | max  |
+| ---------- | ------ | ------- | ---- |
+| chatId     | string |         |      |
+| offset     | number | 0       |      |
+| limit      | number | 25      | 1000 |
 
 Returned value:
 
@@ -704,7 +732,10 @@ Allows you to fetch a form template for a given group and form type.
 
 ```js
 customerSDK
-  .getForm(0, 'prechat')
+  .getForm({
+    groupId: 0,
+    type: 'prechat',
+  })
   .then(response => {
     if (response.enabled) {
       // prechat form is enabled for this group in the configurator
@@ -720,7 +751,7 @@ Parameters:
 
 | parameters | type                              |
 | ---------- | --------------------------------- |
-| group      | number                            |
+| groupId    | number                            |
 | type       | 'prechat', 'postchat' or 'ticket' |
 
 Returned value:
@@ -738,7 +769,9 @@ Returns availability statuses of the requested groups.
 
 ```js
 customerSDK
-  .getGroupsStatus([3, 10])
+  .getGroupsStatus({
+    groupIds: [3, 10],
+  })
   .then(statusMap => {
     console.log(`Status of the group 3: ${statusMap[3]}`)
     console.log(`Status of the group 10: ${statusMap[10]}`)
@@ -752,7 +785,7 @@ Parameters:
 
 | parameters | type     | description                                              |
 | ---------- | -------- | -------------------------------------------------------- |
-| groups     | number[] | optional, if omitted statuses of all groups are returned |
+| groupIds   | number[] | optional, if omitted statuses of all groups are returned |
 
 Returned value:
 
@@ -764,7 +797,9 @@ Returned value:
 
 ```js
 customerSDK
-  .getPredictedAgent(0)
+  .getPredictedAgent({
+    groupId: 0,
+  })
   .then(agent => {
     console.log(agent)
   })
@@ -777,7 +812,7 @@ Parameters:
 
 | parameters | type   | description |
 | ---------- | ------ | ----------- |
-| group      | number | optional    |
+| groupId    | number | optional    |
 
 ### Errors
 
@@ -790,7 +825,7 @@ It returns the info on a given URL.
 
 ```js
 customerSDK
-  .getUrlDetails('https://www.livechatinc.com')
+  .getUrlDetails({ url: 'https://www.livechatinc.com' })
   .then(urlDetails => {
     if (urlDetails.title) {
       console.log(`The title of requested URL is: ${urlDetails.title}`)
@@ -849,7 +884,10 @@ Marks events, as seen by the current customer up to the given date.
 
 ```js
 customerSDK
-  .markEventsAsSeen('ON0X0R0L67', '2017-10-12T15:19:21.010200Z')
+  .markEventsAsSeen({
+    chatId: 'ON0X0R0L67',
+    seenUpTo: '2017-10-12T15:19:21.010200Z',
+  })
   .then(response => {
     console.log(response)
   })
@@ -862,7 +900,7 @@ Parameters:
 
 | parameters | type   | description                                                                              |
 | ---------- | ------ | ---------------------------------------------------------------------------------------- |
-| chat       | string | id of the chat in which you want to mark events as seen                                  |
+| chatId     | string | id of the chat in which you want to mark events as seen                                  |
 | seenUpTo   | string | RFC 3339 date-time format, you should use the event's `createdAt` value as this argument |
 
 Returned value:
@@ -877,9 +915,12 @@ Sends a chat rating and comment for the most recent chat thread.
 
 ```js
 customerSDK
-  .rateChat('ON0X0R0L67', {
-    score: 1,
-    comment: 'Agent helped me a lot!',
+  .rateChat({
+    chatId: 'ON0X0R0L67',
+    rating: {
+      score: 1,
+      comment: 'Agent helped me a lot!',
+    },
   })
   .then(() => {
     console.log('Rating has been set')
@@ -893,7 +934,7 @@ Parameters:
 
 | parameters     | type   | description                                               |
 | -------------- | ------ | --------------------------------------------------------- |
-| chat           |        | destination chat id                                       |
+| chatId         | string | destination chat id                                       |
 | rating         |        |                                                           |
 | rating.score   | 0 or 1 | rating value - 0 for a bad rating and 1 for a good rating |
 | rating.comment | string | optional comment                                          |
@@ -919,7 +960,10 @@ const event = {
 }
 
 customerSDK
-  .sendEvent('ON0X0R0L67', event)
+  .sendEvent({
+    chatId: 'ON0X0R0L67',
+    event,
+  })
   .then(event => {
     console.log(event)
   })
@@ -930,25 +974,29 @@ customerSDK
 
 Parameters:
 
-| parameters              | type    | description         |
-| ----------------------- | ------- | ------------------- |
-| chat                    | string  | destination chat id |
-| event                   |         |                     |
-| event.type              | string  | type of the event   |
-| meta                    |         | optional            |
-| meta.attachToLastThread | boolean | optional            |
+| parameters         | type    | description         |
+| ------------------ | ------- | ------------------- |
+| chatId             | string  | destination chat id |
+| event              |         |                     |
+| event.type         | string  | type of the event   |
+| attachToLastThread | boolean | optional            |
 
-## sendPostback
+## sendRichMessagePostback
 
 Sends infomration to the server about user interaction with rich message button.
 
 ```js
 customerSDK
-  .sendPostback('ON0X0R0L67', 'OS0C0W0Z1B', 'OS0C0W0Z1B01', {
-    id: 'OS0C0W0Z1B01002',
-    toggled: true,
+  .sendRichMessagePostback({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    eventId: 'OS0C0W0Z1B01',
+    postback: {
+      id: 'OS0C0W0Z1B01002',
+      toggled: true,
+    },
   })
-  .then(rating => {
+  .then(() => {
     console.log('success')
   })
   .catch(error => {
@@ -960,9 +1008,9 @@ Parameters:
 
 | parameters       | type    | default | description        |
 | ---------------- | ------- | ------- | ------------------ |
-| chat             | string  |         | postback chat id   |
-| thread           | string  |         | postback thread id |
-| event            | string  |         | postback event id  |
+| chatId           | string  |         | postback chat id   |
+| threadId         | string  |         | postback thread id |
+| eventId          | string  |         | postback event id  |
 | postback         |         |         |                    |
 | postback.id      | string  |         | postback button id |
 | postback.toggled | boolean | true    | postback toggled   |
@@ -973,8 +1021,9 @@ Can be used to send a filled ticket form.
 
 ```js
 customerSDK
-  .sendTicketForm(
-    {
+  .sendTicketForm({
+    groupId: 10,
+    filledForm: {
       type: 'filled_form',
       formId: '',
       fields: [
@@ -1008,8 +1057,7 @@ customerSDK
         },
       ],
     },
-    10,
-  )
+  })
   .then(response => {
     console.log(`Created a ticket with id: ${response.id}`)
   })
@@ -1025,7 +1073,7 @@ Parameters:
 | filledForm.type   | 'filled_form'     |             |
 | filledForm.formId | string            |             |
 | filledForm.fields | FilledFormField[] |             |
-| group             | number            | optional    |
+| groupId           | number            | optional    |
 
 Returned value:
 
@@ -1039,8 +1087,10 @@ Sends the request if the SDK is connected or queues the update to perform once t
 
 ```js
 customerSDK.setCustomerFields({
-  foo: 'bar',
-  test: 'qwerty',
+  fields: {
+    foo: 'bar',
+    test: 'qwerty',
+  },
 })
 ```
 
@@ -1116,7 +1166,7 @@ const properties = {
   },
 }
 customerSDK
-  .updateChatProperties('ON0X0R0L67', properties)
+  .updateChatProperties({ chatId: 'ON0X0R0L67', properties })
   .then(response => {
     console.log(response)
   })
@@ -1129,7 +1179,7 @@ Parameters:
 
 | parameters | type   | description                                           |
 | ---------- | ------ | ----------------------------------------------------- |
-| chat       | string | id of the chat of which properties you want to update |
+| chatId     | string | id of the chat of which properties you want to update |
 | properties | object |
 
 ## updateChatThreadProperties
@@ -1141,7 +1191,11 @@ const properties = {
   },
 }
 customerSDK
-  .updateChatThreadProperties('ON0X0R0L67', 'OS0C0W0Z1B', properties)
+  .updateChatThreadProperties({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    properties,
+  })
   .then(response => {
     console.log(response)
   })
@@ -1154,8 +1208,8 @@ Parameters:
 
 | parameters | type   | description                                             |
 | ---------- | ------ | ------------------------------------------------------- |
-| chat       | string | id of the chat of which properties you want to update   |
-| thread     | string | id of the thread of which properties you want to update |
+| chatId     | string | id of the chat of which properties you want to update   |
+| threadId   | string | id of the thread of which properties you want to update |
 | properties | object |
 
 ## updateCustomer
@@ -1214,7 +1268,12 @@ const properties = {
   },
 }
 customerSDK
-  .updateEventProperties('ON0X0R0L67', 'OS0C0W0Z1B', 'Q50W0A0P0Y', properties)
+  .updateEventProperties({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    eventId: 'Q50W0A0P0Y',
+    properties,
+  })
   .then(response => {
     console.log(response)
   })
@@ -1227,9 +1286,9 @@ Parameters:
 
 | parameters | type   | description                                             |
 | ---------- | ------ | ------------------------------------------------------- |
-| chat       | string | id of the chat of which properties you want to update   |
-| thread     | string | id of the thread of which properties you want to update |
-| event      | string | id of the event of which properties you want to update  |
+| chatId     | string | id of the chat of which properties you want to update   |
+| threadId   | string | id of the thread of which properties you want to update |
+| eventId    | string | id of the event of which properties you want to update  |
 | properties | object |                                                         |
 
 ## uploadFile
@@ -1237,17 +1296,13 @@ Parameters:
 Returns both a `promise` and a `cancel`. You can use `cancel` to abort the upload of the file.
 It also lets you pass `onProgress` callback function. Keep in mind that the maximum accepted file size is 10 MB.
 
+It returns a URL that expires after 24 hours unless the URL is used in [`sendEvent`](#sendevent)
+
 ```js
-const { promise, cancel } = customerSDK.uploadFile(
-  'ON0X0R0L67',
-  {
-    file,
-    customId, // optional
-  },
-  {
-    onProgress: progress => console.log(`upload progress: ${progress}`),
-  },
-)
+const { promise, cancel } = customerSDK.uploadFile({
+  file,
+  onProgress: progress => console.log(`upload progress: ${progress}`),
+})
 
 document.getElementById('cancel-upload').onclick = () => {
   cancel()
@@ -1264,14 +1319,16 @@ promise
 
 Parameters:
 
-| parameters      | type     | description                                                                   |
-| --------------- | -------- | ----------------------------------------------------------------------------- |
-| chat            | string   | destination chat id                                                           |
-| data            |          |                                                                               |
-| data.file       | blob     |                                                                               |
-| data.customId   | string   | optional customId for the event                                               |
-| spec            |          |                                                                               |
-| spec.onProgress | function | this callback function will receive a progress value - number between 0 and 1 |
+| parameters | type     | description               |
+| ---------- | -------- | ------------------------- |
+| file       | blob     |                           |
+| onProgress | function | receives a progress value |
+
+onProgress parameters:
+
+| parameters | type   | min | max |
+| ---------- | ------ | --- | --- |
+| progress   | number | 0   | 1   |
 
 Returned value:
 
@@ -1681,6 +1738,38 @@ Payload:
 | chat       | string | chat id     |
 | user       | string | user id     |
 | timestamp  | number |             |
+
+## Greeting accepted
+
+Informs about a greeting accepted by the Customer.
+
+```js
+customerSDK.on('greeting_accepted', payload => {
+  console.log('greeting_accepted', payload.uniqueId)
+})
+```
+
+Payload:
+
+| properties | type   |
+| ---------- | ------ |
+| uniqueId   | string |
+
+## Greeting canceled
+
+Informs about a greeting canceled by the Customer. It is also emitted when a new greeting automatically cancels the currently displayed one.
+
+```js
+customerSDK.on('greeting_canceled', payload => {
+  console.log('greeting_canceled', payload.uniqueId)
+})
+```
+
+Payload:
+
+| properties | type   |
+| ---------- | ------ |
+| uniqueId   | string |
 
 ## Incoming chat thread
 
