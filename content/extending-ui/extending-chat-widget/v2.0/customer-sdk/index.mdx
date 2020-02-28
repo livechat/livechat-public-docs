@@ -1401,7 +1401,7 @@ Payload:
 
 | properties | type   | description     |
 | ---------- | ------ | --------------- |
-| chat       | string | chat id         |
+| chatId     | string | chat id         |
 | properties | object | chat properties |
 
 ## Chat properties updated
@@ -1419,7 +1419,7 @@ Payload:
 
 | properties | type   | description     |
 | ---------- | ------ | --------------- |
-| chat       | string | chat id         |
+| chatId     | string | chat id         |
 | properties | object | chat properties |
 
 ## Chat thread properties deleted
@@ -1437,8 +1437,8 @@ Payload:
 
 | properties | type   | description            |
 | ---------- | ------ | ---------------------- |
-| chat       | string | chat id                |
-| thread     | string | thread id              |
+| chatId     | string | chat id                |
+| threadId   | string | thread id              |
 | properties | object | chat thread properties |
 
 ## Chat thread properties updated
@@ -1454,8 +1454,8 @@ Payload:
 
 | properties | type   | description       |
 | ---------- | ------ | ----------------- |
-| chat       | string | chats id          |
-| thread     | string | thread id         |
+| chatId     | string | chats id          |
+| threadId   | string | thread id         |
 | properties | object | thread properties |
 
 ## Chat transferred
@@ -1495,7 +1495,7 @@ Payload:
 | properties | type    | description |
 | ---------- | ------- | ----------- |
 | user       | object  | user        |
-| chat       | string  | chat id     |
+| chatId     | string  | chat id     |
 | present    | boolean |             |
 
 ## Chat user removed
@@ -1514,7 +1514,7 @@ Payload:
 | properties | type   | description |
 | ---------- | ------ | ----------- |
 | userId     | string | user id     |
-| chat       | string | chat id     |
+| chatId     | string | chat id     |
 
 ## Connected
 
@@ -1622,29 +1622,30 @@ Each property in payload is available only if it was updated.
 ```js
 customerSDK.on('customer_updated', payload => {
   if (payload.name) {
-    console.log(`Name got updated to: ${payload.name}`)
+    console.log(`Name got updated to: ${payload.customer.name}`)
   }
-  if (payload.email) {
-    console.log(`Email got updated to: ${payload.email}`)
+  if (payload.customer.email) {
+    console.log(`Email got updated to: ${payload.customer.email}`)
   }
-  if (payload.avatar) {
-    console.log(`Avatar got updated to: ${payload.avatar}`)
+  if (payload.customer.avatar) {
+    console.log(`Avatar got updated to: ${payload.customer.avatar}`)
   }
-  if (payload.fields) {
+  if (payload.customer.fields) {
     console.log(`Fields got updated:`)
-    console.log(payload.fields)
+    console.log(payload.customer.fields)
   }
 })
 ```
 
 Payload:
 
-| properties | type   |
-| ---------- | ------ |
-| name       | string |
-| email      | string |
-| avatar     | string |
-| fields     | object |
+| properties      | type   |
+| --------------- | ------ |
+| customer        |        |
+| customer.name   | string |
+| customer.email  | string |
+| customer.avatar | string |
+| customer.fields | object |
 
 ## Disconnected
 
@@ -1678,9 +1679,9 @@ Payload:
 
 | properties | type   | description      |
 | ---------- | ------ | ---------------- |
-| chat       | string | chat id          |
-| thread     | string | thread id        |
-| event      | string | event id         |
+| chatId     | string | chat id          |
+| threadId   | string | thread id        |
+| eventId    | string | event id         |
 | properties | object | event properties |
 
 ## Event properties updated
@@ -1698,9 +1699,9 @@ Payload:
 
 | properties | type   | description      |
 | ---------- | ------ | ---------------- |
-| chat       | string | chat id          |
-| thread     | string | thread id        |
-| event      | string | event id         |
+| chatId     | string | chat id          |
+| threadId   | string | thread id        |
+| eventId    | string | event id         |
 | properties | object | event properties |
 
 ## Event updated
@@ -1718,8 +1719,8 @@ Payload:
 
 | properties | type   | description         |
 | ---------- | ------ | ------------------- |
-| chat       | string | chat id             |
-| thread     | string | thread id           |
+| chatId     | string | chat id             |
+| threadId   | string | thread id           |
 | event      | object | whole updated event |
 
 ## Events marked as seen
@@ -1735,8 +1736,8 @@ Payload:
 
 | properties | type   | description |
 | ---------- | ------ | ----------- |
-| chat       | string | chat id     |
-| user       | string | user id     |
+| chatId     | string | chat id     |
+| userId     | string | user id     |
 | timestamp  | number |             |
 
 ## Greeting accepted
@@ -1858,10 +1859,10 @@ Payload:
 
 | properties       | type    | description                                |
 | ---------------- | ------- | ------------------------------------------ |
-| user             | number  | user who has sent a rich message postback  |
-| chat             | string  | chat id of the sent postback               |
-| thread           | string  | thread id of the sent postback             |
-| event            | string  | event id of the sent postback              |
+| userId           | number  | user who has sent a rich message postback  |
+| chatId           | string  | chat id of the sent postback               |
+| threadId         | string  | thread id of the sent postback             |
+| eventId          | string  | event id of the sent postback              |
 | postback.id      | boolean | id of the sent postback                    |
 | postback.toggled | boolean | describes if the sent postback was toggled |
 
@@ -1873,13 +1874,13 @@ The push payload contains the typing indicator object.
 
 ```js
 customerSDK.on('incoming_typing_indicator', payload => {
-  if (payload.isTyping) {
+  if (payload.typingIndicator.isTyping) {
     console.log(
-      `user with ${payload.user} id is writing something in ${payload.chat}`,
+      `user with ${payload.typingIndicator.authorId} id is writing something in ${payload.chatId}`,
     )
   } else {
     console.log(
-      `user with ${payload.user} id stopped writing in ${payload.chat}`,
+      `user with ${payload.typingIndicator.authorId} id stopped writing in ${payload.chatId}`,
     )
   }
 })
@@ -1887,11 +1888,12 @@ customerSDK.on('incoming_typing_indicator', payload => {
 
 Payload:
 
-| properties | type    | description |
-| ---------- | ------- | ----------- |
-| chat       | string  | chat id     |
-| user       | string  | user id     |
-| isTyping   | boolean |             |
+| properties               | type    | description |
+| ------------------------ | ------- | ----------- |
+| chatId                   | string  | chat id     |
+| typingIndicator          |         |             |
+| typingIndicator.authorId | string  | user id     |
+| typingIndicator.isTyping | boolean |             |
 
 ## Thread closed
 
@@ -1906,7 +1908,7 @@ Payload:
 
 | properties | type   | description |
 | ---------- | ------ | ----------- |
-| chat       | string | chat id     |
+| chatId     | string | chat id     |
 
 ## User data
 
