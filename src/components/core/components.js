@@ -3,6 +3,7 @@ import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { Link } from "gatsby";
+import StarRating from "../core/rating"
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
@@ -117,15 +118,18 @@ export const PageHeaderWrapper = styled.div`
   padding: 2em 0 1em;
 `;
 
-export const PageDetails = styled.p`
+export const PageDetails = styled.div`
   font-size: 14px;
   color: gray;
+  display: flex;
+  align-items: bottom;
+  margin-bottom: 1.45rem
 `;
-export const PageHeader = ({ title, timeToRead, modifiedTime }) => (
+export const PageHeader = ({ title, timeToRead }) => (
   <PageHeaderWrapper>
     <PageTitle>{title}</PageTitle>
     <PageDetails>
-      {timeToRead} minutes reading time &bull; last modified {modifiedTime}
+      {timeToRead} minutes reading time &nbsp;&nbsp; <StarRating />
     </PageDetails>
   </PageHeaderWrapper>
 );

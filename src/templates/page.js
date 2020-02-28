@@ -53,6 +53,7 @@ export default ({ data: { mdx, allMdx } }) => {
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
+  console.log(modifiedTime)
 
   const versions = getVersionsByGroup(versionGroup);
   const { edges } = allMdx;
@@ -186,7 +187,6 @@ export default ({ data: { mdx, allMdx } }) => {
                 modifiedTime={modifiedTime}
               />
             )}
-
             <MDXProvider components={components}>
               <MDXRenderer>{body}</MDXRenderer>
             </MDXProvider>
