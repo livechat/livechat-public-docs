@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
 import { PopperTooltip } from "@livechat/design-system";
+import styled from "@emotion/styled";
+
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { logAmplitudeEvent } from "../../utils/index";
+
+export const Wrapper = styled.span`
+display: flex;
+align-items: center;
+`
+
+export const Label = styled.label`
+font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Roboto",
+    sans-serif;
+margin-right: 10px; 
+font-size: 14px;
+font-weight: normal;
+color: gray;
+`
 
 const Star = props => {
     const [isVisible, setIsVisible] = useState(false)
@@ -85,9 +101,10 @@ const StarRating = ({ numberOfStars = 5 }) => {
     }
     return (
 
-        <>
+        <Wrapper>
+            <Label>Rate this page:</Label>
             {stars}
-        </>
+        </Wrapper>
     )
 };
 

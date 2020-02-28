@@ -111,6 +111,12 @@ export const NavHeader = styled.div`
 
 export const PageTitle = styled.h1`
   margin: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 export const PageHeaderWrapper = styled.div`
@@ -118,21 +124,21 @@ export const PageHeaderWrapper = styled.div`
   padding: 2em 0 1em;
 `;
 
-export const PageDetails = styled.div`
+export const PageSubtitle = styled.div`
   font-size: 14px;
   color: gray;
-  display: flex;
-  align-items: bottom;
   margin-bottom: 1.45rem
 `;
 export const PageHeader = ({ title, timeToRead }) => (
   <PageHeaderWrapper>
-    <PageTitle>{title}</PageTitle>
-    <PageDetails>
-      {timeToRead} minutes reading time &nbsp;&nbsp; <StarRating />
-    </PageDetails>
+    <PageTitle><span>{title}</span><StarRating /></PageTitle>
+    <PageSubtitle>
+      {timeToRead} minutes reading time
+    </PageSubtitle>
   </PageHeaderWrapper>
 );
+
+
 
 export const Content = styled.article`
   display: grid;
