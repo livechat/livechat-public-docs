@@ -28,8 +28,10 @@ import Rating from "../components/core/Rating";
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
+
 import { useLocalStorage, useRating } from "../hooks";
 import { VersionProvider, RatingProvider } from "../contexts";
+import { SCROLL_OFFSET } from "../constant";
 
 const components = {
   ...DesignSystem,
@@ -119,7 +121,7 @@ export default ({ data: { mdx, allMdx } }) => {
       const selector = document.querySelector(hash);
       if (selector) {
         selector.scrollIntoView();
-        window.scrollBy(0, -100);
+        window.scrollBy(0, -SCROLL_OFFSET);
       }
     }
   }, []);
@@ -194,7 +196,7 @@ export default ({ data: { mdx, allMdx } }) => {
               <MDXProvider components={components}>
                 <MDXRenderer>{body}</MDXRenderer>
               </MDXProvider>
-              <Rating margin />
+              <Rating margin label="Was this article helpful?" />
             </Content>
           </MiddleColumn>
         </MainWrapper>

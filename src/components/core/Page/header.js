@@ -28,7 +28,7 @@ const PageHeader = ({ title, timeToRead }) => (
   <PageHeaderWrapper>
     <PageTitle>
       <span>{title}</span>
-      <Rating />
+      <Rating label="Rate this page" />
     </PageTitle>
     <PageSubtitle>{timeToRead} minutes reading time</PageSubtitle>
   </PageHeaderWrapper>

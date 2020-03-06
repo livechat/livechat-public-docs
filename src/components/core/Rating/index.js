@@ -6,7 +6,6 @@ import { RATES } from "../../../constant";
 import { RatingContext } from "../../../contexts";
 
 const Wrapper = styled.div`
-  width: 215px;
   height: 25px;
   display: flex;
   align-items: center;
@@ -24,13 +23,13 @@ const Label = styled.label`
   color: gray;
 `;
 
-const Rating = ({ margin = false }) => {
+const Rating = ({ margin = false, label }) => {
   const { selectedStar, saveRating } = useContext(RatingContext);
   const [hoverStar, setHoverStar] = useState(-1);
 
   return (
     <Wrapper margin={margin}>
-      <Label margin={margin}>Rate this page</Label>
+      <Label margin={margin}>{label}</Label>
       {RATES.map((r, i) => {
         const isHover = hoverStar > i - 1;
         const isSelected = selectedStar > i - 1;
