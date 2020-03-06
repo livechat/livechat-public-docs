@@ -20,7 +20,7 @@ one of the options to do this. If you need a fully customizable solution and you
 brave, dive into LiveChat Customer SDK. We provide [methods](#methods) and
 [events](#events) for deep integration with the LiveChat environment.
 
-Keep in mind that interacting with this API requires **some development skills**. 
+Keep in mind that interacting with this API requires **some development skills**.
 
 Customer SDK allows you to create frontend apps, so if you're looking for server-side solutions, you should explore the [LiveChat Customer Chat API](https://developers.livechatinc.com/docs/messaging/customer-chat-api/) instead.
 If you want to dive deeper into the LiveChat Platform, you might find the [Platform Overview](https://developers.livechatinc.com/docs/getting-started/) article handy.
@@ -28,7 +28,7 @@ If you want to dive deeper into the LiveChat Platform, you might find the [Platf
 ## About LiveChat Customer SDK
 
 We provide an asynchronous API. Most methods return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). You can subscribe to the emitted events with the `on` and `off` methods.
-  Not familiar with promises? Read <a href="https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise">this article</a> to learn more.
+Not familiar with promises? Read <a href="https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise">this article</a> to learn more.
 
 We authenticate your sessions with the use of
 [customer-auth package](https://www.npmjs.com/package/@livechat/customer-auth)
@@ -76,7 +76,7 @@ Or use the node-style `require` call:
 
 `const CustomerSDK = require('@livechat/customer-sdk')`
 
-### Using script tag - UMD module hosted on unpkg's CDN
+### Using a script tag - UMD module hosted on unpkg's CDN
 
 `<script src="https://unpkg.com/@livechat/customer-sdk"></script>`
 
@@ -86,19 +86,33 @@ If you just want to look around and play with the SDK, check out our
 For the time being you need to register your application in the <a href="https://developers.livechatinc.com/console" target="_blank">Developers Console</a>
 as a "Web app (frontend, eg. JavaScript)" type. Then, you have to pass the configured `redirectUri` to the `init`, along with the regular required properties (`licenseId` and `clientId`).
 
-## Use the API
+## Using the API
 
-Now run the `init` function with the configuration, replacing `LICENSE_ID`
-with your LiveChat license ID.
+To use the API you will first need to create an instance using the `init` function.
+You will need to provide your licenseId and clientId when creating a Customer SDK instance.
 
-It also accepts some optional parameters:
+Other optional configuration parameters are also available:
 
-| parameters  | type    | default |
-| ----------- | ------- | ------- |
-| autoConnect | boolean | true    |
-| groupId     | number  |         |
+| parameters           | type               | default | description                                                                                                                                                                  |
+| -------------------- | ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| licenseId            | number             |         | Your license number, you receive this value when creating a new livechat account.                                                                                            |
+| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat developers console.                                                                |
+| autoConnect          | boolean            | true    | Optional; should the library try to reconnect on it's own.                                                                                                                   |
+| uniqueGroups         | boolean            | false   | Optional; should chat sessions be separated between groups, this feature is analogous to [setting separate chat sessions][1] in our chat widget.                             |
+| groupId              | number             | 0       | Optional; the id of the group you wish to connect to.                                                                                                                        |
+| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                              |
+| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                   |
+| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](updateCustomer) should be prefered for sending customer data. |
 
-The function will return a Customer SDK instance:
+CustomerData:
+
+| parameters | type   | description      |
+| ---------- | ------ | ---------------- |
+| name       | string | Optional         |
+| email      | string | Optional         |
+| fields     | object | Key: value pairs |
+
+The `init` function will return a Customer SDK instance:
 
 ```js
 const customerSDK = CustomerSDK.init({
@@ -169,6 +183,8 @@ export default class App extends React.Component {
 }
 ```
 
+[1]: https://www.livechatinc.com/help/livechat-for-multiple-websites#set-separate-sessions
+
 # Key Concepts
 
 The LiveChat system includes four basic types of entities - users, chats, threads, and
@@ -201,7 +217,7 @@ You can read more about key concepts of the LiveChat messaging in the [Messaging
 }
 ```
 
-### Custoemr
+### Customer
 
 ```js
 {
@@ -318,14 +334,14 @@ customerSDK
 
 Parameters:
 
-| parameters                  | type    | description                                                                                                 |
-| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| data.continuous             | boolean | Optional                                                                                                    |
-| data.chat.id                | string  |                                                                                                             |
-| data.chat.access            | Access  | Optional                                                                                                    |
-| data.chat.properties        | object  | Optional                                                                                                    |
-| data.chat.thread.events     | Event[] | Optional; you can pass initial events which will immediately become part of the created thread.             |
-| data.chat.thread.properties | object  | Optional                                                                                                    |
+| parameters                  | type    | description                                                                                     |
+| --------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| data.continuous             | boolean | Optional                                                                                        |
+| data.chat.id                | string  |                                                                                                 |
+| data.chat.access            | Access  | Optional                                                                                        |
+| data.chat.properties        | object  | Optional                                                                                        |
+| data.chat.thread.events     | Event[] | Optional; you can pass initial events which will immediately become part of the created thread. |
+| data.chat.thread.properties | object  | Optional                                                                                        |
 
 ### Errors
 
@@ -435,10 +451,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                           |
-| ---------- | ------ | ----------------------------------------------------- |
-| chat       | string | ID of the chat whose properties you want to delete    |
-| properties | object | Chat properties to delete                             |
+| parameters | type   | description                                         |
+| ---------- | ------ | --------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to delete. |
+| properties | object | Chat properties to delete                           |
 
 Returned value:
 
@@ -469,11 +485,11 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                          |
-| ---------- | ------ | ---------------------------------------------------- |
-| chatId       | string | ID of the chat whose properties you want to delete   |
-| threadId     | string | ID of the thread whose properties you want to delete |
-| properties | object | Properties to delete                                 |
+| parameters | type   | description                                           |
+| ---------- | ------ | ----------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to delete.   |
+| threadId   | string | ID of the thread whose properties you want to delete. |
+| properties | object | Properties to delete                                  |
 
 Returned value:
 
@@ -505,12 +521,12 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                              |
-| ---------- | ------ | -------------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to delete.      |
-| threadId   | string | ID of the thread whose properties you want to delete.    |
-| eventId    | string | ID of the event whose properties you want to delete.     |
-| properties | object | Properties to delete                                     |
+| parameters | type   | description                                           |
+| ---------- | ------ | ----------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to delete.   |
+| threadId   | string | ID of the thread whose properties you want to delete. |
+| eventId    | string | ID of the event whose properties you want to delete.  |
+| properties | object | Properties to delete                                  |
 
 Returned value:
 
@@ -539,7 +555,7 @@ customerSDK.disconnect()
 
 Helps loading in historical thread events.
 
-First, call `getChatHistory` to access the `history` object of a particular chat. 
+First, call `getChatHistory` to access the `history` object of a particular chat.
 The returned `history` object has only one method, `next`, which gives you a `Promise` with a `{ done, value }` object.
 
 - `done` - indicates if there is anything more to load
@@ -572,9 +588,9 @@ history.next().then(result => {
 
 Parameters:
 
-| parameters | type   | description                                |
-| ---------- | ------ | ------------------------------------------ |
-| chatId       | string | Chat ID of the requested history object  |
+| parameters | type   | description                             |
+| ---------- | ------ | --------------------------------------- |
+| chatId     | string | Chat ID of the requested history object |
 
 ## getChatsSummary
 
@@ -602,17 +618,17 @@ Parameters:
 
 Returned value:
 
-| properties   | type     | properties         | type     | description                                        |
-| ------------ | -------- | ------------------ | -------- | -------------------------------------------------- |
-| chatsSummary | object[] |                    |          |                                                    |
-|              |          | id                 |          | Chat ID                                            |
-|              |          | active             | boolean  |                                                    |
-|              |          | users              | string[] | User IDs                                           |
-|              |          | lastEvent          | object   | Event                                              |
-|              |          | lastEventsPerType  | object   | Map of event types to event objects                |
-|              |          | lastSeenTimestamps | object   | Map of user IDs to optional lastSeenTimestamps     |
-|              |          | lastThread         | string   | Thread ID                                          |
-| totalChats   | number   |                    |          |                                                    |
+| properties   | type     | properties         | type     | description                                    |
+| ------------ | -------- | ------------------ | -------- | ---------------------------------------------- |
+| chatsSummary | object[] |                    |          |                                                |
+|              |          | id                 |          | Chat ID                                        |
+|              |          | active             | boolean  |                                                |
+|              |          | users              | string[] | User IDs                                       |
+|              |          | lastEvent          | object   | Event                                          |
+|              |          | lastEventsPerType  | object   | Map of event types to event objects            |
+|              |          | lastSeenTimestamps | object   | Map of user IDs to optional lastSeenTimestamps |
+|              |          | lastThread         | string   | Thread ID                                      |
+| totalChats   | number   |                    |          |                                                |
 
 ## getChatThreads
 
@@ -781,15 +797,15 @@ customerSDK
 
 Parameters:
 
-| parameters | type     | description                                               |
-| ---------- | -------- | --------------------------------------------------------- |
+| parameters | type     | description                                                |
+| ---------- | -------- | ---------------------------------------------------------- |
 | groupsIds  | number[] | Optional; if omitted, statuses of all groups are returned. |
 
 Returned value:
 
-| properties | type   | description                                     |
-| ---------- | ------ | ----------------------------------------------- |
-| statusMap  | object | Map of group numbers to availability statuses   |
+| properties | type   | description                                   |
+| ---------- | ------ | --------------------------------------------- |
+| statusMap  | object | Map of group numbers to availability statuses |
 
 ## getPredictedAgent
 
@@ -814,8 +830,8 @@ Parameters:
 
 ### Errors
 
-- `GROUP_OFFLINE` - The requested group is offline, and it was not possible to return a predicted Agent for it.
-- `GROUP_UNAVAILABLE` - There are no available slots in the requested group, so it is not possible to return a predicted Agent for it. If you call `startChat` or `activateChat` accordingly, you are most likely to end up in the queue.
+- `GROUP_OFFLINE` - the requested group is offline, and it was not possible to return a predicted Agent for it.
+- `GROUP_UNAVAILABLE` - there are no available slots in the requested group, so it is not possible to return a predicted Agent for it. If you call `startChat` or `activateChat` accordingly, you are most likely to end up in the queue.
 
 ## getUrlDetails
 
@@ -896,10 +912,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                                                               |
-| ---------- | ------ | ----------------------------------------------------------------------------------------- |
-| chatId     | string | ID of the chat in which you want to mark events as seen.                                  |
-| seenUpTo   | string | RFC 3339 date-time format; you should use the event's `createdAt` value as the argument.  |
+| parameters | type   | description                                                                              |
+| ---------- | ------ | ---------------------------------------------------------------------------------------- |
+| chatId     | string | ID of the chat in which you want to mark events as seen.                                 |
+| seenUpTo   | string | RFC 3339 date-time format; you should use the event's `createdAt` value as the argument. |
 
 Returned value:
 
@@ -930,18 +946,18 @@ customerSDK
 
 Parameters:
 
-| parameters     | type   | description                                               |
-| -------------- | ------ | --------------------------------------------------------- |
-| chatId         |        | Destination chat ID                                       |
-| rating         |        |                                                           |
-| rating.score   | 0 or 1 | Rating value: 0 for a bad rating and 1 for a good rating  |
-| rating.comment | string | Optional comment                                          |
+| parameters     | type   | description                                              |
+| -------------- | ------ | -------------------------------------------------------- |
+| chatId         |        | Destination chat ID                                      |
+| rating         |        |                                                          |
+| rating.score   | 0 or 1 | Rating value: 0 for a bad rating and 1 for a good rating |
+| rating.comment | string | Optional comment                                         |
 
 Returned value:
 
-| type    | description                                     |
-| ------- | ----------------------------------------------- |
-| promise | Promise resolving to a constant success value   |
+| type    | description                                   |
+| ------- | --------------------------------------------- |
+| promise | Promise resolving to a constant success value |
 
 ### Errors
 
@@ -1141,13 +1157,13 @@ customerSDK
 
 Parameters:
 
-| parameters             | type    | description                                                                               |
-| ---------------------- | ------- | ----------------------------------------------------------------------------------------- |
-| continuous             | boolean | Optional                                                                                  |
-| chat.access            | access  | Optional                                                                                  |
-| chat.properties        | object  | Optional                                                                                  |
-| chat.thread.events     | event[] | Optional; initial events that will immediately become a part of the created thread        |
-| chat.thread.properties | object  | Optional                                                                                  |
+| parameters             | type    | description                                                                         |
+| ---------------------- | ------- | ----------------------------------------------------------------------------------- |
+| continuous             | boolean | Optional                                                                            |
+| chat.access            | access  | Optional                                                                            |
+| chat.properties        | object  | Optional                                                                            |
+| chat.thread.events     | event[] | Optional; initial events that will immediately become a part of the created thread. |
+| chat.thread.properties | object  | Optional                                                                            |
 
 ### Errors
 
@@ -1174,10 +1190,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                           |
-| ---------- | ------ | ----------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to update.   |
-| properties | object |                                                       |
+| parameters | type   | description                                         |
+| ---------- | ------ | --------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to update. |
+| properties | object |                                                     |
 
 ## updateChatThreadProperties
 
@@ -1203,10 +1219,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                              |
-| ---------- | ------ | -------------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to update.      |
-| threadId   | string | ID of the thread whose properties you want to update.    |
+| parameters | type   | description                                           |
+| ---------- | ------ | ----------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to update.   |
+| threadId   | string | ID of the thread whose properties you want to update. |
 | properties | object |
 
 ## updateCustomer
@@ -1281,12 +1297,12 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                             |
-| ---------- | ------ | ------------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to update.     |
-| threadId   | string | ID of the thread whose properties you want to update.   |
-| eventId    | string | ID of the event whose properties you want to update.    |
-| properties | object |                                                         |
+| parameters | type   | description                                           |
+| ---------- | ------ | ----------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to update.   |
+| threadId   | string | ID of the thread whose properties you want to update. |
+| eventId    | string | ID of the event whose properties you want to update.  |
+| properties | object |                                                       |
 
 ## uploadFile
 
@@ -1434,11 +1450,13 @@ Payload:
 
 | properties | type   | description            |
 | ---------- | ------ | ---------------------- |
-| chatId       | string | Chat ID              |
-| threadId     | string | Thread ID            |
+| chatId     | string | Chat ID                |
+| threadId   | string | Thread ID              |
 | properties | object | Chat thread properties |
 
 ## Chat thread properties updated
+
+Informs about updated thread properties.
 
 ```js
 customerSDK.on('chat_thread_properties_updated', payload => {
@@ -1451,8 +1469,8 @@ Payload:
 
 | properties | type   | description       |
 | ---------- | ------ | ----------------- |
-| chatId       | string | Chat ID         |
-| threadId     | string | Thread ID       |
+| chatId     | string | Chat ID           |
+| threadId   | string | Thread ID         |
 | properties | object | Thread properties |
 
 ## Chat transferred
@@ -1515,6 +1533,8 @@ Payload:
 
 ## Connected
 
+Informs that the connection has been established.
+
 ```js
 customerSDK.on('connected', payload => {
   const { availability, greeting } = payload
@@ -1546,6 +1566,8 @@ Greeting:
 
 ## Connection lost
 
+Informs that the Customer SDK has disconnected.
+
 ```js
 customerSDK.on('connection_lost', () => {
   console.log('connection_lost')
@@ -1556,7 +1578,7 @@ This event doesn't carry any additional payload.
 
 ## Connection recovered
 
-It informs that Customer SDK has recovered from an "unstable" connection state. It's always preceded by the [`"connection_unstable"`](#connection-unstable) event.
+Informs that Customer SDK has recovered from an "unstable" connection state. It's always preceded by the [`"connection_unstable"`](#connection-unstable) event.
 
 ```js
 customerSDK.on('connection_recovered', () => {
@@ -1568,7 +1590,7 @@ This event doesn't carry any additional payload.
 
 ## Connection unstable
 
-It informs that Customer SDK has detected that connection quality is poor. It doesn't mean that it has disconnected from the server just yet.
+Informs that Customer SDK has detected that connection quality is poor. It doesn't mean that it has disconnected from the server just yet.
 
 ```js
 customerSDK.on('connection_unstable', () => {
@@ -1578,7 +1600,9 @@ customerSDK.on('connection_unstable', () => {
 
 This event doesn't carry any additional payload.
 
-## Customer id
+## Customer ID
+
+Informs about the ID of the Customer.
 
 ```js
 customerSDK.on('customer_id', id => {
@@ -1605,11 +1629,11 @@ customerSDK.on('customer_page_updated', payload => {
 
 Payload:
 
-| properties | type   |                                                   |
-| ---------- | ------ | ------------------------------------------------- |
-| url        | string | URL the Customer's currently on                   |
-| title      | string | Title of the website the Customer's currently on  |
-| timestamp  | string | Timestamp of the latest change                    |
+| properties | type   |                                                  |
+| ---------- | ------ | ------------------------------------------------ |
+| url        | string | URL the Customer's currently on                  |
+| title      | string | Title of the website the Customer's currently on |
+| timestamp  | string | Timestamp of the latest change                   |
 
 ## Customer updated
 
@@ -1618,7 +1642,7 @@ Each property in payload is available only if it was updated.
 
 ```js
 customerSDK.on('customer_updated', payload => {
-  if (payload.name) {
+  if (payload.customer.name) {
     console.log(`Name got updated to: ${payload.customer.name}`)
   }
   if (payload.customer.email) {
@@ -1721,6 +1745,8 @@ Payload:
 | event      | object | The entire updated event |
 
 ## Events marked as seen
+
+Informs that the events were seen by the particular user.
 
 ```js
 customerSDK.on('events_marked_as_seen', payload => {
@@ -1843,7 +1869,7 @@ Payload:
 
 ## Incoming rich message postback
 
-Informs about an incoming greeting.
+Informs about an incoming rich message postback.
 
 ```js
 customerSDK.on('incoming_rich_message_postback', payload => {
@@ -1854,14 +1880,14 @@ customerSDK.on('incoming_rich_message_postback', payload => {
 
 Payload:
 
-| properties       | type    | description                                |
-| ---------------- | ------- | ------------------------------------------ |
-| userId           | number  | User who has sent a rich message postback  |
-| chatId           | string  | Chat ID of the sent postback               |
-| threadId         | string  | Thread ID of the sent postback             |
-| eventId          | string  | Event ID of the sent postback              |
-| postback.id      | boolean | ID of the sent postback                    |
-| postback.toggled | boolean | Describes if the sent postback was toggled |
+| properties       | type    | description                                 |
+| ---------------- | ------- | ------------------------------------------- |
+| userId           | number  | User who has sent a rich message postback   |
+| chatId           | string  | Chat ID of the sent postback                |
+| threadId         | string  | Thread ID of the sent postback              |
+| eventId          | string  | Event ID of the sent postback               |
+| postback.id      | boolean | ID of the sent postback                     |
+| postback.toggled | boolean | Describes if the sent postback was toggled. |
 
 ## Incoming typing indicator
 
@@ -1894,6 +1920,8 @@ Payload:
 
 ## Thread closed
 
+Informs that thread has been closed.
+
 ```js
 customerSDK.on('thread_closed', payload => {
   const { chat } = payload
@@ -1908,6 +1936,8 @@ Payload:
 | chatId     | string | Chat ID     |
 
 ## User data
+
+Contains the information about the User data.
 
 ```js
 customerSDK.on('user_data', user => {
@@ -1936,7 +1966,7 @@ customerSDK.on('user_data', user => {
 | avatar     | string  |
 | jobTitle   | string  |
 
-# Disconnection reasons
+# Disconnection reasons and errors
 
 Most of the disconnection reasons can be treated as errors. Because of that, you can find their detailed descriptions in this section.
 
@@ -2051,6 +2081,108 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 
 # Changelog
 
-#### [v2.0.0-alpha.0] - 2018-08-17
+## [v2.0.0-beta.0] - xxxx-xx-xx
+
+### Changed
+
+- Most methods have been changed to accept parameters by name instead of by position.
+  We found this pattern to be easier to read and maintain in the long run.
+  As an example, a call that previously might have looked like this: `customerSDK.updateChatProperties('ON0X0R0L67', properties)` will now look like this: `customerSDK.updateChatProperties({ chatId: 'ON0X0R0L67', properties })`.
+  All methods and their respective parameters are described in the documentation.
+
+- All data structures have been adjusted:
+  Previously properties like `chat` or `thread` could hold a primitive value (usually a string) because they actually contained IDs.
+  This has been confusing and all such properties have been renamed to have an `Id` suffix now.
+  For example: `chat` was renamed to `chatId`, and `thread` was renamed to `threadId`.
+
+- `updateCustomer` method now returns a Promise.
+  Additionally, customer data is not sent automatically in the `login` request.
+  If you still need to send customer data during the `login` request, you will need to provide a `customerDataProvider` in the configuration passed in the `init` call.
+  This provider will be called before sending any `login` request.
+
+- `connected` event no longer contains any chat information. You should use `getChatsSummary` and `getChatHistory` appropriately to fetch it.
+
+- `getChatHistory` now returns an array of threads instead of an array of events.
+
+- `sendEvent` can no longer activate an existing chat.
+  You should use the `activateChat` method for that purpose.
+
+- `new_event` event has been renamed to `incoming_event`.
+
+- `customer_updated` doesn't provide the whole Customer object anymore.
+  You will only receive the data that has actually been changed.
+
+- Chat summary & incoming chat objects used to contain an array of user IDs.
+  This has been changed to align with the API and you can now expect complete user objects in those objects.
+
+- `getPredictedAgent` method requires a group argument now.
+
+- `updateLastSeenTimestamp` method has been changed to `markEventsAsSeen`.
+
+- `sendPostback` method has been changed to `sendRichMessagePostback`.
+
+### Removed
+
+- `reconnected` event got removed. You should just use a single `connected` handler for both initial connection and reconnets.
+
+- `thread_summary` event got removed.
+
+- `sendMessage` method has been removed. You can just use `sendEvent` to send any of the supported types of events.
+
+- `user_is_typing` and `user_stopped_typing` events have been removed. You can use `incoming_typing_indicator` to receive those informations - it comes with a `isTyping` property.
+
+- `user_joined_chat` and `user_left_chat` events have been renamed to `chat_user_added` and `chat_user_removed` respectively.
+
+- `sendFile` method has been removed. You should use the new `uploadFile` method instead.
+
+- Events of type `"annotation"` don't exist anymore. They were only used for rating events and now those are automatically added to a chat upon rating in a form of system events.
+
+### Added
+
+- `incoming_typing_indicator` event replaced `user_is_typing` and `user_stopped_typing` events.
+
+- `chat_user_added` and `chat_user_removed` events replaced `user_joined_chat` and `user_left_chat` events respectively.
+
+- `getForm` and `sendTicketForm` have been added.
+
+- `deleteChatProperties`, `deleteChatThreadProperties` and `deleteEventProperties` methods have been added with accompanying `chat_properties_deleted`, `chat_thread_properties_deleted` and `event_properties_deleted` events.
+
+- `acceptGreeting` and `cancelGreeting` have been added with accompanying `incoming_greeting`, `greeting_accepted` and `greeting_canceled` events.
+
+- `getCustomer` method has been added.
+
+- `setCustomerFields` method has been added.
+
+- `cancelRate` method has been added.
+
+- `getGroupsStatus` method has been added.
+
+- `uploadFile` method has been added. It replaces `sendFile` and doesn't add an event of type `"file"` to a chat but rather returns a URL which you can then use to send a `"file"` event using the `sendEvent` method.
+
+- `availability_changed` event has been added.
+
+- `event_updated` event has been added.
+
+- `access_set` event has been added.
+
+- `chat_transferred` event has been added.
+
+- `connection_recovered` and `connection_unstable` have been added.
+
+- All possible errors and disconnection reasons have been documented.
+
+- SDK automatically reconnects to the correct region, but it's advised to pass the correct region of your license explicitly to the `init` function. `dal` is the default.
+
+- Users of type `"agent"` got a `jobTitle` property.
+
+- Events of type `"file"` got a `name` property.
+
+- New types of rich message buttons have been added and some of them have additional properties. Buttons of type `"webview"` come with a `webviewHeight` and buttons of type `"url"` come with a `target`.
+
+- `connected` event payload has a new `availability` property.
+
+- You can send custom system message events using `sendEvent`.
+
+## [v2.0.0-alpha.0] - 2018-08-17
 
 Initial alpha release.
