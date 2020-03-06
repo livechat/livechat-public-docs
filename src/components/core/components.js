@@ -224,7 +224,6 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      // an ugly fix beneath (active ? 1 : 0)
       <MenuLink to={url} active={active ? 1 : 0}>
         <ArticleIcon
           style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
