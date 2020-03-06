@@ -18,9 +18,10 @@ import {
   MainWrapper,
   LeftColumn,
   MiddleColumn,
-  Content,
-  PageHeader
+  Content
 } from "../components/core/components";
+
+import { Header as PageHeader } from "../components/core/Page";
 
 import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
@@ -53,7 +54,6 @@ export default ({ data: { mdx, allMdx } }) => {
     fields: { slug },
     parent: { modifiedTime }
   } = mdx;
-  console.log(modifiedTime)
 
   const versions = getVersionsByGroup(versionGroup);
   const { edges } = allMdx;

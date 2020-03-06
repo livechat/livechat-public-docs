@@ -11,3 +11,11 @@ export const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["1.0", "2.0"]
   }
 };
+
+export const RATES = [
+  "It's unsuable",
+  "Rather poor",
+  "It's OK",
+  "Great",
+  "Excellent"
+];

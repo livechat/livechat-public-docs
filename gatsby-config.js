@@ -1,11 +1,11 @@
 const path = require("path");
 let activeEnv =
-  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || 'development'
+  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || "development";
 
-console.log(`Using environment config: '${activeEnv}'`)
+console.log(`Using environment config: '${activeEnv}'`);
 require("dotenv").config({
-  path: `.env.${activeEnv}`,
-})
+  path: `.env.${activeEnv}`
+});
 
 module.exports = {
   siteMetadata: {
@@ -98,7 +98,15 @@ module.exports = {
         display: "swap"
       }
     },
-    `gatsby-plugin-sitemap`
+    `gatsby-plugin-sitemap`,
+    {
+      resolve: "gatsby-plugin-react-svg",
+      options: {
+        rule: {
+          include: /assets/
+        }
+      }
+    }
     // mutation observer doesn't really work for some reason here
     // {
     //   resolve: `gatsby-plugin-algolia-docsearch`,

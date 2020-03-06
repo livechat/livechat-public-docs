@@ -3,7 +3,6 @@ import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { Link } from "gatsby";
-import StarRating from "../core/rating"
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
@@ -108,37 +107,6 @@ export const NavHeader = styled.div`
     margin-right: 2px;
   }
 `;
-
-export const PageTitle = styled.h1`
-  margin: 0;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
-`;
-
-export const PageHeaderWrapper = styled.div`
-  margin: 3em 0 1em;
-  padding: 2em 0 1em;
-`;
-
-export const PageSubtitle = styled.div`
-  font-size: 14px;
-  color: gray;
-  margin-bottom: 1.45rem
-`;
-export const PageHeader = ({ title, timeToRead }) => (
-  <PageHeaderWrapper>
-    <PageTitle><span>{title}</span><StarRating /></PageTitle>
-    <PageSubtitle>
-      {timeToRead} minutes reading time
-    </PageSubtitle>
-  </PageHeaderWrapper>
-);
-
-
 
 export const Content = styled.article`
   display: grid;
@@ -256,14 +224,14 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-        // an ugly fix beneath (active ? 1 : 0)
-        <MenuLink to={url} active={active ? 1 : 0}>
-          <ArticleIcon
-            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-          />
-          &nbsp;
+      // an ugly fix beneath (active ? 1 : 0)
+      <MenuLink to={url} active={active ? 1 : 0}>
+        <ArticleIcon
+          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+        />
+        &nbsp;
         <span>{title}</span>
-        </MenuLink>
-      )}
+      </MenuLink>
+    )}
   </Li>
 );
