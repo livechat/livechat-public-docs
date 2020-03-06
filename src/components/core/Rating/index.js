@@ -1,70 +1,54 @@
-import React from "react";
-import { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "@emotion/styled";
 
 import Star from "./star";
-import useLocalStorage from "../../../hooks/useLocalStorage";
-import { logAmplitudeEvent } from "../../../utils/index";
 import { RATES } from "../../../constant";
+import { RatingContext } from "../../../contexts";
 
-const Wrapper = styled.span`
+const Wrapper = styled.div`
+  width: 215px;
+  height: 25px;
   display: flex;
   align-items: center;
+  margin: ${({ margin }) => (margin ? "50px 0 0 auto" : "none")};
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Label = styled.label`
-  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Roboto",
-    sans-serif;
-  margin-right: 10px;
+  font-family: "Source Sans Pro";
+  margin: ${({ margin }) => (margin ? "0px 10px 5px 0" : "6px 10px 5px 0")};
   font-size: 14px;
-  font-weight: normal;
   color: gray;
 `;
 
-const Rating = () => {
-  const [ratings, setRatings] = useLocalStorage("ratings", []);
-  const currentRating = ratings.find(
-    rating => rating.pathname === window.location.pathname
-  );
-  const [selectedIndex, setSelectedIndex] = useState(
-    currentRating ? currentRating.rating : -1
-  );
-  const [hoveredIndex, setHoveredIndex] = useState(-1);
-
-  const saveRatings = (rating, text) => {
-    const newRatings = ratings.filter(
-      r => r.pathname !== window.location.pathname
-    );
-    const newRating = {
-      rating,
-      pathname: window.location.pathname
-    };
-    newRatings.push(newRating);
-    setRatings(newRatings);
-    setSelectedIndex(rating);
-
-    logAmplitudeEvent("Document rated", {
-      pathname: newRating.pathname,
-      rating: newRating.rating,
-      text
-    });
-  };
+const Rating = ({ margin = false }) => {
+  const { selectedStar, saveRating } = useContext(RatingContext);
+  const [hoverStar, setHoverStar] = useState(-1);
 
   return (
-    <Wrapper>
-      <Label>Rate this page:</Label>
-      {RATES.map((r, i) => (
-        <Star
-          key={r}
-          handleMouseEnter={() => setHoveredIndex(i)}
-          handleMouseLeave={() => setHoveredIndex(-1)}
-          handleClick={() => saveRatings(i, RATES[i])}
-          hovered={hoveredIndex > i - 1}
-          rated={selectedIndex === i}
-          selected={selectedIndex > i - 1}
-          text={RATES[i]}
-        />
-      ))}
+    <Wrapper margin={margin}>
+      <Label margin={margin}>Rate this page</Label>
+      {RATES.map((r, i) => {
+        const isHover = hoverStar > i - 1;
+        const isSelected = selectedStar > i - 1;
+        const isRated = selectedStar === i;
+
+        return (
+          <Star
+            key={r}
+            handleMouseEnter={() => setHoverStar(i)}
+            handleMouseLeave={() => setHoverStar(-1)}
+            handleClick={() => saveRating(i)}
+            isHover={isHover}
+            isSelected={isSelected}
+            isRated={isRated}
+            text={RATES[i]}
+          />
+        );
+      })}
     </Wrapper>
   );
 };

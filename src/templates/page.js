@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
+import * as DesignSystem from "@livechat/design-system";
 
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
@@ -22,13 +23,13 @@ import {
 } from "../components/core/components";
 
 import { Header as PageHeader } from "../components/core/Page";
+import Rating from "../components/core/Rating";
 
-import * as DesignSystem from "@livechat/design-system";
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { VersionProvider } from "../contexts/version";
+import { useLocalStorage, useRating } from "../hooks";
+import { VersionProvider, RatingProvider } from "../contexts";
 
 const components = {
   ...DesignSystem,
@@ -156,44 +157,49 @@ export default ({ data: { mdx, allMdx } }) => {
     items: versions
   };
 
+  const ratingContext = useRating();
+
   return (
-    <VersionProvider value={versionContext}>
-      <SEO desc={desc} title={title} />
-      <Header />
-      <MainWrapper>
-        <LeftColumn>
-          <SideNav
-            currentSlug={customSlug || slug}
-            category={category}
-            subcategory={subcategory}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            versions={versions}
-          />
-        </LeftColumn>
-        <MiddleColumn>
-          {currentApiVersion && (
-            <Version
-              articleVersions={articlesVersions[category][subcategory][title]}
-              redirectToVersion={redirectToVersion}
-              group={versionGroup}
+    <RatingProvider value={ratingContext}>
+      <VersionProvider value={versionContext}>
+        <SEO desc={desc} title={title} />
+        <Header />
+        <MainWrapper>
+          <LeftColumn>
+            <SideNav
+              currentSlug={customSlug || slug}
+              category={category}
+              subcategory={subcategory}
+              expanded={expanded}
+              setExpanded={setExpanded}
+              versions={versions}
             />
-          )}
-          <Content>
-            {title && (
-              <PageHeader
-                title={title}
-                timeToRead={timeToRead}
-                modifiedTime={modifiedTime}
+          </LeftColumn>
+          <MiddleColumn>
+            {currentApiVersion && (
+              <Version
+                articleVersions={articlesVersions[category][subcategory][title]}
+                redirectToVersion={redirectToVersion}
+                group={versionGroup}
               />
             )}
-            <MDXProvider components={components}>
-              <MDXRenderer>{body}</MDXRenderer>
-            </MDXProvider>
-          </Content>
-        </MiddleColumn>
-      </MainWrapper>
-    </VersionProvider>
+            <Content>
+              {title && (
+                <PageHeader
+                  title={title}
+                  timeToRead={timeToRead}
+                  modifiedTime={modifiedTime}
+                />
+              )}
+              <MDXProvider components={components}>
+                <MDXRenderer>{body}</MDXRenderer>
+              </MDXProvider>
+              <Rating margin />
+            </Content>
+          </MiddleColumn>
+        </MainWrapper>
+      </VersionProvider>
+    </RatingProvider>
   );
 };
 

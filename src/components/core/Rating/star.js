@@ -8,17 +8,21 @@ import BlueStarIcon from "../../../assets/blue-star.svg";
 
 const Container = styled.div`
   cursor: pointer;
+  margin-left: 4px;
 `;
 
 const StarIcon = styled(BlueStarIcon)`
   > path {
-    fill: ${({ fill }) => fill};
+    fill: #0066ff;
+  }
+
+  :hover > path {
+    fill: #004cbf;
   }
 `;
 
-const Star = ({ hovered, selected, rated, text, ...props }) => {
+const Star = ({ isHover, isSelected, isRated, text, ...props }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const fillColor = hovered ? "#004cbf" : selected ? "#0066FF" : "";
 
   const onMouseEnter = () => {
     props.handleMouseEnter();
@@ -42,15 +46,11 @@ const Star = ({ hovered, selected, rated, text, ...props }) => {
           onMouseLeave={onMouseLeave}
           onClick={props.handleClick}
         >
-          {hovered || selected ? (
-            <StarIcon fill={fillColor} />
-          ) : (
-            <BlackStarIcon />
-          )}
+          {isHover || isSelected ? <StarIcon /> : <BlackStarIcon />}
         </Container>
       }
     >
-      {rated ? `You rated "${text}"` : text}
+      {isRated ? `You rated "${text}"` : text}
     </PopperTooltip>
   );
 };
