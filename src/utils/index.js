@@ -32,7 +32,7 @@ export const setupDocsearch = () => {
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
-    handleSelected: function(input, event, suggestion, datasetNumber, context) {
+    handleSelected: function (input, event, suggestion, datasetNumber, context) {
       if (
         context.selectionMethod === "click" ||
         context.selectionMethod === "enterKey"
@@ -59,4 +59,10 @@ export const getVersionColor = (version, groupVersions) => {
   const isLegacy = version === groupVersions.LEGACY_VERSION;
 
   return isStable ? "67, 132, 245" : isLegacy ? "209, 52, 91" : "239, 168, 67";
+};
+
+export const openChatWindow = (e) => {
+  e.preventDefault()
+  const LC_API = window.LC_API || {}
+  LC_API.open_chat_window()
 };
