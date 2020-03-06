@@ -365,6 +365,12 @@ The **Message** event contains text message to other chat users.
 | `type`                | yes     | `string`  | `message`                                                           |
 | `recipients`          | yes     | `string`  | Possible values: `all` (default), `agents`                          |
 | `properties`          | no      | `object`  | [Properties](#properties)                                           |
+| `postback`            | no      | `object`  | Indicates that the message event was generated in response to a rich message event. |
+| `postback.id`         | yes     | `string`  | ID of the postback from the rich message event.                     |
+| `postback.thread_id`  | yes     | `string`  | ID of the thread with the rich message event.                       |
+| `postback.event_id`   | yes     | `string`  | ID of the rich message event.                                       |
+| `postback.type`       | no      | `string`  | Should be used together with `postback.value`.                      |
+| `postback.value`      | no      | `string`  | Should be used together with `postback.type`.                       |
 
 ### Response
 
@@ -1123,7 +1129,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 </CodeResponse>
 
-## Thread
+## Threads
 
 <CodeResponse title={'Sample Thread data structure'}>
 
@@ -2071,12 +2077,12 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 #### Specifics
 
-|                        |                                      |
-| ---------------------- | ------------------------------------ |
-| **Action**             | `unfollow_chat`                      |
-| **Required scopes**    | -                                    |
-| **Web API equivalent** | [`unfollow_chat`](../#unfollow-chat) |
-| **Push message**       | -                                    |
+|                        |                                       |
+| ---------------------- | ------------------------------------- |
+| **Action**             | `unfollow_chat`                       |
+| **Required scopes**    | -                                     |
+| **Web API equivalent** | [`unfollow_chat`](../#unfollow-chat)  |
+| **Push message**       | [`chat_unfollowed`](#chat_unfollowed) |
 
 #### Request
 
@@ -4350,7 +4356,7 @@ Here's what you need to know about **pushes**:
 | **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
 | **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
-| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast)                                                                                                                                                   |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed)                                                                                                                         |
 
 </Text>
 
@@ -4598,6 +4604,7 @@ This push can be emitted with `user.present` set to `false` when a user writes t
 | Object      | Notes                                |
 | ----------- | ------------------------------------ |
 | `user_type` | Possible values: `agent`, `customer` |
+| `thread_id` | Present when a user was added to an active chat. |
 
 ### `chat_user_removed`
 Informs that a user (Customer or Agent) was removed from a chat.
@@ -4627,6 +4634,7 @@ Informs that a user (Customer or Agent) was removed from a chat.
 | Object      | Notes                                |
 | ----------- | ------------------------------------ |
 | `user_type` | Possible values: `agent`, `customer` |
+| `thread_id` | Present when a user was removed from an active chat. |
 
 ## Events
 
@@ -5303,6 +5311,27 @@ Informs about messages sent via the `multicast` method or by the system.
 | `author_id` | No       | Present only if the push was generated by the **Multicast** method and not sent from the server. |
 | `content`   | Yes      |       |
 | `type`      | No       |       |
+
+### `chat_unfollowed`
+
+Informs that a chat has been unfollowed. Useful in multiple connection scenarios, where one app/integration needs to know that another one unfollowed the chat.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                   |
+| ---------------------- | ----------------- |
+| **Action**             | `chat_unfollowed` |
+| **Webhook equivalent** | -                 |
 
 # Errors
 

@@ -19,3 +19,6 @@ export const RATES = [
   "Great",
   "Excellent"
 ];
+
+export const SCROLL_OFFSET = 130;
+

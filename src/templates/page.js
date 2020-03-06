@@ -29,6 +29,7 @@ import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { VersionProvider } from "../contexts/version";
+import { SCROLL_OFFSET } from "../constant";
 
 const components = {
   ...DesignSystem,
@@ -118,7 +119,7 @@ export default ({ data: { mdx, allMdx } }) => {
       const selector = document.querySelector(hash);
       if (selector) {
         selector.scrollIntoView();
-        window.scrollBy(0, -100);
+        window.scrollBy(0, -SCROLL_OFFSET);
       }
     }
   }, []);
