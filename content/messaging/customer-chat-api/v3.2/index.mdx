@@ -680,9 +680,11 @@ Here's the list of all system messages you might come across as a Customer:
   "name": "John Smith",
   "email": "customer1@example.com",
   "avatar": "https://example.com/avatars/1.jpg",
-  "fields": {
-    "custom field name": "custom field value"
-  },
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }],
   "present": true,
   "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
@@ -690,12 +692,12 @@ Here's the list of all system messages you might come across as a Customer:
 
 </CodeResponse>
 
-| Field    | Req./Opt. |     |
-| -------- | :-------: | --: |
-| `avatar` | optional  |     |
-| `email`  | optional  |     |
-| `name`   | optional  |     |
-| `fields` | optional  |     |
+| Field            | Req./Opt. | Notes                                                                                     |
+| ---------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `avatar`         | optional  |                                                                                           |
+| `email`          | optional  |                                                                                           |
+| `name`           | optional  |                                                                                           |
+| `session_fields` | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration. |
 
 ## Agent
 
@@ -1011,7 +1013,7 @@ curl -X POST \
 | **Chats**      | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                                                                                                                     |
 | **Events**     | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                                                                                                 |
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) [`get_license_properties`](#get-license-properties) [`get_group_properties`](#get-group-properties) |
-| **Customers**  | [`update_customer`](#update-customer) [`set_customer_fields`](#set-customer-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                                                                                                                                         |
+| **Customers**  | [`update_customer`](#update-customer) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                                                                                                                         |
 | **Status**     | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | **Other**      | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                                                                                         |
 
@@ -2163,12 +2165,12 @@ curl -X GET \
 
 #### Request
 
-| Parameter | Required | Data type | Notes                            |
-| --------- | -------- | --------- | -------------------------------- |
-| `name`    | No       | `string`  |                                  |
-| `email`   | No       | `string`  |                                  |
-| `avatar`  | No       | `string`  | The URL of the Customer's avatar |
-| `fields`  | No       | `object`  | `key: value` format              |
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | The URL of the Customer's avatar                                                   |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
 
 At least one optional parameter needs to be included in the request.
 
@@ -2184,12 +2186,19 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/update_customer?license_id=<license_id>' \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "name": "John Doe"
-      }'
+'https://api.livechatinc.com/v3.2/customer/action/update_customer?license_id=<license_id>' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <customer_access_token>' \
+-d '{
+      "name": "John Doe",
+      "email": "customer1@example.com",
+      "avatar": "example.com/avatars/1.png",
+      "session_fields": [{
+        "custom_key": "custom_value"
+      }, {
+        "another_custom_key": "another_custom_value"
+      }]
+    }'
 ```
 
 </CodeSample>
@@ -2202,21 +2211,21 @@ curl -X POST \
 
 <Text>
 
-### Set Customer Fields
+### Set Customer Session Fields
 
 #### Specifics
 
-|                        |                                                                        |
-| ---------------------- | ---------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/set_customer_fields` |
-| **RTM API equivalent** | [`set_customer_fields`](rtm-reference/#set-customer-fields)            |
-| **Webhook**            | [`customer_updated`](/management/configuration-api/#customer_updated)  |
+|                        |                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/set_customer_session_fields` |
+| **RTM API equivalent** | [`set_customer_session_fields`](rtm-reference/#set-customer-session-fields)    |
+| **Webhook**            | [`customer_updated`](/management/configuration-api/#customer_updated)          |
 
 #### Request
 
-| Parameter | Required | Data type | Notes                              |
-| --------- | -------- | --------- | ---------------------------------- |
-| `fields`  | Yes      | `object`  | `key:value` format; max keys: 100  |
+| Parameter        | Required | Data type  | Notes                                                                                            |
+| ---------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| `session_fields` | Yes      | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. Max keys: 100 |
 
 Users Agent and referrer are updated by default using the browser’s headers.
 
@@ -2232,14 +2241,16 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/set_customer_fields?license_id=<license_id>' \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-      "fields": {
-		    "company_size": "10-100"
-      		}
-      }'
+'https://api.livechatinc.com/v3.2/customer/action/set_customer_session_fields?license_id=<license_id>' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <customer_access_token>' \
+-d '{
+      "session_fields": [{
+        "custom_key": "custom_value"
+      }, {
+        "another_custom_key": "another_custom_value"
+      }]
+    }'
 ```
 
 </CodeSample>
@@ -2266,12 +2277,12 @@ Returns the info about the Customer requesting it.
 
 #### Response
 
-|          |                                                      |
-| ---------| ---------------------------------------------------- |
-| `name`   | [Customer's](#customer) name. Returned only if set.  |
-| `email`  | [Customer's](#customer) email. Returned only if set. |
-| `avatar` | [Customer's](#customer) avatar. Returned only if set.|
-| `fields` | Custom fields. Returned only if set.                 |
+|                  |                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `name`           | [Customer's](#customer) name. Returned only if set.                                                             |
+| `email`          | [Customer's](#customer) email. Returned only if set.                                                            |
+| `avatar`         | [Customer's](#customer) avatar. Returned only if set.                                                           |
+| `session_fields` | An array of custom object-enclosed `key:value` pairs. Returned only if set. Available for the session duration. |
 
 </Text>
 
@@ -2281,10 +2292,10 @@ Returns the info about the Customer requesting it.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/get_customer?license_id=<license_id>' \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{}'
+'https://api.livechatinc.com/v3.2/customer/action/get_customer?license_id=<license_id>' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <customer_access_token>' \
+-d '{}'
 ```
 
 </CodeSample>
@@ -2294,13 +2305,15 @@ curl -X POST \
 ```json
 {
   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "type": "customer", 
+  "type": "customer",
   "name": "Customer Name", // optional
   "email": "customer1@example.com", // optional
   "avatar": "https://example.com/avatars/1.jpg", // optional
-  "fields": {
-    "custom field name": "custom field value"
-      } // optional
+  "session_fields": [{ // optional
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
 }
 ```
 
@@ -2403,11 +2416,11 @@ Customer can use this method to trigger checking if [goals](https://www.livechat
 
 #### Request
 
-| Parameter         | Required | Data type | Notes              |
-| ----------------- | -------- | --------- | ------------------ |
-| `customer_fields` | Yes      | `object`  | `key:value` format |
-| `group_id`        | Yes      | `number`  |                    |
-| `page_url`        | Yes      | `string`  |                    |
+| Parameter        | Required | Data type  | Notes                                                |
+| ---------------- | -------- | ---------- | ---------------------------------------------------- |
+| `session_fields` | Yes      | `[]object` | An array of custom object-enclosed `key:value` pairs |
+| `group_id`       | Yes      | `number`   |                                                      |
+| `page_url`       | Yes      | `string`   |                                                      |
 
 #### Response
 
@@ -2421,16 +2434,18 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/check_goals?license_id=<license_id>' \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{
-        "page_url": "https://mypage.com",
-        "customer_fields": {
-            "field1": "value1"
-	      },
-	    "group_id": 0
-}'
+'https://api.livechatinc.com/v3.2/customer/action/check_goals?license_id=<license_id>' \
+-H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <customer_access_token>' \
+-d '{
+      "page_url": "https://mypage.com",
+      "session_fields": [{
+        "custom_key": "custom_value"
+      }, {
+        "another_custom_key": "another_custom_value"
+      }],
+      "group_id": 0
+    }'
 ```
 
 </CodeSample>
