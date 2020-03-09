@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import Rating from "../../core/rating";
+import Rating from "../Rating";
 
 const PageTitle = styled.h1`
   margin: 0;
