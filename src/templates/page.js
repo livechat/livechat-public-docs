@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
-import * as DesignSystem from "@livechat/design-system";
 
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
@@ -35,7 +34,6 @@ import { VersionProvider, RatingProvider } from "../contexts";
 import { SCROLL_OFFSET } from "../constant";
 
 const components = {
-  ...DesignSystem,
   ...CodeBlocks,
   ...Headings,
   RichMessagePreview,

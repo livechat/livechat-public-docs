@@ -28,14 +28,14 @@ const Rating = ({ label, className }) => {
   return (
     <Wrapper className={className}>
       <Label>{label}</Label>
-      {RATES.map((r, i) => {
+      {RATES.map((rate, i) => {
         const isHover = hoverStar > i - 1;
         const isSelected = selectedStar > i - 1;
         const isRated = selectedStar === i;
 
         return (
           <Star
-            key={r}
+            key={rate}
             handleMouseEnter={() => setHoverStar(i)}
             handleMouseLeave={() => setHoverStar(-1)}
             handleClick={() => saveRating(i)}

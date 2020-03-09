@@ -17,7 +17,7 @@ const useRating = () => {
 
   const saveRating = index => {
     const newRatings = ratings.filter(
-      r => r.pathname !== window.location.pathname
+      rating => rating.pathname !== window.location.pathname
     );
     const newRating = {
       rating: index,
