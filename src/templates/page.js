@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
+import styled from "@emotion/styled";
 import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
@@ -40,6 +41,14 @@ const components = {
   RichMessagePreview,
   Link
 };
+
+const StyledRating = styled(Rating)`
+  margin: 50px 0 0 auto;
+
+  > label {
+    margin: 0px 10px 5px 0;
+  }
+`;
 
 export default ({ data: { mdx, allMdx } }) => {
   const {
@@ -196,7 +205,7 @@ export default ({ data: { mdx, allMdx } }) => {
               <MDXProvider components={components}>
                 <MDXRenderer>{body}</MDXRenderer>
               </MDXProvider>
-              <Rating margin label="Was this article helpful?" />
+              <StyledRating label="Was this article helpful?" />
             </Content>
           </MiddleColumn>
         </MainWrapper>

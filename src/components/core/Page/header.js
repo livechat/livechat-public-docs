@@ -24,11 +24,17 @@ const PageSubtitle = styled.div`
   margin-bottom: 1.45rem;
 `;
 
+const StyledRating = styled(Rating)`
+  > label {
+    margin: 6px 10px 5px 0;
+  }
+`;
+
 const PageHeader = ({ title, timeToRead }) => (
   <PageHeaderWrapper>
     <PageTitle>
       <span>{title}</span>
-      <Rating label="Rate this page" />
+      <StyledRating label="Rate this page" />
     </PageTitle>
     <PageSubtitle>{timeToRead} minutes reading time</PageSubtitle>
   </PageHeaderWrapper>

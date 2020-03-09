@@ -9,7 +9,6 @@ const Wrapper = styled.div`
   height: 25px;
   display: flex;
   align-items: center;
-  margin: ${({ margin }) => (margin ? "50px 0 0 auto" : "none")};
 
   @media (max-width: 768px) {
     display: none;
@@ -18,18 +17,17 @@ const Wrapper = styled.div`
 
 const Label = styled.label`
   font-family: "Source Sans Pro";
-  margin: ${({ margin }) => (margin ? "0px 10px 5px 0" : "6px 10px 5px 0")};
   font-size: 14px;
   color: gray;
 `;
 
-const Rating = ({ margin = false, label }) => {
+const Rating = ({ label, className }) => {
   const { selectedStar, saveRating } = useContext(RatingContext);
   const [hoverStar, setHoverStar] = useState(-1);
 
   return (
-    <Wrapper margin={margin}>
-      <Label margin={margin}>{label}</Label>
+    <Wrapper className={className}>
+      <Label>{label}</Label>
       {RATES.map((r, i) => {
         const isHover = hoverStar > i - 1;
         const isSelected = selectedStar > i - 1;
