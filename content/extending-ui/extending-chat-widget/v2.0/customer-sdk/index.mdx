@@ -93,16 +93,15 @@ You will need to provide your licenseId and clientId when creating a Customer SD
 
 Other optional configuration parameters are also available:
 
-| parameters           | type               | default | description                                                                                                                                                                  |
-| -------------------- | ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| licenseId            | number             |         | Your license number, you receive this value when creating a new livechat account.                                                                                            |
-| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat developers console.                                                                |
-| autoConnect          | boolean            | true    | Optional; should the library try to reconnect on it's own.                                                                                                                   |
-| uniqueGroups         | boolean            | false   | Optional; should chat sessions be separated between groups, this feature is analogous to [setting separate chat sessions][1] in our chat widget.                             |
-| groupId              | number             | 0       | Optional; the id of the group you wish to connect to.                                                                                                                        |
-| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                              |
-| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                   |
-| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](updateCustomer) should be prefered for sending customer data. |
+| parameters           | type               | default | description                                                                                                                                                                   |
+| -------------------- | ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| licenseId            | number             |         | Your license number, you receive this value when creating a new livechat account.                                                                                             |
+| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat developer console.                                                                  |
+| autoConnect          | boolean            | true    | Optional; should the library try to reconnect on it's own.                                                                                                                    |
+| groupId              | number             | 0       | Optional; the id of the group you wish to connect to.                                                                                                                         |
+| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                               |
+| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                    |
+| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](#updateCustomer) should be prefered for sending customer data. |
 
 CustomerData:
 
@@ -183,12 +182,9 @@ export default class App extends React.Component {
 }
 ```
 
-[1]: https://www.livechatinc.com/help/livechat-for-multiple-websites#set-separate-sessions
-
 # Key Concepts
 
-The LiveChat system includes four basic types of entities - users, chats, threads, and
-events.
+The LiveChat system includes four basic types of entities - users, chats, threads, and events.
 
 - Chats consist of threads and threads consist of events.
 - Threads are parts of chats.
@@ -281,7 +277,7 @@ You can read more about key concepts of the LiveChat messaging in the [Messaging
 
 ## acceptGreeting
 
-You can use this method to inform that a Customer has seen a greeting. Based on that, the Reports section displays only the greetings seen by Customers instead of all the sent greetings. If a Customer started a chat from a greeting but you didn't execute `acceptGreeting`, the greeting counts as seen in Reports anyway.
+You can use this method to inform that a Customer has seen a greeting. Based on that, the Reports section displays only the greetings seen by Customers instead of all the sent greetings. If a Customer started a chat from a greeting but you didn't execute `acceptGreeting` method, the greeting counts as seen in Reports anyway.
 
 As arguments to this method you should use `uniqueId` & `greetingId` received in the [`incoming_greeting`](#incoming_greeting) or [`connected`](#connected) event.
 
@@ -537,7 +533,7 @@ Returned value:
 ## destroy
 
 Clears any stored resources, removes all listeners, and disconnects from the network.
-After using this method, you won't be able to use the destroyed SDK instance.
+After using this method, you won't be able to use the destroyed Customer SDK instance.
 
 ```js
 customerSDK.destroy()
@@ -955,9 +951,9 @@ Parameters:
 
 Returned value:
 
-| type    | description                                   |
-| ------- | --------------------------------------------- |
-| promise | Promise resolving to a constant success value |
+| properties | type    |
+| ---------- | ------- |
+| success    | boolean |
 
 ### Errors
 
@@ -1117,7 +1113,7 @@ Parameters:
 ## setSneakPeek
 
 You can use it to update the [sneak peek](https://www.livechatinc.com/blog/customer-message-sneak-peak/) in the Agent App.
-It is sent to the server only if the target chat is active.
+It is sent to the server only if the target chat is active. This method doesn't return a promise.
 
 ```js
 customerSDK.setSneakPeek({
@@ -1564,18 +1560,6 @@ Greeting:
 | agent.jobTitle     | string  |                                      |
 | agent.isBot        | boolean |                                      |
 
-## Connection lost
-
-Informs that the Customer SDK has disconnected.
-
-```js
-customerSDK.on('connection_lost', () => {
-  console.log('connection_lost')
-})
-```
-
-This event doesn't carry any additional payload.
-
 ## Connection recovered
 
 Informs that Customer SDK has recovered from an "unstable" connection state. It's always preceded by the [`"connection_unstable"`](#connection-unstable) event.
@@ -1629,11 +1613,11 @@ customerSDK.on('customer_page_updated', payload => {
 
 Payload:
 
-| properties | type   |                                                  |
-| ---------- | ------ | ------------------------------------------------ |
-| url        | string | URL the Customer's currently on                  |
-| title      | string | Title of the website the Customer's currently on |
-| timestamp  | string | Timestamp of the latest change                   |
+| properties | type   |                                       |
+| ---------- | ------ | ------------------------------------- |
+| url        | string | URL of the Customer current website   |
+| title      | string | Title of the Customer current website |
+| timestamp  | string | Timestamp of the latest change        |
 
 ## Customer updated
 
@@ -1945,7 +1929,7 @@ customerSDK.on('user_data', user => {
 })
 ```
 
-**Customer** user type:
+### Customer user type:
 
 | properties | type           | description |
 | ---------- | -------------- | ----------- |
@@ -1956,7 +1940,7 @@ customerSDK.on('user_data', user => {
 | avatar     | string         | Optional    |
 | fields     | customerFields |             |
 
-**Agent** user type:
+### Agent user type:
 
 | properties | type    |
 | ---------- | ------- |
@@ -1966,7 +1950,7 @@ customerSDK.on('user_data', user => {
 | avatar     | string  |
 | jobTitle   | string  |
 
-# Disconnection reasons and errors
+# Disconnection reasons
 
 Most of the disconnection reasons can be treated as errors. Because of that, you can find their detailed descriptions in this section.
 
@@ -1985,6 +1969,10 @@ customerSDK.on('disconnected', ({ reason }) => {
 ## Access token expired
 
 Access token lifetime has elapsed. Customer SDK fetches a new token and reconnects to the server on its own. This is emitted to the user for informational purposes, so for example a reconnection bar can be displayed.
+
+## Connection lost
+
+Disconnected because of the poor connection quality. Customer SDK will try to reconnect on its own.
 
 ## Customer banned
 
@@ -2064,7 +2052,7 @@ Can be received in response to any request that accepts a group somewhere in its
 
 ## Internal
 
-Internal error
+Internal error.
 
 ## Pending requests limit reached
 
