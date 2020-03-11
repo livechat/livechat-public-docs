@@ -25,6 +25,8 @@ const PageSubtitle = styled.div`
 `;
 
 const StyledRating = styled(Rating)`
+  margin-top: 8px;
+
   > label {
     margin: 6px 10px 5px 0;
   }

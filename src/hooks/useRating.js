@@ -4,30 +4,29 @@ import { useLocalStorage } from "./";
 import { RATES } from "../constant";
 import { logAmplitudeEvent } from "../utils";
 
-const useRating = () => {
+const useRating = ({ slug }) => {
   const [ratings, setRatings] = useLocalStorage("ratings", []);
 
-  const currentRating = ratings.find(
-    rating => rating.pathname === window.location.pathname
-  );
+  const currentRating = ratings.find(rating => rating.slug === slug);
 
   const [selectedStar, setSelectedStar] = useState(
     currentRating ? currentRating.rating : -1
   );
 
   const saveRating = index => {
-    const newRatings = ratings.filter(
-      rating => rating.pathname !== window.location.pathname
-    );
+    const newRatings = ratings.filter(rating => rating.slug !== slug);
+
     const newRating = {
       rating: index,
-      pathname: window.location.pathname
+      slug
     };
+
     newRatings.push(newRating);
     setRatings(newRatings);
     setSelectedStar(index);
+
     logAmplitudeEvent("Document rated", {
-      pathname: newRating.pathname,
+      pathname: newRating.slug,
       rating: newRating.rating,
       text: RATES[index]
     });

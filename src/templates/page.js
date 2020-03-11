@@ -41,7 +41,8 @@ const components = {
 };
 
 const StyledRating = styled(Rating)`
-  margin: 50px 0 0 auto;
+  width: 270px;
+  margin: 50px 0 0 calc(50% - 135px);
 
   > label {
     margin: 0px 10px 5px 0;
@@ -166,7 +167,7 @@ export default ({ data: { mdx, allMdx } }) => {
     items: versions
   };
 
-  const ratingContext = useRating();
+  const ratingContext = useRating({ slug: customSlug || slug });
 
   return (
     <RatingProvider value={ratingContext}>
