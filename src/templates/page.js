@@ -167,7 +167,8 @@ export default ({ data: { mdx, allMdx } }) => {
     items: versions
   };
 
-  const ratingContext = useRating({ slug: customSlug || slug });
+  console.log("customSlug", customSlug);
+  const ratingContext = useRating({ slug: customSlug });
 
   return (
     <RatingProvider value={ratingContext}>
