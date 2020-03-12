@@ -46,9 +46,9 @@ customerSDK.auth.getToken().then(token => {
 
 We have prepared a sample chat widget implementation to present the features of LiveChat Customer SDK: [Sample widget on CodeSandbox](https://codesandbox.io/s/rm3prxw88n)
 
-## Known issues
+## Questions
 
-Currently, LiveChat Customer SDK doesn't support queue handling. However, it will be added soon. If you have any questions, you can start a chat with our [24/7 Support](https://direct.lc.chat/1520/125).
+If you have any questions, you can start a chat with our [24/7 Support](https://direct.lc.chat/1520/125).
 
 # How to start
 
@@ -105,11 +105,11 @@ Other optional configuration parameters are also available:
 
 CustomerData:
 
-| parameters | type   | description      |
-| ---------- | ------ | ---------------- |
-| name       | string | Optional         |
-| email      | string | Optional         |
-| fields     | object | Key: value pairs |
+| parameters    | type   | description      |
+| ------------- | ------ | ---------------- |
+| name          | string | Optional         |
+| email         | string | Optional         |
+| sessionFields | object | Key: value pairs |
 
 The `init` function will return a Customer SDK instance:
 
@@ -555,7 +555,7 @@ First, call `getChatHistory` to access the `history` object of a particular chat
 The returned `history` object has only one method, `next`, which gives you a `Promise` with a `{ done, value }` object.
 
 - `done` - indicates if there is anything more to load
-- `value` - an array of threads, each containing an array of its events
+- `value` - an object with array of threads, each containing an array of its events, and array of user objects
 
 Then, you can keep calling `history.next()` multiple times to load previous historical events. They're going to be grouped into threads and might require merging with already loaded events.
 This is useful for implementing an infinite scroll or otherwise showing your Customer's archival chats.
@@ -573,7 +573,8 @@ history.next().then(result => {
     wholeChatHistoryLoaded = true
   }
 
-  const threads = result.value
+  const { threads, users } = result.value
+
   const events = threads
     .map(thread => thread.events || [])
     .reduce((acc, current) => acc.concat(current), [])
@@ -619,7 +620,7 @@ Returned value:
 | chatsSummary | object[] |                    |          |                                                |
 |              |          | id                 |          | Chat ID                                        |
 |              |          | active             | boolean  |                                                |
-|              |          | users              | string[] | User IDs                                       |
+|              |          | users              | object[] | Users objects referenced in the chat           |
 |              |          | lastEvent          | object   | Event                                          |
 |              |          | lastEventsPerType  | object   | Map of event types to event objects            |
 |              |          | lastSeenTimestamps | object   | Map of user IDs to optional lastSeenTimestamps |
@@ -645,8 +646,9 @@ customerSDK
     chatId: 'ON0X0R0L67',
     threadIds,
   })
-  .then(threads => {
-    console.log(threads)
+  .then(response => {
+    console.log(response.threads)
+    console.log(response.users)
   })
   .catch(error => {
     console.log(error)
@@ -662,14 +664,15 @@ Parameters:
 
 Returned value:
 
-| array of shapes | type     | description                     |
-| --------------- | -------- | ------------------------------- |
-| id              | string   | Thread ID                       |
-| chat            | string   | Chat ID                         |
-| active          | string[] | Active state                    |
-| order           | number   | Order (can be used for sorting) |
-| users           | string[] | User IDs                        |
-| events          | object[] | Events                          |
+| properties | type     | description |                                      |
+| ---------- | -------- | ----------- | ------------------------------------ |
+| threads    | object[] |             |                                      |
+|            | id       | string      | Thread ID                            |
+|            | chatId   | string      | Chat ID                              |
+|            | active   | string[]    | Active state                         |
+|            | order    | number      | Order (can be used for sorting)      |
+|            | events   | object[]    | Events                               |
+| users      | object[] |             | Users objects referenced in the chat |
 
 ## getChatThreadsSummary
 
@@ -845,12 +848,14 @@ customerSDK
         `The description of requested URL is: ${urlDetails.description}`,
       )
     }
-    if (urlDetails.image) {
+    if (urlDetails.imageUrl) {
       console.log(
-        `The preview image of requested URL is available under: ${urlDetails.image.url}`,
+        `The preview image of requested URL is available under: ${urlDetails.imageUrl}`,
       )
-      console.log(`Its width is: ${urlDetails.image.width}`)
-      console.log(`Its height is: ${urlDetails.image.height}`)
+      if (urlDetails.imageWidth && urlDetails.imageHeight) {
+        console.log(`Its width is: ${urlDetails.imageWidth}`)
+        console.log(`Its height is: ${urlDetails.imageHeight}`)
+      }
     }
   })
   .catch(error => {
@@ -866,15 +871,14 @@ Parameters:
 
 Returned value:
 
-| properties   | type   | description |
-| ------------ | ------ | ----------- |
-| url          | string |             |
-| title        | string | Optional    |
-| description  | string | Optional    |
-| image        | object | Optional    |
-| image.url    | string |             |
-| image.width  | number |             |
-| image.height | number |             |
+| properties  | type   | description |
+| ----------- | ------ | ----------- |
+| url         | string |             |
+| title       | string | Optional    |
+| description | string | Optional    |
+| imageUrl    | string | Optional    |
+| imageWidth  | number | Optional    |
+| imageHeight | number | Optional    |
 
 ## off
 
@@ -1091,13 +1095,13 @@ Returned value:
 | ---------- | ------ | ------------------------ |
 | id         | string | ID of the created ticket |
 
-## setCustomerFields
+## setCustomerSessionFields
 
-Sends the request if the SDK is connected. Alternatively, queues the update to perform once the connection gets established.
+Sends the request to set customer's session fields. They are available for the duration of the session.
 
 ```js
-customerSDK.setCustomerFields({
-  fields: {
+customerSDK.setCustomerSessionFields({
+  sessionFields: {
     foo: 'bar',
     test: 'qwerty',
   },
@@ -1106,9 +1110,9 @@ customerSDK.setCustomerFields({
 
 Parameters:
 
-| parameters | type   |
-| ---------- | ------ |
-| fields     | object |
+| parameters    | type   |
+| ------------- | ------ |
+| sessionFields | object |
 
 ## setSneakPeek
 
@@ -1229,7 +1233,7 @@ Updates the specified Customer properties and fields.
 const properties = {
   name: 'John Doe',
   email: 'john.doe@example.com',
-  fields: {
+  sessionFields: {
     custom_property: 'BasketValue=10usd',
     any_key_is_ok: 'sample custom field',
   },
@@ -1239,12 +1243,16 @@ customerSDK.updateCustomer(properties)
 
 Parameters:
 
-| parameters        | type   | description                                |
-| ----------------- | ------ | ------------------------------------------ |
-| properties        |        |                                            |
-| properties.name   | string | Optional                                   |
-| properties.email  | string | Optional                                   |
-| properties.fields | object | Optional; custom fields with string values |
+| parameters               | type   | description                                |
+| ------------------------ | ------ | ------------------------------------------ |
+| properties               |        |                                            |
+| properties.name          | string | Optional                                   |
+| properties.email         | string | Optional                                   |
+| properties.sessionFields | object | Optional; custom fields with string values |
+
+### Errors
+
+- `CUSTOMER_SESSION_FIELDS_LIMIT_REACHED` - total amount of session fields would have been exceeded after requested update
 
 ## updateCustomerPage
 
@@ -1902,6 +1910,29 @@ Payload:
 | typingIndicator.authorId | string  | User ID     |
 | typingIndicator.isTyping | boolean |             |
 
+## Queue position updated
+
+Informs that the queue position has been updated.
+
+```js
+customerSDK.on('queue_position_updated', payload => {
+  console.log(payload.chatId)
+  console.log(payload.threadId)
+  console.log(payload.queue.position)
+  console.log(payload.queue.waitTime)
+})
+```
+
+Payload:
+
+| properties     | type   | description                                                                |
+| -------------- | ------ | -------------------------------------------------------------------------- |
+| chatId         | string | Chat ID                                                                    |
+| threadId       | string | Thread ID                                                                  |
+| queue          |        |                                                                            |
+| queue.position | number | Current place in the queue                                                 |
+| queue.waitTime | number | Estimated waiting time for an agent to be assigned to the chat, in seconds |
+
 ## Thread closed
 
 Informs that thread has been closed.
@@ -2069,7 +2100,7 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 
 # Changelog
 
-## [v2.0.0-beta.0] - xxxx-xx-xx
+## [v2.0.0-beta.0] - 2020-03-12
 
 ### Changed
 
@@ -2129,6 +2160,8 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 
 - `incoming_typing_indicator` event replaced `user_is_typing` and `user_stopped_typing` events.
 
+- optional `queue` property has been added on thread objects.
+
 - `chat_user_added` and `chat_user_removed` events replaced `user_joined_chat` and `user_left_chat` events respectively.
 
 - `getForm` and `sendTicketForm` have been added.
@@ -2139,13 +2172,15 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 
 - `getCustomer` method has been added.
 
-- `setCustomerFields` method has been added.
+- `setCustomerSessionFields` method has been added.
 
 - `cancelRate` method has been added.
 
 - `getGroupsStatus` method has been added.
 
 - `uploadFile` method has been added. It replaces `sendFile` and doesn't add an event of type `"file"` to a chat but rather returns a URL which you can then use to send a `"file"` event using the `sendEvent` method.
+
+- `queue_position_updated` event has been added.
 
 - `availability_changed` event has been added.
 
