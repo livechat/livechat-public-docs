@@ -32,6 +32,210 @@ Summing up, if the user token starts with `fra-`, you should add the `X-Region: 
 
 All configurations set by this API will have action in system after max 2 minutes. This delay will be removed in the future.
 
+# Agents
+
+An Agent is a type of [user](/messaging/agent-chat-api/#users) who communicates with Customers. The Agent data structure consists of several fields, which you can look up [here](/messaging/agent-chat-api/#agent). The requester can view and modify some of the fields, but others are read-only.
+
+## Methods
+
+| HTTP method | The Agents API endpoint |
+|-------------|-------------------------|
+| `POST`      |`https://api.livechatinc.com/v3.2/configuration/action/<action>` |
+
+| Required header | Value              |
+| --------------- | ------------------ |
+| `Content-Type`  | `application/json` |
+
+<Section>
+
+<Text>
+
+### Get Agent
+
+It returns the info about an Agent specified by `id`.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/get_agent` |
+| Required scopes| `agents--my:ro` `agents--all:ro` |
+
+#### Request
+
+| Request object | Type       | Required | Notes                                                                   |
+| -------------- | ---------- | -------- | ----------------------------------------------------------------------- |
+| `id`           | `string`   | Yes      | Agent ID                                                                |
+| `fields`__*__  | `string[]` | No       | Filter out desired Agent fields. When empty, you'll get all the fields. |
+
+__*__ The table below presents the possible values for the `fields[]` parameter:
+
+| Possible value | Notes         |
+| -------------  | ------------- |
+| `email`        | Agent's email |
+| `job`          | Agent's job title |
+| `login_status` | The current login status of an Agent |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/get_agent \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": "agent@domain.com",
+        "fields": [
+          "email",
+          "onboarding_completed"
+          ]
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+    "email": "agent@domain.com",
+    "id": "agent@domain.com",
+    "onboarding_completed": "0"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Agents
+
+Returns all Agents within a license. You can request only the Agents from a specific group as well as filter Agent fields.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/get_agents` |
+| Required scopes| `agents--all:ro` |
+
+#### Request
+
+| Parameter   | Required | Type       | Notes                                                                                     |
+| ----------- | -------- | ---------- | ----------------------------------------------------------------------------------------- |
+| `fields`    |  No      | `string[]` | Agent fields to filter out (may contain up to 5 elements when provided with `group_ids`). |
+| `group_ids` |  No      | `int[]`    | Groups from which Agents you want to receive. If `group_ids` are provided, then also `fields` is mandatory and cannot exceed 5 elements. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/get_agents \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "fields": [
+            "email",
+            "onboarding_completed"
+        ],
+        "group_ids": [
+            0,
+            1
+        ]
+    }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+    {
+        "email": "agent1@domain.com",
+        "id": "agent1@domain.com",
+        "onboarding_completed": "0"
+    },
+    {
+        "email": "agent2@domain.com",
+        "id": "agent2@domain.com",
+        "onboarding_completed": "1"
+    },
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Agent
+
+Updates the properties of an Agent specified by `id`.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/update_agent` |
+| Required scopes| `agents--my:rw` `agents--all:rw` (to update other Agents within the same license) |
+
+#### Request
+
+| Parameter                            | Required | Data type | Notes                       |
+| ------------------------------------ | -------- | --------- | --------------------------- |
+| `id`                                 | Yes      | `string`  | Agent ID                    |
+| `nick`                               | No       | `string`  | Agent's nickname            |
+| `job`                                | No       | `string`  | Agent's job title           |
+| `name`                               | No       | `string`  | Agent's display name        |
+| `mobile`                             | No       | `string`  | Agent's mobile phone number |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.0/configuration/action/update_agent \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": "agent1@domain.com",
+        "mobile": "+48 123 456 789"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
 # Bots
 
 Bot enables writing integrations using the **Agent Chat API** - both [RTM](/messaging/agent-chat-api/rtm-reference/) and [Web](/messaging/agent-chat-api/) - to communicate in chats as regular Agents.
@@ -2716,217 +2920,6 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
         "webhook_id": "pqi8oasdjahuakndw9nsad9na"
-      }'
-```
-
-</CodeSample>
-
-</Code>
-
-</Section>
-
-# Agents
-
-Agent is instance of user that communicates with customers. Agent object consists of many fields, some of them are accessible by requester to view and modify, while some of them are just read-only.
-
-## Methods
-
-
-| HTTP method  | The Agents API endpoint |
-|-------|--------|
-| `POST`|`https://api.livechatinc.com/v3.2/configuration/action/<action>`   |
-
-
-| Required header   |      Value      |   |
-|----------|:-------------:|------:|
-| `Content-Type`	 |  `application/json`  |  |
-
-<Section>
-
-<Text>
-
-### Get Agent 
-
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| Method URL   | `https://api.livechatinc.com/v3.2/configuration/action/get_agent`  |
-| Required scopes| `agents--my:ro` `agents--all:ro` |
-
-#### Request
-
-| Request object                       | Type       | Required | Notes                                                                                                                  |
-| ------------------------------------ | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `id`                                 | `string`   | Yes      | ID of agent                                                                                                            |
-| `fields`.__*__                       | `string[]` | No       | Filter out desired agent fields, get all fields if empty                                                               |
-
-
-__*__ The table below presents the possible values for the `fields[]` parameter:
-
-| Possible value | Notes         |
-| -------------  |:-------------:|
-| `email`        | Agent email  |
-| `job`          | Agent job title  |
-| `login_status` | Current agent login status  |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.2/configuration/action/get_agent \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-      "id": "agent@domain.com",
-      "fields": [
-        "email",
-        "onboarding_completed"
-      ]
-      }'
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-    "email": "agent@domain.com",
-    "id": "agent@domain.com",
-    "onboarding_completed": "0"
-}
-```
-
-</CodeResponse>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### Get Agents
-
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| Method URL   | `https://api.livechatinc.com/v3.2/configuration/action/get_agents`  |
-| Required scopes|  `agents--all:ro`  |
-
-#### Request
-
-| Parameter             | Required | Type       | Notes                                                                                     |
-| --------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------- |
-| `fields`              |  No      | `string[]` | Agent fields to filter out (May contain up to 5 elements when provided with `group_ids`)  |
-| `group_ids`           |  No      | `int[]`    | Groups from which agents we want to receive (when provided `fields` are required)         |
-
-If `group_ids` are provided then also `fields` is mandatory and could not exceed 5 elements.
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.2/configuration/action/get_agents \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-        "fields": [
-            "email",
-            "onboarding_completed"
-        ],
-        "group_ids": [
-            0,
-            1
-        ]
-    }'
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-[
-    {
-        "email": "agent1@domain.com",
-        "id": "agent1@domain.com",
-        "onboarding_completed": "0"
-    },
-    {
-        "email": "agent2@domain.com",
-        "id": "agent2@domain.com",
-        "onboarding_completed": "1"
-    },
-]
-```
-
-</CodeResponse>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### Update Agent
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/update_agent`  |
-| Required scopes| `agents--my:rw` `agents--all:rw` (to update other Agents within the same license) |
-
-#### Request
-
-| Parameter                            | Required | Data type | Notes                                                                                                                   |
-| ------------------------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `id`                                 | Yes      | `string`  | Agent ID                                                                                                                |
-| `nick`                               | No       | `string`  | Agent nickname                                                                                                          |
-| `job`                                | No       | `string`  | Agent job title                                                                                                         |
-| `name`                               | No       | `string`  | Display name                                                                                                            |
-| `mobile`                             | No       | `string`  | Agent mobile phone number                                                                                               |
-
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.0/configuration/action/update_agent \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-          "id": "agent1@domain.com",
-          "mobile": "+48 123 456 789"
       }'
 ```
 
