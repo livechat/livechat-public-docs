@@ -3711,7 +3711,10 @@ It returns the initial state of the current Agent.
 | `application`                       | No       | `object`  |                                                                                                                                  |
 | `application.name`                  | No       | `string`  | Application name                                                                                                                 |
 | `application.version`               | No       | `string`  | Application version                                                                                                              |
-| `away`                              | No       | `bool`    | Controls whether the connection should be considered to be in the away state by the auto-away feature. Defaults to false.        |
+| `away` __*__                        | No       | `bool`    | When `true`, the connection is set to the `away` state. Defaults to `false`.  |
+
+__*__ You can use the `away` param to **prevent assigning chats** to Agents **after random reconnections** when their status was set to `not_accepting_chats` by the auto-away feature. When an Agent logs in with `away: true`, the connection is immediately recognized
+as `away`. [Read more...](#set-away-status)
 
 #### Response
 
@@ -3821,6 +3824,11 @@ It returns the initial state of the current Agent.
 
 ### Set Away Status
 
+Sets an Agent's connection to the `away` state. You can use this method to manipulate the Agent's status. The method works per connection - all connections an Agent has (desktop, mobile, etc) must be in the `away` state for the Agent's status to be changed to `not_accepting_chats`.
+
+You may want to make use of the <a href="https://www.livechatinc.com/help/setting-up-auto-away/" target="_blank">auto-away feature</a> and set the Agents' statuses to `not_accepting_chats` when they're inactive, for example they're not at their desks.
+Remember that checking if Agents are active/inactive should be **implemented on your side**. If you decide they're inactive, set their connections to `away`. The auto-away feature will recognize the `away` connections and change the Agent's status to `not_accepting_chats`.
+
 #### Specifics
 
 |                        |                   |
@@ -3832,9 +3840,9 @@ It returns the initial state of the current Agent.
 
 #### Request
 
-| Request object | Required | Type   |     |
-| -------------- | -------- | ------ | --- |
-| `away`         | Yes      | `bool` |     |
+| Request object | Required | Data type |
+| -------------- | -------- | --------- |
+| `away`         | Yes      | `bool`    |
 
 </Text>
 <Code>
@@ -3850,19 +3858,6 @@ It returns the initial state of the current Agent.
 ```
 
 </CodeSample>
-
-<!-- > **`set_away_status`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "set_away_status",
-	"payload": {
-		"away": true
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3923,21 +3918,6 @@ Change the firebase push notifications properties.
 
 </CodeSample>
 
-<!-- > **`change_push_notifications`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "change_push_notifications",
-	"payload": {
-		"firebase_token": "8daDAD9dada8ja1JADA11",
-		"platform": "ios",
-		"enabled": true
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -3961,7 +3941,8 @@ Change the firebase push notifications properties.
 
 ### Set Routing Status
 
-Changes the status of an Agent or a Bot Agent.
+Changes the status of an Agent or a Bot Agent. It sets the status for the session duration. Once the session ends, the status gets back to what's in the Agent's settings.
+Unlike [**Set Away Status**](#set-away-status), which is another mechanism of status manipulation, **Set Routing Status** is independent of the number of connections (desktop, mobile, etc).
 
 #### Specifics
 
@@ -3976,8 +3957,8 @@ Changes the status of an Agent or a Bot Agent.
 
 | Parameter  | Required | Data type| Notes                                                            |
 | -----------| -------- | -------- | ---------------------------------------------------------------- |
-| `status`   |   Yes    | `string` | For Agents: `accepting_chats` or `not_accepting_chats`; for Bot Agents: `accepting_chats`, `not_accepting_chats`, or `offline` | 
-| `agent_id` |   No     | `string` | If not specified, the requester's status will be updated.        | 
+| `status`   |   Yes    | `string` | For Agents: `accepting_chats` or `not_accepting_chats`; for Bot Agents: `accepting_chats`, `not_accepting_chats`, or `offline` |
+| `agent_id` |   No     | `string` | If not specified, the requester's status will be updated.        |
 
 </Text>
 <Code>
@@ -4041,17 +4022,6 @@ Logs the Agent out.
 ```
 
 </CodeSample>
-
-<!-- > **`logout`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "logout",
-	"payload": {},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
