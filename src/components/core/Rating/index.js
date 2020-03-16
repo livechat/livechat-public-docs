@@ -25,6 +25,10 @@ const Rating = ({ label, className }) => {
   const { selectedStar, saveRating } = useContext(RatingContext);
   const [hoverStar, setHoverStar] = useState(-1);
 
+  if (typeof window === "undefined") {
+    return null;
+  }
+
   return (
     <Wrapper className={className}>
       <Label>{label}</Label>

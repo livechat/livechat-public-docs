@@ -2,22 +2,29 @@ import React from "react";
 import { useState } from "react";
 import styled from "@emotion/styled";
 import { PopperTooltip } from "@livechat/design-system";
-
-import BlackStarIcon from "../../../assets/black-star.svg";
-import BlueStarIcon from "../../../assets/blue-star.svg";
+import { StarIcon } from "../../core/icons";
 
 const Container = styled.div`
   cursor: pointer;
   margin-left: 4px;
 `;
 
-const StarIcon = styled(BlueStarIcon)`
+const BlackStar = styled(StarIcon)`
+  > path {
+    fill: #ffffff;
+    stroke: #0f0f10;
+  }
+`;
+
+const BlueStar = styled(StarIcon)`
   > path {
     fill: #0066ff;
-  }
+    stroke: #0066ff;
 
-  :hover > path {
-    fill: #004cbf;
+    :hover {
+      fill: #004cbf;
+      stroke: #004cbf;
+    }
   }
 `;
 
@@ -46,7 +53,7 @@ const Star = ({ isHover, isSelected, isRated, text, ...props }) => {
           onMouseLeave={onMouseLeave}
           onClick={props.handleClick}
         >
-          {isHover || isSelected ? <StarIcon /> : <BlackStarIcon />}
+          {isHover || isSelected ? <BlueStar /> : <BlackStar />}
         </Container>
       }
     >

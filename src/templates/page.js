@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import styled from "@emotion/styled";
 import { graphql, Link, navigate } from "gatsby";
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { MDXProvider } from "@mdx-js/react";
@@ -19,7 +18,8 @@ import {
   MainWrapper,
   LeftColumn,
   MiddleColumn,
-  Content
+  Content,
+  RatingWrapper
 } from "../components/core/components";
 
 import { Header as PageHeader } from "../components/core/Page";
@@ -39,15 +39,6 @@ const components = {
   RichMessagePreview,
   Link
 };
-
-const StyledRating = styled(Rating)`
-  width: 270px;
-  margin: 50px 0 0 calc(50% - 135px);
-
-  > label {
-    margin: 0px 10px 5px 0;
-  }
-`;
 
 export default ({ data: { mdx, allMdx } }) => {
   const {
@@ -167,7 +158,6 @@ export default ({ data: { mdx, allMdx } }) => {
     items: versions
   };
 
-  console.log("customSlug", slug);
   const ratingContext = useRating({ slug });
 
   return (
@@ -205,7 +195,10 @@ export default ({ data: { mdx, allMdx } }) => {
               <MDXProvider components={components}>
                 <MDXRenderer>{body}</MDXRenderer>
               </MDXProvider>
-              <StyledRating label="Was this article helpful?" />
+
+              <RatingWrapper>
+                <Rating label="Was this article helpful?" />
+              </RatingWrapper>
             </Content>
           </MiddleColumn>
         </MainWrapper>
