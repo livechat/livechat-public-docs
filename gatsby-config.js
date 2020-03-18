@@ -98,15 +98,7 @@ module.exports = {
         display: "swap"
       }
     },
-    `gatsby-plugin-sitemap`,
-    {
-      resolve: "gatsby-plugin-react-svg",
-      options: {
-        rule: {
-          include: /assets/
-        }
-      }
-    }
+    `gatsby-plugin-sitemap`
     // mutation observer doesn't really work for some reason here
     // {
     //   resolve: `gatsby-plugin-algolia-docsearch`,
