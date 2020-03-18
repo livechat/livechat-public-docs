@@ -20,7 +20,6 @@ This document describes the **Configuration API v3.2**.
 
 Authentication for Configuration API is handled by access tokens. Find out how to get an access token from [Agent authorization flows](/getting-started/authorization/#agent-authorization-flows). If a method requires particular authorization scopes, you’ll find them included in the method description. Each request should contain the `Authorization: Bearer <your_access_token>` header.
 
-
 ## Data centers
 
 LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
@@ -36,28 +35,25 @@ All configurations set by this API will have action in system after max 2 minute
 # Bot Agents
 
 Bot Agents enables writing integrations using the **Agent Chat API** - both [RTM](/messaging/agent-chat-api/rtm-reference/) and [Web](/messaging/agent-chat-api/) - to communicate in chats as regular Agents.
-A Bot Agent shares the SSO access token with the Agent who created the Bot. Each Bot Agent is a resource owned by an application in Developers Platform, identified by its own `client_id`. 
+A Bot Agent shares the SSO access token with the Agent who created the Bot. Each Bot Agent is a resource owned by an application in Developers Platform, identified by its own `client_id`.
 
-Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as a Bot. 
+Unlike Agents, Bot Agents don't have passwords or emails - you cannot log in as a Bot.
 
 ## Methods
-
 
 | HTTP method  | The Bot Agents API endpoint |
 |-------|--------|
 | `POST`|`https://api.livechatinc.com/v3.2/configuration/action/<action>`   |
 
-
 | Required header   |      Value      |   |
 |----------|:-------------:|------:|
-| `Content-Type`	 |  `application/json`  |  |
+| `Content-Type` |  `application/json`  |  |
 
 <Section>
 
 <Text>
 
-### Create Bot Agent 
-
+### Create Bot Agent
 
 #### Specifics
 
@@ -130,7 +126,6 @@ curl -X POST \
 
 ### Remove Bot Agent
 
-
 #### Specifics
 
 |  |  |
@@ -143,7 +138,6 @@ curl -X POST \
 | Parameter          | Required | Type     | Notes        |
 | ------------------ | -------- | -------- | ------------ |
 | `bot_agent_id`     |  Yes     | `string` | Bot Agent ID |
-
 
 #### Response
 
@@ -192,7 +186,7 @@ curl -X POST \
 | `name`                               | No       | `string`  | Display name                                                                                                            |
 | `avatar`                             | No       | `string`  | Avatar URL                                                                                                              |
 | `max_chats_count`                    | No       | `int`     | Maximum incoming chats that can be routed to an Agent.                                                                  |
-| `groups`                             | No       | `object[]`| Groups an Agent belongs to                                                                                              |                                        
+| `groups`                             | No       | `object[]`| Groups an Agent belongs to                                                                                              |
 | `groups[].id`                        | Yes      | `uint`    | Group ID, required only when `groups`'s present.                                                                        |
 | `groups[].priority` __*__            | Yes      | `string`  | Agent's priority in the group; required only when `groups` is included.                                                 |
 | `default_group_priority` __**__      | No       | `string`  | The default routing priority for a group without defined priority.                                                      |
@@ -212,7 +206,6 @@ __*__ The table below presents the possible values for the `groups[].priority` p
 | `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
 | `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
 
-
 __**__ The table below presents the possible values for the `default_group_priority` parameter:
 
 | Possible values |  Notes   |
@@ -221,7 +214,6 @@ __**__ The table below presents the possible values for the `default_group_prior
 | `normal` | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
 | `last` | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
 | `supervisor` | Bot works as `supervisor` so it will not be assigned to any chats.   |
-
 
 #### Response
 
@@ -232,7 +224,6 @@ No response payload (`200 OK`).
 <Code>
 
 <CodeSample path={'REQUEST'}>
-
 
 ```shell
 curl -X POST \
@@ -255,8 +246,7 @@ curl -X POST \
 
 <Text>
 
-### Get Bot Agents 
-
+### Get Bot Agents
 
 #### Specifics
 
@@ -264,7 +254,6 @@ curl -X POST \
 |-------|--------|
 | Method URL   | `https://api.livechatinc.com/v3.2/configuration/action/get_bot_agents`  |
 | Required scopes| `agents-bot--my:ro` `agents-bot--all:ro`  |
-
 
 #### Request
 
@@ -391,6 +380,316 @@ curl -X POST \
             }]
         }
     }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Groups
+
+Groups let you organize your work by creating teams with Agent and Bot members. You can use groups to do configuration based on shared settings (language, working hours, department) and to separate chat routing. It's worth mentioning that one Agent can belong to multiple groups at the same time. It's possible to configure routing priorities for Agents and Bots specifically per group.
+
+## Methods
+
+| HTTP method | The Groups API endpoint |
+| ----------- | ----------------------- |
+| `POST`      | `https://api.livechatinc.com/v3.2/configuration/action/<action>` |
+
+| Required header | Value               |
+| --------------- | ------------------- |
+| `Content-Type`  |  `application/json` |
+
+<Section>
+
+<Text>
+
+### Create Group
+
+Creates a new group.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/create_group` |
+| Required scopes | `groups--all:rw`  |
+
+#### Request
+
+| Request object          | Data type  | Required | Notes                                                                                                                      |
+| ----------------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `name`                  | `string`   | Yes      | Group name (up to 180 chars)                                                                                               |
+| `language_code`         | `string`   | No       | The code of the group languange                                                                                                |
+| `agent_priorities`__*__ | `object`   | Yes      | Agents' priorities in a group as a map in the `"<id>": "<priority>"` format. At least one Agent must have the `normal` priority. |
+
+__*__ The table below presents the possible values for the `agent_priorities` map:
+
+| Possible value | Notes         |
+| -------------  | ------------- |
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/create_group \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "name": "Sports shoes",
+        "agent_priorities": {
+          "agent1@example.com": "normal",
+          "agent2@example.com": "normal",
+          "agent3@example.com": "last"
+        }
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+    "id": 19
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Group
+
+Updates an existing group.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/update_group` |
+| Required scopes | `groups--my:rw` `groups--all:rw` (to update groups the requester is not a member of) |
+
+#### Request
+
+| Request object           | Data type  | Required | Notes                                                                        |
+| ------------------------ | ---------- | -------- | ---------------------------------------------------------------------------- |
+| `id`                     | `int`      | Yes      | Group ID                                                                     |
+| `name`                   | `string`   | No       | Group name (up to 180 chars)                                                 |
+| `language_code`          | `string`   | No       | The code of the group languange                                              |
+| `agent_priorities`__*__ | `object`   | No       | Agents' priorities in a group as a map in the `"<id>": "<priority>"` format. |
+
+__*__ The table below presents the possible values for the `agent_priorities` map:
+
+| Possible value | Notes         |
+| -------------  | ------------- |
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/update_group \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": 19,
+        "name": "Sport shoes",
+        "agent_priorities": {
+          "agent1@example.com": "normal",
+          "agent2@example.com": "normal",
+          "agent3@example.com": "last"
+        }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Remove Group
+
+Removes an existing group.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/remove_group` |
+| Required scopes | `groups--my:rw` `groups--all:rw` (to remove groups the requester is not a member of) |
+
+#### Request
+
+| Request object | Data type  | Required | Notes     |
+| -------------- | ---------- | -------- | --------- |
+| `id`           | `int`      | Yes      | Group ID  |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/remove_group \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": 19
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Groups
+
+Lists all the exisiting groups.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/list_groups` |
+| Required scopes| `groups--all:ro` |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/list_groups \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "id": 0,
+    "name": "General",
+    "language_code": "en",
+    "routing_status": "offline"
+  },
+  {
+    "id": 19,
+    "name": "Sport shoes",
+    "language_code": "en",
+    "routing_status": "offline"
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Group
+
+Returns details about a group specified by its `id`.
+
+#### Specifics
+
+|  |  |
+|--|--|
+| Method URL   | `https://api.livechatinc.com/v3.2/configuration/action/get_group` |
+| Required scopes| `groups--my:ro` `groups--all:ro` (to get groups the requester is not a member of) |
+
+#### Request
+
+| Request object | Data type  | Required | Notes    |
+| -------------- | ---------- | -------- | -------- |
+| `id`           | `int`      | Yes      | Group ID |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/get_group \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": 19
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 19,
+  "name": "Sports shoes",
+  "language_code": "en",
+  "agent_priorities": {
+    "agent1@example.com": "normal",
+    "agent2@example.com": "normal",
+    "agent3@example.com": "last"
+  },
+  "routing_status": "offline"
 }
 ```
 
