@@ -12,4 +12,13 @@ export const VERSIONS_GROUPS = {
   }
 };
 
+export const RATES = [
+  "It's unsuable",
+  "Rather poor",
+  "It's OK",
+  "Great",
+  "Excellent"
+];
+
 export const SCROLL_OFFSET = 130;
+

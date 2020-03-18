@@ -9,7 +9,7 @@ import {
 import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
 import { WarningIcon } from "./icons";
-import { VersionContext } from "../../contexts/version";
+import { VersionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
 
 export const getVersionsByGroup = group =>
@@ -150,8 +150,8 @@ const Version = ({ articleVersions, redirectToVersion }) => {
           {version === versions.STABLE_VERSION
             ? `(stable)`
             : version === versions.LEGACY_VERSION
-              ? `(legacy)`
-              : `(dev preview)`}
+            ? `(legacy)`
+            : `(dev preview)`}
         </span>
       </>
     );
@@ -222,8 +222,10 @@ const Version = ({ articleVersions, redirectToVersion }) => {
                 itemId: i,
                 content: formatVersion(version),
                 onItemSelect: () => {
-                  logAmplitudeEvent('Version selected', { version: selectedVersion })
-                  return onDropdownHandle(version)
+                  logAmplitudeEvent("Version selected", {
+                    version: selectedVersion
+                  });
+                  return onDropdownHandle(version);
                 },
                 isSelected: version === selectedVersion
               }))}

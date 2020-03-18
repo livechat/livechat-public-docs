@@ -19,19 +19,21 @@ import {
   LeftColumn,
   MiddleColumn,
   Content,
-  PageHeader
+  RatingWrapper
 } from "../components/core/components";
 
-import * as DesignSystem from "@livechat/design-system";
+import { Header as PageHeader } from "../components/core/Page";
+import Rating from "../components/core/Rating";
+
 import { Headings, CodeBlocks } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { VersionProvider } from "../contexts/version";
+
+import { useLocalStorage, useRating } from "../hooks";
+import { VersionProvider, RatingProvider } from "../contexts";
 import { SCROLL_OFFSET } from "../constant";
 
 const components = {
-  ...DesignSystem,
   ...CodeBlocks,
   ...Headings,
   RichMessagePreview,
@@ -156,45 +158,52 @@ export default ({ data: { mdx, allMdx } }) => {
     items: versions
   };
 
+  const ratingContext = useRating({ slug });
+
   return (
-    <VersionProvider value={versionContext}>
-      <SEO desc={desc} title={title} />
-      <Header />
-      <MainWrapper>
-        <LeftColumn>
-          <SideNav
-            currentSlug={customSlug || slug}
-            category={category}
-            subcategory={subcategory}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            versions={versions}
-          />
-        </LeftColumn>
-        <MiddleColumn>
-          {currentApiVersion && (
-            <Version
-              articleVersions={articlesVersions[category][subcategory][title]}
-              redirectToVersion={redirectToVersion}
-              group={versionGroup}
+    <RatingProvider value={ratingContext}>
+      <VersionProvider value={versionContext}>
+        <SEO desc={desc} title={title} />
+        <Header />
+        <MainWrapper>
+          <LeftColumn>
+            <SideNav
+              currentSlug={customSlug || slug}
+              category={category}
+              subcategory={subcategory}
+              expanded={expanded}
+              setExpanded={setExpanded}
+              versions={versions}
             />
-          )}
-          <Content>
-            {title && (
-              <PageHeader
-                title={title}
-                timeToRead={timeToRead}
-                modifiedTime={modifiedTime}
+          </LeftColumn>
+          <MiddleColumn>
+            {currentApiVersion && (
+              <Version
+                articleVersions={articlesVersions[category][subcategory][title]}
+                redirectToVersion={redirectToVersion}
+                group={versionGroup}
               />
             )}
+            <Content>
+              {title && (
+                <PageHeader
+                  title={title}
+                  timeToRead={timeToRead}
+                  modifiedTime={modifiedTime}
+                />
+              )}
+              <MDXProvider components={components}>
+                <MDXRenderer>{body}</MDXRenderer>
+              </MDXProvider>
 
-            <MDXProvider components={components}>
-              <MDXRenderer>{body}</MDXRenderer>
-            </MDXProvider>
-          </Content>
-        </MiddleColumn>
-      </MainWrapper>
-    </VersionProvider>
+              <RatingWrapper>
+                <Rating label="Was this article helpful?" />
+              </RatingWrapper>
+            </Content>
+          </MiddleColumn>
+        </MainWrapper>
+      </VersionProvider>
+    </RatingProvider>
   );
 };
 

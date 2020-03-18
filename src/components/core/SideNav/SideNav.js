@@ -17,7 +17,7 @@ import {
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
-import { VersionContext } from "../../../contexts/version";
+import { VersionContext } from "../../../contexts";
 import { getVersionColor } from "../../../utils";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => (

@@ -4,6 +4,8 @@ import useAllCategoriesMeta from "./useAllCategoriesMeta";
 import useAllArticlesGroupedByCategory from "./useAllArticlesGroupedByCategory";
 import useAllArticlesGroupedBySubcategory from "./useAllArticlesGroupedBySubcategory";
 import useScrollSpy from "./useScrollSpy";
+import useLocalStorage from "./useLocalStorage";
+import useRating from "./useRating";
 
 export {
   useAllArticlesInCategory,
@@ -11,5 +13,7 @@ export {
   useAllCategoriesMeta,
   useAllArticlesGroupedByCategory,
   useAllArticlesGroupedBySubcategory,
-  useScrollSpy
+  useScrollSpy,
+  useLocalStorage,
+  useRating
 };

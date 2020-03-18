@@ -108,28 +108,6 @@ export const NavHeader = styled.div`
   }
 `;
 
-export const PageTitle = styled.h1`
-  margin: 0;
-`;
-
-export const PageHeaderWrapper = styled.div`
-  margin: 3em 0 1em;
-  padding: 2em 0 1em;
-`;
-
-export const PageDetails = styled.p`
-  font-size: 14px;
-  color: gray;
-`;
-export const PageHeader = ({ title, timeToRead, modifiedTime }) => (
-  <PageHeaderWrapper>
-    <PageTitle>{title}</PageTitle>
-    <PageDetails>
-      {timeToRead} minutes reading time &bull; last modified {modifiedTime}
-    </PageDetails>
-  </PageHeaderWrapper>
-);
-
 export const Content = styled.article`
   display: grid;
   grid-gap: 0 30px;
@@ -246,14 +224,27 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-        // an ugly fix beneath (active ? 1 : 0)
-        <MenuLink to={url} active={active ? 1 : 0}>
-          <ArticleIcon
-            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-          />
-          &nbsp;
+      <MenuLink to={url} active={active ? 1 : 0}>
+        <ArticleIcon
+          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+        />
+        &nbsp;
         <span>{title}</span>
-        </MenuLink>
-      )}
+      </MenuLink>
+    )}
   </Li>
 );
+
+export const RatingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > div {
+    margin-top: 50px;
+
+    > label {
+      margin: 0px 10px 5px 0;
+    }
+  }
+`;
