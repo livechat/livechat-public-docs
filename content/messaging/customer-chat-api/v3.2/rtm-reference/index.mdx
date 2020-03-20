@@ -712,9 +712,11 @@ Here's the list of all system messages you might come across as a Customer:
   "name": "John Smith",
   "email": "customer1@example.com",
   "avatar": "https://example.com/avatar.png",
-  "fields": {
-    "custom field name": "custom field value"
-  },
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }],
   "present": true,
   "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
@@ -722,12 +724,12 @@ Here's the list of all system messages you might come across as a Customer:
 
 </CodeResponse>
 
-| Field    | Req./Opt. |     |
-| -------- | :-------: | --: |
-| `avatar` | optional  |     |
-| `email`  | optional  |     |
-| `name`   | optional  |     |
-| `fields` | optional  |     |
+| Field            | Req./Opt. |                                                                                           |
+| ---------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `avatar`         | optional  |                                                                                           |
+| `email`          | optional  |                                                                                           |
+| `name`           | optional  |                                                                                           |
+| `session_fields` | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration. |
 
 ## Agent
 
@@ -1012,9 +1014,9 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 | **Chats**      | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                 |
 | **Events**     | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                           |
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
-| **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_fields`](#set-customer-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                     |
+| **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                     |
 | **Status**     | [`login`](#login) [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                             |
-| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                                                                                              |
+| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                   |
 
 </Text>
 
@@ -2276,20 +2278,20 @@ Sends a sneak peek to a chat.
 
 #### Specifics
 
-|                        |                                                                     |
-| ---------------------- | ------------------------------------------------------------------- |
-| **Action**             | `update_customer`                                                   |
+|                        |                                          |
+| ---------------------- | ---------------------------------------- |
+| **Action**             | `update_customer`                        |
 | **Web API equivalent** | [`update_customer`](../#update-customer) |
-| **Push message**       | [`customer_updated`](#customer_updated)                             |
+| **Push message**       | [`customer_updated`](#customer_updated)  |
 
 #### Request
 
-| Parameter | Required | Data type | Notes                         |
-| --------- | -------- | --------- | ----------------------------- |
-| `name`    | No       | `string`  |                               |
-| `email`   | No       | `string`  |                               |
-| `avatar`  | No       | `string`  | URL of the Customer's avatar. |
-| `fields`  | No       | `object`  | `key: value` format           |
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | URL of the Customer's avatar.                                                      |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
 
 At least one optional parameter needs to be included in the request payload.
 
@@ -2303,7 +2305,14 @@ At least one optional parameter needs to be included in the request payload.
 {
   "action": "update_customer",
   "payload": {
-    "name": "John Doe"
+    "name": "John Doe",
+    "email": "customer1@example.com",
+    "avatar": "example.com/avatars/1.png",
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }]
   }
 }
 ```
@@ -2394,21 +2403,21 @@ Agent and referrer are updated by default using the browser’s headers.
 
 <Text>
 
-### Set Customer Fields
+### Set Customer Session Fields
 
 #### Specifics
 
-|                        |                                                                 |
-| ---------------------- | --------------------------------------------------------------- |
-| **Action**             | `set_customer_fields`                                           |
-| **Web API equivalent** | [`set_customer_fields`](../#set-customer-fields) |
-| **Push message**       | [`customer_updated`](#customer_updated)                         |
+|                        |                                                                  |
+| ---------------------- | ---------------------------------------------------------------- |
+| **Action**             | `set_customer_session_fields`                                    |
+| **Web API equivalent** | [`set_customer_session_fields`](../#set-customer-session-fields) |
+| **Push message**       | [`customer_updated`](#customer_updated)                          |
 
 #### Request
 
-| Parameter | Required | Data type | Notes                              |
-| --------- | -------- | --------- | ---------------------------------- |
-| `fields`  | Yes      | `object`  | `key:value` format; max keys: 100  |
+| Parameter        | Required | Data type  | Notes                                                                                            |
+| ---------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| `session_fields` | Yes      | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. Max keys: 100 |
 
 Agent and referrer are updated by default using the browser’s headers.
 
@@ -2420,11 +2429,13 @@ Agent and referrer are updated by default using the browser’s headers.
 
 ```json
 {
-  "action": "set_customer_fields",
+  "action": "set_customer_session_fields",
   "payload": {
-    "fields": {
-      "company_size": "10-100"
-    }
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }],
   }
 }
 ```
@@ -2436,7 +2447,7 @@ Agent and referrer are updated by default using the browser’s headers.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "set_customer_fields",
+  "action": "set_customer_session_fields",
   "type": "response",
   "success": true,
   "payload": {
@@ -2469,12 +2480,12 @@ Returns the info about the Customer requesting it.
 
 #### Response
 
-|          |                                                      |
-| ---------| ---------------------------------------------------- |
-| `name`   | [Customer's](#customer) name. Returned only if set.  |
-| `email`  | [Customer's](#customer) email. Returned only if set. |
-| `avatar` | [Customer's](#customer) avatar. Returned only if set.|
-| `fields` | Custom fields. Returned only if set.                 |
+|                  |                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `name`           | [Customer's](#customer) name. Returned only if set.                                                             |
+| `email`          | [Customer's](#customer) email. Returned only if set.                                                            |
+| `avatar`         | [Customer's](#customer) avatar. Returned only if set.                                                           |
+| `session_fields` | An array of custom object-enclosed `key:value` pairs. Returned only if set. Available for the session duration. |
 
 </Text>
 
@@ -2485,7 +2496,13 @@ Returns the info about the Customer requesting it.
 ```json
 {
   "action": "get_customer",
-  "payload": {}
+  "payload": {
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }],
+  }
 }
 ```
 
@@ -2505,10 +2522,12 @@ Returns the info about the Customer requesting it.
     "name": "Customer Name", // optional
     "email": "customer1@example.com", // optional
     "avatar": "https://example.com/avatars/1.jpg", // optional
-    "fields": {
-      "custom field name": "custom field value"
-        } // optional
-    }
+    "session_fields": [{ // optional
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }]
+  }
 }
 ```
 
@@ -2538,20 +2557,20 @@ It returns the initial state of the current Customer.
 
 #### Request
 
-| Parameter                     | Required | Data type | Notes                                                    |
-| ----------------------------- | -------- | --------- | -------------------------------------------------------- |
-| `token`                       | Yes      | `string`  | OAuth token from the Customer's account                  |
-| `customer`                    | No       | `object`  |                                                          |
-| `customer.avatar`             | No       | `string`  | The URL of the Customer's avatar                         |
-| `customer.email`              | No       | `string`  |                                                          |
-| `customer.name`               | No       | `string`  |                                                          |
-| `customer.fields`             | No       | `object`  | A map in the `"key": "value"` format                     |
-| `customer_page.title`         | No       | `string`  |                                                          |
-| `customer_page.url`           | No       | `string`  |                                                          |
-| `customer_side_storage`**\*** | No       | `object`  | A map in the `"key": "value"` format                     |
-| `is_mobile`                   | No       | `bool`    | Informs if logging in is performed from a mobile device. |
-| `group_id`                    | No       | `number`  |                                                          |
-| `referrer`                    | No       | `string`  |                                                          |
+| Parameter                     | Required | Data type  | Notes                                                                              |
+| ----------------------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `token`                       | Yes      | `string`   | OAuth token from the Customer's account                                            |
+| `customer`                    | No       | `object`   |                                                                                    |
+| `customer.avatar`             | No       | `string`   | The URL of the Customer's avatar                                                   |
+| `customer.email`              | No       | `string`   |                                                                                    |
+| `customer.name`               | No       | `string`   |                                                                                    |
+| `customer.session_fields`     | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
+| `customer_page.title`         | No       | `string`   |                                                                                    |
+| `customer_page.url`           | No       | `string`   |                                                                                    |
+| `customer_side_storage`**\*** | No       | `object`   | A map in the `"key": "value"` format                                               |
+| `is_mobile`                   | No       | `bool`     | Informs if logging in is performed from a mobile device.                           |
+| `group_id`                    | No       | `number`   |                                                                                    |
+| `referrer`                    | No       | `string`   |                                                                                    |
 
 **\*)** We use `customer_side_storage` to keep some data on the client side. You should pass a map from the `customer_side_storage_updated` push payload to this field.
 

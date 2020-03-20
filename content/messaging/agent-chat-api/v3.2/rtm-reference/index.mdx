@@ -896,9 +896,11 @@ Here's the list of all system messages you might come across:
       }
     ]
   },
-  "fields": {
-    "custom field name": "custom field value"
-  },
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }],
   "statistics": {
     "chats_count": 3,
     "threads_count": 9,
@@ -915,19 +917,19 @@ Here's the list of all system messages you might come across:
 
 </CodeResponse>
 
-| Field                            | Req./Opt. |                                     Note |
-| -------------------------------- | :-------: | ---------------------------------------: |
-| `agent_last_event_created_at`    | optional  |                                          |
-| `avatar`                         | optional  |                                          |
-| `customer_last_event_created_at` | optional  |                                          |
-| `created_at`                     | optional  |                                          |
-| `email`                          | optional  |                                          |
-| `fields`                         | optional  | Isn't present when the chat is archived. |
-| `name`                           | optional  |                                          |
-| `events_seen_up_to`              | optional  | RFC 3339 datetime string                 |
-| `last_visit`                     | optional  |                                          |
-| `present`                        | optional  |                                          |
-| `statistics`                     | optional  |                                          |
+| Field                            | Req./Opt. | Notes                                                                                 |
+| -------------------------------- | --------- | ------------------------------------------------------------------------------------- |
+| `agent_last_event_created_at`    | optional  |                                                                                       |
+| `avatar`                         | optional  |                                                                                       |
+| `customer_last_event_created_at` | optional  |                                                                                       |
+| `created_at`                     | optional  |                                                                                       |
+| `email`                          | optional  |                                                                                       |
+| `session_fields`                 | optional  | An array of custom object-enclosed `key:value` pairs. Expires along with the session. |
+| `name`                           | optional  |                                                                                       |
+| `events_seen_up_to`              | optional  | RFC 3339 datetime string                                                              |
+| `last_visit`                     | optional  |                                                                                       |
+| `present`                        | optional  |                                                                                       |
+| `statistics`                     | optional  |                                                                                       |
 
 # Other common structures
 
@@ -3289,18 +3291,18 @@ Returns the info about the Customer with a given `customer_id`.
 
 #### Response
 
-| Parameter    | Data type | Notes                                                                                                                             |
-| ------------ | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `id`         | string    | [Customer's](#customer) ID.                                                                                                       |
-| `type`       | string    | `customer`                                                                                                                        |
-| `name`       | string    | Customer's name. Returned only if set.                                                                                            |
-| `email`      | string    | Customer's email. Returned only if set.                                                                                           |
-| `avatar`     | string    | Customer's avatar. Returned only if set.                                                                                          |
-| `created_at` | string    | Specifies when the customer's identity was created.                                                                               |
-| `fields`     | object    | Custom fields. Ephemeral. Returned only if set.                                                                                   |
-| `statistics` | object    | Counters for started threads, opened pages, etc.                                                                                  |
-| `last_visit` | object    | Geolocation and opened pages from the customer's most recent online visit. Returned only if the customer logged in at least once. |
-| `chat_ids`   | []string  | IDs of a customer's chats. Returned only if the customer had at least one chat.                                                   |
+| Parameter        | Data type | Notes                                                                                                                             |
+| ---------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `id`             | string    | [Customer's](#customer) ID.                                                                                                       |
+| `type`           | string    | `customer`                                                                                                                        |
+| `name`           | string    | Customer's name. Returned only if set.                                                                                            |
+| `email`          | string    | Customer's email. Returned only if set.                                                                                           |
+| `avatar`         | string    | Customer's avatar. Returned only if set.                                                                                          |
+| `created_at`     | string    | Specifies when the customer's identity was created.                                                                               |
+| `session_fields` | []object  | An array of custom object-enclosed `key:value` pairs. Returned only if set. Available for the session duration.                   |
+| `statistics`     | object    | Counters for started threads, opened pages, etc.                                                                                  |
+| `last_visit`     | object    | Geolocation and opened pages from the customer's most recent online visit. Returned only if the customer logged in at least once. |
+| `chat_ids`       | []string  | IDs of a customer's chats. Returned only if the customer had at least one chat.                                                   |
 
 </Text>
 <Code>
@@ -3331,9 +3333,11 @@ Returns the info about the Customer with a given `customer_id`.
     "name": "John Smith",
     "email": "customer1@example.com",
     "avatar": "example.com/avatars/1.jpg",
-    "fields": {
-      "custom field name": "custom field value"
-    },
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }],
     "last_visit": {
       "started_at": "2017-10-12T15:19:21.010200Z",
       "referrer": "http://www.google.com/",
@@ -3519,12 +3523,12 @@ Creates a new [Customer](#customer) user type.
 
 #### Request
 
-| Parameter | Required | Data type | Notes                            |
-| --------- | -------- | --------- | -------------------------------- |
-| `name`    | No       | `string`  |                                  |
-| `email`   | No       | `string`  |                                  |
-| `avatar`  | No       | `string`  | URL of the Customer's avatar     |
-| `fields`  | No       | `object`  | A map in `"key": "value"` format |
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | URL of the Customer's avatar                                                       |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
 
 </Text>
 <Code>
@@ -3533,7 +3537,16 @@ Creates a new [Customer](#customer) user type.
 ```json
 {
   "action": "create_customer",
-  "payload": {}
+  "payload": {
+    "name": "John Smith",
+    "email": "customer1@example.com",
+    "avatar": "example.com/avatars/1.png",
+    "session_fields": [{
+    "custom_key": "custom_value"
+    }, {
+    "another_custom_key": "another_custom_value"
+    }]
+  }
 }
 ```
 
@@ -3575,13 +3588,13 @@ Updates Customer's properties.
 
 #### Request
 
-| Parameter     | Required | Data type | Notes                            |
-| ------------- | -------- | --------- | -------------------------------- |
-| `customer_id` | Yes      | `string`  | UUID v4 format is required.      |
-| `name`        | No       | `string`  |                                  |
-| `email`       | No       | `string`  |                                  |
-| `avatar`      | No       | `string`  | URL of the Customer's avatar     |
-| `fields`      | No       | `object`  | A map in `"key": "value"` format |
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `customer_id`    | Yes      | `string`   | UUID v4 format is required.                                                        |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | URL of the Customer's avatar                                                       |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
 
 Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
 
@@ -3594,14 +3607,19 @@ Apart from `customer_id`, which is a required parameter, you also need to includ
   "action": "update_customer",
   "payload": {
     "customer_id": "646d53b8-ba76-48bf-7ef1-f6d61ec4ec44",
-    "name": "John Doe"
+    "name": "John Doe",
+    "email": "customer1@example.com",
+    "avatar": "example.com/avatars/1.png",
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }]
   }
 }
 ```
 
 </CodeSample>
-
-
 <CodeResponse>
 
 ```json
@@ -5001,11 +5019,14 @@ Informs that a new Customer registered.
     // "User > Customer" object
     "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
     "created_at": "2019-11-14T14:27:24.410018Z",
+    "name": "John Doe",
     "email": "customer1@example.com",
     "avatar": "https://example.com/avatars/1.jpg",
-    "fields": {
-        "some_key": "some_value"
-    }
+    "session_fields": [{
+        "custom_key": "custom_value"
+    }, {
+        "another_custom_key": "another_custom_value"
+    }]
   }
 }
 ```
@@ -5026,17 +5047,19 @@ Informs that Customer's data was updated.
 
 ```json
 {
-"customer": {  
-  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "name": "John Doe",
-  "email": "john@doe.me",
-  "avatar": "https://example.com/avatars/1.jpg",
-  "type": "customer",
-  "present": false,
-  "banned": false,
-  "fields": {
-    "custom field name": "custom field value"
-    }
+  "customer": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "name": "John Doe",
+    "email": "john@doe.me",
+    "avatar": "https://example.com/avatars/1.jpg",
+    "type": "customer",
+    "present": false,
+    "banned": false,
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }]
   }
 }
 ```
