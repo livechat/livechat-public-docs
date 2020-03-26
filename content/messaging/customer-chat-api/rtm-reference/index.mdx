@@ -267,8 +267,8 @@ Message event contains text message to other chat users.
 | `postback.id`        | yes      | `string`  | ID of the postback from the rich message event.                                                                               |
 | `postback.thread_id` | yes      | `string`  | ID of the thread with the rich message event.                                                                                 |
 | `postback.event_id`  | yes      | `string`  | ID of the rich message event.                                                                                                 |
-| `postback.type`      | no       | `string`  | Should be used together with `postback.value`.                                                                                |
-| `postback.value`     | no       | `string`  | Should be used together with `postback.type`.                                                                                 |
+| `postback.type`      | no       | `string`  | Should be used together with `postback.value`(when  one of them is present, the other is required).                                                                                |
+| `postback.value`     | no       | `string`  | Should be used together with `postback.type`(when  one of them is present, the other is required).                                                                                 |
 
 ### Response
 
@@ -281,9 +281,9 @@ Message event contains text message to other chat users.
 | `author_id`          | always     |                                                                     |
 | `text`               | always     |                                                                     |
 | `postback`           | optionally | Appears in a message only when triggered by a rich message.         |
-| `postback.id`        | optionally |                                                                     |
-| `postback.thread_id` | optionally |                                                                     |
-| `postback.event_id`  | optionally |                                                                     |
+| `postback.id`        | always     |                                                                     |
+| `postback.thread_id` | always     |                                                                     |
+| `postback.event_id`  | always     |                                                                     |
 | `postback.type`      | optionally | Appears only if `postback.value` is present.                        |
 | `postback.value`     | optionally | Appears only if `postback.type` is present.                         |
 | `properties`         | optionally | [Properties](#properties)                                           |
@@ -324,29 +324,52 @@ Message event contains text message to other chat users.
 ## Rich message
 
 <Section>
-
 <Text>
 
-Rich message event contains rich message data structure. [Read more](/extending-ui/extending-chat-widget/rich-messages/) in a document dedicated to Rich messages.
+Rich message (RM) event contains a rich message data structure. [Read more](/extending-ui/extending-chat-widget/rich-messages/) about rich messages.
 
-| Field                             | Req./Opt. |                                                                                                                                                                                                                                                                                           Notes |
-| --------------------------------- | :-------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| `created_at`                      | required  |                                                                                                                                                                                                                             Date & time format with a resolution of microseconds, `UTC string`. |
-| `template_id`                     | required  |                                                                                                                                                                                                                                          Describes how the event should be presented in an app. |
-| `type`                            | required  |                                                                                                                                                                                                                                                                                  `rich_message` |
-| `custom_id`                       | optional  |                                                                                                                                                                                                                                                                                                 |
-| `elements`                        | optional  |                                                                                                                                                                                                                                                           May contain 1 - 10 `element` objects. |
-| `elements.buttons`                | optional  |                                                                                                                                                                                                                                                  `buttons` may contain 1 - 11 `button` objects. |
-| `elements.buttons.postback_id`    | optional  | Required only if `elements.buttons` is present. Describes the action sent via `send_rich_message_postback`. Multiple buttons (even from different elements) can contain the same `postback_id`. Calling `send_rich_message_postback` with this id will add a user to all those buttons at once. |
-| `elements.buttons.text`           | optional  |                                                                                                                                                                                                                                                 Required only if `elements.buttons` is present. |
-| `elements.buttons.type`           | optional  |                                                                         Required only if both `elements.buttons` and `elements.buttons.value` are present. Possible values: `webview`, `message`, `url`, `phone`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started) |
-| `elements.buttons.user_ids`       | optional  |                                                                                                                                                                                  Required only if `elements.buttons` is present. Describes users that sent the postback with `"toggled": true`. |
-| `elements.buttons.value`          | optional  |                                                                                                                                                                                                               Required only if both `elements.buttons` and `elements.buttons.type` are present. |
-| `elements.buttons.webview_height` | optional  |                                                                                                                                                                                                                                                      Possible values: `compact`, `full`, `tall` |
-| `elements.image`                  | optional  |                                                                                                                                                                                                      `image` properties are optional: `name`, `url`, `content_type`, `size`, `width`, `height`. |
-| `elements.subtitle`               | optional  |                                                                                                                                                                                                                                                                                                 |
-| `elements.title`                  | optional  |                                                                                                                                                                                                                                                                                                 |
-| `properties`                      | optional  |                                                                                                                                                                                                                                                            The [properties](#properties) object |
+### Request
+
+| Field                            | Required | Data type | Notes                                                                                             |
+| -------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------- |
+| `custom_id`                      | no       | `string`  | You can give your RM a custom ID.                                                                 |
+| `type`                           | yes      | `string`  | Event type: `rich_message`                                                                        |
+| `properties`                     | no       | `object`  | The [properties](#properties) data structure                                                      |
+| `template_id`                    | yes      | `string`  | Defines how every Rich Message will be presented. Values: `cards`, `sticker`, or `quick_replies`. |
+| `elements`                       | no       | `array`   | Can contain up to 10 `element` objects.                                                           |
+| `elements.title`                 | yes      | `string`  | Displays formatted text on RMs.                                                                   |
+| `elements.subtitle`              | yes      | `string`  | Displays formatted text on RMs.                                                                   |
+| `elements.image`                 | yes      | `image`   | Displays images on RMs. Required param: `url`; Optional params: `name`, `content_type`, `size`, `width`, `height`.|
+| `elements.buttons`               | no       | `array`   | Displays buttons. Can contain up to 11 `button` objects.                                          |
+| `elements.buttons.text`          | yes      | `string`  | Text displayed on a button.                                                                       |
+| `elements.buttons.type`          | yes      | `array`   | Defines the behavior after a user clicks the button. Should be used together with `elements.buttons.value`. Possible values: `webview`, `message`, `url`, `phone`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started)  |
+| `elements.buttons.value`         | yes      | `string`  | Should be used together with `elements.buttons.type`.                                             |
+| `elements.buttons.webview_height`| yes      | `string`  | Required only for the `webview` button`type`. Possible values: `compact`, `full`, `tall`.         |
+| `elements.buttons.postback_id`   | yes      | `string`  | A description of the sent action. Describes the action sent via `send_rich_message_postback`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started) |
+| `elements.buttons.user_ids`      | yes      | `array`   | Describes users that sent the postback with `"toggled": true`.|
+
+### Response
+
+| Field                            | Returned   | Notes                                                               |
+| -------------------------------- | ---------- | ------------------------------------------------------------------- |
+| `id`                             | always     | Generated server-side                                               |
+| `custom_id`                      | optionally |                                                                     |
+| `type`                           | always     |                                                                     |
+| `author_id`                      | always     | Generated server-side                                               |
+| `created_at`                     | always     | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side. |
+| `properties`                     | optionally |                                                                     |
+| `template_id`                    | always     |                                                                     |
+| `elements`                       | optionally |                                                                     |
+| `elements.title`                 | always     |                                                                     |
+| `elements.subtitle`              | always     |                                                                     |
+| `elements.image`                 | always     |                                                                     |
+| `elements.buttons`               | optionally |                                                                     |
+| `elements.buttons.text`          | always     |                                                                     |
+| `elements.buttons.type`          | always     |                                                                     |
+| `elements.buttons.value`         | always     |                                                                     |
+| `elements.buttons.webview_height`| always     | Unless button `type` is different than `webview`.                   |
+| `elements.buttons.postback_id`   | always     |                                                                     |
+| `elements.buttons.user_ids`      | always     |                                                                     |
 
 </Text>
 
@@ -356,11 +379,11 @@ Rich message event contains rich message data structure. [Read more](/extending-
 
 ```json
 {
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743",
   "custom_id": "31-0C-1C-07-DB-16",
-  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "type": "rich_message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "created_at": "2017-10-12T15:19:21.010200Z",
   "properties": {
     // "Properties" object
   },
@@ -371,7 +394,7 @@ Rich message event contains rich message data structure. [Read more](/extending-
       "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "image": {
         "name": "image25.png",
-        "url": "https://example.com/asdsfdsf.png",
+        "url": "https://example.com/image25.png",
         "content_type": "image/png",
         "size": 123444,
         "width": 640,
@@ -392,14 +415,11 @@ Rich message event contains rich message data structure. [Read more](/extending-
           "type": "phone",
           "text": "value",
           "value": "790034890",
-          "webview_height": "tall", // optional, one of compact, tall, full
+          "webview_height": "tall",
           "postback_id": "action_call",
           "user_ids": []
         }
       ]
-    },
-    {
-      "title": "Lorem ipsum dolor 2."
     }
   ]
 }
@@ -414,31 +434,42 @@ Rich message event contains rich message data structure. [Read more](/extending-
 ## Custom
 
 <Section>
-
 <Text>
 
-Custom event is an event with customizable payload.
+The Custom event is an event with customizable payload.
 
-| Field        | Req./Opt. |                                                                Note |
-| ------------ | :-------: | ------------------------------------------------------------------: |
-| `type`       | required  |                                                            `custom` |
-| `custom_id`  | optional  |                                                                   - |
-| `created_at` | required  | Date & time format with a resolution of microseconds, `UTC string`. |
-| `properties` | optional  |                                                                   - |
+### Request
+
+| Field        | Required | Data type | Notes                                                               |                                                                                   |
+| ------------ | -------- | --------- | ------------------------------------------------------------------- |
+| `custom_id`  | no       | `string`  | You can give the event a custom ID.                                 |
+| `type`       | yes      | `string`  | Event type: `custom`                                                |
+| `content`    | no       | `object`  | The content you define                                              |
+| `properties` | no       | `object`  | The [properties](#properties) data structure                        |
+
+### Response
+
+| Field        | Returned   | Notes                                                                                     |
+| ------------ | ---------- | ----------------------------------------------------------------------------------------- |
+| `id`         | always     | Generated server-side                                                                     |
+| `custom_id`  | optionally |                                                                                           |
+| `type`       | always     |                                                                                           |
+| `author_id`  | always     | Generated server-side                                                                     |
+| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`; generated server-side |
+| `content`    | optionally |                                                                                           |
+| `properties` | optionally |                                                                                           |
 
 </Text>
-
 <Code>
-
 <CodeResponse title={'Sample Custom event'}>
 
 ```json
 {
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", 
   "custom_id": "31-0C-1C-07-DB-16",
-  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
   "type": "custom",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "created_at": "2017-10-12T15:19:21.010200Z",
   "content": {
     "custom": {
       "nested": "json"
@@ -464,18 +495,29 @@ Custom event is an event with customizable payload.
 
 System message event is a native system event sent in specific situations.
 
-| Field                 | Req./Opt. |                                                                                                                            Notes |
-| --------------------- | :-------: | -------------------------------------------------------------------------------------------------------------------------------: |
-| `created_at`          | required  |                                                              Date & time format with a resolution of microseconds, `UTC string`. |
-| `type`                | required  |                                                                                                                 `system_message` |
-| `system_message_type` | required  |                                                                                                                                  |
-| `custom_id`           | optional  |                                                                                                                                  |
-| `recipients`          | optional  | It can be specified when sending system messages via the [**Send Event**](#send-event) method. Possible values: `all`, `agents`. |
+### Request
+
+| Field                 | Required | Data type |                                                                                                                            Notes |
+| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`           | no       | `string`  |                                                                                     You can give the system message a custom ID. |
+| `type`                | yes      | `string`  |                                                                                                                 `system_message` |
+| `text`                | no       | `string`  |                                                                                                     Text displayed to recipients |
+| `system_message_type` | yes      | `string`  |                                                                                [System message type](#available-system-messages) |
+| `text_vars`           | no       | `object`  |                                                                                                       Variables used in the text |
+
+### Response
+
+| Field                 | Returned   | Notes                                                                                     |
+| --------------------- | ---------- | ----------------------------------------------------------------------------------------- |
+| `id`                  | always     | Generated server-side                                                                     |
+| `custom_id`           | optionally |                                                                                           |
+| `type`                | always     |                                                                                           |
+| `created_at`          | always     | Date & time format with a resolution of microseconds, `UTC string`; generated server-side |
+| `text`                | optionally |                                                                                           |
+| `system_message_type` | always     |                                                                                           |
 
 </Text>
-
 <Code>
-
 <CodeResponse title={'Sample System message event'}>
 
 ```json
@@ -493,208 +535,213 @@ System message event is a native system event sent in specific situations.
 ```
 
 </CodeResponse>
-
 </Code>
 
 </Section>
 
-Here's the list of all system messages you might come across as a Customer:
+### Available system messages
 
-<FixedTdWidth>
+Here's the list of all system messages you might come across:
 
-### `agent_added`
+<Section>
+
+|                        |                       |        |
+| ---------------------- | --------------------- | ------ |
+| <ul><li>[`agent_added`](#agent_added)</li> <li>[`agent_removed`](#agent_removed)</li> <li>[`archived_customer_disconnected`](#archived_customer_disconnected)</li> <li>[`chat_transferred`](#chat_transferred)</li> <li>[`customer_added`](#customer_added)</li> <li>[`customer_banned`](#customer_banned)</li> <li>[`customer_removed`](#customer_removed)</li> <li>[`manual_archived_agent`](#manual_archived_agent)</li> <li>[`manual_archived_customer`](#manual_archived_customer)</li> <li>[`rating.chat_commented`](#ratingchat_commented)</li><li>[`rating.chat_rated`](#ratingchat_rated)</li> </ul> | <ul><li>[`rating.chat_rating_canceled`](#ratingchat_rating_canceled)</li><li>[`routing.archived_deleted`](#routingarchived_deleted)</li><li>[`routing.archived_disconnected`](#routingarchived_disconnected)</li><li>[`routing.archived_inactive`](#routingarchived_inactive)</li><li>[`routing.archived_offline`](#routingarchived_offline)</li><li>[`routing.archived_other`](#routingarchived_other)</li><li>[`routing.archived_remotely_signed_out`](#routingarchived_remotely_signed_out)</li><li>[`routing.archived_signed_out`](#routingarchived_signed_out)</li><li>[`routing.assigned_deleted`](#routingassigned_deleted)</li><li>[`routing.assigned_disconnected`](#routingassigned_disconnected)</li><li>[`routing.assigned_inactive`](#routingassigned_inactive)</li></ul> | <ul><li>[`routing.assigned_other`](#routingassigned_other)</li><li>[`routing.assigned_remotely_signed_out`](#routingassigned_remotely_signed_out)</li><li>[`routing.assigned_signed_out`](#routingassigned_signed_out)</li> <li>[`routing.unassigned_deleted`](#routingunassigned_deleted)</li><li>[`routing.unassigned_disconnected`](#routingunassigned_disconnected)</li><li>[`routing.unassigned_other`](#routingunassigned_other)</li><li>[`routing.unassigned_remotely_signed_out`](#routingunassigned_remotely_signed_out)</li><li>[`routing.unassigned_signed_out`](#routingunassigned_signed_out)</li><li>[`system_archived`](#system_archived)</li><li>[`transcript_requested`](#transcript_requested)</li><li>[`transcript_sent`](#transcript_sent)</li></ul>
+
+</Section>
+
+#### `agent_added`
 
 |                 Content                 |                                                                                      Generated when |
 | :-------------------------------------: | --------------------------------------------------------------------------------------------------: |
 | _%initiator% added %agent% to the chat_ | Agent was added to chat via the `add_user_to_chat` request and is not the first Agent in that chat. |
 
-### `agent_removed`
+#### `agent_removed`
 
 |                   Content                   |                                                       Generated when |
 | :-----------------------------------------: | -------------------------------------------------------------------: |
 | _%initiator% removed %agent% from the chat_ | Agent was removed from chat via the `remove_user_from_chat` request. |
 
-### `archived_customer_disconnected`
+#### `archived_customer_disconnected`
 
 |          Content           |                              Generated when |
 | :------------------------: | ------------------------------------------: |
 | _%customer% left the chat_ | Chat ended after Customer left the website. |
 
-### `chat_transferred`
+#### `chat_transferred`
 
 |                     Content                     |                                        Generated when |
 | :---------------------------------------------: | ----------------------------------------------------: |
 | _%initiator% transferred the chat to %targets%_ | Chat was transferred via the `transfer_chat` request. |
 
-### `customer_added`
+#### `customer_added`
 
 |                  Content                   |                                                 Generated when |
 | :----------------------------------------: | -------------------------------------------------------------: |
 | _%initiator% added %customer% to the chat_ | Customer was added to chat via the `add_user_to_chat` request. |
 
-### `customer_banned`
+#### `customer_banned`
 
 |                                   Content                                    |                                                        Generated when |
 | :--------------------------------------------------------------------------: | --------------------------------------------------------------------: |
 | _Chat archived because customer was banned by %agent% for %duration% day(s)_ | Chat ended becaus Customer was banned via the `ban_customer` request. |
 
-### `customer_removed`
+#### `customer_removed`
 
 |                    Content                     |                                                          Generated when |
 | :--------------------------------------------: | ----------------------------------------------------------------------: |
 | _%initiator% removed %customer% from the chat_ | Customer was removed from chat via the `remove_user_from_chat` request. |
 
-### `manual_archived_agent`
+#### `manual_archived_agent`
 
 |           Content           |                                    Generated when |
 | :-------------------------: | ------------------------------------------------: |
 | _%agent% archived the chat_ | Agent closed chat via the `close_thread` request. |
 
-### `manual_archived_customer`
+#### `manual_archived_customer`
 
 |            Content             |                                       Generated when |
 | :----------------------------: | ---------------------------------------------------: |
 | _%customer% archived the chat_ | Customer closed chat via the `close_thread` request. |
 
-### `rating.chat_commented`
+#### `rating.chat_commented`
 
 |                      Content                       |                  Generated when |
 | :------------------------------------------------: | ------------------------------: |
 | _%customer% left the following comment: %comment%_ | Chat was commented by Customer. |
 
-### `rating.chat_rated`
+#### `rating.chat_rated`
 
 |                Content                 |              Generated when |
 | :------------------------------------: | --------------------------: |
 | _%customer% rated the chat as %score%_ | Chat was rated by Customer. |
 
-### `rating.chat_rating_canceled`
+#### `rating.chat_rating_canceled`
 
 |                Content                |                         Generated when |
 | :-----------------------------------: | -------------------------------------: |
 | _%customer% canceled the chat rating_ | Chat rating was cancelled by Customer. |
 
-### `routing.archived_deleted`
+#### `routing.archived_deleted`
 
 |                            Content                             |                                                                                                          Generated when |
 | :------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------------: |
 | _The chat was closed because %agent% account had been deleted_ | Chat was archived after Agent was removed from the license. No other Agent could be selected, and queues were disabled. |
 
-### `routing.archived_disconnected`
+#### `routing.archived_disconnected`
 
 |                              Content                               |                                                                                                          Generated when |
 | :----------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------------: |
 | _The chat was closed because %agent% had lost internet connection_ | Chat was archived after Agent unexpectedly lost connection. No other Agent could be selected, and queues were disabled. |
 
-### `routing.archived_inactive`
+#### `routing.archived_inactive`
 
 |                         Content                         |                                              Generated when |
 | :-----------------------------------------------------: | ----------------------------------------------------------: |
 | _Chat archived due to %duration% minutes of inactivity_ | No new messages were posted for an extended amount of time. |
 
-### `routing.archived_offline`
+#### `routing.archived_offline`
 
 |                  Content                   |                                                 Generated when |
 | :----------------------------------------: | -------------------------------------------------------------: |
 | _Chat archived due to no available agents_ | No Agent could be selected after chat was placed in the queue. |
 
-### `routing.archived_other`
+#### `routing.archived_other`
 
 |        Content        |                                                                                                                     Generated when |
 | :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------: |
 | _The chat was closed_ | Chat was archived after Agent was removed from chat for other reasons. No other Agent could be selected, and queues were disabled. |
 
-### `routing.archived_remotely_signed_out`
+#### `routing.archived_remotely_signed_out`
 
 |                              Content                               |                                                                                              Generated when |
 | :----------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------: |
 | _The chat was closed because %agent% had been remotely signed out_ | Chat was archived after an Agent was logged out. No other Agent could be selected and queues were disabled. |
 
-### `routing.archived_signed_out`
+#### `routing.archived_signed_out`
 
 |                       Content                        |                                                                                        Generated when |
 | :--------------------------------------------------: | ----------------------------------------------------------------------------------------------------: |
 | _The chat was closed because %agent% had signed out_ | Chat was archived after Agent logged out. No other Agent could be selected, and queues were disabled. |
 
-### `routing.assigned_deleted`
+#### `routing.assigned_deleted`
 
 |                                      Content                                      |                                                                        Generated when |
 | :-------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------: |
 | _Chat assigned to %agent_added% because %agent_removed% account had been deleted_ | Chat was assigned to a new Agent after the previous one was removed from the license. |
 
-### `routing.assigned_disconnected`
+#### `routing.assigned_disconnected`
 
 |                                        Content                                        |                                                                        Generated when |
 | :-----------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------: |
 | _Chat assigned to %agent_added% because %agent_removed% had lost internet connection_ | Chat was assigned to a new Agent after the previous one unexpectedly lost connection. |
 
-### `routing.assigned_inactive`
+#### `routing.assigned_inactive`
 
 |                                            Content                                            |                                                                                 Generated when |
 | :-------------------------------------------------------------------------------------------: | ---------------------------------------------------------------------------------------------: |
 | _Chat assigned to %agent_added% because %agent_removed% hasn't replied in %duration% minutes_ | Chat was assigned to a new Agent after the previous one failed to response in a timely manner. |
 
-### `routing.assigned_other`
+#### `routing.assigned_other`
 
 |        Content        |                                                                                                                     Generated when |
 | :-------------------: | ---------------------------------------------------------------------------------------------------------------------------------: |
 | _The chat was closed_ | Chat was archived after Agent was removed from chat for other reasons. No other Agent could be selected, and queues were disabled. |
 
-### `routing.assigned_remotely_signed_out`
+#### `routing.assigned_remotely_signed_out`
 
 |                                        Content                                        |                                                          Generated when |
 | :-----------------------------------------------------------------------------------: | ----------------------------------------------------------------------: |
 | _Chat assigned to %agent_added% because %agent_removed% had been remotely signed out_ | Chat was assigned to a new Agent after the previous one was logged out. |
 
-### `routing.assigned_signed_out`
+#### `routing.assigned_signed_out`
 
 |                                 Content                                 |                                                      Generated when |
 | :---------------------------------------------------------------------: | ------------------------------------------------------------------: |
 | _Chat assigned to %agent_added% because %agent_removed% had signed out_ | Chat was assigned to a new Agent after the previous one logged out. |
 
-### `routing.unassigned_deleted`
+#### `routing.unassigned_deleted`
 
 |                            Content                             |                                            Generated when |
 | :------------------------------------------------------------: | --------------------------------------------------------: |
 | _Customer was queued because %agent% account has been deleted_ | Chat was queued after Agent was removed from the license. |
 
-### `routing.unassigned_disconnected`
+#### `routing.unassigned_disconnected`
 
 |                              Content                               |                                            Generated when |
 | :----------------------------------------------------------------: | --------------------------------------------------------: |
 | _Customer was queued because %agent% had lost internet connection_ | Chat was queued after Agent unexpectedly lost connection. |
 
-### `routing.unassigned_other`
+#### `routing.unassigned_other`
 
 |       Content        |                                                       Generated when |
 | :------------------: | -------------------------------------------------------------------: |
 | _Chat is unassigned_ | Chat was queued after Agent was removed from chat for other reasons. |
 
-### `routing.unassigned_remotely_signed_out`
+#### `routing.unassigned_remotely_signed_out`
 
 |                              Content                               |                              Generated when |
 | :----------------------------------------------------------------: | ------------------------------------------: |
 | _Customer was queued because %agent% had been remotely signed out_ | Chat was queued after Agent was logged out. |
 
-### `routing.unassigned_signed_out`
+#### `routing.unassigned_signed_out`
 
 |                       Content                        |                          Generated when |
 | :--------------------------------------------------: | --------------------------------------: |
 | _Customer was queued because %agent% had signed out_ | Chat was queued after Agent logged out. |
 
-### `system_archived`
+#### `system_archived`
 
 |     Content     |                                                                     Generated when |
 | :-------------: | ---------------------------------------------------------------------------------: |
 | _Chat archived_ | License was moved to another lc_serv instance while there were still active chats. |
 
-### `transcript_requested`
+#### `transcript_requested`
 
 |                             Content                              |               Generated when |
 | :--------------------------------------------------------------: | ---------------------------: |
 | _%customer% requested the chat transcript to be sent to %email%_ | Customer enables transcript. |
-
-</FixedTdWidth>
 
 # Users
 
