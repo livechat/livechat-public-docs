@@ -44,7 +44,7 @@ export const setupDocsearch = () => {
 
         // removes the hardcoded path from Algolia
         navigate(
-          suggestion.url.replace("https://developers.livechatinc.com/docs/", "")
+          suggestion.url.replace("https://developers.livechat.com/docs/", "")
         );
       }
     }
