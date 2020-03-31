@@ -715,13 +715,13 @@ Here's the list of all system messages you might come across:
 
 |           Content           |                                    Generated when |
 | :-------------------------: | ------------------------------------------------: |
-| _%agent% archived the chat_ | Agent closed chat via the `close_thread` request. |
+| _%agent% archived the chat_ | Agent closed chat via the `deactivate_chat` request. |
 
 #### `manual_archived_customer`
 
 |            Content             |                                       Generated when |
 | :----------------------------: | ---------------------------------------------------: |
-| _%customer% archived the chat_ | Customer closed chat via the `close_thread` request. |
+| _%customer% archived the chat_ | Customer closed chat via the `deactivate_chat` request. |
 
 #### `rating.chat_commented`
 
@@ -1250,15 +1250,15 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 |                 |                                                                                                                                                                                                                                                                                                                                                         |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`get_archives`](#get-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
+| **Chats**       | [`list_chats`](#list-chats) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
 | **Chat access** | [`grant_access`](#grant-access) [`revoke_access`](#revoke-access) [`set_access`](#set-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                                         |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                                               |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                                                 |
-| **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
-| **Thread tags** | [`tag_chat_thread`](#tag-chat-thread) [`untag_chat_thread`](#untag-chat-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customer`](#get-customer) [`get_customers`](#get-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                           |
+| **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
+| **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
+| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                           |
 | **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                                       |
-| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`get_agents_for_transfer`](#get-agents-for-transfer)                                                                                                                                                                         |
+| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                                         |
 
 </Text>
 <Code>
@@ -1299,17 +1299,17 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 <Section>
 <Text>
 
-### Get Chats Summary
+### List Chats
 
 It returns [summaries](#chat-summaries) of the chats an Agent has access to.
 
 #### Specifics
 
 |                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `get_chats_summary`                               |
+|------------------------|---------------------------------------------------|
+| **Action**             | `list_chats`                                      |
 | **Required scopes \*** | `chats--all:ro` `chats--access:ro` `chats--my:ro` |
-| **Web API equivalent** | [`get_chats_summary`](../#get-chats-summary)      |
+| **Web API equivalent** | [`list_chats`](../#list-chats)                    |
 | **Push message**       | -                                                 |
 
 #### Request
@@ -1320,7 +1320,7 @@ It returns [summaries](#chat-summaries) of the chats an Agent has access to.
 | `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.                |
 | `filters.group_ids`                                   | No       | `array`  | Array of group IDs. Max array size: 200                                                     |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                             |
-| `order`                                               | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default)          |
+| `sort_order`                                               | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default)          |
 | `limit`                                               | No       | `number` | Default: 10, maximum: 100                                                                    |
 | `page_id`                                             | No       | `string` |                                                                                             |
 
@@ -1346,7 +1346,7 @@ There's only one value allowed for a single property.
 
 ```json
 {
-  "action": "get_chats_summary",
+  "action": "list_chats",
   "payload": {}
 }
 ```
@@ -1358,7 +1358,7 @@ There's only one value allowed for a single property.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_chats_summary",
+  "action": "list_chats",
   "type": "response",
   "success": true,
   "payload": {
@@ -1446,12 +1446,12 @@ There's only one value allowed for a single property.
 
 #### Request
 
-| Parameter | Required | Data ype | Notes                                                                              |
-| --------- | -------- | -------- | ---------------------------------------------------------------------------------- |
-| `chat_id` | Yes      | `string` |                                                                                    |
-| `order`   | No       | `string` | Possible values: `asc` - oldest chats first, `desc` - newest chats first (default) |
-| `limit`   | No       | `number` | Defaul: 10, maximum: 100                                                           |
-| `page_id` | No       | `string` |                                                                                    |
+| Parameter    | Required | Data type | Notes                                                                              |
+|--------------|----------|-----------|------------------------------------------------------------------------------------|
+| `chat_id`    | Yes      | `string`  |                                                                                    |
+| `sort_order` | No       | `string`  | Possible values: `asc` - oldest chats first, `desc` - newest chats first (default) |
+| `limit`      | No       | `number`  | Defaul: 10, maximum: 100                                                           |
+| `page_id`    | No       | `string`  |                                                                                    |
 
 #### Response
 
@@ -1618,7 +1618,7 @@ It returns threads that the current Agent has access to in a given chat.
 <Section>
 <Text>
 
-### Get Archives
+### List Archives
 
 It returns a list of the chats an Agent has access to. Together with a **chat**, the **events** of **one thread** from this chat are returned.
 
@@ -1627,10 +1627,10 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 #### Specifics
 
 |                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `get_archives`                                    |
+|------------------------|---------------------------------------------------|
+| **Action**             | `list_archives`                                   |
 | **Required scopes**    | `chats--all:ro` `chats--access:ro` `chats--my:ro` |
-| **Web API equivalent** | [`get_archives`](../#get-archives)                |
+| **Web API equivalent** | [`list_archives`](../#list-archives)              |
 | **Push message**       | -                                                 |
 
 #### Request
@@ -1674,7 +1674,7 @@ There's only one value allowed for a single property.
 
 ```json
 {
-  "action": "get_archives",
+  "action": "list_archives",
   "payload": {}
 }
 ```
@@ -1686,7 +1686,7 @@ There's only one value allowed for a single property.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_archives",
+  "action": "list_archives",
   "type": "response",
   "success": true,
   "payload": {
@@ -1775,11 +1775,11 @@ Starts a chat.
 #### Specifics
 
 |                        |                                                                                          |
-| ---------------------- | ---------------------------------------------------------------------------------------- |
+|------------------------|------------------------------------------------------------------------------------------|
 | **Action**             | `start_chat`                                                                             |
 | **Required scopes \*** | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **Web API equivalent** | [`start_chat`](../#start-chat)                                                           |
-| **Push message**       | [`incoming_chat_thread`](#incoming_chat_thread)                                          |
+| **Push message**       | [`incoming_chat`](#incoming_chat)                                                        |
 
 **\*)**
 When `chat.users` is defined, one of following scopes is required:
@@ -1905,7 +1905,7 @@ Restarts an archived chat.
 | **Action**             | `activate_chat`                                                                          |
 | **Required scopes \*** | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
 | **Web API equivalent** | [`activate_chat`](../#activate-chat)                                                     |
-| **Push message**       | [`incoming_chat_thread`](#incoming_chat_thread)                                          |
+| **Push message**       | [`incoming_chat`](#incoming_chat)                                          |
 
 **\*)**
 When `chat.users` is defined, one of following scopes is required:
@@ -1927,7 +1927,7 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.users.type`        | Yes      | `string` | `agent` or `customer`                                               |
 | `chat.thread`            | No       | `object` |                                                                     |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                           |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                      |
+| `chat.thread.properties` | No       | `object` | Initial thread properties                                      |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
 #### Response
@@ -2016,18 +2016,18 @@ When `chat.users` is defined, one of following scopes is required:
 <Section>
 <Text>
 
-### Close Thread
+### Deactivate Chat
 
 Closes a thread. Sending messages to this thread will no longer be possible.
 
 #### Specifics
 
 |                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `close_thread`                                    |
+|------------------------|---------------------------------------------------|
+| **Action**             | `deactivate_chat`                                 |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`close_thread`](../#close-thread)                |
-| **Push message**       | [`thread_closed`](#thread_closed)                 |
+| **Web API equivalent** | [`deactivate_chat`](../#deactivate-chat)          |
+| **Push message**       | [`chat_deactivated`](#chat_deactivated)           |
 
 #### Request
 
@@ -2041,7 +2041,7 @@ Closes a thread. Sending messages to this thread will no longer be possible.
 
 ```json
 {
-  "action": "close_thread",
+  "action": "deactivate_chat",
   "payload": {
     "chat_id": "PJ0MRSHTDG"
   }
@@ -2050,12 +2050,12 @@ Closes a thread. Sending messages to this thread will no longer be possible.
 
 </CodeSample>
 
-<!-- > **`close_thread`** sample **request** with optional params
+<!-- > **`deactivate_chat`** sample **request** with optional params
 
 ```json
 {
 	"request_id": "657", // optional
-	"action": "close_thread",
+	"action": "deactivate_chat",
 	"payload": {
 		"chat_id": "PJ0MRSHTDG"
 	},
@@ -2068,7 +2068,7 @@ Closes a thread. Sending messages to this thread will no longer be possible.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "close_thread",
+  "action": "deactivate_chat",
   "type": "response",
   "success": true,
   "payload": {
@@ -2090,12 +2090,12 @@ Marks a chat as followed. All changes to the chat will be sent to the requester 
 
 #### Specifics
 
-|                        |                                                       |
-| ---------------------- | ----------------------------------------------------- |
-| **Action**             | `follow_chat`                                         |
-| **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw`     |
-| **Web API equivalent** | [`follow_chat`](../#follow-chat)                      |
-| **Push message**       | [`incoming_chat_thread`](#incoming_chat_thread)**\*** |
+|                        |                                                   |
+|------------------------|---------------------------------------------------|
+| **Action**             | `follow_chat`                                     |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
+| **Web API equivalent** | [`follow_chat`](../#follow-chat)                  |
+| **Push message**       | [`incoming_chat`](#incoming_chat)**\***           |
 
 **\*)**
 It won't be sent when the requester already follows the chat or is the chat member.
@@ -2938,16 +2938,16 @@ It's possible to write to a chat without joining it. The user sending an event w
 <Section>
 <Text>
 
-### Update Chat Thread Properties
+### Update Thread Properties
 
 #### Specifics
 
 |                        |                                                                                          |
-| ---------------------- | ---------------------------------------------------------------------------------------- |
-| **Action**             | `update_chat_thread_properties`                                                          |
+|------------------------|------------------------------------------------------------------------------------------|
+| **Action**             | `update_thread_properties`                                                               |
 | **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent** | [`update_chat_thread_properties`](../#update-chat-thread-properties)                     |
-| **Push message**       | [`chat_thread_properties_updated`](#chat_thread_properties_updated)                      |
+| **Web API equivalent** | [`update_thread_properties`](../#update-thread-properties)                               |
+| **Push message**       | [`thread_properties_updated`](#thread_properties_updated)                                |
 
 #### Request
 
@@ -2963,7 +2963,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 ```json
 {
-  "action": "update_chat_thread_properties",
+  "action": "update_thread_properties",
   "payload": {
     "chat_id": "Q1WZ073OA7",
     "thread_id": "Q1WZ073OB7",
@@ -2983,7 +2983,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "update_chat_thread_properties",
+  "action": "update_thread_properties",
   "type": "response",
   "success": true,
   "payload": {
@@ -2999,24 +2999,24 @@ It's possible to write to a chat without joining it. The user sending an event w
 <Section>
 <Text>
 
-### Delete Chat Thread Properties
+### Delete Thread Properties
 
 #### Specifics
 
 |                        |                                                                                          |
-| ---------------------- | ---------------------------------------------------------------------------------------- |
-| **Action**             | `delete_chat_thread_properties`                                                          |
+|------------------------|------------------------------------------------------------------------------------------|
+| **Action**             | `delete_thread_properties`                                                               |
 | **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent** | [`delete_chat_thread_properties`](../#delete-chat-thread-properties)                     |
-| **Push message**       | [`chat_thread_properties_deleted`](#chat_thread_properties_deleted)                      |
+| **Web API equivalent** | [`delete_thread_properties`](../#delete-thread-properties)                               |
+| **Push message**       | [`thread_properties_deleted`](#thread_properties_deleted)                                |
 
 #### Request
 
 | Parameter    | Required | Data type | Notes                                             |
-| ------------ | -------- | --------- | ------------------------------------------------- |
+|--------------|----------|-----------|---------------------------------------------------|
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete property for. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete. |
+| `properties` | Yes      | `object`  | Chat properties to delete.                        |
 
 </Text>
 <Code>
@@ -3024,7 +3024,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 ```json
 {
-  "action": "delete_chat_thread_properties",
+  "action": "delete_thread_properties",
   "payload": {
      "chat_id": "Q1WZ073OA7",
      "thread_id": "Q1WZ073OB7",
@@ -3044,7 +3044,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "delete_chat_thread_properties",
+  "action": "delete_thread_properties",
   "type": "response",
   "success": true,
   "payload": {
@@ -3188,16 +3188,16 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 ## Thread tags
 
-### Tag Chat Thread
+### Tag Thread
 
 #### Specifics
 
 |                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `tag_chat_thread`                                 |
+|------------------------|---------------------------------------------------|
+| **Action**             | `tag_thread`                                      |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`tag_chat_thread`](../#tag-chat-thread)          |
-| **Push message**       | [`chat_thread_tagged`](#chat_thread_tagged)       |
+| **Web API equivalent** | [`tag_thread`](../#tag-thread)                    |
+| **Push message**       | [`thread_tagged`](#thread_tagged)                 |
 
 #### Request
 
@@ -3213,7 +3213,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 ```json
 {
-  "action": "tag_chat_thread",
+  "action": "tag_thread",
   "payload": {
     "chat_id": "PW94SJTGW6",
     "thread_id": "PWS6GIKAKH",
@@ -3224,12 +3224,12 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 </CodeSample>
 
-<!-- > **`tag_chat_thread`** sample **request** with optional params
+<!-- > **`tag_thread`** sample **request** with optional params
 
 ```json
 {
 	"request_id": "125", // optional
-	"action": "tag_chat_thread",
+	"action": "tag_thread",
 	"payload": {
 		"chat_id": "PW94SJTGW6",
 		"thread_id": "PWS6GIKAKH",
@@ -3244,7 +3244,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "tag_chat_thread",
+  "action": "tag_thread",
   "type": "response",
   "success": true,
   "payload": {
@@ -3260,16 +3260,16 @@ It's possible to write to a chat without joining it. The user sending an event w
 <Section>
 <Text>
 
-### Untag Chat Thread
+### Untag Thread
 
 #### Specifics
 
 |                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `untag_chat_thread`                               |
+|------------------------|---------------------------------------------------|
+| **Action**             | `untag_thread`                                    |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`untag_chat_thread`](../#untag-chat-thread)      |
-| **Push message**       | [`chat_thread_untagged`](#chat_thread_untagged)   |
+| **Web API equivalent** | [`untag_thread`](../#untag-thread)                |
+| **Push message**       | [`thread_untagged`](#thread_untagged)             |
 
 #### Request
 
@@ -3285,7 +3285,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 ```json
 {
-  "action": "untag_chat_thread",
+  "action": "untag_thread",
   "payload": {
     "chat_id": "PW94SJTGW6",
     "thread_id": "PWS6GIKAKH",
@@ -3296,12 +3296,12 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 </CodeSample>
 
-<!-- > **`untag_chat_thread`** sample **request** with optional params
+<!-- > **`untag_thread`** sample **request** with optional params
 
 ```json
 {
 	"request_id": "1245", // optional
-	"action": "untag_chat_thread",
+	"action": "untag_thread",
 	"payload": {
 		"chat_id": "PW94SJTGW6",
 		"thread_id": "PWS6GIKAKH",
@@ -3316,7 +3316,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "untag_chat_thread",
+  "action": "untag_thread",
   "type": "response",
   "success": true,
   "payload": {
@@ -3334,7 +3334,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 <Section>
 <Text>
 
-### Get Customer
+### List Customer
 
 Returns the info about the Customer with a given `customer_id`.
 
@@ -3460,22 +3460,22 @@ It returns the list of Customers.
 
 #### Specifics
 
-|                        |                                      |
-| ---------------------- | ------------------------------------ |
-| **Action**             | `get_customers`                      |
-| **Required scopes**    | `customers:ro`                       |
-| **Web API equivalent** | [`get_customers`](../#get-customers) |
-| **Push message**       | -                                    |
+|                        |                                        |
+|------------------------|----------------------------------------|
+| **Action**             | `list_customers`                       |
+| **Required scopes**    | `customers:ro`                         |
+| **Web API equivalent** | [`list_customers`](../#list-customers) |
+| **Push message**       | -                                      |
 
 #### Request
 
 All parameters are optional.
 
 | Parameter                                                                      | Data type | Notes                     |
-| ------------------------------------------------------------------------------ | --------- | ------------------------- |
+|--------------------------------------------------------------------------------|-----------|---------------------------|
 | `page_id`                                                                      | `string`  |                           |
 | `limit`                                                                        | `number`  | Default: 10, maximum: 100 |
-| `order` **\***                                                                 | `string`  | Default: `desc`           |
+| `sort_order` **\***                                                            | `string`  | Default: `desc`           |
 | `filters`                                                                      | `object`  |                           |
 | `filters.country.<string_filter_type>` **\*\***                                | `object`  |                           |
 | `filters.email.<string_filter_type>` **\*\***                                  | `object`  |                           |
@@ -3490,7 +3490,7 @@ All parameters are optional.
 
 **\*)**
 
-`order` can take the following values:
+`sort_order` can take the following values:
 
 - `asc` - oldest customers first
 - `desc` - newest customers first
@@ -3539,7 +3539,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 ```json
 {
-  "action": "get_customers",
+  "action": "list_customers",
   "payload": {}
 }
 ```
@@ -3551,7 +3551,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_customers",
+  "action": "list_customers",
   "type": "response",
   "success": true,
   "payload": {
@@ -4259,13 +4259,13 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 
 #### Request
 
-| Parameter | Required | Data type | Notes                     |
-| --------- | -------- | --------- | ------------------------- |
-| `scopes`  | Yes      | `object`  | **\***                    |
-| `content` | Yes      | `any`     | A JSON message to be sent |
-| `type`    | No       | `string`  | Multicast message type    |
+| Parameter    | Required | Data type | Notes                     |
+|--------------|----------|-----------|---------------------------|
+| `recipients` | Yes      | `object`  | **\***                    |
+| `content`    | Yes      | `any`     | A JSON message to be sent |
+| `type`       | No       | `string`  | Multicast message type    |
 
-**\*)** `scopes` can take the following values:
+**\*)** `recipients` can take the following values:
 
 - `agents`:
 
@@ -4276,7 +4276,7 @@ For example, it could be used in an app that sends notifications to Agents or Cu
 - `customers`:
   - `ids` (`[]string` - an array of customer's IDs)
 
-At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
+At least one `recipients` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
 
 </Text>
 <Code>
@@ -4286,7 +4286,7 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 {
 	"action": "multicast",
 	"payload": {
-		"scopes": {
+		"recipients": {
             "agents": {
                 "all": true,
                 "ids": [
@@ -4337,7 +4337,7 @@ At least one `scopes` type (`agents.all`, `agents.ids`, `agents.groups`, `custom
 <Section>
 <Text>
 
-### Get Agents For Transfer
+### List Agents For Transfer
 
 It returns the Agents you can transfer a chat to. Agents are sorted ascendingly by the total number of active chats they have. Note that:
 
@@ -4347,12 +4347,12 @@ It returns the Agents you can transfer a chat to. Agents are sorted ascendingly 
 
 #### Specifics
 
-|                        |                                                         |
-| ---------------------- | ------------------------------------------------------- |
-| **Action**             | `get_agents_for_transfer`                               |
-| **Required scopes**    | -                                                       |
-| **Web API equivalent** | [`get_agents_for_transfer`](../#get-agents-for-transfer)|
-| **Push message**       | -                                                       |
+|                        |                                                            |
+|------------------------|------------------------------------------------------------|
+| **Action**             | `list_agents_for_transfer`                                 |
+| **Required scopes**    | -                                                          |
+| **Web API equivalent** | [`list_agents_for_transfer`](../#list-agents-for-transfer) |
+| **Push message**       | -                                                          |
 
 #### Request
 
@@ -4367,7 +4367,7 @@ It returns the Agents you can transfer a chat to. Agents are sorted ascendingly 
 
 ```json
 {
-  "action": "get_agents_for_transfer",
+  "action": "list_agents_for_transfer",
   "payload": {
      "chat_id": "PJ0MRSHTDG"
   }
@@ -4381,7 +4381,7 @@ It returns the Agents you can transfer a chat to. Agents are sorted ascendingly 
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_agents_for_transfer",
+  "action": "list_agents_for_transfer",
   "type": "response",
   "success": true,
   "payload":  
@@ -4419,12 +4419,12 @@ Here's what you need to know about **pushes**:
 
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`incoming_chat_thread`](#incoming_chat_thread) [`thread_closed`](#thread_closed)                                                                                                                                                                                                                                                                                   |
+| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                                   |
 | **Chat access** | [`access_granted`](#access_granted) [`access_revoked`](#access_revoked) [`access_set`](#access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                         |
 | **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
-| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
-| **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
 | **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
 | **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed)                                                                                                                         |
@@ -4454,7 +4454,7 @@ Here's what you need to know about **pushes**:
 
 ## Chats
 
-### `incoming_chat_thread`
+### `incoming_chat`
 Informs about a new thread coming in the chat. The push payload contains not only the new thread, but the whole chat data structure. If the chat was started with some initial events, the thread object contains them.  
 
 <CodeResponse title={'Sample push payload'}>
@@ -4483,12 +4483,12 @@ Informs about a new thread coming in the chat. The push payload contains not onl
 
 #### Specifics
 
-|                        |                                                                       |
-| ---------------------- | --------------------------------------------------------------------- |
-| **Action**             | `incoming_chat_thread`                                                |
-| **Webhook equivalent** | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread) |
+|                        |                                                                 |
+|------------------------|-----------------------------------------------------------------|
+| **Action**             | `incoming_chat`                                                 |
+| **Webhook equivalent** | [`incoming_chat`](/management/configuration-api/#incoming_chat) |
 
-### `thread_closed`
+### `chat_deactivated`
 Informs that a thread was closed. 
 
 <CodeResponse title={'Sample push payload'}>
@@ -4505,10 +4505,10 @@ Informs that a thread was closed.
 
 #### Specifics
 
-|                        |                                                         |
-| ---------------------- | ------------------------------------------------------- |
-| **Action**             | `thread_closed`                                         |
-| **Webhook equivalent** | [`thread_closed`](/management/configuration-api/#thread_closed) |
+|                        |                                                                       |
+|------------------------|-----------------------------------------------------------------------|
+| **Action**             | `chat_deactivated`                                                    |
+| **Webhook equivalent** | [`chat_deactivated`](/management/configuration-api/#chat_deactivated) |
 
 #### Push payload
 
@@ -4859,8 +4859,8 @@ Informs about those chat properties that were deleted.
 | ------------ | ------------------------------------------------------------------------------------------------------------ |
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
-### `chat_thread_properties_updated`
-Informs about those chat thread properties that were updated.
+### `thread_properties_updated`
+Informs about those thread properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4882,10 +4882,10 @@ Informs about those chat thread properties that were updated.
 
 #### Specifics
 
-|                        |                                                                                           |
-| ---------------------- | ----------------------------------------------------------------------------------------- |
-| **Action**             | `chat_thread_properties_updated`                                                          |
-| **Webhook equivalent** | [`chat_thread_properties_updated`](/management/configuration-api/#chat_thread_properties_updated) |
+|                        |                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
+| **Action**             | `thread_properties_updated`                                                             |
+| **Webhook equivalent** | [`thread_properties_updated`](/management/configuration-api/#thread_properties_updated) |
 
 #### Push payload
 
@@ -4893,8 +4893,8 @@ Informs about those chat thread properties that were updated.
 | ------------ | ------------------------------------------------------------------------------------------------------------ |
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
-### `chat_thread_properties_deleted`
-Informs about those chat thread properties that were deleted.
+### `thread_properties_deleted`
+Informs about those thread properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4914,10 +4914,10 @@ Informs about those chat thread properties that were deleted.
 
 #### Specifics
 
-|                        |                                                                                           |
-| ---------------------- | ----------------------------------------------------------------------------------------- |
-| **Action**             | `chat_thread_properties_deleted`                                                          |
-| **Webhook equivalent** | [`chat_thread_properties_deleted`](/management/configuration-api/#chat_thread_properties_deleted) |
+|                        |                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
+| **Action**             | `thread_properties_deleted`                                                             |
+| **Webhook equivalent** | [`thread_properties_deleted`](/management/configuration-api/#thread_properties_deleted) |
 
 #### Push payload
 
@@ -4993,7 +4993,7 @@ Informs about those event properties that were deleted.
 
 ## Thread tags
 
-### `chat_thread_tagged`
+### `thread_tagged`
 Informs that a chat thread was tagged.
 
 <CodeResponse title={'Sample push payload'}>
@@ -5010,12 +5010,12 @@ Informs that a chat thread was tagged.
 
 #### Specifics
 
-|                        |                                                                   |
-| ---------------------- | ----------------------------------------------------------------- |
-| **Action**             | `chat_thread_tagged`                                              |
-| **Webhook equivalent** | [`chat_thread_tagged`](/management/configuration-api/#chat_thread_tagged) |
+|                        |                                                                 |
+|------------------------|-----------------------------------------------------------------|
+| **Action**             | `thread_tagged`                                                 |
+| **Webhook equivalent** | [`thread_tagged`](/management/configuration-api/#thread_tagged) |
 
-### `chat_thread_untagged`
+### `thread_untagged`
 Informs that a chat thread was untagged.
 
 <CodeResponse title={'Sample push payload'}>
@@ -5032,10 +5032,10 @@ Informs that a chat thread was untagged.
 
 #### Specifics
 
-|                        |                                                                       |
-| ---------------------- | --------------------------------------------------------------------- |
-| **Action**             | `chat_thread_untagged`                                                |
-| **Webhook equivalent** | [`chat_thread_untagged`](/management/configuration-api/#chat_thread_untagged) |
+|                        |                                                                     |
+|------------------------|---------------------------------------------------------------------|
+| **Action**             | `thread_untagged`                                                   |
+| **Webhook equivalent** | [`thread_untagged`](/management/configuration-api/#thread_untagged) |
 
 ## Customers
 
