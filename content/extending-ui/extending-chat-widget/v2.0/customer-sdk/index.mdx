@@ -391,11 +391,18 @@ customerSDK
 
 - `MISSING_CHAT_THREAD` - the targeted chat is empty and has no threads.
 
-## closeThread
+## connect
+
+Starts the connection process to our servers. It is needed when:
+
+- the argument `autoConnect: false` has been passed to the `init` method
+- you get disconnected for a reason that suspends reconnection attempts (e.g. [`inactivity_timeout`](#inactivity_timeout))
+
+## deactivateChat
 
 ```js
 customerSDK
-  .closeThread({ chatId: 'ON0X0R0L67' })
+  .deactivateChat({ chatId: 'ON0X0R0L67' })
   .then(response => {
     console.log(response)
   })
@@ -415,13 +422,6 @@ Returned value:
 | properties | type    |
 | ---------- | ------- |
 | success    | boolean |
-
-## connect
-
-Starts the connection process to our servers. It is needed when:
-
-- the argument `autoConnect: false` has been passed to the `init` method
-- you get disconnected for a reason that suspends reconnection attempts (e.g. [`inactivity_timeout`](#inactivity_timeout))
 
 ## deleteChatProperties
 
@@ -449,41 +449,6 @@ Parameters:
 | ---------- | ------ | --------------------------------------------------- |
 | chatId     | string | ID of the chat whose properties you want to delete. |
 | properties | object | Chat properties to delete                           |
-
-Returned value:
-
-| properties | type    |
-| ---------- | ------- |
-| success    | boolean |
-
-## deleteChatThreadProperties
-
-Deletes given chat thread properties.
-
-```js
-customerSDK
-  .deleteChatThreadProperties({
-    chatId: 'ON0X0R0L67',
-    threadId: 'OS0C0W0Z1B',
-    properties: {
-      property_namespace: ['sample'],
-    },
-  })
-  .then(response => {
-    console.log(response)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type   | description                                           |
-| ---------- | ------ | ----------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to delete.   |
-| threadId   | string | ID of the thread whose properties you want to delete. |
-| properties | object | Properties to delete                                  |
 
 Returned value:
 
@@ -520,6 +485,41 @@ Parameters:
 | chatId     | string | ID of the chat whose properties you want to delete.   |
 | threadId   | string | ID of the thread whose properties you want to delete. |
 | eventId    | string | ID of the event whose properties you want to delete.  |
+| properties | object | Properties to delete                                  |
+
+Returned value:
+
+| properties | type    |
+| ---------- | ------- |
+| success    | boolean |
+
+## deleteThreadProperties
+
+Deletes given chat thread properties.
+
+```js
+customerSDK
+  .deleteThreadProperties({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    properties: {
+      property_namespace: ['sample'],
+    },
+  })
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type   | description                                           |
+| ---------- | ------ | ----------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to delete.   |
+| threadId   | string | ID of the thread whose properties you want to delete. |
 | properties | object | Properties to delete                                  |
 
 Returned value:
@@ -587,44 +587,6 @@ Parameters:
 | ---------- | ------ | --------------------------------------- |
 | chatId     | string | Chat ID of the requested history object |
 
-## getChatsSummary
-
-```js
-customerSDK
-  .getChatsSummary({
-    offset: 0,
-    limit: 10,
-  })
-  .then(({ chatsSummary, totalChats }) => {
-    console.log(chatsSummary)
-    console.log(totalChats)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type   | default | max |
-| ---------- | ------ | ------- | --- |
-| offset     | number | 0       |     |
-| limit      | number | 10      | 25  |
-
-Returned value:
-
-| properties   | type     | properties         | type     | description                                    |
-| ------------ | -------- | ------------------ | -------- | ---------------------------------------------- |
-| chatsSummary | object[] |                    |          |                                                |
-|              |          | id                 |          | Chat ID                                        |
-|              |          | active             | boolean  |                                                |
-|              |          | users              | object[] | Users objects referenced in the chat           |
-|              |          | lastEvent          | object   | Event                                          |
-|              |          | lastEventsPerType  | object   | Map of event types to event objects            |
-|              |          | lastSeenTimestamps | object   | Map of user IDs to optional lastSeenTimestamps |
-|              |          | lastThread         | string   | Thread ID                                      |
-| totalChats   | number   |                    |          |                                                |
-
 ## getChatThreads
 
 Returns a list of thread objects for the specified thread IDs.
@@ -662,15 +624,15 @@ Parameters:
 
 Returned value:
 
-| properties | type     | description |                                      |
-| ---------- | -------- | ----------- | ------------------------------------ |
-| threads    | object[] |             |                                      |
-|            | id       | string      | Thread ID                            |
-|            | chatId   | string      | Chat ID                              |
-|            | active   | string[]    | Active state                         |
-|            | order    | number      | Order (can be used for sorting)      |
-|            | events   | object[]    | Events                               |
-| users      | object[] |             | Users objects referenced in the chat |
+| properties       | type     | description                          |
+| ---------------- | -------- | ------------------------------------ |
+| threads          | object[] |                                      |
+| threads[].id     | string   | Thread ID                            |
+| threads[].chatId | string   | Chat ID                              |
+| threads[].active | boolean  | Active state                         |
+| threads[].order  | number   | Order (can be used for sorting)      |
+| threads[].events | object[] | Events                               |
+| users            | object[] | Users objects referenced in the chat |
 
 ## getChatThreadsSummary
 
@@ -728,14 +690,21 @@ customerSDK
 
 Returned value:
 
-| properties | type       | description          |
-| ---------- | ---------- | -------------------- |
-| type       | 'customer' |                      |
-| id         | string     |                      |
-| name       | string     | Returned only if set |
-| email      | string     | Returned only if set |
-| avatar     | string     | Returned only if set |
-| fields     | object     | Returned only if set |
+| properties                        | type       | description          |
+| --------------------------------- | ---------- | -------------------- |
+| type                              | 'customer' |                      |
+| id                                | string     |                      |
+| name                              | string     | Returned only if set |
+| email                             | string     | Returned only if set |
+| avatar                            | string     | Returned only if set |
+| sessionFields                     | object     |                      |
+| statistics                        | object     |                      |
+| statistics.chatsCount             | number     |                      |
+| statistics.threadsCount           | number     |                      |
+| statistics.visitsCount            | number     |                      |
+| statistics.pageViewsCount         | number     |                      |
+| statistics.greetingsShownCount    | number     |                      |
+| statistics.greetingsAcceptedCount | number     |                      |
 
 ## getForm
 
@@ -774,36 +743,6 @@ Returned value:
 | form.id     | string   |                                             |
 | form.fields | object[] |                                             |
 
-## getGroupsStatus
-
-Returns availability statuses of the requested groups.
-
-```js
-customerSDK
-  .getGroupsStatus({
-    groupIds: [3, 10],
-  })
-  .then(statusMap => {
-    console.log(`Status of the group 3: ${statusMap[3]}`)
-    console.log(`Status of the group 10: ${statusMap[10]}`)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type     | description                                                |
-| ---------- | -------- | ---------------------------------------------------------- |
-| groupsIds  | number[] | Optional; if omitted, statuses of all groups are returned. |
-
-Returned value:
-
-| properties | type   | description                                   |
-| ---------- | ------ | --------------------------------------------- |
-| statusMap  | object | Map of group numbers to availability statuses |
-
 ## getPredictedAgent
 
 ```js
@@ -830,13 +769,13 @@ Parameters:
 - `GROUP_OFFLINE` - the requested group is offline, and it was not possible to return a predicted Agent for it.
 - `GROUP_UNAVAILABLE` - there are no available slots in the requested group, so it is not possible to return a predicted Agent for it. If you call `startChat` or `activateChat` accordingly, you are most likely to end up in the queue.
 
-## getUrlDetails
+## getUrlInfo
 
 It returns the info on a given URL.
 
 ```js
 customerSDK
-  .getUrlDetails({ url: 'https://www.livechatinc.com' })
+  .getUrlInfo({ url: 'https://www.livechatinc.com' })
   .then(urlDetails => {
     if (urlDetails.title) {
       console.log(`The title of requested URL is: ${urlDetails.title}`)
@@ -889,6 +828,76 @@ Subscribes to emitted events, which are described [here](#events).
 ## once
 
 Subscribes to emitted events, which are described [here](#events). Unsubscribes immediately after the callback gets called.
+
+## listChats
+
+It returns summaries of the chats a Customer participated in.
+
+```js
+customerSDK
+  .listChats({
+    offset: 0,
+    limit: 10,
+  })
+  .then(({ chatsSummary, totalChats }) => {
+    console.log(chatsSummary)
+    console.log(totalChats)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type   | default | max |
+| ---------- | ------ | ------- | --- |
+| offset     | number | 0       |     |
+| limit      | number | 10      | 25  |
+
+Returned value:
+
+| properties                        | type     | description                                    |
+| --------------------------------- | -------- | ---------------------------------------------- |
+| chatsSummary                      | object[] |                                                |
+| chatsSummary[].id                 | string   | Chat ID                                        |
+| chatsSummary[].active             | boolean  |                                                |
+| chatsSummary[].users              | object[] | Users objects referenced in the chat           |
+| chatsSummary[].lastEvent          | object   | Event                                          |
+| chatsSummary[].lastEventsPerType  | object   | Map of event types to event objects            |
+| chatsSummary[].lastSeenTimestamps | object   | Map of user IDs to optional lastSeenTimestamps |
+| chatsSummary[].lastThread         | string   | Thread ID                                      |
+| totalChats                        | number   |                                                |
+
+## listGroupStatuses
+
+Returns availability statuses of the requested groups.
+
+```js
+customerSDK
+  .listGroupStatuses({
+    groupIds: [3, 10],
+  })
+  .then(statusMap => {
+    console.log(`Status of the group 3: ${statusMap[3]}`)
+    console.log(`Status of the group 10: ${statusMap[10]}`)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type     | description                                                |
+| ---------- | -------- | ---------------------------------------------------------- |
+| groupsIds  | number[] | Optional; if omitted, statuses of all groups are returned. |
+
+Returned value:
+
+| properties | type   | description                                   |
+| ---------- | ------ | --------------------------------------------- |
+| statusMap  | object | Map of group numbers to availability statuses |
 
 ## markEventsAsSeen
 
@@ -1193,36 +1202,6 @@ Parameters:
 | chatId     | string | ID of the chat whose properties you want to update. |
 | properties | object |                                                     |
 
-## updateChatThreadProperties
-
-```js
-const properties = {
-  property_namespace: {
-    sample: 'property',
-  },
-}
-customerSDK
-  .updateChatThreadProperties({
-    chatId: 'ON0X0R0L67',
-    threadId: 'OS0C0W0Z1B',
-    properties,
-  })
-  .then(response => {
-    console.log(response)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type   | description                                           |
-| ---------- | ------ | ----------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to update.   |
-| threadId   | string | ID of the thread whose properties you want to update. |
-| properties | object |
-
 ## updateCustomer
 
 Updates the specified Customer properties and fields.
@@ -1305,6 +1284,36 @@ Parameters:
 | threadId   | string | ID of the thread whose properties you want to update. |
 | eventId    | string | ID of the event whose properties you want to update.  |
 | properties | object |                                                       |
+
+## updateThreadProperties
+
+```js
+const properties = {
+  property_namespace: {
+    sample: 'property',
+  },
+}
+customerSDK
+  .updateThreadProperties({
+    chatId: 'ON0X0R0L67',
+    threadId: 'OS0C0W0Z1B',
+    properties,
+  })
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type   | description                                           |
+| ---------- | ------ | ----------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to update.   |
+| threadId   | string | ID of the thread whose properties you want to update. |
+| properties | object |
 
 ## uploadFile
 
@@ -1401,6 +1410,23 @@ Payload:
 | ------------ | ------ | --------------------- |
 | availability | string | 'online' or 'offline' |
 
+## Chat deactivated
+
+Informs that thread has been closed.
+
+```js
+customerSDK.on('chat_deactivated', payload => {
+  const { chatId } = payload
+  console.log('chat_deactivated', { chatId })
+})
+```
+
+Payload:
+
+| properties | type   | description |
+| ---------- | ------ | ----------- |
+| chatId     | string | Chat ID     |
+
 ## Chat properties deleted
 
 Informs about deleted chat properties.
@@ -1408,7 +1434,7 @@ Informs about deleted chat properties.
 ```js
 customerSDK.on('chat_properties_deleted', payload => {
   const { chatId, properties } = payload
-  console.log('chat_thread_properties_deleted', { chat, properties })
+  console.log('chat_properties_deleted', { chatId, properties })
 })
 ```
 
@@ -1426,7 +1452,7 @@ Informs about updated chat properties.
 ```js
 customerSDK.on('chat_properties_updated', payload => {
   const { chatId, properties } = payload
-  console.log('chat_properties_updated', payload)
+  console.log('chat_properties_updated', { chatId, properties })
 })
 ```
 
@@ -1437,109 +1463,32 @@ Payload:
 | chatId     | string | Chat ID         |
 | properties | object | Chat properties |
 
-## Chat thread properties deleted
-
-Informs about deleted thread properties.
-
-```js
-customerSDK.on('chat_thread_properties_deleted', payload => {
-  const { chatId, threadId, properties } = payload
-  console.log('chat_thread_properties_deleted', {
-    chatId,
-    threadId,
-    properties,
-  })
-})
-```
-
-Payload:
-
-| properties | type   | description            |
-| ---------- | ------ | ---------------------- |
-| chatId     | string | Chat ID                |
-| threadId   | string | Thread ID              |
-| properties | object | Chat thread properties |
-
-## Chat thread properties updated
-
-Informs about updated thread properties.
-
-```js
-customerSDK.on('chat_thread_properties_updated', payload => {
-  const { chatId, threadId, properties } = payload
-  console.log('chat_thread_properties_updated', {
-    chatId,
-    threadId,
-    properties,
-  })
-})
-```
-
-Payload:
-
-| properties | type   | description       |
-| ---------- | ------ | ----------------- |
-| chatId     | string | Chat ID           |
-| threadId   | string | Thread ID         |
-| properties | object | Thread properties |
-
 ## Chat transferred
 
 Informs that a chat was transferred to a different group or an Agent.
 
 ```js
 customerSDK.on('chat_transferred', payload => {
-  const { chatId, threadId, requesterId, type, ids } = payload
-  console.log('chat_transferred', { chatId, threadId, requesterId, type, ids })
+  const { chatId, threadId, requesterId, transferredTo } = payload
+  console.log('chat_transferred', {
+    chatId,
+    threadId,
+    requesterId,
+    transferredTo,
+  })
 })
 ```
 
 Payload:
 
-| properties  | type               |
-| ----------- | ------------------ |
-| chatId      | string             |
-| threadId    | string             |
-| requesterId | string             |
-| type        | 'agent' \| 'group' |
-| ids         | string[]           |
-
-## Chat user added
-
-Informs that a user was added to a chat.
-
-```js
-customerSDK.on('chat_user_added', payload => {
-  const { user, chatId, present } = payload
-  console.log('chat_user_added', { user, chatId, present })
-})
-```
-
-Payload:
-
-| properties | type    | description |
-| ---------- | ------- | ----------- |
-| user       | object  | User        |
-| chatId     | string  | Chat ID     |
-| present    | boolean |             |
-
-## Chat user removed
-
-Informs that a user was removed from a chat.
-
-```js
-customerSDK.on('chat_user_removed', payload => {
-  const { userId, chatId } = payload
-  console.log('chat_user_removed', { userId, chatId })
-})
-```
-
-Payload:
-
-| properties | type   | description |
-| ---------- | ------ | ----------- |
-| userId     | string | User ID     |
-| chatId     | string | Chat ID     |
+| properties             | type               |
+| ---------------------- | ------------------ |
+| chatId                 | string             |
+| threadId               | string             |
+| requesterId            | string             |
+| transferredTo          |                    |
+| transferredTo.agentIds | string[], optional |
+| transferredTo.groupIds | number[], optional |
 
 ## Connected
 
@@ -1547,17 +1496,18 @@ Informs that the connection has been established.
 
 ```js
 customerSDK.on('connected', payload => {
-  const { availability, greeting } = payload
-  console.log('connected', { availability, greeting })
+  const { customer, availability, greeting } = payload
+  console.log('connected', { customer, availability, greeting })
 })
 ```
 
 Payload:
 
-| argument     | type     | description                                        |
-| ------------ | -------- | -------------------------------------------------- |
-| availability | string   | 'online' or 'offline'                              |
-| greeting     | greeting | Optional greeting received before the chat started |
+| argument     | type     | description                                                                  |
+| ------------ | -------- | ---------------------------------------------------------------------------- |
+| customer     | object   | Customer object, the same as the response from [`getCustomer`](#getcustomer) |
+| availability | string   | 'online' or 'offline'                                                        |
+| greeting     | greeting | Optional greeting received before the thread started                         |
 
 Greeting:
 
@@ -1758,18 +1708,18 @@ Informs that the events were seen by the particular user.
 
 ```js
 customerSDK.on('events_marked_as_seen', payload => {
-  const { chatId, userId, timetamp } = payload
-  console.log('events_marked_as_seen', { chatId, userId, timetamp })
+  const { chatId, userId, seenUpTo } = payload
+  console.log('events_marked_as_seen', { chatId, userId, seenUpTo })
 })
 ```
 
 Payload:
 
-| properties | type   | description |
-| ---------- | ------ | ----------- |
-| chatId     | string | Chat ID     |
-| userId     | string | User ID     |
-| timestamp  | number |             |
+| properties | type   | description               |
+| ---------- | ------ | ------------------------- |
+| chatId     | string | Chat ID                   |
+| userId     | string | User ID                   |
+| seenUpTo   | string | RFC 3339 date-time format |
 
 ## Greeting accepted
 
@@ -1810,10 +1760,10 @@ The payload contains the chat data structure and an object describing the new th
 If the chat was started with some initial events, they will be included in the thread object.
 
 ```js
-customerSDK.on('incoming_chat_thread', payload => {
+customerSDK.on('incoming_chat', payload => {
   const { chat } = payload
   const { id, access, users, properties, thread } = chat
-  console.log('incoming_chat_thread', { id, access, users, properties, thread })
+  console.log('incoming_chat', { id, access, users, properties, thread })
 })
 ```
 
@@ -1881,8 +1831,14 @@ Informs about an incoming rich message postback.
 
 ```js
 customerSDK.on('incoming_rich_message_postback', payload => {
-  const { userId, chatId, threadId, eventId, postback } = payload
-  console.log('incoming_rich_message_postback', payload)
+  const { chatId, threadId, eventId, userId, postback } = payload
+  console.log('incoming_rich_message_postback', {
+    chatId,
+    threadId,
+    eventId,
+    userId,
+    postback,
+  })
 })
 ```
 
@@ -1890,10 +1846,10 @@ Payload:
 
 | properties       | type    | description                                 |
 | ---------------- | ------- | ------------------------------------------- |
-| userId           | number  | User who has sent a rich message postback   |
 | chatId           | string  | Chat ID of the sent postback                |
 | threadId         | string  | Thread ID of the sent postback              |
 | eventId          | string  | Event ID of the sent postback               |
+| userId           | number  | User who has sent a rich message postback   |
 | postback.id      | boolean | ID of the sent postback                     |
 | postback.toggled | boolean | Describes if the sent postback was toggled. |
 
@@ -1949,22 +1905,62 @@ Payload:
 | queue.position | number | Current place in the queue                                                 |
 | queue.waitTime | number | Estimated waiting time for an agent to be assigned to the chat, in seconds |
 
-## Thread closed
+## Thread properties deleted
 
-Informs that thread has been closed.
+Informs about deleted thread properties.
 
 ```js
-customerSDK.on('thread_closed', payload => {
-  const { chatId } = payload
-  console.log('thread_closed', { chatId })
+customerSDK.on('thread_properties_deleted', payload => {
+  const { chatId, threadId, properties } = payload
+  console.log('thread_properties_deleted', { chatId, threadId, properties })
 })
 ```
 
 Payload:
 
-| properties | type   | description |
-| ---------- | ------ | ----------- |
-| chatId     | string | Chat ID     |
+| properties | type   | description            |
+| ---------- | ------ | ---------------------- |
+| chatId     | string | Chat ID                |
+| threadId   | string | Thread ID              |
+| properties | object | Chat thread properties |
+
+## Thread properties updated
+
+Informs about updated thread properties.
+
+```js
+customerSDK.on('thread_properties_updated', payload => {
+  const { chatId, threadId, properties } = payload
+  console.log('thread_properties_updated', { chatId, threadId, properties })
+})
+```
+
+Payload:
+
+| properties | type   | description       |
+| ---------- | ------ | ----------------- |
+| chatId     | string | Chat ID           |
+| threadId   | string | Thread ID         |
+| properties | object | Thread properties |
+
+## User added to chat
+
+Informs that a user was added to a chat.
+
+```js
+customerSDK.on('user_added_to_chat', payload => {
+  const { chatId, user, present } = payload
+  console.log('user_added_to_chat', { chatId, user, present })
+})
+```
+
+Payload:
+
+| properties | type    | description |
+| ---------- | ------- | ----------- |
+| chatId     | string  | Chat ID     |
+| user       | object  | User        |
+| present    | boolean |             |
 
 ## User data
 
@@ -1996,6 +1992,24 @@ customerSDK.on('user_data', user => {
 | name       | string  |
 | avatar     | string  |
 | jobTitle   | string  |
+
+## User removed from chat
+
+Informs that a user was removed from a chat.
+
+```js
+customerSDK.on('user_removed_from_chat', payload => {
+  const { chatId, userId } = payload
+  console.log('user_removed_from_chat', { chatId, userId })
+})
+```
+
+Payload:
+
+| properties | type   | description |
+| ---------- | ------ | ----------- |
+| chatId     | string | Chat ID     |
+| userId     | string | User ID     |
 
 # Disconnection reasons
 
@@ -2115,6 +2129,30 @@ The request has timed out.
 Wrong format of request, for example a `string` sent in the place of a `number`.
 
 # Changelog
+
+## [v2.0.0-beta.2] - 2020-04-02
+
+### Changed
+
+- Renamed methods:
+  - `closeThread` to `deactivateChat`
+  - `deleteChatThreadProperties` to `deleteThreadProperties`
+  - `getChatsSummary` to `listChats`
+  - `getGroupsStatus` to `listGroupStatuses`
+  - `getUrlDetails` to `getUrlInfo`
+  - `updateChatThreadProperties` to `updateThreadProperties`
+- Renamed events:
+  - `chat_thread_properties_deleted` to `thread_properties_deleted`
+  - `chat_thread_properties_updated` to `thread_properties_updated`
+  - `chat_user_added` to `user_added_to_chat`
+  - `chat_user_removed` to `user_removed_from_chat`
+  - `thread_closed` to `chat_deactivated`
+- `chat_transferred` event doesn't contain `type` and `ids` properties anymore. Instead `transferredTo` property is available. It has optional `agentIds` and `groupIds` properties
+
+### Added
+
+- `customer` data available in the `connected` callback
+- `statistics` property available on the Customer object returned from `getCustomer` method
 
 ## [v2.0.0-beta.1] - 2020-03-13
 
