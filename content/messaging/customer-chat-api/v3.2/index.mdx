@@ -568,13 +568,13 @@ Here's the list of all system messages you might come across:
 
 |           Content           |                                    Generated when |
 | :-------------------------: | ------------------------------------------------: |
-| _%agent% archived the chat_ | Agent closed chat via the `close_thread` request. |
+| _%agent% archived the chat_ | Agent closed chat via the `deactivate_chat` request. |
 
 #### `manual_archived_customer`
 
 |            Content             |                                       Generated when |
 | :----------------------------: | ---------------------------------------------------: |
-| _%customer% archived the chat_ | Customer closed chat via the `close_thread` request. |
+| _%customer% archived the chat_ | Customer closed chat via the `deactivate_chat` request. |
 
 #### `rating.chat_commented`
 
@@ -1021,7 +1021,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | HTTP method | The API endpoint                                            | Methods                                                                                                     |
 | ----------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **POST**    | `https://api.livechatinc.com/v3.2/customer/action/<action>` | All except for **Get License Properties** and **Get Group Properties**                                      |
-| **GET**     | `https://api.livechatinc.com/v3.2/customer/action/<action>` | [**Get License Properties**](#get-license-properties) and [**Get Group Properties**](#get-group-properties) |
+| **GET**     | `https://api.livechatinc.com/v3.2/customer/action/<action>` | [**Get License Properties**](#list-license-properties) and [**Get Group Properties**](#list-group-properties) |
 
 | Header          |                   Value                    |                                                                                                                                                                                                         Notes |
 | --------------- | :----------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -1062,12 +1062,12 @@ curl -X POST \
 
 |                |                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**      | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                                                                                                                     |
+| **Chats**      | [`list_chats`](#list-chats) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                                                                                                                     |
 | **Events**     | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                                                                                                 |
-| **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) [`get_license_properties`](#get-license-properties) [`get_group_properties`](#get-group-properties) |
+| **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) [`list_license_properties`](#list-license-properties) [`list_group_properties`](#list-group-properties) |
 | **Customers**  | [`update_customer`](#update-customer) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                                                                                                                         |
-| **Status**     | [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Other**      | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                                                                                         |
+| **Status**     | [`list_group_statuses`](#list-group-statuses)                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| **Other**      | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                                                                                         |
 
 ## Chats
 
@@ -1075,17 +1075,17 @@ curl -X POST \
 
 <Text>
 
-### Get Chats Summary
+### List Chats
 
 It returns [summaries](#chat-summary) of the chats a Customer participated in.
 
 #### Specifics
 
-|                        |                                                                      |
-| ---------------------- | -------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_chats_summary` |
-| **RTM API equivalent** | [`get_chats_summary`](rtm-reference/#get-chats-summary)              |
-| **Webhook**            | -                                                                    |
+|                        |                                                               |
+|------------------------|---------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/list_chats` |
+| **RTM API equivalent** | [`list_chats`](rtm-reference/#list-chats)                     |
+| **Webhook**            | -                                                             |
 
 #### Request
 
@@ -1102,7 +1102,7 @@ It returns [summaries](#chat-summary) of the chats a Customer participated in.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.2/customer/action/get_chats_summary?license_id=<license_id> \
+  https://api.livechatinc.com/v3.2/customer/action/list_chats?license_id=<license_id> \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{}'
@@ -1349,22 +1349,22 @@ Starts a chat.
 
 #### Specifics
 
-|                        |                                                                               |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/start_chat`                 |
-| **RTM API equivalent** | [`start_chat`](rtm-reference/#start-chat)                                     |
-| **Webhook**            | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread) |
+|                        |                                                                 |
+|------------------------|-----------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/start_chat`   |
+| **RTM API equivalent** | [`start_chat`](rtm-reference/#start-chat)                       |
+| **Webhook**            | [`incoming_chat`](/management/configuration-api/#incoming_chat) |
 
 #### Request
 
 | Parameters               | Required | Data type | Notes                                                                       |
-| ------------------------ | -------- | --------- | --------------------------------------------------------------------------- |
+|--------------------------|----------|-----------|-----------------------------------------------------------------------------|
 | `chat`                   | No       | `object`  |                                                                             |
 | `chat.properties`        | No       | `object`  | Initial chat properties                                                     |
 | `chat.access`            | No       | `object`  | Chat access to set; default: all agents.                                    |
 | `chat.thread`            | No       | `object`  |                                                                             |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
-| `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
+| `chat.thread.properties` | No       | `object`  | Initial thread properties                                                   |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
 #### Response
@@ -1416,23 +1416,23 @@ Used to restart an archived chat.
 
 #### Specifics
 
-|                        |                                                                               |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/activate_chat`              |
-| **RTM API equivalent** | [`activate_chat`](rtm-reference/#activate-chat)                               |
-| **Webhook**            | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread) |
+|                        |                                                                  |
+|------------------------|------------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/activate_chat` |
+| **RTM API equivalent** | [`activate_chat`](rtm-reference/#activate-chat)                  |
+| **Webhook**            | [`incoming_chat`](/management/configuration-api/#incoming_chat)  |
 
 #### Request
 
 | Request object           | Required | Type     | Notes                                                                      |
-| ------------------------ | -------- | -------- | -------------------------------------------------------------------------- |
+|--------------------------|----------|----------|----------------------------------------------------------------------------|
 | `chat`                   | Yes      | `object` |                                                                            |
 | `chat.id`                | Yes      | `string` | ID of the chat that will be activated.                                     |
 | `chat.access`            | No       | `object` | Chat access to set; default: all agents.                                   |
 | `chat.properties`        | No       | `object` | Initial chat properties                                                    |
 | `chat.thread`            | No       | `object` |                                                                            |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                                  |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                             |
+| `chat.thread.properties` | No       | `object` | Initial thread properties                                                  |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
 #### Response
@@ -1480,17 +1480,17 @@ curl -X POST \
 
 <Text>
 
-### Close Thread
+### Deactivate Chat
 
-Closes the thread. Sending messages to this thread will no longer be possible.
+Deactivates a chat by closing the currently open thread. Sending messages to this thread will no longer be possible.
 
 #### Specifics
 
-|                        |                                                                                                                                       |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/close_thread`                                                                       |
-| **RTM API equivalent** | [`close_thread`](rtm-reference/#close-thread)                                                                                         |
-| **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event) and [`thread_closed`](/management/configuration-api/#thread_closed) |
+|                        |                                                                                                                                             |
+|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/deactivate_chat`                                                                          |
+| **RTM API equivalent** | [`deactivate_chat`](rtm-reference/#deactivate-chat)                                                                                         |
+| **Webhook**            | [`incoming_event`](/management/configuration-api/#incoming_event) and [`chat_deactivated`](/management/configuration-api/#chat_deactivated) |
 
 #### Request
 
@@ -1510,7 +1510,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/close_thread?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/deactivate_chat?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1871,15 +1871,15 @@ curl -X POST \
 
 <Text>
 
-### Update Chat Thread Properties
+### Update Thread Properties
 
 #### Specifics
 
-|                        |                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/update_chat_thread_properties`                  |
-| **RTM API equivalent** | [`update_chat_thread_properties`](rtm-reference/#update-chat-thread-properties)                   |
-| **Webhook**            | [`chat_thread_properties_updated`](/management/configuration-api/#chat_thread_properties_updated) |
+|                        |                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/update_thread_properties`             |
+| **RTM API equivalent** | [`update_thread_properties`](rtm-reference/#update-thread-properties)                   |
+| **Webhook**            | [`thread_properties_updated`](/management/configuration-api/#thread_properties_updated) |
 
 #### Request
 
@@ -1901,7 +1901,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/update_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/update_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -1909,7 +1909,7 @@ curl -X POST \
 	    "thread_id": "Q1GZ3FNAU9",
       "properties": {
           "0805e283233042b37f460ed8fbf22160": {
-              "string_property": "Chat thread property value updated by Customer"
+              "string_property": "Thread property value updated by Customer"
               }
           }
       }'
@@ -1925,23 +1925,23 @@ curl -X POST \
 
 <Text>
 
-### Delete Chat Thread Properties
+### Delete Thread Properties
 
 #### Specifics
 
-|                        |                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/delete_chat_thread_properties`                  |
-| **RTM API equivalent** | [`delete_chat_thread_properties`](rtm-reference/#delete-chat-thread-properties)                   |
-| **Webhook**            | [`chat_thread_properties_deleted`](/management/configuration-api/#chat_thread_properties_deleted) |
+|                        |                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/delete_thread_properties`             |
+| **RTM API equivalent** | [`delete_thread_properties`](rtm-reference/#delete-thread-properties)                   |
+| **Webhook**            | [`thread_properties_deleted`](/management/configuration-api/#thread_properties_deleted) |
 
 #### Request
 
 | Parameter    | Required | Data type | Notes                                                  |
-| ------------ | -------- | --------- | ------------------------------------------------------ |
+|--------------|----------|-----------|--------------------------------------------------------|
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete.                      |
+| `properties` | Yes      | `object`  | Thread properties to delete.                           |
 
 #### Response
 
@@ -1955,7 +1955,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/delete_chat_thread_properties?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/delete_thread_properties?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2091,18 +2091,18 @@ curl -X POST \
 
 <Text>
 
-### Get License Properties
+### List License Properties
 
 Returns the properties of a given license. It only returns the properties a Customer has access to.
 
 #### Specifics
 
-|                        |                                                                           |
-| ---------------------- | ------------------------------------------------------------------------- |
-| **HTTP Method**        | **GET**                                                                   |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_license_properties` |
-| **RTM API equivalent** | -                                                                         |
-| **Webhook**            | -                                                                         |
+|                        |                                                                            |
+|------------------------|----------------------------------------------------------------------------|
+| **HTTP Method**        | **GET**                                                                    |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/list_license_properties` |
+| **RTM API equivalent** | -                                                                          |
+| **Webhook**            | -                                                                          |
 
 #### Request
 
@@ -2120,7 +2120,7 @@ Returns the properties of a given license. It only returns the properties a Cust
 
 ```shell
 curl -X GET \
-  'https://api.livechatinc.com/v3.2/customer/action/get_license_properties?license_id=123&namespace=0805e283233042b37f460ed8fbf22160&name=string_property' \
+  'https://api.livechatinc.com/v3.2/customer/action/list_license_properties?license_id=123&namespace=0805e283233042b37f460ed8fbf22160&name=string_property' \
   -H 'Content-Type: application/json'
 ```
 
@@ -2147,18 +2147,18 @@ curl -X GET \
 
 <Text>
 
-### Get Group Properties
+### List Group Properties
 
 Returns the properties of a given group. It only returns the properties a Customer has access to.
 
 #### Specifics
 
-|                        |                                                                         |
-| ---------------------- | ----------------------------------------------------------------------- |
-| **HTTP Method**        | **GET**                                                                 |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_group_properties` |
-| **RTM API equivalent** | -                                                                       |
-| **Webhook**            | -                                                                       |
+|                        |                                                                          |
+|------------------------|--------------------------------------------------------------------------|
+| **HTTP Method**        | **GET**                                                                  |
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/list_group_properties` |
+| **RTM API equivalent** | -                                                                        |
+| **Webhook**            | -                                                                        |
 
 #### Request
 
@@ -2177,7 +2177,7 @@ Returns the properties of a given group. It only returns the properties a Custom
 
 ```shell
 curl -X GET \
-  'https://api.livechatinc.com/v3.2/customer/action/get_group_properties?license_id=11069052&group_id=1&namespace=0805e283233042b37f460ed8fbf22160&name=string_property' \
+  'https://api.livechatinc.com/v3.2/customer/action/list_group_properties?license_id=11069052&group_id=1&namespace=0805e283233042b37f460ed8fbf22160&name=string_property' \
   -H 'Content-Type: application/json'
 ```
 
@@ -2381,15 +2381,15 @@ curl -X POST \
 
 <Text>
 
-### Get Groups Status
+### List Group Statuses
 
 #### Specifics
 
-|                        |                                                                      |
-| ---------------------- | -------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_groups_status` |
-| **RTM API equivalent** | [`get_groups_status`](rtm-reference/#get-groups-status)              |
-| **Webhook**            | -                                                                    |
+|                        |                                                                        |
+|------------------------|------------------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/list_group_statuses` |
+| **RTM API equivalent** | [`list_group_statuses`](rtm-reference/#list-group-statuses)            |
+| **Webhook**            | -                                                                      |
 
 #### Request
 
@@ -2418,7 +2418,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/get_groups_status?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/list_group_statuses?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
@@ -2670,17 +2670,17 @@ curl -X POST \
 
 <Text>
 
-### Get URL Details
+### Get URL Info
 
 It returns the info on a given URL.
 
 #### Specifics
 
-|                        |                                                                    |
-| ---------------------- | ------------------------------------------------------------------ |
-| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_url_details` |
-| **RTM API equivalent** | [`get_url_details`](rtm-reference/#get-url-details)                |
-| **Webhook**            | -                                                                  |
+|                        |                                                                 |
+|------------------------|-----------------------------------------------------------------|
+| **Method URL**         | `https://api.livechatinc.com/v3.2/customer/action/get_url_info` |
+| **RTM API equivalent** | [`get_url_info`](rtm-reference/#get-url-info)                   |
+| **Webhook**            | -                                                               |
 
 #### Request
 
@@ -2703,7 +2703,7 @@ It returns the info on a given URL.
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/get_url_details?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.2/customer/action/get_url_info?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{

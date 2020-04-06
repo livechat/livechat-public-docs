@@ -599,13 +599,13 @@ Here's the list of all system messages you might come across:
 
 |           Content           |                                    Generated when |
 | :-------------------------: | ------------------------------------------------: |
-| _%agent% archived the chat_ | Agent closed chat via the `close_thread` request. |
+| _%agent% archived the chat_ | Agent closed chat via the `deactivate_chat` request. |
 
 #### `manual_archived_customer`
 
 |            Content             |                                       Generated when |
 | :----------------------------: | ---------------------------------------------------: |
-| _%customer% archived the chat_ | Customer closed chat via the `close_thread` request. |
+| _%customer% archived the chat_ | Customer closed chat via the `deactivate_chat` request. |
 
 #### `rating.chat_commented`
 
@@ -1062,12 +1062,12 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 |                |                                                                                                                                                                                                                                                                                                                                                         |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**      | [`get_chats_summary`](#get-chats-summary) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`close_thread`](#close-thread)                                                                                                                 |
+| **Chats**      | [`list_chats`](#list-chats) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                 |
 | **Events**     | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                           |
-| **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_chat_thread_properties`](#update-chat-thread-properties) [`delete_chat_thread_properties`](#delete-chat-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
+| **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                     |
-| **Status**     | [`login`](#login) [`get_groups_status`](#get-groups-status)                                                                                                                                                                                                                                                                                             |
-| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_details`](#get-url-details) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                   |
+| **Status**     | [`login`](#login) [`list_group_statuses`](#list-group-statuses)                                                                                                                                                                                                                                                                                             |
+| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                   |
 
 </Text>
 
@@ -1114,17 +1114,17 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 <Text>
 
-### Get Chats Summary
+### List Chats
 
 It returns [summaries](#chat-summaries) of the chats a Customer participated in.
 
 #### Specifics
 
-|                        |                                              |
-| ---------------------- | -------------------------------------------- |
-| **Action**             | `get_chats_summary`                          |
-| **Web API equivalent** | [`get_chats_summary`](../#get-chats-summary) |
-| **Push message**       | -                                            |
+|                        |                                |
+|------------------------|--------------------------------|
+| **Action**             | `list_chats`                   |
+| **Web API equivalent** | [`list_chats`](../#list-chats) |
+| **Push message**       | -                              |
 
 #### Request
 
@@ -1141,7 +1141,7 @@ It returns [summaries](#chat-summaries) of the chats a Customer participated in.
 
 ```json
 {
-  "action": "get_chats_summary",
+  "action": "list_chats",
   "payload": {}
 }
 ```
@@ -1153,7 +1153,7 @@ It returns [summaries](#chat-summaries) of the chats a Customer participated in.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_chats_summary",
+  "action": "list_chats",
   "type": "response",
   "success": true,
   "payload": {
@@ -1416,23 +1416,23 @@ Starts a chat.
 
 #### Specifics
 
-|                        |                                                 |
-| ---------------------- | ----------------------------------------------- |
-| **Action**             | `start_chat`                                    |
-| **Web API equivalent** | [`start_chat`](../#start-chat)                  |
-| **Push message**       | [`incoming_chat_thread`](#incoming_chat_thread) |
+|                        |                                   |
+|------------------------|-----------------------------------|
+| **Action**             | `start_chat`                      |
+| **Web API equivalent** | [`start_chat`](../#start-chat)    |
+| **Push message**       | [`incoming_chat`](#incoming_chat) |
 
 #### Request
 
 | Parameters               | Required | Data type | Notes                                                                       |
-| ------------------------ | -------- | --------- | --------------------------------------------------------------------------- |
+|--------------------------|----------|-----------|-----------------------------------------------------------------------------|
 | `chat`                   | No       | `object`  |                                                                             |
 | `chat.properties`        | No       | `object`  | Initial chat properties                                                     |
 | `chat.access`            | No       | `object`  | Chat access to set, default: all agents.                                    |
 | `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type `customer`).         |
 | `chat.thread`            | No       | `object`  |                                                                             |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
-| `chat.thread.properties` | No       | `object`  | Initial chat thread properties                                              |
+| `chat.thread.properties` | No       | `object`  | Initial thread properties                                                   |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
 #### Response
@@ -1527,23 +1527,23 @@ Used to restart an archived chat.
 
 #### Specifics
 
-|                        |                                                 |
-| ---------------------- | ----------------------------------------------- |
-| **Action**             | `activate_chat`                                 |
-| **Web API equivalent** | [`activate_chat`](../#activate-chat)            |
-| **Push message**       | [`incoming_chat_thread`](#incoming_chat_thread) |
+|                        |                                      |
+|------------------------|--------------------------------------|
+| **Action**             | `activate_chat`                      |
+| **Web API equivalent** | [`activate_chat`](../#activate-chat) |
+| **Push message**       | [`incoming_chat`](#incoming_chat)    |
 
 #### Request
 
 | Request object           | Required | Type     | Notes                                                                      |
-| ------------------------ | -------- | -------- | -------------------------------------------------------------------------- |
+|--------------------------|----------|----------|----------------------------------------------------------------------------|
 | `chat`                   | Yes      | `object` |                                                                            |
 | `chat.id`                | Yes      | `string` | The ID of the chat that will be activated.                                 |
 | `chat.access`            | No       | `object` | Chat access to set, default: all agents.                                   |
 | `chat.properties`        | No       | `object` | Initial chat properties                                                    |
 | `chat.thread`            | No       | `object` |                                                                            |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                                  |
-| `chat.thread.properties` | No       | `object` | Initial chat thread properties                                             |
+| `chat.thread.properties` | No       | `object` | Initial thread properties                                                  |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
 #### Response
@@ -1636,17 +1636,17 @@ Used to restart an archived chat.
 
 <Text>
 
-### Close Thread
+### Deactivate Chat
 
-Closes the thread. Sending messages to this thread will no longer be possible.
+Deactivates a chat by closing the currently open thread. Sending messages to this thread will no longer be possible.
 
 #### Specifics
 
-|                        |                                                                           |
-| ---------------------- | ------------------------------------------------------------------------- |
-| **Action**             | `close_thread`                                                            |
-| **Web API equivalent** | [`close_thread`](../#close-thread)                                        |
-| **Push message**       | [`incoming_event`](#incoming_event) and [`thread_closed`](#thread_closed) |
+|                        |                                                                                 |
+|------------------------|---------------------------------------------------------------------------------|
+| **Action**             | `deactivate_chat`                                                               |
+| **Web API equivalent** | [`deactivate_chat`](../#deactivate-chat)                                        |
+| **Push message**       | [`incoming_event`](#incoming_event) and [`chat_deactivated`](#chat_deactivated) |
 
 #### Request
 
@@ -1662,7 +1662,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 
 ```json
 {
-  "action": "close_thread",
+  "action": "deactivate_chat",
   "payload": {
     "chat_id": "PJ0MRSHTDG"
   }
@@ -1676,7 +1676,7 @@ Closes the thread. Sending messages to this thread will no longer be possible.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "close_thread",
+  "action": "deactivate_chat",
   "type": "response",
   "success": true,
   "payload": {
@@ -2058,15 +2058,15 @@ Sends a sneak peek to a chat.
 
 <Text>
 
-### Update Chat Thread Properties
+### Update Thread Properties
 
 #### Specifics
 
-|                        |                                                                      |
-| ---------------------- | -------------------------------------------------------------------- |
-| **Action**             | `update_chat_thread_properties`                                      |
-| **Web API equivalent** | [`update_chat_thread_properties`](../#update-chat-thread-properties) |
-| **Push message**       | [`chat_thread_properties_updated`](#chat_thread_properties_updated)  |
+|                        |                                                            |
+|------------------------|------------------------------------------------------------|
+| **Action**             | `update_thread_properties`                                 |
+| **Web API equivalent** | [`update_thread_properties`](../#update-thread-properties) |
+| **Push message**       | [`thread_properties_updated`](#thread_properties_updated)  |
 
 #### Request
 
@@ -2084,13 +2084,13 @@ Sends a sneak peek to a chat.
 
 ```json
 {
-  "action": "update_chat_thread_properties",
+  "action": "update_thread_properties",
   "payload": {
     "chat_id": "Q1GZ3FNAT9",
 	  "thread_id": "Q1GZ3FNAU9",
     "properties": {
         "0805e283233042b37f460ed8fbf22160": {
-            "string_property": "Chat thread property value updated by Customer"
+            "string_property": "Thread property value updated by Customer"
             }
         }
     }
@@ -2104,7 +2104,7 @@ Sends a sneak peek to a chat.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "update_chat_thread_properties",
+  "action": "update_thread_properties",
   "type": "response",
   "success": true,
   "payload": {
@@ -2123,23 +2123,23 @@ Sends a sneak peek to a chat.
 
 <Text>
 
-### Delete Chat Thread Properties
+### Delete Thread Properties
 
 #### Specifics
 
-|                        |                                                                      |
-| ---------------------- | -------------------------------------------------------------------- |
-| **Action**             | `delete_chat_thread_properties`                                      |
-| **Web API equivalent** | [`delete_chat_thread_properties`](../#delete-chat-thread-properties) |
-| **Push message**       | [`chat_thread_properties_deleted`](#chat_thread_properties_deleted)  |
+|                        |                                                            |
+|------------------------|------------------------------------------------------------|
+| **Action**             | `delete_thread_properties`                                 |
+| **Web API equivalent** | [`delete_thread_properties`](../#delete-thread-properties) |
+| **Push message**       | [`thread_properties_deleted`](#thread_properties_deleted)  |
 
 #### Request
 
 | Parameter    | Required | Data type | Notes                                                  |
-| ------------ | -------- | --------- | ------------------------------------------------------ |
+|--------------|----------|-----------|--------------------------------------------------------|
 | `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
 | `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
-| `properties` | Yes      | `object`  | Chat thread properties to delete.                      |
+| `properties` | Yes      | `object`  | Thread properties to delete.                           |
 
 </Text>
 
@@ -2149,7 +2149,7 @@ Sends a sneak peek to a chat.
 
 ```json
 {
-  "action": "delete_chat_thread_properties",
+  "action": "delete_thread_properties",
   "payload": {
     "chat_id": "Q1GZ3FNAT9",
     "thread_id": "Q1GZ3FNAU9",
@@ -2169,7 +2169,7 @@ Sends a sneak peek to a chat.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "delete_chat_thread_properties",
+  "action": "delete_thread_properties",
   "type": "response",
   "success": true,
   "payload": {
@@ -2732,15 +2732,14 @@ It returns the initial state of the current Customer.
 
 <Text>
 
-### Get Groups Status
+### List Group Statuses
 
 #### Specifics
-
-|                        |                                              |
-| ---------------------- | -------------------------------------------- |
-| **Action**             | `get_groups_status`                          |
-| **Web API equivalent** | [`get_groups_status`](../#get-groups-status) |
-| **Push message**       | -                                            |
+|                        |                                                  |
+|------------------------|--------------------------------------------------|
+| **Action**             | `list_group_statuses`                            |
+| **Web API equivalent** | [`list_group_statuses`](../#list-group-statuses) |
+| **Push message**       | -                                                |
 
 #### Request
 
@@ -2765,7 +2764,7 @@ One of the optional parameters needs to be included in the request payload.
 
 ```json
 {
-  "action": "get_groups_status",
+  "action": "list_group_statuses",
   "payload": {
     "all": true
   }
@@ -2779,7 +2778,7 @@ One of the optional parameters needs to be included in the request payload.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_groups_status",
+  "action": "list_group_statuses",
   "type": "response",
   "success": true,
   "payload": {
@@ -2970,17 +2969,17 @@ Gets the predicted Agent - the one the Customer will chat with when the chat sta
 
 <Text>
 
-### Get URL Details
+### Get URL Info
 
 It returns the info on a given URL.
 
 #### Specifics
 
-|                        |                                          |
-| ---------------------- | ---------------------------------------- |
-| **Action**             | `get_url_details`                        |
-| **Web API equivalent** | [`get_url_details`](../#get-url-details) |
-| **Push message**       | -                                        |
+|                        |                                    |
+|------------------------|------------------------------------|
+| **Action**             | `get_url_info`                     |
+| **Web API equivalent** | [`get_url_info`](../#get-url-info) |
+| **Push message**       | -                                  |
 
 #### Request
 
@@ -3004,7 +3003,7 @@ It returns the info on a given URL.
 
 ```json
 {
-  "action": "get_url_details",
+  "action": "get_url_info",
   "payload": {
     "url": "https://livechatinc.com"
   }
@@ -3018,7 +3017,7 @@ It returns the info on a given URL.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "get_url_details",
+  "action": "get_url_info",
   "type": "response",
   "success": true,
   "payload": {
@@ -3227,11 +3226,11 @@ Here's what you need to know about **pushes**:
 
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`incoming_chat_thread`](#incoming_chat_thread) [`thread_closed`](#thread_closed)                                                                                                                                                                                                                                                                                   |
+| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                                   |
 | **Chat access** | [`access_set`](#access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                                                                                               |
 | **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
-| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Customers**   | [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_side_storage_updated`](#customer_side_storage_updated)                                                                                                                                                                                                         |
 | **Status**      | [`customer_disconnected`](#customer_disconnected)                                                                                                                                                                                                                                                                                                                   |
 | **Other**       | [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_greeting`](#incoming_greeting) [`greeting_accepted`](#greeting_accepted) [`greeting_canceled`](#greeting_canceled)                                                                               |
@@ -3262,8 +3261,8 @@ Here's what you need to know about **pushes**:
 
 ## Chats
 
-### `incoming_chat_thread`
-Informs about a new thread coming in the chat. The push payload contains not only the new thread, but the whole chat data structure. If the chat was started with some initial events, the thread object contains them.  
+### `incoming_chat`
+Informs about a chat coming with a new thread. The push payload contains the whole chat data structure. If the chat was started with some initial events, the thread object contains them.  
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3292,13 +3291,13 @@ Informs about a new thread coming in the chat. The push payload contains not onl
 
 #### Specifics
 
-|                        |                                                                               |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| **Action**             | `incoming_chat_thread`                                                        |
-| **Webhook equivalent** | [`incoming_chat_thread`](/management/configuration-api/#incoming_chat_thread) |
+|                        |                                                                 |
+|------------------------|-----------------------------------------------------------------|
+| **Action**             | `incoming_chat`                                                 |
+| **Webhook equivalent** | [`incoming_chat`](/management/configuration-api/#incoming_chat) |
 
-### `thread_closed`
-Informs that a thread was closed. 
+### `chat_deactivated`
+Informs that a chat was deactivated by closing the currently open thread.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3314,10 +3313,10 @@ Informs that a thread was closed.
 
 #### Specifics
 
-|                        |                                                                 |
-| ---------------------- | --------------------------------------------------------------- |
-| **Action**             | `thread_closed`                                                 |
-| **Webhook equivalent** | [`thread_closed`](/management/configuration-api/#thread_closed) |
+|                        |                                                                       |
+|------------------------|-----------------------------------------------------------------------|
+| **Action**             | `chat_deactivated`                                                    |
+| **Webhook equivalent** | [`chat_deactivated`](/management/configuration-api/#chat_deactivated) |
 
 #### Push payload
 
@@ -3607,8 +3606,8 @@ Informs about those chat properties that were deleted.
 | ------------ | ---------------------------------------------------------------------------------------------------- |
 | `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
 
-### `chat_thread_properties_updated`
-Informs about those chat thread properties that were updated.
+### `thread_properties_updated`
+Informs about those thread properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3618,7 +3617,7 @@ Informs about those chat thread properties that were updated.
   "thread_id": "Q1GZ3FNAU9",
   "properties": {
     "0805e283233042b37f460ed8fbf22160": {
-      "string_property": "Chat thread property value updated by Customer" 
+      "string_property": "Thread property value updated by Customer" 
         },
     // ...
     }
@@ -3629,10 +3628,10 @@ Informs about those chat thread properties that were updated.
 
 #### Specifics
 
-|                        |                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------- |
-| **Action**             | `chat_thread_properties_updated`                                                                  |
-| **Webhook equivalent** | [`chat_thread_properties_updated`](/management/configuration-api/#chat_thread_properties_updated) |
+|                        |                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
+| **Action**             | `thread_properties_updated`                                                             |
+| **Webhook equivalent** | [`thread_properties_updated`](/management/configuration-api/#thread_properties_updated) |
 
 #### Push payload
 
@@ -3640,8 +3639,8 @@ Informs about those chat thread properties that were updated.
 | ------------ | ----------------------------------------------------------------------------------------------------------- |
 | `properties` | This is not a full `properties` object. This push shows only the properties the have been recently updated. |
 
-### `chat_thread_properties_deleted`
-Informs about those chat thread properties that were deleted.
+### `thread_properties_deleted`
+Informs about those thread properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3660,10 +3659,10 @@ Informs about those chat thread properties that were deleted.
 
 #### Specifics
 
-|                        |                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------- |
-| **Action**             | `chat_thread_properties_deleted`                                                                  |
-| **Webhook equivalent** | [`chat_thread_properties_deleted`](/management/configuration-api/#chat_thread_properties_deleted) |
+|                        |                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------|
+| **Action**             | `thread_properties_deleted`                                                             |
+| **Webhook equivalent** | [`thread_properties_deleted`](/management/configuration-api/#thread_properties_deleted) |
 
 #### Push payload
 
