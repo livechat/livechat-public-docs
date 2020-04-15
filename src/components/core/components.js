@@ -37,7 +37,7 @@ const NavWrapper = styled.aside`
   --page-theme-color: ${({ color }) => color};
   transition: margin 0.3s ease-out, box-shadow 0.3s ease-out;
   top: 0;
-  background-color: #f1f6f8;
+  background-color: #f6f6f7;
   border-right: 1px solid #dedede;
 
   position: fixed;
@@ -156,7 +156,7 @@ export const MenuWrapper = styled.div`
   overflow-y: scroll;
   padding: 20px;
   @media (min-width: 768px) {
-    height: calc(100vh - 195px);
+    height: calc(100vh - 180px);
   }
 `;
 
