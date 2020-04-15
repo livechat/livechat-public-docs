@@ -9,13 +9,13 @@ import { VersionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
-  background: #293462;
+  background: #4a4a55;
   height: 60px;
   display: none;
   align-items: center;
   position: fixed;
   width: 100%;
-  font-family: "Source Sans Pro";
+  font-family: "Colfax";
   z-index: 99;
   @media (min-width: 768px) {
     display: flex;
@@ -54,11 +54,11 @@ const MenuElementWrapper = styled.li`
     height: 60px;
     display: flex;
     align-items: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 1);
     text-decoration: none;
     font-size: 15px;
     &:hover {
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255, 255, 255, 1);
     }
   }
 `;
@@ -66,13 +66,20 @@ const MenuElementWrapper = styled.li`
 const linkCss = css`
   color: white;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
 
   &:hover {
     text-decoration: none;
     color: white;
   }
+`;
+
+const VLine = styled.div`
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 28px;
+  width: 1px;
+  margin: 0 10px;
 `;
 
 const linkStyle = {
@@ -130,11 +137,9 @@ const Header = () => {
     <HeaderWrapper id="header">
       <LogoWrapper>
         <a href="/">
-          <LiveChatLogo
-            style={{ margin: "0 10px -6px 0", display: "block" }}
-            width={80}
-          />
+          <LiveChatLogo style={{ margin: "0", display: "block" }} />
         </a>
+        <VLine />
         <Link to="/" css={linkCss}>
           Platform Docs
         </Link>
@@ -151,7 +156,7 @@ const Header = () => {
             />
           ))}
           <MenuElement
-            label={"Developer Console"}
+            label={"Console"}
             href={"/console/"}
             style={{ alignSelf: "flex-end", marginLeft: "auto" }}
           />
