@@ -32,6 +32,237 @@ Summing up, if the user token starts with `fra-`, you should add the `X-Region: 
 
 All configurations set by this API will have action in system after max 2 minutes. This delay will be removed in the future.
 
+# Auto access
+
+**Auto access** allows you to assign groups to a thread that will be created when a customer starts a chat. Those groups are
+assigned based on the conditions defined to match the customer's geolocation and the page URL the customer is currently visiting.
+Every time a customer calls [**Login**](/messaging/customer-chat-api/v3.2/rtm-reference/#login) or
+[**Update Customer Page**](/messaging/customer-chat-api/v3.2/rtm-reference/#update-customer-page), our backend checks if
+the page URL and geolocation match the pre-defined conditions. Given there's a match, the groups are assigned to a thread,
+but not until a chat starts and the thread is actually created.
+
+If a customer starts a chat via [**Start Chat**](/messaging/customer-chat-api/v3.2/rtm-reference/#start-chat) or
+[**Activate Chat**](/messaging/customer-chat-api/v3.2/rtm-reference/#activate-chat) with the `chat.access` parameter,
+`chat.access` overrides the auto access assigned to the thread.
+
+## Methods
+
+<Section>
+
+<Text>
+
+### Add Auto Access
+
+Creates an `auto access` data structure, which is a set of conditions for the tracking URL and geolocation of a customer.
+
+#### Specifics
+
+|                |                                                                               |
+| -------------- | ----------------------------------------------------------------------------- |
+| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/add_auto_access`       |
+| Required scopes| `access_rules:rw`                                                             |
+
+
+| Parameter       | Required     | Data type | Notes                         |
+| --------------- | ------------ | --------- | ----------------------------- |
+| `access`        | Yes          | `object`  | Destination access            |
+| `access.groups` | Yes          | `[]int`   | Destination groups            |
+| `conditions`__**__   | Yes          | `object`  | Conditions to check                |
+| `conditions.customer_url` | No      | `object`  | The condition that matches on `customer_page.url` from **Login** or `url` from **Update Customer Page** |
+| `conditions.customer_domain` | No   | `object`  | The condition that matches on the domain of the `customer_url` |
+| `conditions.customer_*.values` | No | `[]match_object`_*_ | Positive match, may not be used together with `exclude_values` |
+| `conditions.customer_*.exclude_values` | No | `[]match_object` | Negative match |
+| `conditions.geolocation` | No   | `object`  | The condition that matches on the customer's geolocation |
+| `conditions.geolocation.values` | Yes | `[]geolocation_object`__**__ | An array of objects; matches when at least one subcondition matches. |
+| `description`   | No           | `string`  | Description of the auto access  |
+
+__*__ `<match_object>` structure:
+
+| Parameter   | Required | Data type | Notes |
+| ----------- | -------- | --------- | ----- |
+| `value`     | Yes      | `string`  | A value to match |
+| `exact_match` | No     | `bool`    | If set to `false`, a `match_object.value` will be matched as a substring of the customer URL or domain. |
+
+__**__ the `geolocation_object` structure.  The condition is fulfilled only when all of the specified fields match:
+
+| Parameter   | Required | Data type | Example |
+| ----------- | -------- | --------- | ----- |
+| `country`   | No | `string` | "United States |
+| `country_code` | No | `string` | "US" |
+| `region` | No | `string` | "California" |
+| `city` | No | `string` | "Mountain View" |
+
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/add_auto_access \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "description": "Chats on livechat.com from United States",
+        "access": {
+          "groups": [ 1 ]
+        },
+        "conditions": {
+          "customer_domain": {
+            "values": [
+              {
+                "value": "livechat.com",
+                "exact_match": true
+              }
+            ]
+          },
+          "customer_geolocation": {
+            "values": [
+              {
+                "country": "United States",
+                "country_code": "US"
+              }
+            ]
+          }
+        }
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": "pqi8oasdjahuakndw9nsad9na"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Auto Accesses
+
+Returns all existing `auto access` data structures.
+
+#### Specifics
+
+|                |                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------ |
+| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/list_auto_accesses`           |
+| Required scopes| `access_rules:ro`                                                                    |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/list_auto_accesses \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+[
+  {
+    "id": "1faad6f5f1d6e8fdf27e8af9839783b7",
+    "description": "Chats on livechat.com from United States",
+    "access": {
+      "groups": [
+        0
+      ]
+    },
+    "conditions": {
+      "customer_geolocation": {
+        "values": [
+          {
+            "country": "United States",
+            "country_code": "US"
+          }
+        ]
+      },
+      "customer_domain": {
+        "values": [
+          {
+            "value": "livechat.com",
+            "exact_match": true
+          }
+        ]
+      }
+    }
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Auto Access
+
+Deletes an existing `auto access` data structure specified by its ID.
+
+#### Specifics
+
+|                |                                                                                  |
+| -------------- | -------------------------------------------------------------------------------- |
+| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/delete_auto_access`       |
+| Required scopes| `access_rules:rw`                                                                |
+
+
+| Parameter              | Required     | Data type | Notes                         |
+| ---------------------- | ------------ | --------- | ----------------------------- |
+| `id`                   | Yes          | `string`  | auto access ID          |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.2/configuration/action/delete_auto_access \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "id": "pqi8oasdjahuakndw9nsad9na"
+  }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
 # Bots
 
 Bot enables writing integrations using the **Agent Chat API** - both [RTM](/messaging/agent-chat-api/rtm-reference/) and [Web](/messaging/agent-chat-api/) - to communicate in chats as regular Agents.
