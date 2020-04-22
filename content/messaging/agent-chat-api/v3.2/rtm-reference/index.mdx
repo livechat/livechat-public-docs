@@ -53,13 +53,14 @@ For web applications and backend integrations (e.g. in Python, Go). Send the fol
 }
 ```
 
-After pinging the server, the client will receive a response with the `ping` action. Thanks to that, the client can make sure the connection is still alive. 
+After pinging the server, the client will receive a response with the `ping` action. Thanks to that, the client can make sure the connection is still alive.
 
 - **The control frame ping in the websocket protocol**
 
 For backend integrations; unavailable in web browsers. Read more about the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2).
 
 ### Scopes
+
 All authorization scopes are listed in the [Scopes](#scopes-1) section. If a method requires particular authorization scopes, you'll find them included in the method description.
 
 ## Data centers
@@ -67,7 +68,7 @@ All authorization scopes are listed in the [Scopes](#scopes-1) section. If a met
 LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
 
 For backend applications, you can specify the region in the request header. The mechanism is the same as in [Agent Chat Web API reference](../#data-centers). It doesn't work for frontend applications, though.
-Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL. 
+Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL.
 
 **`fra`:** `wss://api-fra.livechatinc.com/v3.2/agent/rtm/ws`
 
@@ -209,7 +210,7 @@ These are the available **event types**:
 The **File** event informs about an uploaded file.
 
 ### Request
- 
+
 | Field                                                 | Required | Data type | Notes                                                               |
 | ----------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------: |
 | `custom_id`                                           | no       | `string`  |                                                                     |
@@ -577,7 +578,7 @@ Custom event is an event with customizable payload.
 
 ```json
 {
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", 
+  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743",
   "custom_id": "31-0C-1C-07-DB-16",
   "type": "custom",
   "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
@@ -1252,7 +1253,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 |                 |                                                                                                                                                                                                                                                                                                                                                         |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`list_chats`](#list-chats) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
-| **Chat access** | [`grant_access`](#grant-access) [`revoke_access`](#revoke-access) [`set_access`](#set-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                                         |
+| **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`set_chat_access`](#set-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                           |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                                               |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                                                 |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
@@ -1319,6 +1320,7 @@ It returns [summaries](#chat-summaries) of the chats an Agent has access to.
 | ----------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------- |
 | `filters`                                             | No       | `object` | Mustn't change between requests for subsequent pages. Otherwise, the behavior is undefined. |
 | `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.                |
+| `filters.include_chats_without_threads`               | No       | `bool`   | Defines if the returned chat summary includes chats without any threads; default: `true`.   |
 | `filters.group_ids`                                   | No       | `array`  | Array of group IDs. Max array size: 200                                                     |
 | `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                             |
 | `sort_order`                                               | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default)          |
@@ -1796,7 +1798,7 @@ When `chat.users` is defined, one of following scopes is required:
 | ----------- | ---------- | ----- |
 | `chat_id`   | `string`   |       |
 | `thread_id` | `string`   |       |
-| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. | 
+| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
 
 </Text>
 <Code>
@@ -2037,19 +2039,6 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 
 </CodeSample>
 
-<!-- > **`deactivate_chat`** sample **request** with optional params
-
-```json
-{
-	"request_id": "657", // optional
-	"action": "deactivate_chat",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -2108,19 +2097,6 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 </CodeSample>
 
-<!-- > **`follow_chat`** sample **request** with optional params
-
-```json
-{
-	"request_id": "756", // optional
-	"action": "follow_chat",
-	"payload": {
-		 "chat_id": "PW94SJTGW6"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -2130,7 +2106,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
   "type": "response",
   "success": true,
   "payload": {
-    "chat_id": "PW94SJTGW6"
+    // no response payload
   }
 }
 ```
@@ -2176,19 +2152,6 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 </CodeSample>
 
-<!-- > **`unfollow_chat`** sample **request** with optional params
-
-```json
-{
-	"request_id": "4756", // optional
-	"action": "unfollow_chat",
-	"payload": {
-		 "chat_id": "PWF6BACIKO"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -2212,25 +2175,24 @@ Removes the requester from the chat followers. After that, only key changes to t
 <Section>
 <Text>
 
-### Grant Access
+### Grant Chat Access
 
-Grants access to a new resource without overwriting the existing ones.
+Grants access to a new chat without overwriting the existing ones.
 
 #### Specifics
 
 |                        |                                                   |
 | ---------------------- | ------------------------------------------------- |
-| **Action**             | `grant_access`                                    |
+| **Action**             | `grant_chat_access`                               |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`grant_access`](../#grant-access)                |
-| **Push message**       | [`access_granted`](#access_granted)               |
+| **Web API equivalent** | [`grant_chat_access`](../#grant-chat-access)      |
+| **Push message**       | [`chat_access_granted`](#chat_access_granted)     |
 
 #### Request
 
 | Parameter     | Required | Data ype | Notes                |
 | ------------- | -------- | -------- | -------------------- |
-| `resource`    | Yes      | `string` | `chat` or `customer` |
-| `id`          | Yes      | `string` | Resource Id          |
+| `id`          | Yes      | `string` | Chat Id              |
 | `access`      | Yes      | `object` |                      |
 | `access.type` | Yes      | `string` | `group`              |
 | `access.id`   | Yes      | any      |                      |
@@ -2241,9 +2203,8 @@ Grants access to a new resource without overwriting the existing ones.
 
 ```json
 {
-  "action": "grant_access",
+  "action": "grant_chat_access",
   "payload": {
-    "resource": "chat",
     "id": "PW94SJTGW6",
     "access": {
       "type": "group",
@@ -2255,28 +2216,12 @@ Grants access to a new resource without overwriting the existing ones.
 
 </CodeSample>
 
-<!-- > **`grant_access`** sample **request** with optional params
-```json
-{
-	"request_id": "680",
-	"payload": {
-		"resource": "chat",
-			"id": "PW94SJTGW6",
-			"access": {
-				"type": "group",
-				"id": 19
-       		 }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "grant_access",
+  "action": "grant_chat_access",
   "type": "response",
   "success": true,
   "payload": {
@@ -2292,23 +2237,22 @@ Grants access to a new resource without overwriting the existing ones.
 <Section>
 <Text>
 
-### Revoke Access
+### Revoke Chat Access
 
 #### Specifics
 
 |                        |                                                   |
 | ---------------------- | ------------------------------------------------- |
-| **Action**             | `revoke_access`                                   |
+| **Action**             | `revoke_chat_access`                              |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`revoke_access`](../#revoke-access)              |
-| **Push message**       | [`access_revoked`](#access_revoked)               |
+| **Web API equivalent** | [`revoke_chat_access`](../#revoke-chat-access)    |
+| **Push message**       | [`chat_access_revoked`](#chat_access_revoked)     |
 
 #### Request
 
 | Parameter     | Required | Data type | Notes                |
 | ------------- | -------- | --------- | -------------------- |
-| `resource`    | Yes      | `string`  | `chat` or `customer` |
-| `id`          | Yes      | `string`  | Resource Id          |
+| `id`          | Yes      | `string`  | Chat Id              |
 | `access`      | Yes      | `object`  |                      |
 | `access.type` | Yes      | `string`  | `group` or `agent`   |
 | `access.id`   | Yes      | `number`  |                      |
@@ -2319,9 +2263,8 @@ Grants access to a new resource without overwriting the existing ones.
 
 ```json
 {
-  "action": "revoke_access",
+  "action": "revoke_chat_access",
   "payload": {
-    "resource": "chat",
     "id": "PW94SJTGW6",
     "access": {
       "type": "group",
@@ -2338,7 +2281,7 @@ Grants access to a new resource without overwriting the existing ones.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "revoke_access",
+  "action": "revoke_chat_access",
   "type": "response",
   "success": true,
   "payload": {
@@ -2354,25 +2297,24 @@ Grants access to a new resource without overwriting the existing ones.
 <Section>
 <Text>
 
-### Set Access
+### Set Chat Access
 
-Grants access to a new resource overwriting the existing ones.
+Grants access to a new chat overwriting the existing ones.
 
 #### Specifics
 
 |                        |                                                   |
 | ---------------------- | ------------------------------------------------- |
-| **Action**             | `set_access`                                      |
+| **Action**             | `set_chat_access`                                 |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`set_access`](../#set-access)                    |
-| **Push message**       | [`access_set`](#access_set)                       |
+| **Web API equivalent** | [`set_chat_access`](../#set-chat-access)          |
+| **Push message**       | [`chat_access_set`](#chat_access_set)             |
 
 #### Request
 
 | Request object | Required | Type     | Notes                |
 | -------------- | -------- | -------- | -------------------- |
-| `resource`     | Yes      | `string` | `chat` or `customer` |
-| `id`           | Yes      | `string` | Resource Id          |
+| `id`           | Yes      | `string` | Chat Id              |
 | `access`       | Yes      | `object` |                      |
 | `access.type`  | Yes      | `string` | `group` or `agent`   |
 | `access.id`    | Yes      | `number` |                      |
@@ -2383,9 +2325,8 @@ Grants access to a new resource overwriting the existing ones.
 
 ```json
 {
-  "action": "set_access",
+  "action": "set_chat_access",
   "payload": {
-    "resource": "chat",
     "id": "PW94SJTGW6",
     "access": {
       "type": "group",
@@ -2397,30 +2338,12 @@ Grants access to a new resource overwriting the existing ones.
 
 </CodeSample>
 
-<!-- > **`set_access`** sample **request** with optional params
-
-```json
-{
-	"request_id": "3456", // optional
-	"action": "set_access",
-	"payload": {
-		"resource": "chat",
-        "id": "PW94SJTGW6",
-        "access": {
-            "type": "group",
-            "id": 19
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "set_access",
+  "action": "set_chat_access",
   "type": "response",
   "success": true,
   "payload": {
@@ -2453,7 +2376,7 @@ Transfers a chat to an Agent or a group.
 
 | Parameter     | Required | Data ype | Notes                                                                                                                           |
 | ------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `chat_id`     | Yes      | `string` | Resource Id                                                                                                                     |
+| `chat_id`     | Yes      | `string` | Chat Id                                                                                                                     |
 | `target`      | No       | `object` | If missing, the chat will be transferred within the current group.                                                              |
 | `target.type` | Yes      | `string` | `group` or `agent`                                                                                                              |
 | `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                                    |
@@ -2477,24 +2400,6 @@ Transfers a chat to an Agent or a group.
 ```
 
 </CodeSample>
-
-<!-- > **`transfer_chat`** sample **request** with optional params
-
-```json
-{
-	"request_id": "3452", // optional
-	"action": "transfer_chat",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"target": {
-			"type":  "group",
-			"ids": [1]
-				},
-		"force": true
-			},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -2558,21 +2463,6 @@ Adds a user to the chat. You can't add more than one `customer` user type to the
 ```
 
 </CodeSample>
-
-<!-- > **`add_user_to_chat`** sample **request** with optional params
-
-```json
-{
-  "request_id": "3445", // optional
-  "action": "add_user_to_chat",
-  "payload": {
-    "chat_id": "PW94SJTGW6",
-    "user_id": "smith@example.com",
-    "user_type": "agent"
-  },
-  "author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -2658,18 +2548,18 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 
 ### Send Event
 
-Sends an [Event](#events) object. Use this method to send a message by specifing the [Message](#message) event type in the request. 
+Sends an [Event](#events) object. Use this method to send a message by specifing the [Message](#message) event type in the request.
 
 It's possible to write to a chat without joining it. The user sending an event will be automatically added to the chat with the `present` parameter set to `false` (see [`chat_user_added`](#chat_user_added)). **Sample use case:** a Bot Agent that sends messages visible to all chat participants without actually joining the chat.
 
 #### Specifics
 
-|                        |                                                                                          
-| ---------------------- | ---------------------------------------------------------------------------------------- 
-| **Action**             | `send_event`                                                                             
-| **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` 
-| **Web API equivalent** | [`send_event`](../#send-event)                                                           
-| **Push message**       | [`incoming_event`](#incoming_event)                                                       
+|                        |
+| ---------------------- | ----------------------------------------------------------------------------------------
+| **Action**             | `send_event`
+| **Required scopes**    | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw`
+| **Web API equivalent** | [`send_event`](../#send-event)
+| **Push message**       | [`incoming_event`](#incoming_event)
 
 #### Request
 
@@ -2764,25 +2654,6 @@ It's possible to write to a chat without joining it. The user sending an event w
 ```
 
 </CodeSample>
-
-<!-- > **`send_rich_message_postback`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "send_rich_message_postback",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-        "thread_id": "K600PKZON8",
-        "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
-        "postback": {
-            "id": "Method URL_yes",
-            "toggled": true
-        }
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -3211,21 +3082,6 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 </CodeSample>
 
-<!-- > **`tag_thread`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "tag_thread",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 <CodeResponse>
 
 ```json
@@ -3282,21 +3138,6 @@ It's possible to write to a chat without joining it. The user sending an event w
 ```
 
 </CodeSample>
-
-<!-- > **`untag_thread`** sample **request** with optional params
-
-```json
-{
-	"request_id": "1245", // optional
-	"action": "untag_thread",
-	"payload": {
-		"chat_id": "PW94SJTGW6",
-		"thread_id": "PWS6GIKAKH",
-		"tag": "support"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 
@@ -4148,20 +3989,6 @@ No response payload (`200 OK`).
 
 </CodeSample>
 
-<!-- > **`mark_events_as_seen`** sample **request** with optional params
-
-```json
-{
-	"request_id": "125", // optional
-	"action": "mark_events_as_seen",
-	"payload": {
-		 "chat_id": "PJ0MRSHTDG",
-		 "seen_up_to": "2017-10-12T15:19:21.010200Z"
-	},
-	"author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
-
 </Code>
 </Section>
 
@@ -4385,25 +4212,25 @@ It returns the Agents you can transfer a chat to. Agents are sorted ascendingly 
 
 # Pushes
 
-Here's what you need to know about **pushes**: 
+Here's what you need to know about **pushes**:
 
 - They are generated primarily by RTM API actions, but also by Web API actions.
-- They notify you when specific events occur. 
-- Can be **delivered** only in the websocket transport. 
-- You don't need to register pushes to receive them. 
-- Their equivalents in Web API are [webhooks](/management/configuration-api/#webhooks). 
+- They notify you when specific events occur.
+- Can be **delivered** only in the websocket transport.
+- You don't need to register pushes to receive them.
+- Their equivalents in Web API are [webhooks](/management/configuration-api/#webhooks).
 - Pushes and webhooks have similar payloads.
 
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                                   |
-| **Chat access** | [`access_granted`](#access_granted) [`access_revoked`](#access_revoked) [`access_set`](#access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                         |
+| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_access_set`](#chat_access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                         |
 | **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
-| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                       |
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                             |
 | **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed)                                                                                                                         |
 
 </Text>
@@ -4495,14 +4322,13 @@ Informs that a chat was deactivated by closing the currently open thread.
 
 ## Chat access
 
-### `access_granted`
-Informs that new, single access to a resource was granted. The existing access isn't overwritten. 
+### `chat_access_granted`
+Informs that new, single access to a chat was granted. The existing access isn't overwritten.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "resource": "chat",
   "id": "PJ0MRSHTDG",
   "access": {
     "group_ids": [1]
@@ -4514,26 +4340,24 @@ Informs that new, single access to a resource was granted. The existing access i
 
 #### Specifics
 
-|                        |                                                           |
-| ---------------------- | --------------------------------------------------------- |
-| **Action**             | `access_granted`                                          |
-| **Webhook equivalent** | [`access_granted`](/management/configuration-api/#access_granted) |
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Action**             | `chat_access_granted`                                                       |
+| **Webhook equivalent** | [`chat_access_granted`](/management/configuration-api/v3.2/#chat_access_granted) |
 
 #### Push payload
 
 | Object     | Notes         |
 | ---------- | ------------- |
-| `resource` | Resource type |
-| `id`       | Resource id   |
+| `id`       | Chat id   |
 
-### `access_revoked`
-Informs that access to a certain resource was revoked.
+### `chat_access_revoked`
+Informs that access to a certain chat was revoked.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "resource": "chat",
   "id": "PJ0MRSHTDG",
   "access": {
     "group_ids": [1]
@@ -4545,26 +4369,24 @@ Informs that access to a certain resource was revoked.
 
 #### Specifics
 
-|                        |                                                           |
-| ---------------------- | --------------------------------------------------------- |
-| **Action**             | `access_revoked`                                          |
-| **Webhook equivalent** | [`access_revoked`](/management/configuration-api/#access_revoked) |
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Action**             | `chat_access_revoked`                                                       |
+| **Webhook equivalent** | [`chat_access_revoked`](/management/configuration-api/v3.2/#chat_access_revoked) |
 
 #### Push payload
 
 | Object     | Notes         |
 | ---------- | ------------- |
-| `resource` | Resource type |
-| `id`       | Resource Id   |
+| `id`       | Chat Id   |
 
-### `access_set`
-Informs that new, single access to a resource was set. The existing access is overwritten.
+### `chat_access_set`
+Informs that new, single access to a chat was set. The existing access is overwritten.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "resource": "chat",
   "id": "PJ0MRSHTDG",
   "access": {
     "group_ids": [1]
@@ -4576,17 +4398,16 @@ Informs that new, single access to a resource was set. The existing access is ov
 
 #### Specifics
 
-|                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `access_set`                                      |
-| **Webhook equivalent** | [`access_set`](/management/configuration-api/#access_set) |
+|                        |                                                                     |
+| ---------------------- | ------------------------------------------------------------------- |
+| **Action**             | `chat_access_set`                                                   |
+| **Webhook equivalent** | [`chat_access_set`](/management/configuration-api/v3.2/#chat_access_set) |
 
 #### Push payload
 
 | Object     | Notes         |
 | ---------- | ------------- |
-| `resource` | Resource type |
-| `id`       | Resource Id   |
+| `id`       | Chat Id   |
 
 ### `chat_transferred`
 Informs that a chat was transferred to a different group or to an Agent.
@@ -4623,7 +4444,7 @@ Informs that a chat was transferred to a different group or to an Agent.
 ### `chat_user_added`
 Informs that a user (Customer or Agent) was added to a chat.
 
-This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](#send-event) method.  
+This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](#send-event) method.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5332,7 +5153,7 @@ Informs that a user has seen events up to a specific time.
 | **Webhook equivalent** | [`events_marked_as_seen`](/management/configuration-api/#events_marked_as_seen) |
 
 ### `incoming_multicast`
-Informs about messages sent via the `multicast` method or by the system. 
+Informs about messages sent via the `multicast` method or by the system.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -5407,21 +5228,21 @@ Informs that a chat has been unfollowed. Useful in multiple connection scenarios
 
 #### Possible errors
 
-| Type                             | Default Message               | Notes                                                              
-| -------------------------------- | ----------------------------- | ------------------------------------------------------------------ 
-| `authentication`                 | Authentication error          | An invalid or expired access token.                                
-| `authorization`                  | Authorization error           | User is not allowed to perform the action.                         
-| `internal`                       | Internal server error         |                                                                    
-| `license_expired`                | License expired               | The end of license trial or subcription.                            
+| Type                             | Default Message               | Notes
+| -------------------------------- | ----------------------------- | ------------------------------------------------------------------
+| `authentication`                 | Authentication error          | An invalid or expired access token.
+| `authorization`                  | Authorization error           | User is not allowed to perform the action.
+| `internal`                       | Internal server error         |
+| `license_expired`                | License expired               | The end of license trial or subcription.
 | `pending_requests_limit_reached` | Requests limit reached        | The limit of pending requests within one websocket connection has been reached. The limit is 10.
-| `requester_already_offline`      | Requester offline             | The method is only allowed for the logged in Agents (via RTM API). 
-| `requester_awaiting_approval`    | Requester&nbsp;awaiting&nbsp;approval | A new Agent hasn't been approved by the license owner yet.     
-| `request_timeout`                | Request timed out             | Timeout threshold is 15 seconds.                                    
+| `requester_already_offline`      | Requester offline             | The method is only allowed for the logged in Agents (via RTM API).
+| `requester_awaiting_approval`    | Requester&nbsp;awaiting&nbsp;approval | A new Agent hasn't been approved by the license owner yet.
+| `request_timeout`                | Request timed out             | Timeout threshold is 15 seconds.
 | `requester_suspended`            | Requester suspended           | The rights of a given Agent have been withdrawn by the license owner.
-| `validation`                     | Wrong format of request       |                                                                    
-| `wrong_product_version`          | Wrong product version         | License is not LiveChat 3 (probably still LiveChat 2).             
+| `validation`                     | Wrong format of request       |
+| `wrong_product_version`          | Wrong product version         | License is not LiveChat 3 (probably still LiveChat 2).
 | `seats_limit_exceeded`           | Seats limit exceeded          | Displayed on the attempt of logging in. All seats within a given license are already taken.
-| `chat_inactive`                  | No active chat thread         | An action that requires an active thread performed on a chat with no active threads.          
+| `chat_inactive`                  | No active chat thread         | An action that requires an active thread performed on a chat with no active threads.
 
 \* `misdirected_request` error returns also correct `region` in optional `data` object.
 With this information client is able to figure out where he should be connected.

@@ -111,7 +111,9 @@ const SideNav = ({
           </PopperTooltip>
         </Link>
         <ChevronRight width={14} />
-        {categoryMeta.title || "Home"}
+        <span style={{ marginBottom: "-3px" }}>
+          {categoryMeta.title || "Home"}
+        </span>
       </NavHeader>
       <NavHeader>
         <Search />
