@@ -14,7 +14,7 @@
 - **Table:** Available methods/webhooks/pushes
 - **Table:** Specifics
 
-For more guidelines, see [Updating API docs](https://livechatinc.atlassian.net/wiki/spaces/PAT/pages/761529400/Updating+API+docs) 
+For more guidelines, see [Updating API docs](https://livechatinc.atlassian.net/wiki/spaces/PAT/pages/761529400/Updating+API+docs).
 
 ## 👷 Type of change (remove not needed)
 
