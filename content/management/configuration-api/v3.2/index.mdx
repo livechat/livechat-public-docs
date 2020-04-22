@@ -67,20 +67,16 @@ Creates new agent on license for specified parameters.
 | Parameter                                | Data type | Required | Notes                       |
 | ---------------------------------------- | --------- | -------- | --------------------------- |
 | `id`                                     | `string`  | Yes      | Agent ID                    |
-| `groups.<group>`                         | `array`   | No       | **\*\*** **described below**                                            |
+| `groups`                                 | `object[]`| No       | Groups an Agent belongs to.                                           |
+| `groups[].id`                            | `uint`    | Yes      | Group ID; required only when `group`'s included.                                         |
+| `groups[].priority` __****__             | `string`  | Yes      | Agent's priority in a group; required only when `group`'s included.                      |
 | `notifications`                          | `object`  | No       | Represents which agent notifications are turned on |
 | `notifications`.__***__                  | `bool`    | No       | Represents if given notifications is turned on |
 | `summaries`                              | `object`  | No       | Represents which summaries will be send to agent via email |
 | `summaries`.__****__                     | `bool`    | No       | Represents if given summary is active for agent |
 | `work_scheduler`                         | `object`  | No       | Work scheduler options to set for new agent                             |
-| `work_scheduler`.__**__.<work_scheduler> | `object`  | No       | **\**\*** **described below**                                            |
+| `work_scheduler.__**__.<work_scheduler>` | `object`  | No       | **\**\*** **described below**                                            |
 | `__*__`                                  | `any`     | No       | Value for given agent field.                                            |
-
-**\*\***
-`<group>` contains the following fields:
-
-- `id` (`int`) - must be greater or equal to 0
-- `priority` (`string`) - allowed values: `first`, `normal`, `last`
 
 **\**\***
 `<work_scheduler>` contains the following fields:
@@ -93,6 +89,7 @@ __*__ The table below presents the possible values for the `fields` object keys:
 
 | Possible value           | Notes                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------- |
+| `name`                   | Agent name                                                                          |
 | `awaiting_approval`      | Boolean value                                                                       |
 | `permission`             | Agent permission, should be on of following: `viceowner`, `administrator`, `normal` |
 | `avatar`                 | URL path for agent avatar                                                           |
@@ -132,6 +129,14 @@ __***__ Possible values for the `summaries` object keys:
 - `daily_summary`
 - `weekly_summary`
 
+__****__ The table below presents the possible values for the `groups[].priority` parameter:
+
+| Possible value | Notes           |
+| -------------- |:---------------:|
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
 </Text>
 
 <Code>
@@ -145,10 +150,9 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
         "id": "agent@domain.com",
-        "fields": {
-          "acl": "normal",
-          "awaiting_approval": true
-        },
+        "name": "New Agent"
+        "permission": "normal",
+        "awaiting_approval": true,
         "groups": [
           {
             "id": 5,
@@ -177,6 +181,15 @@ curl -X POST \
             "start": "7:30",
             "end": "21:30"
           }
+        },
+        "notifications": {
+          "new_visitor": true,
+          "new_goal": false,
+          "visitor_is_typing": true
+        },
+        "summaries": {
+          "daily_summary": false,
+          "weekly_summary": true
         }
       }'
 ```
@@ -219,8 +232,6 @@ It returns the info about an Agent specified by `id`.
 | `id`                  | `string`   | Yes      | Agent ID                                                                |
 | `with_work_scheduler` | bool       | No       | Indicate if return `work_scheduler` object for given agent              |
 | `with_groups`         | bool       | No       | Indicate if return `groups` object for given agent                      |
-| `with_notifications`  | bool       | No       | Indicate if return `notyfications` object for given agent               |
-| `with_summaries`      | bool       | No       | Indicate if return `summaries` object for given agent                   |
 | `fields`__*__         | `string[]` | No       | Filter out desired Agent fields. When empty, you'll get all the fields. |
 
 __*__ The table below presents the possible values for the `fields[]` parameter:
@@ -228,6 +239,8 @@ __*__ The table below presents the possible values for the `fields[]` parameter:
 | Possible value         | Notes                                                                                                                                                                                                                                 |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `email`                | Agent's email                                                                                                                                                                                                                         |
+| `notifications`        | Agent's notifications object                                                                                                                                                                                                          |
+| `summaries`            | Agent's summaries object                                                                                                                                                                                                              |
 | `job`                  | Agent's job title                                                                                                                                                                                                                     |
 | `login_status`         | The current login status of an Agent                                                                                                                                                                                                  |
 | `onboarding_completed` | Indicates if an Agent finished the onboarding process, which includes: activating the account, downloading the LiveChat Desktop App, uploading an avatar, having at least one chat. `1` when all steps are completed, otherwise `0`.  |
@@ -256,7 +269,8 @@ curl -X POST \
         "id": "agent@domain.com",
         "fields": [
           "email",
-          "onboarding_completed"
+          "onboarding_completed",
+          "summaries"
           ]
       }'
 ```
@@ -269,7 +283,11 @@ curl -X POST \
 {
     "email": "agent@domain.com",
     "id": "agent@domain.com",
-    "onboarding_completed": "0"
+    "onboarding_completed": "0",
+    "summaries": {
+          "daily_summary": false,
+          "weekly_summary": true
+    }
 }
 ```
 
@@ -390,7 +408,9 @@ Updates the properties of an Agent specified by `id`.
 | Parameter                                | Data type | Required | Notes                       |
 | ---------------------------------------- | --------- | -------- | --------------------------- |
 | `id`                                     | `string`  | Yes      | Agent ID                    |
-| `groups.<group>`                         | `array`   | No       | **\*\*** **described below**                                            |
+| `groups`                                 | `object[]`| No       | Groups an Agent belongs to.                                           |
+| `groups[].id`                            | `uint`    | Yes      | Group ID; required only when `group`'s included.                                         |
+| `groups[].priority` __****__             | `string`  | Yes      | Agent's priority in a group; required only when `group`'s included.                      |
 | `notifications`                          | `object`  | No       | Represents which agent notifications are turned on |
 | `notifications`.__***__                  | `bool`    | No       | Represents if given notifications is turned on |
 | `summaries`                              | `object`  | No       | Represents which summaries will be send to agent via email |
@@ -398,12 +418,6 @@ Updates the properties of an Agent specified by `id`.
 | `work_scheduler`                         | `object`  | No       | Work scheduler options to set for new agent                             |
 | `work_scheduler`.__**__.<work_scheduler> | `object`  | No       | **\**\*** **described below**                                            |
 | `__*__`                                  | `any`     | No       | Value for given agent field.                                            |
-
-**\*\***
-`<group>` contains the following fields:
-
-- `id` (`int`) - must be greater or equal to 0
-- `priority` (`string`) - allowed values: `first`, `normal`, `last`
 
 **\**\***
 `<work_scheduler>` contains the following fields:
@@ -416,6 +430,7 @@ __*__ The table below presents the possible values for the `fields` object keys:
 
 | Possible value           | Notes                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------- |
+| `name`                   | Agent name                                                                          |
 | `awaiting_approval`      | Boolean value                                                                       |
 | `permission`             | Agent permission, should be on of following: `viceowner`, `administrator`, `normal` |
 | `avatar`                 | URL path for agent avatar                                                           |
@@ -455,6 +470,14 @@ __***__ Possible values for the `summaries` object keys:
 - `daily_summary`
 - `weekly_summary`
 
+__****__ The table below presents the possible values for the `groups[].priority` parameter:
+
+| Possible value | Notes           |
+| -------------- |:---------------:|
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
 #### Response
 
 No response payload (`200 OK`).
@@ -471,8 +494,47 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-        "id": "agent1@domain.com",
-        "mobile": "+48 123 456 789"
+        "id": "agent@domain.com",
+        "name": "New Agent"
+        "permission": "admin",
+        "groups": [
+          {
+            "id": 5,
+            "priority": "first"
+          },
+          {
+            "id": 2,
+            "priority": "last"
+          },
+          {
+            "id": 1,
+            "priority": "normal"
+          }
+        ],
+        "work_scheduler": {
+          "monday": {
+            "enabled": true,
+            "start": "8:30",
+            "end": "12:30"
+          },
+          "tuesday": {
+            "enabled": false
+          },
+          "friday": {
+            "enabled": true,
+            "start": "7:30",
+            "end": "21:30"
+          }
+        },
+        "notifications": {
+          "new_visitor": true,
+          "new_goal": false,
+          "visitor_is_typing": true
+        },
+        "summaries": {
+          "daily_summary": false,
+          "weekly_summary": true
+        }
       }'
 ```
 
