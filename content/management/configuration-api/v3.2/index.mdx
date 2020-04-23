@@ -38,9 +38,9 @@ An Agent is a type of [user](/messaging/agent-chat-api/#users) who communicates 
 
 ## Methods
 
-| HTTP method | The Agents API endpoint |
-|-------------|-------------------------|
-| `POST`      |`https://api.livechatinc.com/v3.2/configuration/action/<action>` |
+| HTTP method | The Agents API endpoint                                          |
+|-------------|------------------------------------------------------------------|
+| `POST`      | `https://api.livechatinc.com/v3.2/configuration/action/<action>` |
 
 | Required header | Value              |
 | --------------- | ------------------ |
@@ -53,53 +53,44 @@ An Agent is a type of [user](/messaging/agent-chat-api/#users) who communicates 
 
 ### Create Agent
 
-Creates new agent on license for specified parameters.
+Creates new agent on license for specified parameters. If requester has scope `billing:rw`, then newly created agent will have property `awaiting_approval` marked as `false`, otherwise it will be `true`.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/create_agent` |
-| Required scopes| `accounts--all:rc` |
+|                 |                                                                      |
+|-----------------|----------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/create_agent` |
+| Required scopes | `accounts--all:rc`                                                   |
 
 #### Request
 
-| Parameter                                | Data type | Required | Notes                       |
-| ---------------------------------------- | --------- | -------- | --------------------------- |
-| `id`                                     | `string`  | Yes      | Agent ID                    |
-| `groups`                                 | `object[]`| No       | Groups an Agent belongs to.                                           |
-| `groups[].id`                            | `uint`    | Yes      | Group ID; required only when `group`'s included.                                         |
-| `groups[].priority` __****__             | `string`  | Yes      | Agent's priority in a group; required only when `group`'s included.                      |
-| `notifications`                          | `object`  | No       | Represents which agent notifications are turned on |
-| `notifications`.__***__                  | `bool`    | No       | Represents if given notifications is turned on |
-| `summaries`                              | `object`  | No       | Represents which summaries will be send to agent via email |
-| `summaries`.__****__                     | `bool`    | No       | Represents if given summary is active for agent |
-| `work_scheduler`                         | `object`  | No       | Work scheduler options to set for new agent                             |
-| `work_scheduler.__**__.<work_scheduler>` | `object`  | No       | **\**\*** **described below**                                            |
-| `__*__`                                  | `any`     | No       | Value for given agent field.                                            |
+| Parameter                                | Data type  | Required | Notes                                                                         |
+|------------------------------------------|------------|----------|-------------------------------------------------------------------------------|
+| `id`                                     | `string`   | Yes      | Agent ID                                                                      |
+| `name`                                   | `string`   | No       | Agent name                                                                    |
+| `role`                                   | `string`   | No       | Agent role, should be on of following: `viceowner`, `administrator`, `normal` |
+| `avatar`                                 | `string`   | No       | URL path for agent avatar                                                     |
+| `job_title`                              | `string`   | No       | Agent's job title                                                             |
+| `mobile`                                 | `string`   | No       | Agent's mobile number                                                         |
+| `max_chats_count`                        | `int`      | No       | Agent's maximum number of concurrent chats                                    |
+| `design_version`                         | `bool`     | No       | UI version enabled for agent (???)                                            |
+| `chats_enabled`                          | `bool`     | No       | Is it realiable??                                                             |
+| `customers_enabled`                      | `bool`     | No       | Is it realiable??                                                             |
+| `customers_visited`                      | `bool`     | No       | Is it realiable??                                                             |
+| `groups`                                 | `object[]` | No       | Groups an Agent belongs to.                                                   |
+| `groups[].id`                            | `uint`     | Yes      | Group ID; required only when `group`'s included.                              |
+| `groups[].priority` __*****__            | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.           |
+| `notifications`__***__                   | `string[]` | No       | Represents which agent notifications are turned on.                           |
+| `email_subscriptions`__****__            | `string[]` | No       | Represents which subscriptions will be send to agent via email.               |
+| `work_scheduler`                         | `object`   | No       | Work scheduler options to set for new agent                                   |
+| `work_scheduler.__**__.<work_scheduler>` | `object`   | No       | **\**\*** **described below**                                                 |
 
 **\**\***
 `<work_scheduler>` contains the following fields:
 
-- `enabled` (`boolean`) - indicates if works scheduler for given day is enabled
 - `start` (`string`) - time when agent starts work, in format: `HH:MM`
 - `end` (`string`) - time when agent finishes work, in format: `HH:MM`
 
-__*__ The table below presents the possible values for the `fields` object keys:
-
-| Possible value           | Notes                                                                               |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| `name`                   | Agent name                                                                          |
-| `awaiting_approval`      | Boolean value                                                                       |
-| `permission`             | Agent permission, should be on of following: `viceowner`, `administrator`, `normal` |
-| `avatar`                 | URL path for agent avatar                                                           |
-| `job`                    | Agent's job title                                                                   |
-| `mobile`                 | Agent's mobile number                                                               |
-| `max_chats_count`        | Agent's maximum number of concurrent chats                                          |
-| `design_version`         | UI version enabled for agent (???)                                                  |
-| `chats_enabled`          | Is it realiable??                                                                   |
-| `customers_enabled`      | Is it realiable??                                                                   |
-| `customers_visited`      | Is it realiable??                                                                   |
 
 __**__ Possible values for the `work_scheduler` object keys: 
 - `sunday` 
@@ -110,7 +101,7 @@ __**__ Possible values for the `work_scheduler` object keys:
 - `friday`
 - `saturday`
 
-__***__ Possible values for the `notifications` object keys:
+__***__ Possible values for the `notifications` array (value present in array means that notification is turned on):
 - `new_visitor`
 - `incoming_chat`
 - `returning_visitor`
@@ -125,17 +116,17 @@ __***__ Possible values for the `notifications` object keys:
 - `repeat_sound_notifications`
 - `ticket_notifications`
 
-__***__ Possible values for the `summaries` object keys:
+__****__ Possible values for the `email_subscriptions` array (value present in array means that notification is turned on):
 - `daily_summary`
 - `weekly_summary`
 
-__****__ The table below presents the possible values for the `groups[].priority` parameter:
+__*****__ The table below presents the possible values for the `groups[].priority` parameter:
 
-| Possible value | Notes           |
-| -------------- |:---------------:|
-| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| Possible value |                                                                                                      Notes                                                                                                      |
+|----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| `first`        |                         The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.                         |
 | `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
-| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+| `last`         |               The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                |
 
 </Text>
 
@@ -151,8 +142,7 @@ curl -X POST \
   -d '{
         "id": "agent@domain.com",
         "name": "New Agent"
-        "permission": "normal",
-        "awaiting_approval": true,
+        "role": "viceowner",
         "groups": [
           {
             "id": 5,
@@ -169,28 +159,22 @@ curl -X POST \
         ],
         "work_scheduler": {
           "monday": {
-            "enabled": true,
             "start": "8:30",
             "end": "12:30"
           },
-          "tuesday": {
-            "enabled": false
-          },
           "friday": {
-            "enabled": true,
             "start": "7:30",
             "end": "21:30"
           }
         },
-        "notifications": {
-          "new_visitor": true,
-          "new_goal": false,
-          "visitor_is_typing": true
-        },
-        "summaries": {
-          "daily_summary": false,
-          "weekly_summary": true
-        }
+        "notifications": [
+          "new_visitor",
+          "new_goal",
+          "visitor_is_typing"
+        ],
+        "summaries": [
+          "weekly_summary"
+        ]
       }'
 ```
 
@@ -220,10 +204,10 @@ It returns the info about an Agent specified by `id`.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/get_agent` |
-| Required scopes| `agents--my:ro` `agents--all:ro` |
+|                 |                                                                   |
+|-----------------|-------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/get_agent` |
+| Required scopes | `agents--my:ro` `agents--all:ro`                                  |
 
 #### Request
 
@@ -236,23 +220,23 @@ It returns the info about an Agent specified by `id`.
 
 __*__ The table below presents the possible values for the `fields[]` parameter:
 
-| Possible value         | Notes                                                                                                                                                                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `email`                | Agent's email                                                                                                                                                                                                                         |
-| `notifications`        | Agent's notifications object                                                                                                                                                                                                          |
-| `summaries`            | Agent's summaries object                                                                                                                                                                                                              |
-| `job`                  | Agent's job title                                                                                                                                                                                                                     |
-| `login_status`         | The current login status of an Agent                                                                                                                                                                                                  |
-| `onboarding_completed` | Indicates if an Agent finished the onboarding process, which includes: activating the account, downloading the LiveChat Desktop App, uploading an avatar, having at least one chat. `1` when all steps are completed, otherwise `0`.  |
-| `awaiting_approval`    | Boolean value                                                                                                                                                                                                                         |
-| `permission`           | Agent permission, should be on of following: `viceowner`, `administrator`, `normal`                                                                                                                                                   |
-| `avatar`               | URL path for agent avatar                                                                                                                                                                                                             |
-| `mobile`               | Agent's mobile number                                                                                                                                                                                                                 |
-| `max_chats_count`      | Agent's maximum number of concurrent chats                                                                                                                                                                                            |
-| `design_version`       | UI version enabled for agent (???)                                                                                                                                                                                                    |
-| `chats_enabled`        | Is it realiable??                                                                                                                                                                                                                     |
-| `customers_enabled`    | Is it realiable??                                                                                                                                                                                                                     |
-| `customers_visited`    | Is it realiable??                                                                                                                                                                                                                     |
+| Possible value         | Notes                                                                                                                                                                                                                                |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `email`                | Agent's email                                                                                                                                                                                                                        |
+| `notifications`        | Agent's notifications object                                                                                                                                                                                                         |
+| `summaries`            | Agent's summaries object                                                                                                                                                                                                             |
+| `job`                  | Agent's job title                                                                                                                                                                                                                    |
+| `login_status`         | The current login status of an Agent                                                                                                                                                                                                 |
+| `onboarding_completed` | Indicates if an Agent finished the onboarding process, which includes: activating the account, downloading the LiveChat Desktop App, uploading an avatar, having at least one chat. `1` when all steps are completed, otherwise `0`. |
+| `awaiting_approval`    | Boolean value                                                                                                                                                                                                                        |
+| `permission`           | Agent permission, should be on of following: `viceowner`, `administrator`, `normal`                                                                                                                                                  |
+| `avatar`               | URL path for agent avatar                                                                                                                                                                                                            |
+| `mobile`               | Agent's mobile number                                                                                                                                                                                                                |
+| `max_chats_count`      | Agent's maximum number of concurrent chats                                                                                                                                                                                           |
+| `design_version`       | UI version enabled for agent (???)                                                                                                                                                                                                   |
+| `chats_enabled`        | Is it realiable??                                                                                                                                                                                                                    |
+| `customers_enabled`    | Is it realiable??                                                                                                                                                                                                                    |
+| `customers_visited`    | Is it realiable??                                                                                                                                                                                                                    |
 
 </Text>
 
@@ -307,39 +291,37 @@ Returns all Agents within a license. You can request only the Agents from a spec
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL | `https://api.livechatinc.com/v3.2/configuration/action/list_agents` |
-| Required scopes| `agents--all:ro` |
+|                 |                                                                     |
+|-----------------|---------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/list_agents` |
+| Required scopes | `agents--all:ro`                                                    |
 
 #### Request
 
-| Parameter             | Required | Type       | Notes                                                                                                                                    |
-| --------------------- | -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `fields`              | No       | `string[]` | Agent fields to filter out (may contain up to 5 elements when provided with `group_ids`).                                                |
-| `group_ids`           | No       | `int[]`    | Groups from which Agents you want to receive. If `group_ids` are provided, then also `fields` is mandatory and cannot exceed 5 elements. |
-| `with_work_scheduler` | No       | bool       | Indicate if return `work_scheduler` object for given agent                                                                               |
-| `with_groups`         | No       | bool       | Indicate if return `groups` object for given agent                                                                                       |
-| `with_notifications`  | No       | bool       | Indicate if return `notifications` object for given agent                                                                                |
-| `with_summaries`      | No       | bool       | Indicate if return `summaries` object for given agent                                                                                    |
-| `fields`__*__         | No       | `string[]` | Filter out desired Agent fields. When empty, you'll get all the fields.                                                                  |
+| Parameter     | Required | Type       | Notes                                                       |
+|---------------|----------|------------|-------------------------------------------------------------|
+| `fields`__*__ | Yes      | `string[]` | Agent fields to filter out. At least one field is required. |
 
 __*__ The table below presents the possible values for the `fields[]` parameter:
-| Possible value         | Notes                                                                                                                                                                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `email`                | Agent's email                                                                                                                                                                                                                         |
-| `job`                  | Agent's job title                                                                                                                                                                                                                     |
-| `login_status`         | The current login status of an Agent                                                                                                                                                                                                  |
-| `onboarding_completed` | Indicates if an Agent finished the onboarding process, which includes: activating the account, downloading the LiveChat Desktop App, uploading an avatar, having at least one chat. `1` when all steps are completed, otherwise `0`.  |
-| `awaiting_approval`    | Boolean value                                                                                                                                                                                                                         |
-| `permission`           | Agent permission, should be on of following: `viceowner`, `administrator`, `normal`                                                                                                                                                   |
-| `avatar`               | URL path for agent avatar                                                                                                                                                                                                             |
-| `mobile`               | Agent's mobile number                                                                                                                                                                                                                 |
-| `max_chats_count`      | Agent's maximum number of concurrent chats                                                                                                                                                                                            |
-| `design_version`       | UI version enabled for agent (???)                                                                                                                                                                                                    |
-| `chats_enabled`        | Is it realiable??                                                                                                                                                                                                                     |
-| `customers_enabled`    | Is it realiable??                                                                                                                                                                                                                     |
-| `customers_visited`    | Is it realiable??                                                                                                                                                                                                                     |
+| Possible value         | Notes                                                                                                                                                                               |
+|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `email`                | Agent's email                                                                                                                                                                       |
+| `job`                  | Agent's job title                                                                                                                                                                   |
+| `login_status`         | The current login status of an Agent                                                                                                                                                |
+| `work_scheduler`       | Work scheduler object for agent                                                                                                                                                     |
+| `groups`               | Groups in which agent belongs                                                                                                                                                       |
+| `email_subscriptions`  | Active agent email subscriptions list                                                                                                                                               |
+| `notifications`        | Enabled agent email subscriptions list                                                                                                                                              |
+| `onboarding_completed` | Indicates if an Agent finished the onboarding process, which includes: activating the account, downloading the LiveChat Desktop App, uploading an avatar, having at least one chat. |
+| `awaiting_approval`    | Boolean value                                                                                                                                                                       |
+| `permission`           | Agent permission, should be on of following: `viceowner`, `administrator`, `normal`                                                                                                 |
+| `avatar`               | URL path for agent avatar                                                                                                                                                           |
+| `mobile`               | Agent's mobile number                                                                                                                                                               |
+| `max_chats_count`      | Agent's maximum number of concurrent chats                                                                                                                                          |
+| `design_version`       | UI version enabled for agent (???)                                                                                                                                                  |
+| `chats_enabled`        | Is it realiable??                                                                                                                                                                   |
+| `customers_enabled`    | Is it realiable??                                                                                                                                                                   |
+| `customers_visited`    | Is it realiable??                                                                                                                                                                   |
 </Text>
 
 <Code>
@@ -398,49 +380,40 @@ Updates the properties of an Agent specified by `id`.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/update_agent` |
-| Required scopes| `agents--my:rw` `agents--all:rw` (to update other Agents within the same license) |
+|                 |                                                                                   |
+|-----------------|-----------------------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/update_agent`              |
+| Required scopes | `agents--my:rw` `agents--all:rw` (to update other Agents within the same license) |
 
 #### Request
 
-| Parameter                                | Data type | Required | Notes                       |
-| ---------------------------------------- | --------- | -------- | --------------------------- |
-| `id`                                     | `string`  | Yes      | Agent ID                    |
-| `groups`                                 | `object[]`| No       | Groups an Agent belongs to.                                           |
-| `groups[].id`                            | `uint`    | Yes      | Group ID; required only when `group`'s included.                                         |
-| `groups[].priority` __****__             | `string`  | Yes      | Agent's priority in a group; required only when `group`'s included.                      |
-| `notifications`                          | `object`  | No       | Represents which agent notifications are turned on |
-| `notifications`.__***__                  | `bool`    | No       | Represents if given notifications is turned on |
-| `summaries`                              | `object`  | No       | Represents which summaries will be send to agent via email |
-| `summaries`.__****__                     | `bool`    | No       | Represents if given summary is active for agent |
-| `work_scheduler`                         | `object`  | No       | Work scheduler options to set for new agent                             |
-| `work_scheduler`.__**__.<work_scheduler> | `object`  | No       | **\**\*** **described below**                                            |
-| `__*__`                                  | `any`     | No       | Value for given agent field.                                            |
+| Parameter                                | Data type  | Required | Notes                                                                                    |
+|------------------------------------------|------------|----------|------------------------------------------------------------------------------------------|
+| `id`                                     | `string`   | Yes      | Agent ID                                                                                 |
+| `name`                                   | `string`   | No       | Agent name                                                                               |
+| `role`                                   | `string`   | No       | Agent role, should be on of following: `viceowner`, `administrator`, `normal`            |
+| `avatar`                                 | `string`   | No       | URL path for agent avatar                                                                |
+| `job_title`                              | `string`   | No       | Agent's job title                                                                        |
+| `mobile`                                 | `string`   | No       | Agent's mobile number                                                                    |
+| `max_chats_count`                        | `int`      | No       | Agent's maximum number of concurrent chats                                               |
+| `design_version`                         | `bool`     | No       | UI version enabled for agent (???)                                                       |
+| `chats_enabled`                          | `bool`     | No       | Is it realiable??                                                                        |
+| `customers_enabled`                      | `bool`     | No       | Is it realiable??                                                                        |
+| `customers_visited`                      | `bool`     | No       | Is it realiable??                                                                        |
+| `groups`                                 | `object[]` | No       | Groups an Agent belongs to.                                                              |
+| `groups[].id`                            | `uint`     | Yes      | Group ID; required only when `group`'s included.                                         |
+| `groups[].priority` __****__             | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                      |
+| `notifications`                          | `string[]` | No       | Represents which agent notifications are turned on, possible values: __***__             |
+| `email_subscriptions`                    | `string[]` | No       | Represents which subscriptions will be send to agent via email, possible values: __***__ |
+| `work_scheduler`                         | `object`   | No       | Work scheduler options to set for new agent                                              |
+| `work_scheduler.__**__.<work_scheduler>` | `object`   | No       | **\**\*** **described below**                                                            |
 
 **\**\***
 `<work_scheduler>` contains the following fields:
 
-- `enabled` (`boolean`) - indicates if works scheduler for given day is enabled
 - `start` (`string`) - time when agent starts work, in format: `HH:MM`
 - `end` (`string`) - time when agent finishes work, in format: `HH:MM`
 
-__*__ The table below presents the possible values for the `fields` object keys:
-
-| Possible value           | Notes                                                                               |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| `name`                   | Agent name                                                                          |
-| `awaiting_approval`      | Boolean value                                                                       |
-| `permission`             | Agent permission, should be on of following: `viceowner`, `administrator`, `normal` |
-| `avatar`                 | URL path for agent avatar                                                           |
-| `job`                    | Agent's job title                                                                   |
-| `mobile`                 | Agent's mobile number                                                               |
-| `max_chats_count`        | Agent's maximum number of concurrent chats                                          |
-| `design_version`         | UI version enabled for agent (???)                                                  |
-| `chats_enabled`          | Is it realiable??                                                                   |
-| `customers_enabled`      | Is it realiable??                                                                   |
-| `customers_visited`      | Is it realiable??                                                                   |
 
 __**__ Possible values for the `work_scheduler` object keys: 
 - `sunday` 
@@ -451,7 +424,7 @@ __**__ Possible values for the `work_scheduler` object keys:
 - `friday`
 - `saturday`
 
-__***__ Possible values for the `notifications` object keys:
+__***__ Possible values for the `notifications` array (value present in array means that notification is turned on):
 - `new_visitor`
 - `incoming_chat`
 - `returning_visitor`
@@ -466,21 +439,17 @@ __***__ Possible values for the `notifications` object keys:
 - `repeat_sound_notifications`
 - `ticket_notifications`
 
-__***__ Possible values for the `summaries` object keys:
+__***__ Possible values for the `email_subscriptions` array (value present in array means that notification is turned on):
 - `daily_summary`
 - `weekly_summary`
 
 __****__ The table below presents the possible values for the `groups[].priority` parameter:
 
-| Possible value | Notes           |
-| -------------- |:---------------:|
-| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
+| Possible value |                                                                                                      Notes                                                                                                      |
+|----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| `first`        |                         The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.                         |
 | `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
-| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
-
-#### Response
-
-No response payload (`200 OK`).
+| `last`         |               The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                |
 
 </Text>
 
@@ -496,7 +465,7 @@ curl -X POST \
   -d '{
         "id": "agent@domain.com",
         "name": "New Agent"
-        "permission": "admin",
+        "role": "viceowner",
         "groups": [
           {
             "id": 5,
@@ -513,28 +482,22 @@ curl -X POST \
         ],
         "work_scheduler": {
           "monday": {
-            "enabled": true,
             "start": "8:30",
             "end": "12:30"
           },
-          "tuesday": {
-            "enabled": false
-          },
           "friday": {
-            "enabled": true,
             "start": "7:30",
             "end": "21:30"
           }
         },
-        "notifications": {
-          "new_visitor": true,
-          "new_goal": false,
-          "visitor_is_typing": true
-        },
-        "summaries": {
-          "daily_summary": false,
-          "weekly_summary": true
-        }
+        "notifications": [
+          "new_visitor",
+          "new_goal",
+          "visitor_is_typing"
+        ],
+        "summaries": [
+          "weekly_summary"
+        ]
       }'
 ```
 
@@ -542,7 +505,11 @@ curl -X POST \
 
 </Code>
 
-</Section>
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
 
 <Section>
 
@@ -554,10 +521,10 @@ Deletes Agent specified by `id`.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/delete_agent` |
-| Required scopes| `agents--all:rw` |
+|                 |                                                                      |
+|-----------------|----------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/delete_agent` |
+| Required scopes | `agents--all:rw`                                                     |
 
 #### Request
 
@@ -601,10 +568,10 @@ Suspends Agent specified by `id`.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/suspend_agent` |
-| Required scopes| `agents--all:rw`|
+|                 |                                                                       |
+|-----------------|-----------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/suspend_agent` |
+| Required scopes | `agents--all:rw`                                                      |
 
 #### Request
 
@@ -648,10 +615,10 @@ Unsuspends Agent specified by `id`.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/unsuspend_agent` |
-| Required scopes| `agents--all:rw` `billing:rw`|
+|                 |                                                                         |
+|-----------------|-------------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/unsuspend_agent` |
+| Required scopes | `agents--all:rw` `billing:rw`                                           |
 
 #### Request
 
@@ -695,10 +662,10 @@ Suspended agent can send email to all owners and viceowners with request to unsu
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/request_agent_unsuspension` |
-| Required scopes| |
+|                 |                                                                                    |
+|-----------------|------------------------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/request_agent_unsuspension` |
+| Required scopes |                                                                                    |
 
 #### Request
 
@@ -738,10 +705,10 @@ Approves agent making him able to use application.
 
 #### Specifics
 
-|  |  |
-|--|--|
-| Method URL     | `https://api.livechatinc.com/v3.2/configuration/action/approve_agent` |
-| Required scopes| `agents-all:rw` `billing:rw`|
+|                 |                                                                       |
+|-----------------|-----------------------------------------------------------------------|
+| Method URL      | `https://api.livechatinc.com/v3.2/configuration/action/approve_agent` |
+| Required scopes | `agents-all:rw` `billing:rw`                                          |
 
 #### Request
 
