@@ -19,13 +19,13 @@ import {
   LeftColumn,
   MiddleColumn,
   Content,
-  RatingWrapper
+  RatingWrapper,
 } from "../components/core/components";
 
 import { Header as PageHeader } from "../components/core/Page";
 import Rating from "../components/core/Rating";
 
-import { Headings, CodeBlocks } from "../components/extensions";
+import { Headings, CodeBlocks, Scopes } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 
@@ -36,8 +36,9 @@ import { SCROLL_OFFSET } from "../constant";
 const components = {
   ...CodeBlocks,
   ...Headings,
+  Scopes,
   RichMessagePreview,
-  Link
+  Link,
 };
 
 export default ({ data: { mdx, allMdx } }) => {
@@ -51,28 +52,28 @@ export default ({ data: { mdx, allMdx } }) => {
       subcategory,
       slug: customSlug,
       apiVersion: currentApiVersion,
-      versionGroup
+      versionGroup,
     },
     fields: { slug },
-    parent: { modifiedTime }
+    parent: { modifiedTime },
   } = mdx;
 
   const versions = getVersionsByGroup(versionGroup);
   const { edges } = allMdx;
 
   const articlesVersions = edges
-    .map(edge => {
+    .map((edge) => {
       const {
         node: {
-          frontmatter: { title, category, subcategory, apiVersion }
-        }
+          frontmatter: { title, category, subcategory, apiVersion },
+        },
       } = edge;
 
       return {
         title,
         category,
         subcategory,
-        apiVersion
+        apiVersion,
       };
     })
     .reduce((prev, curr) => {
@@ -104,8 +105,8 @@ export default ({ data: { mdx, allMdx } }) => {
     const pathname = window.location.pathname;
 
     versions.ALL_VERSIONS.filter(
-      version => version !== versions.STABLE_VERSION
-    ).forEach(version => {
+      (version) => version !== versions.STABLE_VERSION
+    ).forEach((version) => {
       if (pathname.includes(version)) {
         setSelectedVersion(version);
       }
@@ -125,7 +126,7 @@ export default ({ data: { mdx, allMdx } }) => {
     }
   }, []);
 
-  const redirectToVersion = version => {
+  const redirectToVersion = (version) => {
     setSelectedVersion(version);
 
     let currentSlug = customSlug || slug;
@@ -155,7 +156,7 @@ export default ({ data: { mdx, allMdx } }) => {
 
   const versionContext = {
     selected: selectedVersion,
-    items: versions
+    items: versions,
   };
 
   const ratingContext = useRating({ slug });

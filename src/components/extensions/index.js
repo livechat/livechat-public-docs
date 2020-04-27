@@ -1,4 +1,5 @@
 import Headings from "./Headings";
 import * as CodeBlocks from "./CodeBlocks";
+import Scopes from "./Scopes";
 
-export { Headings, CodeBlocks };
+export { Headings, CodeBlocks, Scopes };

@@ -1,6 +1,6 @@
 import React from "react";
 
-export const HashtagIcon = props => (
+export const HashtagIcon = (props) => (
   <svg
     {...props}
     width="10px"
@@ -17,14 +17,14 @@ export const HashtagIcon = props => (
   </svg>
 );
 
-export const HomeIcon = props => (
+export const HomeIcon = (props) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor" />
     <path d="M0 0h24v24H0z" fill="none" />
   </svg>
 );
 
-export const ChevronRight = props => (
+export const ChevronRight = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ export const ChevronRight = props => (
   </svg>
 );
 
-export const ArticleIcon = props => (
+export const ArticleIcon = (props) => (
   <svg
     {...props}
     width="12px"
@@ -175,7 +175,7 @@ export const CategoryIcon = ({ category, ...props }) => {
   }
 };
 
-export const LiveChatLogo = props => (
+export const LiveChatLogo = (props) => (
   <svg
     {...props}
     width="123"
@@ -189,7 +189,7 @@ export const LiveChatLogo = props => (
       width="121.25"
       height="30"
       fill="white"
-      fill-opacity="0.01"
+      fillOpacity="0.01"
     />
     <path
       d="M27.3285 19.5947C27.1889 21.2278 26.4364 22.7476 25.2224 23.8488C24.0083 24.9501 22.4225 25.5511 20.7835 25.5312H17.1741L10.2991 30V25.5312L17.1741 21.0625H20.7904C21.3021 21.081 21.8017 20.9046 22.1883 20.569C22.575 20.2334 22.8199 19.7636 22.8735 19.2544C23.0837 15.8195 23.0664 12.3745 22.822 8.94187C22.7806 8.48399 22.5758 8.05629 22.2451 7.73693C21.9143 7.41757 21.4797 7.22787 21.0207 7.2025C18.6763 7.05813 16.2082 6.96875 13.7366 6.96875C11.2651 6.96875 8.79695 7.05125 6.45258 7.21625C5.99353 7.24162 5.55893 7.43132 5.22821 7.75068C4.89749 8.07004 4.69272 8.49774 4.65132 8.95563C4.40684 12.3882 4.38961 15.8332 4.59976 19.2681C4.65665 19.7748 4.90293 20.2413 5.28924 20.5741C5.67555 20.9068 6.17336 21.0813 6.68289 21.0625H10.2991V25.5312H6.68976C5.0526 25.5475 3.46977 24.9445 2.25854 23.8429C1.04731 22.7413 0.297181 21.2226 0.158512 19.5913C-0.0688345 15.9275 -0.0516088 12.2527 0.210075 8.59125C0.340007 7.07289 1.00827 5.65095 2.09431 4.58193C3.18035 3.51291 4.61267 2.86719 6.13289 2.76125C8.58039 2.58594 11.1585 2.5 13.7366 2.5C16.3148 2.5 18.8929 2.58594 21.3404 2.76125C22.8652 2.86446 24.3026 3.51075 25.3917 4.58288C26.4809 5.65501 27.1497 7.08199 27.277 8.605C27.5382 12.263 27.5554 15.9344 27.3285 19.5947Z"
@@ -230,7 +230,7 @@ export const LiveChatLogo = props => (
   </svg>
 );
 
-export const LinkIcon = props => (
+export const LinkIcon = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +246,7 @@ export const LinkIcon = props => (
   </svg>
 );
 
-export const WarningIcon = props => (
+export const WarningIcon = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +262,7 @@ export const WarningIcon = props => (
   </svg>
 );
 
-export const StarIcon = props => (
+export const StarIcon = (props) => (
   <svg
     {...props}
     width="20"
