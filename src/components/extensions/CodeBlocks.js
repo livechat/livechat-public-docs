@@ -58,6 +58,7 @@ const CodeSampleTopbar = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 5px 15px;
+  height: 41px;
   background-color: #383f54;
   border-radius: 8px 8px 0 0;
   color: #dee5e8;
@@ -71,8 +72,9 @@ const ResponseTopbar = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 5px 15px;
+  height: 42px;
   background-color: #dee5e8;
-  border-radius: 8px 8px 0 0;
+  border-radius: 5px 5px 0 0;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -138,6 +140,10 @@ export const Text = styled.div`
   overflow-x: auto;
 `;
 
+export const TextWrapper = styled.div`
+  justify-content: space-between;
+`;
+
 export const FixedTdWidth = styled.div`
   th:first-of-type,
   td:first-of-type {
@@ -152,18 +158,27 @@ export const CopyToClipboardIconWrapper = styled.div`
 `;
 
 export const CopyToClipboardIcon = ({ text }) => {
-  //const [copiedText, setCopiedText] = useState(text); // change to bool
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    // display info it's copied
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
   };
 
   return (
-    <CopyToClipboardIconWrapper>
-      <CopyToClipboard onCopy={handleCopy} text={text}>
-        <CopyIcon />
-      </CopyToClipboard>
-    </CopyToClipboardIconWrapper>
+    <CopyToClipboard onCopy={handleCopy} text={text}>
+      {copied ? (
+        <TextWrapper>
+          <Text>Copied!</Text>
+        </TextWrapper>
+      ) : (
+        <CopyIconWrapper>
+          <CopyIcon />
+        </CopyIconWrapper>
+      )}
+    </CopyToClipboard>
   );
 };
 
