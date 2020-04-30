@@ -60,7 +60,6 @@ const CodeSampleTopbar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 5px 15px;
-  height: 41px;
   background-color: #383f54;
   border-radius: 8px 8px 0 0;
   color: #dee5e8;
@@ -68,6 +67,7 @@ const CodeSampleTopbar = styled.div`
     font-size: 12px;
     max-width: 100%;
     flex-grow: 2;
+    word-break: break-all;
   }
 `;
 

@@ -7,6 +7,8 @@ import { logAmplitudeEvent } from "../../utils/index";
 const CopyToClipboardWrapper = styled.div`
   position: relative;
   flex-grow: 1;
+  min-width: 54px;
+  margin-left: 10px;
 `;
 
 const CopyToClipboardAction = styled.div`
@@ -54,7 +56,9 @@ const CopyToClipboardIcon = ({ text }) => {
 
   const handleCopy = () => {
     setIsCopied(true);
-    logAmplitudeEvent('Copied to clipboard', { pathname: window.location.pathname })
+    logAmplitudeEvent("Copied to clipboard", {
+      pathname: window.location.pathname,
+    });
 
     setTimeout(() => {
       setIsCopied(false);
