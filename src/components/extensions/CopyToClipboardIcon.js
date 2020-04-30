@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CopyIcon } from "../core/icons";
+import { logAmplitudeEvent } from "../../utils/index";
 
 const CopyToClipboardWrapper = styled.div`
   position: relative;
@@ -53,6 +54,7 @@ const CopyToClipboardIcon = ({ text }) => {
 
   const handleCopy = () => {
     setIsCopied(true);
+    logAmplitudeEvent('Copied to clipboard', { pathname: window.location.pathname })
 
     setTimeout(() => {
       setIsCopied(false);
