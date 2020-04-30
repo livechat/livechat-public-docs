@@ -4,6 +4,7 @@ import Prism from "prismjs";
 import innerText from "react-innertext";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CopyIcon } from "../core/icons";
+import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
   position: sticky;
@@ -57,6 +58,7 @@ const CodeSampleWrapper = styled.div`
 const CodeSampleTopbar = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 5px 15px;
   height: 41px;
   background-color: #383f54;
@@ -65,12 +67,14 @@ const CodeSampleTopbar = styled.div`
   code {
     font-size: 12px;
     max-width: 100%;
+    flex-grow: 2;
   }
 `;
 
 const ResponseTopbar = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 5px 15px;
   height: 42px;
   background-color: #dee5e8;
@@ -78,6 +82,10 @@ const ResponseTopbar = styled.div`
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+`;
+
+const ResponseTopbarTitle = styled.span`
+  flex-grow: 1;
 `;
 
 const Body = styled.div`
@@ -217,7 +225,8 @@ export const CodeResponse = ({ title = "Response", children, json }) => {
     <CodeResponseWrapper>
       {title && (
         <ResponseTopbar>
-          {title} <CopyToClipboardIcon text={innerText(children)} />
+          <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
+          <CopyToClipboardIcon text={innerText(children)} />
         </ResponseTopbar>
       )}
       <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
