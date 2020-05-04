@@ -190,6 +190,12 @@ export const CopyToClipboardIcon = ({ text }) => {
   );
 };
 
+export const CopyAndLanguageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
 export const CodeSample = ({ path, children }) => {
   const childrenArray = React.Children.toArray(children);
   const count = React.Children.count(children);
@@ -203,16 +209,18 @@ export const CodeSample = ({ path, children }) => {
       {path && (
         <CodeSampleTopbar>
           <code>{path}</code>
-          <CopyToClipboardIcon text={innerText(selectedChild)} />
-          {count > 1 && (
-            <SelectLanguage onChange={(e) => setSample(e.target.value)}>
-              {childrenArray.map((children) => (
-                <option key={children.props.label}>
-                  {children.props.label}
-                </option>
-              ))}
-            </SelectLanguage>
-          )}
+          <CopyAndLanguageWrapper>
+            {count > 1 && (
+              <SelectLanguage onChange={(e) => setSample(e.target.value)}>
+                {childrenArray.map((children) => (
+                  <option key={children.props.label}>
+                    {children.props.label}
+                  </option>
+                ))}
+              </SelectLanguage>
+            )}
+            <CopyToClipboardIcon text={innerText(selectedChild)} />
+          </CopyAndLanguageWrapper>
         </CodeSampleTopbar>
       )}
       <Body>{selectedChild}</Body>

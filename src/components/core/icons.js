@@ -287,9 +287,9 @@ export const CopyIcon = props => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    height="24"
+    height="18px"
     viewBox="0 0 24 24"
-    width="24"
+    width="18px"
   >
     <path
       d="M0 0h24v24H0V0z"

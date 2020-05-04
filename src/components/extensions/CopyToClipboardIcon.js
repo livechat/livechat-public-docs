@@ -13,20 +13,20 @@ const CopyToClipboardWrapper = styled.div`
 
 const CopyToClipboardAction = styled.div`
   position: relative;
-  min-height: 24px;
+  min-height: 18px;
 `;
 
 const CopyIconWrapper = styled.div`
   position: absolute;
   top: 0;
-  left: 0;
+  left: 20;
   right: 0;
   text-align: right;
+  max-width: 24px;
   opacity: ${({ isCopied }) => (isCopied ? 0 : 1)};
   transition-delay: ${({ isCopied }) => (isCopied ? "0" : "0.25")};
   transition: ${({ isCopied }) =>
     isCopied ? "none" : "opacity 0.25s ease-in-out"};
-
   :hover {
     cursor: ${({ isCopied }) => (isCopied ? "initial" : "pointer")};
   }
