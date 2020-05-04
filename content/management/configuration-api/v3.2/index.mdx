@@ -53,7 +53,7 @@ An Agent is a type of [user](/messaging/agent-chat-api/#users) who communicates 
 
 ### Create Agent
 
-Creates new agent on license for specified parameters. If requester has scope `billing:rw`, then newly created agent will have property `awaiting_approval` by default marked as `false`, otherwise it will be `true`.
+Creates a new Agent with specified parameters within a license. If the requester has the `billing:rw` scope, then the newly created Agent will have the `awaiting_approval` property marked as `false` by default; otherwise it'll be `true`.
 
 #### Specifics
 
@@ -64,23 +64,23 @@ Creates new agent on license for specified parameters. If requester has scope `b
 
 #### Request
 
-| Parameter                                    | Data type  | Required | Notes                                                                                                                                  |
-|----------------------------------------------|------------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                                         | `string`   | Yes      | Agent ID                                                                                                                               |
-| `name`                                       | `string`   | Yes      | Agent name                                                                                                                             |
-| `role`                                       | `string`   | No       | Agent role, should be on of following: `viceowner`, `administrator`, `normal`. Default role is `normal`.                               |
-| `avatar`                                     | `string`   | No       | URL path for agent avatar                                                                                                              |
-| `job_title`                                  | `string`   | No       | Agent's job title                                                                                                                      |
-| `mobile`                                     | `string`   | No       | Agent's mobile number                                                                                                                  |
-| `max_chats_count`                            | `int`      | No       | Agent's maximum number of concurrent chats                                                                                             |
-| `awaiting_approval`                          | `bool`     | No       | Determines if agent will be awaiting for approval after creation. Only requester with scope `billing:rw` can set this value to `false` |
-| `groups`                                     | `object[]` | No       | Groups an Agent belongs to.                                                                                                            |
-| `groups[].id`                                | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                       |
-| `groups[].priority` __*__                    | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                                                                    |
-| `notifications`__**__                        | `string[]` | No       | Represents which agent notifications are turned on.                                                                                    |
-| `email_subscriptions`__***__                 | `string[]` | No       | Represents which subscriptions will be send to agent via email.                                                                        |
-| `work_scheduler`                             | `object`   | No       | Work scheduler options to set for new agent                                                                                            |
-| `work_scheduler.`__****__`.<work_scheduler>` | `object`   | No       | **\**\***** **described below**                                                                                                          |
+| Parameter                                    | Data type  | Required | Notes                                                                                                                                         |
+|----------------------------------------------|------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                                         | `string`   | Yes      | Agent ID                                                                                                                                      |
+| `name`                                       | `string`   | Yes      | Agent name                                                                                                                                    |
+| `role`                                       | `string`   | No       | Agent role, should be one of the following: `viceowner`, `administrator`, `normal` (default).                                                 |
+| `avatar_path`                                | `string`   | No       | URL path of the Agent's avatar                                                                                                                |
+| `job_title`                                  | `string`   | No       | Agent's job title                                                                                                                             |
+| `mobile`                                     | `string`   | No       | Agent's mobile number                                                                                                                         |
+| `max_chats_count`                            | `int`      | No       | Agent's maximum number of concurrent chats                                                                                                    |
+| `awaiting_approval`                          | `bool`     | No       | Determines if the Agent will be awaiting approval after creation. Only a requester with the `billing:rw` scope can set this value to `false`. |
+| `groups`                                     | `object[]` | No       | Groups an Agent belongs to.                                                                                                                   |
+| `groups[].id`                                | `uint`     | Yes      | Group ID; required only when `group` is included.                                                                                             |
+| `groups[].priority` __*__                    | `string`   | Yes      | Agent's priority in a group; required only when `group` is included.                                                                          |
+| `notifications`__**__                        | `string[]` | No       | Represents which Agent notifications are turned on.                                                                                           |
+| `email_subscriptions`__***__                 | `string[]` | No       | Represents which subscriptions will be send to the Agent via email.                                                                           |
+| `work_scheduler`                             | `object`   | No       | Work scheduler options to set for the new Agent                                                                                               |
+| `work_scheduler.`__****__`.<work_scheduler>` | `object`   | No       | **\*\***** **described below**                                                                                                                |
 
 
 __*__ The table below presents the possible values for the `groups[].priority` parameter:
@@ -91,7 +91,7 @@ __*__ The table below presents the possible values for the `groups[].priority` p
 | `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
 | `last`         |               The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                |
 
-__**__ Possible values for the `notifications` array (value present in array means that notification is turned on):
+__**__ Possible values for the `notifications` array:
 - `new_visitor`
 - `incoming_chat`
 - `returning_visitor`
@@ -106,7 +106,7 @@ __**__ Possible values for the `notifications` array (value present in array mea
 - `repeat_sound_notifications`
 - `ticket_notifications`
 
-__***__ Possible values for the `email_subscriptions` array (value present in array means that notification is turned on):
+__***__ Possible values for the `email_subscriptions` array:
 - `daily_summary`
 - `weekly_summary`
 
@@ -119,11 +119,11 @@ __****__ Possible values for the `work_scheduler` object keys:
 - `friday`
 - `saturday`
 
-**\**\*****
+**\*\*****
 `<work_scheduler>` contains the following fields:
 
-- `start` (`string`) - time when agent starts work, in format: `HH:MM`
-- `end` (`string`) - time when agent finishes work, in format: `HH:MM`
+- `start` (`string`) - the time when the Agent starts work, in the format: `HH:MM`
+- `end` (`string`) - the time when the Agent finishes work, in the format: `HH:MM`
 
 </Text>
 
@@ -137,8 +137,8 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-        "id": "agent@domain.com",
-        "name": "New Agent"
+        "id": "smith@example.com",
+        "name": "Agent Smith"
         "role": "viceowner",
         "groups": [
           {
@@ -181,7 +181,7 @@ curl -X POST \
 
 ```json
 {
-    "id": "agent@domain.com",
+    "id": "smith@example.com",
 }
 ```
 
@@ -197,7 +197,7 @@ curl -X POST \
 
 ### Get Agent
 
-It returns the info about an Agent specified by `id`. There are some agent fields that always gonna be returned, but user can request some additional ones.
+It returns the info about an Agent specified by `id`.
 
 #### Specifics
 
@@ -217,15 +217,15 @@ __*__ The table below presents the possible values for the `fields[]` parameter:
 
 | Possible value        | Notes                                                       |
 |-----------------------|-------------------------------------------------------------|
-| `work_scheduler`      | Work scheduler object for agent                             |
-| `groups`              | Groups in which agent belongs                               |
-| `email_subscriptions` | Active agent email subscriptions list                       |
-| `notifications`       | Enabled agent email subscriptions list                      |
+| `work_scheduler`      | Work scheduler object for an Agent                          |
+| `groups`              | Groups an Agent belongs to                                  |
+| `email_subscriptions` | A list of the Agent's active subscriptions                  |
+| `notifications`       | A list of the Agent's enabled notifications                 |
 | `job_title`           | Agent's job title                                           |
 | `mobile`              | Agent's mobile number                                       |
 | `max_chats_count`     | Agent's maximum number of concurrent chats                  |
-| `suspended`           | Boolean value  indicating if agent is suspended             |
-| `awaiting_approval`   | Boolean value  indicating if agent is awaiting for approval |
+| `suspended`           | Boolean value  indicating if an Agent is suspended          |
+| `awaiting_approval`   | Boolean value indicating if an Agent is awaiting approval   |
 
 
 </Text>
@@ -240,7 +240,7 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-        "id": "agent@domain.com",
+        "id": "smith@example.com",
         "fields": [
           "summaries",
           "max_chats_count",
@@ -255,8 +255,8 @@ curl -X POST \
 
 ```json
 {
-    "id": "agent@domain.com",
-    "name": "John",
+    "id": "smith@example.com",
+    "name": "Agent Smith",
     "avatar_path": "https://domain.com/avatar.image.jpg",
     "role": "administrator",
     "login_status": "accepting chats",
@@ -281,7 +281,7 @@ curl -X POST \
 
 ### List Agents
 
-Returns all Agents within a license. You can request only the Agents from a specific group. Some of agents fields are returned by default by you can also extend them via providing fields names.
+Returns all Agents within a license. You can request only the Agents from a specific group.
 
 #### Specifics
 
@@ -292,25 +292,25 @@ Returns all Agents within a license. You can request only the Agents from a spec
 
 #### Request
 
-| Parameter           | Required | Type       | Notes                                         |
-|---------------------|----------|------------|-----------------------------------------------|
-| `filters`           | No       | `object`   | Groups from which Agents you want to receive. |
-| `filters.group_ids` | No       | `int[]`    | Groups from which Agents you want to receive. |
-| `fields`__*__       | No       | `string[]` | Additional agent fields to include.           |
+| Parameter           | Required | Type       | Notes                                                 |
+|---------------------|----------|------------|-------------------------------------------------------|
+| `filters`           | No       | `object`   | Possible request filters                              |
+| `filters.group_ids` | No       | `int[]`    | IDs of the groups from which you want to list Agents. |
+| `fields`__*__       | No       | `string[]` | Additional agent fields to include.                   |
 
 __*__ The table below presents the possible values for the `fields[]` parameter:
 
 | Possible value        | Notes                                                       |
 |-----------------------|-------------------------------------------------------------|
-| `work_scheduler`      | Work scheduler object for agent                             |
-| `groups`              | Groups in which agent belongs                               |
-| `email_subscriptions` | Active agent email subscriptions list                       |
-| `notifications`       | Enabled agent email subscriptions list                      |
+| `groups`              | Groups an Agent belongs to                                  |
+| `work_scheduler`      | Work scheduler object for an Agent                          |
+| `email_subscriptions` | A list of the Agent's active email subscriptions            |
+| `notifications`       | A list of the Agent's enabled notifications                 |
 | `job_title`           | Agent's job title                                           |
 | `mobile`              | Agent's mobile number                                       |
 | `max_chats_count`     | Agent's maximum number of concurrent chats                  |
-| `suspended`           | Boolean value  indicating if agent is suspended             |
-| `awaiting_approval`   | Boolean value  indicating if agent is awaiting for approval |
+| `suspended`           | Boolean value indicating if an Agent is suspended           |
+| `awaiting_approval`   | Boolean value indicating if an Agent is awaiting approval   |
 
 </Text>
 
@@ -343,8 +343,8 @@ curl -X POST \
 ```json
 [
     {
-        "id": "agent@domain.com",
-        "name": "John",
+        "id": "smith@example.com",
+        "name": "Agent Smith",
         "avatar_path": "https://domain.com/avatar_image.jpg",
         "role": "administrator",
         "login_status": "accepting chats",
@@ -356,7 +356,7 @@ curl -X POST \
         ]
     },
     {
-        "id": "agent2@domain.com",
+        "id": "adam@example.com",
         "name": "Adam",
         "avatar_path": "https://domain.com/avatar_image1.jpg",
         "role": "normal",
@@ -399,17 +399,17 @@ Updates the properties of an Agent specified by `id`.
 | `id`                                         | `string`   | Yes      | Agent ID                                                                      |
 | `name`                                       | `string`   | No       | Agent name                                                                    |
 | `role`                                       | `string`   | No       | Agent role, should be on of following: `viceowner`, `administrator`, `normal` |
-| `avatar`                                     | `string`   | No       | URL path for agent avatar                                                     |
+| `avatar_path`                                | `string`   | No       | URL path for agent avatar                                                     |
 | `job_title`                                  | `string`   | No       | Agent's job title                                                             |
 | `mobile`                                     | `string`   | No       | Agent's mobile number                                                         |
 | `max_chats_count`                            | `int`      | No       | Agent's maximum number of concurrent chats                                    |
 | `groups`                                     | `object[]` | No       | Groups an Agent belongs to.                                                   |
 | `groups[].id`                                | `uint`     | Yes      | Group ID; required only when `group`'s included.                              |
 | `groups[].priority` __*__                    | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.           |
-| `notifications`__**__                        | `string[]` | No       | Represents which agent notifications are turned on.                           |
-| `email_subscriptions`__***__                 | `string[]` | No       | Represents which subscriptions will be send to agent via email.               |
-| `work_scheduler`                             | `object`   | No       | Work scheduler options to set for new agent                                   |
-| `work_scheduler.`__****__`.<work_scheduler>` | `object`   | No       | **\**\***** **described below**                                                 |
+| `notifications`__**__                        | `string[]` | No       | Represents which Agent notifications are turned on.                           |
+| `email_subscriptions`__***__                 | `string[]` | No       | Represents which subscriptions will be send to an Agent via email.            |
+| `work_scheduler`                             | `object`   | No       | Work scheduler options to set for a new Agent                                 |
+| `work_scheduler.`__****__`.<work_scheduler>` | `object`   | No       | **\*\***** **described below**                                                |
 
 __*__ The table below presents the possible values for the `groups[].priority` parameter:
 
@@ -419,7 +419,7 @@ __*__ The table below presents the possible values for the `groups[].priority` p
 | `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
 | `last`         |               The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                |
 
-__**__ Possible values for the `notifications` array (value present in array means that notification is turned on):
+__**__ Possible values for the `notifications` array:
 - `new_visitor`
 - `incoming_chat`
 - `returning_visitor`
@@ -434,7 +434,7 @@ __**__ Possible values for the `notifications` array (value present in array mea
 - `repeat_sound_notifications`
 - `ticket_notifications`
 
-__***__ Possible values for the `email_subscriptions` array (value present in array means that notification is turned on):
+__***__ Possible values for the `email_subscriptions` array:
 - `daily_summary`
 - `weekly_summary`
 
@@ -447,11 +447,11 @@ __****__ Possible values for the `work_scheduler` object keys:
 - `friday`
 - `saturday`
 
-**\**\*****
+**\*\*****
 `<work_scheduler>` contains the following fields:
 
-- `start` (`string`) - time when agent starts work, in format: `HH:MM`
-- `end` (`string`) - time when agent finishes work, in format: `HH:MM`
+- `start` (`string`) - the time when the Agent starts work, in the format: `HH:MM`
+- `end` (`string`) - the time when the Agent finishes work, in the format: `HH:MM`
 
 #### Response
 
@@ -470,8 +470,8 @@ curl -X POST \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
-        "id": "agent@domain.com",
-        "name": "New Agent"
+        "id": "smith@example.com",
+        "name": "Agent Smith"
         "role": "viceowner",
         "groups": [
           {
@@ -520,7 +520,7 @@ curl -X POST \
 
 ### Delete Agent
 
-Deletes Agent specified by `id`.
+Deletes an Agent specified by `id`.
 
 #### Specifics
 
@@ -567,7 +567,7 @@ curl -X POST \
 
 ### Suspend Agent
 
-Suspends Agent specified by `id`.
+Suspends an Agent specified by `id`.
 
 #### Specifics
 
@@ -614,7 +614,7 @@ curl -X POST \
 
 ### Unsuspend Agent
 
-Unsuspends Agent specified by `id`.
+Unsuspends an Agent specified by `id`.
 
 #### Specifics
 
@@ -661,7 +661,7 @@ curl -X POST \
 
 ### Request Agent Unsuspension
 
-Suspended agent can send email to all owners and viceowners with request to unsuspend him.
+A suspended Agent can send emails to license owners and vice owners with an unsuspension request.
 
 #### Specifics
 
@@ -704,7 +704,7 @@ curl -X POST \
 
 ### Approve Agent
 
-Approves agent making him able to use application.
+Approves an Agent thus allowing the Agent to use the application.
 
 #### Specifics
 
