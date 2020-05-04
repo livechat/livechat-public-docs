@@ -193,7 +193,6 @@ export const CopyToClipboardIcon = ({ text }) => {
 export const CopyAndLanguageWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 `;
 
 export const CodeSample = ({ path, children }) => {

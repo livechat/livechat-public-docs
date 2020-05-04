@@ -8,7 +8,6 @@ const CopyToClipboardWrapper = styled.div`
   position: relative;
   flex-grow: 1;
   min-width: 54px;
-  margin-left: 10px;
 `;
 
 const CopyToClipboardAction = styled.div`
@@ -38,6 +37,8 @@ const TextWrapper = styled.div`
   left: 0;
   right: 0;
   text-align: right;
+  line-height: 20px;
+  font-size: 13px;
   justify-content: space-between;
   opacity: ${({ isCopied }) => (isCopied ? 1 : 0)};
   transition-delay: ${({ isCopied }) => (isCopied ? "0" : "0.25s")};
