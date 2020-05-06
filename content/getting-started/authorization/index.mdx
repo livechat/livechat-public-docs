@@ -9,14 +9,17 @@ desc: "Learn how to use OAuth 2.0 to access LiveChat data in a secure way."
 
 # Introduction
 
-LiveChat uses [OAuth 2.0](https://oauth.net/2/) protocol for **authentication** and **authorization** for all of its services. Before you continue, make sure you understand the following difference:
+LiveChat uses [OAuth 2.0](https://oauth.net/2/) protocol for **authentication** and **authorization** for all of its services. Before you continue, make sure you understand the difference between them.
 
 - **Authentication** is making sure that somebody really is who they say they are. <br/>_E.g.: Checking your passport at the security check is authentication._
 - **Authorization** is assigning rules about who is allowed to do what. <br/>_E.g.: Allowing you to take first class seat is authorization._
 
-## Overview
+In terms of LiveChat apps, authentication is when you check the user credentials to see if they are signed in. Authorization is when you look up whether you allow them to do something.
 
-In terms of LiveChat apps, authentication is when you check the user credentials to see if they are signed in. Authorization is when you look up whether you allow them to do something. There are [different authorization flows](#agent-authorization-flows) available for different ways of interacting with LiveChat APIs.
+Throughout the document, we'll be using the terms **public** and **private** apps:
+
+- **public apps** are available to all LiveChat customers, who can install it from the LiveChat Marketplace.
+- **private apps** are only available within a LiveChat license that created the app. They're a way to go if you want to build an internal app for your chat Agents only. Unlike public apps, private apps don't ask for access grant.
 
 ## Basic use cases
 
@@ -58,32 +61,37 @@ When a user allows the access, your app will receive an `access_token` that will
 
 There are a few scenarios in which you can acquire an `access_token`:
 
-- [Sign in with LiveChat](#sign-in-with-livechat) – the easiest way to get access to any LiveChat account.
-- [Public web apps](#public-web-apps) – JavaScript apps available to all LiveChat customers.
-- [Private web apps](#private-web-apps) – JavaScript apps available to agents from single LiveChat account.
-- [Public server-side apps](#public-server-side-apps) – backend apps available to all LiveChat customers.
-- [Private server-side apps (coming soon)](#private-server-side-apps-coming-soon) – backend apps installed on a single LiveChat account.
 - [Personal Access Tokens](#personal-access-tokens) - tokens for Agents, not for apps.
+- [Implicit grant](#implicit-grant) - for JavaScript web apps, both the public and private ones.
+- [Authorization code grant](#authorization-code-grant) - recommended for public server-side apps.  
 
-## Sign in with LiveChat
+## Personal Access Tokens
 
-"Sign in with LiveChat" button is the easiest way to collect `access_token` from a LiveChat user.
+Unlike other authorization flows that let you acquire a token for your app, **Personal Access Tokens (PATs)** are generated per Agent.
 
-![Sign in with LiveChat](images/sign-in-with-livechat.png)
+With the use of PATs, you can make requests to the Agent Chat API, Configuration API, and Reports API.
 
-In this scenario, LiveChat user enters your website with a "Sign in with LiveChat" button installed. After clicking the button, they enter LiveChat login and password in a pop-up window and grant access to some parts of their account.
+### Step 1: Generate a PAT
 
-In return, you acquire an `access_token` which can be used to call LiveChat APIs.
+Start in <a href="https://developers.livechatinc.com/console/" target="_blank">Developer Console</a>. Then, go to **Tools -> Personal Access Tokens** and create a new token together with necessary scopes. You won't be able to change those scopes once you create the token.
 
-Read more how to implement this flow in a dedicated ["Sign in with LiveChat"](./sign-in-with-livechat) article.
+![LiveChat Developer Console](images/new_PAT.png)
 
-## Public web apps
+### Step 2: Use your account_id
 
-Public web apps are JavaScript applications that can access any LiveChat customer account. Examples of public web apps are [LiveChat's Agent App](https://my.livechatinc.com/) and [Developers Console](https://developers.livechatinc.com/console).
+Personal Access Tokens use the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme/" target="_blank">Basic authentication scheme</a>. For that reason, you need a username and a password. Each Agent has a unique `account_id`, which serves as the **username** while a PAT is the **password**. 
 
-To set up your own public app, you must define the URL of the app and the list of scopes – parts of LiveChat account your app will have access to. LiveChat customer who enters your app URL is asked to enter their login and password and grant access for your app.
+### Step 3: Send a request
 
-Then, the user is redirected to your app with `access_token` included in the URL.
+Once you have your `account_id` and your PAT, you can send requests to [Agent Chat API](/messaging/agent-chat-api/) and [Configuration API](/management/configuration-api/).
+
+![LiveChat Request Authorized with PAT](images/request_PAT.png)
+
+## Implicit grant
+
+Implicit grant is an authorization flow recommended for web apps, both ([public and private](#introduction)).
+
+To set up your own public web app, you must define the URL of the app and the list of scopes. Scopes determine which parts of a LiveChat user's account your app will have access to. A LiveChat customer who enters your app URL will be asked to enter their login and password and grant the access for your app. Then, the user is redirected to your app with `access_token` included in the URL.
 
 ![LiveChat Public Web Apps](images/public-web-app.png)
 
@@ -219,23 +227,13 @@ This example app fetches [Agents list](/management/configuration-api/v2.0/#list-
 
 You should update `clientId` and `redirectUri` params from the example to match actual values. You can set up these params when creating the app in [LiveChat Developers Console](https://developers.livechatinc.com/console). Your app must also have access to **read agents list** scopes. Scopes are also configured in the Developers Console.
 
-Please note that the request is performed by the backend script (in this case, PHP) because LiveChat Configuration API v2 does not allow cross-domain requests.
+Please note that the request is performed by the backend script (in this case, PHP) because LiveChat Configuration API v2 does not allow cross-domain requests
 
-## Private web apps
+## Authorization code grant
 
-Private web apps are JavaScript applications that are available only to agents from a single LiveChat account. If you want to build an internal app for your chat agents only, this is a good way to go.
+Authorization code grant flow is recommended for server-side apps, both [public and private](#introduction). Server-side apps have access to user's data for an unlimited amount of time. Unlike web apps, they can store confidential info, such as **Client Secret**, on a server without ever exposing it.
 
-Private web apps work the very same way like [public web apps](#public-web-apps). Please refer to that documentation to understand how it works.
-
-To start building a private web app, set it up [LiveChat Developers Console](https://developers.livechatinc.com/console).
-
-## Public server-side apps
-
-Public server-side apps are applications that have access to user's data for unlimited time.
-
-When your application wants to acquire the `access_token`, you must redirect the user to LiveChat OAuth Server only once. After successful authorization, the user is redirected back to your app along with a single-use authorization code.
-
-Your application exchanges the authorization code for an `access_token` and `refresh_token`. From now now, you can generate new `access_tokens` indefinitely without any action required from the user.
+When your application wants to acquire an `access_token`, you must redirect the user to LiveChat OAuth Server only once. After successful authorization, the user is redirected back to your app along with a single-use authorization code. Your application exchanges the authorization code for an `access_token` and `refresh_token` using the **Client Secret**. From now now, you can generate new `access_tokens` indefinitely without any action required from the user.
 
 ![LiveChat Public Server-Side Apps](images/public-backend-app.png)
 
@@ -472,37 +470,6 @@ curl "https://accounts.livechatinc.com/info"
 </CodeResponse>
 </Code>
 </Section>
-
-## Private server-side apps (coming soon)
-
-Private apps can be used only on accounts chosen by the developer.
-
-![LiveChat Private Server-Side Apps](images/private-backend-app.png)
-
-This authorization flow is not yet available.
-
-## Personal Access Tokens
-
-Unlike other authorization flows that let you acquire a token for your app, **Personal Access Tokens (PATs)** are generated per Agent.
-
-With the use of PATs, you can make requests to the Agent Chat API, Configuration API, and Reports API.
- 
-
-### Step 1: Generate a PAT
-
-Start in <a href="https://developers.livechatinc.com/console/" target="_blank">Developer Console</a>. Then, go to **Tools -> Personal Access Tokens** and create a new token together with necessary scopes. You won't be able to change those scopes once you create the token.
-
-![LiveChat Developer Console](images/new_PAT.png)
-
-### Step 2: Use your account_id
-
-Personal Access Tokens use the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme/" target="_blank">Basic authentication scheme</a>. For that reason, you need a username and a password. Each Agent has a unique `account_id`, which serves as the **username** while a PAT is the **password**. 
-
-### Step 3: Send a request
-
-Once you have your `account_id` and your PAT, you can send requests to [Agent Chat API](/messaging/agent-chat-api/) and [Configuration API](/management/configuration-api/).
-
-![LiveChat Request Authorized with PAT](images/request_PAT.png)
 
 # Customer authorization flow
 
