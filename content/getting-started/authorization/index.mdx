@@ -125,20 +125,19 @@ At this point, the app should ask the user to grant it access to certain resourc
 
 ### Step 3: Acquire the access token
 
-After successful authorization, the user is redirected back to your application. The URL includes a number o parameter, including the `access_token`.
+After a user authorizes the app by clicking **Allow**, they are redirected back to your application (to the **Redirect URI** you specified in Developer Console). The URL includes a number o parameters, including the `access_token`.
 
 <Section>
 <Text>
 
 #### URL parameters
 
-| Parameter       | Required | Value                                                                       | Notes                                                                                                                                                                                   |
-| --------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `response_type` | yes      | `token`                                                                     |                                                                                                                                                                                         |
-| `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                  |                                                                                                                                                                                         |
-| `redirect_uri`  | yes      | one of the URLs defined in the Authorization block during app configuration | The URL of your web application. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                                      |
-| `state`         | no       | any value that might be useful to your application                          | It's strongly recommended to include an anti-forgery token to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).                      |
-| `prompt`        | no       | `consent`                                                                   | **For testing purposes.** It forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace. |
+| Parameter      | Value    | Notes                                                                                                                                                                          |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `access_token` |          | The token you can use to call LiveChat APIs on behalf of the user.                                                                                                             |
+| `expires_in`   |          | The number of seconds the `access_token` will be valid. By default, `28800`. When it expires, you will need to repeat the authorization process to get the new `access_token`. |
+| `token_type`   | `Bearer` |                                                                                                                                                                                |
+| `state`        |          | The value of the `state` param that you passed to LiveChat OAuth Server in redirection.                                                                                        |
 
 </Text>
 <Code>
@@ -146,9 +145,9 @@ After successful authorization, the user is redirected back to your application.
 
 ```
 https://my-application.com/
-  #access_token=1/fFBGRNJru1FQd44AzqT3Zg
+  #access_token=dal%3A0i0CSDQTRHGbZCFkAoss4Q
   &token_type=Bearer
-  &expires_in=1209600
+  &expires_in=28800
   &state=i8XNjC4b8KVok4uw5RftR38Wgp2BFwql
 ```
 
@@ -156,22 +155,7 @@ https://my-application.com/
 </Code>
 </Section>
 
-Example redirection back to your app:
-
-```
-https://my-application.com/
-  #access_token=1/fFBGRNJru1FQd44AzqT3Zg
-  &token_type=Bearer
-  &expires_in=1209600
-  &state=i8XNjC4b8KVok4uw5RftR38Wgp2BFwql
-```
-
-- **access_token** – token you can use to call LiveChat APIs on behalf of the user.
-- **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to repeat the authorization process to get the new `access_token`.
-- **state** – value of the `state` param that you passed in redirection to LiveChat OAuth Server.
-- **token_type=Bearer**
-
-Your application should remember `access_token` in localStorage or a cookie until it expires. Caching the token prevents you from redirecting the user to LiveChat OAuth Server every time he visits your app.
+Your application should store the `access_token` in localStorage or a cookie until it expires. Caching the token prevents you from redirecting the user to LiveChat OAuth Server every time they visit your app.
 
 ### Example app
 
