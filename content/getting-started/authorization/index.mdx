@@ -16,117 +16,145 @@ LiveChat uses [OAuth 2.0](https://oauth.net/2/) protocol for **authentication** 
 
 In terms of LiveChat apps, authentication is when you check the user credentials to see if they are signed in. Authorization is when you look up whether you allow them to do something.
 
-Throughout the document, we'll be using the terms **public** and **private** apps:
+Throughout the document, we'll also use the terms **public** and **private** apps:
 
-- **public apps** are available to all LiveChat customers, who can install it from the LiveChat Marketplace.
-- **private apps** are only available within a LiveChat license that created the app. They're a way to go if you want to build an internal app for your chat Agents only. Unlike public apps, private apps don't ask for access grant.
+- **public apps** are available to all LiveChat customers, who can install it from the LiveChat [Marketplace](https://www.livechat.com/marketplace/).
+- **private apps** are only available within a LiveChat license that created the app. They're a way to go if you want to build an internal app for your chat Agents only. Unlike public apps, private apps don't ask users for an access grant.
 
-## Basic use cases
+## Use cases
 
-### Authorizing WEB API calls
+Decide which authorization flow to choose based on your use case.
 
-<CodeSample path={'Web API request format'}>
+| Use case                              | Recommended flow                                                                                                                                                                                                                                           |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sending requests to LiveChat API**  | [Personal Access Tokens](#personal-access-tokens) is the fastest way, but all other flows are also possible                                                                                                                                                |
+| **Testing an app during development** | [Personal Access Tokens](#personal-access-tokens) is the fastes, but all other flows are also possible                                                                                                                                                     |
+| **Building public web apps**          | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Implicit grant](#implicit-grant)                                                                                                                                          |
+| **Building private web apps**         | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Implicit grant](#implicit-grant)                                                                                                                                          |
+| **Building public server-side apps**  | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Authorization code grant](#authorization-code-grant)                                                                                                                      |
+| **Building private server-side apps** | [Personal Access Tokens](#personal-access-tokens) for the personal use of the app, [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) or [Authorization code grant](#authorization-code-grant) for all Agents within a license |
 
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/agent/action/<action> \
-  -H 'Content-Type: <content-type>' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-        // payload
-      }'
-```
-
-</CodeSample>
-
-Calling API methods on behalf of LiveChat user is as simple as including `Authorization: Bearer <access_token>` HTTP header in each call. Find out how to acquire the `access_token` in the sections below.
-
-Calling Customer Chat API requires an additional steps to get a different access token. Find out more below.
-
-### Authentication service
-
-You can authenticate users of your app using LiveChat authorization flows. You can leverage the existing LiveChat user base and distribute apps for the community of LiveChat users without the need of building your own authentication service.
-
-### Connect with LiveChat
-
-Let's say you have a service which can import chat data from the external sources. You can use a [Sign in with LiveChat SDK](#sign-in-with-livechat) to create something like _"Connect with LiveChat"_ button. This way your users can connect their LiveChat accounts to your service with just a few clicks.
+Read more about [creating LiveChat apps](getting-started/guides/#creating-livechat-apps) or go straight to [Developer Console](https://developers.livechat.com/console/) and start building.
 
 # Agent authorization flows
 
-All apps integrated with LiveChat must be first created in [LiveChat Developers Console](https://developers.livechatinc.com/console). When a user starts using your app, they will see what parts of his account your app will have access to:
-
-![LiveChat Grant Access](images/grant-access.png)
-
-When a user allows the access, your app will receive an `access_token` that will let you access their account.
-
-There are a few scenarios in which you can acquire an `access_token`:
-
-- [Personal Access Tokens](#personal-access-tokens) - tokens for Agents, not for apps.
-- [Implicit grant](#implicit-grant) - for JavaScript web apps, both the public and private ones.
-- [Authorization code grant](#authorization-code-grant) - recommended for public server-side apps.  
+All of the following authorization flows let your app acquire an `access_token`. With this token, the app can make calls to the Agent Chat API, Configuration API, and Reports API, Billing API, and Partner Program API on behalf of an Agent.
+To make calls to Customer Chat API, you need a different `access_token`. For that, see [Customer authorization flow](#customer-authorization-flow).
 
 ## Personal Access Tokens
 
-Unlike other authorization flows that let you acquire a token for your app, **Personal Access Tokens (PATs)** are generated per Agent.
+Unlike other authorization flows that let you acquire a token for your app, **Personal Access Tokens (PATs)** are generated per Agent. PATs are great when you want to make a quick call to the LiveChat API or test out the app you're working on.
 
-With the use of PATs, you can make requests to the Agent Chat API, Configuration API, and Reports API.
+To sign a request with a Personal Access Token, you need to:
+
+1. Create a PAT in <a href="https://developers.livechatinc.com/console" target="_blank">Developer Console</a>.
+2. Use your `account_id` and PAT in the **Basic authentication scheme** to send a request.
 
 ### Step 1: Generate a PAT
 
-Start in <a href="https://developers.livechatinc.com/console/" target="_blank">Developer Console</a>. Then, go to **Tools -> Personal Access Tokens** and create a new token together with necessary scopes. You won't be able to change those scopes once you create the token.
+Start in <a href="https://developers.livechatinc.com/console/" target="_blank">Developer Console</a>. Then, go to **Tools -> Personal Access Tokens** and create a new token together with necessary [scopes](/messaging/agent-chat-api/#scopes-1). You won't be able to change those scopes once you create the token.
 
 ![LiveChat Developer Console](images/new_PAT.png)
 
-### Step 2: Use your account_id
+### Step 2: Use your credentials to send the request
 
-Personal Access Tokens use the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme/" target="_blank">Basic authentication scheme</a>. For that reason, you need a username and a password. Each Agent has a unique `account_id`, which serves as the **username** while a PAT is the **password**. 
+Personal Access Tokens use the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme/" target="_blank">Basic authentication scheme</a>. For that reason, you need a username and a password.
 
-### Step 3: Send a request
+Use:
 
-Once you have your `account_id` and your PAT, you can send requests to [Agent Chat API](/messaging/agent-chat-api/) and [Configuration API](/management/configuration-api/).
+- **Account ID** as the **username** for API v3
+- **Entity ID (your LiveChat login)** as the **username** for API v2
+- **PAT** as the **password** for API v2 and v3
+
+Once you have your credentials, you can send requests to, for example, [Agent Chat API](/messaging/agent-chat-api/).
 
 ![LiveChat Request Authorized with PAT](images/request_PAT.png)
 
 ## Implicit grant
 
-Implicit grant is an authorization flow recommended for web apps, both ([public and private](#introduction)).
+Implicit grant is an authorization flow recommended for JavaScript web apps.
 
-To set up your own public web app, you must define the URL of the app and the list of scopes. Scopes determine which parts of a LiveChat user's account your app will have access to. A LiveChat customer who enters your app URL will be asked to enter their login and password and grant the access for your app. Then, the user is redirected to your app with `access_token` included in the URL.
+To set up your own web app, you must define the URL of the app and the list of scopes. Scopes determine which parts of a LiveChat user's account your app will have access to. A LiveChat customer who enters your app URL will be asked to enter their login and password and grant the access for your app. Then, the user is redirected to your app with `access_token` included in the URL.
 
 ![LiveChat Public Web Apps](images/public-web-app.png)
 
-### Step 1: Create the app
+### Step 1: Create an app
 
-Go to [Developers Console](https://developers.livechatinc.com/console) and create a new "LiveChat OAuth 2.0 Client" app. **Redirect URI** is the address of your app that will receive `access_token` in a URL. **Scopes** is a list of permissions your app will get.
+Start by creating an app in [Developer Console](https://developers.livechat.com/console). The app is a LiveChat OAuth 2.0 Client with its **Id** and **Secret**. You need to configure the Authorization building block of your application. [See the guide](/getting-started/authorization/authorization-in-practice/#step-1-configure-the-authorization-building-block) to learn how to do that. Since this is the Implicint grant authorization flow, you won't use the **Client Secret** of your app. Feel free to skip the part about **Client Secret** in the guide; the rest applies without any change.
 
-### Step 2: Redirect to LiveChat OAuth Server
+### Step 2: Redirect users to LiveChat OAuth Server
 
-Example redirection to LiveChat OAuth Server:
+When a user runs your app, you should redirect them to the LiveChat OAuth Server, which can be found under this URL:
+
+```
+https://accounts.livechat.com/
+```
+
+<Section>
+<Text>
+
+#### URL parameters
+
+| Parameter       | Required | Value                                                                       | Notes                                                                                                                                                                                   |
+| --------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `response_type` | yes      | `token`                                                                     |                                                                                                                                                                                         |
+| `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                  |                                                                                                                                                                                         |
+| `redirect_uri`  | yes      | one of the URLs defined in the Authorization block during app configuration | The URL of your web application. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                                      |
+| `state`         | no       | any value that might be useful to your application                          | It's strongly recommended to include an anti-forgery token to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).                      |
+| `prompt`        | no       | `consent`                                                                   | **For testing purposes.** It forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace. |
+
+</Text>
+<Code>
+<CodeSample path={'EXAMPLE REDIRECTION TO LIVECHAT OAUTH SERVER'}>
 
 ```shell
-https://accounts.livechatinc.com/
+https://accounts.livechat.com/
   ?response_type=token
   &client_id=2261a58dfe1420acc0dc1bd77158f7ac
   &redirect_uri=https%3A%2F%2Fmy-application.com
   &state=i8XNjC4b8KVok4uw5RftR38Wgp2BFwql
 ```
 
-When a user runs your app, you should redirect their browser to the following URL:
+</CodeSample>
+</Code>
+</Section>
 
-`https://accounts.livechatinc.com/`
+At this point, the app should ask the user to grant it access to certain resources.
 
-with the following URL params:
+![Access Grant Request](images/grant-access-livechat.png)
 
-- **response_type=token**
-- **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
-- **redirect_uri** – URL of your web application that LiveChat OAuth Server will redirect the user back after successful authorization. It must be one of the URLs that you entered when creating the app in the previous step.
-- **state** – you can provide here any value that might be useful to your application. It is strongly recommended to include an anti-forgery token here mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).
-
-**For testing purposes:**
-
-- **prompt=consent** - forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace.
-  
 ### Step 3: Acquire the access token
+
+After successful authorization, the user is redirected back to your application. The URL includes a number o parameter, including the `access_token`.
+
+<Section>
+<Text>
+
+#### URL parameters
+
+| Parameter       | Required | Value                                                                       | Notes                                                                                                                                                                                   |
+| --------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `response_type` | yes      | `token`                                                                     |                                                                                                                                                                                         |
+| `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                  |                                                                                                                                                                                         |
+| `redirect_uri`  | yes      | one of the URLs defined in the Authorization block during app configuration | The URL of your web application. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                                      |
+| `state`         | no       | any value that might be useful to your application                          | It's strongly recommended to include an anti-forgery token to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).                      |
+| `prompt`        | no       | `consent`                                                                   | **For testing purposes.** It forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace. |
+
+</Text>
+<Code>
+<CodeResponse title={'EXAMPLE REDIRECTION BACK TO THE APP'}>
+
+```
+https://my-application.com/
+  #access_token=1/fFBGRNJru1FQd44AzqT3Zg
+  &token_type=Bearer
+  &expires_in=1209600
+  &state=i8XNjC4b8KVok4uw5RftR38Wgp2BFwql
+```
+
+</CodeResponse>
+</Code>
+</Section>
 
 Example redirection back to your app:
 
@@ -137,8 +165,6 @@ https://my-application.com/
   &expires_in=1209600
   &state=i8XNjC4b8KVok4uw5RftR38Wgp2BFwql
 ```
-
-After successful authorization, the user is redirected back to your app. The URL will include a number of params in the hash section of the URL:
 
 - **access_token** – token you can use to call LiveChat APIs on behalf of the user.
 - **expires_in** – number of seconds the `access_token` will be valid. When it expires, you will need to repeat the authorization process to get the new `access_token`.
@@ -151,6 +177,7 @@ Your application should remember `access_token` in localStorage or a cookie unti
 
 This example private web application fetches LiveChat agents list and logs it in the console.
 
+<Code>
 <CodeSample path={'index.html'}>
 
 ```html
@@ -222,6 +249,7 @@ echo $result;
 ```
 
 </CodeSample>
+</Code>
 
 This example app fetches [Agents list](/management/configuration-api/v2.0/#list-all-agents) and returns it in the browser's console.
 
@@ -231,7 +259,7 @@ Please note that the request is performed by the backend script (in this case, P
 
 ## Authorization code grant
 
-Authorization code grant flow is recommended for server-side apps, both [public and private](#introduction). Server-side apps have access to user's data for an unlimited amount of time. Unlike web apps, they can store confidential info, such as **Client Secret**, on a server without ever exposing it.
+Authorization code grant flow is recommended for server-side apps. Server-side apps have access to user's data for an unlimited amount of time. Unlike web apps, they can store confidential info, such as **Client Secret**, on a server without ever exposing it.
 
 When your application wants to acquire an `access_token`, you must redirect the user to LiveChat OAuth Server only once. After successful authorization, the user is redirected back to your app along with a single-use authorization code. Your application exchanges the authorization code for an `access_token` and `refresh_token` using the **Client Secret**. From now now, you can generate new `access_tokens` indefinitely without any action required from the user.
 
