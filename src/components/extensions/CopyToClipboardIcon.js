@@ -18,7 +18,6 @@ const CopyToClipboardAction = styled.div`
 const CopyIconWrapper = styled.div`
   position: absolute;
   top: 0;
-  left: 20;
   right: 0;
   text-align: right;
   max-width: 24px;
