@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import Prism from "prismjs";
 
 const StickyWrapper = styled.div`
   position: sticky;
@@ -154,8 +155,8 @@ export const CodeSample = ({ path, children }) => {
         <CodeSampleTopbar>
           <code>{path}</code>
           {count > 1 && (
-            <SelectLanguage onChange={e => setSample(e.target.value)}>
-              {childrenArray.map(children => (
+            <SelectLanguage onChange={(e) => setSample(e.target.value)}>
+              {childrenArray.map((children) => (
                 <option key={children.props.label}>
                   {children.props.label}
                 </option>
@@ -169,11 +170,11 @@ export const CodeSample = ({ path, children }) => {
   );
 };
 
-export const CodeResponse = ({ title = "Response", children }) => {
+export const CodeResponse = ({ title = "Response", children, json }) => {
   return (
     <CodeResponseWrapper>
       {title && <ResponseTopbar>{title}</ResponseTopbar>}
-      <Body>{children}</Body>
+      <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
     </CodeResponseWrapper>
   );
 };
@@ -183,3 +184,22 @@ export const Code = ({ children }) => (
     <StickyWrapper>{children}</StickyWrapper>
   </CodeWrapper>
 );
+
+const JSONHighlighter = ({ source, language = "javascript" }) => {
+  const ref = React.createRef();
+  const body = JSON.stringify(source, null, "\t");
+
+  useEffect(() => {
+    if (ref && ref.current) {
+      Prism.highlightElement(ref.current.children[0]);
+    }
+  }, [source, ref]);
+
+  return (
+    <div className="gatsby-highlight" data-language={language}>
+      <pre ref={ref} className={`language-${language}`}>
+        <code className={`language-${language}`}>{body}</code>
+      </pre>
+    </div>
+  );
+};
