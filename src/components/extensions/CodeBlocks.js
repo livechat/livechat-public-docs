@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
 import innerText from "react-innertext";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { CopyIcon } from "../core/icons";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
@@ -157,42 +155,6 @@ export const FixedTdWidth = styled.div`
   td:first-of-type {
     width: 200px;
   }
-`;
-
-export const CopyToClipboardIconWrapper = styled.div`
-  :hover {
-    cursor: pointer;
-  }
-`;
-
-export const CopyToClipboardIcon = ({ text }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 3000);
-  };
-
-  return (
-    <CopyToClipboard onCopy={handleCopy} text={text}>
-      {copied ? (
-        <TextWrapper>
-          <Text>Copied!</Text>
-        </TextWrapper>
-      ) : (
-        <CopyIconWrapper>
-          <CopyIcon />
-        </CopyIconWrapper>
-      )}
-    </CopyToClipboard>
-  );
-};
-
-export const CopyAndLanguageWrapper = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 export const CodeSample = ({ path, children }) => {
