@@ -146,10 +146,6 @@ export const Text = styled.div`
   overflow-x: auto;
 `;
 
-export const TextWrapper = styled.div`
-  justify-content: space-between;
-`;
-
 export const FixedTdWidth = styled.div`
   th:first-of-type,
   td:first-of-type {
