@@ -153,6 +153,11 @@ export const FixedTdWidth = styled.div`
   }
 `;
 
+const ActionsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const CodeSample = ({ path, children }) => {
   const childrenArray = React.Children.toArray(children);
   const count = React.Children.count(children);
