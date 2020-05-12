@@ -208,16 +208,18 @@ export const CodeSample = ({ path, children }) => {
       {path && (
         <CodeSampleTopbar>
           <code>{path}</code>
-          {count > 1 && (
-            <SelectLanguage onChange={(e) => setSample(e.target.value)}>
-              {childrenArray.map((children) => (
-                <option key={children.props.label}>
-                  {children.props.label}
-                </option>
-              ))}
-            </SelectLanguage>
-          )}
-          <CopyToClipboardIcon text={innerText(selectedChild)} />
+          <ActionsWrapper>
+            {count > 1 && (
+              <SelectLanguage onChange={(e) => setSample(e.target.value)}>
+                {childrenArray.map((children) => (
+                  <option key={children.props.label}>
+                    {children.props.label}
+                  </option>
+                ))}
+              </SelectLanguage>
+            )}
+            <CopyToClipboardIcon text={innerText(selectedChild)} />
+          </ActionsWrapper>
         </CodeSampleTopbar>
       )}
       <Body>{selectedChild}</Body>

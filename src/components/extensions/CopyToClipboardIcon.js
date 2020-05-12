@@ -7,7 +7,7 @@ import { logAmplitudeEvent } from "../../utils/index";
 const CopyToClipboardWrapper = styled.div`
   position: relative;
   flex-grow: 1;
-  width: 50px;
+  width: 45px;
 `;
 
 const CopyToClipboardAction = styled.div`
