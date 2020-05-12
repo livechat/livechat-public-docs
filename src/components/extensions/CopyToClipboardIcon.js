@@ -36,6 +36,7 @@ const TextWrapper = styled.div`
   left: 0;
   right: 0;
   text-align: right;
+  text-transform: capitalize;
   line-height: 20px;
   font-size: 13px;
   justify-content: space-between;
