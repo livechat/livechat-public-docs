@@ -28,13 +28,13 @@ Decide which authorization flow to choose based on your use case.
 | Use case                              | Recommended flow                                                                                                                                                                                                                                           |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Sending requests to LiveChat API**  | [Personal Access Tokens](#personal-access-tokens) is the fastest way, but all other flows are also possible                                                                                                                                                |
-| **Testing an app during development** | [Personal Access Tokens](#personal-access-tokens) is the fastes, but all other flows are also possible                                                                                                                                                     |
+| **Testing an app during development** | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) is the fastest, but all other flows are also possible                                                                                                                       |
 | **Building public web apps**          | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Implicit grant](#implicit-grant)                                                                                                                                          |
 | **Building private web apps**         | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Implicit grant](#implicit-grant)                                                                                                                                          |
 | **Building public server-side apps**  | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Authorization code grant](#authorization-code-grant)                                                                                                                      |
 | **Building private server-side apps** | [Personal Access Tokens](#personal-access-tokens) for the personal use of the app, [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) or [Authorization code grant](#authorization-code-grant) for all Agents within a license |
 
-Read more about [creating LiveChat apps](getting-started/guides/#creating-livechat-apps) or go straight to [Developer Console](https://developers.livechat.com/console/) and start building.
+Read more about [creating LiveChat apps](getting-started/guides/#creating-livechat-apps) or go straight to [get_customersDeveloper Console](https://developers.livechat.com/console/) and start building.
 
 # Agent authorization flows
 
@@ -87,7 +87,7 @@ There are a few steps in the process:
 
 ### Step 1: Create an app
 
-If you don't have an app yet, start by creating one in [Developer Console](https://developers.livechat.com/console). The app is a LiveChat OAuth 2.0 Client with its **Id** and **Secret**. You need to configure the Authorization building block of your application. [See the guide](/getting-started/authorization/authorization-in-practice/#step-1-configure-the-authorization-building-block) to learn how to do that. Since this is the Implicint grant authorization flow, you won't use the **Client Secret** of your app. Feel free to skip the part about **Client Secret** in the guide; the rest applies without any change.
+If you don't have an app yet, start by creating one in [Developer Console](https://developers.livechat.com/console). The app is a LiveChat OAuth 2.0 Client with its **Id** and **Secret**. You need to configure the Authorization building block of your application. [See the guide](/getting-started/authorization/authorization-in-practice/#step-1-configure-the-authorization-building-block) to learn how to do that. Since this is the Implicit grant authorization flow, you won't use the **Client Secret** of your app. Feel free to skip the part about **Client Secret** in the guide; the rest applies without any change.
 
 ### Step 2: Redirect users to LiveChat OAuth Server
 
@@ -114,7 +114,7 @@ https://accounts.livechat.com/
 <Code>
 <CodeSample path={'EXAMPLE REDIRECTION TO LIVECHAT OAUTH SERVER'}>
 
-```shell
+```
 https://accounts.livechat.com/
   ?response_type=token
   &client_id=2261a58dfe1420acc0dc1bd77158f7ac
@@ -135,7 +135,7 @@ This step is also omitted for private web apps installed by Agents from the same
 
 ### Step 4: Get an access token from the URL
 
-After a user authorizes the app by clicking **Allow**, they are redirected back to your application (to the **Redirect URI** you specified in Developer Console). The URL includes a number o parameters, including the `access_token`.
+After a user authorizes the app by clicking **Allow**, they are redirected back to your application (to the **Redirect URI** you specified in Developer Console). The URL includes a number of parameters, including the `access_token`.
 
 <Section>
 <Text>
@@ -172,90 +172,84 @@ Your application should store the `access_token` in localStorage or a cookie unt
 
 ### Example implementation
 
-This example private web app fetches the list of [Agents](/management/configuration-api/v2.0/#list-all-agents) and logs it in the console.
+This sample web app makes a call to Agent Chat API to [return the list of customers](messaging/agent-chat-api/#get-customers), which is then logged in the console. The application uses the **Implicit grant** to get an access token.
 
 <CodeSample path={'index.html'}>
 
 ```html
 <!DOCTYPE html>
 <html>
-  <body>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <script>
-      function getHashParam(key) {
-        var params = location.hash.substring(1).split("&");
-        var value = params.find(function(item) {
-          return item.split("=")[0] === key;
-        });
-        return value ? value.split("=")[1] : "";
-      }
-
-      var clientId = "<client_id>";
-      var redirectUri = "http://localhost/test.html";
-      var accessToken = getHashParam("access_token");
-
-      if (accessToken) {
-        $.ajax({
-          url: "./get_agents.php",
-          dataType: "json",
-          data: {
-            access_token: accessToken
-          },
-          success: agents => {
-            console.log(agents);
-          }
-        });
-      } else {
-        location.href =
-          "https://accounts.livechatinc.com/" +
-          "?response_type=token" +
-          "&client_id=" +
-          clientId +
-          "&redirect_uri=" +
-          redirectUri;
-      }
-    </script>
-  </body>
+​
+<body>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="/get_customers.js"></script>
+​
+  <script>
+    function getHashParam(key) {
+      var params = location.hash.substring(1).split("&");
+      var value = params.find(function (item) {
+        return item.split("=")[0] === key;
+      });
+      return value ? value.split("=")[1] : "";
+    }
+​
+    var clientId = "bb9e5b2f1ab480e4a715977b7b1b4279"; // Client Id of your app
+    var redirectUri = "https://get-customers-app.samplehosting.com/"; // URL of your app
+    var accessToken = decodeURIComponent(getHashParam("access_token"));
+​
+    if (accessToken) {
+      get_customers();
+    } else {
+      location.href =
+        "https://accounts.livechat.com/" +
+        "?response_type=token" +
+        "&client_id=" +
+        clientId +
+        "&redirect_uri=" +
+        redirectUri;
+    }
+  </script>
+</body>
+​
 </html>
 ```
 
 </CodeSample>
 
-<CodeSample path={'get_agents.php'}>
+<CodeSample path={'get_customers.js'}>
 
-```php
-<?php
-$accessToken = $_GET['access_token'];
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://api.livechatinc.com/agents');
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-	'Content-Type: application/json',
-	'X-API-Version: 2',
-	'Authorization: Bearer ' . $accessToken
-));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-
-$result = curl_exec($ch);
-curl_close($ch);
-
-echo $result;
+```js
+function get_customers() {
+        axios({
+                method: 'post',
+                url: 'https://api.livechat.com/v3.1/agent/action/get_customers',
+                headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + accessToken,
+                },
+                data: {
+                }
+        }).then((response) => {
+                console.log(response.data);
+        }, (error) => {
+                console.log(error);
+        });
+}
 ```
 
 </CodeSample>
 
-To make it work, you should update the `clientId` and `redirectUri` parameters in the example to match actual values. You can set up these params when creating the app in [LiveChat Developers Console](https://developers.livechat.com/console). Your app must also have access to **read agents list** scope. Scopes are also configured in the Developers Console.
-
-Please note that the request is performed by the backend script (in this case, PHP) because LiveChat Configuration API v2 does not allow cross-domain requests.
+To make it work, run this app on localhost or [deploy it to Firebase](getting-started/guides/#creating-livechat-apps) to host it. Update `index.html` with your own `redirectUri` (link to your app) and `clientId`. 
+Make sure to use the exact same Redirect URI in Developer Console. Also, to use the **Get Customers** method, your app needs the `customers:ro` scope, which you should select in Developer Console. 
+When everything is ready, install the app privately for your license.
 
 ## Authorization code grant
 
 Authorization code grant flow is recommended for server-side apps. Unlike web apps, they can store confidential info, such as **Client Secret**, on a server without ever exposing it.
 When a user runs your app, they are redirected to the LiveChat OAuth Server only once. After successful authorization, the user is redirected back to your app along with a single-use authorization code. Then, your application exchanges the code for an access token and a refresh token using the Client Secret. From now on, the app can regenerate new access tokens without any action required from the user.
 
-This flow is very similar to **Implicint grant**, but contains one additional step of exchanging a code for an access token.
+This flow is very similar to **Implicit grant**, but contains one additional step of exchanging a code for an access token.
 
 The steps are as follows:
 
@@ -296,7 +290,7 @@ https://accounts.livechat.com/
 <Code>
 <CodeSample path={'EXAMPLE REDIRECTION TO LIVECHAT OAUTH SERVER'}>
 
-```shell
+```
 https://accounts.livechat.com/
   ?response_type=code
   &client_id=2261a58dfe1420acc0dc1bd77158f7ac
@@ -351,9 +345,8 @@ https://my-application.com/
 To exchange the `code` for an `access_token` and a `refresh_token`, you need to make an HTTP POST request to the following URL:
 
 ```
-https://accounts.livechatinc.com/token
+https://accounts.livechat.com/token
 ```
-
 
 #### URL parameters
 
@@ -385,7 +378,7 @@ The response is a JSON with the following parameters:
 <CodeSample path={'EXCHANGE CODE FOR TOKEN'}>
 
 ```shell
-curl "https://accounts.livechatinc.com/token" \
+curl "https://accounts.livechat.com/token" \
   -X POST \
   -d "grant_type=authorization_code&\
   code=4/P7q7W91a-oMsCeLvIaQm6bTrgtp7&\
@@ -424,32 +417,42 @@ Your application should store the `access_token` in localStorage or a cookie unt
 
 ### Using the refresh token
 
-To obtain a new `access_token`, your application must send an HTTP POST request using the `refresh_token`.
+When an `access_token` expires, your app needs to acquire a new one. To do that, it has to send an HTTP POST request using the `refresh_token`.
 
-Required parameters:
+```
+https://accounts.livechat.com/token
+```
 
-- **grant_type=refresh_token**
-- **refresh_token** – the value of the refresh token you received in the previous step.
-- **client_id** – you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
-- **client_secret** - you received it when you created the app in [Developers Console](https://developers.livechatinc.com/console).
+#### URL parameters
 
-The response is a JSON with the following parameters: 
+| Parameter       | Required | Description                                                                                                                                                                    |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `grant_type`    | yes      | Value: `refresh_token`                                                                                                                                                    |
+| `refresh_token` | yes      | The refresh token returned from the request in Step 4.                                                                                                         |
+| `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                                                                                                                     |
+| `client_secret` | yes      | Unique, confidential identifier of your app from [Developer Console](https://developers.livechatinc.com/console) (Authorization block).                                        |
 
-- **access_token** – the token you can use to call LiveChat APIs on behalf of the user.
-- **account_id** - the ID of the Agent's account.
-- **entity_id** - the requester's email address.
-- **license_id** - the LiveChat license number.
-- **expires_in** – a number in seconds specifying how long the `access_token` will be valid. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details).
-- **organization_id** - the ID of the organization's account.
-- **refresh_token** – the token that can be used to generate new access tokens.
-- **token_type=Bearer**
+#### Response
+
+The response is a JSON with the following parameters:
+
+| Parameter         | Description                                                                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `access_token`    | A token you can use to call LiveChat APIs on behalf of the user.                                                                                                                                                                           |
+| `account_id`      | The ID of the Agent's account                                                                                                                                                                                                              |
+| `account_id`      | The requester's email address                                                                                                                                                                                                              |
+| `license_id`      | The LiveChat license number                                                                                                                                                                                                                |
+| `expires_in`      | A number in seconds specifying how long the `access_token` will be valid. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details). |
+| `organization_id` | the ID of the organization's account.                                                                                                                                                                                                      |
+| `refresh_token`   | A token that can be used to generate new access tokens.                                                                                                                                                                                    |
+| `token_type`      | Value: `Bearer`                                                                                                                                                                                                                            |
 
 </Text>
 <Code>
-<CodeSample path={'POST https://accounts.livechatinc.com/token'}>
+<CodeSample path={'GET A NEW ACCESS TOKEN'}>
 
 ```shell
-curl "https://accounts.livechatinc.com/token" \
+curl "https://accounts.livechat.com/token" \
   -X POST \
   -d "grant_type=refresh_token&\
   refresh_token=-/khgiugfalskdbcakg2347o8326&\
@@ -458,13 +461,13 @@ curl "https://accounts.livechatinc.com/token" \
 ```
 
 </CodeSample>
-<CodeResponse title={'Sample response'}>
+<CodeResponse title={'response'}>
 
 ```json
 {
-  "access_token": "1/fFAGRNJru1FTz70BzhT3Zg",
+  "access_token": "dal:Lp6DVYTJQ6GDVgQf8kQDPw",
   "account_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "entity_id": "agent1@example.com",
+  "entity_id": "smith@example.com",
   "expires_in": 28800,
   "license_id": 104130623,
   "organization_id": "390e44e6-f1e6-0368c-z6ddb-74g14508c2ex",
@@ -482,26 +485,50 @@ curl "https://accounts.livechatinc.com/token" \
 
 ### Revoking tokens
 
-In some cases a user may wish to revoke access given to an application. The token can be an access token or a refresh token. If the token is an access token and it has a corresponding refresh token, the refresh token will also be revoked.
+In some cases, a user may wish to revoke the access (the token) given to your application. The token can be either an access token or a refresh token. If it's an access token with a corresponding refresh token, both tokens will be revoked.
+To revoke a token, make a DELETE HTTP request to the following URL:
+
+```
+https://accounts.livechat.com/token
+```
+
+Code snippets present two alternative ways of making the same request.
+
+#### URL parameters
+
+| Parameter       | Required | Description                                                                                                                                                                    |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `code`    | yes      | The value of the `access_token` or the `refresh_token`  to revoke                                                                                                                                                   |
 
 </Text>
 <Code>
-<CodeSample path={'DELETE https://accounts.livechatinc.com/token'}>
+<CodeSample path={'REVOKE A TOKEN (URL PARAM)'}>
 
 ```shell
-curl "https://accounts.livechatinc.com/token\
-  ?token=<access_token|refresh_token>"
+curl "https://accounts.livechat.com/token\
+  ?code=dal:Lp6DVYTJQ6GDVgQf8kQDPw"
   -X DELETE
 ```
 
 </CodeSample>
+
+<CodeSample path={'REVOKE A TOKEN'}>
+
+```shell
+curl "https://accounts.livechat.com/token"
+  -H "Authorization: Bearer <access_token|refresh token>"
+  -X DELETE
+```
+
+</CodeSample>
+
 </Code>
 </Section>
 
 <Section>
 <Text>
 
-### Validating the access token
+### Validating access tokens
 
 You can validate an `access_token` by making an HTTP request.
 
@@ -520,10 +547,10 @@ The response will include the following params in JSON format:
 
 </Text>
 <Code>
-<CodeSample path={'GET https://accounts.livechatinc.com/info'}>
+<CodeSample path={'GET https://accounts.livechat.com/info'}>
 
 ```shell
-curl "https://accounts.livechatinc.com/info"
+curl "https://accounts.livechat.com/info"
   -H "Authorization: Bearer <access_token>"
 ```
 
@@ -556,7 +583,7 @@ To authorize [Customer Chat API](../../messaging/customer-chat-api/) you will ne
 
 ## Creating new customer
 
-You can create a new customer on licence or use an existing identity. The `<ACCESS_TOKEN>` mentioned below is the one that you get from the app authorization flow. Required scope: `customers.own`.
+You can create a new customer on licence or use an existing identity. The `<ACCESS_TOKEN>` mentioned below is the one that you get from the app authorization flow. Required scope: `customers:own`.
 
 **Required parameters**
 
@@ -571,10 +598,10 @@ You can create a new customer on licence or use an existing identity. The `<ACCE
 
 </Text>
 <Code>
-<CodeSample path={'POST https://accounts.livechatinc.com/customer/'}>
+<CodeSample path={'POST https://accounts.livechat.com/customer/'}>
 
 ```shell
-curl "https://accounts.livechatinc.com/customer/" \
+curl "https://accounts.livechat.com/customer/" \
   -H "Authorization: Bearer <access_token>" \
   -X POST
   -d '{
@@ -607,7 +634,7 @@ It's possible to create customer direct chat url using `license_id` and `access_
 **Example URL**
 
 ```
-https://accounts.livechatinc.com/customer?
+https://accounts.livechat.com/customer?
   access_token=ae19bb31-803a-46f3-53ac-3b7d2564fe7e&
   redirect_uri=https://lc.chat/now/1520/"
 ```
@@ -650,7 +677,7 @@ URI is composed of several parts:
 
 # Errors
 
-All authorization errors redirect to error page (`https://accounts.livechatinc.com/ooops`) while authentication errors redirect to the login page (`https://accounts.livechatinc.com/`).
+All authorization errors redirect to error page (`https://accounts.livechat.com/ooops`) while authentication errors redirect to the login page (`https://accounts.livechat.com/`).
 
 Errors codes are returned in the query strings, in form of `oauth_exception` param (for authorization errors) or `identity_exception` param (for authentication errors).
 
@@ -740,7 +767,7 @@ The client is missing granted rights. Possible reasons:
 
 `invalid_redirect_uri` - redirect uri is not one of client's allowed redirects
 
-`to_many_redirects` - server has detected redirect loop, client should not redirect to many times
+`too_many_redirects` - server has detected redirect loop, client should not redirect to many times
 
 ## Authentication errors
 
