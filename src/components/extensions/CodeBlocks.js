@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
+import innerText from "react-innertext";
+import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
   position: sticky;
@@ -54,6 +56,7 @@ const CodeSampleWrapper = styled.div`
 const CodeSampleTopbar = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 5px 15px;
   background-color: #383f54;
   border-radius: 8px 8px 0 0;
@@ -61,17 +64,26 @@ const CodeSampleTopbar = styled.div`
   code {
     font-size: 12px;
     max-width: 100%;
+    flex-grow: 2;
+    word-break: break-all;
   }
 `;
 
 const ResponseTopbar = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 5px 15px;
+  height: 42px;
   background-color: #dee5e8;
-  border-radius: 8px 8px 0 0;
+  border-radius: 5px 5px 0 0;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+`;
+
+const ResponseTopbarTitle = styled.span`
+  flex-grow: 1;
 `;
 
 const Body = styled.div`
@@ -141,6 +153,11 @@ export const FixedTdWidth = styled.div`
   }
 `;
 
+const ActionsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const CodeSample = ({ path, children }) => {
   const childrenArray = React.Children.toArray(children);
   const count = React.Children.count(children);
@@ -154,15 +171,18 @@ export const CodeSample = ({ path, children }) => {
       {path && (
         <CodeSampleTopbar>
           <code>{path}</code>
-          {count > 1 && (
-            <SelectLanguage onChange={(e) => setSample(e.target.value)}>
-              {childrenArray.map((children) => (
-                <option key={children.props.label}>
-                  {children.props.label}
-                </option>
-              ))}
-            </SelectLanguage>
-          )}
+          <ActionsWrapper>
+            {count > 1 && (
+              <SelectLanguage onChange={(e) => setSample(e.target.value)}>
+                {childrenArray.map((children) => (
+                  <option key={children.props.label}>
+                    {children.props.label}
+                  </option>
+                ))}
+              </SelectLanguage>
+            )}
+            <CopyToClipboardIcon text={innerText(selectedChild)} />
+          </ActionsWrapper>
         </CodeSampleTopbar>
       )}
       <Body>{selectedChild}</Body>
@@ -173,7 +193,12 @@ export const CodeSample = ({ path, children }) => {
 export const CodeResponse = ({ title = "Response", children, json }) => {
   return (
     <CodeResponseWrapper>
-      {title && <ResponseTopbar>{title}</ResponseTopbar>}
+      {title && (
+        <ResponseTopbar>
+          <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
+          <CopyToClipboardIcon text={innerText(children)} />
+        </ResponseTopbar>
+      )}
       <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
     </CodeResponseWrapper>
   );
