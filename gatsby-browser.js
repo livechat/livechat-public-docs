@@ -14,3 +14,37 @@ if (typeof window !== "undefined") {
   });
   setupAmplitude();
 }
+
+export const onInitialClientRender = () => {
+  const hash = window.location.hash;
+  const redirects = [{
+    from: '#public-web-apps',
+    to: '#implicit-grant'
+  }, {
+    from: '#private-web-apps',
+    to: '#implicit-grant'
+  },
+  {
+    from: '#public-server-side-apps',
+    to: '#authorization-code-grant'
+  },
+  {
+    from: '#private-server-side-apps-coming-soon',
+    to: '#authorization-code-grant'
+  },
+  {
+    from: '#sign-in-with-livechat',
+    to: 'sign-in-with-livechat'
+  },
+  {
+    from: "#creating-new-customer",
+    to: '#creating-a-new-customer'
+  }]
+  if (hash) {
+    redirects.forEach(redirect => {
+      if (redirect.from === hash) {
+        window.location.href = window.location.href.replace(hash, redirect.to);
+      }
+    });
+  }
+}
