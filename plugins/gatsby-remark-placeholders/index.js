@@ -33,10 +33,6 @@ const processNodeChildren = (children, placeholder) => {
 };
 
 module.exports = ({ markdownAST, markdownNode }, pluginOptions) => {
-  if (markdownNode.fileAbsolutePath.indexOf("how-to-monetize-apps") === -1) {
-    return;
-  }
-
   // Loop through all paragraphs from mdx files
   visit(markdownAST, "paragraph", (node) => {
     let children = [...node.children];
