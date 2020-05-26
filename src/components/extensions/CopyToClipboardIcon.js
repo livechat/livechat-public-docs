@@ -57,7 +57,6 @@ const CopyToClipboardIcon = ({ text }) => {
 
   const handleCopy = () => {
     setIsCopied(true);
-    console.log(text);
     logAmplitudeEvent("Copied to clipboard", {
       pathname: window.location.pathname,
     });
