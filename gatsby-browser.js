@@ -1,5 +1,6 @@
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import docsearch from "docsearch.js/dist/cdn/docsearch.min.js";
+import { navigate } from "gatsby";
 import { setupAmplitude } from "./src/utils";
 import { SCROLL_OFFSET } from "./src/constant";
 
@@ -33,17 +34,13 @@ export const onInitialClientRender = () => {
     to: '#authorization-code-grant'
   },
   {
-    from: '#sign-in-with-livechat',
-    to: 'sign-in-with-livechat'
-  },
-  {
     from: "#creating-new-customer",
     to: '#creating-a-new-customer'
   }]
   if (hash) {
     redirects.forEach(redirect => {
       if (redirect.from === hash) {
-        window.location.href = window.location.href.replace(hash, redirect.to);
+        navigate(window.location.pathname + redirect.to);
       }
     });
   }
