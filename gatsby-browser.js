@@ -37,11 +37,15 @@ export const onInitialClientRender = () => {
     from: "#creating-new-customer",
     to: '#creating-a-new-customer'
   }]
+
   if (hash) {
-    redirects.forEach(redirect => {
+    redirects.some(redirect => {
       if (redirect.from === hash) {
-        navigate(window.location.pathname + redirect.to);
+        navigate(`${window.location.pathname}${redirect.to}`);
+        return true
       }
+
+      return false
     });
   }
 }
