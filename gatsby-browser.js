@@ -41,7 +41,7 @@ export const onInitialClientRender = () => {
   if (hash) {
     redirects.some(redirect => {
       if (redirect.from === hash) {
-        navigate(`${window.location.pathname}${redirect.to}`);
+        window.location.href = window.location.href.replace(hash, redirect.to);
         return true
       }
 
