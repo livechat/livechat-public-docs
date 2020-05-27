@@ -1,5 +1,6 @@
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import docsearch from "docsearch.js/dist/cdn/docsearch.min.js";
+import { navigate } from "gatsby";
 import { setupAmplitude } from "./src/utils";
 import { SCROLL_OFFSET } from "./src/constant";
 
@@ -13,4 +14,38 @@ if (typeof window !== "undefined") {
     offset: SCROLL_OFFSET
   });
   setupAmplitude();
+}
+
+export const onInitialClientRender = () => {
+  const hash = window.location.hash;
+  const redirects = [{
+    from: '#public-web-apps',
+    to: '#implicit-grant'
+  }, {
+    from: '#private-web-apps',
+    to: '#implicit-grant'
+  },
+  {
+    from: '#public-server-side-apps',
+    to: '#authorization-code-grant'
+  },
+  {
+    from: '#private-server-side-apps-coming-soon',
+    to: '#authorization-code-grant'
+  },
+  {
+    from: "#creating-new-customer",
+    to: '#creating-a-new-customer'
+  }]
+
+  if (hash) {
+    redirects.some(redirect => {
+      if (redirect.from === hash) {
+        navigate(`${window.location.pathname}${redirect.to}`);
+        return true
+      }
+
+      return false
+    });
+  }
 }
