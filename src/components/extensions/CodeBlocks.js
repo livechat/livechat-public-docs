@@ -196,7 +196,7 @@ export const CodeResponse = ({ title = "Response", children, json }) => {
       {title && (
         <ResponseTopbar>
           <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
-          <CopyToClipboardIcon text={innerText(children)} />
+          <CopyToClipboardIcon text={JSON.stringify(json, null, "\t")} />
         </ResponseTopbar>
       )}
       <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
