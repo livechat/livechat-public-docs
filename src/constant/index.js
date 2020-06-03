@@ -55,7 +55,7 @@ export const SCOPES = [
   },
   {
     id: "accounts--all:rc",
-    description: "Permission for creating new accounts in LiveChat Accounts",
+    description: "Permission for creating, but not managing, new accounts in LiveChat Accounts",
     role: "normal",
   },
   {
