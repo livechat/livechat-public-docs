@@ -29,18 +29,16 @@ const Scopes = ({ title, scopes }) => {
   const allScopes = scopes.split(",");
   const formattedScopes = allScopes.map((scope) => {
     const newScope = SCOPES.find((item) => item.id === scope);
-
     return newScope;
   });
-
-  const titleId = title.toLowerCase().replace(" ", "-");
-
+  const titleId = title && title.toLowerCase().replace(" ", "-");
   return (
     <>
-      <h4 id={titleId} className="heading">
-        <HeadingLink href={`#${titleId}`}>{title}</HeadingLink>
-      </h4>
-
+      {title && (
+        <h4 id={titleId} className="heading">
+          <HeadingLink href={`#${titleId}`}>{title}</HeadingLink>
+        </h4>
+      )}
       <TableWrapper>
         <table>
           <thead>
@@ -50,7 +48,6 @@ const Scopes = ({ title, scopes }) => {
               <th>Description</th>
             </tr>
           </thead>
-
           <tbody>
             {formattedScopes.map((scope, index) => (
               <tr key={`scope-${titleId}-${index}`}>

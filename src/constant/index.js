@@ -29,8 +29,18 @@ export const SCOPES = [
     role: "normal",
   },
   {
+    id: "agents--my:ro",
+    description: "Read permission for my profile configuration",
+    role: "normal",
+  },
+  {
     id: "agents--all:rw",
     description: "Write permission for all agents profiles configuration",
+    role: "administrator",
+  },
+  {
+    id: "agents--all:ro",
+    description: "Read permission for all agents profiles configuration",
     role: "administrator",
   },
   {
@@ -42,6 +52,11 @@ export const SCOPES = [
     id: "access_rules:rw",
     description: "Read/write permission for auto chat scopes configuration",
     role: "administrator",
+  },
+  {
+    id: "accounts--all:rc",
+    description: "Permission for creating, but not managing, new accounts in LiveChat Accounts",
+    role: "normal",
   },
   {
     id: "agents-bot--my:ro",
@@ -66,6 +81,30 @@ export const SCOPES = [
     description:
       "Read/write permission for bot agents configuration (all in license, delete only)",
     role: "administrator",
+  },
+  {
+    id: "groups--my:rw",
+    description:
+      "Write/read permission for groups I'm a member of",
+    role: "administrator",
+  },
+  {
+    id: "groups--my:ro",
+    description:
+      "Read permission for groups I'm a member of",
+    role: "normal",
+  },
+  {
+    id: "groups--all:rw",
+    description:
+      "Write/read permission for all groups within a license",
+    role: "administrator",
+  },
+  {
+    id: "groups--all:ro",
+    description:
+      "Read permission for all groups within a license",
+    role: "normal",
   },
   {
     id: "chats--all:ro",

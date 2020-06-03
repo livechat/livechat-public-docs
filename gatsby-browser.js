@@ -1,6 +1,5 @@
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import docsearch from "docsearch.js/dist/cdn/docsearch.min.js";
-import { navigate } from "gatsby";
 import { setupAmplitude } from "./src/utils";
 import { SCROLL_OFFSET } from "./src/constant";
 
