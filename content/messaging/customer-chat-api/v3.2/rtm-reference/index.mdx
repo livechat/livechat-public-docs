@@ -682,7 +682,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 |                |                                                                                                                                                                                                                                                                                                                                                         |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**      | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat_threads`](#get-chat-threads) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                 |
+| **Chats**      | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat_threads_summary`](#get-chat-threads-summary) [`get_chat`](#get-chat) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                 |
 | **Events**     | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                           |
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                     |
@@ -995,22 +995,22 @@ You cannot use both `limit` and `min_events_count` at the same time.
 
 <Text>
 
-### Get Chat Threads
+### Get Chat
 
 #### Specifics
 
-|                        |                                            |
-| ---------------------- | ------------------------------------------ |
-| **Action**             | `get_chat_threads`                         |
-| **Web API equivalent** | [`get_chat_threads`](../#get-chat-threads) |
-| **Push message**       | -                                          |
+|                        |                            |
+|------------------------|----------------------------|
+| **Action**             | `get_chat`                 |
+| **Web API equivalent** | [`get_chat`](../#get-chat) |
+| **Push message**       | -                          |
 
 #### Request
 
-| Parameter    | Required | Data type |     |
-| ------------ | -------- | --------- | --- |
-| `chat_id`    | Yes      | `string`  |     |
-| `thread_ids` | Yes      | `array`   |     |
+| Parameter   | Required | Data type |                                        |
+|-------------|----------|-----------|----------------------------------------|
+| `chat_id`   | Yes      | `string`  |                                        |
+| `thread_id` | No       | `string`  | Default: the latest thread (if exists) |
 
 </Text>
 
@@ -1020,11 +1020,11 @@ You cannot use both `limit` and `min_events_count` at the same time.
 
 ```json
 {
-  "action": "get_chat_threads",
-  "payload": {
-	"chat_id": "PJ0MRSHTDG",
-	"thread_ids": ["K600PKZON8"]
-  }
+	"action": "get_chat",
+	"payload": {
+		"chat_id": "PJ0MRSHTDG",
+		"thread_id": "K600PKZON8"
+	}
 }
 ```
 
@@ -1034,58 +1034,59 @@ You cannot use both `limit` and `min_events_count` at the same time.
 
 ```json
 {
-  "request_id": "<request_id>", // optional
-  "action": "get_chat_threads",
-  "type": "response",
-  "success": true,
-  "payload": {
-	"chat": {
-	  "id": "PJ0MRSHTDG",
-	  "order": 1576569422,
-	  "threads": [{
-		"id": "K600PKZON8",
-		"active": true,
-		"user_ids": [
-		  "b7eff798-f8df-4364-8059-649c35c9ed0c",
-		  "b5657aff34dd32e198160d54666df9d8"
-		],
-		"events": [{
-		  "id": "Q20N9CKRX2_1",
-		  "created_at": "2019-12-17T07:57:41.512000Z",
-		  "type": "message",
-		  "text": "Hello",
-		  "author_id": "b5657aff34dd32e198160d54666df9d8"
+	"request_id": "<request_id>",
+	"action": "get_chat",
+	"type": "response",
+	"success": true,
+	"payload": {
+		"id": "PJ0MRSHTDG",
+		"thread": {
+			"id": "K600PKZON8",
+			"active": true,
+			"user_ids": [
+				"b7eff798-f8df-4364-8059-649c35c9ed0c",
+				"b5657aff34dd32e198160d54666df9d8"
+			],
+			"events": [{
+				"id": "Q20N9CKRX2_1",
+				"created_at": "2019-12-17T07:57:41.512000Z",
+				"type": "message",
+				"text": "Hello",
+				"author_id": "b5657aff34dd32e198160d54666df9d8"
+			}],
+			"properties": {
+				"0805e283233042b37f460ed8fbf22160": {
+					"string_property": "string_value"
+				}
+			},
+			"access": {
+				"group_ids": [0]
+			},
+			"previous_thread_id": "K600PKZOM8",
+			"next_thread_id": "K600PKZOO8",
+			"created_at": "2020-05-07T07:11:28.288340Z"
+		},
+		"users": [{
+			"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+			"type": "customer",
+			"present": true
+		}, {
+			"id": "b5657aff34dd32e198160d54666df9d8",
+			"name": "Agent Smith",
+			"type": "agent",
+			"present": true,
+			"avatar": "https://example.com/avatar.jpg",
+			"job_title": "Support Agent"
 		}],
-		"properties": {
-		  // "Property" object
-		},
 		"access": {
-		  "group_ids": [0]
+			"group_ids": [0]
 		},
-		"previous_thread_id": "K600PKZOM8",
-		"next_thread_id": "K600PKZOO8",
-		"created_at": "2020-05-07T07:11:28.288340Z"
-	  }],
-	  "users": [{
-		"id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-		"type": "customer",
-		"present": true
-	  }, {
-		"id": "b5657aff34dd32e198160d54666df9d8",
-		"name": "Agent Smith",
-		"type": "agent",
-		"present": true,
-		"avatar": "https://example.com/avatar.jpg",
-		"job_title": "Support Agent"
-	  }],
-	  "access": {
-		"group_ids": [0]
-	  },
-	  "properties": {
-		// "Property" object
-	  }
+		"properties": {
+			"0805e283233042b37f460ed8fbf22160": {
+				"string_property": "string_value"
+			}
+		}
 	}
-  }
 }
 ```
 
@@ -1094,19 +1095,6 @@ You cannot use both `limit` and `min_events_count` at the same time.
 </Code>
 
 </Section>
-
-<!-- > **`get_chat_threads`** sample **request** with optional params
-
-```json
-{
-	"request_id": "4125", // optional
-	"action": "get_chat_threads",
-	"payload": {
-		"chat_id": "PJ0MRSHTDG",
-		"thread_ids": ["a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5"]
-	}
-}
-``` -->
 
 <Section>
 
