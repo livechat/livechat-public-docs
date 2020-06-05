@@ -30,7 +30,7 @@ if (argv.baseURL && argv.output) {
 
   const buildCommand = `PATH_PREFIX=${baseURL} npm run build && mkdir -p ${argv.output} && cp -r public/. ${argv.output}`;
 
-  console.log(`> ${buildCommand}`);
+  console.log(`>> ${buildCommand}`);
   shell.exit(shell.exec(buildCommand).code);
 } else {
   console.log("--baseURL and --output are required");
