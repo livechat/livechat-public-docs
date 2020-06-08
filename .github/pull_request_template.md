@@ -1,7 +1,9 @@
 ## 🚀 Links
 
+<!-- markdown-link-check-disable -->
 - [Feature branch](https://developers.labs.livechat.com/docs/feature/BRANCHNAME)
 - [Jira](https://livechatinc.atlassian.net/browse/XXX-XXX)
+<!-- markdown-link-check-enable-->
 
 ## 📓 Description
 
