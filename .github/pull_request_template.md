@@ -22,6 +22,7 @@ For more guidelines, see [Updating API docs](https://livechatinc.atlassian.net/w
 
 - New content
 - Proofreading/content fixes
+- Refactor
   
 ### Features (for the website)
 
