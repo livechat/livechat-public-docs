@@ -183,7 +183,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         }
       >
         <DesktopNote>
-          {(selectedVersion === versions.LEGACY_VERSION || selectedVersion === versions.LEGACY_VERSION_1) && (
+          {(versions.LEGACY_VERSIONS.includes(selectedVersion)) && (
             <span>You are browsing the legacy version of the API.</span>
           )}
           {selectedVersion === versions.DEV_PREVIEW_VERSION && (
