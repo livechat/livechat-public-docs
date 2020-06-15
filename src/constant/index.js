@@ -2,7 +2,6 @@ export const VERSIONS_GROUPS = {
   DEFAULT: {
     STABLE_VERSION: "3.2",
     LEGACY_VERSIONS: ["2.0", "3.1"],
-    LEGACY_VERSION_1: "3.1",
     DEV_PREVIEW_VERSION: "3.3",
     ALL_VERSIONS: ["3.3", "3.2", "3.1", "2.0"],
   },
