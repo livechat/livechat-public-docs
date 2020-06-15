@@ -154,7 +154,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         <span style={{ marginLeft: "3px" }}>
           {version === versions.STABLE_VERSION
             ? `(stable)`
-            : version === versions.LEGACY_VERSION || version === versions.LEGACY_VERSION_1
+            : (versions.LEGACY_VERSIONS.includes(version))
               ? `(legacy)`
               : `(dev preview)`}
         </span>
