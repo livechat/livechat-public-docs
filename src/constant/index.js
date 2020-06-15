@@ -7,6 +7,7 @@ export const VERSIONS_GROUPS = {
   },
   "chat-widget": {
     STABLE_VERSION: "1.0",
+    LEGACY_VERSIONS: [],
     DEV_PREVIEW_VERSION: "2.0",
     ALL_VERSIONS: ["1.0", "2.0"],
   },
