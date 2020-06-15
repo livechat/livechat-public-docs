@@ -56,7 +56,7 @@ export const versionToString = number =>
 
 export const getVersionColor = (version, groupVersions) => {
   const isStable = version === groupVersions.STABLE_VERSION;
-  const isLegacy = (version === groupVersions.LEGACY_VERSION || version === groupVersions.LEGACY_VERSION_1);
+  const isLegacy = groupVersions.LEGACY_VERSIONS.includes(version);
 
   return isStable ? "67, 132, 245" : isLegacy ? "209, 52, 91" : "239, 168, 67";
 };
