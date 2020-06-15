@@ -1,9 +1,10 @@
 export const VERSIONS_GROUPS = {
   DEFAULT: {
-    STABLE_VERSION: "3.1",
+    STABLE_VERSION: "3.2",
     LEGACY_VERSION: "2.0",
-    DEV_PREVIEW_VERSION: "3.2",
-    ALL_VERSIONS: ["3.2", "3.1", "2.0"],
+    LEGACY_VERSION_1: "3.1",
+    DEV_PREVIEW_VERSION: "3.3",
+    ALL_VERSIONS: ["3.3", "3.2", "3.1", "2.0"],
   },
   "chat-widget": {
     STABLE_VERSION: "1.0",
