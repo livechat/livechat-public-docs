@@ -159,8 +159,10 @@ import { AuthWebView } from '@livechat/customer-auth'
 import { init } from '@livechat/customer-sdk'
 
 export default class App extends React.Component {
+  customerSDK = null
+
   componentDidMount() {
-    const customerSDK = init({
+    this.customerSDK = init({
       licenseId: LICENSE_ID,
       clientId: CLIENT_ID,
       redirectUri: REDIRECT_URI,
@@ -545,6 +547,41 @@ Disconnects from the server.
 customerSDK.disconnect()
 ```
 
+## getChat
+
+Returns the chat data about the requested chat ID together with a single thread's data. If the method is called with `threadId` parameter, then this particular thread is being returned. If no `threadId` is given the latest thread is automatically returned.
+
+```js
+customerSDK
+  .getChat({
+    chatId: 'ON0X0R0L67',
+  })
+  .then(chat => {
+    const { id, access, users, properties, thread } = chat
+    console.log({ id, access, users, properties, thread })
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type   | description |
+| ---------- | ------ | ----------- |
+| chatId     | string |             |
+| threadId   | string | optional    |
+
+Returned value:
+
+| properties | type     | description                          |
+| ---------- | -------- | ------------------------------------ |
+| id         | string   | Chat ID                              |
+| access     | object   | Chat initial access                  |
+| users      | object[] | Users objects referenced in the chat |
+| properties | object   | Chat properties                      |
+| thread     | object   |                                      |
+
 ## getChatHistory
 
 Helps loading in historical thread events.
@@ -553,7 +590,7 @@ First, call `getChatHistory` to access the `history` object of a particular chat
 The returned `history` object has only one method, `next`, which gives you a `Promise` with a `{ done, value }` object.
 
 - `done` - indicates if there is anything more to load
-- `value` - an object with array of threads, each containing an array of its events, and array of user objects
+- `value` - an object with array of threads, each containing an array of its events
 
 Then, you can keep calling `history.next()` multiple times to load previous historical events. They're going to be grouped into threads and might require merging with already loaded events.
 This is useful for implementing an infinite scroll or otherwise showing your Customer's archival chats.
@@ -571,7 +608,7 @@ history.next().then(result => {
     wholeChatHistoryLoaded = true
   }
 
-  const { threads, users } = result.value
+  const { threads } = result.value
 
   const events = threads
     .map(thread => thread.events || [])
@@ -586,92 +623,6 @@ Parameters:
 | parameters | type   | description                             |
 | ---------- | ------ | --------------------------------------- |
 | chatId     | string | Chat ID of the requested history object |
-
-## getChatThreads
-
-Returns a list of thread objects for the specified thread IDs.
-If you want to load more events, consider using [`getChatHistory`](#getchathistory).
-
-```js
-const threadIds = [
-  'OS0C0W0Z1B',
-  'OS0I0M0J0G',
-  'OT01080705',
-  'OT0E02082U',
-  'OT0E08040G',
-]
-
-customerSDK
-  .getChatThreads({
-    chatId: 'ON0X0R0L67',
-    threadIds,
-  })
-  .then(response => {
-    console.log(response.threads)
-    console.log(response.users)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type     |
-| ---------- | -------- |
-| chatId     | string   |
-| threadIds  | string[] |
-
-Returned value:
-
-| properties       | type     | description                          |
-| ---------------- | -------- | ------------------------------------ |
-| threads          | object[] |                                      |
-| threads[].id     | string   | Thread ID                            |
-| threads[].chatId | string   | Chat ID                              |
-| threads[].active | boolean  | Active state                         |
-| threads[].order  | number   | Order (can be used for sorting)      |
-| threads[].events | object[] | Events                               |
-| users            | object[] | Users objects referenced in the chat |
-
-## getChatThreadsSummary
-
-Returns the summary of your chat threads including the total count of threads, the list of IDs, and a number of events in each thread.
-If you want to load more thread summaries, consider using [`getChatHistory`](#getchathistory).
-
-```js
-customerSDK
-  .getChatThreadsSummary({
-    chatId: 'ON0X0R0L67',
-    offset: 0,
-    limit: 10,
-  })
-  .then(summary => {
-    console.log(summary.threadsSummary)
-    console.log(summary.totalThreads)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type   | default | max  |
-| ---------- | ------ | ------- | ---- |
-| chatId     | string |         |      |
-| offset     | number | 0       |      |
-| limit      | number | 25      | 1000 |
-
-Returned value:
-
-| properties     | type     | properties  | type   |
-| -------------- | -------- | ----------- | ------ |
-| threadsSummary | object[] |             |        |
-|                |          | id          | string |
-|                |          | order       | number |
-|                |          | totalEvents | number |
-| totalThreads   | number   |             |        |
 
 ## getCustomer
 
@@ -836,7 +787,7 @@ It returns summaries of the chats a Customer participated in.
 ```js
 customerSDK
   .listChats({
-    offset: 0,
+    pageId: 'MTU5MTEwMTUxNDM5NTk5OTpkZXNj',
     limit: 10,
   })
   .then(({ chatsSummary, totalChats }) => {
@@ -850,10 +801,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | default | max |
-| ---------- | ------ | ------- | --- |
-| offset     | number | 0       |     |
-| limit      | number | 10      | 25  |
+| parameters | type   | description                                                                 |
+| ---------- | ------ | --------------------------------------------------------------------------- |
+| pageId     | string | Optional; Cursor returned from previous `listChats` calls                   |
+| limit      | number | Optional; Limit of returned results. Default is set to 10 and maximum is 25 |
 
 Returned value:
 
@@ -898,6 +849,56 @@ Returned value:
 | properties | type   | description                                   |
 | ---------- | ------ | --------------------------------------------- |
 | statusMap  | object | Map of group numbers to availability statuses |
+
+## listThreads
+
+Returns a list of thread objects together with previous and next page ID cursors that can be used to load more threads.
+If you want to load consecutive events, consider using [`getChatHistory`](#getchathistory).
+
+```js
+customerSDK
+  .listThreads({
+    chatId: 'ON0X0R0L67',
+  })
+  .then(response => {
+    console.log(response.threads)
+    console.log(response.previousPageId)
+    console.log(response.nextPageId)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters     | type            | description                                                        |
+| -------------- | --------------- | ------------------------------------------------------------------ |
+| chatId         | string          |                                                                    |
+| pageId         | string          | Optional, cursor returned from previous `listThreads` calls        |
+| sortOrder      | 'desc' \| 'asc' | Optional, default: 'desc'                                          |
+| limit          | number          | Optional, default: 3, can't be used together with `minEventsCount` |
+| minEventsCount | number          | Optional, can't be used together with `limit`                      |
+
+Returned value:
+
+| properties               | type     | description                                                                |
+| ------------------------ | -------- | -------------------------------------------------------------------------- |
+| threads                  | object[] |                                                                            |
+| threads[].id             | string   | Thread ID                                                                  |
+| threads[].chatId         | string   | Chat ID                                                                    |
+| threads[].active         | boolean  | Active state                                                               |
+| threads[].createdAt      | string   | Thread creation date in RFC 3339 date-time format                          |
+| threads[].userIds        | string[] | User IDs                                                                   |
+| threads[].events         | object[] | Events                                                                     |
+| threads[].properties     | object   | Chat properties                                                            |
+| threads[].access         | object   |                                                                            |
+| threads[].queue          | object   | Optional                                                                   |
+| threads[].queue.position | number   | Current place in the queue                                                 |
+| threads[].queue.waitTime | number   | Estimated waiting time for an agent to be assigned to the chat, in seconds |
+| threads[].queue.queuedAt | string   | RFC 3339 date-time format                                                  |
+| previousPageId           | string   |                                                                            |
+| nextPageId               | string   |                                                                            |
 
 ## markEventsAsSeen
 
@@ -1089,12 +1090,13 @@ customerSDK
 
 Parameters:
 
-| parameters        | type              | description |
-| ----------------- | ----------------- | ----------- |
-| filledForm.type   | 'filled_form'     |             |
-| filledForm.formId | string            |             |
-| filledForm.fields | FilledFormField[] |             |
-| groupId           | number            | Optional    |
+| parameters        | type              | description                    |
+| ----------------- | ----------------- | ------------------------------ |
+| filledForm.type   | 'filled_form'     |                                |
+| filledForm.formId | string            |                                |
+| filledForm.fields | FilledFormField[] |                                |
+| groupId           | number            | Optional                       |
+| timeZone          | string            | Optional, valid IANA Time Zone |
 
 Returned value:
 
@@ -1376,24 +1378,6 @@ const file = {
 You can listen for emitted events by subscribing to them using the [on](#on) method with your custom callback.
 For example, your function can be executed every time a message is received.
 
-## Access set
-
-Informs that new, single access to a resource was set. The existing access is overwritten.
-
-```js
-customerSDK.on('access_set', ({ resource, id, access }) => {
-  console.log('access_set', { resource, id, access })
-})
-```
-
-Payload:
-
-| properties | type   |
-| ---------- | ------ |
-| resource   | string |
-| id         | string |
-| access     | object |
-
 ## Availability updated
 
 Informs about a changed availability status.
@@ -1469,11 +1453,10 @@ Informs that a chat was transferred to a different group or an Agent.
 
 ```js
 customerSDK.on('chat_transferred', payload => {
-  const { chatId, threadId, requesterId, transferredTo } = payload
+  const { chatId, threadId, transferredTo } = payload
   console.log('chat_transferred', {
     chatId,
     threadId,
-    requesterId,
     transferredTo,
   })
 })
@@ -1481,14 +1464,19 @@ customerSDK.on('chat_transferred', payload => {
 
 Payload:
 
-| properties             | type               |
-| ---------------------- | ------------------ |
-| chatId                 | string             |
-| threadId               | string             |
-| requesterId            | string             |
-| transferredTo          |                    |
-| transferredTo.agentIds | string[], optional |
-| transferredTo.groupIds | number[], optional |
+| properties             | type     | description                                                                |
+| ---------------------- | -------- | -------------------------------------------------------------------------- |
+| chatId                 | string   |                                                                            |
+| threadId               | string   |                                                                            |
+| reason                 | string   |                                                                            |
+| requesterId            | string   | returned only if `reason` is equal to `'manual'`                           |
+| transferredTo          |          |                                                                            |
+| transferredTo.agentIds | string[] | optional                                                                   |
+| transferredTo.groupIds | number[] | optional                                                                   |
+| queue                  |          | optional                                                                   |
+| queue.position         | number   | Current place in the queue                                                 |
+| queue.waitTime         | number   | Estimated waiting time for an agent to be assigned to the chat, in seconds |
+| queue.queuedAt         | string   | RFC 3339 date-time format                                                  |
 
 ## Connected
 
@@ -1753,7 +1741,7 @@ Payload:
 | ---------- | ------ |
 | uniqueId   | string |
 
-## Incoming chat thread
+## Incoming chat
 
 Informs about a newly started chat thread.
 The payload contains the chat data structure and an object describing the new thread.
@@ -2130,6 +2118,30 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 
 # Changelog
 
+## [v2.0.0-beta.3] - xxxx-xx-xx
+
+### Changed
+
+- The iterator returned from `getChatHistory` no longer returns `users`. Their data needs to be obtained independently, for example by using `getChat` method.
+- `listChats` no longer accepts `offset` parameter. Instead, it now accepts `pageId` to which you can provide a value of `previousPageId` or `nextPageId` returned from other `listChats` calls.
+- Chat objects returned from `listChats` no longer have `lastThreadOrder` property, but they have received a new `lastThreadCreatedAt` property instead.
+- `threads` objects no longer have `order` property, but they have received a new `createdAt` property instead.
+- `eventsSeenUpToMap` is no longer available on thread object, it has been moved to chat objects.
+- The payload of the `chat_transferred` event has been changed. It now always have a `reason` property, contains `queue` property if the chat has been transferred and queued immediately and `requesterId` is available when `reason` is equal to `"manual"`.
+
+### Removed
+
+- `access_set` event has been removed. `chat_transferred` event covers for its use cases.
+- `getChatThreads` and `getChatThreadsSummary` methods have been removed. Newly introduced `listThreads` can be used instead.
+
+### Added
+
+- `listThreads` and `getChat` methods have been added.
+- Thread objects gained back `userIds` property.
+- Thread objects got `previousThreadId` and `nextThreadId` properties.
+- `sendTicketForm` methods accepts a new `timeZone` parameter which influences how times are formatted in a generated ticket.
+- Queue objects got a new `queuedAt` property. This doesn't apply to the information returned in `queue_position_updated` event.
+
 ## [v2.0.0-beta.2] - 2020-04-02
 
 ### Changed
@@ -2152,7 +2164,7 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 ### Added
 
 - `customer` data available in the `connected` callback
-- `statistics` property available on the Customer object returned from `getCustomer` method
+- `statistics` property available on the Customer object returned from the `getCustomer` method
 
 ## [v2.0.0-beta.1] - 2020-03-13
 
