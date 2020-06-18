@@ -658,7 +658,6 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | `events`             | optional  | Doesn't exists if `restricted_access` is `true`.                                           |
 | `properties`         | optional  |                                                                                            |
 | `restricted_access`  | optional  |                                                                                            |
-| `queue`              | optional  | Present only if the chat is in the queue. Wait time is approximated in seconds.            |
 | `previous_thread_id` | optional  | Present only if there is a preceding thread.                                               |
 | `next_thread_id`     | optional  | Present only if there is a following thread.                                               |
 | `created_at`         | required  | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side. |
@@ -791,8 +790,8 @@ It returns [summaries](#chat-summaries) of the chats a Customer participated in.
     "next_page_id": "MTUxNzM5ODEzMTQ5Ng==",
     "chats_summary": [{
       "id": "PJ0MRSHTDG",
+      "order": 1575892853242000,
       "last_thread_id": "K600PKZON8",
-	  "last_thread_created_at": "2020-05-08T08:22:21.128420Z",
       "last_event_per_type": {
         "message": {
           "thread_id": "K600PKZON9",
@@ -1219,6 +1218,7 @@ Used to restart an archived chat.
 	"payload": {
 	"chat": {
 		"id": "PJ0MRSHTDG",
+		"order": 343544565,
 		"access": {
 			"group_ids": [1]
 		},
@@ -2849,13 +2849,13 @@ Here's what you need to know about **pushes**:
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                                   |
-| **Chat access** | [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                                                                                               |
-| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                                                     |
+| **Chat access** | [`access_set`](#access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                                                                                                               |
+| **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Customers**   | [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_side_storage_updated`](#customer_side_storage_updated)                                                                                                                                                                                                         |
 | **Status**      | [`customer_disconnected`](#customer_disconnected)                                                                                                                                                                                                                                                                                                                   |
-| **Other**       | [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_greeting`](#incoming_greeting) [`greeting_accepted`](#greeting_accepted) [`greeting_canceled`](#greeting_canceled) [`queue_position_updated`](#queue_position_updated)                           |
+| **Other**       | [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_greeting`](#incoming_greeting) [`greeting_accepted`](#greeting_accepted) [`greeting_canceled`](#greeting_canceled)                                                                               |
 
 
 </Text>
@@ -2890,9 +2890,9 @@ Informs about a chat coming with a new thread. The push payload contains the who
 
 ```json
 {
-  "requester_id": "b5657aff34dd32e198160d54666df9d8",
   "chat": {
 	"id": "PJ0MRSHTDG",
+	"order": 343544565,
 	"users": [
 	  // array of "User" objects
 	],
@@ -2904,10 +2904,6 @@ Informs about a chat coming with a new thread. The push payload contains the who
 	},
 	"thread": {
 	  // "Thread" object
-	},
-  "transferred_from": {
-    "group_ids": [ 1 ],
-    "agent_ids": [ "bbb67d600796e9f277e360e842418833" ]
 	}
   }
 }
@@ -2952,6 +2948,38 @@ Informs that a chat was deactivated by closing the currently open thread.
 
 ## Chat access
 
+### `access_set`
+
+Informs that new, single access to a resource was set. The existing access is overwritten.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "resource": "chat",
+  "id": "PJ0MRSHTDG",
+  "access": {
+	"group_ids": [1]
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                           |
+| ---------------------- | --------------------------------------------------------- |
+| **Action**             | `access_set`                                              |
+| **Webhook equivalent** | [`access_set`](/management/configuration-api/#access_set) |
+
+#### Push payload
+
+| Object     | Notes         |
+| ---------- | ------------- |
+| `resource` | Resource type |
+| `id`       | Resource id   |
+
 ### `chat_transferred`
 Informs that a chat was transferred to a different group or to an Agent.
 
@@ -2961,16 +2989,9 @@ Informs that a chat was transferred to a different group or to an Agent.
 {
   "chat_id": "PJ0MRSHTDG",
   "thread_id": "K600PKZON8",
-  "requester_id": "b5657aff34dd32e198160d54666df9d8",
-  "transferred_to": {
-    "group_ids": [ 1 ],
-    "agent_ids": ["b5657aff34dd32e198160d54666df9d8"],
-  },
-  "queue": {
-    "position": 42,
-    "wait_time": 1337,
-    "queued_at": "2019-12-09T12:01:18.909000Z"
-  }
+  "requester_id": "cb531744-e6a4-4ded-b3eb-b3eb4ded4ded",
+  "type": "agent",
+  "ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
 }
 ```
 
@@ -2987,13 +3008,12 @@ Informs that a chat was transferred to a different group or to an Agent.
 
 | Object | Notes                                  |
 | ------ | -------------------------------------- |
-| `thread_id`      | Present if the chat is active                        |
-| `transferred_to` | IDs of groups and Agents the chat has been assigned to |
-| `queue`          | Present if the chat is queued after the transfer     |
+| `type` | `agent` or `group`                     |
+| `ids`  | An array of the `group` or `agent` IDs |
 
 ## Chat users
 
-### `user_added_to_chat`
+### `chat_user_added`
 Informs that a user (Customer or Agent) was added to a chat.
 
 This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](/messaging/agent-chat-api/v3.2/rtm-reference/#send-event) method.
@@ -3007,8 +3027,7 @@ This push can be emitted with `user.present` set to `false` when a user writes t
   "user": {
 	// "User > Customer" or "User > Agent" object
   },
-  "reason": "manual",
-  "requester_id": "b5657aff34dd32e198160d54666df9d8"
+  "user_type": "customer"
 }
 ```
 
@@ -3018,18 +3037,17 @@ This push can be emitted with `user.present` set to `false` when a user writes t
 
 |                        |                                                                     |
 | ---------------------- | ------------------------------------------------------------------- |
-| **Action**             | `user_added_to_chat`                                                   |
-| **Webhook equivalent** | [`user_added_to_chat`](/management/configuration-api/#user_added_to_chat) |
+| **Action**             | `chat_user_added`                                                   |
+| **Webhook equivalent** | [`chat_user_added`](/management/configuration-api/#chat_user_added) |
 
 #### Push payload
 
 | Object      | Notes                                            |
 | ----------- | ------------------------------------------------ |
-| `thread_id`    | Present when a user was added to an active chat. |
-| `reason`       | Why the user was added.                          |
-| `requester_id` | Present if the user was added by an agent.       |
+| `user_type` | Possible values: `agent`, `customer`             |
+| `thread_id` | Present when a user was added to an active chat. |
 
-### `user_removed_from_chat`
+### `chat_user_removed`
 Informs that a user (Customer or Agent) was removed from a chat.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3038,9 +3056,8 @@ Informs that a user (Customer or Agent) was removed from a chat.
 {
   "chat_id": "PJ0MRSHTDG",
   "thread_id": "K600PKZON8",
-  "user_id": "bbb67d600796e9f277e360e842418833",
-  "reason": "manual",
-  "requester_id": "b5657aff34dd32e198160d54666df9d8"
+  "user_id": "user@example.com",
+  "user_type": "customer"
 }
 ```
 
@@ -3050,16 +3067,15 @@ Informs that a user (Customer or Agent) was removed from a chat.
 
 |                        |                                                                         |
 | ---------------------- | ----------------------------------------------------------------------- |
-| **Action**             | `user_removed_from_chat`                                                     |
-| **Webhook equivalent** | [`user_removed_from_chat`](/management/configuration-api/#user_removed_from_chat) |
+| **Action**             | `chat_user_removed`                                                     |
+| **Webhook equivalent** | [`chat_user_removed`](/management/configuration-api/#chat_user_removed) |
 
 #### Push payload
 
 | Object      | Notes                                                |
 | ----------- | ---------------------------------------------------- |
-| `thread_id`    | Present when a user was removed from an active chat. |
-| `reason`       | Why the user was removed.                            |
-| `requester_id` | Present if the user was removed by an agent.         |
+| `user_type` | Possible values: `agent`, `customer`                 |
+| `thread_id` | Present when a user was removed from an active chat. |
 
 ## Events
 
@@ -3663,36 +3679,6 @@ Informs about a greeting rejected by the Customer. Also, the push is sent when a
 | Object      | Notes                                                      |
 | ----------- | ---------------------------------------------------------- |
 | `unique_id` | ID of the greeting that was generated, sent, and rejected. |
-
-### `queue_position_updated`
-
-Informs about an updated position in the queue and about the wait time.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
-  "action": "queue_position_updated",
-  "type": "push",
-  "payload": {
-    "chat_id": "PJ0MRSHTDG",
-    "thread_id": "K600PKZON8",
-    "queue": {
-      "position": 42,
-      "wait_time": 1337
-    }
-  }
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                          |
-| ---------------------- | ------------------------ |
-| **Action**             | `queue_position_updated` |
-| **Webhook equivalent** | -                        |
 
 # Errors
 
