@@ -102,10 +102,15 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
     zIndex={99999}
   >
     <div style={{ maxWidth: "320px" }}>
-      {selectedVersion === versions.LEGACY_VERSION && (
+      {selectedVersion === versions.LEGACY_VERSIONS[1] && (
         <p>
-          This version covers only some functionalities of the Configuration
-          API. For the rest, refer to v3.1.
+          This is the legacy version of the API.
+        </p>
+      )}
+      {selectedVersion === versions.LEGACY_VERSIONS[0] && (
+        <p>
+          This version covers only some functionalities of the API.
+          For the rest, refer to the v3.2.
         </p>
       )}
       {selectedVersion === versions.DEV_PREVIEW_VERSION && (
@@ -149,9 +154,9 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         <span style={{ marginLeft: "3px" }}>
           {version === versions.STABLE_VERSION
             ? `(stable)`
-            : version === versions.LEGACY_VERSION
-            ? `(legacy)`
-            : `(dev preview)`}
+            : (versions.LEGACY_VERSIONS.includes(version))
+              ? `(legacy)`
+              : `(dev preview)`}
         </span>
       </>
     );
@@ -178,7 +183,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         }
       >
         <DesktopNote>
-          {selectedVersion === versions.LEGACY_VERSION && (
+          {(versions.LEGACY_VERSIONS.includes(selectedVersion)) && (
             <span>You are browsing the legacy version of the API.</span>
           )}
           {selectedVersion === versions.DEV_PREVIEW_VERSION && (
