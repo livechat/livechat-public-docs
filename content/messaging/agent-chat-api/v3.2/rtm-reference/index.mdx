@@ -692,6 +692,8 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | `events`             | optional  | Doesn't exists if `restricted_access` is `true`.                                           |
 | `properties`         | optional  |                                                                                            |
 | `restricted_access`  | optional  |                                                                                            |
+| `queue`              | optional  | Present only if the chat is in the queue. Wait time is approximated in seconds.            |
+| `queues_duration`    | optional  | Present only in the [List Archives](#list-archives) responses if the chat was queued.         |
 | `previous_thread_id` | optional  | Present only if there is a preceding thread.                                               |
 | `next_thread_id`     | optional  | Present only if there is a following thread.                                               |
 | `created_at`         | required  | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side. |
@@ -709,7 +711,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 |                 |                                                                                                                                                                                                                                                                                                                                                         |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
-| **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`set_chat_access`](#set-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                           |
+| **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                                           |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                                               |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                                                 |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
@@ -1095,23 +1097,26 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 
 #### Request
 
-| Parameter                                             | Required | Data type | Notes                                                                                     |
-| ----------------------------------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------- |
-| `filters`                                             | No       | `object`  |                                                                                           |
-| `filters.query`                                       | No       | `string`  |                                                                                           |
-| `filters.date_from`                                   | No       | `string`  | `YYYY-MM-DD` format                                                                       |
-| `filters.date_to`                                     | No       | `string`  | `YYYY-MM-DD` format                                                                       |
-| `filters.group_ids`                                   | No       | `array`   | Array of group IDs. Max array size: 200                                                   |
-| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     | **\* described below**                                                                    |
-| `filters.agents.<filter_type>`                        | No       | `any`     |  `exists` see to `false` will return unassigned chats; `true` will return the assigned ones.|
-| `filters.tags.<filter_type>`                          | No       | `any`     |                                                                                           |
-| `filters.sales.<filter_type>`                         | No       | `any`     |                                                                                           |
-| `filters.goals.<filter_type>`                         | No       | `any`     |                                                                                           |
-| `filters.surveys.<survey>`                            | No       | `array`   | **\*\*** **described below**                                                              |
-| `filters.events.types`                                | No       | `array`   | Array of [Event](#events) types. Duplicates are ignored.                                  |
-| `page_id`                                             | No       | `string`  |                                                                                           |
-| `sort_order` **\***                                   | No       | `string`  |  Default: `desc`                                                                          |
-| `limit`                                               | No       | `number`  | Default: 10, min: 1, max: 100                                                             |
+| Parameter                                             | Required | Data type | Notes                                                                                                                 |
+| ----------------------------------------------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------------- |
+| `filters`                                             | No       | `object`  |                                                                                                                       |
+| `filters.query`                                       | No       | `string`  |                                                                                                                       |
+| `filters.date_from`                                   | No       | `string`  | `YYYY-MM-DD` format                                                                                                   |
+| `filters.date_to`                                     | No       | `string`  | `YYYY-MM-DD` format                                                                                                   |
+| `filters.group_ids`                                   | No       | `array`   | Array of group IDs. Max array size: 200                                                                               |
+| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`     | **\* described below**                                                                                                |
+| `filters.agents.<filter_type>`                        | No       | `any`     | `exists` see to `false` will return unassigned chats; `true` will return the assigned ones.                           |
+| `filters.tags.<filter_type>`                          | No       | `any`     |                                                                                                                       |
+| `filters.sales.<filter_type>`                         | No       | `any`     |                                                                                                                       |
+| `filters.goals.<filter_type>`                         | No       | `any`     |                                                                                                                       |
+| `filters.surveys.<survey>`                            | No       | `array`   | **\*\*** **described below**                                                                                          |
+| `filters.events.types`                                | No       | `array`   | Array of [Event](#events) types. Duplicates are ignored.                                                              |
+| `page_id`                                             | No       | `string`  |                                                                                                                       |
+| `sort_order` **\***                                   | No       | `string`  | Default: `desc`                                                                                                       |
+| `limit`                                               | No       | `number`  | Default: 10, min: 1, max: 100                                                                                         |
+| `highlights`                                          | No       | `object`  | Use it to highlight the match of `filters.query`. To enable highlights with default parameters, pass an empty object. |
+| `highlights.pre_tag`                                  | No       | `string`  | An HTML tag to use for highlighting the matched text; default: `<em>`. Use it together with `highlights.post_tag`.    |
+| `highlights.post_tag`                                 | No       | `string`  | An HTML tag to use for highlighting the matched text; default: `</em>`. Use it together with `highlights.pre_tag`.    |
 
 **\*)**
 
@@ -1119,7 +1124,7 @@ The list classification is based on threads; 1 chat per 1 thread. Thus, the same
 
 - `asc` - the oldest chats first
 - `desc` - the newest chats first
-  
+
 `<filter_type>` can take the following values:
 
 - `exists` (`bool`)
@@ -1775,68 +1780,6 @@ Grants access to a new chat without overwriting the existing ones.
 <Section>
 <Text>
 
-### Set Chat Access
-
-Grants access to a new chat overwriting the existing ones.
-
-#### Specifics
-
-|                        |                                                   |
-| ---------------------- | ------------------------------------------------- |
-| **Action**             | `set_chat_access`                                 |
-| **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
-| **Web API equivalent** | [`set_chat_access`](../#set-chat-access)          |
-| **Push message**       | [`chat_access_set`](#chat_access_set)             |
-
-#### Request
-
-| Request object | Required | Type     | Notes                |
-| -------------- | -------- | -------- | -------------------- |
-| `id`           | Yes      | `string` | Chat Id              |
-| `access`       | Yes      | `object` |                      |
-| `access.type`  | Yes      | `string` | `group` or `agent`   |
-| `access.id`    | Yes      | `number` |                      |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "set_chat_access",
-  "payload": {
-	"id": "PW94SJTGW6",
-	"access": {
-	  "type": "group",
-	  "id": 19
-	}
-  }
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "set_chat_access",
-  "type": "response",
-  "success": true,
-  "payload": {
-	// no response optional
-  }
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
 ### Transfer Chat
 
 Transfers a chat to an Agent or a group.
@@ -1913,7 +1856,7 @@ Adds a user to the chat. You can't add more than one `customer` user type to the
 | **Action**             | `add_user_to_chat`                                |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw` |
 | **Web API equivalent** | [`add_user_to_chat`](../#add-user-to-chat)        |
-| **Push message**       | [`chat_user_added`](#chat_user_added)             |
+| **Push message**       | [`user_added_to_chat`](#user_added_to_chat)       |
 
 #### Request
 
@@ -1974,7 +1917,7 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 | **Action**             | `remove_user_from_chat`                              |
 | **Required scopes**    | `chats--all:rw` `chats--access:rw` `chats--my:rw`    |
 | **Web API equivalent** | [`remove_user_from_chat`](../#remove-user-from-chat) |
-| **Push message**       | [`chat_user_added`](#chat_user_added)                |
+| **Push message**       | [`user_removed_from_chat`](#user_removed_from_chat)                |
 
 **Request payload**
 
@@ -2028,7 +1971,7 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 
 Sends an [Event](#events) object. Use this method to send a message by specifing the [Message](#message) event type in the request.
 
-It's possible to write to a chat without joining it. The user sending an event will be automatically added to the chat with the `present` parameter set to `false` (see [`chat_user_added`](#chat_user_added)). **Sample use case:** a Bot Agent that sends messages visible to all chat participants without actually joining the chat.
+It's possible to write to a chat without joining it. The user sending an event will be automatically added to the chat with the `present` parameter set to `false` (see [`user_added_to_chat`](#user_added_to_chat)). **Sample use case:** a Bot Agent that sends messages visible to all chat participants without actually joining the chat.
 
 #### Specifics
 
@@ -3701,14 +3644,14 @@ Here's what you need to know about **pushes**:
 |                 |                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                                   |
-| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_access_set`](#chat_access_set) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                         |
-| **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
+| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred-1)                                                                                                                                                                                                           |
+| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                            |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                                         |
 | **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                             |
-| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed)                                                                                                                         |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated)                                               |
 
 </Text>
 
@@ -3742,6 +3685,7 @@ Informs about a chat coming with a new thread. The push payload contains the who
 
 ```json
 {
+  "requester_id": "smith@example.com",
   "chat": {
 	"id": "PJ0MRSHTDG",
 	"users": [
@@ -3755,6 +3699,10 @@ Informs about a chat coming with a new thread. The push payload contains the who
 	},
 	"thread": {
 	  // "Thread" object
+  },
+  "transferred_from": {
+    "group_ids": [ 1 ],
+    "agent_ids": [ "agent@example.com" ]
 	}
   }
 }
@@ -3857,35 +3805,6 @@ Informs that access to a certain chat was revoked.
 | ---------- | ------------- |
 | `id`       | Chat Id   |
 
-### `chat_access_set`
-Informs that new, single access to a chat was set. The existing access is overwritten.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
-  "id": "PJ0MRSHTDG",
-  "access": {
-	"group_ids": [1]
-  }
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                                                                     |
-| ---------------------- | ------------------------------------------------------------------- |
-| **Action**             | `chat_access_set`                                                   |
-| **Webhook equivalent** | [`chat_access_set`](/management/configuration-api/v3.2/#chat_access_set) |
-
-#### Push payload
-
-| Object     | Notes         |
-| ---------- | ------------- |
-| `id`       | Chat Id   |
-
 ### `chat_transferred`
 Informs that a chat was transferred to a different group or to an Agent.
 
@@ -3894,9 +3813,17 @@ Informs that a chat was transferred to a different group or to an Agent.
 ```json
 {
   "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
   "requester_id": "cb531744-e6a4-4ded-b3eb-b3eb4ded4ded",
-  "type": "agent",
-  "ids": ["smith@example.com"]
+  "transferred_to": {
+    "group_ids": [ 1 ],
+    "agent_ids": ["smith@example.com"],
+  },
+  "queue": {
+    "position": 42,
+    "wait_time": 1337,
+    "queued_at": "2019-12-09T12:01:18.909000Z"
+  }
 }
 ```
 
@@ -3913,12 +3840,13 @@ Informs that a chat was transferred to a different group or to an Agent.
 
 | Object | Notes                        |
 | ------ | ---------------------------- |
-| `type` | `agent` or `group`           |
-| `ids`  | `group` or `agent` IDs array |
+| `thread_id`      | present if the chat is active                        |
+| `transferred_to` | IDs of groups and Agents the chat is now assigned to |
+| `queue`          | present if the chat is queued after the transfer     |
 
 ## Chat users
 
-### `chat_user_added`
+### `user_added_to_chat`
 Informs that a user (Customer or Agent) was added to a chat.
 
 This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](#send-event) method.
@@ -3932,7 +3860,8 @@ This push can be emitted with `user.present` set to `false` when a user writes t
   "user": {
 	// "User > Customer" or "User > Agent" object
   },
-  "user_type": "agent"
+  "reason": "manual",
+  "requester_id": "smith@example.com"
 }
 ```
 
@@ -3942,17 +3871,18 @@ This push can be emitted with `user.present` set to `false` when a user writes t
 
 |                        |                                                             |
 | ---------------------- | ----------------------------------------------------------- |
-| **Action**             | `chat_user_added`                                           |
-| **Webhook equivalent** | [`chat_user_added`](/management/configuration-api/#chat_user_added) |
+| **Action**             | `user_added_to_chat`                                                      |
+| **Webhook equivalent** | [`user_added_to_chat`](/management/configuration-api/#user_added_to_chat) |
 
 #### Push payload
 
 | Object      | Notes                                |
 | ----------- | ------------------------------------ |
-| `user_type` | Possible values: `agent`, `customer` |
-| `thread_id` | Present when a user was added to an active chat. |
+| `thread_id`    | Present when a user was added to an active chat. |
+| `reason`       | Why the user was added.                          |
+| `requester_id` | Present if the user was added by an agent.       |
 
-### `chat_user_removed`
+### `user_removed_from_chat`
 Informs that a user (Customer or Agent) was removed from a chat.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3961,8 +3891,9 @@ Informs that a user (Customer or Agent) was removed from a chat.
 {
   "chat_id": "PJ0MRSHTDG",
   "thread_id": "K600PKZON8",
-  "user_id": "smith@example.com",
-  "user_type": "agent"
+  "user_id": "agent@example.com",
+  "reason": "manual",
+  "requester_id": "smith@example.com"
 }
 ```
 
@@ -3972,15 +3903,16 @@ Informs that a user (Customer or Agent) was removed from a chat.
 
 |                        |                                                                 |
 | ---------------------- | --------------------------------------------------------------- |
-| **Action**             | `chat_user_removed`                                             |
-| **Webhook equivalent** | [`chat_user_removed`](/management/configuration-api/#chat_user_removed) |
+| **Action**             | `user_removed_from_chat`                                                          |
+| **Webhook equivalent** | [`user_removed_from_chat`](/management/configuration-api/#user_removed_from_chat) |
 
 #### Push payload
 
 | Object      | Notes                                |
 | ----------- | ------------------------------------ |
-| `user_type` | Possible values: `agent`, `customer` |
-| `thread_id` | Present when a user was removed from an active chat. |
+| `thread_id`    | Present when a user was removed from an active chat. |
+| `reason`       | Why the user was removed.                            |
+| `requester_id` | Present if the user was removed by an agent.         |
 
 ## Events
 
@@ -4683,6 +4615,40 @@ Informs that a chat has been unfollowed. Useful in multiple connection scenarios
 | ---------------------- | ----------------- |
 | **Action**             | `chat_unfollowed` |
 | **Webhook equivalent** | -                 |
+
+### `queue_positions_updated`
+
+New positions and wait times for queued chats.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+[{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "queue": {
+    "position": 42,
+    "wait_time": 1337
+  }
+}, {
+  "chat_id": "PJ0VRSATDS",
+  "thread_id": "K60QPKSON9",
+  "queue": {
+    "position": 43,
+    "wait_time": 1373
+  }
+}]
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                           |
+|------------------------|---------------------------|
+| **Action**             | `queue_positions_updated` |
+| **Webhook equivalent** | -                         |
+
 
 # Errors
 
