@@ -549,7 +549,7 @@ customerSDK.disconnect()
 
 ## getChat
 
-Returns the chat data about the requested chat ID together with a single thread's data. If the method is called with `threadId` parameter, then this particular thread is being returned. If no `threadId` is given the latest thread is automatically returned.
+Returns the chat data about the requested chat ID together with a single thread's data. If the method is called with the `threadId` parameter, then this particular thread is being returned. If no `threadId` is given, the latest thread is automatically returned.
 
 ```js
 customerSDK
@@ -590,7 +590,7 @@ First, call `getChatHistory` to access the `history` object of a particular chat
 The returned `history` object has only one method, `next`, which gives you a `Promise` with a `{ done, value }` object.
 
 - `done` - indicates if there is anything more to load
-- `value` - an object with array of threads, each containing an array of its events
+- `value` - an object with an array of threads, each containing an array of its events
 
 Then, you can keep calling `history.next()` multiple times to load previous historical events. They're going to be grouped into threads and might require merging with already loaded events.
 This is useful for implementing an infinite scroll or otherwise showing your Customer's archival chats.
@@ -801,10 +801,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                                                 |
-| ---------- | ------ | --------------------------------------------------------------------------- |
-| pageId     | string | Optional; Cursor returned from previous `listChats` calls                   |
-| limit      | number | Optional; Limit of returned results. Default is set to 10 and maximum is 25 |
+| parameters | type   | description                                                                     |
+| ---------- | ------ | ------------------------------------------------------------------------------- |
+| pageId     | string | Optional; the cursor returned from the previous `listChats` calls               |
+| limit      | number | Optional; the limit of returned results. Default is set to 10 and maximum is 25 |
 
 Returned value:
 
@@ -852,7 +852,7 @@ Returned value:
 
 ## listThreads
 
-Returns a list of thread objects together with previous and next page ID cursors that can be used to load more threads.
+Returns a list of thread objects together with the previous and next page ID cursors that can be used to load more threads.
 If you want to load consecutive events, consider using [`getChatHistory`](#getchathistory).
 
 ```js
@@ -872,13 +872,13 @@ customerSDK
 
 Parameters:
 
-| parameters     | type            | description                                                        |
-| -------------- | --------------- | ------------------------------------------------------------------ |
-| chatId         | string          |                                                                    |
-| pageId         | string          | Optional, cursor returned from previous `listThreads` calls        |
-| sortOrder      | 'desc' \| 'asc' | Optional, default: 'desc'                                          |
-| limit          | number          | Optional, default: 3, can't be used together with `minEventsCount` |
-| minEventsCount | number          | Optional, can't be used together with `limit`                      |
+| parameters     | type            | description                                                         |
+| -------------- | --------------- | ------------------------------------------------------------------- |
+| chatId         | string          |                                                                     |
+| pageId         | string          | Optional, the cursor returned from the previous `listThreads` calls |
+| sortOrder      | 'desc' \| 'asc' | Optional, default: 'desc'                                           |
+| limit          | number          | Optional, default: 3, can't be used together with `minEventsCount`  |
+| minEventsCount | number          | Optional, can't be used together with `limit`                       |
 
 Returned value:
 
@@ -894,7 +894,7 @@ Returned value:
 | threads[].properties     | object   | Chat properties                                                            |
 | threads[].access         | object   |                                                                            |
 | threads[].queue          | object   | Optional                                                                   |
-| threads[].queue.position | number   | Current place in the queue                                                 |
+| threads[].queue.position | number   | Current position in the queue                                              |
 | threads[].queue.waitTime | number   | Estimated waiting time for an agent to be assigned to the chat, in seconds |
 | threads[].queue.queuedAt | string   | RFC 3339 date-time format                                                  |
 | previousPageId           | string   |                                                                            |
@@ -2118,28 +2118,28 @@ Wrong format of request, for example a `string` sent in the place of a `number`.
 
 # Changelog
 
-## [v2.0.0-beta.3] - xxxx-xx-xx
+## [v2.0.0] - 2020-06-22
 
 ### Changed
 
-- The iterator returned from `getChatHistory` no longer returns `users`. Their data needs to be obtained independently, for example by using `getChat` method.
-- `listChats` no longer accepts `offset` parameter. Instead, it now accepts `pageId` to which you can provide a value of `previousPageId` or `nextPageId` returned from other `listChats` calls.
-- Chat objects returned from `listChats` no longer have `lastThreadOrder` property, but they have received a new `lastThreadCreatedAt` property instead.
-- `threads` objects no longer have `order` property, but they have received a new `createdAt` property instead.
-- `eventsSeenUpToMap` is no longer available on thread object, it has been moved to chat objects.
-- The payload of the `chat_transferred` event has been changed. It now always have a `reason` property, contains `queue` property if the chat has been transferred and queued immediately and `requesterId` is available when `reason` is equal to `"manual"`.
+- The iterator returned from `getChatHistory` no longer returns `users`. User data needs to be obtained independently, for example by using the `getChat` method.
+- `listChats` no longer accepts `offset` parameter. Instead, it now accepts `pageId` to which you can provide a value of `previousPageId` or `nextPageId` returned from the other `listChats` calls.
+- Chat objects returned from `listChats` no longer have the `lastThreadOrder` property, but they received a new `lastThreadCreatedAt` property instead.
+- The `threads` objects no longer have the `order` property, but they received a new `createdAt` property instead.
+- The `eventsSeenUpToMap` is no longer available on the thread object, it has been moved to chat objects.
+- The payload of the `chat_transferred` event was changed. It now always has the `reason` property. It contains the `queue` property if the chat has been transferred and queued immediately. `requesterId` is available when `reason` is equal to `"manual"`.
 
 ### Removed
 
-- `access_set` event has been removed. `chat_transferred` event covers for its use cases.
-- `getChatThreads` and `getChatThreadsSummary` methods have been removed. Newly introduced `listThreads` can be used instead.
+- The `access_set` event has been removed. `chat_transferred` event covers for its use cases.
+- The `getChatThreads` and the `getChatThreadsSummary` methods have been removed. Newly introduced `listThreads` can be used instead.
 
 ### Added
 
-- `listThreads` and `getChat` methods have been added.
-- Thread objects gained back `userIds` property.
-- Thread objects got `previousThreadId` and `nextThreadId` properties.
-- `sendTicketForm` methods accepts a new `timeZone` parameter which influences how times are formatted in a generated ticket.
+- The `listThreads` and `getChat` methods have been added.
+- The thread objects gained back `userIds` property.
+- The thread objects got `previousThreadId` and `nextThreadId` properties.
+- The `sendTicketForm` methods accepts a new `timeZone` parameter which influences how times are formatted in a generated ticket.
 - Queue objects got a new `queuedAt` property. This doesn't apply to the information returned in `queue_position_updated` event.
 
 ## [v2.0.0-beta.2] - 2020-04-02
