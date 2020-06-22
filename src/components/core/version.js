@@ -102,15 +102,9 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
     zIndex={99999}
   >
     <div style={{ maxWidth: "320px" }}>
-      {selectedVersion === versions.LEGACY_VERSIONS[1] && (
+      {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
         <p>
           This is the legacy version of the API.
-        </p>
-      )}
-      {selectedVersion === versions.LEGACY_VERSIONS[0] && (
-        <p>
-          This version covers only some functionalities of the API.
-          For the rest, refer to the v3.2.
         </p>
       )}
       {selectedVersion === versions.DEV_PREVIEW_VERSION && (
