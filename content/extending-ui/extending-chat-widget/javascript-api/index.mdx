@@ -1,831 +1,609 @@
 ---
-weight: 31
+weight: 32
 category: "extending-ui"
 subcategory: "extending-chat-widget"
 title: "Chat Widget JS API"
 tagline: "Customize the behavior of the Chat Widget."
 desc: "Adjust the mechanics of the widget or leverage the API to pass additional details on the Customer."
 versionGroup: "chat-widget"
-apiVersion: "1.0"
+apiVersion: "2.0"
 ---
 
 # Introduction
 
-The chat window API allows you to manipulate the chat widget displayed on your website. Some common use cases are:
+## About the API
 
-- maximizing the chat window after a given time,
-- hiding the window during the weekends.
+The Chat Widget JavaScript API lets you interact with the Chat Widget embedded on your site.
+It might come in handy whenever you want to gather some additional data using LiveChat, show or hide your Chat Widget on certain occasions, or amend its behavior in a way that is not provided by the standard settings.
 
-You can also get some basic visitor’s statistics. For instance, the chat window API will tell you how many chats the visitor had in the past.
+This document focuses on Developers and requires a basic knowledge of JavaScript. However, if you would have any questions, don't hesitate to start a chat with our Support Team or add a new topic on [Developers Community](https://www.livechatinc.com/community/c/developers-api).
 
-## Support for the JavaScript API in chat window installed in native mobile apps
+This API works only with the [new Chat Widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
 
-When you install the chat window in a [native mobile app](https://docs.livechatinc.com/#mobile-widgets), you can still interact with the JavaScript API using the `LC_API` object.
+## Getting started
 
-## Support for React-based single-page apps
+The API is accessed through the `LiveChatWidget` object.
+It is being initialized within the LiveChat tracking code, which is used to install our Chat Widget on your site.
+If you haven't installed the code yet, you can  either find it directly in the [LiveChat app](https://my.livechatinc.com/settings/code) or copy it from here (remember to replace `<LICENSE_NUMBER>` with your license number):
 
-LiveChat has a dedicated module to integrate with React-based single-page apps.
-There is special component that makes the integration very easy.
-All you have to do is to import the LiveChat component and put it in your render method:
-
-<CodeSample>
-
-```javascript
-import LiveChat from 'react-livechat'
-...
-
-<LiveChat license={your_license_id} />
+```html
+<!-- Start of LiveChat (www.livechatinc.com) code -->
+<script>
+    window.__lc = window.__lc || {};
+    window.__lc.license = <LICENSE_NUMBER>;
+    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+</script>
+<noscript><a href="https://www.livechatinc.com/chat-with/<LICENSE_NUMBER>/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+<!-- End of LiveChat code -->
 ```
 
-</CodeSample>
-
-You can find full description [here](https://github.com/livechat/react-livechat).
-
-## Using chat window API
-
-Use the `LC_API` global variable to execute any API method. Use the `on_after_load` callback to make sure `LC_API` is already loaded.
-
-
-<CodeSample>
+The API requires the newest version of the code snippet (≥2.0). If you had installed the code a while ago and the API presented here doesn't work, you should either update the code or use the [old version of JS API](https://developers.livechatinc.com/docs/js-api/#introduction). You can check the current version of your snippet by calling the `scriptTagVersion` function:
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_after_load = function() {
-  // your code here
-};
+LiveChatWidget.scriptTagVersion()
 ```
 
-</CodeSample>
+The `LiveChatWidget` object comes with four functions:
 
+- `on` registers a callback function for a specific event
+- `once` similar to `on` but after single event trigger the callback is removed
+- `off` removes a callback registered by `on`
+- `call` allows you to invoke methods and setters
+- `get` makes it possible to fetch data
 
-## Support for AJAX–based and Flash-based websites
+The usage of these functions is based on passing the correct arguments in the following pattern:
 
-LiveChat has a built–in support for AJAX-based and Flash-based websites that do not physically refresh the browser. Just make sure that the address bar in the browser changes (using the anchor element in the URL: `#somepage` – you can use the [swfaddress](http://www.asual.com/swfaddress/) library to do so). LiveChat will display it just as a normal page refresh.
+```js
+LiveChatWidget.function('method', 'data')
+```
+
+For example, if you would like to set your customer's name to `John Doe`, this is how it would look like:
+
+```js
+LiveChatWidget.call('set_customer_name', 'John Doe')
+```
 
 # Methods
 
-## Set custom variables
+To change the visibility of the Chat Widget, you can use the following methods:
 
-You can set custom variables that the LiveChat agents will see in their apps. Custom variables will be saved in the chat transcript, so you will see them in the [Archives](https://my.livechatinc.com/archives) even after the chat has been finished. (Note: if the variables are set after the chat has started, they will not be saved in Archives.)
+- [Maximize](#maximize)
+- [Minimize](#minimize)
+- [Hide](#hide)
+- [Destroy](#destroy)
+- [Hide greeting](#hide-greeting)
 
-<img
-  src="https://www.livechatinc.com/wp-content/uploads/2015/03/custom-variables-in-livechat@2x.jpg"
-  width="400"
-/>
+## Maximize
 
-Please note that custom variables can also be set in the tracking code `window.__lc.params` variable ([read more](#tracking-code)). The above method should be used if you want to update the custom variables without page refresh.
+It maximizes the Chat Widget.
 
-
-<CodeSample>
-
-```js
-var custom_variables = [
-  { name: "page", value: "Store" },
-  { name: "user_id", value: "12345" }
-];
-LC_API.set_custom_variables(custom_variables);
-```
-
-</CodeSample>
-
-
-## Update custom variables
-
-This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
-
-It works the same way as [Set custom variables](/docs/js-api/#set-custom-variables) method, but it will merge new visitor's properties with the current visitor's properties, instead of replacing them with a new set.
-
-<CodeSample>
+#### Example
 
 ```js
-var custom_variables = [
-  { name: "page", value: "Store" },
-  { name: "user_id", value: "12345" }
-];
-LC_API.update_custom_variables(custom_variables);
+LiveChatWidget.call('maximize')
 ```
 
-</CodeSample>
+## Minimize
 
+It minimizes the Chat Widget.
 
-## Set visitor name
-
-Sets current visitor name which is used in chat, Agent App Customers section and as default value in forms where `name` field appears.
-
-
-This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
-
-<CodeSample>
+#### Example
 
 ```js
-LC_API.set_visitor_name("John Doe");
+LiveChatWidget.call('minimize')
 ```
 
-</CodeSample>
+## Hide
 
+It hides the Chat Widget on the site.
+You will need to use either 'maximize', or 'minimize' API calls to show it afterwards.
 
-## Set visitor email
-
-Sets current visitor email which is used in chat, Agent App Customers section and as default value in forms where `email` field appears.
-
-
-This method works only with [new chat widget](https://developers.livechatinc.com/blog/new-chat-window-look/).
-
-<CodeSample>
+#### Example
 
 ```js
-LC_API.set_visitor_email("john@doe.com");
+LiveChatWidget.call('hide')
 ```
 
-</CodeSample>
+## Destroy
 
+It destroys the Chat Widget.
+It won't be available for further actions until the window is refreshed.
 
-## Open the chat window
-
-Maximizes the chat window (when using the embedded chat window) or opens the chat window (when using the pop-up window).
-
-
-<CodeSample>
+#### Example
 
 ```js
-LC_API.open_chat_window();
+LiveChatWidget.call('destroy')
 ```
 
-</CodeSample>
+## Hide greeting
 
+It hides the currently displayed greeting.
+In order to hide particular greeting you can listen to [`new_event`](#on-new-event) or [`greeting_hidden`](#on-greeting-hidden) callbacks to know when greeting with specified `id` or `uniqueId` appears and disappears accordingly.
 
-## Minimize the chat window
-
-Minimizes the chat window (not supported with the pop-up chat window).
-
-
-<CodeSample>
+#### Example
 
 ```js
-LC_API.minimize_chat_window();
+LiveChatWidget.call('hide_greeting')
 ```
 
-</CodeSample>
+# Getters
 
+You can use getters to fetch the data from the Chat Widget.
 
-## Hide the chat window
+Available getters:
 
-Hides the chat window (not supported with the pop-up chat window).
+- [Get state](#get-state)
+- [Get customer data](#get-customer-data)
+- [Get chat data](#get-chat-data)
 
+## Get state
 
-<CodeSample>
+It returns the Chat Widget state.
+This includes Widget visibility and license availability.
+
+#### Example
 
 ```js
-LC_API.hide_chat_window();
+LiveChatWidget.get('state')
 ```
 
-</CodeSample>
+#### Response
 
+| param        | type                                         | description                |
+| ------------ | -------------------------------------------- | -------------------------- |
+| availability | `'online'` \| `'offline'`                    | Group's availability       |
+| visibility   | `'maximized'` \| `'minimized'` \| `'hidden'` | the Chat Widget visibility |
 
-### Hide on page load
+## Get customer data
 
-Use this snippet if you want to hide chat window on particular page(s).
+It returns a filtered list of customer data.
 
-
-<CodeSample>
+#### Example
 
 ```js
-var LC_API = LC_API || {};
-var livechat_chat_started = false;
-
-LC_API.on_before_load = function() {
-  // don't hide the chat window only if visitor
-  // is currently chatting with an agent
-  if (LC_API.visitor_engaged() === false && livechat_chat_started === false) {
-    LC_API.hide_chat_window();
-  }
-};
-
-LC_API.on_chat_started = function() {
-  livechat_chat_started = true;
-};
+LiveChatWidget.get('customer_data')
 ```
 
-</CodeSample>
+#### Response
 
+| param            | type                                                      | description                              |
+| ---------------- | --------------------------------------------------------- | ---------------------------------------- |
+| id               | `string`                                                  | unique customer id                       |
+| name             | `string`                                                  | customer name, as provided               |
+| email            | `string`                                                  | customer e-mail address, as provided     |
+| isReturning      | `boolean`                                                 | if this customer visited you before      |
+| status           | `'queued'` \| `'chatting'` \| `'browsing'` \| `'invited'` | Customer's status                        |
+| sessionVariables | `Record<string, string>`                                  | additional free-form session information |
 
-## Agents are available
+## Get chat data
 
-Returns `true` if your agents are available to chat, otherwise it returns `false`. This function is available only when using the embedded chat window (not the pop–up window).
+It returns chata data which contains current chat and thread ids.
 
-
-<CodeSample>
+#### Example
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_after_load = function() {
-  if (LC_API.agents_are_available()) {
-    // your code here which will fire only
-    // when your agents are available to chat
-  }
-};
+LiveChatWidget.get('chat_data')
 ```
 
-</CodeSample>
+#### Response
 
+| param    | type     | description              |
+| -------- | -------- | ------------------------ |
+| chatId   | `string` | unique chat id           |
+| threadId | `string` | unique current thread id |
 
-## Check if the chat window is maximized
+# Setters
 
-Returns `true` if the chat window is maximized, returns `false` otherwise (not supported with the pop-up chat window).
+Various data can be sent over to the LiveChat integration so that your Agents can use it.
+For more information, you can read these articles in our Help Center: https://www.livechatinc.com/help/custom-variables-configuration/.
 
+Available setters:
 
-<CodeSample>
+- [Set session variables](#set-session-variables)
+- [Update session variables](#update-session-variables)
+- [Set customer name](#set-customer-name)
+- [Set customer email](#set-customer-email)
+
+## Set session variables
+
+Creates new session variables, or replaces the ones set previously.
 
 ```js
-var is_maximized = LC_API.chat_window_maximized();
+LiveChatWidget.call('set_session_variables', {
+  username: 'john.doe',
+  cart_value: '450',
+  'order date': '05/21/2019',
+})
 ```
 
-</CodeSample>
+## Update session variables
 
+It changes the values of your session variables.
+Please note that the existing variables won't be replaced. The new session variables will be included together with the ones set previously.
 
-## Check if the chat window is minimized
-
-Returns `true` if the chat window is minimized, returns `false` otherwise (not supported with the pop-up chat window).
-
-
-<CodeSample>
+#### Example
 
 ```js
-var is_minimized = LC_API.chat_window_minimized();
+LiveChatWidget.call('update_session_variables', {
+  username: 'j.doe',
+  cart_value: '400',
+  'order date': '06/15/2019',
+})
 ```
 
-</CodeSample>
+## Set customer name
 
+It sets the customer's name.
 
-## Check if the chat window is hidden
-
-Returns `true` if the chat window is hidden, returns `false` otherwise (not supported with the pop-up chat window).
-
-
-<CodeSample>
+#### Example
 
 ```js
-var is_hidden = LC_API.chat_window_hidden();
+LiveChatWidget.call('set_customer_name', 'John Doe')
 ```
 
-</CodeSample>
+## Set customer email
 
+It sets the customer's email address.
 
-## Check if the visitor is currently waiting in the queue
-
-Returns `true` if the visitor is currently waiting in the queue, returns `false` otherwise (not supported with the pop-up chat window).
-
-
-<CodeSample>
+#### Example
 
 ```js
-var visitor_in_queue = LC_API.visitor_queued();
+LiveChatWidget.call('set_customer_email', 'john@example.com')
 ```
-
-</CodeSample>
-
-
-## Check if the visitor is currently chatting with an agent
-
-Returns `true` if the visitor is currently chatting with an agent, returns `false` otherwise (not supported with the pop-up chat window).
-
-
-<CodeSample>
-
-```js
-var is_chatting = LC_API.chat_running();
-```
-
-</CodeSample>
-
-
-## Check if the visitor is engaged
-
-Returns `true` if the visitor is currently chatting, waiting in the queue or the greeting is displayed to them. Returns `false` otherwise (not supported with the pop-up chat window).
-
-
-<CodeSample>
-
-```js
-var is_engaged = LC_API.visitor_engaged();
-```
-
-</CodeSample>
-
-
-## Return current chat window type
-
-Returns `embedded` if the chat window is embedded on the website or `popup` if the chat window opens in a new window. You can change the chat window type in the [LiveChat app](https://my.livechatinc.com/settings/window-type).
-
-
-<CodeSample>
-
-```js
-var window_type = LC_API.get_window_type();
-```
-
-</CodeSample>
-
-
-## Close chat
-
-Closes an ongoing chat.
-
-
-<CodeSample>
-
-```js
-LC_API.close_chat();
-```
-
-</CodeSample>
-
-
-## Disable sounds
-
-Mutes all sounds in the chat window on visitor's side (not supported with the pop-up chat window).
-
-
-<CodeSample>
-
-```js
-LC_API.disable_sounds();
-```
-
-</CodeSample>
-
 
 # Callbacks
 
-Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time the chat window is opened.
+Callbacks allow you to react to the events triggered by the Chat Widget.
+You can use them to add custom behaviors when certain events happen.
+This can be accomplished by subscribing a callback with the API.
 
-## On before load
+Available callbacks:
 
-Callback function executed when `LC_API` object is loaded and ready to use, before the chat window has been rendered (not supported with the pop-up chat window). You may want to use this callback to perform some operations with the chat window before it's displayed to the visitor. See the sample code for the [hide_chat_window](#hide-chat-window) function.
+- [On ready](#on-ready)
+- [On availability changed](#on-availability-changed)
+- [On visibility changed](#on-visibility-changed)
+- [On customer status changed](#on-customer-status-changed)
+- [On new event](#on-new-event)
+- [On form submitted](#on-form-submitted)
+- [On rating submitted](#on-rating-submitted)
+- [On greeting dismissed](#on-greeting-dismissed)
+- [On rich message button clicked](#on-rich-message-button-clicked)
 
+## On ready
 
-<CodeSample>
+The Chat Widget has finished loading. If the Chat Widget is already loaded the provided handler function will be called immediately.
+With this callback, you will receive the Chat Widget state and customer data as if requested by their getters.
 
-```js
-var LC_API = LC_API || {};
-LC_API.on_before_load = function() {
-  // your code here
-};
-```
+#### Payload
 
-</CodeSample>
-
-
-## On after load
-
-Callback function executed when `LC_API` object is loaded and ready to use, right after the chat window has been rendered (not supported with the pop-up chat window).
-
-
-<CodeSample>
-
-```js
-var LC_API = LC_API || {};
-LC_API.on_after_load = function() {
-  // your code here
-};
-```
-
-</CodeSample>
-
-
-## On chat window opened
-
-Callback function executed when the chat window is opened.
-
-
-<CodeSample>
+| param        | type                               | description                        |
+| ------------ | ---------------------------------- | ---------------------------------- |
+| state        | [WidgetState](#get-state)          | the Chat Widget state              |
+| customerData | [CustomerData](#get-customer-data) | Customer data from the Chat Widget |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_chat_window_opened = function() {
-  // your code here
-};
+function onReady(initialData) {
+  // Chat Widget is ready
+
+  var state = initialData.state
+  var customerData = initialData.customerData
+}
+
+LiveChatWidget.on('ready', onReady)
+LiveChatWidget.off('ready', onReady)
 ```
 
-</CodeSample>
+## On availability changed
 
+Availability has changed for the current group.
 
-## On chat window minimized
+#### Payload
 
-Callback function executed when the chat window is minimized (not supported with the pop-up chat window).
-
-
-<CodeSample>
+| param        | type                      | description             |
+| ------------ | ------------------------- | ----------------------- |
+| availability | `"online"` \| `"offline"` | Availability of a group |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_chat_window_minimized = function() {
-  // your code here
-};
+function onAvailabilityChanged(data) {
+  if (data.availability === 'online') {
+    // we're available to chat!
+  } else {
+    // sadly, no agents are available at the moment.
+  }
+}
+
+LiveChatWidget.on('availability_changed', onAvailabilityChanged)
+LiveChatWidget.off('availability_changed', onAvailabilityChanged)
 ```
 
-</CodeSample>
+## On visibility changed
 
+It is called once the visibility of the Chat Widget has changed.
+This applies to both user actions like maximizing or minimizing the window as well as hiding or showing the Chat Widget through the use of this API.
 
-## On chat window hidden
+#### Payload
 
-Callback function executed when the chat window is hidden (not supported with the pop-up chat window).
-
-<CodeSample>
+| param      | type                                         | description                |
+| ---------- | -------------------------------------------- | -------------------------- |
+| visibility | `"maximized"` \| `"minimized"` \| `"hidden"` | the Chat Widget visibility |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_chat_window_hidden = function() {
-  // your code here
-};
+function onVisibilityChanged(data) {
+  switch (data.visibility) {
+    case 'maximized':
+      break
+    case 'minimized':
+      break
+    case 'hidden':
+      break
+  }
+}
+
+LiveChatWidget.on('visibility_changed', onVisibilityChanged)
+LiveChatWidget.off('visibility_changed', onVisibilityChanged)
 ```
 
-</CodeSample>
+## On customer status changed
 
+It is called once the status of your customer has changed.
+This can be used to track the following info:
 
+- If and when Customers are being invited to chat
+- If Customers are already chatting
+- If they are waiting for an agent to become available in the queue
 
-## On chat state changed
+#### Payload
 
-Callback function executed when the chat state is changed. It accepts one argument which contains an object with the `state` property. Possible values:
-
-- `offline` – chat agents are not available to chat.
-- `online_for_chat` – chat agents are available to chat. A visitor entering the chat will be connected to an agent immediately.
-- `online_for_queue` – chat agents are available to chat. A visitor entering the chat will be put in the chat queue and will need to wait for an available agent.
-
-<CodeSample>
+| param  | type                                                     | description       |
+| ------ | -------------------------------------------------------- | ----------------- |
+| status | `'queued'` \| `'chatting'` \| `'invited'` \|`'browsing'` | Customer's status |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_chat_state_changed = function(data) {
-  alert("Chat state changed to: " + data.state);
-};
+function onCustomerStatusChanged(data) {
+  switch (data.status) {
+    case 'queued':
+      // customer is in queue
+      break
+    case 'chatting':
+      // customer is currently chatting
+      break
+    case 'invited':
+      // customer received an invitation but didn't start the chat
+      break
+    case 'browsing':
+      // customer is in idle state, not queued, not chatting, and didn't receive an invitation
+      break
+  }
+}
+
+LiveChatWidget.on('customer_status_changed', onCustomerStatusChanged)
+LiveChatWidget.off('customer_status_changed', onCustomerStatusChanged)
 ```
 
-</CodeSample>
+## On new event
 
+It is called for both incoming and outgoing events.
 
+#### Payload
 
-## On chat started
-
-Callback function executed when the chat is started. The only argument, `data`, contains additional information about the chat:
-
-- `data.agent_name` – the name of the agent that handles the chat.
-
-<CodeSample>
+| param                           | type                                        | description               |
+| ------------------------------- | ------------------------------------------- | ------------------------- |
+| timestamp                       | `number`                                    | Event's send timestamp    |
+| type                            | `'message'` \| `'rich_message'` \| `'file'` | Event's type              |
+| author.id                       | `string`                                    | Event's author id         |
+| author.type                     | `'customer'` \| `'agent'`                   | Event's author type       |
+| **If new event is a greeting:** |                                             |                           |
+| greeting.id                     | `number`                                    | Greeting's template id    |
+| greeting.uniqueId               | `string`                                    | Greeting's event uniqueId |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_chat_started = function(data) {
-  alert("Chat started with agent: " + data.agent_name);
-};
+function onNewEvent(event) {
+  switch (event.type) {
+    case 'message':
+      // handle new message event
+      break
+
+    case 'rich_message':
+      // handle new rich_message event
+      break
+
+    case 'file':
+      // handle new file event
+      break
+
+    default:
+      break
+  }
+
+  if (event.greeting) {
+    // new event is a greeting
+    // greeting properties are available
+    var id = greeting.id
+    var uniqueId = greeting.uniqueId
+  }
+}
+
+LiveChatWidget.on('new_event', onNewEvent)
+LiveChatWidget.off('new_event', onNewEvent)
 ```
 
-</CodeSample>
+## On form submitted
 
+It is called after a form has been submitted in the chat.
 
+Payload:
 
-## On chat ended
-
-Callback function executed when the chat is ended.
-
-
-<CodeSample>
+| param | type                                      | description |
+| ----- | ----------------------------------------- | ----------- |
+| type  | `"prechat"` \| `"postchat"` \| `"ticket"` | Form's type |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_chat_ended = function() {
-  alert("Chat ended");
-};
+function onFormSubmitted(data) {
+  switch (data.type) {
+    case 'prechat':
+      // prechat submitted
+      break
+
+    case 'postchat':
+      // postchat submitted
+      break
+
+    case 'ticket':
+      // ticket submitted
+      break
+
+    default:
+      break
+  }
+}
+
+LiveChatWidget.on('form_submitted', onFormSubmitted)
+LiveChatWidget.off('form_submitted', onFormSubmitted)
 ```
 
-</CodeSample>
+## On rating submitted
 
+It is called after the customer has rated the chat, or cancelled the previous rating.
 
-## On message
+#### Payload
 
-Callback function executed when the message has been sent or received. The only argument, `data`, contains additional information about the message:
-
-- `data.text` – the content of the message
-- `data.user_type` – visitor or agent
-- `data.timestamp` – unix timestamp created at the time the message arrives.
-
-If the message has been sent by agent (data.user_type is 'agent'), the data contains additional information:
-
-- `data.agent_name` – the name of the agent that sent the message
-- `data.agent_login` – the login of the agent that sent the message
-
-If the message has been sent by visitor (data.user_type is 'visitor'), the data contains additional information:
-
-- `data.visitor_name` – the name of the visitor that sent the message
-
-<CodeSample>
+| param | type                            | description             |
+| ----- | ------------------------------- | ----------------------- |
+| value | `"good"` \| `"bad"` \| `"none"` | Customer's rating value |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_message = function(data) {
-  alert("Message " + data.text + " sent by " + data.user_type);
-};
+function onRatingSubmitted(value) {
+  // do something
+}
+
+LiveChatWidget.on('rating_submitted', onRatingSubmitted)
+LiveChatWidget.off('rating_submitted', onRatingSubmitted)
 ```
 
-</CodeSample>
+## On greeting displayed
 
+It is called after the greeting has been displayed to the customer.
 
+#### Payload
 
-## On ticket created
-
-Callback function executed when the ticket form has been filled in by the visitor. The only argument, `data`, contains additional information:
-
-- `data.ticket_id` – ID of the created ticket, received from the API
-- `data.text` – the ticket message
-- `data.visitor_name` – the name of the visitor that created the message
-- `data.visitor_email` – the name of the visitor that created the message
-- `data.form_data` – all information provided by the visitor in the ticket form.
-
-If the ticket form contains the subject field and it has been filled in by the visitor, the data contains additional information:
-
-- `data.ticket_subject` – the subject of the ticket
-
-<CodeSample>
+| param    | type     | description               |
+| -------- | -------- | ------------------------- |
+| id       | `number` | Greeting's template id    |
+| uniqueId | `string` | Greeting's event uniqueId |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_ticket_created = function(data) {
-  alert(
-    "Ticket " +
-      data.ticket_id +
-      " created by " +
-      data.visitor_name +
-      ", subject " +
-      data.ticket_subject +
-      ", " +
-      data.text
-  );
-};
+function onGreetingDisplayed(greeting) {
+  // greeting has been displayed
+  var id = greeting.id
+  var uniqueId = greeting.uniqueId
+}
+
+LiveChatWidget.on('greeting_displayed', onGreetingDisplayed)
+LiveChatWidget.off('greeting_displayed', onGreetingDisplayed)
 ```
 
-</CodeSample>
+## On greeting hidden
 
+It is called after the greeting has been cancelled by the customer or [`hide_greeting`](#hide-greeting) method.
 
+#### Payload
 
-## On pre-chat survey submitted
-
-Callback function executed when the pre-chat survey has been submitted by visitor. The only argument, `data`, contains the `data.form_data` property with all information provided by the visitor.
-
-
-<CodeSample>
+| param    | type     | description               |
+| -------- | -------- | ------------------------- |
+| id       | `number` | Greeting's template id    |
+| uniqueId | `string` | Greeting's event uniqueId |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_prechat_survey_submitted = function(data) {
-  var alertText = data.form_data
-    .map(function(formData) {
-      return formData.label + ": " + formData.value;
-    })
-    .join("\n");
-  alert(alertText);
-};
+function onGreetingHidden(greeting) {
+  // greeting has been hidden
+  var id = greeting.id
+  var uniqueId = greeting.uniqueId
+}
+
+LiveChatWidget.on('greeting_hidden', onGreetingHidden)
+LiveChatWidget.off('greeting_hidden', onGreetingHidden)
 ```
 
-</CodeSample>
+## On rich message button clicked
 
+It is called after the rich message button has been clicked by the customer.
 
-## On post-chat survey submitted
+#### Payload
 
-Callback function executed when the post-chat survey has been submitted by visitor. The only argument, `data`, contains the `data.form_data` property with all information provided by the visitor.
-
-
-<CodeSample>
+| param                                         | type     | description                  |
+| --------------------------------------------- | -------- | ---------------------------- |
+| eventId                                       | `string` | Button's owner event's id    |
+| postbackId                                    | `string` | Clicked button's postback id |
+| **If button was included in greeting event:** |          |                              |
+| greeting.id                                   | `number` | Greeting's template id       |
+| greeting.uniqueId                             | `string` | Greeting's event uniqueId    |
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_postchat_survey_submitted = function(data) {
-  var alertText = data.form_data
-    .map(function(formData) {
-      return formData.label + ": " + formData.value;
-    })
-    .join("\n");
-  alert(alertText);
-};
+function onRichMessageButtonClicked(data) {
+  // rich message button clicked
+  var eventId = data.eventId
+  var postbackId = data.postbackId
+
+  if (data.greeting) {
+    // clicked button belongs to greeting event
+    var greetingId = data.greeting.id
+    var greetingUniqueId = data.greeting.uniqueId
+  }
+}
+
+LiveChatWidget.on('rich_message_button_clicked', onRichMessageButtonClicked)
+LiveChatWidget.off('rich_message_button_clicked', onRichMessageButtonClicked)
 ```
 
-</CodeSample>
+# Playground
 
+Here's where you can play with the Chat Widget JavaScript API in an interactive environment. Use the buttons and inputs on the left side of the Widget or try to invoke some functions directly in the console.
 
-## On chat rated
+<iframe src="https://codesandbox.io/embed/static-ejhgy?autoresize=1&expanddevtools=1&fontsize=14&hidenavigation=1&view=preview" style="width: 100%; height: 750px; max-height: 100vh; border: 0; border-radius: 4px; overflow: hidden;"></iframe>
 
-Callback function executed when the chat rating is submitted. The only argument, `data`, can have three values: `good`, `bad` or `none`.
+# Examples
 
+Here you can find some example usage of the Chat Widget JavaScript API. They all require the Widget to be installed on the page and `window.LiveChatWidget` to be defined.
 
-<CodeSample>
+## Show the Widget after time
+
+Show the Chat Widget after 30 seconds and keep it open after reloading.
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_rating_submitted = function(data) {
-  alert("Rating:" + data);
-};
+LiveChatWidget.on('visibility_changed', function(data) {
+  if (data.visibility === 'maximized') {
+    localStorage.setItem('livechat_chat_visible', true)
+  }
+})
+
+var isWidgetVisible = Boolean(localStorage.getItem('livechat_chat_visible'))
+
+if (!isWidgetVisible) {
+  setTimeout(function() {
+    LiveChatWidget.call('maximize')
+  }, 30000)
+}
 ```
 
-</CodeSample>
+## Open the Widget using the button
 
-
-## On chat rating comment submitted
-
-Callback function executed when a chat rating comment is submitted. The only argument, `data`, contains the message entered by the visitor.
-
-
-<CodeSample>
+Show the hidden or minimized Widget after a button has been clicked.
+You can change the Widget visibility as described in our [Help Center](https://www.livechatinc.com/help/chat-widget-visibility/)
 
 ```js
-var LC_API = LC_API || {};
-LC_API.on_rating_comment_submitted = function(data) {
-  alert("Rating message:" + data);
-};
+var chatButton = document.getElementById('chat-btn')
+chatButton.addEventListener('click', function() {
+  LiveChatWidget.call('maximize')
+})
 ```
 
-</CodeSample>
+## Prefill username and email
 
-
-# Statistics
-
-## Get last visit timestamp
-
-Returns the timestamp (in seconds) of the user’s previous visit on the website.
-
-
-<CodeSample>
+It sets the Customers name and email using their login and email.
 
 ```js
-var timestamp = LC_API.get_last_visit_timestamp();
+var user = JSON.parse(localStorage.getItem('user'))
+
+LiveChatWidget.call('set_customer_name', user.login)
+LiveChatWidget.call('set_customer_email', user.email)
 ```
-
-</CodeSample>
-
-
-## Get visits number
-
-Returns the total number of the user’s visit on the website.
-
-<CodeSample>
-
-```js
-var visits = LC_API.get_visits_number();
-```
-
-</CodeSample>
-
-
-
-## Get page views number
-
-Returns the total number of the user’s page views (including the past visits).
-
-
-<CodeSample>
-
-```js
-var pageviews = LC_API.get_page_views_number();
-```
-
-</CodeSample>
-
-
-## Get chats number
-
-Returns the total number of the user’s chats.
-
-
-<CodeSample>
-
-```js
-var chats = LC_API.get_chats_number();
-```
-
-</CodeSample>
-
-
-## Get visitor’s ID
-
-Returns the unique identificator of the current visitor.
-
-<CodeSample>
-
-```js
-var visitor_id = LC_API.get_visitor_id();
-```
-
-</CodeSample>
-
-
-## Get current chat ID
-
-Returns the unique identificator of the current chat.
-
-The chat ID is remembered even when the chat ends until the page is refreshed. Returns `null` if the chat ID is unknown (e.g. the chat has not yet started).
-
-
-<CodeSample>
-
-```js
-var chat_id = LC_API.get_chat_id();
-```
-
-</CodeSample>
-
-
-# Tracking code
-
-LiveChat tracking code is available in the [LiveChat app](https://my.livechatinc.com/settings/code).
-
-You can customize the tracking code to send additional information about your visitors to LiveChat applications.
-
-Alternatively instead of using `window.__lc.visitor` you can set visitor name and email using dedicated methods: [set_visitor_name](#set-visitor-name) and [set_visitor_email](#set-visitor-email)
-
-
-<CodeSample>
-
-```js
-<script type="text/javascript">
-window.__lc = window.__lc || {};
-
-/**
- * LiveChat license number
- */
-window.__lc.license = 123456;
-
-/**
- * Chat window group (defaults to "0").
- * You can divide LiveChat agents into different departments,
- * such as "Billing" or "Support".
- * For example, if this parameter will point to group "Billing",
- * all visitors entering the chat will talk with agents
- * from this group and not the "Support" group.
- *
- * Create your group in LiveChat app:
- * https://my.livechatinc.com/agents/groups
- */
-window.__lc.group = 1;
-
-/**
- * By default, visitor's browsing history is remembered
- * across different groups.
- *
- * If you don't want to display visitor's browsing history
- * across different groups, use the following code.
- *
- * Using this parameter is not recommended when
- * using target field in the pre-chat survey.
- */
-window.__lc.chat_between_groups = false;
-
-/**
- * By default, our tracking code strores LiveChat related data
- * in the Google Analytics gaq - traditional asynchronous
- * code for Google Analytics.
- *
- * If you are using a different type of Google Analytics,
- * you can decide which one LiveChat should track.
- *
- * The available options are:
- * ga – Universal Analytics;
- * gtm – Google Tag Manager;
- * gtag – Global Site Tag (gtag.js);
- * gaq – traditional asynchronous code for Google Analytics.
- */
-window.__lc.ga_version = 'ga';
-
-/**
- * Visitor's data. If your visitor is already logged in
- * to your system, you can pass his name and e-mail to LiveChat apps.
- * Agents will see the information on the "Visitors" list
- * and in the Archives.
- */
-window.__lc.visitor = {
-  name: 'Joe Public',
-  email: 'joe.public@gmail.com'
-};
-
-/**
- * Custom variables sent to LiveChat applications.
- * These can be your visitor's account ID, login
- * or any other information that is important for
- * LiveChat agent during the chat.
- *
- * "name"  can be max 500 characters long.
- * "value" can be max 3500 characters long.
- */
-window.__lc.params = [
-  { name: 'Login', value: 'joe_public' },
-  { name: 'Account ID', value: 'ABCD1234' },
-  { name: 'Total order value', value: '$123' }
-];
-
-(function() {
-  var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
-  lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
-})();
-</script>
-```
-
-</CodeSample>
-
