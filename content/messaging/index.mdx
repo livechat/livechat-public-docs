@@ -44,7 +44,17 @@ Here are some general rules, which summarize the previous section and add new in
 
 7. The algorithm that decides how chats are distributed between Agents is called **routing**. It's documented in the [Routing](#chat-routing) section.
 
-### The flow
+## Chat routing
+
+Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents who use the same license.
+
+Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [Understanding chat routing](https://www.livechatinc.com/help/understanding-chat-routing/).
+
+### Router system messages
+
+While the chat changes its state, the router sends system messages. Read more about **system messages** in [Agent Chat API](./agent-chat-api/#system-message) and [Customer Chat API](./customer-chat-api/#system-message).
+
+## Flow between services
 
 Watch a short video that illustrates the basic flow between services in LiveChat.
 
@@ -52,7 +62,9 @@ Watch a short video that illustrates the basic flow between services in LiveChat
   <source type="video/mp4" src="images/livechat-messaging-api-flow.mp4" />
 </video>
 
-For more technical details, analyze the diagram and read the description below.
+For more technical details, analyze the diagrams and read the descriptions below.
+
+### Basic flow
 
 ![Basic flow between services in LiveChat](images/livechat-flow.png)
 
@@ -65,15 +77,13 @@ The first connection allows for sending an event, for example, a message, by an 
 
 Apart from pushes, actions can also trigger the LiveChat's backend to generate webhooks. To receive a webhook, you need to [register it](/management/configuration-api/#register-webhook) first. That's how you let the LiveChat's backend know you want to be notified about certain actions. The LiveChat's backend will send webhooks to the target webhook URL you specify during webhook registration.
 
-## Chat routing
+### Flow with integrations
 
-Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents who use the same license.
+Developers can build integrations that extend LiveChat's messaging capabilities, for example, via a new communication channel. Consider the example of the <a href="https://www.livechat.com/marketplace/apps/facebook-messenger/" target="_blank">integration app</a> that connects LiveChat with Facebook Messenger.
 
-Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [Understanding chat routing](https://www.livechatinc.com/help/understanding-chat-routing/).
+![livechat-integrations-flow](images/livechat-integrations-flow.png)
 
-### Router system messages
-
-While the chat changes its state, the router sends system messages. Read more about **system messages** in [Agent Chat API](./agent-chat-api/#system-message) and [Customer Chat API](./customer-chat-api/#system-message).
+An Agent [sends a message](/messaging/agent-chat-api/rtm-reference/#send-event) via a websocket connection. It triggers the LiveChat's backend to send a webhook to the integration app, informing about the [incoming event](/management/configuration-api/#incoming_chat). In response to the webhook, the integration sends an HTTP request to the external backend (in this case it's Facebook). They use transport of their choice to pass the message to the Customer chatting via Facebook Messenger.
 
 # APIs Overview
 

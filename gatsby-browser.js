@@ -35,6 +35,10 @@ export const onInitialClientRender = () => {
   {
     from: "#creating-new-customer",
     to: '#creating-a-new-customer'
+  }, 
+  {
+    from: "#the-flow",
+    to: '#flow-between-services'
   }]
 
   if (hash) {
