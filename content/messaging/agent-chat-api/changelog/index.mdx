@@ -11,64 +11,86 @@ This document is the record of all the changes in the **Agent Chat API**, Web an
 
 ## [v3.2] - 2020-06-18
 
-### Added
+### Chats
 
-- There's a new method **List Agents For Transfer** ([Web](/messaging/agent-chat-api/v3.2/#list-agents-for-transfer) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-agents-for-transfer)).
-- There's a new method **Get Customer** ([Web](/messaging/agent-chat-api/v3.2/#get-customer) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#get-customer)) that returns info about a given Customer.
-- There's a new push [`chat_unfollowed`](/messaging/agent-chat-api/v3.2/rtm-reference/#chat_unfollowed) complementary to the **Unfollow Chat** method.
-- There's a new `include_chats_without_threads` filter in the  **List Chats** ([Web](/messaging/agent-chat-api/v3.2/#list-chats) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-chats)) method.
+- The **Get Archives** method was renamed to **List Archives**.
 - There's a new `agents` filter in the **List Archives** ([Web](/messaging/agent-chat-api/v3.2/#list-archives) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-archives)) method. It replaces the `agents_ids` filter.
 - There's a new `events.types` filter in the **List Archives** ([Web](/messaging/agent-chat-api/v3.2/#list-archives) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-archives)) method.
 - The **List Archives** ([Web](/messaging/agent-chat-api/v3.2/#list-archives) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-archives)) method has new pagination with hashed page IDs replacing the old pagination format. Pagination is now uniform across the whole Agent Chat API.
-- There's a new method **List Threads** ([Web](/messaging/agent-chat-api/v3.2/#list-threads) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-threads)).
 - There's a new `highlights` parameter in the **List Archives** ([Web](/messaging/agent-chat-api/v3.2/#list-archives) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-archives)) method. It allows you to highlight the match of `filters.query` with an HTML tag.
-- There's a new push [`queue_positions_updated`](/messaging/agent-chat-api/v3.2/rtm-reference/#queue_positions_updated) with updated positions and wait times for queued chats.
 
-### Changed
+- The **Get Chats Summary** method was renamed to **List Chats**.
+- There's a new `include_chats_without_threads` filter in the  **List Chats** ([Web](/messaging/agent-chat-api/v3.2/#list-chats) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-chats)) method.
+- The `order` field was renamed to `sort_order` in **List Chats**.
+- The `order` field in the `chat` object was removed from the responses of the **List Chats** method.
+
+- There's a new method **List Threads** ([Web](/messaging/agent-chat-api/v3.2/#list-threads) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-threads)).
+
+- The **Get Chat Threads** method evolved into **Get Chat** ([Web](/messaging/agent-chat-api/v3.2/#get-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#get-chat)). It now allows to retrieve a chat containing a particular thread. It also changed its shape; it no longer contains the `order` field and the `chat` key.
+
+- The **Close Thread** method was renamed to **Deactivate Chat**. The corresponding push, **thread_closed**, was renamed to **chat_deactivated**.
+- The `incoming_chat_thread` push was renamed to `incoming_chat`.
+- There are new fields, `requester_id` and `transferred_from` in the [**incoming_chat**](/messaging/agent-chat-api/v3.2/rtm-reference/#incoming_chat) push.
+
+- The **Get Chat Threads Summary** method was removed.
+
+- There's a new push, [**chat_unfollowed**](/messaging/agent-chat-api/v3.2/rtm-reference/#chat_unfollowed), complementary to the **Unfollow Chat** method.
+
+### Chat access
+
+- The **Chat access** ([Web](/messaging/agent-chat-api/v3.2/#chat-access) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#chat-access)) methods, `grant_access` and `revoke_access` were renamed, respectively, to `grant_chat_access` and `revoke_chat_access` along with the corresponding [pushes](/messaging/agent-chat-api/v3.2/rtm-reference/#chat-access-1). These methods no longer accept the `resource` parameter.
+- The **Set Chat Access** method was removed. Its use cases are now covered by the **Transfer Chat**.
+- **Transfer Chat** ([Web](/messaging/agent-chat-api/v3.2/#transfer-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#transfer-chat)) can now be used with inactive chats.
+- The **chat_access_set** push was removed.
+- The [**chat_transferred**](/messaging/agent-chat-api/v3.2/rtm-reference/#chat_transferred-1) push is no longer tied directly to **Transfer Chat**. Now, it can be generated when the transfer is implicit, for example, agents are reassigned due to their inactivity.
+- There are new fields, `requester_id`, `thread_id`, `reason`, `queue` and `transferred_to` in the **chat_transferred** push.
+- The `type` and `ids` fields were removed from the **chat_transferred** push.
+
+### Chat users
+
+- The **Add User to Chat** method ([Web](/messaging/agent-chat-api/v3.2/#add-user-to-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#add-user-to-chat)) accepts an optional parameter `require_active_thread`.
+- The **chat_user_added** push was renamed to [**user_added_to_chat**](/messaging/agent-chat-api/v3.2/rtm-reference/#user_added_to_chat). It has new fields: `reason` and `requester_id`.
+- The **chat_user_removed** push was renamed to [**user_removed_from_chat**](/messaging/agent-chat-api/v3.2/rtm-reference/#user_removed_from_chat). It has new fields: `reason` and `requester_id`.
+- The `user_type` field was removed from the **user_added_to_chat** and **user_removed_from_chat** pushes.
+
+### Events
+
+- There's a new parameter `id` in the [**Form field**](/messaging/agent-chat-api/v3.2/#form-fields) data structure (`fields.answer.id` for the `group_chooser` field type).  It's an identifier for each option Customers can choose.
+- There are new fields, `previous_thread_id`, `next_thread_id`, `queue` and `queues_duration` in the [**Thread**](/messaging/agent-chat-api/v3.2/#threads) data structure.
+- The `order` and `timestamp` fields in the [**Thread**](/messaging/agent-chat-api/v3.2/#threads) data structure were replaced with the new field, `created_at` (date & time in microseconds in UTC).
+- There's a new field `queue` in [**Chat summary**](/messaging/agent-chat-api/v3.2/#chat-summaries), nested in `last_thread_summary`.
+
+### Properties
+
+- The [**Property**](/messaging/agent-chat-api/v3.2/#properties) data structure now has the same format in requests as in responses and pushes.
+- The **Update Chat Thread Properties** method was renamed to **Update Thread Properties**. The corresponding push, **chat_thread_properties_updated**, was renamed to **thread_properties_updated**.
+- The **Delete Chat Thread Properties** method was renamed to **Delete Thread Properties**. The corresponding push, **chat_thread_properties_deleted**, was renamed to **thread_properties_deleted**.
+
+### Thread tags
+
+- The **Tag Chat Thread** method was renamed to **Tag Thread**. The corresponding push, **chat_thread_tagged**, was renamed to **thread_tagged**.
+- The **Untag Chat Thread** method was renamed to **Untag Thread**. The corresponding push, **chat_thread_untagged**, was renamed to **thread_untagged**.
+
+### Customers
+
+- There's a new method **Get Customer** ([Web](/messaging/agent-chat-api/v3.2/#get-customer) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#get-customer)) that returns info about a given Customer.
+- The method **Update Customer** ([Web](/messaging/agent-chat-api/v3.2/#update-customer) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#update-customer)), which used to return the Customer data structure, now has no response payload.
+- Each method, response, and push that deals with a variation of customer `fields` had this field renamed to `session_fields` and its format changed. It's now an array that respects the item order.
+- The **Get Customers** method was renamed to **List Customers**.
+- The `order` field was renamed to `sort_order` in the **List Customers** method.
+
+### Status
 
 - The **Update Agent** method was replaced with **Set Routing Status** ([Web](/messaging/agent-chat-api/v3.2/#set-routing-status) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#set-routing-status)).
-- The `agent_updated` push was replaced with [`routing_status_set`](/messaging/agent-chat-api/v3.2/rtm-reference/#routing_status_set).
-- The method **Update Customer** ([Web](/messaging/agent-chat-api/v3.2/#update-customer) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#update-customer)), which used to return the Customer data structure, now has no response payload.
-- The method **Get Chat Threads** ([Web](/messaging/agent-chat-api/v3.2/#get-chat-threads) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#get-chat-threads)) now requires `thread_ids`. Also, it no longer returns `threads_summary` in the response.
-- The [**Property**](/messaging/agent-chat-api/v3.2/#properties) data structure now has the same format in requests as in responses and pushes.
-- There's a new parameter `id` in the [Form field](/messaging/agent-chat-api/v3.2/#form-fields) data structure (`fields.answer.id` for the `group_chooser` field type).  It's an identifier for each option Customers can choose.
-- The **Add User to Chat** method ([Web](/messaging/agent-chat-api/v3.2/#add-user-to-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#add-user-to-chat)) accepts an optional parameter `require_active_thread`.
-- There's a new parameter `away` in the [Login](/messaging/agent-chat-api/v3.2/rtm-reference/#login) method. It was introduced to prevent chat assignments after unexpected reconnects.
-- Each method, response, and push that deals with a variation of customer `fields` had this field renamed to `session_fields` and its format changed. It's now an array that respects the item order.
-- The **Chat access** ([Web](/messaging/agent-chat-api/v3.2/#chat-access) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#chat-access)) methods, `grant_access` and `revoke_access` were renamed, respectively, to `grant_chat_access` and `revoke_chat_access` along with the corresponding [pushes](/messaging/agent-chat-api/v3.2/rtm-reference/#chat-access-1). These methods no longer accept the `resource` parameter.
-- Many methods and pushes have been renamed:
-  - method: **Get Customers** -> **List Customers**
-  - method: **Get Archives** -> **List Archives**
-  - method: **Get Chats Summary** -> **List Chats**
-  - method: **Update Chat Thread Properties** -> **Update Thread Properties** and push: **Chat Thread Properties Updated** -> **Thread Properties Updated**
-  - method: **Delete Chat Thread Properties** -> **Delete Thread Properties** and push: **Chat Thread Properties Deleted** -> **Thread Properties Deleted**
-  - method: **Tag Chat Thread** -> **Tag Thread** and push: **Chat Thread Tagged** -> **Thread Tagged**
-  - method: **Untag Chat Thread** -> **Untag Thread** and push: **Chat Thread Untagged** -> **Thread Untagged**
-  - method: **Close Thread** -> **Deactivate Chat** and push: **Thread Closed** -> **Chat Deactivated**
-  - push: **incoming_chat_thread** -> **incoming_chat**
-- The `order` field has been renamed to `sort_order` in **List Chats**, **Get Chat Threads Summary**, and **List Customers**.
-- The `scopes` field in **Multicast** has been renamed to `recipients`.
-- There are new fields, `previous_thread_id`, `next_thread_id`, `queue` and `queues_duration` in the [**Thread**](/messaging/agent-chat-api/v3.2/#threads) data structure.
-- There's a new field `queue` in [**Chat summary**](/messaging/agent-chat-api/v3.2/#chat-summaries), nested in `last_thread_summary`.
-- The `order` and `timestamp` fields in the [**Thread**](/messaging/agent-chat-api/v3.2/#threads) data structure were replaced with the new field, `created_at` (date & time in microseconds in UTC).
-- The **Get Chat Threads** method evolved into **Get Chat** ([Web](/messaging/agent-chat-api/v3.2/#get-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#get-chat)). It now allows to retrieve a chat containing a particular thread. It also changed its shape; it no longer contains the `order` field and the `chat` key.
-- The `order` field in the `chat` object was removed from the responses of the **Login** and **List Chats** methods.
-- **Transfer Chat** ([Web](/messaging/agent-chat-api/v3.2/#transfer-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#transfer-chat)) can now be used with inactive chats.
-- There are new fields, `requester_id` and `transferred_from` in [`incoming_chat`](/messaging/agent-chat-api/v3.2/rtm-reference/#incoming_chat).
-- The [`chat_transferred`](/messaging/agent-chat-api/v3.2/rtm-reference/#chat_transferred-1) push is no longer tied directly to **Transfer Chat**. Now, it can be generated when the transfer is implicit, for example, agents are reassigned due to their inactivity.
-- There are new fields, `requester_id`, `thread_id`, `reason`, `queue` and `transferred_to` in `chat_transferred`.
-- The `chat_user_added` push was renamed to [`user_added_to_chat`](/messaging/agent-chat-api/v3.2/rtm-reference/#user_added_to_chat). It has new fields: `reason` and `requester_id`.
-- The `chat_user_removed` push was renamed to [`user_removed_from_chat`](/messaging/agent-chat-api/v3.2/rtm-reference/#user_removed_from_chat). It has new fields: `reason` and `requester_id`.
+- The **agent_updated** push was replaced with [**routing_status_set**](/messaging/agent-chat-api/v3.2/rtm-reference/#routing_status_set).
+- There's a new parameter `away` in the [**Login**](/messaging/agent-chat-api/v3.2/rtm-reference/#login) method. It was introduced to prevent chat assignments after unexpected reconnects.
+- The `order` field in the `chat` object was removed from the responses of the **Login** method.
 
-### Removed
+### Other
 
-- The **Update Agent** and **Get Chat Threads Summary** methods were removed.
-- The `agent_updated` push was removed.
-- The **Set Chat Access** method was removed. Its use cases are now covered by the **Transfer Chat**.
-- The `chat_access_set` push was removed.
-- The `type` and `ids` fields were removed from the `chat_transferred` push.
-- The `user_type` field was removed from the `user_added_to_chat` push.
-- The `user_type` field was removed from the `user_removed_from_chat` push.
+- There's a new method **List Agents For Transfer** ([Web](/messaging/agent-chat-api/v3.2/#list-agents-for-transfer) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#list-agents-for-transfer)).
+- There's a new push, [**queue_positions_updated**](/messaging/agent-chat-api/v3.2/rtm-reference/#queue_positions_updated), with updated positions and wait times for queued chats.
+- The `scopes` field in **Multicast** ([Web](/messaging/agent-chat-api/v3.2/#multicast) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#multicast)) was renamed to `recipients`.
 
 ## [v3.1] - 2019-09-17
 
