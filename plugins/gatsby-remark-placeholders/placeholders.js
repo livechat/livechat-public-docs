@@ -11,6 +11,11 @@ const placeholders = [
     type: "link",
     label: "LiveChat",
   },
+  {
+    from: "{{NUMBER_OF_CUSTOMERS}}",
+    to: "30,000",
+    type: "text",
+  },
 ];
 
 module.exports = placeholders;

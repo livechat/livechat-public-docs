@@ -11,11 +11,19 @@ const processNodeChildren = (children, placeholder) => {
       case "text":
         if (child.value.includes(placeholder.from)) {
           switch (placeholder.type) {
-            case "link":
+            case "link": {
               const parsedChildren = parsers.link(child.value, placeholder);
               nodeChildren = [...nodeChildren, ...parsedChildren];
 
               break;
+            }
+
+            case "text": {
+              const parsedChildren = parsers.text(child.value, placeholder);
+              nodeChildren = [...nodeChildren, ...parsedChildren];
+
+              break;
+            }
 
             default:
           }
