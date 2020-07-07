@@ -11,51 +11,84 @@ This document is the record of all the changes in the **Customer Chat API**, Web
 
 ## [v3.2] - 2020-06-18
 
-### Added
+### Chats
 
-- There are new methods: **Get Customer** ([Web](/messaging/customer-chat-api/v3.2/#get-customer) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-customer)), **Accept Greeting** ([Web](/messaging/customer-chat-api/v3.2/#accept-greeting) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#accept-greeting)), **Cancel Greeting** ([Web](/messaging/customer-chat-api/v3.2/#cancel-greeting) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#cancel-greeting)), **List License Properties** ([Web](/messaging/customer-chat-api/v3.2/#list-license-properties)), **List Group Properties** ([Web](/messaging/customer-chat-api/v3.2/#list-group-properties)), **List Threads** ([Web](/messaging/customer-chat-api/v3.2/#list-threads) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-threads)).
-- There are new pushes: [`incoming_greeting`](/messaging/customer-chat-api/v3.2/rtm-reference/#incoming_greeting), [`greeting_accepted`](/messaging/customer-chat-api/v3.2/rtm-reference/#greeting_accepted), and [`greeting_canceled`](/messaging/customer-chat-api/v3.2/rtm-reference/#greeting_canceled).
-- There's a new push [`queue_position_updated`](/messaging/customer-chat-api/v3.2/rtm-reference/#queue_position_updated) with an updated queue position and wait time.
+- The **Get Chats Summary** method was renamed to **List Chats** ([Web](/messaging/customer-chat-api/v3.2/#list-chats) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-chats)).
+- The **List Chats** method:
+  - is paginated with `page_id`.
+  - had the `order` field replaced with `last_thread_created_at` in the response.
+- The **incoming_chat_thread** push was renamed to [**incoming_chat**](/messaging/customer-chat-api/v3.2/rtm-reference/#incoming_chat).
+- The **incoming_chat** push:
+  - had the `chat.order` field removed from the payload.
+  - has a new field, `requester_id`.
+- The **Get Chat Threads** method evolved into **Get Chat** ([Web](/messaging/customer-chat-api/v3.2/#get-chat) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-chat)).
+- The **Get Chat** method:
+  - allows to retrieve a particular thread from the specified chat.
+  - has changed its shape; it no longer contains the `order` field and the `chat` key.
+  - returns `thread` instead of `threads_summary`.
+- The **Close Thread** method was renamed to **Deactivate Chat** ([Web](/messaging/customer-chat-api/v3.2/#deactivate-chat) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#deactivate-chat)). The corresponding push, **thread_closed**, was renamed to [**chat_deactivated**](/messaging/customer-chat-api/v3.2/rtm-reference/#chat_deactivated).
+- There's a new method, **List Threads** ([Web](/messaging/customer-chat-api/v3.2/#list-threads) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-threads)).
+- The **Get Chat Threads Summary** method was removed.
 
-### Changed
+### Chat access
 
-- Method **Update Customer** ([Web](/messaging/customer-chat-api/v3.2/#update-customer) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#update-customer)), which used to return the Customer data structure, now has no response payload.
+- The [**chat_transferred**](/messaging/customer-chat-api/v3.2/rtm-reference/#chat_transferred-1) push:
+  - is no longer tied directly to **Transfer Chat** ([Web](/messaging/agent-chat-api/v3.2/#transfer-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#transfer-chat)). Now, it can be generated when the transfer is implicit, for example, agents are reassigned due to their inactivity.
+  - has new fields: `thread_id`, `reason`, `queue` and `transferred_to`.
+  - had the `requester_id` field changed to optional. The field will be present only when `reason` is `manual`.
+  - had the `type` and `ids` fields were removed.
+- The **chat_access_set** push was removed.
+
+### Chat users
+
+- The **chat_user_added** push was renamed to [**user_added_to_chat**](/messaging/customer-chat-api/v3.2/rtm-reference/#user_added_to_chat).
+- The **user_added_to_chat** push:
+  - has new fields: `reason` and `requester_id`.
+  - had the `user_type` field removed.
+- The **chat_user_removed** push was renamed to [**user_removed_from_chat**](/messaging/customer-chat-api/v3.2/rtm-reference/#user_removed_from_chat). 
+- The **user_removed_from_chat** push:
+  - has new fields: `reason` and `requester_id`.
+  - had the `user_type` field removed.
+
+### Events
+
+- The [**Form field**](/messaging/customer-chat-api/v3.2/#form-fields) data structure has a new field, `id` (`fields.answer.id` for the `group_chooser` field type). It's an identifier for each option Customers can choose. The `id` is now returned by the **Get Form** method ([Web](/messaging/customer-chat-api/v3.2/#get-form) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-form)) (`form.fields.options` for the `group_chooser` field type).
+- The [**Thread**](/messaging/customer-chat-api/v3.2/#threads) data structure:
+  - has new fields: `previous_thread_id` and `next_thread_id`.
+  - had the `order` and `timestamp` fields replaced with a new one, `created_at` (date & time in microseconds in UTC).
+  - has a new field, `queue`.
+
+### Properties
+
 - The [**Property**](/messaging/customer-chat-api/v3.2/#properties) data structure now has the same format in requests as in responses and pushes.
-- There's a new field `id` in the [Form field](/messaging/customer-chat-api/v3.2/#form-fields) data structure (`fields.answer.id` for the `group_chooser` field type).  It's an identifier for each option Customers can choose. The `id` is now returned by the **Get Form** method ([Web](/messaging/customer-chat-api/v3.2/#get-form) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-form)) (`form.fields.options` for the `group_chooser` field type).
-- **Get URL Info** ([Web](/messaging/customer-chat-api/v3.2/#get-url-info) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-url-info)) now returns the `image_original_URL` parameter.
+- There are new methods: **List License Properties** ([Web](/messaging/customer-chat-api/v3.2/#list-license-properties)) and **List Group Properties** ([Web](/messaging/customer-chat-api/v3.2/#list-group-properties)).
+- The **Update Chat Thread Properties** method was renamed to **Update Thread Properties** ([Web](/messaging/customer-chat-api/v3.2/#update-thread-properties) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#update-thread-properties)). The corresponding push, **chat_thread_properties_updated**, was renamed to [**thread_properties_updated**](/messaging/customer-chat-api/v3.2/rtm-reference/#thread_properties_updated).
+- The **Delete Chat Thread Properties** method was renamed to **Delete Thread Properties** ([Web](/messaging/customer-chat-api/v3.2/#delete-thread-properties) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#delete-thread-properties)). The corresponding push, **chat_thread_properties_deleted**, was renamed to [**thread_properties_deleted**](/messaging/customer-chat-api/v3.2/rtm-reference/#thread_properties_deleted).
+
+### Customers
+
+- The **Update Customer** ([Web](/messaging/customer-chat-api/v3.2/#update-customer) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#update-customer)) method, which used to return the Customer data structure, now has no response payload.
 - The **Set Customer Fields** method was renamed to **Set Customer Session Fields** ([Web](/messaging/customer-chat-api/v3.2/#set-customer-session-fields) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#set-customer-session-fields)).
 - Each method, response, and push that deals with a variation of customer `fields` had this field renamed to `session_fields` and its format changed. It's now an array that respects the item order.
-- The response of the [**Login**](/messaging/customer-chat-api/v3.2/rtm-reference/#login) method was extended with the `greeting` object. The returned customer data was moved from `__priv_dynamic_config` to the `customer` object.
-- Many methods and pushes have been renamed:
-  - method: **Get Groups Status** -> **List Group Statuses**
-  - method: **Get URL Details** -> **Get URL Info**
-  - method: **Get Chats Summary** -> **List Chats**
-  - method: **Update Chat Thread Properties** -> **Update Thread Properties** and push: **Chat Thread Properties Updated** -> **Thread Properties Updated**
-  - method: **Delete Chat Thread Properties** -> **Delete Thread Properties** and push: **Chat Thread Properties Deleted** -> **Thread Properties Deleted**
-  - method: **Close Thread** -> **Deactivate Chat** and push: **Thread Closed** -> **Chat Deactivated**
-  - push: **Incoming Chat Thread** -> **Incoming Chat**
-- There're new fields `previous_thread_id` and `next_thread_id` in the [**Thread**](/messaging/customer-chat-api/v3.2/#threads) data structure.
-- Fields `order` and `timestamp` in the [**Thread**](/messaging/customer-chat-api/v3.2/#threads) data structure were replaced with the new field, `created_at` (date & time in microseconds in UTC).
-- From now on **List Group Statuses** ([Web](/messaging/customer-chat-api/v3.2/#list-group-statuses) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-group-statuses)) accepts `group_ids` instead of the `groups` parameter.
-- Method **List Chats** ([Web](/messaging/customer-chat-api/v3.2/#list-chats) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-chats)) is paginated with `page_id` now.
-- The [Login](/messaging/customer-chat-api/v3.2/rtm-reference/#login) method was extended with the application info.
-- The **Get Chat Threads** method evolved into **Get Chat** ([Web](/messaging/customer-chat-api/v3.2/#get-chat) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-chat)). It now allows to retrieve a chat containing a particular thread. It also changed its shape; it no longer contains the `order` field and the `chat` key.
-- The `order` field in the `chat` object was removed from the payload of the **incoming_chat** push. Also, this field was replaced with `last_thread_created_at` in the response of the **List Chats** method.
-- There's a new field `queue` in the [**Thread**](/messaging/customer-chat-api/v3.2/#threads) data structure.
-- There's a new field `requester_id` in [`incoming_chat`](/messaging/customer-chat-api/v3.2/rtm-reference/#incoming_chat).
-- The [`chat_transferred`](/messaging/customer-chat-api/v3.2/rtm-reference/#chat_transferred-1) push is no longer tied directly to **Transfer Chat** ([Web](/messaging/agent-chat-api/v3.2/#transfer-chat) & [RTM](/messaging/agent-chat-api/v3.2/rtm-reference/#transfer-chat)). Now, it can be generated when the transfer is implicit, for example, agents are reassigned due to their inactivity.
-- There're new fields, `thread_id`, `reason`, `queue` and `transferred_to` in `chat_transferred`.
-- The `requester_id` field in the `chat_transferred` push is now optional and will be present only when `reason` is `manual`.
-- The `chat_user_added` push was renamed to [`user_added_to_chat`](/messaging/customer-chat-api/v3.2/rtm-reference/#user_added_to_chat). It has new fields: `reason` and `requester_id`.
-- The `chat_user_removed` push was renamed to [`user_removed_from_chat`](/messaging/customer-chat-api/v3.2/rtm-reference/#user_removed_from_chat). It has new fields: `reason` and `requester_id`.
+- There's a new method, **Get Customer** ([Web](/messaging/customer-chat-api/v3.2/#get-customer) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-customer)).
 
-### Removed
+### Status
 
-- The **Get Chat Threads Summary** method was removed.
-- The `chat_access_set` push was removed.
-- The `type` and `ids` fields were removed from the `chat_transferred` push.
-- The `user_type` field was removed from the `user_added_to_chat` push.
-- The `user_type` field was removed from the `user_removed_from_chat` push.
+- The [**Login**](/messaging/customer-chat-api/v3.2/rtm-reference/#login) method:
+  - has a new parameter, `application`, related to the application info.
+  - had its response extended with the `greeting` object. The returned customer data was moved from `__priv_dynamic_config` to the `customer` object.
+- The **Get Groups Status**  method was renamed to **List Group Statuses** ([Web](/messaging/customer-chat-api/v3.2/#list-group-statuses) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-group-statuses)).
+- The **List Group Statuses** ([Web](/messaging/customer-chat-api/v3.2/#list-group-statuses) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#list-group-statuses)) method accepts `group_ids` instead of the `groups` parameter.
+
+### Other
+
+- The **Get URL Details** method was renamed to **Get URL Info** ([Web](/messaging/customer-chat-api/v3.2/#get-url-info) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#get-url-info)).
+- The **Get URL Info** method now returns the `image_original_URL` parameter.
+- There're new greeting-related methods and pushes:
+  - the [**incoming_greeting**](/messaging/customer-chat-api/v3.2/rtm-reference/#incoming_greeting) push
+  - the **Accept Greeting** ([Web](/messaging/customer-chat-api/v3.2/#accept-greeting) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#accept-greeting)) method and the corresponding push, [**greeting_accepted**](/messaging/customer-chat-api/v3.2/rtm-reference/#greeting_accepted)
+  - the **Cancel Greeting** ([Web](/messaging/customer-chat-api/v3.2/#cancel-greeting) & [RTM](/messaging/customer-chat-api/v3.2/rtm-reference/#cancel-greeting)) method and the corresponding push, [**greeting_canceled**](/messaging/customer-chat-api/v3.2/rtm-reference/#greeting_canceled)
+- There's a new [**queue_position_updated**](/messaging/customer-chat-api/v3.2/rtm-reference/#queue_position_updated) push with an updated queue position and wait time.
 
 ## [v3.1] - 2019-09-17
 
