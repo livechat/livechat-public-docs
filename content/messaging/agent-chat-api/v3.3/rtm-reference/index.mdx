@@ -115,13 +115,14 @@ The **File** event informs about an uploaded file.
 
 ### Request
 
-| Field                                                 | Required | Data type | Notes                                                               |
-| ----------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------: |
-| `custom_id`                                           | no       | `string`  |                                                                     |
-| `type`                                                | yes      | `string`  | `file`                                                              |
-| `recipients`                                          | yes      | `string`  | Possible values: `all` (default), `agents`                          |
-| `properties`                                          | no       | `object`  | [Properties](#properties)                                           |
-| `url`                                                 | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/customer-chat-api/#upload-file).|
+| Field              | Required | Data type | Notes                                                                                                                                     |
+| ------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`        | no       | `string`  |                                                                                                                                           |
+| `type`             | yes      | `string`  | `file`                                                                                                                                    |
+| `recipients`       | yes      | `string`  | Possible values: `all` (default), `agents`                                                                                                |
+| `properties`       | no       | `object`  | [Properties](#properties)                                                                                                                 |
+| `url`              | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/customer-chat-api/#upload-file). |
+| `alternative_text` | no       | `string`  | Only applicable to images                                                                                                                 |
 
 ### Response
 
@@ -139,6 +140,7 @@ The **File** event informs about an uploaded file.
 | `thumbnail_url`, `thumbnail2x_url`  | only for images |                                                                     |
 | `content_type`                      | always          |                                                                     |
 | `size`, `width`, `height`           | only for images |                                                                     |
+| `alternative_text`                  | only for images |                                                                     |
 
 </Text>
 <Code>
@@ -1513,7 +1515,7 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 
 | Parameter | Required | Data type |  |
 | --------- | -------- | --------- | ----- |
-| `chat_id` | Yes      | `string`  |       |
+| `id`      | Yes      | `string`  |       |
 
 </Text>
 <Code>
@@ -1523,7 +1525,7 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 {
   "action": "deactivate_chat",
   "payload": {
-  "chat_id": "PJ0MRSHTDG"
+    "id": "PJ0MRSHTDG"
   }
 }
 ```
@@ -1571,7 +1573,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 | Parameter | Required | Data type |  |
 | --------- | -------- | --------- | ----- |
-| `chat_id` | Yes      | `string`  |       |
+| `id`      | Yes      | `string`  |       |
 
 </Text>
 <Code>
@@ -1581,7 +1583,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 {
   "action": "follow_chat",
   "payload": {
-  "chat_id": "PW94SJTGW6"
+    "id": "PW94SJTGW6"
   }
 }
 ```
@@ -1626,7 +1628,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 | Parameter | Required | Data type |     |
 | --------- | -------- | --------- | --- |
-| `chat_id` | Yes      | `string`  |     |
+| `id`      | Yes      | `string`  |     |
 
 </Text>
 <Code>
@@ -1636,7 +1638,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 {
   "action": "unfollow_chat",
   "payload": {
-  "chat_id": "PWF6BACIKO"
+    "id": "PWF6BACIKO"
   }
 }
 ```
@@ -1652,7 +1654,7 @@ Removes the requester from the chat followers. After that, only key changes to t
   "type": "response",
   "success": true,
   "payload": {
-  "chat_id": "PWF6BACIKO"
+    "chat_id": "PWF6BACIKO"
   }
 }
 ```
@@ -1805,7 +1807,7 @@ Transfers a chat to an Agent or a group.
 
 | Parameter     | Required | Data ype | Notes                                                                                                                           |
 | ------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `chat_id`     | Yes      | `string` | Chat Id                                                                                                                     |
+| `id`          | Yes      | `string` | Chat Id                                                                                                                     |
 | `target`      | No       | `object` | If missing, the chat will be transferred within the current group.                                                              |
 | `target.type` | Yes      | `string` | `group` or `agent`                                                                                                              |
 | `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                                    |
@@ -1819,11 +1821,11 @@ Transfers a chat to an Agent or a group.
 {
   "action": "transfer_chat",
   "payload": {
-  "chat_id": "PWF6BACIKO",
-  "target": {
-    "type": "group",
-    "ids": [19]
-  }
+    "id": "PWF6BACIKO",
+    "target": {
+      "type": "group",
+      "ids": [19]
+    }
   }
 }
 ```
@@ -2122,7 +2124,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 | Parameter    | Required | Data type | Notes                                     |
 | ------------ | -------- | --------- | ----------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat you to set a property for. |
+| `id`         | Yes      | `string`  | Id of the chat you to set a property for. |
 | `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_.  |
 
 </Text>
@@ -2133,10 +2135,10 @@ It's possible to write to a chat without joining it. The user sending an event w
 {
   "action": "update_chat_properties",
   "payload": {
-  "chat_id": "Q1VZR7AJCE",
-  "properties": {
-    "0805e283233042b37f460ed8fbf22160": {
-      "string_property": "Chat property value updated by Agent"
+    "id": "Q1VZR7AJCE",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "Chat property value updated by Agent"
       }
     }
   }
@@ -2181,7 +2183,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 
 | Parameter    | Required | Data type | Notes                                           |
 | ------------ | -------- | --------- | ----------------------------------------------- |
-| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for. |
+| `id`         | Yes      | `string`  | Id of the chat you want to delete property for. |
 | `properties` | Yes      | `object`  | Chat properties to delete. |
 
 </Text>
@@ -2192,10 +2194,10 @@ It's possible to write to a chat without joining it. The user sending an event w
 {
   "action": "delete_chat_properties",
   "payload": {
-  "chat_id": "Q1VZR7AJCE",
-  "properties": {
-    "0805e283233042b37f460ed8fbf22160": [
-      "string_property"
+    "id": "Q1VZR7AJCE",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": [
+        "string_property"
       ]
     }
   }
@@ -2591,9 +2593,9 @@ It's possible to write to a chat without joining it. The user sending an event w
 <Section>
 <Text>
 
-### List Customer
+### Get Customer
 
-Returns the info about the Customer with a given `customer_id`.
+Returns the info about the Customer with a given `id`.
 
 #### Specifics
 
@@ -2608,7 +2610,7 @@ Returns the info about the Customer with a given `customer_id`.
 
 | Parameter     | Required | Data type | Notes |
 | ------------- | -------- | --------- | ----- |
-| `customer_id` | Yes      | string    |       |
+| `id`          | Yes      | string    |       |
 
 #### Response
 
@@ -2633,7 +2635,7 @@ Returns the info about the Customer with a given `customer_id`.
 {
   "action": "get_customer",
   "payload": {
-  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
   }
 }
 ```
@@ -2708,7 +2710,7 @@ Returns the info about the Customer with a given `customer_id`.
 <Section>
 <Text>
 
-### Get Customers
+### List Customers
 
 It returns the list of Customers.
 
@@ -2908,13 +2910,13 @@ Updates Customer's properties.
 
 | Parameter        | Required | Data type  | Notes                                                                              |
 | ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
-| `customer_id`    | Yes      | `string`   | UUID v4 format is required.                                                        |
+| `id`             | Yes      | `string`   | UUID v4 format is required.                                                        |
 | `name`           | No       | `string`   |                                                                                    |
 | `email`          | No       | `string`   |                                                                                    |
 | `avatar`         | No       | `string`   | URL of the Customer's avatar                                                       |
 | `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
 
-Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
+Apart from `id`, which is a required parameter, you also need to include **one of the optional** parameters.
 
 </Text>
 <Code>
@@ -2924,15 +2926,15 @@ Apart from `customer_id`, which is a required parameter, you also need to includ
 {
   "action": "update_customer",
   "payload": {
-  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "name": "Thomas Anderson",
-  "email": "t.anderson@example.com",
-  "avatar": "example.com/avatars/1.png",
-  "session_fields": [{
-    "custom_key": "custom_value"
-  }, {
-    "another_custom_key": "another_custom_value"
-  }]
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "name": "Thomas Anderson",
+    "email": "t.anderson@example.com",
+    "avatar": "example.com/avatars/1.png",
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }]
   }
 }
 ```
@@ -2976,7 +2978,7 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 | Parameter     | Required | Data type |     |
 | ------------- | -------- | --------- | --- |
-| `customer_id` | Yes      | `string`  |     |
+| `id`          | Yes      | `string`  |     |
 | `ban`         | Yes      | `object`  |     |
 | `ban.days`    | Yes      | `number`  |     |
 
@@ -2988,10 +2990,10 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 {
   "action": "ban_customer",
   "payload": {
-  "customer_id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
-  "ban": {
-    "days": 3
-  }
+    "id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
+    "ban": {
+      "days": 3
+    }
   }
 }
 ```
