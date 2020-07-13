@@ -108,21 +108,21 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
         {label}
       </a>
     ) : (
-      <Link
-        to={`/${slug}/`}
-        partiallyActive
-        css={linkStyle}
-        activeStyle={activeLinkStyle(color)}
-        onClick={() =>
-          logAmplitudeEvent("Top menu tab clicked", {
-            slug
-          })
-        }
-      >
-        <CategoryIcon category={slug} style={iconStyle} />
-        {label}
-      </Link>
-    )}
+        <Link
+          to={`/${slug}/`}
+          partiallyActive
+          css={linkStyle}
+          activeStyle={activeLinkStyle(color)}
+          onClick={() =>
+            logAmplitudeEvent("Top menu tab clicked", {
+              slug
+            })
+          }
+        >
+          <CategoryIcon category={slug} style={iconStyle} />
+          {label}
+        </Link>
+      )}
   </MenuElementWrapper>
 );
 
