@@ -88,7 +88,7 @@ const linkStyle = {
   transition: "color 60ms ease-out"
 };
 
-const iconStyle = { marginRight: "5px" };
+const iconStyle = { marginRight: "5px", marginBottom: "1px" };
 
 const activeLinkStyle = color => ({
   borderBottom: `5px solid rgb(${color})`,
