@@ -88,7 +88,7 @@ const linkStyle = {
   transition: "color 60ms ease-out"
 };
 
-const iconStyle = { marginRight: "5px" };
+const iconStyle = { marginRight: "5px", marginBottom: "1px" };
 
 const activeLinkStyle = color => ({
   borderBottom: `5px solid rgb(${color})`,
@@ -108,21 +108,21 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
         {label}
       </a>
     ) : (
-      <Link
-        to={`/${slug}/`}
-        partiallyActive
-        css={linkStyle}
-        activeStyle={activeLinkStyle(color)}
-        onClick={() =>
-          logAmplitudeEvent("Top menu tab clicked", {
-            slug
-          })
-        }
-      >
-        <CategoryIcon category={slug} style={iconStyle} />
-        {label}
-      </Link>
-    )}
+        <Link
+          to={`/${slug}/`}
+          partiallyActive
+          css={linkStyle}
+          activeStyle={activeLinkStyle(color)}
+          onClick={() =>
+            logAmplitudeEvent("Top menu tab clicked", {
+              slug
+            })
+          }
+        >
+          <CategoryIcon category={slug} style={iconStyle} />
+          {label}
+        </Link>
+      )}
   </MenuElementWrapper>
 );
 
