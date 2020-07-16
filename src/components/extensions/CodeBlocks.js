@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
 import innerText from "react-innertext";
+import payloads from "payloads";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
@@ -191,6 +192,27 @@ export const CodeSample = ({ path, children }) => {
 };
 
 export const CodeResponse = ({ title = "Response", children, json }) => {
+  return (
+    <CodeResponseWrapper>
+      {title && (
+        <ResponseTopbar>
+          <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
+          <CopyToClipboardIcon text={JSON.stringify(json, null, "\t")} />
+        </ResponseTopbar>
+      )}
+      <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
+    </CodeResponseWrapper>
+  );
+};
+
+export const CodeResponseNew = ({
+  title = "Response",
+  children,
+  version,
+  payload,
+}) => {
+  const json = payloads[version][payload];
+
   return (
     <CodeResponseWrapper>
       {title && (

@@ -104,6 +104,14 @@ module.exports = {
       },
     },
     `gatsby-plugin-sitemap`,
+    {
+      resolve: `gatsby-alias-imports`,
+      options: {
+        aliases: {
+          payloads: `payloads/`,
+        },
+      },
+    },
     // mutation observer doesn't really work for some reason here
     // {
     //   resolve: `gatsby-plugin-algolia-docsearch`,
