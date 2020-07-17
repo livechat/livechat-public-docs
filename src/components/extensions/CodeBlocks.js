@@ -209,19 +209,20 @@ export const CodeResponseNew = ({
   title = "Response",
   children,
   version,
-  payload,
+  json,
+  type = "default",
 }) => {
-  const json = payloads[version][payload];
+  const jsonPayload = payloads[version][type][json];
 
   return (
     <CodeResponseWrapper>
       {title && (
         <ResponseTopbar>
           <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
-          <CopyToClipboardIcon text={JSON.stringify(json, null, "\t")} />
+          <CopyToClipboardIcon text={JSON.stringify(jsonPayload, null, "\t")} />
         </ResponseTopbar>
       )}
-      <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
+      <Body>{jsonPayload ? <JSONHighlighter source={jsonPayload} /> : children}</Body>
     </CodeResponseWrapper>
   );
 };
