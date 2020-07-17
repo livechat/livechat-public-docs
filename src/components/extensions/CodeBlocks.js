@@ -191,28 +191,18 @@ export const CodeSample = ({ path, children }) => {
   );
 };
 
-export const CodeResponse = ({ title = "Response", children, json }) => {
-  return (
-    <CodeResponseWrapper>
-      {title && (
-        <ResponseTopbar>
-          <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
-          <CopyToClipboardIcon text={JSON.stringify(json, null, "\t")} />
-        </ResponseTopbar>
-      )}
-      <Body>{json ? <JSONHighlighter source={json} /> : children}</Body>
-    </CodeResponseWrapper>
-  );
-};
-
-export const CodeResponseNew = ({
+export const CodeResponse = ({
   title = "Response",
   children,
   version,
   json,
   type = "default",
 }) => {
-  const jsonPayload = payloads[version][type][json];
+  let jsonPayload;
+
+  if (version && type && json) {
+    jsonPayload = payloads[version][type][json]
+  }
 
   return (
     <CodeResponseWrapper>
