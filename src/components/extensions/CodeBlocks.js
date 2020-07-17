@@ -209,7 +209,7 @@ export const CodeResponse = ({
       {title && (
         <ResponseTopbar>
           <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
-          <CopyToClipboardIcon text={JSON.stringify(jsonPayload, null, "\t")} />
+          <CopyToClipboardIcon text={jsonPayload ? JSON.stringify(jsonPayload, null, "\t") : innerText(children)} />
         </ResponseTopbar>
       )}
       <Body>{jsonPayload ? <JSONHighlighter source={jsonPayload} /> : children}</Body>
