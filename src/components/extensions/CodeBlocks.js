@@ -201,7 +201,7 @@ export const CodeResponse = ({
   let jsonPayload;
 
   if (version && type && json) {
-    jsonPayload = payloads[version][type][json]
+    jsonPayload = payloads[version][type][json];
   }
 
   return (
