@@ -1,0 +1,221 @@
+---
+weight: 35
+category: "extending-chat-widget"
+subcategory: "chat-widget-moments"
+title: "Chat Widget Moments"
+tagline: "Use Moments to show any web application during a chat."
+desc: "Showing any web application during a chat is possible - all you need to do is use Moments."
+versionGroup: "chat-widget"
+---
+
+# Introduction
+
+Moments allow you to show any web application during a chat and let customers perform specific actions.
+
+<video
+  src="https://cdn-staging.livechat-static.com/api/file/lc/att/1520/34fb66f74b2f18394a199dbf0b6c4e9f/chw.mp4"
+  autoplay="true"
+  loop="true"
+  muted="true"
+/>
+
+## Is it for me?
+
+Think about Moments as a solution for difficult tasks to handle during a conversation. When a specific task is hard to perform using text messages or it requires a lot of effort from your customer to provide requested data, Moments can make your process much more accessible. The feature allows you to solve a problem without the need to leave a chat. From a technical point of view, it's a web page embedded in an iframe shown during a chat.
+
+<div>
+  <iframe
+    src="https://cdn.livechatinc.com/labs/open_chat3.html?license=100016461&group=1"
+    style="border: 1px solid rgba(0, 0, 0, 0.1); width: 100%; max-width: 300px; height: 550px; display: block; margin: 1em auto;"
+  ></iframe>
+</div>
+
+## How it works?
+
+1. The customer receives a rich message with the webview button
+2. The customer clicks button
+3. Moments show, web applications loads
+4. Customer performs activities in the web application
+5. The moment is closed either by:
+   - Web application (method call)
+   - User (close button)
+
+# Sample use cases
+
+**Schedule meeting** - give the customer an option to choose the available term. Send a message with “choose term” button, open web application with data picker component, then send back chosen term to chat conversation as customer’s message.
+
+**Payment system** - send customer “Pay” button, open web application with payment provider billing form, send payment id to chat after successful fulfillment.
+
+**Seat picker** - let the customer choose a seat in stadium or restaurant. Prepare custom component with seat’s placement visualization, send back preferred option to the agent.
+
+**Articles view** - send case-related materials from your knowledge base. Let customer quickly read them without the need of opening a new tab.
+
+Moments let you embed almost every web application in chat widget, but it shouldn’t be treated as a place to surf the web. Moments should allow a customer to focus on a particular task, complete it in a straightforward way and back to the chat. You shouldn’t redirect the customer to the complex web application with multiple views, complicated forms or web.
+
+# Examples
+
+## Calendly integration
+
+Calendly - integration available to install in [LiveChat Marketplace](https://www.livechatinc.com/marketplace/apps/calendly/), allowing customers to schedule meetings directly from the Chat widget.
+It consists of two parts:
+
+- [Agent App Widget](/extending-ui/extending-agent-app/agent-app-sdk/#messagebox) application, attached to the Message box, allowing an agent to send a Rich message with an invitation
+- Calendly Moment app, integrating Calendly JavaScript API with Moments SDK, allowing prefilling customer name and email and sending booking confirmation to a chat.
+
+## Date picker
+
+Data picker - app written in Vue, allows a customer to pick any date from datepicker. It sends a chosen option back to a chat.
+
+Source code is available on [github](https://github.com/livechat/moments-apps-examples/tree/master/examples/datepicker), preview is deployed [here](https://cdn.livechat-static.com/moments-apps-examples/datepicker/).
+
+## Network tester
+
+Network tester - app written in React, performing a test of the connection status of client connection with specific servers.
+
+# Moments in LiveChat
+
+Moments can be triggered only by [rich message's](https://www.livechatinc.com/help/rich-messages/) buttons. Currently, LiveChat supports rich messages delivered by chatbots using our [ChatBot](https://chatbot.com) product or using [MessageBox](/extending-ui/extending-agent-app/agent-app-sdk/#messagebox) integration in Agent App. However, we are still working on other possibilities to provide rich messages to chat, such as using backend Chat APIs.
+
+# Moments SDK
+
+Moments SDK is the library to integrate web application used as Moments with Chat Widget. It's not necessary to use Moments SDK inside Moments web applications, but it provides more chat widget integration options - it allows you to send messages as a visitor, set visitor attributes or close Moment.
+
+## Methods
+
+### createMomentsSDK
+
+Default method exported by the library. It's initializing connection with chat widget. You can pass additional properties:
+
+| param | type   | description                                                  |
+| ----- | ------ | ------------------------------------------------------------ |
+| title | string | Application title, will be placed on Moment's titlebar       |
+| icon  | string | URL to Application icon, will be placed on Moments title bar |
+
+### Using npm
+
+To simply get started with creating your Moments App add `@livechat/moments-sdk` as dependency to your project:
+
+```
+npm install @livechat/moments-sdk
+```
+
+and then import `createMomentsSDK` function which is exported as default from package.
+
+```js
+import createMomentsSDK from "@livechat/moments-sdk";
+createMomentsSDK({ title: "My App" }).then((momentsSDK) => {
+  // your code
+});
+```
+
+### Using script tag
+
+To simply get started with creating your Moments App add to your page, at the bottom of `body` section, `script` tag with `src` atribute set to our moments-sdk.
+
+```html
+<script src="https://cdn.livechat-static.com/moments-sdk/moments-sdk-1.0.1.umd.min.js"></script>
+```
+
+In your code before `moments-sdk` is loaded assign to window function called `onMomentAsyncInit`. It is used as a hook to let you know when sdk is loaded. You will get `createMomentsSDK` function as an argument of that call. Using UMD build you should reference to `window.MomentsSDK` instead of `momentsSDK` to access methods.
+
+```js
+window.onMomentAsyncInit = function(createMomentsSDK) {
+  createMomentsSDK({ title: "My App" }).then(() => {
+    // your code
+  });
+};
+```
+
+### sendMessage
+
+Sends a message as a visitor in currently active chat.
+Parameters:
+
+- `text` - Message text
+
+```js
+momentsSDK.sendMessage({ text: "Chosen date: 19.12.2009" });
+```
+
+### sendSystemMessage
+
+Sends a system message in the currently active chat.
+Parameteres:
+
+- `text` - Message text
+- `recipients` - Optional, defines those who can display the message: `all` (default) or `agents`
+
+```js
+momentsSDK.sendSystemMessage({
+  text: "Survey submitted",
+  recipients: "agents",
+});
+```
+
+### setAttributes
+
+Set customer's properties.
+Parameters:
+
+- `customProperties` - Customer's additional data object
+
+```js
+momentsSDK.setAttributes({ clientId: "SJ3CJ6JVNMK42A", source: "Organic" });
+```
+
+### setExternalLink
+
+Sets the external link for the fullscreen version of the app, which will be opened in the new tab.
+Parameters:
+
+- `link` - URL of the fullscreen version
+
+```js
+momentsSDK.setExternalLink("https://livechat.com");
+```
+
+### close
+
+Close Moment app.
+
+This method has no parameters.
+
+```js
+momentsSDK.close();
+```
+
+## How to start
+
+You should start by preparing your first Moment app. You can use one of our examples or use our bootstrap project build on Glitch platform - it’s ready to publish, integrated with Moments SDK and easy to fork and adjust to own needs.
+
+If you want to use simple static page in moment instead of web app you can use `moments-title` parameter in URL to specify the title that should be displayed for your Moment.
+
+#### Example:
+
+`https://example.com?moments-title=MyApp`
+
+To try Moments out, head to the [ChatBot website](https://chatbot.com) to sign up for a 14-day free trial. If you already have an account go to our article on how to integrate ChatBot with Livechat.
+Configure story, add bot response “Card”, add the button with “webview” widget and fill in your application URL. Test your story in LiveChat chat widget.
+
+Alternatively you can setup the [MessageBox](/extending-ui/extending-agent-app/agent-app-sdk/#messagebox) integration in Agent App and use your Moment app there.
+
+## Resources
+
+- [What are rich messages?](https://www.livechatinc.com/kb/rich-messages/)
+- [Chatbots explained](https://www.livechatinc.com/kb/chatbots-explained/)
+- [Chatbot: add a bot to LiveChat](https://www.livechatinc.com/kb/chatbot-integration/)
+- [Agent App MessageBox](/extending-ui/extending-agent-app/agent-app-sdk/#messagebox)
+
+---
+
+## Changelog
+
+### [v1.1.0] - 2019-12-17
+
+#### Added
+
+- New methods: `setExternalLink` and `sendSystemMessage`
+
+### [v0.0.1] - 2019-02-20
+
+- First public Release.

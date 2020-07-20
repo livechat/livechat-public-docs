@@ -1,0 +1,1445 @@
+---
+weight: 37
+category: "extending-chat-widget"
+subcategory: "visitor-sdk"
+title: "Visitor SDK"
+tagline: "Build your own Chat Widget."
+desc: "LiveChat Visitor SDK allows you to a chat as a visitor. You can use Visitor SDK to create your own chat widget."
+versionGroup: "chat-widget"
+hidden: true
+---
+
+<Warning>
+
+**Please note this SDK is deprecated**. We highly recommend switching to the new [Customer SDK](/extending-ui/extending-chat-widget/customer-sdk/).
+
+</Warning>
+
+# Introduction
+
+Chat Widget Visitor SDK allows you to perform a chat via LiveChat as a visitor using JavaScript.
+
+You can use this to create your own chat widget.
+
+## Is it for me?
+
+If you need to customize the LiveChat widget, using Chat Widget Visitor SDK is one of the options to do this.
+
+Keep in mind, however, that interacting with this API requires **significant development skills**.
+
+- If you only want to modify the look and feel of the chat widget, check our powerful yet easy to use [chat widget configurator](https://www.livechatinc.com/help/customize-your-chat/).
+
+- If you want to integrate the chat widget with your application, you can use the the existing [JavaScript API](/extending-ui/extending-chat-widget/javascript-api/).
+
+However, if you need a fully custom solution and you feel brave, dive into Chat Widget Visitor SDK: we provide [methods](#methods) and [callbacks](#callbacks) for deep integration with the LiveChat environment.
+
+## About Chat Widget Visitor SDK
+
+Chat Widget Visitor SDK is promise-based; all asynchronous methods return a promise. To get a promise fulfillment result, subscribe your handler to the promise's `then` method. Check out [this article](https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise) to learn more about promises.
+
+**Important!** Some methods and callbacks are not implemented yet.
+
+## Tools
+
+- [React Chat UI Kit](https://docs.livechatinc.com/react-chat-ui-kit/) - set of **React components** to easily build nice-looking chat windows
+
+## Examples
+
+- [A sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
+- [A sample chat widget implementation integrated with BotEngine, built with React Chat UI Kit](https://codesandbox.io/s/github/livechat/chat-widget-sample/tree/master/)
+- [A sample iOS React Native implementation](https://github.com/livechat/chat-window-react-native-example)
+
+## Resources
+
+- [Chat Widget Visitor SDK tutorial - blog post](https://developers.livechatinc.com/blog/livechat-visitor-sdk/)
+- [npm package](https://www.npmjs.com/package/@livechat/livechat-visitor-sdk)
+
+# How to start
+
+## Install Visitor SDK
+
+You can use Chat Widget Visitor SDK in two different ways:
+
+#### Using npm
+
+<CodeSample>
+
+```
+npm install --save @livechat/livechat-visitor-sdk
+```
+
+</CodeSample>
+
+Now, you can import SDK in your code:
+
+<CodeSample>
+
+```
+import * as LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
+```
+
+</CodeSample>
+
+#### Using script tag - UMD module hosted on unpkg's CDN
+
+<CodeSample>
+
+```
+<script src="https://unpkg.com/@livechat/livechat-visitor-sdk@0.36.2/dist/livechat-visitor-sdk.min.js"></script>
+```
+
+</CodeSample>
+
+If you just want to look around and play with the SDK, check out our
+[sample chat widget implementation](https://glitch.com/#!/project/livechat-sample-chat-widget)
+
+## Use SDK
+
+Now run the init function with configuration, replacing `LICENSE_NUMBER` with
+your LiveChat license number. The function will return the visitorSDK interface:
+
+<CodeSample>
+
+```js
+const visitorSDK = LivechatVisitorSDK.init({
+  license: LICENSE_NUMBER
+});
+```
+
+</CodeSample>
+
+With `visitorSDK`, you can attach [callbacks](#callbacks) or execute
+[methods](#methods).
+
+<CodeSample>
+
+```js
+visitorSDK.on("new_message", newMessage => {
+  console.log(newMessage);
+});
+
+visitorSDK
+  .sendMessage({
+    text: "Hello",
+    customId: 123423215
+  })
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+# Methods
+
+## init
+
+Initializes the chat window.
+
+<CodeSample>
+
+```js
+import LivechatVisitorSDK from "@livechat/livechat-visitor-sdk";
+
+const visitorSDK = LivechatVisitorSDK.init({
+  license: 123,
+  group: 0
+});
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param   | type   | description               |
+| ------- | ------ | ------------------------- |
+| license | number | LiveChat license number   |
+| group   | number | Group number (default: 0) |
+
+## sendMessage
+
+Sends a message.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .sendMessage({
+    text: "Hello",
+    customId: "123423215"
+  })
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param    | type   | description          |
+| -------- | ------ | -------------------- |
+| text     | string | Visitor message text |
+| customId | string | Message custom id    |
+
+#### Errors:
+
+| type             | reason                               |
+| ---------------- | ------------------------------------ |
+| connection       | "Request failed"                     |
+| missing argument | "Missing text or customId parameter" |
+| state            | "Chat is offline"                    |
+
+## closeChat
+
+Closes the chat.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .closeChat()
+  .then(() => {
+    console.log("Chat is closed");
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+This method has no parameters.
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type         | reason                    |
+| ------------ | ------------------------- |
+| "state"      | There is no chat to close |
+| "connection" | Request failed            |
+
+## sendFile
+
+Enables [file sharing](https://www.livechatinc.com/features/chat-tools/#File-sharing) through the chat window.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .sendFile({
+    file: FileObject,
+    customId: "123423215"
+  })
+  .then(response => {
+    console.log(response.status);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param      | type     | description                                                                    |
+| ---------- | -------- | ------------------------------------------------------------------------------ |
+| file       | blob     | File to upload                                                                 |
+| onProgress | function | Callback function. It will receive a progress value (a number between 0 and 1) |
+
+#### Errors:
+
+| type             | reason                           |
+| ---------------- | -------------------------------- |
+| connection       | "Request failed"                 |
+| missing argument | "Missing file"                   |
+| wrong argument   | "Cannot upload a file over 10MB" |
+
+#### Response:
+
+| param       | type   | description                                       |
+| ----------- | ------ | ------------------------------------------------- |
+| id          | string | File id                                           |
+| timestamp   | string | File timestamp                                    |
+| url         | string | File URL address                                  |
+| contentType | string | File content type                                 |
+| size        | number | File size in bytes                                |
+| width       | number | Image width (for image content types) - optional  |
+| height      | number | Image height (for image content types) - optional |
+
+## rateChat
+
+Enables [chat ratings](https://www.livechatinc.com/features/getting-feedback/#Chat-ratings).
+
+<CodeSample>
+
+```js
+visitorSDK
+  .rateChat({
+    rate: "good",
+    comment: "Agent helped me a lot!"
+  })
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param   | type                    | description                  |
+| ------- | ----------------------- | ---------------------------- |
+| rate    | "good" \ "bad" \ "none" | Rate type                    |
+| comment | string                  | Rate comment text (optional) |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type               | reason                                                |
+| ------------------ | ----------------------------------------------------- |
+| "missing argument" | Missing rate parameter                                |
+| "wrong argument"   | Rate argument should be equal "good", "bad" or "none" |
+| "connection"       | Request failed                                        |
+| "connection"       | Rate Comment request failed                           |
+
+## markMessageAsSeen
+
+Marks a message as Seen.
+
+Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
+
+<CodeSample>
+
+```js
+visitorSDK.markMessageAsSeen("123123123");
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param     | type   | description                        |
+| --------- | ------ | ---------------------------------- |
+| messageId | string | Id of message to be marked as seen |
+
+## setSneakPeek
+
+Enables [sneak peeks](https://www.livechatinc.com/features/chat-tools/#Message-sneak-peak) to see what the visitor is typing in before they actually send the message.
+
+<CodeSample>
+
+```js
+visitorSDK.setSneakPeek({
+  text: "Hello, I woul"
+});
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param | type   | description                |
+| ----- | ------ | -------------------------- |
+| text  | string | Current message input text |
+
+**Note:** Sneak peek won't be sent every time you call a function. It will be throttled (i.e. sent not earlier than 300ms after the last sneak peek request).
+
+## forwardChatTranscript
+
+Sends [chat transcripts](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features) to the specified email address when the chat is ended.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .forwardChatTranscript({
+    email: "test@livechatinc.com"
+  })
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param | type   | description                                                                |
+| ----- | ------ | -------------------------------------------------------------------------- |
+| email | string | Email that will automatically receive a transcript when a chat is finished |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type               | reason                                 |
+| ------------------ | -------------------------------------- |
+| "state"            | There is no chat to forward transcript |
+| "missing argument" | Missing email parameter                |
+| "connection"       | Request failed                         |
+
+## getPostchatForm
+
+Get post-chat survey form fields configured in [chat window settings section](https://my.livechatinc.com/settings/post-chat-survey) in agent app.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .getPostchatForm()
+  .then(data => {
+    console.log("Post-Chat form data", data);
+  })
+  .catch(error => {
+    console.log("error");
+  });
+```
+
+</CodeSample>
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type        | description                                                    |
+| ------ | ----------- | -------------------------------------------------------------- |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                                     | description                                                                                                                |
+| -------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| type     | "text" / "select" / "checkbox" / "radio" / "information" | Type of the field                                                                                                          |
+| required | boolean                                                  | Is field required?                                                                                                         |
+| name     | string                                                   | field's name                                                                                                               |
+| label    | string                                                   | Field's label                                                                                                              |
+| value    | string                                                   | Optional - field's value                                                                                                   |
+| options  | fieldOption[]                                            | Array with fields options - only for fields of type: radio, checkbox, select, group_select. see option's description below |
+
+#### fieldOption object description
+
+| param   | type    | description          |
+| ------- | ------- | -------------------- |
+| label   | string  | input's label        |
+| checked | boolean | input's checked flag |
+| value   | string  | input's value        |
+
+#### Errors:
+
+| type         | reason                         |
+| ------------ | ------------------------------ |
+| "connection" | Request failed                 |
+| "state"      | Post-chat survey is turned off |
+
+## getPrechatForm
+
+Get pre-chat survey form fields configured in [chat window settings section](https://my.livechatinc.com/settings/pre-chat-survey) in agent app.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .getPrechatForm()
+  .then(data => {
+    console.log("Pre-Chat form data", data);
+  })
+  .catch(error => {
+    console.log("error");
+  });
+```
+
+</CodeSample>
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type        | description                                                    |
+| ------ | ----------- | -------------------------------------------------------------- |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                                                                         | description                                                                                                                |
+| -------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| type     | "name" / "text" / "email" / "select" / "checkbox" / "radio" / "group_select" / "information" | Type of the field                                                                                                          |
+| required | boolean                                                                                      | Is field required?                                                                                                         |
+| name     | string                                                                                       | field's name                                                                                                               |
+| label    | string                                                                                       | Field's label                                                                                                              |
+| value    | string                                                                                       | Optional - field's value                                                                                                   |
+| options  | fieldOption[]                                                                                | Array with fields options - only for fields of type: radio, checkbox, select, group_select. see option's description below |
+
+#### fieldOption object description
+
+| param   | type    | description          |
+| ------- | ------- | -------------------- |
+| label   | string  | input's label        |
+| checked | boolean | input's checked flag |
+| value   | string  | input's value        |
+
+#### Errors:
+
+| type         | reason                        |
+| ------------ | ----------------------------- |
+| "connection" | Request failed                |
+| "state"      | Pre-chat survey is turned off |
+
+## sendPrechatForm
+
+Collects the pre-chat survey form information (it will be visible during the chat and in the archives). Pre-chat form should be rendered using fields fetched by getPrechatForm method.
+
+<CodeSample>
+
+```js
+const formAnswers = {
+  "151913066848701614": "Sidney Bechet", // "151913066848701614" is field's name, and "Sidney Bechet" is value provided by the visitor
+  "151913066848701615": "s.brechet@example.org",
+  "15191306684870388": ["1", "2"] // Fields with "checkbox" type have multiple values.
+};
+
+visitorSDK
+  .sendPrechatForm(formAnswers)
+  .then(() => {
+    console.log("Pre-chat sent");
+  })
+  .catch(error => {
+    console.log("error");
+  });
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param       | type   | description                                             |
+| ----------- | ------ | ------------------------------------------------------- |
+| formAnswers | object | Pre-chat forms answers object - field.name: field.value |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type            | reason                                        | fields       |
+| --------------- | --------------------------------------------- | ------------ |
+| connection      | "Request failed"                              |              |
+| state           | "You can't send prechat when chat is running" |              |
+| wrong arguments |                                               | fieldError[] |
+
+`wrong arguments` error object contains additional array "fields" with detailed validations errors.
+
+#### fieldError object description
+
+| param       | type    | description                                                               |
+| ----------- | ------- | ------------------------------------------------------------------------- |
+| reason      | string  | Error reason, e.g. "Required field", "Wrong type"                         |
+| description | boolean | Optional. Detailed error description, e.g. "Pease fill in required field" |
+| field       | string  | Field's name                                                              |
+
+## sendPostchatForm
+
+Collects the [post-chat form](https://www.livechatinc.com/features/getting-feedback/#Post-chat-surveys) information (it will be visible in the archives).
+
+<CodeSample>
+
+```js
+const formAnswers = {
+  "151913066848701614": "Good support!", // "151913066848701614" is field's name, and "Good support!" is value provided by the visitor
+  "15191306684870388": ["1", "2"] // Fields with "checkbox" type have multiple values.
+};
+
+visitorSDK
+  .sendPostchatForm(formAnswers)
+  .then(() => {
+    console.log("Pre-chat sent");
+  })
+  .catch(error => {
+    console.log("error");
+  });
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param       | type   | description                                              |
+| ----------- | ------ | -------------------------------------------------------- |
+| formAnswers | object | Post-chat forms answers object - field.name: field.value |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type | reason | fields |
+| --------------- | --------------------------------------------- | ------------ |
+| connection | "Request failed" | |
+| state | "You can't send postchat when chat is running" | |
+| wrong arguments | | fieldError[] |
+
+## getVisitorData
+
+Collects the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
+
+<CodeSample>
+
+```js
+const visitorData = visitorSDK.getVisitorData().then(visitorData => {
+  console.log(visitorData);
+});
+```
+
+</CodeSample>
+
+#### Returned value:
+
+| param            | type   | description                                          |
+| ---------------- | ------ | ---------------------------------------------------- |
+| name             | string | Visitor's name                                       |
+| email            | string | Visitor's email address                              |
+| pageUrl          | string | Visitor's currently visiting website URL             |
+| pageTitle        | string | Visitor's currently visiting website title           |
+| customProperties | object | Visitor's additional data object (custom properties) |
+
+## setVisitorData
+
+Set the [visitor information](https://www.livechatinc.com/features/chat-tools/#Visitor-information).
+
+<CodeSample>
+
+```js
+visitorSDK.setVisitorData({
+  name: "Wynton Marsalis",
+  email: "test@livechatinc.com",
+  pageUrl: "http://example.org/pricing",
+  pageTitle: "Pricing",
+  customProperties: {
+    login: "wyntonmarsalis",
+    customerId: "18260556127834"
+  }
+});
+```
+
+</CodeSample>
+
+#### Parameters:
+
+| param            | type   | description                                          |
+| ---------------- | ------ | ---------------------------------------------------- |
+| name             | string | Visitor's name                                       |
+| email            | string | Visitor's email address                              |
+| pageUrl          | string | Visitor's currently visiting website URL             |
+| pageTitle        | string | Visitor's currently visiting website title           |
+| customProperties | object | Visitor's additional data object (custom properties) |
+
+#### Errors:
+
+| type             | reason                                         |
+| ---------------- | ---------------------------------------------- |
+| missing argument | "Missing name, email, url or customProperties" |
+| connection       | "Request failed"                               |
+
+## getTicketForm
+
+Get [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) fields configured in [chat window settings section](https://my.livechatinc.com/settings/ticket-form) in agent app.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .getTicketForm()
+  .then(data => {
+    console.log("Ticket form data", data);
+  })
+  .catch(error => {
+    console.log("error");
+  });
+```
+
+</CodeSample>
+
+This method has no parameters.
+
+#### Response:
+
+| param  | type        | description                                                    |
+| ------ | ----------- | -------------------------------------------------------------- |
+| fields | formField[] | Array with form fields details - see field's description below |
+
+#### formField object description
+
+| param    | type                                    | description              |
+| -------- | --------------------------------------- | ------------------------ |
+| type     | "name" / "subject" / "email" / "header" | Type of the field        |
+| required | boolean                                 | Is field required?       |
+| label    | string                                  | Field's label            |
+| value    | string                                  | Optional - field's value |
+
+## sendTicketForm
+
+Send [ticket form](https://www.livechatinc.com/features/engaging-customers/#Ticket-form) filled in by visitor. Ticket form should be rendered using fields fetched by getTicketForm method.
+
+<CodeSample>
+
+```js
+visitorSDK
+  .sendTicketForm({
+    name: "John",
+    email: "john@example.org",
+    subject: "App support",
+    message: "I have a problem with your app"
+  })
+  .then(() => {
+    console.log("Ticket sent");
+  })
+  .catch(error => {
+    console.log("error");
+  });
+```
+
+</CodeSample>
+
+#### Parameters
+
+| param   | type   | description             |
+| ------- | ------ | ----------------------- |
+| name    | string | Vistior's name          |
+| email   | string | Visitor's email address |
+| subject | string | Ticket subject          |
+| message | string | Visitor's message       |
+
+#### Response:
+
+| param   | type    | description               |
+| ------- | ------- | ------------------------- |
+| success | boolean | Request's response status |
+
+#### Errors:
+
+| type             | reason            |
+| ---------------- | ----------------- |
+| connection       | "Request failed"  |
+| missing argument | "Missing email"   |
+| missing argument | "Missing message" |
+
+## disconnect
+
+Disconnect Visitor SDK. A visitor won't be tracked, and you won't be notified about agent's availability status. You will be automatically connected again after using sendMessage or setVisitorData methods.
+
+<CodeSample>
+
+```js
+visitorSDK.disconnect();
+```
+
+</CodeSample>
+
+#### Errors:
+
+| type  | reason                                 |
+| ----- | -------------------------------------- |
+| state | "You can't disconnect during the chat" |
+
+## destroy
+
+Disconnect Visitor SDK and unsubscribe from all callbacks.
+
+<CodeSample>
+
+```js
+visitorSDK.destroy();
+```
+
+</CodeSample>
+
+## getTranslations
+
+Get translations for current group.
+
+<CodeSample>
+
+```js
+visitorSDK.getTranslations().then(translations => {
+  console.log("Translations", translations);
+});
+```
+
+</CodeSample>
+
+#### Errors:
+
+| type       | reason           |
+| ---------- | ---------------- |
+| connection | "Request failed" |
+
+## getPredictedAgent
+
+Get agent details without starting a chat
+
+#### Response:
+
+| param     | type   | description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| name      | string | Agent's name                                    |
+| id        | string | Agent's ID                                      |
+| avatarUrl | string | Agent's avatar - path to the image on Amazon s3 |
+| jobTitle  | string | Agent's job title                               |
+
+#### Errors:
+
+| type       | reason           |
+| ---------- | ---------------- |
+| connection | "Request failed" |
+
+## getConfig
+
+Get chat widget configuration
+
+#### Response:
+
+| param           | type                 | description                        |
+| --------------- | -------------------- | ---------------------------------- |
+| visitorData     | object               | Visitor's data                     |
+| features        | object               | Feature toggles and settings       |
+| buttons         | array                | Buttons configuration              |
+| theme           | object               | Theme settings                     |
+| domainWhitelist | array                | Whitelisted domains                |
+| widgetType      | "embedded" / "popup" | Chat widget type                   |
+| integrations    | object               | Installed chat widget integrations |
+| language        | string               | Chat widget language               |
+| groups          | object               | Groups details                     |
+
+#### Errors:
+
+| type       | reason           |
+| ---------- | ---------------- |
+| connection | "Request failed" |
+
+## startChat
+
+Start the chat
+
+<CodeSample>
+
+```js
+visitorSDK.startChat().then(data => {
+  console.log("data", data);
+});
+```
+
+</CodeSample>
+
+#### Response:
+
+| param  | type   | description |
+| ------ | ------ | ----------- |
+| chatId | string | New Chat ID |
+
+#### Errors:
+
+| type       | reason                                 |
+| ---------- | -------------------------------------- |
+| connection | "Request failed"                       |
+| state      | "You can't start new chat during chat" |
+
+# Callbacks
+
+Callbacks let you bind a custom JavaScript function to an event. For example, your function can be executed every time agent's message has been received.
+
+## visitor_data
+
+Callback function executed when server returns visitor's data.
+
+<CodeSample>
+
+```js
+visitorSDK.on("visitor_data", visitorData => {
+  console.log(visitorData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param | type   | description |
+| ----- | ------ | ----------- |
+| id    | string | Visitor ID  |
+
+## new_message
+
+Callback function executed when a new message arrives.
+
+<CodeSample>
+
+```js
+visitorSDK.on("new_message", newMessage => {
+  console.log(newMessage);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param     | type   | description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| id        | string | Message ID                                      |
+| authorId  | string | Message author ID                               |
+| timestamp | number | Timestamp added by server                       |
+| text      | string | Message text                                    |
+| chatId    | string | Message chat ID                                 |
+| customId  | string | Message custom ID (for visitor's messages only) |
+
+## visitor_banned - not implemented yet
+
+Callback function executed when a [visitor is banned](https://www.livechatinc.com/features/chat-tools/#Chat-tools-other-features).
+
+<CodeSample>
+
+```js
+visitorSDK.on("visitor_banned", data => {
+  console.log(data);
+});
+```
+
+</CodeSample>
+
+## chat_started
+
+Callback function executed when a chat is started.
+
+<CodeSample>
+
+```js
+visitorSDK.on("chat_started", chatData => {
+  console.log(chatData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param  | type   | description |
+| ------ | ------ | ----------- |
+| chatId | string | New chat ID |
+
+## chat_ended
+
+Callback function executed when a chat is ended. This callback is called without any additional data.
+
+<CodeSample>
+
+```js
+visitorSDK.on("chat_ended", () => {
+  console.log("Chat is closed");
+});
+```
+
+</CodeSample>
+
+## status_changed
+
+Callback function executed when the chat status is changed.
+
+<CodeSample>
+
+```js
+visitorSDK.on("status_changed", statusData => {
+  console.log(statusData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param  | type                  | description                      |
+| ------ | --------------------- | -------------------------------- |
+| status | "online" \| "offline" | Current chat availability status |
+
+## visitor_queued
+
+Callback function executed when a visitor is queued.
+
+<CodeSample>
+
+```js
+visitorSDK.on("visitor_queued", queueData => {
+  console.log(queueData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param         | type   | description                       |
+| ------------- | ------ | --------------------------------- |
+| numberInQueue | number | Visitor's order number in queue   |
+| waitingTime   | number | Estimated waiting time in seconds |
+
+## connection_status_changed
+
+Callback function executed when the connection status changes.
+
+<CodeSample>
+
+```js
+visitorSDK.on("connection_status_changed", statusData => {
+  console.log(statusData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param  | type                          | description               |
+| ------ | ----------------------------- | ------------------------- |
+| status | "connected" \| "disconnected" | Current connection status |
+
+## new_file
+
+Callback function executed when a [file is shared](https://www.livechatinc.com/features/chat-tools/#File-sharing).
+
+<CodeSample>
+
+```js
+visitorSDK.on("new_file", newFile => {
+  console.log(newFile);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param       | type   | description                           |
+| ----------- | ------ | ------------------------------------- |
+| id          | string | File ID                               |
+| authorId    | string | File author ID                        |
+| timestamp   | number | Timestamp added by server             |
+| url         | string | File url                              |
+| contentType | string | File content type (i.e. 'text/plain') |
+| size        | number | File size                             |
+
+## agent_changed
+
+Callback function executed when an agent takes over the chat.
+
+<CodeSample>
+
+```js
+visitorSDK.on("agent_changed", newAgent => {
+  console.log(newAgent);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param     | type   | description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| name      | string | Agent's name                                    |
+| id        | string | Agent's ID                                      |
+| avatarUrl | string | Agent's avatar - path to the image on Amazon s3 |
+| jobTitle  | string | Agent's job title                               |
+
+## typing_indicator
+
+Callback function executed when the typing indicator appears.
+
+<CodeSample>
+
+```js
+visitorSDK.on("typing_indicator", typingData => {
+  console.log(typingData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param    | type    | description                       |
+| -------- | ------- | --------------------------------- |
+| authorId | string  | Author ID of the writer           |
+| isTyping | boolean | Author is typing / stopped typing |
+
+## message_seen
+
+Callback function executed when a message is marked as seen.
+
+Learn more about LiveChat delivery statuses [here](https://www.livechatinc.com/features/chat-tools/#Delivery-status).
+
+<CodeSample>
+
+```js
+visitorSDK.on("message_seen", data => {
+  console.log(data);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param    | type                | description                  |
+| -------- | ------------------- | ---------------------------- |
+| id       | string              | Seen message id              |
+| customId | string              | Senn message custom id       |
+| type     | "agent" / "visitor" | Original message author type |
+
+## chat_rated
+
+Callback function executed when the chat is [rated or commented](https://www.livechatinc.com/features/getting-feedback/#Chat-ratings) by visitor.
+
+<CodeSample>
+
+```js
+visitorSDK.on("chat_rated", data => {
+  console.log(messageData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param   | type                    | description       |
+| ------- | ----------------------- | ----------------- |
+| rate    | "good" \ "bad" \ "none" | Rate type         |
+| comment | string                  | Rate comment text |
+
+## new_invitation
+
+Callback function executed when an [invitation](https://www.livechatinc.com/features/engaging-customers/#Automatic-greetings) was sent to visitor.
+
+<CodeSample>
+
+```js
+visitorSDK.on("new_invitation", invitationData => {
+  console.log(invitationData);
+});
+```
+
+</CodeSample>
+
+#### Payload:
+
+| param             | type    | description                                |
+| ----------------- | ------- | ------------------------------------------ |
+| id                | string  | Message ID                                 |
+| authorId          | string  | Message author ID                          |
+| text              | string  | Message text                               |
+| receivedFirstTime | boolean | Was invitation received for the first time |
+
+## ready
+
+Callback executed when SDK finished initialization and all chat history was fetched. This callback is called without any additional data.
+
+<CodeSample>
+
+```js
+visitorSDK.on("ready", () => {
+  console.log("Visitor SDK is ready");
+});
+```
+
+</CodeSample>
+
+# Changelog
+
+Subscribe to [LiveChat Developers Newsletter](http://eepurl.com/V75-9) to be
+notified about changes in Visitor SDK.
+
+#### [v0.36.2] - 12.08.2019
+
+##### Fixed
+
+- Fixed CORS error
+
+#### [v0.35.2] - 20.06.2018
+
+##### Fixed
+
+- Fixed sendTicketForm method
+
+#### [v0.35.1] - 08.05.2018
+
+#### Fixes
+
+- Fixed CORS error
+
+#### [v0.35.0] - 01.05.2018
+
+#### Added
+
+- Added sendPostChatForm method
+- Added getPostChatForm method
+- Added acceptInvitation method
+
+#### [v0.34.0] - 19.03.2018
+
+##### Added
+
+- Added getPredictedAgent method
+
+##### Fixed
+
+- Fixed getPrechatForm method documentation - error description
+
+#### [v0.33.3] - 8.03.2018
+
+##### Fixed
+
+- Fix sendTicketForm method - incorrect data passed to request
+
+#### [v0.33.2] - 6.03.2018
+
+##### Fixed
+
+- Fix sendPrechatForm method - incorrect answers bug
+
+#### [v0.33.1] - 27.02.2018
+
+##### Fixed
+
+- Fix sendMessage method - reject promise if chat is offline
+
+#### [v0.33.0] - 26.02.2018
+
+##### Added
+
+- Added getPrechatForm method
+- Added sendPrechatForm method
+
+#### [v0.32.0] - 16.02.2018
+
+##### Added
+
+- Added [new_invitation](https://www.livechatinc.com/features/engaging-customers/#Automatic-greetings) callback
+
+##### Fixed
+
+- Fix documentation - npm installation code snippet
+
+#### [v0.31.3] - 31.01.2018
+
+##### Fixed
+
+- Fix fielsharing bug - use correct chat id after starting a new chat again
+
+#### [v0.31.2] - 30.01.2018
+
+##### Fixed
+
+- Fix group init parameter
+
+#### [v0.31.1] - 25.01.2018
+
+##### Fixed
+
+- sendFile method - correct server address
+- fix URL rules - correct visitor's current URL detection
+
+#### [v0.31.0] - 9.01.2018
+
+##### Added
+
+- Added sendFile method
+
+#### [v0.30.0] - 3.01.2018
+
+##### Added
+
+- Support [Data Centers in Europe](https://www.livechatinc.com/features/security/data-center-in-europe/)
+
+#### [v0.29.2] - 28.12.2017
+
+##### Fixed
+
+- Docs fix - correct date in changelog
+
+#### [v0.29.0] - 28.12.2017
+
+##### Added
+
+- Added chat_rated callback
+- Added [URL rules](https://www.livechatinc.com/kb/setting-up-url-rules-for-groups/) support
+
+##### Fixed
+
+- sendMessage parameter "customId" now parsed to string by default
+
+#### [v0.28.4] - 27.11.2017
+
+##### Fixed
+
+- Fixed docs
+
+#### [v0.28.3] - 22.11.2017
+
+##### Fixed
+
+- Fixed npm build Safari support
+
+#### [v0.28.2] - 22.11.2017
+
+##### Fixed
+
+- Fixed iOS Safari support
+
+##### Changed
+
+- New reject type for setVisitorData method: "connection"
+
+#### [v0.28.1] - 30.10.2017
+
+##### Fixed
+
+- Fixed npm build
+
+#### [v0.28.0] - 30.10.2017
+
+##### Added
+
+- Added destroy method
+
+##### Changed
+
+- Added customId parameter to new_message callback's data
+
+#### [v0.27.1] - 30.10.2017
+
+##### Fixed
+
+- Adjust docs according to
+  [Docs Changelog Guidelines](https://github.com/livechat/docs-templates/blob/master/docs-changelog-guidelines.md)
+
+#### [v0.27.0] - 16.10.2017
+
+##### Added
+
+- Added getVisitorData method
+
+##### Changed
+
+- setVisitorData method: Added possibility to set customProperties
+
+#### [v0.0.26] - 13.10.2017
+
+##### Added
+
+- Added getTicketForm method
+- Added sendTicketForm method
+
+##### Fixed
+
+- Fixed error handling
+
+##### Changed
+
+- setVistiorData method renamed to setVisitorData
+
+#### [v0.0.25] - 03.10.2017
+
+##### Added
+
+- Added disconnect method
+
+#### [v0.0.24] - 12.09.2017
+
+##### Added
+
+- Added iOS React Native sample app to Examples
+
+#### [v0.0.23] - 11.09.2017
+
+##### Added
+
+- Added visitor_data callback
+
+#### [v0.0.22] - 07.09.2017
+
+##### Added
+
+- Support for non-browser environments
+
+#### [v0.0.21] - 06.09.2017
+
+##### Added
+
+- Added closeChat method
+
+#### [v0.0.20] - 05.09.2017
+
+##### Fixed
+
+- Fix npm package - add all dependencies
+
+#### [v0.0.19] - 31.08.2017
+
+##### Added
+
+- Added forwardChatTranscript method
+
+#### [v0.0.18] - 30.08.2017
+
+##### Added
+
+- Added setSneakPeek method
+
+#### [v0.0.17] - 29.08.2017
+
+##### Added
+
+- Added rateChat method
+- Added changelog section
+
+#### [v0.0.16] - 24.08.2017
+
+##### Fixed
+
+- Docs fixes - correct method names
+
+#### [v0.0.15] - 24.08.2017
+
+First public Release

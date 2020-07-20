@@ -1,0 +1,1279 @@
+---
+weight: 33
+category: "extending-chat-widget"
+subcategory: "customer-sdk"
+title: "Customer SDK"
+tagline: "Build your own Chat Widget."
+desc: "If our default widget is not enough, feel free to build your own. Customer JS SDK is your way to go."
+versionGroup: "chat-widget"
+apiVersion: "1.0"
+---
+
+# Introduction
+
+LiveChat Customer JS SDK is a set of tools to build a custom chat widget. It allows you to manage multiple chats via LiveChat as a
+customer using JavaScript.
+
+## Is it for me?
+
+If you need to customize the LiveChat widget, using LiveChat Customer JS SDK is
+one of the options to do this. If you need a fully custom solution and you feel
+brave, dive into LiveChat Customer JS SDK: we provide [methods](#methods) and
+[events](#events) for deep integration with the LiveChat environment.
+
+Keep in mind, however, that interacting with this API requires **some
+development skills**.
+
+## About LiveChat Customer JS SDK
+
+We provide an asynchronous API, where most methods interacting with a server
+return **promises**. To get the promise's fulfillment result, subscribe your handler to
+the promise's
+[`then()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)
+method. You can also subscribe to the emitted events with `on` and `off` methods.
+
+<div class="callout type-info">
+  Not familiar with promises? Read{" "}
+  <a href="https://developer.mozilla.org/pl/docs/Web/JavaScript/Reference/Global_Objects/Promise">
+    this article
+  </a>{" "}
+  to learn more.
+</div>
+
+We authenticate your sessions by using
+[customer-auth package](https://www.npmjs.com/package/@livechat/customer-auth)
+and expose the created `auth` object on the returned SDK's instance. In general,
+you don't have to worry about it nor use the exposed object, but if you need to
+get the authentication token you can get it through the SDK like this:
+
+<CodeSample>
+
+```js
+customerSDK.auth.getToken().then(token => console.log(token));
+```
+
+</CodeSample>
+
+## Examples
+
+We have prepared a sample chat widget implementation to present the features of LiveChat Customer JS SDK:
+
+- [Sample widget at CodeSandbox](https://codesandbox.io/s/rm3prxw88n)
+
+# How to start
+
+This tutorial will help you get started with using LiveChat Customer JS SDK.
+
+## Create an application
+
+First, you need to create an application in the
+[Developers Console](https://developers.livechatinc.com/console) (select the _Web app (frontend,
+eg. JavaScript)_ type).
+
+## Install Customer JS SDK
+
+You can use LiveChat Customer JS SDK in two different ways:
+
+### Using npm
+
+<CodeSample>
+
+```
+npm install --save @livechat/customer-sdk@2.0.0-alpha.3
+```
+
+</CodeSample>
+
+Now, you can import SDK in your code:
+
+<CodeSample>
+
+```
+import * as CustomerSDK from '@livechat/customer-sdk'
+```
+
+</CodeSample>
+
+or with a node-style `require` call:
+
+<CodeSample>
+
+```
+const CustomerSDK = require('@livechat/customer-sdk')
+```
+
+</CodeSample>
+
+### Using script tag - UMD module hosted on unpkg's CDN
+
+<CodeSample>
+
+```
+<script src="https://unpkg.com/@livechat/customer-sdk@2.0.0-alpha.3"></script>
+```
+
+</CodeSample>
+
+If you just want to look around and play with the SDK, check out our
+[sample chat widget implementation](https://codesandbox.io/s/rm3prxw88n).
+
+<div class="callout type-warning">
+  For the time being you need to register your application in the{" "}
+  <a href="https://developers.livechatinc.com/console" target="_blank">
+    Developers Console
+  </a>{" "}
+  as a "Web app (frontend, eg. JavaScript)" type. Then, you have to pass the
+  configured <code>redirectUri</code> to the <code>init</code>, along with the
+  regular required properties (<code>license</code> and <code>clientId</code>).
+</div>
+
+## Use the API
+
+Now run the `init` function with the configuration, replacing `LICENSE_NUMBER`
+with your LiveChat license number. The function will return the customerSDK
+instance:
+
+<CodeSample>
+
+```js
+const customerSDK = CustomerSDK.init({
+  license: LICENSE_NUMBER,
+  clientId: CLIENT_ID
+});
+```
+
+</CodeSample>
+
+With `customerSDK`, you can attach [events](#events):
+
+<CodeSample>
+
+```js
+customerSDK.on("new_event", newEvent => {
+  console.log(newEvent);
+});
+```
+
+</CodeSample>
+
+or execute [methods](#methods):
+
+<CodeSample>
+
+```js
+const chatId = "OU0V0P0OWT";
+customerSDK
+  .sendEvent(chatId, {
+    type: "message",
+    text: "Hi!"
+  })
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+### Using the API in React Native
+
+If you want to use LiveChat Customer SDK in React Native, keep in mind that we
+use cookies to authenticate your sessions, so we need some sort of browser
+environment for that. We've prepared a special wrapper for you to use in React
+Native, which opens a WebView component to get an authentication token. All you
+have to do is to import it from our authentication package (no need to install
+it - the SDK depends on it, so you have it already) and mount it in your React
+Native application:
+
+<CodeSample>
+
+```js
+import { AuthWebView } from "@livechat/customer-auth";
+import { init } from "@livechat/customer-sdk";
+
+export default class App extends React.Component {
+  componentDidMount() {
+    const customerSDK = init({
+      license: LICENSE_NUMBER,
+      clientId: CLIENT_ID,
+      redirectUri: REDIRECT_URI
+    });
+    // you can start using customerSDK from now
+  }
+
+  render() {
+    return (
+      <View>
+        <AuthWebView />
+      </View>
+    );
+  }
+}
+```
+
+</CodeSample>
+
+# Key Concepts
+
+The LiveChat system is based on four basic types of entities - users, chats, events and
+threads.
+
+- chats consist of threads and threads consist of events
+- threads are parts of chats,
+- users can add events to chats, which then are automatically added to threads
+- users can participate in many chats at the same time
+
+Threads are a vital part of LiveChat architecture. They provide
+continuous chat experience (i.e. they never end and you can always add to
+them) and they group events in smaller logical chunks, e.g. for reporting and
+caching purposes. However, threads tend to complicate handling
+various operations like loading more history events. The good part is that you don't
+have to worry about them most of the time and this SDK is doing the heavy lifting
+behind the scenes for you. You will get notified about threads'
+metadata only if you explicitly ask for it - most SDK methods expect only chat
+IDs.
+
+## User
+
+<CodeSample>
+
+```js
+{
+	id: 'ed9d4095-45d6-428d-5093-f8ec7f1f81b9',
+	type: 'agent',
+	name: 'Jane Doe',
+	avatar: 'https://livechat-static.com/assets/images/livechat_logo.ae4271fe1a0a2db838dcf075388ee844.png',
+}
+```
+
+</CodeSample>
+
+## Chat
+
+<CodeSample>
+
+```js
+{
+	id: 'OU0V0P0OWT',
+	users: [{
+		id: 'ed9d4095-45d6-428d-5093-f8ec7f1f81b9',
+		// ... more user properties
+	}],
+	lastSeenTimestamps: {
+		'ed9d4095-45d6-428d-5093-f8ec7f1f81b9': 1503062591000, // might be null
+	},
+	threads: ['OU0V0U3IMN'],
+}
+```
+
+</CodeSample>
+
+## Event
+
+<CodeSample>
+
+```js
+{
+	type: 'message',
+	text: 'hi!',
+    author: 'ed9d4095-45d6-428d-5093-f8ec7f1f81b9', // assigned by server
+	id: 'OU0V0U3IMN_1', // assigned by server
+    timestamp: 1503062591000, // assigned by server
+    customnId: '814.3316641404942', // optional
+    thread: 'OU0V4R0OXP',
+	properties: {},
+}
+```
+
+</CodeSample>
+
+## Threads
+
+<CodeSample>
+
+```js
+{
+	id: 'OU0V0U3IMN',
+	active: true,
+	order: 3,
+	users: ['ed9d4095-45d6-428d-5093-f8ec7f1f81b9'],
+	lastSeenTimestamps: {
+		'ed9d4095-45d6-428d-5093-f8ec7f1f81b9': 1503062591000, // might be null
+	},
+	events: [ /* events */ ],
+}
+```
+
+</CodeSample>
+
+## Methods
+
+### closeThread
+
+<CodeSample>
+
+```js
+customerSDK
+  .closeThread("ON0X0R0L67")
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | type   | description                                 |
+| --------- | ------ | ------------------------------------------- |
+| chat      | string | Chat's id in which thread should get closed |
+
+Returned value:
+
+| shape   | type    |
+| ------- | ------- |
+| success | boolean |
+
+### destroy
+
+This method clears any held resources, removes all listeners and
+disconnects from the network. After using this method you won't be able to use
+the destroyed SDK's instance.
+
+<CodeSample>
+
+```js
+customerSDK.destroy();
+```
+
+</CodeSample>
+
+### disconnect
+
+<CodeSample>
+
+```js
+customerSDK.disconnect();
+```
+
+</CodeSample>
+
+### getChatHistory
+
+This method facilitates loading more history events. You need to
+get access to the `history` object for certain chat by calling this method. The
+returned `history` object has only one method, `next`, which gives you a promise
+of `{ done, value }` pair.
+
+- `done` - indicates if there is anything more to load
+- `value` - it's an array of loaded events
+
+You can keep calling `history.next()` multiple times to load more and more
+history events (useful for infinite scroll feature). Keep in mind, though,
+that you generally shouldn't call `next` while the history is being loaded - we
+queue those requests so the previous one must resolve before we proceed with the
+next one.
+
+Such structure like our `history` object is called an **async iterator**.
+
+<CodeSample>
+
+```js
+let wholeChatHistoryLoaded = false;
+
+const history = customerSDK.getChatHistory("OU0V0P0OWT");
+
+history.next().then(result => {
+  if (result.done) {
+    wholeChatHistoryLoaded = true;
+  }
+
+  const events = result.value;
+  console.log(events);
+});
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | type   | description                                           |
+| --------- | ------ | ----------------------------------------------------- |
+| chat      | string | Chat's id for which history object should be returned |
+
+### getChatsSummary
+
+<CodeSample>
+
+```js
+customerSDK
+  .getChatsSummary({
+    offset: 0,
+    limit: 10
+  })
+  .then(({ chatsSummary, totalChats }) => {
+    console.log(chatsSummary);
+    console.log(totalChats);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments  | shape  | type   | default | max | description |
+| ---------- | ------ | ------ | ------- | --- | ----------- |
+| pagination |        |        |         |     |             |
+|            | offset | number | 0       |     |             |
+|            | limit  | number | 10      | 25  |             |
+
+Returned value:
+
+| shape        | type     | shape              | type     | description                                        |
+| ------------ | -------- | ------------------ | -------- | -------------------------------------------------- |
+| chatsSummary | object[] |                    |          |                                                    |
+|              |          | id                 |          | Chat's id                                          |
+|              |          | active             | boolean  |                                                    |
+|              |          | users              | string[] | Users' ids                                         |
+|              |          | lastEvent          | object   | Event                                              |
+|              |          | lastEventsPerType  | object   | Map from event types to event objects              |
+|              |          | lastSeenTimestamps | object   | Map from Users' ids to optional lastSeenTimestamps |
+|              |          | lastThread         | string   | Thread's id                                        |
+| totalChats   | number   |                    |          |                                                    |
+
+### getChatThreads
+
+In most cases you do not need to use this method directly. If you want to load
+more events, consider using [`getChatHistory`](#getchathistory).
+
+<CodeSample>
+
+```js
+const threads = [
+  "OS0C0W0Z1B",
+  "OS0I0M0J0G",
+  "OT01080705",
+  "OT0E02082U",
+  "OT0E08040G"
+];
+customerSDK
+  .getChatThreads("ON0X0R0L67", threads)
+  .then(threads => {
+    console.log(threads);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | shape | type     |
+| --------- | ----- | -------- |
+| chat      |       | string   |
+| threads   | page  | string[] |
+
+Returned value:
+
+| array of shapes | type     | description                     |
+| --------------- | -------- | ------------------------------- |
+| id              | string   | Thread's id                     |
+| chat            | string   | Chat's id                       |
+| active          | string[] | Active state                    |
+| order           | number   | order (can be used for sorting) |
+| users           | string[] | Users' ids                      |
+| events          | object[] | Events                          |
+
+### getChatThreadsSummary
+
+In most cases you do not need to use this method directly. If you want to load
+more events, consider using [`getChatHistory`](#getchathistory).
+
+<CodeSample>
+
+```js
+customerSDK
+  .getChatThreadsSummary("ON0X0R0L67", {
+    offset: 0,
+    limit: 10
+  })
+  .then(summary => {
+    console.log(summary.threadsSummary);
+    console.log(summary.totalThreads);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments  | shape  | type   | default | max  | description |
+| ---------- | ------ | ------ | ------- | ---- | ----------- |
+| chat       |        | string |         |      |             |
+| pagination |        |        |         |      |             |
+|            | offset | number | 0       |      |             |
+|            | limit  | number | 25      | 1000 |             |
+
+Returned value:
+
+| shape          | type     | shape       | type   |
+| -------------- | -------- | ----------- | ------ |
+| threadsSummary | object[] |             |        |
+|                |          | id          | string |
+|                |          | order       | number |
+|                |          | totalEvents | number |
+| totalThreads   | number   |             |        |
+
+### getPredictedAgent
+
+<CodeSample>
+
+```js
+customerSDK
+  .getPredictedAgent()
+  .then(agent => {
+    console.log(agent);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+### off
+
+This method unsubscribes from emitted events which are described [here](#events).
+
+### on
+
+This method subscribes to emitted events which are described [here](#events).
+
+### once
+
+This method subscribes to emitted events which are described [here](#events) and unsubscribes immediately after the callback gets called.
+
+### rateChat
+
+<CodeSample>
+
+```js
+customerSDK
+  .rateChat("ON0X0R0L67", {
+    value: "good",
+    comment: "Agent helped me a lot!"
+  })
+  .then(rating => {
+    console.log(rating);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | shape   | type   | description           |
+| --------- | ------- | ------ | --------------------- |
+| chat      |         |        | Destination chat's id |
+| rating    |         |        |                       |
+|           | score   | 0 or 1 | Rating value          |
+|           | comment | string | Optional comment      |
+
+Returned value:
+
+| shape | type   |                    |
+| ----- | ------ | ------------------ |
+| id    | string | Created event's id |
+
+### sendEvent
+
+<CodeSample>
+
+```js
+const event = {
+  type: "message"
+  // ... other properties specific for the event's type
+};
+
+customerSDK
+  .sendEvent("ON0X0R0L67", event)
+  .then(event => {
+    console.log(event);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | shape              | type    | description           |
+| --------- | ------------------ | ------- | --------------------- |
+| chat      |                    | string  | Destination chat's id |
+| event     |                    |         |                       |
+|           | type               | string  | Type of the event     |
+|           | ...                |         | Other properties      |
+| meta      |                    |         |                       | optional |
+|           | attachToLastThread | boolean | optional              |
+
+### sendFile
+
+This method is a little bit special - it returns regular `then`/`catch` methods
+of a Promise **and** a `cancel` method which you can use to abort the upload of
+the file. It also lets you pass `onProgress` callback function. Keep in mind
+that the maximum accepted file size is 10 MB.
+
+<CodeSample>
+
+```js
+customerSDK
+  .sendFile(
+    "ON0X0R0L67",
+    {
+      file,
+      customId // optional
+    },
+    {
+      onProgress: progress => console.log(`upload progress: ${progress}`)
+    }
+  )
+  .then(response => {
+    console.log(response.url);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | shape      | type     | description                                                                   |
+| --------- | ---------- | -------- | ----------------------------------------------------------------------------- |
+| chat      |            | string   | Destination chat's id                                                         |
+| data      |            |          |                                                                               |
+|           | file       | Blob     |                                                                               |
+|           | customId   | string   | Optional customId for the event                                               |
+| spec      |            |          |                                                                               |
+|           | onProgress | function | This callback function will receive a progress value - number between 0 and 1 |
+
+Returned value:
+
+| shape | type   |
+| ----- | ------ |
+| url   | string |
+
+In React Native instead of passing a blob you need to pass an object of
+[such shape](https://github.com/facebook/react-native/blob/56fef9b6225ffc1ba87f784660eebe842866c57d/Libraries/Network/FormData.js#L34-L38):
+
+<CodeSample>
+
+```js
+const file = {
+  uri: uriFromCameraRoll,
+  type: "image/jpeg", // optional
+  name: "photo.jpg" // optional
+};
+```
+
+</CodeSample>
+
+### sendPostback
+
+<CodeSample>
+
+```js
+customerSDK
+  .sendPostback("ON0X0R0L67", "OS0C0W0Z1B", "OS0C0W0Z1B01", {
+    id: "OS0C0W0Z1B01002",
+    toggled: true
+  })
+  .then(rating => {
+    console.log("success");
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | shape   | type    | description                     |
+| --------- | ------- | ------- | ------------------------------- |
+| chat      |         | string  | Postback chat's id              |
+| thread    |         | string  | Postback thread's id            |
+| event     |         | string  | Postback event's id             |
+| postback  |         |         |                                 |
+|           | id      | string  | Postback button's id            |
+|           | toggled | boolean | Postback toggled (default true) |
+
+### setSneakPeek
+
+This method doesn't return a promise. It just sets the internal sneak peek
+value. It will be sent to the server only if the target chat is active and only
+once per 2 seconds (it's [throttled](https://lodash.com/docs/4.17.4#throttle)).
+
+<CodeSample>
+
+```js
+customerSDK.setSneakPeek("ON0X0R0L67", "what is the price for your ");
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | type   | description                              |
+| --------- | ------ | ---------------------------------------- |
+| chat      | string | Destination chat id                      |
+| text      | string | Message preview broadcasted to the agent |
+
+### startChat
+
+<CodeSample>
+
+```js
+customerSDK
+  .startChat({
+    events: []
+  })
+  .then(chat => {
+    console.log(chat);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments     | shape  | type     | description        |
+| ------------- | ------ | -------- | ------------------ |
+| specification |        |          | For advanced usage |
+|               | scope  |          |                    |
+|               | events | events[] |                    |
+
+### updateChatProperties
+
+<CodeSample>
+
+```js
+const properties = {
+  property_namespace: {
+    sample: "property"
+  }
+};
+customerSDK
+  .updateChatProperties("ON0X0R0L67", properties)
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments  | shape | type   | description |
+| ---------- | ----- | ------ | ----------- |
+| chat       |       | string |             |
+| properties |       |        |             |
+
+### updateChatThreadProperties
+
+<CodeSample>
+
+```js
+const properties = {
+  property_namespace: {
+    sample: "property"
+  }
+};
+customerSDK
+  .updateChatThreadProperties("ON0X0R0L67", "OS0C0W0Z1B", properties)
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments  | shape | type   | description |
+| ---------- | ----- | ------ | ----------- |
+| chat       |       | string |             |
+| thread     |       | string |             |
+| properties |       |        |             |
+
+### updateCustomer
+
+<CodeSample>
+
+```js
+const properties = {
+  name: "John Doe",
+  email: "john.doe@example.com",
+  fields: {
+    custom_property: "BasketValue=10usd",
+    any_key_is_ok: "sample custom field"
+  }
+};
+customerSDK.updateCustomer(properties);
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments  | shape  | type   | description                              |
+| ---------- | ------ | ------ | ---------------------------------------- |
+| properties |        |        |                                          |
+|            | name   | string | Optional name                            |
+|            | email  | string | Optional email                           |
+|            | fields | object | Optionl custom fields with string values |
+
+### updateCustomerPage
+
+<CodeSample>
+
+```js
+customerSDK.updateCustomerPage({
+  url: "https://developers.livechatinc.com/",
+  title: "LiveChat for Developers"
+});
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | shape | type   | description |
+| --------- | ----- | ------ | ----------- |
+| page      |       |        |             |
+|           | url   | string |             |
+|           | title | string |             |
+
+### updateLastSeenTimestamp
+
+<CodeSample>
+
+```js
+customerSDK
+  .updateLastSeenTimestamp("ON0X0R0L67", 1500646701447)
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+</CodeSample>
+
+Arguments:
+
+| arguments | type   | description |
+| --------- | ------ | ----------- |
+| chat      | string |             |
+| timestamp | number | optional    |
+
+Returned value:
+
+| shape     | type   |
+| --------- | ------ |
+| timestamp | number |
+
+### \$\$observable
+
+You can consume all emitted events as a stream with
+[most](https://github.com/mostjs/core) of stream libraries like in example
+[RxJS](https://github.com/reactivex/rxjs). We provide an interop point for this,
+so you can easily convert our SDK to a stream like this:
+
+<CodeSample>
+
+```js
+import Rx from "@reactivex/rxjs";
+
+Rx.Observable.from(visitorSDK).subscribe(([eventName, eventData]) => {
+  console.log(eventName, eventData);
+});
+```
+
+</CodeSample>
+
+## Events
+
+You can listen for emitted events by subscribing to them (using
+[on method](#on)) with your custom JavaScript function. For example, your
+function can be executed every time a message has been received.
+
+### connected
+
+<CodeSample>
+
+```js
+customerSDK.on("connected", payload => {
+  console.log("connected");
+  console.log(payload.chatsSummary);
+  console.log(payload.totalChats);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape        | type     | shape              | type     | description                                        |
+| ------------ | -------- | ------------------ | -------- | -------------------------------------------------- |
+| chatsSummary | object[] |                    |          |                                                    |
+|              |          | id                 |          | Chat's id                                          |
+|              |          | active             | boolean  |                                                    |
+|              |          | users              | string[] | Users' ids                                         |
+|              |          | lastEvent          | object   | Event                                              |
+|              |          | lastEventsPerType  | object   | Map from event types to event objects              |
+|              |          | lastSeenTimestamps | object   | Map from Users' ids to optional lastSeenTimestamps |
+|              |          | lastThread         | string   | Thread's id                                        |
+| totalChats   | number   |                    |          |                                                    |
+
+### connection_lost
+
+<CodeSample>
+
+```js
+customerSDK.on("connection_lost", () => {
+  console.log("connection_lost");
+});
+```
+
+</CodeSample>
+
+This event doesn't carry any additional payload.
+
+### connection_restored
+
+<CodeSample>
+
+```js
+customerSDK.on("connection_restored", payload => {
+  console.log("connection_restored");
+  console.log(payload.chatsSummary);
+  console.log(payload.totalChats);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape        | type     | shape              | type     | description                                        |
+| ------------ | -------- | ------------------ | -------- | -------------------------------------------------- |
+| chatsSummary | object[] |                    |          |                                                    |
+|              |          | id                 |          | Chat's id                                          |
+|              |          | active             | boolean  |                                                    |
+|              |          | users              | string[] | Users' ids                                         |
+|              |          | lastEvent          | object   | Event                                              |
+|              |          | lastEventsPerType  | object   | Map from event types to event objects              |
+|              |          | lastSeenTimestamps | object   | Map from Users' ids to optional lastSeenTimestamps |
+|              |          | lastThread         | string   | Thread's id                                        |
+| totalChats   | number   |                    |          |                                                    |
+
+### customer_id
+
+<CodeSample>
+
+```js
+customerSDK.on("customer_id", id => {
+  console.log("customer id is", id);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| argument | type   |
+| -------- | ------ |
+| id       | string |
+
+### disconnected
+
+<CodeSample>
+
+```js
+customerSDK.on("disconnected", reason => {
+  console.log(reason);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| argument | type   | description |
+| -------- | ------ | ----------- |
+| reason   | string | Optional    |
+
+### chat_properties_updated
+
+<CodeSample>
+
+```js
+customerSDK.on("chat_properties_updated", payload => {
+  console.log(payload.chat);
+  console.log(payload.properties);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape      | type   | description     |
+| ---------- | ------ | --------------- |
+| chat       | string | Chat's id       |
+| properties | object | Chat properties |
+
+### chat_thread_properties_updated
+
+<CodeSample>
+
+```js
+customerSDK.on("chat_thread_properties_updated", payload => {
+  console.log(payload.chat);
+  console.log(payload.thread);
+  console.log(payload.properties);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape      | type   | description       |
+| ---------- | ------ | ----------------- |
+| chat       | string | Chat's id         |
+| thread     | string | Thread's id       |
+| properties | object | Thread properties |
+
+### last_seen_timestamp_updated
+
+<CodeSample>
+
+```js
+customerSDK.on("last_seen_timestamp_updated", payload => {
+  console.log(payload.chat);
+  console.log(payload.user);
+  console.log(payload.timestamp);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape     | type   | description |
+| --------- | ------ | ----------- |
+| chat      | string | Chat's id   |
+| user      | string | User's id   |
+| timestamp | number |             |
+
+### new_event
+
+You should distinguish received events by their types.
+
+<CodeSample>
+
+```js
+customerSDK.on("new_event", ({ chat, event }) => {
+  switch (event.type) {
+    case "message":
+      console.log("new message - ", event.text);
+      break;
+    default:
+      break;
+  }
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape | type   | description      |
+| ----- | ------ | ---------------- |
+| type  | string | Event's type     |
+| ...   |        | Other properties |
+
+### user_data
+
+<CodeSample>
+
+```js
+customerSDK.on("user_data", user => {
+  console.log(user);
+});
+```
+
+</CodeSample>
+
+User:
+
+| shape | type | description |
+| ----- | ---- | ----------- |
+|       |      |             |
+
+### user_joined_chat
+
+<CodeSample>
+
+```js
+customerSDK.on("user_joined_chat", ({ user, chat }) => {
+  console.log({ user, chat });
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape | type   | description |
+| ----- | ------ | ----------- |
+| user  | string | User's ID   |
+| chat  | string | Chat's ID   |
+
+### user_left_chat
+
+<CodeSample>
+
+```js
+customerSDK.on("user_left_chat", ({ user, chat }) => {
+  console.log({ user, chat });
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape | type   | description |
+| ----- | ------ | ----------- |
+| user  | string | User's ID   |
+| chat  | string | Chat's ID   |
+
+### user_is_typing
+
+<CodeSample>
+
+```js
+customerSDK.on("user_is_typing", payload => {
+  console.log(
+    "user with " + payload.user + " id is writing something in " + payload.chat
+  );
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape | type   | description |
+| ----- | ------ | ----------- |
+| chat  | string | Chat's id   |
+| user  | string | User's id   |
+
+### user_stopped_typing
+
+<CodeSample>
+
+```js
+customerSDK.on("user_stopped_typing", payload => {
+  console.log(
+    "user with " + payload.user + " id stopped writing in " + payload.chat
+  );
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape | type   | description |
+| ----- | ------ | ----------- |
+| chat  | string | Chat's id   |
+| user  | string | User's id   |
+
+### thread_closed
+
+<CodeSample>
+
+```js
+customerSDK.on("thread_closed", ({ chat }) => {
+  console.log(chat);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape | type   | description |
+| ----- | ------ | ----------- |
+| chat  | string | Chat's id   |
+
+### thread_summary
+
+<CodeSample>
+
+```js
+customerSDK.on("thread_summary", summary => {
+  console.log(summary);
+});
+```
+
+</CodeSample>
+
+Payload:
+
+| shape       | type   | description |
+| ----------- | ------ | ----------- |
+| id          | string |             |
+| chat        | string | Chat's ID   |
+| order       | number |             |
+| totalEvents | number |             |
+
+# Changelog
+
+#### [v2.0.0-alpha.0] - 2018-08-17
+
+Initial alpha release.
