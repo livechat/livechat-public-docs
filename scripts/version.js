@@ -267,7 +267,7 @@ if (argv.type) {
     case "new": {
       if (argv.newVersion && argv.fromVersion) {
         const silentState = shell.config.silent; // save old silent state
-        // shell.config.silent = true;
+        shell.config.silent = true;
 
         const newVersion = `v${argv.newVersion.toFixed(1)}`;
         const fromVersion = `v${argv.fromVersion.toFixed(1)}`;
