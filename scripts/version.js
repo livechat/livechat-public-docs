@@ -77,6 +77,9 @@ const createNewVersion = (newVersion, baseVersion, group) => {
       process.stdout.write("Done\n");
       break;
   }
+
+  console.log("Remember to update apiVersion in the documents' metadata");
+  console.log("Remember to update ALL_VERSIONS in constants");
 };
 
 const makeStable = (version, previousVersion, group) => {
@@ -92,6 +95,7 @@ const makeStable = (version, previousVersion, group) => {
       shell.exec(
         `git mv ${CONF_API_BASE_URL}/v${version}/index.mdx ${CONF_API_BASE_URL}/`
       );
+      shell.rm("-R", `${CONF_API_BASE_URL}/v${version}`);
 
       process.stdout.write("Done\n");
 
@@ -149,6 +153,7 @@ const makeStable = (version, previousVersion, group) => {
       shell.exec(
         `git mv ${CUSTOMER_SDK_BASE_URL}/v${version}/index.mdx ${CUSTOMER_SDK_BASE_URL}/`
       );
+      shell.rm("-R", `${CUSTOMER_SDK_BASE_URL}/v${version}`);
 
       process.stdout.write("Done\n");
 
@@ -162,6 +167,7 @@ const makeStable = (version, previousVersion, group) => {
       shell.exec(
         `git mv ${JS_API_BASE_URL}/v${version}/index.mdx ${JS_API_BASE_URL}/`
       );
+      shell.rm("-R", `${JS_API_BASE_URL}/v${version}`);
 
       process.stdout.write("Done\n");
       break;
