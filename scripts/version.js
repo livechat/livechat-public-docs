@@ -1,73 +1,188 @@
 const shell = require("shelljs");
 const argv = require("yargs").argv;
 
+const CONF_API_BASE_URL = "./content/management/configuration-api";
+const AGENT_CHAT_API_BASE_URL = "./content/messaging/agent-chat-api";
+const CUSTOMER_CHAT_API_BASE_URL = "./content/messaging/customer-chat-api";
+const CUSTOMER_SDK_BASE_URL = "./content/extending-chat-widget/customer-sdk";
+const JS_API_BASE_URL = "./content/extending-chat-widget/javascript-api";
+
+const createNewVersion = (newVersion, baseVersion, group) => {
+  switch (group) {
+    case "default":
+      console.log(`Creating new version v${newVersion} from v${baseVersion}`);
+
+      // configuration-api
+      process.stdout.write(`Creating configuration-api for v${newVersion}...`);
+
+      shell.mkdir(`${CONF_API_BASE_URL}/v${newVersion}`);
+      shell.cp(
+        "-Rn",
+        `${CONF_API_BASE_URL}/v${baseVersion}/.`,
+        `${CONF_API_BASE_URL}/v${newVersion}`
+      );
+
+      process.stdout.write("Done\n");
+
+      // agent-chat-api
+      process.stdout.write(`Creating agent-chat-api for v${newVersion}...`);
+      shell.mkdir(`${AGENT_CHAT_API_BASE_URL}/v${newVersion}`);
+      shell.mkdir(`${AGENT_CHAT_API_BASE_URL}/v${newVersion}/rtm-reference`);
+      shell.cp(
+        "-Rn",
+        `${AGENT_CHAT_API_BASE_URL}/v${baseVersion}/.`,
+        `${AGENT_CHAT_API_BASE_URL}/v${newVersion}/`
+      );
+
+      process.stdout.write("Done\n");
+
+      // customer-chat-api
+      process.stdout.write(`Creating customer-chat-api for v${newVersion}...`);
+      shell.mkdir(`${CUSTOMER_CHAT_API_BASE_URL}/v${newVersion}`);
+      shell.mkdir(`${CUSTOMER_CHAT_API_BASE_URL}/v${newVersion}/rtm-reference`);
+      shell.cp(
+        "-Rn",
+        `${CUSTOMER_CHAT_API_BASE_URL}/v${baseVersion}/.`,
+        `${CUSTOMER_CHAT_API_BASE_URL}/v${newVersion}/`
+      );
+
+      process.stdout.write("Done\n");
+      break;
+
+    case "chat-widget":
+      console.log(`Creating new version v${newVersion} from v${baseVersion}`);
+
+      // customer-sdk
+      process.stdout.write(`Creating customer-sdk for v${newVersion}...`);
+
+      shell.mkdir(`${CUSTOMER_SDK_BASE_URL}/v${newVersion}`);
+      shell.cp(
+        "-Rn",
+        `${CUSTOMER_SDK_BASE_URL}/v${baseVersion}/.`,
+        `${CUSTOMER_SDK_BASE_URL}/v${newVersion}`
+      );
+
+      process.stdout.write("Done\n");
+
+      // javascript-api
+      process.stdout.write(`Creating javascript-api for v${newVersion}...`);
+
+      shell.mkdir(`${JS_API_BASE_URL}/v${newVersion}`);
+      shell.cp(
+        "-Rn",
+        `${JS_API_BASE_URL}/v${baseVersion}/.`,
+        `${JS_API_BASE_URL}/v${newVersion}`
+      );
+
+      process.stdout.write("Done\n");
+      break;
+  }
+};
+
+const makeStable = (version, previousVersion, group) => {
+  switch (group) {
+    case "default":
+      // configuration-api
+      process.stdout.write("Moving configuration-api...");
+
+      shell.mkdir(`${CONF_API_BASE_URL}/v${previousVersion}`);
+      shell.exec(
+        `git mv ${CONF_API_BASE_URL}/index.mdx ${CONF_API_BASE_URL}/v${previousVersion}`
+      );
+      shell.exec(
+        `git mv ${CONF_API_BASE_URL}/v${version}/index.mdx ${CONF_API_BASE_URL}/`
+      );
+
+      process.stdout.write("Done\n");
+
+      // agent-chat-api
+      process.stdout.write("Moving agent-chat-api...");
+      shell.mkdir(`${AGENT_CHAT_API_BASE_URL}/v${previousVersion}`);
+      shell.mkdir(
+        `${AGENT_CHAT_API_BASE_URL}/v${previousVersion}/rtm-reference`
+      );
+      shell.exec(
+        `git mv ${AGENT_CHAT_API_BASE_URL}/index.mdx ${AGENT_CHAT_API_BASE_URL}/v${previousVersion}`
+      );
+      shell.exec(
+        `git mv ${AGENT_CHAT_API_BASE_URL}/v${version}/index.mdx ${AGENT_CHAT_API_BASE_URL}/`
+      );
+      shell.exec(
+        `git mv ${AGENT_CHAT_API_BASE_URL}/rtm-reference/index.mdx ${AGENT_CHAT_API_BASE_URL}/v${previousVersion}/rtm-reference`
+      );
+      shell.exec(
+        `git mv ${AGENT_CHAT_API_BASE_URL}/v${version}/rtm-reference/index.mdx ${AGENT_CHAT_API_BASE_URL}/rtm-reference`
+      );
+      shell.rm("-R", `${AGENT_CHAT_API_BASE_URL}/v${version}`);
+      process.stdout.write("Done\n");
+
+      // customer-chat-api
+      process.stdout.write("Moving customer-chat-api...");
+      shell.mkdir(`${CUSTOMER_CHAT_API_BASE_URL}/v${previousVersion}`);
+      shell.mkdir(
+        `${CUSTOMER_CHAT_API_BASE_URL}/v${previousVersion}/rtm-reference`
+      );
+      shell.exec(
+        `git mv ${CUSTOMER_CHAT_API_BASE_URL}/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/v${previousVersion}`
+      );
+      shell.exec(
+        `git mv ${CUSTOMER_CHAT_API_BASE_URL}/v${version}/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/`
+      );
+      shell.exec(
+        `git mv ${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/v${previousVersion}/rtm-reference`
+      );
+      shell.exec(
+        `git mv ${CUSTOMER_CHAT_API_BASE_URL}/v${version}/rtm-reference/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference`
+      );
+      shell.rm("-R", `${CUSTOMER_CHAT_API_BASE_URL}/v${version}`);
+      process.stdout.write("Done\n");
+      break;
+
+    case "chat-widget":
+      // customer-sdk
+      process.stdout.write("Moving customer-sdk...");
+
+      shell.mkdir(`${CUSTOMER_SDK_BASE_URL}/v${previousVersion}`);
+      shell.exec(
+        `git mv ${CUSTOMER_SDK_BASE_URL}/index.mdx ${CUSTOMER_SDK_BASE_URL}/v${previousVersion}`
+      );
+      shell.exec(
+        `git mv ${CUSTOMER_SDK_BASE_URL}/v${version}/index.mdx ${CUSTOMER_SDK_BASE_URL}/`
+      );
+
+      process.stdout.write("Done\n");
+
+      // javascript-api
+      process.stdout.write("Moving javascript-api...");
+
+      shell.mkdir(`${JS_API_BASE_URL}/v${previousVersion}`);
+      shell.exec(
+        `git mv ${JS_API_BASE_URL}/index.mdx ${JS_API_BASE_URL}/v${previousVersion}`
+      );
+      shell.exec(
+        `git mv ${JS_API_BASE_URL}/v${version}/index.mdx ${JS_API_BASE_URL}/`
+      );
+
+      process.stdout.write("Done\n");
+      break;
+  }
+
+  console.log(
+    "Remember to update STABLE_VERSION and LEGACY_VERSIONS in constants"
+  );
+};
+
 if (argv.type) {
   switch (argv.type) {
     case "make-stable": {
       if (argv.fromVersion && argv.toVersion) {
         const silentState = shell.config.silent; // save old silent state
         shell.config.silent = true;
-        const fromVersion = argv.fromVersion;
-        const toVersion = argv.toVersion;
+        const fromVersion = argv.fromVersion.toFixed(1);
+        const toVersion = argv.toVersion.toFixed(1);
+        const group = argv.group || "default";
 
-        // configuration-api
-        process.stdout.write("Moving configuration-api...");
-
-        shell.mkdir(`./content/management/configuration-api/v${fromVersion}`);
-        shell.exec(
-          `git mv ./content/management/configuration-api/index.mdx ./content/management/configuration-api/v${fromVersion}`
-        );
-        shell.exec(
-          `git mv ./content/management/configuration-api/v${toVersion}/index.mdx ./content/management/configuration-api/`
-        );
-
-        process.stdout.write("Done\n");
-
-        // agent-chat-api
-        process.stdout.write("Moving agent-chat-api...");
-        shell.mkdir(`./content/messaging/agent-chat-api/v${fromVersion}`);
-        shell.mkdir(
-          `./content/messaging/agent-chat-api/v${fromVersion}/rtm-reference`
-        );
-        shell.exec(
-          `git mv ./content/messaging/agent-chat-api/index.mdx ./content/messaging/agent-chat-api/v${fromVersion}`
-        );
-        shell.exec(
-          `git mv ./content/messaging/agent-chat-api/v${toVersion}/index.mdx ./content/messaging/agent-chat-api/`
-        );
-        shell.exec(
-          `git mv ./content/messaging/agent-chat-api/rtm-reference/index.mdx ./content/messaging/agent-chat-api/v${fromVersion}/rtm-reference`
-        );
-        shell.exec(
-          `git mv ./content/messaging/agent-chat-api/v${toVersion}/rtm-reference/index.mdx ./content/messaging/agent-chat-api/rtm-reference`
-        );
-        shell.rm("-R", `./content/messaging/agent-chat-api/v${toVersion}`);
-        process.stdout.write("Done\n");
-
-        // customer-chat-api
-        process.stdout.write("Moving customer-chat-api...");
-        shell.mkdir(`./content/messaging/customer-chat-api/v${fromVersion}`);
-        shell.mkdir(
-          `./content/messaging/customer-chat-api/v${fromVersion}/rtm-reference`
-        );
-        shell.exec(
-          `git mv ./content/messaging/customer-chat-api/index.mdx ./content/messaging/customer-chat-api/v${fromVersion}`
-        );
-        shell.exec(
-          `git mv ./content/messaging/customer-chat-api/v${toVersion}/index.mdx ./content/messaging/customer-chat-api/`
-        );
-        shell.exec(
-          `git mv ./content/messaging/customer-chat-api/rtm-reference/index.mdx ./content/messaging/customer-chat-api/v${fromVersion}/rtm-reference`
-        );
-        shell.exec(
-          `git mv ./content/messaging/customer-chat-api/v${toVersion}/rtm-reference/index.mdx ./content/messaging/customer-chat-api/rtm-reference`
-        );
-        shell.rm("-R", `./content/messaging/customer-chat-api/v${toVersion}`);
-        process.stdout.write("Done\n");
-
-        console.log(
-          "Remember to update STABLE_VERSION and LEGACY_VERSIONS in constants"
-        );
+        makeStable(toVersion, fromVersion, group);
 
         shell.config.silent = silentState;
       } else {
@@ -78,70 +193,19 @@ if (argv.type) {
     }
 
     case "new": {
-      if (argv.newVersion) {
+      if (argv.newVersion && argv.fromVersion) {
         const silentState = shell.config.silent; // save old silent state
         shell.config.silent = true;
 
-        const newVersion = argv.newVersion;
-        const fromVersion = argv.fromVersion
-          ? argv.fromVersion
-          : parseFloat(argv.newVersion) - 0.1;
+        const newVersion = argv.newVersion.toFixed(1);
+        const fromVersion = argv.fromVersion.toFixed(1);
+        const group = argv.group || "default";
 
-        if (fromVersion) {
-          console.log(
-            `Creating new version v${newVersion} from v${fromVersion}`
-          );
-
-          // configuration-api
-          process.stdout.write(
-            `Creaging configuration-api for v${newVersion}...`
-          );
-
-          shell.mkdir(`./content/management/configuration-api/v${newVersion}`);
-          shell.cp(
-            "-R",
-            `./content/management/configuration-api/v${fromVersion}/.`,
-            `./content/management/configuration-api/v${newVersion}`
-          );
-
-          process.stdout.write("Done\n");
-
-          // agent-chat-api
-          process.stdout.write(`Creaging agent-chat-api for v${newVersion}...`);
-          shell.mkdir(`./content/messaging/agent-chat-api/v${newVersion}`);
-          shell.mkdir(
-            `./content/messaging/agent-chat-api/v${newVersion}/rtm-reference`
-          );
-          shell.cp(
-            "-R",
-            `./content/messaging/agent-chat-api/v${fromVersion}/.`,
-            `./content/messaging/agent-chat-api/v${newVersion}/`
-          );
-
-          process.stdout.write("Done\n");
-
-          // customer-chat-api
-          process.stdout.write(
-            `Creaging customer-chat-api for v${newVersion}...`
-          );
-          shell.mkdir(`./content/messaging/customer-chat-api/v${newVersion}`);
-          shell.mkdir(
-            `./content/messaging/customer-chat-api/v${newVersion}/rtm-reference`
-          );
-          shell.cp(
-            "-R",
-            `./content/messaging/customer-chat-api/v${fromVersion}/.`,
-            `./content/messaging/customer-chat-api/v${newVersion}/`
-          );
-
-          process.stdout.write("Done\n");
-        } else {
-          console.log("--fromVersion is required");
-        }
+        createNewVersion(newVersion, fromVersion, group);
 
         shell.config.silent = silentState;
       } else {
-        console.log("--newVersion is required");
+        console.log("--newVersion and --fromVersion are required");
         shell.exit(1);
       }
 
