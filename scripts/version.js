@@ -246,19 +246,19 @@ const makeStable = (version, group, exclude = []) => {
 if (argv.type) {
   switch (argv.type) {
     case "make-stable": {
-      if (argv.version) {
+      if (argv.newVersion) {
         const silentState = shell.config.silent; // save old silent state
         shell.config.silent = true;
-        const version = `v${argv.version.toFixed(1)}`;
+        const version = `v${argv.newVersion.toFixed(1)}`;
         const group = argv.group || "DEFAULT";
         const exclude = argv.exclude || "";
         const excludeParts = exclude.split(",");
 
-        makeStable(version, fromVersion, group, excludeParts);
+        makeStable(version, group, excludeParts);
 
         shell.config.silent = silentState;
       } else {
-        console.log("--fromVersion and --toVersion are required");
+        console.log("--newVersion is required");
         shell.exit(1);
       }
       break;
