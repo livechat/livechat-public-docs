@@ -1,4 +1,4 @@
-export const VERSIONS_GROUPS = {
+const VERSIONS_GROUPS = {
   DEFAULT: {
     STABLE_VERSION: "3.2",
     LEGACY_VERSIONS: ["2.0", "3.1"],
@@ -13,17 +13,11 @@ export const VERSIONS_GROUPS = {
   },
 };
 
-export const RATES = [
-  "It's unsuable",
-  "Rather poor",
-  "It's OK",
-  "Great",
-  "Excellent",
-];
+const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];
 
-export const SCROLL_OFFSET = 130;
+const SCROLL_OFFSET = 130;
 
-export const SCOPES = [
+const SCOPES = [
   {
     id: "agents--my:rw",
     description: "Write permission for my profile configuration",
@@ -56,7 +50,8 @@ export const SCOPES = [
   },
   {
     id: "accounts--all:rc",
-    description: "Permission for creating, but not managing, new accounts in LiveChat Accounts",
+    description:
+      "Permission for creating, but not managing, new accounts in LiveChat Accounts",
     role: "normal",
   },
   {
@@ -85,26 +80,22 @@ export const SCOPES = [
   },
   {
     id: "groups--my:rw",
-    description:
-      "Write/read permission for groups I'm a member of",
+    description: "Write/read permission for groups I'm a member of",
     role: "administrator",
   },
   {
     id: "groups--my:ro",
-    description:
-      "Read permission for groups I'm a member of",
+    description: "Read permission for groups I'm a member of",
     role: "normal",
   },
   {
     id: "groups--all:rw",
-    description:
-      "Write/read permission for all groups within a license",
+    description: "Write/read permission for all groups within a license",
     role: "administrator",
   },
   {
     id: "groups--all:ro",
-    description:
-      "Read permission for all groups within a license",
+    description: "Read permission for all groups within a license",
     role: "normal",
   },
   {
@@ -228,3 +219,12 @@ export const SCOPES = [
     role: "administrator",
   },
 ];
+
+const constants = {
+  VERSIONS_GROUPS,
+  RATES,
+  SCROLL_OFFSET,
+  SCOPES,
+};
+
+module.exports = constants;
