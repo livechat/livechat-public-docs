@@ -2,21 +2,29 @@
 
 Hello 👋!
 
-The source (markdown & assets) for all of the APIs documentations. Rendered here: https://docs.livechatinc.com/
+The source (markdown & assets) for all of the APIs documentations. Rendered here: https://developers.livechat.com/docs/
 
 ## If you're new to LiveChat
 
-[LiveChat](https://www.livechatinc.com/) is an online customer service software with live support, help desk software and web analytics capabilities. It's used by more than 20,000 companies all over the world. You can find more information here: [LiveChat for Developers](https://developers.livechatinc.com/).
+[LiveChat](https://www.livechat.com/) is an online customer service software with live support, help desk software and web analytics capabilities. It's used by more than 30,000 companies all over the world. You can find more information here: [LiveChat for Developers](https://developers.livechat.com/).
 
-## Support & Feedback
+## Development
 
-Please let us know if you have any thoughts on making this collection complete. We are eager to make the documentations better and better! Drop us a line at developers@livechatinc.com or submit a pull request.
-
-:rocket:
+1. Fetch the repository
+2. Run `npm install`
+3. Run `npm start`
 
 ## Versioning
 
-The API documentation is versioned. Currently, we are using version `3.1` as `stable`, `3.2` as `dev preview` and `2.0` as `legacy`. This versioning is **default** for all articles which aren't grouped.
+Currently, versioning for the Agent Chat API, Customer Chat API, and Configuration API is as follows:
+
+|                 | Agent Chat API | Customer Chat API | Configuration API |
+| --------------- | -------------- | ----------------- | ----------------- |
+| **stable**      | 3.2            | 3.2               | 3.2               |
+| **dev preview** | 3.3            | 3.3               | 3.3               |
+| **legacy**      | 3.1            | 3.1               | 2.0, 3.1          |
+
+This versioning is **default** for all articles which aren't grouped.
 
 ### Grouping versions
 
@@ -43,10 +51,30 @@ weight: 30
 versionGroup: "foo"
 ```
 
-The last step is to add the `versionGroup` and the specified `version` inside your article. Please, also remember to add `versionGroup` to all the siblings (all documents within the same subcategory). You don't have to specify `version` for them, but `versionGroup` is required. 
+The last step is to add the `versionGroup` and the specified `version` inside your article. Please, also remember to add `versionGroup` to all the siblings (all documents within the same subcategory). You don't have to specify `version` for them, but `versionGroup` is required.
 
-## Development
+### Adding a new version
 
-## Structure
+Run this command to automatically create folders and files for a new version of the API documentation.
 
-## Basic Concepts
+`new` e.g. `npm run version -- --type=new --newVersion=3.5 --fromVersion=3.1` (create new version 3.5 based on files from 3.1)
+
+Options:
+
+- `--group`: (default: DEFAULT), for chat widget use `--group=chat-widget`
+- `--exclude`: e.g. `--exclude=agent-chat-api,customer-chat-api`
+
+### Changing the stable version
+
+Run this command to automatically change the stable version of the API documentation. All the necessary files and folders will be created, moved, and deleted.
+
+`make-stable` e.g. `npm run version -- --type=make-stable --newVersion=3.3 --exclude=customer-chat-api` (make version 3.3 stable, current stable version will become legacy)
+
+Options:
+
+- `--group`: (default: DEFAULT), for chat widget use `--group=chat-widget`
+- `--exclude`: e.g. `--exclude=agent-chat-api,customer-chat-api`
+
+## Support & Feedback
+
+Please let us know if you have any thoughts on making this collection complete. We are eager to make the documentations better and better! Drop us a line at developers@livechatinc.com or submit a pull request.
