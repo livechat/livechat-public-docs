@@ -249,12 +249,20 @@ if (argv.type) {
       if (argv.newVersion) {
         const silentState = shell.config.silent; // save old silent state
         shell.config.silent = true;
-        const version = `v${argv.newVersion.toFixed(1)}`;
+        const version = argv.newVersion.toFixed(1);
         const group = argv.group || "DEFAULT";
         const exclude = argv.exclude || "";
         const excludeParts = exclude.split(",");
 
-        makeStable(version, group, excludeParts);
+        const groupVersions = VERSIONS_GROUPS[group];
+
+        if (groupVersions.STABLE_VERSION.includes(version)) {
+          console.log(`${version} is already stable`);
+        } else if (!groupVersions.ALL_VERSIONS.includes(version)) {
+          console.log(`${version} does not exists`);
+        } else {
+          makeStable(`v${version}`, group, excludeParts);
+        }
 
         shell.config.silent = silentState;
       } else {
@@ -269,13 +277,26 @@ if (argv.type) {
         const silentState = shell.config.silent; // save old silent state
         shell.config.silent = true;
 
-        const newVersion = `v${argv.newVersion.toFixed(1)}`;
-        const fromVersion = `v${argv.fromVersion.toFixed(1)}`;
+        const newVersion = argv.newVersion.toFixed(1);
+        const fromVersion = argv.fromVersion.toFixed(1);
         const group = argv.group || "DEFAULT";
         const exclude = argv.exclude || "";
         const excludeParts = exclude.split(",");
 
-        createNewVersion(newVersion, fromVersion, group, excludeParts);
+        const groupVersions = VERSIONS_GROUPS[group];
+
+        if (groupVersions.ALL_VERSIONS.includes(newVersion)) {
+          console.log(`${newVersion} already exists`);
+        } else if (!groupVersions.ALL_VERSIONS.includes(fromVersion)) {
+          console.log(`${fromVersion} does not exists`);
+        } else {
+          createNewVersion(
+            `v${newVersion}`,
+            `v${fromVersion}`,
+            group,
+            excludeParts
+          );
+        }
 
         shell.config.silent = silentState;
       } else {
