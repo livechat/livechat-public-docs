@@ -9,21 +9,129 @@ desc: 'Global Accounts API'
 
 # Introduction
 
-<!--
-- What this API is for
-- When to use it
-- Versioning
-- Authorization/limits etc.
- -->
+Global Accounts API is responsible for managing your organization resources like: accounts, organizations, roles, passwords etc.
+
+## When to use Global Accounts Web API
+
+If you want to build custom panel in order to manage your organization, or integrate it with existing management software then it's place to go.
+
+## Versioning
+
+This document describes the **Global Accounts Web API v2**. This is the latest stable version recommended for the production use.
+
+## Authorization
+
+In Global Accounts API you can authorize using **Basic** and *Bearer* authorization types in following way:
+
+### Bearer Authorization
+
+Possible formats are:
+
+* HTTP call with the header `Authorization: Bearer <access_token>` - Recommended
+* HTTP call with the `?code=<access_token>` param
+
+### Basic Authorization
+
+HTTP call with the header `Authorization: Basic b64(<account_id>:<personal_token>)`
+
+Where `account_id` is unique account identification `string` and `personal_token` is token generated for given account by using  #TODO(wstaw metodę) and `b64()` is a Base 64 standard encoding.
+
 
 # Key Concepts
 
-<!-- You can use this section to describe different data structures that are important in this API reference
-Nice reference: https://developers.livechat.com/docs/extending-chat-widget/customer-sdk/#key-concepts -->
+Global Accounts is responsible for managing accounts, organizations, security and users access. System consists of few essentials objects types:
+
+* Account - Representation of user account, one account could be in many organizations
+* Organization - Organizations group accounts into one set. Each organization must contain at least one account and one owner. An account can be assigned to many organizations at once. The default organization is the first assigned to a given account.
+* OAuth Client - OAuth client is an application that has access to a resource using a bearer token. The bearer token is authenticated by the resource owner.
+* Role - Role is set of permissions (**scopes**) that could be assigned to account. There are predefined roles but user can also create its own ones.
+* Scope - Scope describe user access for given resource type
+* Personal Token - Personal access tokens are lifetime tokens used to perform simple API tasks. They are designed as basic authentication API keys.
+
+## Account
+
+```json
+  {
+    "account_id": "28df1a50-84fa-490c-9615-5b77d507c393", // Unique account identifier
+    "name": "", // Account name (nick, first, second name or both)
+    "email": "john@example.com", // email related to an account
+    "email_verified": false, // Email is correct (account performed some email action or is validated in third party)
+    "default_product": null, // Default product that account uses
+    "default_organization_id": null, // ID of default organization that accounts belongs to
+    "avatar_url": "https://gravatar.com/avatar/4ce8115a796c613862684b5b048fa623?s=401&d=robohash&r=x", // Account's avatar, default `null`
+    "roles": [ // Array of account roles
+     ...
+    ],
+    "updated_at": "2020-01-31T15:20:10Z", // Date of account last update
+    "created_at": "2020-01-16T13:37:28Z" // Date of account creation
+  }
+```
 
 ## Organization
 
-## Account
+```json
+  {
+    "organization_id": "e19f32f5-1546-442c-b8e7-bfdd1f4dc828", // Unique organization identifier
+    "name": "Organization with name", // Organization name
+    "company: { // Could be `nil` if no company details are set
+        "website":"", // Company primary website
+        "phone":"" // Company phone number
+    }
+  }
+```
+
+## OAuth Client
+
+```json
+[
+  {
+    "name": "app name", // Application name
+    "organization_id": "59aa5076-13c5-4ce5-b13a-07d33e838acf", // Organization which created a client
+    "client_id": "05b7023b3a27b021cc48785fdafaa12f", // Unique client identifier
+    "visibility": "private", // Describes if an application is `private`, `public` or `lc`, private applications authenticate accounts from a single organization, and application is not visible in the market for others, `lc` doesn't require consent confirmation
+    "redirect_uri": "http://localhost:9000", // List of possible redirection URIs separated by a comma
+    "configuration_uri" : null, // If defined it receives a webhook with an access token, the webhook is sent only once - on first authorization for a given organization, account and client
+    "type": "server_side_app", // Descirbes if application is `javascript_app`, `mobile` (Public clients) or `server_side_app` (Private client).
+    "secret": "a2f6762c711e611d39a429c1deb42aa3", // Obtained when creating an application, useful only for `server_side_app`.
+    "scopes": "accounts-all:rw" // List of authorization scopes required by the client.
+  }
+```
+
+## Role
+
+```json
+  {
+    "role_id": "728b99be-848c-11ea-9b91-005056a007e9", // Unique role definition ID
+    "product": "Accounts", // Product name, one of `LiveChat`, `Accounts`
+    "role": "owner", // Role name, one of `owner`, `viceowner`, `administrator`, `normal` or custom name for custom roles
+    "type": "primary", // Role type, one of `primary` (obligatory Global Accoutns role), `secondary` (basic product role) and `custom` for custom defined roles
+    "predefined": true // Boolean indication if role is common across all organizations or if it's defined only for one organization
+  }
+```
+
+## Scope
+
+```json
+  {
+    "scope": "webhooks_manage", // Unique value of a scope
+    "description": "add, update and delete webhooks", // Short explanation of the scope and permissions it gives
+    "product": "LiveChat", // The name of the product which defines the scope, one of `LiveChat` or `Accounts`
+  }
+```
+
+## Personal Token
+
+```json
+  {
+    "personal_token_id": "9647bb14-066d-40e4-8799-1fc80f40", // Unique personal token identifier
+    "personal_token": "abcde1234" // Random string, returned only during creation
+    "name": "test", // Custom name related to token
+    "scope": "archives_read", // Granted scopes
+    "organization_id": "59aa5076-13c5-4ce5-b13a-07d33e838acf", // Token owner`s organization
+    "account_id": "28df1a50-84fa-490c-9615-5b77d507c393", // Token owner`s account id
+    "created_at": "2019-09-03T12:53:04+02:00" // Date when the token was created
+  }
+```
 
 # Methods
 
