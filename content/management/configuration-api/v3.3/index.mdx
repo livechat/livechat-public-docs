@@ -703,6 +703,8 @@ Unlike Agents, Bot don't have passwords or emails - you cannot log in as a Bot.
 
 ### Create Bot
 
+Creates a new Bot.
+
 #### Specifics
 
 |                 |                                                                    |
@@ -712,21 +714,24 @@ Unlike Agents, Bot don't have passwords or emails - you cannot log in as a Bot.
 
 #### Request
 
-| Request object                       | Type       | Required | Notes                                                                                                                                  |
-| ------------------------------------ | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                               | `string`   | Yes      | Display name                                                                                                                           |
-| `avatar`                             | `string`   | No       | Avatar URL                                                                                                                             |
-| `max_chats_count`                    | `int`      | No       | Max. number of incoming chats that can be routed to the Bot; default: 6.                                                               |
-| `groups`                             | `object[]` | No       | Groups the Bot belongs to.                                                                                                             |
-| `groups[].id`                        | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                       |
-| `groups[].priority` __*__            | `string`   | Yes      | Bot's priority in a group; required only when `group`'s included.                                                                      |
-| `webhooks`                           | `object`   | No       | Webhooks sent to the Bot; for more info on possible values and payload, see [Webhooks](#webhooks). Webhooks work only for online Bots. |
-| `webhooks.url`                       | `string`   | Yes      | Destination URL for webhooks; required only when `webhooks` is included.                                                               |
-| `webhooks.secret_key`                | `string`   | Yes      | Secret sent in webhooks to verify webhook's source; required only when `webhooks`'s included.                                          |
-| `webhooks.actions`                   | `object[]` | Yes      | [Triggering actions](#triggering-actions); required only when `webhooks`'s included.                                                   |
-| `webhooks.actions[].name`            | `string`   | Yes      | The name of the triggering action; required only when `webhooks` is included.                                                          |
-| `webhooks.actions[].filters`         | `object`   | No       | Filters to check if a webhook should be triggered. For more info on filters, see [Register webhook](#register-webhook).                |
-| `webhooks.actions[].additional_data` | `string[]` | No       | Additional data that will arrive with webhooks.                                                                                        |
+| Parameter                              | Required | Data type  | Notes                                                                                                                                  |
+| -------------------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                 | Yes      | `string`   | Display name                                                                                                                           |
+| `avatar`                               | No       | `string`   | Avatar URL                                                                                                                             |
+| `max_chats_count`                      | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6.                                                               |
+| `groups`                               | No       | `object[]` | Groups the Bot belongs to.                                                                                                             |
+| `groups[].id`                          | No       | `int`      | Group ID; required only when `group`'s included.                                                                                       |
+| `groups[].priority` __*__              | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                      |
+| `webhooks`                             | No       | `object`   | Webhooks sent to the Bot; for more info on possible values and payload, see [Webhooks](#webhooks). Webhooks work only for online Bots. |
+| `webhooks.url`                         | Yes      | `string`   | Destination URL for webhooks; required only when `webhooks` is included.                                                               |
+| `webhooks.secret_key`                  | Yes      | `string`   | Secret sent in webhooks to verify webhook's source; required only when `webhooks`'s included.                                          |
+| `webhooks.actions`                     | Yes      | `object[]` | [Triggering actions](#triggering-actions); required only when `webhooks`'s included.                                                   |
+| `webhooks.actions[].name`              | Yes      | `string`   | The name of the triggering action; required only when `webhooks` is included.                                                          |
+| `webhooks.actions[].filters`           | No       | `object`   | Filters to check if a webhook should be triggered. For more info on filters, see [Register webhook](#register-webhook).                |
+| `webhooks.actions[].additional_data`   | No       | `string[]` | Additional data that will arrive with webhooks.                                                                                        |
+| `work_scheduler`                       | No       | `object`   | Work scheduler options to set for the new Bot.                                                                                         |
+| `work_scheduler.**.<work_scheduler>`   | No       | `object`   | `<work_scheduler>` values __***__.                                                                                                     |
+| `timezone`                             | No       | `string`   | The time zone in which the Bot's work scheduler should operate. Required if `work_scheduler` is provided.                                       |
 
 __*__ Possible values for the `groups[].priority` parameter:
 
@@ -735,6 +740,21 @@ __*__ Possible values for the `groups[].priority` parameter:
 | `first`        |                           The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **Bot** priority option in the LiveChat App.                           |
 | `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
 | `last`         |              The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.               |
+
+__**__ Possible values for the `work_scheduler` object keys:
+
+- `sunday`
+- `monday`
+- `tuesday`
+- `wednesday`
+- `thursday`
+- `friday`
+- `saturday`
+  
+__***__ `<work_scheduler>` contains the following fields:
+
+- `start` (`string`) - the time when the Bot starts accepting chats, in the format: `HH:MM`
+- `end` (`string`) - the time when the Bot finishes accepting chats, in the format: `HH:MM`
 
 </Text>
 
@@ -811,6 +831,8 @@ curl -X POST \
 
 ### Update Bot
 
+Updates an existing Bot.
+
 #### Specifics
 
 |                 |                                                                                         |
@@ -820,23 +842,26 @@ curl -X POST \
 
 #### Request
 
-| Parameter                            | Required | Data type  | Notes                                                                                                                   |
-| ------------------------------------ | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `id`                                 | Yes      | `string`   | Bot ID                                                                                                                  |
-| `name`                               | No       | `string`   | Display name                                                                                                            |
-| `avatar`                             | No       | `string`   | Avatar URL                                                                                                              |
-| `max_chats_count`                    | No       | `int`      | Maximum incoming chats that can be routed to the Bot.                                                                   |
-| `groups`                             | No       | `object[]` | Groups the Bot belongs to                                                                                               |
-| `groups[].id`                        | Yes      | `uint`     | Group ID, required only when `groups`'s present.                                                                        |
-| `groups[].priority` __*__            | Yes      | `string`   | Bot's priority in the group; required only when `groups` is included.                                                   |
-| `default_group_priority` __**__      | No       | `string`   | The default routing priority for a group without defined priority.                                                      |
-| `webhooks`                           | No       | `object`   | Webhooks sent to the Bot. Webhooks work only for online Bots.                                                           |
-| `webhooks.url`                       | Yes      | `string`   | Destination URL for webhooks; required only when `webhooks` is present.                                                 |
-| `webhooks.secret_key`                | Yes      | `string`   | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included.                           |
-| `webhooks.actions`                   | Yes      | `object[]` | [Triggering actions](#triggering-actions); required only when `webhooks` is included.                                   |
-| `webhooks.actions[].name`            | Yes      | `string`   | The name of the triggering action; required only when `webhooks` is included.                                           |
-| `webhooks.actions[].filters`         | No       | `object`   | Filters to check if a webhook should be triggered. For more info on filters, see [Register webhook](#register-webhook). |
-| `webhooks.actions[].additional_data` | No       | `string[]` | Additional data arriving with the webhook.                                                                              |
+| Parameter                            | Required | Data type | Notes                                                                                                                   |
+| ------------------------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `id`                                 | Yes      | `string`  | Bot ID                                                                                                                  |
+| `name`                               | No       | `string`  | Display name                                                                                                            |
+| `avatar`                             | No       | `string`  | Avatar URL                                                                                                              |
+| `max_chats_count`                    | No       | `int`     | Maximum incoming chats that can be routed to the Bot.                                                                   |
+| `groups`                             | No       | `object[]`| Groups the Bot belongs to                                                                                               |
+| `groups[].id`                        | Yes      | `uint`    | Group ID, required only when `groups`'s present.                                                                        |
+| `groups[].priority` __*__            | Yes      | `string`  | Bot's priority in the group; required only when `groups` is included.                                                   |
+| `default_group_priority` __**__      | No       | `string`  | The default routing priority for a group without defined priority.                                                      |
+| `webhooks`                           | No       | `object`  | Webhooks sent to the Bot. Webhooks work only for online Bots.                                                           |
+| `webhooks.url`                       | Yes      | `string`  | Destination URL for webhooks; required only when `webhooks` is present.                                                 |
+| `webhooks.secret_key`                | Yes      | `string`  | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included.                           |
+| `webhooks.actions`                   | Yes      | `object[]`| [Triggering actions](#triggering-actions); required only when `webhooks` is included.                                   |
+| `webhooks.actions[].name`            | Yes      | `string`  | The name of the triggering action; required only when `webhooks` is included.                                           |
+| `webhooks.actions[].filters`         | No       | `object`  | Filters to check if a webhook should be triggered. For more info on filters, see [Register webhook](#register-webhook). |
+| `webhooks.actions[].additional_data` | No       | `string[]`| Additional data arriving with the webhook.                                                                              |
+| `work_scheduler`                     | No       | `object`  | Work scheduler options to set for the new Bot.                                                                          |
+| `work_scheduler.***.<work_scheduler>`| No       | `object`  | `<work_scheduler>` values __****__.                                                                                      |
+| `timezone`                           | No       | `string`  | The time zone in which the Bot's work scheduler should operate. Required if `work_scheduler` is provided.                        |
 
 __*__ The table below presents the possible values for the `groups[].priority` parameter:
 
@@ -846,7 +871,7 @@ __*__ The table below presents the possible values for the `groups[].priority` p
 | `normal`        | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
 | `last`          |              The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.               |
 
-__**__ The table below presents the possible values for the `default_group_priority` parameter:
+__**__ The table below presents the possible values for the `default_group_priority` parameter: 
 
 | Possible values |                                                                                                      Notes                                                                                                      |
 | --------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -855,6 +880,21 @@ __**__ The table below presents the possible values for the `default_group_prior
 | `last`          |               The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                |
 | `supervisor`    |                                                                       Bot works as `supervisor` so it will not be assigned to any chats.                                                                        |
 
+__***__ Possible values for the `work_scheduler` object keys:
+
+- `sunday`
+- `monday`
+- `tuesday`
+- `wednesday`
+- `thursday`
+- `friday`
+- `saturday`
+  
+__****__ `<work_scheduler>` contains the following fields:
+
+- `start` (`string`) - the time when the Bot starts accepting chats, in the format: `HH:MM`
+- `end` (`string`) - the time when the Bot finishes accepting chats, in the format: `HH:MM`
+  
 #### Response
 
 No response payload (`200 OK`).
@@ -867,7 +907,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.0/configuration/action/update_bot \
+  https://api.livechatinc.com/v3.3/configuration/action/update_bot \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
