@@ -25,7 +25,7 @@ import {
 import { Header as PageHeader } from "../components/core/Page";
 import Rating from "../components/core/Rating";
 
-import { Headings, CodeBlocks, Scopes } from "../components/extensions";
+import { Headings, CodeBlocks, Scopes, Errors } from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 
@@ -39,6 +39,7 @@ const components = {
   Scopes,
   RichMessagePreview,
   Link,
+  Errors,
 };
 
 export default ({ data: { mdx, allMdx } }) => {

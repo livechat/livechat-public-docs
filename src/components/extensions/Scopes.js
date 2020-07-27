@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { SCOPES } from "../../constant";
 
-const HeadingLink = styled.a`
+export const HeadingLink = styled.a`
   color: inherit;
   text-decoration: none;
   position: relative;
@@ -20,7 +20,7 @@ const HeadingLink = styled.a`
   }
 `;
 
-const TableWrapper = styled.div`
+export const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
 `;
