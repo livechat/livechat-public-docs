@@ -693,6 +693,9 @@ If a customer starts a chat via [**Start Chat**](/messaging/customer-chat-api/v3
 [**Activate Chat**](/messaging/customer-chat-api/v3.3/rtm-reference/#activate-chat) with the `chat.access` parameter,
 `chat.access` overrides the auto access assigned to the thread.
 
+Auto access rules are ordered using a linked list. Each of them points to the next element by keeping its `id` in the `next_id` field.
+For the last element of the list, the `next_id` is empty.
+
 ## Methods
 
 <Section>
@@ -711,34 +714,35 @@ Creates an `auto access` data structure, which is a set of conditions for the tr
 | Required scopes| `access_rules:rw`                                                             |
 
 
-| Parameter       | Required     | Data type | Notes                         |
-| --------------- | ------------ | --------- | ----------------------------- |
-| `access`        | Yes          | `object`  | Destination access            |
-| `access.groups` | Yes          | `[]int`   | Destination groups            |
-| `conditions`__**__   | Yes          | `object`  | Conditions to check                |
-| `conditions.customer_url` | No      | `object`  | The condition that matches on `customer_page.url` from **Login** or `url` from **Update Customer Page** |
-| `conditions.customer_domain` | No   | `object`  | The condition that matches on the domain of the `customer_url` |
-| `conditions.customer_*.values` | No | `[]match_object`_*_ | Positive match, may not be used together with `exclude_values` |
-| `conditions.customer_*.exclude_values` | No | `[]match_object` | Negative match |
-| `conditions.geolocation` | No   | `object`  | The condition that matches on the customer's geolocation |
-| `conditions.geolocation.values` | Yes | `[]geolocation_object`__**__ | An array of objects; matches when at least one subcondition matches. |
-| `description`   | No           | `string`  | Description of the auto access  |
+| Parameter                              | Required     | Data type                    | Notes                                                                                                   |
+| -------------------------------------- | ------------ | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `access`                               | Yes          | `object`                     | Destination access                                                                                      |
+| `access.groups`                        | Yes          | `[]int`                      | Destination groups                                                                                      |
+| `conditions`__**__                     | Yes          | `object`                     | Conditions to check                                                                                     |
+| `conditions.customer_url`              | No           | `object`                     | The condition that matches on `customer_page.url` from **Login** or `url` from **Update Customer Page** |
+| `conditions.customer_domain`           | No           | `object`                     | The condition that matches on the domain of the `customer_url`                                          |
+| `conditions.customer_*.values`         | No           | `[]match_object`_*_          | Positive match, may not be used together with `exclude_values`                                          |
+| `conditions.customer_*.exclude_values` | No           | `[]match_object`             | Negative match                                                                                          |
+| `conditions.geolocation`               | No           | `object`                     | The condition that matches on the customer's geolocation                                                |
+| `conditions.geolocation.values`        | Yes          | `[]geolocation_object`__**__ | An array of objects; matches when at least one subcondition matches.                                    |
+| `description`                          | No           | `string`                     | Description of the auto access                                                                          |
+| `next_id`                              | No           | `string`                     | ID of an existing auto access. Leave empty if the new auto access should be the last.                   |
 
 __*__ `<match_object>` structure:
 
-| Parameter   | Required | Data type | Notes |
-| ----------- | -------- | --------- | ----- |
-| `value`     | Yes      | `string`  | A value to match |
-| `exact_match` | No     | `bool`    | If set to `false`, a `match_object.value` will be matched as a substring of the customer URL or domain. |
+| Parameter     | Required | Data type | Notes                                                                                                   |
+| ------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| `value`       | Yes      | `string`  | A value to match                                                                                        |
+| `exact_match` | No       | `bool`    | If set to `false`, a `match_object.value` will be matched as a substring of the customer URL or domain. |
 
 __**__ the `geolocation_object` structure.  The condition is fulfilled only when all of the specified fields match:
 
-| Parameter   | Required | Data type | Example |
-| ----------- | -------- | --------- | ----- |
-| `country`   | No | `string` | "United States |
-| `country_code` | No | `string` | "US" |
-| `region` | No | `string` | "California" |
-| `city` | No | `string` | "Mountain View" |
+| Parameter      | Required | Data type | Example         |
+| -------------- | -------- | --------- | --------------- |
+| `country`      | No       | `string`  | "United States  |
+| `country_code` | No       | `string`  | "US"            |
+| `region`       | No       | `string`  | "California"    |
+| `city`         | No       | `string`  | "Mountain View" |
 
 
 </Text>
@@ -774,7 +778,8 @@ curl -X POST \
               }
             ]
           }
-        }
+        },
+        "next_id": "1faad6f5f1d6e8fdf27e8af9839783b7"
       }'
 ```
 
@@ -854,7 +859,8 @@ curl -X POST \
           }
         ]
       }
-    }
+    },
+    "next_id": "pqi8oasdjahuakndw9nsad9na"
   }
 ]
 ```
@@ -883,7 +889,7 @@ Deletes an existing `auto access` data structure specified by its ID.
 
 | Parameter              | Required     | Data type | Notes                         |
 | ---------------------- | ------------ | --------- | ----------------------------- |
-| `id`                   | Yes          | `string`  | auto access ID          |
+| `id`                   | Yes          | `string`  | Auto access ID                |
 
 #### Response
 
@@ -898,6 +904,54 @@ No response payload (`200 OK`).
 ```shell
 curl -X POST \
   https://api.livechatinc.com/v3.3/configuration/action/delete_auto_access \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "id": "pqi8oasdjahuakndw9nsad9na"
+  }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Reorder Auto Access
+
+Moves an existing `auto access` data structure, specified by `id`, in front of another, specified by `next_id`. 
+If `next_id` is empty, then the auto access will be placed at the end.
+
+#### Specifics
+
+|                |                                                                                  |
+| -------------- | -------------------------------------------------------------------------------- |
+| Method URL     | `https://api.livechatinc.com/v3.3/configuration/action/reorder_auto_access`      |
+| Required scopes| `access_rules:rw`                                                                |
+
+
+| Parameter              | Required     | Data type | Notes                                                                                                                     |
+| ---------------------- | ------------ | --------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | Yes          | `string`  | ID of the auto access to move                                                                                             |
+| `next_id`              | No           | `string`  | ID of the auto access which should follow the moved auto access. Leave empty if the moved auto access should be the last. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/reorder_auto_access \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
