@@ -46,7 +46,8 @@ Use one of these 2 ways of pinging the server:
 - **Protocol message with the ping action**
 
 For web applications and backend integrations (e.g. in Python, Go). Send the following request every 15 seconds:
-```
+
+```json
 {
   "action": "ping",
   "payload": {}
@@ -892,9 +893,9 @@ It returns threads that the current Agent has access to in a given chat.
 | Parameter          | Required | Data type | Notes                                                                                      |
 | ------------------ | -------- | --------- | ------------------------------------------------------------------------------------------ |
 | `chat_id`          | Yes      | `string`  |                                                                                            |
-| `sort_order` 		 | No       | `string`  | Possible values: `asc` - oldest threads first and `desc` - newest threads first (default). |
-| `limit`            | No       | `number`  | Default: 3, maximum: 100                                                                  |
-| `page_id`    		 | No       | `string`  | 		                                                                                     |
+| `sort_order`       | No       | `string`  | Possible values: `asc` - oldest threads first and `desc` - newest threads first (default). |
+| `limit`            | No       | `number`  | Default: 3, maximum: 100                                                                   |
+| `page_id`          | No       | `string`  |                                                                                            |
 | `min_events_count` | No       | `number`  | Range: 1-100; Specifies the minimum number of events to be returned in the response. It's the **total** number of events, so they can come from more than one thread. You'll get as many latest threads as needed to meet the `min_events_count` condition. |
 
 You cannot use both `limit` and `min_events_count` at the same time.
@@ -959,7 +960,6 @@ You cannot use both `limit` and `min_events_count` at the same time.
 
 </Code>
 </Section>
-
 
 <Section>
 <Text>
@@ -1913,7 +1913,7 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 | **Web API equivalent** | [`remove_user_from_chat`](../#remove-user-from-chat) |
 | **Push message**       | [`user_removed_from_chat`](#user_removed_from_chat)  |
 
-**Request payload**
+#### Request
 
 | Request object | Required | Type     | Notes                                     |
 | -------------- | -------- | -------- | ----------------------------------------- |
@@ -2577,7 +2577,7 @@ It's possible to write to a chat without joining it. The user sending an event w
 <Section>
 <Text>
 
-### List Customer
+### Get Customer
 
 Returns the info about the Customer with a given `customer_id`.
 
@@ -2694,7 +2694,7 @@ Returns the info about the Customer with a given `customer_id`.
 <Section>
 <Text>
 
-### Get Customers
+### List Customers
 
 It returns the list of Customers.
 
@@ -3577,7 +3577,6 @@ It returns the Agents you can transfer a chat to. Agents are sorted ascendingly 
 - The method only returns Agents with statuses **online** and **not accepting chats**. Offline Agents aren't returned.
 - Only chats **with Customers** are taken into account in `total_active_chats`.
 
-
 #### Specifics
 
 |                        |                                                            |
@@ -3592,7 +3591,6 @@ It returns the Agents you can transfer a chat to. Agents are sorted ascendingly 
 | Parameter  | Required | Data type | Notes                                   |
 | ---------- | -------- | --------- | --------------------------------------- |
 | `chat_id`  | Yes      | `string`  | The ID of the chat you want to transfer |
-
 
 </Text>
 <Code>
@@ -3684,6 +3682,7 @@ Here's what you need to know about **pushes**:
 ## Chats
 
 ### `incoming_chat`
+
 Informs about a chat coming with a new thread. The push payload contains the whole chat data structure. If the chat was started with some initial events, the thread object contains them.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3723,6 +3722,7 @@ Informs about a chat coming with a new thread. The push payload contains the who
 | **Webhook equivalent** | [`incoming_chat`](/management/configuration-api/#incoming_chat) |
 
 ### `chat_deactivated`
+
 Informs that a chat was deactivated by closing the currently open thread.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3753,6 +3753,7 @@ Informs that a chat was deactivated by closing the currently open thread.
 ## Chat access
 
 ### `chat_access_granted`
+
 Informs that new, single access to a chat was granted. The existing access isn't overwritten.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3782,6 +3783,7 @@ Informs that new, single access to a chat was granted. The existing access isn't
 | `id`       | Chat id   |
 
 ### `chat_access_revoked`
+
 Informs that access to a certain chat was revoked.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3811,6 +3813,7 @@ Informs that access to a certain chat was revoked.
 | `id`       | Chat Id   |
 
 ### `chat_transferred`
+
 Informs that a chat was transferred to a different group or to an Agent.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3845,9 +3848,16 @@ Informs that a chat was transferred to a different group or to an Agent.
 
 | Object | Notes                        |
 | ------ | ---------------------------- |
-| `thread_id`      | present if the chat is active                        |
-| `transferred_to` | IDs of groups and Agents the chat is now assigned to |
-| `queue`          | present if the chat is queued after the transfer     |
+| `thread_id`      | Present if the chat is active                        |
+| `transferred_to` **\*** | IDs of groups and Agents the chat is now assigned to |
+| `queue`          | Present if the chat is queued after the transfer     |
+
+**\*)**
+One of the following combinations of IDs is possible:
+
+- Both `group_ids` and `agent_ids`. In situations when a chat was transferred to a group and it was immediately assigned to an Agent (even if the chat transfer occurred in the same group).
+- Only `group_ids`. When a chat was transferred to a group and no Agents were available; the queue will be present.
+- Only `agent_ids`. When a chat was transferred directly to an Agent; there'll be no queue.
 
 ## Chat users
 
@@ -3924,6 +3934,7 @@ Informs that a user (Customer or Agent) was removed from a chat.
 ## Events
 
 ### `incoming_event`
+
 Informs about an incoming [event](#events) sent to a chat.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3958,6 +3969,7 @@ Informs about an incoming [event](#events) sent to a chat.
 | **Webhook equivalent** | [`incoming_event`](/management/configuration-api/#incoming_event) |
 
 ### `event_updated`
+
 Informs that an [event](#events) was updated.
 
 <CodeResponse title={'Sample push payload'}>
@@ -3982,6 +3994,7 @@ Informs that an [event](#events) was updated.
 | **Webhook equivalent** | [`event_updated`](/management/configuration-api/#event_updated) |
 
 ### `incoming_rich_message_postback`
+
 Informs about an incoming [rich message](#rich-message) postback. The push payload contains the info on the postback itself, as well as the chat it was sent in.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4011,6 +4024,7 @@ Informs about an incoming [rich message](#rich-message) postback. The push paylo
 ## Properties
 
 ### `chat_properties_updated`
+
 Informs about those chat properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4044,6 +4058,7 @@ Informs about those chat properties that were updated.
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `chat_properties_deleted`
+
 Informs about those chat properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4074,6 +4089,7 @@ Informs about those chat properties that were deleted.
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `thread_properties_updated`
+
 Informs about those thread properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4108,6 +4124,7 @@ Informs about those thread properties that were updated.
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `thread_properties_deleted`
+
 Informs about those thread properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4140,6 +4157,7 @@ Informs about those thread properties that were deleted.
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `event_properties_updated`
+
 Informs about those event properties that were updated.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4174,6 +4192,7 @@ Informs about those event properties that were updated.
 | `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
 
 ### `event_properties_deleted`
+
 Informs about those event properties that were deleted.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4208,6 +4227,7 @@ Informs about those event properties that were deleted.
 ## Thread tags
 
 ### `thread_tagged`
+
 Informs that a chat thread was tagged.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4230,6 +4250,7 @@ Informs that a chat thread was tagged.
 | **Webhook equivalent** | [`thread_tagged`](/management/configuration-api/#thread_tagged) |
 
 ### `thread_untagged`
+
 Informs that a chat thread was untagged.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4254,6 +4275,7 @@ Informs that a chat thread was untagged.
 ## Customers
 
 ### `customer_visit_started`
+
 Informs that a Customer entered the tracked website.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4287,6 +4309,7 @@ Informs that a Customer entered the tracked website.
 | **Webhook equivalent** | -                        |
 
 ### `customer_created`
+
 Informs that a new Customer registered.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4319,6 +4342,7 @@ Informs that a new Customer registered.
 | **Webhook equivalent** | [`customer_created`](/management/configuration-api/#customer_created) |
 
 ### `customer_updated`
+
 Informs that Customer's data was updated.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4352,6 +4376,7 @@ Informs that Customer's data was updated.
 | **Webhook equivalent** | -                  |
 
 ### `customer_page_updated`
+
 Informs that a Customer moved to another page of the website.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4377,6 +4402,7 @@ Informs that a Customer moved to another page of the website.
 | **Webhook equivalent** | -                       |
 
 ### `customer_banned`
+
 Informs that a Customer was banned for a specified number of days.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4400,6 +4426,7 @@ Informs that a Customer was banned for a specified number of days.
 | **Webhook equivalent** | -                 |
 
 ### `customer_visit_ended`
+
 Informs that a Customer left the tracked website.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4424,6 +4451,7 @@ Informs that a Customer left the tracked website.
 ## Status
 
 ### `routing_status_set`
+
 Informs that an Agent's or Bot Agent's status was changed.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4445,6 +4473,7 @@ Informs that an Agent's or Bot Agent's status was changed.
 | **Webhook equivalent** | [`routing_status_set`](/management/configuration-api/v3.2/#routing_status_set)|
 
 ### `agent_disconnected`
+
 Informs that an Agent was disconnected. The payload contains the reason of Customer's disconnection.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4493,6 +4522,7 @@ With this piece of information, the client is able to figure out where it should
 ## Other
 
 ### `incoming_typing_indicator`
+
 Informs that one of the chat users is currently typing a message. The message hasn't been sent yet. The push payload contains the typing indicator object.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4520,6 +4550,7 @@ Informs that one of the chat users is currently typing a message. The message ha
 | **Webhook equivalent** | -                           |
 
 ### `incoming_sneak_peek`
+
 Informs about the message a Customer is currently typing. The push payload contains the sneak peek object.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4547,6 +4578,7 @@ Informs about the message a Customer is currently typing. The push payload conta
 | **Webhook equivalent** | -                     |
 
 ### `events_marked_as_seen`
+
 Informs that a user has seen events up to a specific time.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4569,6 +4601,7 @@ Informs that a user has seen events up to a specific time.
 | **Webhook equivalent** | [`events_marked_as_seen`](/management/configuration-api/#events_marked_as_seen) |
 
 ### `incoming_multicast`
+
 Informs about messages sent via the `multicast` method or by the system.
 
 <CodeResponse title={'Sample push payload'}>
@@ -4675,7 +4708,7 @@ New positions and wait times for queued chats.
 
 </CodeResponse>
 
-#### Possible errors
+## Possible errors
 
 | Type                             | Default Message                       | Notes                                                                                            |
 |----------------------------------|---------------------------------------|--------------------------------------------------------------------------------------------------|
