@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
+import { v4 as uuidv4 } from 'uuid';
 
 const TableWrapper = styled.div`
   width: 100%;
@@ -13,15 +14,15 @@ const Table = ({ headings, bodyItems }) => {
       <table>
         <thead>
           <tr>
-            {headings.map((heading, index) => (
-              <th key={`heading-${index}`}>{heading}</th>
+            {headings.map((heading) => (
+              <th key={`heading-${uuidv4()}`}>{heading}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {bodyItems.map((row, index) => (
-            <tr key={`row-${index}`}>{row.map((item, index) => (
-              <td key={`item-${index}`}>{item}</td>
+          {bodyItems.map((row) => (
+            <tr key={`row-${uuidv4()}`}>{row.map((item) => (
+              <td key={`item-${uuidv4()}`}>{item}</td>
             ))}</tr>
           ))}
         </tbody>
@@ -32,7 +33,7 @@ const Table = ({ headings, bodyItems }) => {
 
 Table.propTypes = {
   headings: PropTypes.arrayOf(PropTypes.string).isRequired,
-  bodyItems: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired
+  bodyItems: PropTypes.array.isRequired
 }
 
 export default Table;
