@@ -6,14 +6,12 @@ const Scopes = ({ scopes }) => {
   const allScopes = scopes.split(",");
   const formattedScopes = allScopes.map((scope) => {
     const newScope = SCOPES.find((item) => item.id === scope);
-    return newScope;
 
-  }).map((scope) => {
-    const scopeArray = [];
-    scopeArray.push(<code className="language-text">{scope.id}</code>)
-    scopeArray.push(scope.role)
-    scopeArray.push(scope.description)
-    return scopeArray;
+    return [
+      <code className="language-text">{newScope.id}</code>,
+      newScope.role,
+      newScope.description
+    ];
   })
   return <Table headings={["Scope", "Role", "Description"]} bodyItems={formattedScopes} />
 };
