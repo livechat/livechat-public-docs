@@ -220,11 +220,92 @@ const SCOPES = [
   },
 ];
 
+const ERRORS = [
+  {
+    id: "authentication",
+    message: "Authentication error",
+    description:
+      "An invalid or expired access token.",
+  },
+  {
+    id: "authorization",
+    message: "Authorization error",
+    description: "User is not allowed to perform the action.",
+  },
+  {
+    id: "entity_too_large",
+    message: "Upload limit exceeded (10MB).",
+    description:
+      "Client's request is too large.",
+  },
+  {
+    id: "internal",
+    message: "Internal server error",
+    description:
+      "",
+  },
+  {
+    id: "license_expired",
+    message: "License expired",
+    description:
+      "The end of license trial or subcription.",
+  },
+  {
+    id: "license_not_found",
+    message: "License not found",
+    description:
+      "License with the specified ID doesn't exist.",
+  },
+  {
+    id: "misdirected_request",
+    message: "Wrong region",
+    description:
+      "Client's request should be performed to another region. The correct region is returned in the optional data object. It helps to figure out where the client should be connected.",
+  },
+  {
+    id: "request_timeout",
+    message: "Request timed out",
+    description:
+      "Timeout threshold is 15 seconds.",
+  },
+  {
+    id: "unsupported_version",
+    message: "Unsupported version",
+    description:
+      "Unsupported protocol version.",
+  },
+  {
+    id: "validation",
+    message: "Wrong format of request",
+    description:
+      "",
+  },
+  {
+    id: "wrong_product_version",
+    message: "Wrong product version",
+    description:
+      "License is not LiveChat 3 (probably still LiveChat 2).",
+  },
+  {
+    id: "chat_inactive",
+    message: "No active chat thread",
+    description:
+      "An action that requires an active thread performed on a chat with no active threads.",
+  },
+  {
+    id: "too_many_requests",
+    message: "Too many requests",
+    description:
+      "The request's rate limit was exceeded. It'll be unblocked automatically after some time.",
+  },
+];
+
 const constants = {
   VERSIONS_GROUPS,
   RATES,
   SCROLL_OFFSET,
   SCOPES,
+  ERRORS,
 };
 
 module.exports = constants;

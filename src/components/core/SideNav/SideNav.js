@@ -20,39 +20,40 @@ import { PopperTooltip } from "@livechat/design-system";
 import { VersionContext } from "../../../contexts";
 import { getVersionColor } from "../../../utils";
 
-const printItems = (items, toggleState, activeUrls, depth = 0) => (
-  <Ul>
-    {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
-      const isActiveItem =
-        (activeUrls &&
-          url === activeUrls[activeUrls.length - 1] &&
-          !isSubcategory) ||
-        "";
+const printItems = (items, toggleState, activeUrls, depth = 0) => {
+  return (
+    <Ul>
+      {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
+        const isActiveItem =
+          (activeUrls &&
+            url === activeUrls[activeUrls.length - 1] &&
+            !isSubcategory) ||
+          "";
 
-      const isActiveSection =
-        activeUrls &&
-        activeUrls.includes(url) &&
-        url.includes(activeUrls[depth]);
+        const isActiveSection =
+          activeUrls &&
+          activeUrls.includes(url) &&
+          url.includes(activeUrls[depth]);
 
-      let redirectUrl = url || "#";
-      return (
-        <Fragment key={`toc-${depth}-${url}`}>
-          <MenuElement
-            url={redirectUrl}
-            title={title}
-            active={isActiveItem}
-            onClick={toggleState(path)}
-          />
-          {itemsInside && (
-            <CollapsableSection expanded={isActiveSection}>
-              {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
-            </CollapsableSection>
-          )}
-        </Fragment>
-      );
-    })}
-  </Ul>
-);
+        let redirectUrl = url || "#";
+        return (
+          <Fragment key={`toc-${depth}-${url}`}>
+            <MenuElement
+              url={redirectUrl}
+              title={title}
+              active={isActiveItem}
+              onClick={toggleState(path)}
+            />
+            {itemsInside && (
+              <CollapsableSection expanded={isActiveSection}>
+                {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
+              </CollapsableSection>
+            )}
+          </Fragment>
+        );
+      })}
+    </Ul>)
+};
 
 const SideNav = ({
   category,
