@@ -233,10 +233,46 @@ const ERRORS = [
     description: "User is not allowed to perform the action.",
   },
   {
+    id: "customer_banned",
+    message: "Customer is banned",
+    description:
+      "The customer had been banned.",
+  },
+  {
     id: "entity_too_large",
     message: "Upload limit exceeded (10MB).",
     description:
       "Client's request is too large.",
+  },
+  {
+    id: "greeting_not_found",
+    message: "Greeting not found",
+    description:
+      "",
+  },
+  {
+    id: "group_not_found",
+    message: "Group not found",
+    description:
+      "",
+  },
+  {
+    id: "group_offline",
+    message: "Group is offline",
+    description:
+      "Thrown in response to Get Predicted Agent.",
+  },
+  {
+    id: "group_unavailable",
+    message: "No agent available for group",
+    description:
+      "Thrown in response to Get Predicted Agent. The group is online, but there are no available Agents.",
+  },
+  {
+    id: "groups_offline",
+    message: "Groups offline",
+    description:
+      "",
   },
   {
     id: "internal",
@@ -275,6 +311,12 @@ const ERRORS = [
       "Unsupported protocol version.",
   },
   {
+    id: "users_limit_reached",
+    message: "Users limit reached	",
+    description:
+      "Displayed on the attempt of logging in. The limit of online Customers for a given license has been reached.",
+  },
+  {
     id: "validation",
     message: "Wrong format of request",
     description:
@@ -297,6 +339,36 @@ const ERRORS = [
     message: "Too many requests",
     description:
       "The request's rate limit was exceeded. It'll be unblocked automatically after some time.",
+  },
+  {
+    id: "pending_requests_limit_reached",
+    message: "Requests limit reached",
+    description:
+      "The limit of pending requests within one websocket connection has been reached. The limit is 10.",
+  },
+  {
+    id: "requester_already_offline",
+    message: "Requester offline",
+    description:
+      "The method is only allowed for the logged in Agents (via RTM API).",
+  },
+  {
+    id: "requester_awaiting_approval",
+    message: "Requester awaiting approval",
+    description:
+      "A new Agent hasn't been approved by the license owner yet.",
+  },
+  {
+    id: "requester_suspended",
+    message: "Requester suspended",
+    description:
+      "The rights of a given Agent have been withdrawn by the license owner.",
+  },
+  {
+    id: "seats_limit_exceeded",
+    message: "Seats limit exceeded",
+    description:
+      "Displayed on the attempt of logging in. All seats within a given license are already taken.",
   },
 ];
 
