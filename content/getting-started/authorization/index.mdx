@@ -269,9 +269,9 @@ This flow is very similar to **Implicit grant**, but contains one additional ste
 The steps are as follows:
 
 - **Step 1:** Create an app in Developer Console and configure the Authorization building block
-- **Step 2:** Redirect the users of your app to the LiveChat OAuth Server, with `code_challenge` and `code_challenge_method` for public client or custom schema redirect url
+- **Step 2:** Redirect the users of your app to the LiveChat OAuth Server, with `code_challenge` and `code_challenge_method` for public client or custom schema redirect uri
 - **Step 3:** Get a code from the URL
-- **Step 4:** Exchange the code for an access token, providing `code_verifier` and `code_challenge_method` if was present in authorization request.
+- **Step 4:** Exchange the code for an access token, providing `code_verifier` and `code_challenge_method` if `code_challenge` was present in authorization request.
 - **Step 5:** Use the token in API calls
 
 ![LiveChat Public Server-Side Apps](images/authorization-code-grant.png)
@@ -374,7 +374,7 @@ https://accounts.livechat.com/token
 | `grant_type`    | yes      | Value: `authorization_code`                                                                                                                                                    |
 | `code`          | yes      | The authorization code returned from the request in the previous step.                                                                                                         |
 | `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                                                                                                                     |
-| `client_secret` | yes      | Unique, confidential identifier of your app from Developer Console (Authorization block).                                                                                      |
+| `client_secret` | no       | Unique, confidential identifier of your app from Developer Console (Authorization block). Required for confidential clients.                                                   |
 | `redirect_uri`  | yes      | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization. |
 | `code_verifier` | no       | If using PKCE, then provide previously generated `code_verifier`                                                                                                               |
 
@@ -399,7 +399,7 @@ The response is a JSON with the following parameters:
 <CodeSample path={'EXCHANGE CODE FOR TOKEN'}>
 
 ```shell
-curl "https://accounts.livechat.com/token" \
+curl "https://accounts.livechat.com/v2/token" \
   -X POST \
   -d "grant_type=authorization_code&\
   code=dal:test_tnlRmy73mg9eaFESA&\
@@ -700,7 +700,7 @@ You can configure many comma-separated redirect URIs for your application. The r
 
 URIs are composed of several parts:
 
-- **scheme** (`http://`, `https://`) - is required and must match exactly. See examples **10** and **11** in the table below.
+- **scheme** (`http://`, `https://`, `my_app://`) - is required and must match exactly. See examples **10** and **11** in the table below. Remember using custom schema will require using **PKCE** extension as well.
 - **host** (`google.pl`, `localhost:3000`, ...) - a hostname or IP and an optional port; is required and must match exactly. See examples **7**, **8**, and **9** in the table below.
 - **path** (`/info`, `/test`, ...) - the client redirect URI path must be a substring of the authorization request redirect path; path traversals are forbidden. Optional. See examples **2**, **3**, **4**, **5**, and **6** in the table below.
 - **query** (`?size=20`, ...) - is forbidden.
