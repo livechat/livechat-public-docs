@@ -4,12 +4,12 @@ category: "getting-started"
 subcategory: "authorization"
 title: "Authorizing API calls"
 tagline: "Build secure LiveChat apps."
-desc: "Learn how to use OAuth 2.0 to access LiveChat data in a secure way."
+desc: "Learn how to use OAuth 2.1 to access LiveChat data in a secure way."
 ---
 
 # Introduction
 
-LiveChat uses [OAuth 2.0](https://oauth.net/2/) protocol for **authentication** and **authorization** for all of its services. Before you continue, make sure you understand the difference between them.
+LiveChat uses [OAuth 2.1](https://oauth.net/2.1/) protocol for **authentication** and **authorization** for all of its services. Before you continue, make sure you understand the difference between them.
 
 - **Authentication** is making sure that somebody really is who they say they are. <br/>_E.g.: Checking your passport at the security check is authentication._
 - **Authorization** is assigning rules about who is allowed to do what. <br/>_E.g.: Allowing you to take first class seat is authorization._
@@ -20,6 +20,10 @@ Throughout the document, we'll also use the terms **public** and **private** app
 
 - **public apps** are available to all LiveChat customers, who can install it from the LiveChat <a href="https://www.livechat.com/marketplace/" target="_blank" rel="noopener noreferrer">Marketplace</a>.
 - **private apps** are only available within a LiveChat license that created the app. They're a way to go if you want to build an internal app for your chat Agents only. Unlike public apps, private apps don't ask users for an access grant.
+
+Also according to (OAuth Specification)[https://oauth.net/2/client-types/] applications can be public and confidential:
+- **javascript apps** are one used on frontend side.
+- **server side apps** are one used on backend side.
 
 ## Use cases
 
@@ -72,7 +76,7 @@ Once you have your credentials, you can send requests to, for example, [Agent Ch
 
 ## Implicit grant
 
-Implicit grant is an authorization flow recommended for JavaScript web apps.
+Implicit grant is an authorization flow recommended for JavaScript web apps. Flow for both **javascript app** and **server side app** are the same.
 
 To set up your own web app, you must define the URL of the app and the list of scopes. Scopes determine which parts of a LiveChat user's account your app will have access to. A LiveChat customer who enters your app URL will be asked to enter their login and password and grant the access for your app. Then, the user is redirected to your app with `access_token` included in the URL.
 
@@ -243,19 +247,31 @@ To make it work, run this app on localhost or [deploy it to Firebase](/getting-s
 Make sure to use the exact same Redirect URI in Developer Console. Also, to use the **Get Customers** method, your app needs the `customers:ro` scope, which you should select in Developer Console.
 When everything is ready, install the app privately for your license.
 
+## PKCE Extension
+In OAuth 2 there was introduced [PKCE (Proof Key for Code Exchange)](https://oauth.net/2/pkce/) extension for authorization code grant flow. 
+It allows public application to use code grant flow and also enables possibility to use custom schema redirects, like: `my_app://` (especially useful with native applications).
+
+How does it work?
+- Client generates `code_verifier` which is minimum 43 long and maximum 128 characters long from following characters: `[A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"`
+- Client the generate `code_challenge` with following `code_challenge_method`:
+-- `plain` - `code_challenge` = `code_verifier`, when no `code_challenge_method` is present then `plain` is assumed.
+-- `S256` - `code_challenge` = `b64(s256(ascii(code_verifier)))` where `b64` is base 64 encoding and `s256` is `SHA256` hash function.
+- Client sends `code_challenge` with authorization request
+- Server responds with code
+- Client sends `code_verifier` during exchanging code for token
+
 ## Authorization code grant
 
-Authorization code grant flow is recommended for server-side apps. Unlike web apps, they can store confidential info, such as **Client Secret**, on a server without ever exposing it.
 When a user runs your app, they are redirected to the LiveChat OAuth Server only once. After successful authorization, the user is redirected back to your app along with a single-use authorization code. Then, your application exchanges the code for an access token and a refresh token using the Client Secret. From now on, the app can regenerate new access tokens without any action required from the user.
 
-This flow is very similar to **Implicit grant**, but contains one additional step of exchanging a code for an access token.
+This flow is very similar to **Implicit grant**, but contains one additional step of exchanging a code for an access token. It also differs for **public** and **confidental** clients, where public clients and custom redirect schemes requires using **PKCE** extension.
 
 The steps are as follows:
 
 - **Step 1:** Create an app in Developer Console and configure the Authorization building block
-- **Step 2:** Redirect the users of your app to the LiveChat OAuth Server
+- **Step 2:** Redirect the users of your app to the LiveChat OAuth Server, with `code_challenge` and `code_challenge_method` for public client or custom schema redirect url
 - **Step 3:** Get a code from the URL
-- **Step 4:** Exchange the code for an access token
+- **Step 4:** Exchange the code for an access token, providing `code_verifier` and `code_challenge_method` if was present in authorization request.
 - **Step 5:** Use the token in API calls
 
 ![LiveChat Public Server-Side Apps](images/authorization-code-grant.png)
@@ -277,13 +293,15 @@ https://accounts.livechat.com/
 
 #### Request
 
-| Parameter       | Required | Description                                                                                                                                                                                                            |
-| --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `response_type` | yes      | Value: `code`                                                                                                                                                                                                          |
-| `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                                                                                                                                                             |
-| `redirect_uri`  | yes      | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                         |
-| `state`         | no       | Any value that might be useful to your application. It's strongly recommended to include an anti-forgery token to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery). |
-| `prompt`        | no       | Value:  `consent`. **For testing purposes.** It forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace.             |
+| Parameter               | Required | Description                                                                                                                                                                                                            |
+|-------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `response_type`         | yes      | Value: `code`                                                                                                                                                                                                          |
+| `client_id`             | yes      | **Client Id** from Developer Console (Authorization block)                                                                                                                                                             |
+| `redirect_uri`          | yes      | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                         |
+| `state`                 | no       | Any value that might be useful to your application. It's strongly recommended to include an anti-forgery token to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery). |
+| `prompt`                | no       | Value:  `consent`. **For testing purposes.** It forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace.             |
+| `code_challenge`        | no       | String consisting of minimum 43 and maximum 128 characters long from following characters: `[A-Z] / [a-z] / [0-9] / "-" / "." / "_" / "~"`.                                                                            |
+| `code_challenge_method` | no       | Value:  `s256` or `plain`.                                                                                                                                                                                             |
 
 </Text>
 <Code>
@@ -295,6 +313,8 @@ https://accounts.livechat.com/
   &client_id=9cbf3a968289727cb3cdfe83ab1d9836
   &redirect_uri=https%3A%2F%2Fmy-application.com
   &state=i8XNjC4b8KVok4uw5RftR38Wgp2BFwql
+  &code_challenge=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU
+  &code_challenge_method=plain
 ```
 
 </CodeSample>
@@ -350,12 +370,13 @@ https://accounts.livechat.com/token
 #### Request
 
 | Parameter       | Required | Description                                                                                                                                                                    |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|-----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `grant_type`    | yes      | Value: `authorization_code`                                                                                                                                                    |
 | `code`          | yes      | The authorization code returned from the request in the previous step.                                                                                                         |
 | `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                                                                                                                     |
 | `client_secret` | yes      | Unique, confidential identifier of your app from Developer Console (Authorization block).                                                                                      |
 | `redirect_uri`  | yes      | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization. |
+| `code_verifier` | no       | If using PKCE, then provide previously generated `code_verifier`                                                                                                               |
 
 #### Response
 
@@ -384,7 +405,8 @@ curl "https://accounts.livechat.com/token" \
   code=dal:test_tnlRmy73mg9eaFESA&\
   client_id=9cbf3a968289727cb3cdfe83ab1d9836&\
   client_secret=test_d7MEp1YYo3&\
-  redirect_uri=https://my-application.com"
+  redirect_uri=https://my-application.com&\
+  code_verifier=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU"
 ```
 
 </CodeSample>
@@ -421,7 +443,7 @@ Your application should store the `access_token` in localStorage or a cookie unt
 When an `access_token` expires, your app needs to acquire a new one. To do that, it has to send an HTTP POST request using the `refresh_token`.
 
 ```url
-https://accounts.livechat.com/token
+https://accounts.livechat.com/v2/token
 ```
 
 #### Request
@@ -454,7 +476,7 @@ The response is a JSON with the following parameters:
 <CodeSample path={'GET A NEW ACCESS TOKEN'}>
 
 ```shell
-curl "https://accounts.livechat.com/token" \
+curl "https://accounts.livechat.com/v2/token" \
   -X POST \
   -d "grant_type=refresh_token&\
   refresh_token=-dal:test_gfalskcakg2347o8326&\
@@ -492,7 +514,7 @@ In some cases, a user may wish to revoke the access (the token) given to your ap
 To revoke a token, make a DELETE HTTP request to the following URL:
 
 ```url
-https://accounts.livechat.com/token
+https://accounts.livechat.com/v2/token
 ```
 
 Code snippets present two alternative ways of making the same request.
@@ -508,7 +530,7 @@ Code snippets present two alternative ways of making the same request.
 <CodeSample path={'REVOKE A TOKEN (URL PARAM)'}>
 
 ```shell
-curl "https://accounts.livechat.com/token\
+curl "https://accounts.livechat.com/v2/token\
   ?code=dal:test_YTJQ6GDVgQf8kQDPw"
   -X DELETE
 ```
@@ -518,7 +540,7 @@ curl "https://accounts.livechat.com/token\
 <CodeSample path={'REVOKE A TOKEN'}>
 
 ```shell
-curl "https://accounts.livechat.com/token"
+curl "https://accounts.livechat.com/v2/token"
   -H "Authorization: Bearer <access_token|refresh token>"
   -X DELETE
 ```
@@ -544,7 +566,7 @@ curl "https://accounts.livechat.com/token"
 You can validate an `access_token` by making a GET HTTP request to the following URL:
 
 ```url
-https://accounts.livechat.com/info
+https://accounts.livechat.com/v2/info
 ```
 
 Please note that refresh tokens are not supported for direct validation. If an access token was obtained using a refresh token, the response will return both tokens.
@@ -571,7 +593,7 @@ The response is a JSON with the following parameters:
 <CodeSample path={'VALIDATE AN ACCESS TOKEN'}>
 
 ```shell
-curl "https://accounts.livechat.com/info"
+curl "https://accounts.livechat.com/v2/info"
   -H "Authorization: Bearer <access_token>"
 ```
 
