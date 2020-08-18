@@ -11,13 +11,13 @@ export const Box = posed.div({
   COLLAPSED: {
     height: 0,
     opacity: 0,
-    transition: { duration: 150 }
+    transition: { duration: 150 },
   },
   EXPANDED: {
     height: "auto",
     opacity: 1,
-    transition: { duration: 150 }
-  }
+    transition: { duration: 150 },
+  },
 });
 
 export const CollapsableSection = ({ expanded, children }) => (
@@ -26,7 +26,7 @@ export const CollapsableSection = ({ expanded, children }) => (
     initialPose={COLLAPSED}
     withParent={false} // don't ever remove this
     style={{
-      overflow: "hidden"
+      overflow: "hidden",
     }}
   >
     {children}
@@ -83,7 +83,7 @@ export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
       <NavSwitch
         href="#toggle-nav"
         expanded={expanded}
-        onClick={e => {
+        onClick={(e) => {
           e.preventDefault();
           setExpanded(!expanded);
         }}
@@ -168,6 +168,9 @@ export const Ul = styled.ul`
     margin: 0 0 0 10px;
     & > li > a {
       font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `;
@@ -218,13 +221,13 @@ export const MenuAnchorLink = styled.a`
 export const MenuElement = ({ url, title, onClick, active }) => (
   <Li onClick={onClick}>
     {/^#.*/.test(url) ? (
-      <MenuAnchorLink href={url} active={active}>
+      <MenuAnchorLink href={url} active={active} title={title}>
         <HashtagIcon style={{ marginTop: "1px", opacity: 0.6 }} />
         &nbsp;
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      <MenuLink to={url} active={active ? 1 : 0}>
+      <MenuLink to={url} active={active ? 1 : 0} title={title}>
         <ArticleIcon
           style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
         />
