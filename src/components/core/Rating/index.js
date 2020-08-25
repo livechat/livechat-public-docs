@@ -42,33 +42,29 @@ const Rating = ({ label, className }) => {
   return (
     <Wrapper className={className}>
       <Label>{label}</Label>
-
       {RATES.map((rate, i) => {
         const isHover = hoverStar > i - 1;
         const isSelected = selectedStar > i - 1;
         const isRated = selectedStar === i;
         return (
-          <div>
-            <Star
-              key={rate}
-              handleMouseEnter={() => setHoverStar(i)}
-              handleMouseLeave={() => setHoverStar(-1)}
-              handleClick={() => handleStarClick(i)}
-              isHover={isHover}
-              isSelected={isSelected}
-              isRated={isRated}
-              text={RATES[i]}
-            />
-            {
-              isModalOpen && (
-                <FeedbackModal
-                  isOpen={isModalOpen}
-                  handleModalClose={() => setModalOpen(false)}
-                />)
-            }
-          </div>
+          <Star
+            key={rate}
+            handleMouseEnter={() => setHoverStar(i)}
+            handleMouseLeave={() => setHoverStar(-1)}
+            handleClick={() => handleStarClick(i)}
+            isHover={isHover}
+            isSelected={isSelected}
+            isRated={isRated}
+            text={RATES[i]}
+          />
         );
       })}
+      {isModalOpen && (
+        <FeedbackModal
+          isOpen={isModalOpen}
+          handleModalClose={() => setModalOpen(false)}
+        />
+      )}
     </Wrapper>
   );
 };
