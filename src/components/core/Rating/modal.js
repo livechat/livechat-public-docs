@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Loader, ModalBase } from "@livechat/design-system";
+/** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 
-const ModalCss = styled.div`
+const ModalBaseCss = css`
+  width: 610px;
+  height: 670px;
+  padding: 22px 10px 15px 15px;
+
+  .lc-modal-base__close {
+    right: 12px;
+    top: 12px;
+  }
+`;
+
+const LoaderWrapper = styled.div`
   position: absolute;
   margin: auto;
   display: flex;
@@ -34,10 +46,10 @@ const FeedbackModal = ({ isOpen, handleModalClose }) => {
     <div>
       <ModalBase
         onClose={onModalClose}
-        style={{ width: "610px", height: "670px", padding: "10px" }}
+        css={ModalBaseCss}
       >
         {isLoading
-          ? <ModalCss isLoading={isLoading}><Loader size="large" /></ModalCss>
+          ? <LoaderWrapper isLoading={isLoading}><Loader size="large" /></LoaderWrapper>
           : null}
         <iframe onLoad={hideLoader} title="feedback-form" src="https://docs.google.com/forms/d/e/1FAIpQLSfcJbrIHOgSqvLVQB_EC1ao70AGDiBun06k7PtEsjmbycymwg/viewform?embedded=true" width="580" height="630" frameBorder="0" marginHeight="0" marginWidth="0"></iframe>
       </ModalBase >
