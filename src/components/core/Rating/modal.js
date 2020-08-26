@@ -34,12 +34,12 @@ const FeedbackModal = ({ isOpen, handleModalClose }) => {
     <div>
       <ModalBase
         onClose={onModalClose}
-        style={{ width: "600px", height: "600px" }}
+        style={{ width: "610px", height: "670px", padding: "10px" }}
       >
         {isLoading
           ? <ModalCss isLoading={isLoading}><Loader size="large" /></ModalCss>
           : null}
-        <iframe onLoad={hideLoader} title="feedback-form" src="https://docs.google.com/forms/d/e/1FAIpQLSfcJbrIHOgSqvLVQB_EC1ao70AGDiBun06k7PtEsjmbycymwg/viewform?embedded=true" width="580" height="550" frameBorder="0" marginHeight="0" marginWidth="0"></iframe>
+        <iframe onLoad={hideLoader} title="feedback-form" src="https://docs.google.com/forms/d/e/1FAIpQLSfcJbrIHOgSqvLVQB_EC1ao70AGDiBun06k7PtEsjmbycymwg/viewform?embedded=true" width="580" height="630" frameBorder="0" marginHeight="0" marginWidth="0"></iframe>
       </ModalBase >
     </div >
   )
