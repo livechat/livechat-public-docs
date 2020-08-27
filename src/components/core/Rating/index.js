@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import styled from "@emotion/styled";
 
 import Star from "./star";
+import FeedbackModal from "./modal";
 import { RATES } from "../../../constant";
 import { RatingContext } from "../../../contexts";
 
@@ -25,6 +26,15 @@ const Rating = ({ label, className }) => {
   const { selectedStar, saveRating } = useContext(RatingContext);
   const [hoverStar, setHoverStar] = useState(-1);
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleStarClick = (i) => {
+    saveRating(i);
+    if (i <= 2) {
+      setModalOpen(true);
+    }
+  };
+
   if (typeof window === "undefined") {
     return null;
   }
@@ -36,13 +46,12 @@ const Rating = ({ label, className }) => {
         const isHover = hoverStar > i - 1;
         const isSelected = selectedStar > i - 1;
         const isRated = selectedStar === i;
-
         return (
           <Star
             key={rate}
             handleMouseEnter={() => setHoverStar(i)}
             handleMouseLeave={() => setHoverStar(-1)}
-            handleClick={() => saveRating(i)}
+            handleClick={() => handleStarClick(i)}
             isHover={isHover}
             isSelected={isSelected}
             isRated={isRated}
@@ -50,6 +59,12 @@ const Rating = ({ label, className }) => {
           />
         );
       })}
+      {isModalOpen && (
+        <FeedbackModal
+          isOpen={isModalOpen}
+          handleModalClose={() => setModalOpen(false)}
+        />
+      )}
     </Wrapper>
   );
 };
