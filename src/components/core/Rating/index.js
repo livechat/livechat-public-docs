@@ -33,7 +33,7 @@ const Rating = ({ label, className }) => {
     if (i <= 2) {
       setModalOpen(true);
     }
-  }
+  };
 
   if (typeof window === "undefined") {
     return null;
@@ -70,4 +70,3 @@ const Rating = ({ label, className }) => {
 };
 
 export default Rating;
-
