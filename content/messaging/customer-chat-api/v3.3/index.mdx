@@ -348,6 +348,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 - [Access](#access)
 - [Chats](#chats)
 - [Chat summaries](#chat-summaries)
+- [Forms](#forms)
 - [Form fields](#form-fields)
 - [Properties](#properties)
 - [Threads](#threads)
@@ -374,6 +375,25 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 **Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_event_per_type`.
 
 <CodeResponse version="v3.3" type="customer" title={'Sample Chat summary data structure'} json="chatSummary"/>
+
+## Forms
+
+A template of prechat, postchat or ticket form.
+
+<CodeResponse version="v3.3" type="customer" title={'Sample Form data structure'} json="form"/>
+
+| Field                     | Required | Data type          | Notes                                                                                                              |
+| ------------------------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `id`                      | no       | `string`           | Form id                                                                                                            |
+| `fields`                  | yes      | `array of objects` | The fields a form contains                                                                                         |
+| `fields.type`             | yes      | `string`           | Possible values: `header`, `checkbox`, `email`, `name`, `question`, `textarea`, `group_chooser`, `radio`, `select` |
+| `fields.id`               | no       | `string`           | Field id, for all field types                                                                                      |
+| `fields.label`            | yes      | `string`           | Field label, for all field types                                                                                   |
+| `fields.required`         | no       | `bool`             | Determines whether the answer for given field is required, for all field types except `header`                     |
+| `fields.options`          | no       | `array of objects` | For `checkbox`, `group_chooser`, `radio` and `select`                                                              |
+| `fields.options.id`       | yes      | `string`           | An identifier of each option a Customer can choose                                                                 |
+| `fields.options.label`    | yes      | `string`           | Answer label                                                                                                       |
+| `fields.options.group_id` | yes      | `number`           | For `group_chooser`                                                                                                |
 
 ## Form fields
 
@@ -966,7 +986,7 @@ Returns the dynamic configuration of a given group. It provides data to call [**
 
 | Parameter              | Required | Data type | Notes                                                       |
 | ----------------------- | -------- | --------- | ----------------------------------------------------------- |
-| `group_id`              | Yes      | `number`  | The ID of the group that you want to get a dynamic configuration for.  |
+| `group_id`              | No       | `number`  | The ID of the group that you want to get a dynamic configuration for. ID of the default group is used if not provided. |
 | `url`                   | No       | `string`  | The URL that you want to get a dynamic configuration for.          |
 | `channel_type`          | No       | `string`  | The channel type that you want to get a dynamic configuration for. |
 | `test`                  | No       | `bool`    | Treats a dynamic configuration request as a test.                  |
@@ -1000,7 +1020,7 @@ curl -X GET \
 {
   "group_id": 0,
   "client_limit_exceeded": false,
-  "domain_whitelisted": true,
+  "domain_allowed": true,
   "config_version": "84cc87cxza5ee24ed0f84fe3027fjf0c71",
   "localization_version": "79cc87cea5ee24ed0f84fe3027fc0c74"
 }
@@ -1073,64 +1093,12 @@ curl -X GET \
       "offline_value": "Leave us a message"
     }
   ],
-  "offline_form": {
-    "fields": [
-      {
-        "type": "header",
-        "value": "Our agents are not available right now. Please leave a message and we'll get back to you.",
-        "order": 0
-      },
-      {
-        "type": "name",
-        "required": true,
-        "order": 1,
-        "label": "Your name:"
-      },
-      {
-        "type": "email",
-        "required": true,
-        "order": 2,
-        "label": "E-mail:"
-      },
-      {
-        "type": "textarea",
-        "required": true,
-        "order": 4,
-        "label": "Message:"
-      },
-      {
-        "type": "subject",
-        "required": true,
-        "order": 3,
-        "label": "Subject:"
-      }
-    ]
-  },
-  "prechat_survey": {
-    "fields": [
-        {
-          "type": "name",
-          "id": "158282965186503292",
-          "required": false,
-          "order": 1,
-          "label": "Name:"
-        },
-        {
-          "type": "header",
-          "value": "Welcome to our LiveChat! Please fill in the form below before starting the chat.",
-          "order": 0
-        },
-        {
-          "type": "email",
-          "id": "158282965186603864",
-          "required": false,
-          "order": 2,
-          "label": "E-mail:"
-        }
-    ],
-    "enabled": true,
-    "id": "15828296518650940"
-  },
+  "ticket_form": {
+    // "Form" object
+  }, // optional
+  "prechat_form": {
+    // "Form" object
+  }, // optional
   "integrations": {},
   "properties": {
     "group": {},
@@ -2211,8 +2179,7 @@ Returns an empty ticket form of a <a href="https://www.livechatinc.com/help/chat
 |           |                                                                                                                        |
 | --------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `enabled` | If `enabled: false`, the `form` object is not returned. Prechat/postchat survey disabled in the LiveChat Agent App UI. |
-| `header`  | For headers; the field has no `answer`, therefore is not sent in the [Filled form](#filled-form) event.                |
-| `rating`  | For rating; the field has no `answer`, therefore is not sent in the [Filled form](#filled-form) event.                 |
+| `form`    | [Form](#forms) data structure.                                                                                         |
 
 </Text>
 
@@ -2238,49 +2205,7 @@ curl -X POST \
 ```json
 {
   "form": {
-    "id": "157986144052005549",
-    "fields": [
-      {
-        "id": "157986144052003238",
-        "type": "header",
-        "label": "Welcome to our LiveChat! Please fill in the form below before starting the chat."
-      },
-      {
-        "id": "157986144052008371",
-        "type": "name",
-        "label": "Name:",
-        "required": false
-      },
-      {
-        "id": "157986144052005782",
-        "type": "email",
-        "label": "E-mail:",
-        "required": false
-      },
-      {
-        "id": "157986144052009331",
-        "type": "group_chooser",
-        "label": "Choose a department:",
-        "required": true,
-        "options": [
-          {
-            "id": "0",
-            "group_id": 1,
-            "label": "Marketing"
-          },
-          {
-            "id": "1",
-            "group_id": 2,
-            "label": "Sales"
-          },
-          {
-            "id": "2",
-            "group_id": 0,
-            "label": "General"
-          }
-        ]
-      }
-    ]
+    // "Form" object
   },
   "enabled": true
 }
