@@ -48,7 +48,7 @@ const NavWrapper = styled.aside`
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    top: 60px;
+    top: 100px;
   }
 
   @media (min-width: 1024px) {
@@ -134,11 +134,11 @@ export const MainWrapper = styled.div`
   display: flex;
 
   @media (min-width: 768px) {
-    padding: 60px 20px 0 0;
+    padding: 0 20px 0 0;
   }
 
   @media (min-width: 1024px) {
-    padding: 60px 30px 0 0;
+    padding: 0 30px 0 0;
   }
 `;
 

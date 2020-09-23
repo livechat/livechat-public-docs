@@ -15,7 +15,7 @@ const VERSIONS_GROUPS = {
 
 const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];
 
-const SCROLL_OFFSET = 130;
+const SCROLL_OFFSET = 170;
 
 const SCOPES = [
   {
@@ -224,8 +224,7 @@ const ERRORS = [
   {
     id: "authentication",
     message: "Authentication error",
-    description:
-      "An invalid or expired access token.",
+    description: "An invalid or expired access token.",
   },
   {
     id: "authorization",
@@ -235,32 +234,27 @@ const ERRORS = [
   {
     id: "customer_banned",
     message: "Customer is banned",
-    description:
-      "The customer had been banned.",
+    description: "The customer had been banned.",
   },
   {
     id: "entity_too_large",
     message: "Upload limit exceeded (10MB).",
-    description:
-      "Client's request is too large.",
+    description: "Client's request is too large.",
   },
   {
     id: "greeting_not_found",
     message: "Greeting not found",
-    description:
-      "",
+    description: "",
   },
   {
     id: "group_not_found",
     message: "Group not found",
-    description:
-      "",
+    description: "",
   },
   {
     id: "group_offline",
     message: "Group is offline",
-    description:
-      "Thrown in response to Get Predicted Agent.",
+    description: "Thrown in response to Get Predicted Agent.",
   },
   {
     id: "group_unavailable",
@@ -271,26 +265,22 @@ const ERRORS = [
   {
     id: "groups_offline",
     message: "Groups offline",
-    description:
-      "",
+    description: "",
   },
   {
     id: "internal",
     message: "Internal server error",
-    description:
-      "",
+    description: "",
   },
   {
     id: "license_expired",
     message: "License expired",
-    description:
-      "The end of license trial or subcription.",
+    description: "The end of license trial or subcription.",
   },
   {
     id: "license_not_found",
     message: "License not found",
-    description:
-      "License with the specified ID doesn't exist.",
+    description: "License with the specified ID doesn't exist.",
   },
   {
     id: "misdirected_request",
@@ -301,14 +291,12 @@ const ERRORS = [
   {
     id: "request_timeout",
     message: "Request timed out",
-    description:
-      "Timeout threshold is 15 seconds.",
+    description: "Timeout threshold is 15 seconds.",
   },
   {
     id: "unsupported_version",
     message: "Unsupported version",
-    description:
-      "Unsupported protocol version.",
+    description: "Unsupported protocol version.",
   },
   {
     id: "users_limit_reached",
@@ -319,14 +307,12 @@ const ERRORS = [
   {
     id: "validation",
     message: "Wrong format of request",
-    description:
-      "",
+    description: "",
   },
   {
     id: "wrong_product_version",
     message: "Wrong product version",
-    description:
-      "License is not LiveChat 3 (probably still LiveChat 2).",
+    description: "License is not LiveChat 3 (probably still LiveChat 2).",
   },
   {
     id: "chat_inactive",
@@ -355,8 +341,7 @@ const ERRORS = [
   {
     id: "requester_awaiting_approval",
     message: "Requester awaiting approval",
-    description:
-      "A new Agent hasn't been approved by the license owner yet.",
+    description: "A new Agent hasn't been approved by the license owner yet.",
   },
   {
     id: "requester_suspended",

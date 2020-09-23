@@ -4,7 +4,7 @@ import {
   Dropdown,
   DropdownList,
   Button,
-  PopperTooltip
+  PopperTooltip,
 } from "@livechat/design-system";
 import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
@@ -12,7 +12,7 @@ import { WarningIcon } from "./icons";
 import { VersionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
 
-export const getVersionsByGroup = group =>
+export const getVersionsByGroup = (group) =>
   group && VERSIONS_GROUPS[group]
     ? VERSIONS_GROUPS[group]
     : VERSIONS_GROUPS.DEFAULT;
@@ -35,7 +35,7 @@ const Container = styled.div`
   margin-right: -20px;
 
   @media (min-width: 768px) {
-    top: 60px;
+    top: 100px;
   }
 
   @media (min-width: 1024px) {
@@ -60,7 +60,7 @@ const DesktopNote = styled.div`
 `;
 
 const labelStyle = {
-  marginRight: "10px"
+  marginRight: "10px",
 };
 
 const StyledDropdownList = styled(DropdownList)`
@@ -93,7 +93,7 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
           style={{
             color: `rgba(${versionColor}, 1)`,
             margin: "0 7px 2px",
-            verticalAlign: "middle"
+            verticalAlign: "middle",
           }}
         />
       </span>
@@ -103,9 +103,7 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
   >
     <div style={{ maxWidth: "320px" }}>
       {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
-        <p>
-          This is the legacy version of the API.
-        </p>
+        <p>This is the legacy version of the API.</p>
       )}
       {selectedVersion === versions.DEV_PREVIEW_VERSION && (
         <p>
@@ -133,7 +131,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
     VersionContext
   );
 
-  const onDropdownHandle = version => {
+  const onDropdownHandle = (version) => {
     redirectToVersion(version);
     setShowDropdown(false);
   };
@@ -141,25 +139,25 @@ const Version = ({ articleVersions, redirectToVersion }) => {
   const openDropdown = () => setShowDropdown(true);
   const closeDropdown = () => setShowDropdown(false);
 
-  const formatVersion = version => {
+  const formatVersion = (version) => {
     return (
       <>
         <span>{version}</span>
         <span style={{ marginLeft: "3px" }}>
           {version === versions.STABLE_VERSION
             ? `(stable)`
-            : (versions.LEGACY_VERSIONS.includes(version))
-              ? `(legacy)`
-              : `(dev preview)`}
+            : versions.LEGACY_VERSIONS.includes(version)
+            ? `(legacy)`
+            : `(dev preview)`}
         </span>
       </>
     );
   };
 
   const sortedArticleVersions = articleVersions
-    .map(e => parseFloat(e))
+    .map((e) => parseFloat(e))
     .sort((a, b) => b - a)
-    .map(e => versionToString(e));
+    .map((e) => versionToString(e));
 
   const versionColor = getVersionColor(selectedVersion, versions);
 
@@ -177,7 +175,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         }
       >
         <DesktopNote>
-          {(versions.LEGACY_VERSIONS.includes(selectedVersion)) && (
+          {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
             <span>You are browsing the legacy version of the API.</span>
           )}
           {selectedVersion === versions.DEV_PREVIEW_VERSION && (
@@ -222,11 +220,11 @@ const Version = ({ articleVersions, redirectToVersion }) => {
                 content: formatVersion(version),
                 onItemSelect: () => {
                   logAmplitudeEvent("Version selected", {
-                    version: selectedVersion
+                    version: selectedVersion,
                   });
                   return onDropdownHandle(version);
                 },
-                isSelected: version === selectedVersion
+                isSelected: version === selectedVersion,
               }))}
             />
           </Dropdown>

@@ -7,8 +7,8 @@ import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
   position: sticky;
-  top: 136px;
-  max-height: calc(100vh - 110px);
+  top: 176px;
+  max-height: calc(100vh - 180px);
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -209,10 +209,18 @@ export const CodeResponse = ({
       {title && (
         <ResponseTopbar>
           <ResponseTopbarTitle>{title}</ResponseTopbarTitle>{" "}
-          <CopyToClipboardIcon text={jsonPayload ? JSON.stringify(jsonPayload, null, "\t") : innerText(children)} />
+          <CopyToClipboardIcon
+            text={
+              jsonPayload
+                ? JSON.stringify(jsonPayload, null, "\t")
+                : innerText(children)
+            }
+          />
         </ResponseTopbar>
       )}
-      <Body>{jsonPayload ? <JSONHighlighter source={jsonPayload} /> : children}</Body>
+      <Body>
+        {jsonPayload ? <JSONHighlighter source={jsonPayload} /> : children}
+      </Body>
     </CodeResponseWrapper>
   );
 };
