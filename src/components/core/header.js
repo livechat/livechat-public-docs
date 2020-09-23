@@ -10,16 +10,26 @@ import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
-  height: 60px;
+  height: 100px;
   display: none;
   align-items: center;
-  position: fixed;
+  position: sticky;
+  top: 0;
   width: 100%;
   font-family: "Colfax";
   z-index: 99;
   @media (min-width: 768px) {
+    flex-direction: column;
     display: flex;
   }
+`;
+
+const MenuWrapper = styled.div`
+  background: #4a4a55;
+  height: 60px;
+  width: 100%;
+  font-family: "Colfax";
+  display: flex;
 `;
 
 const LogoWrapper = styled.nav`
@@ -82,17 +92,33 @@ const VLine = styled.div`
   margin: 0 10px;
 `;
 
+const PromoBanner = styled.div`
+  width: 100%;
+  background-color: #ff5100;
+  color: white;
+  font-weight: 500;
+  padding: 8px;
+  text-align: center;
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    color: white;
+    text-decoration: underline;
+  }
+`;
+
 const linkStyle = {
   borderTop: "4px solid transparent",
   borderBottom: "4px solid transparent",
-  transition: "color 60ms ease-out"
+  transition: "color 60ms ease-out",
 };
 
 const iconStyle = { marginRight: "5px", marginBottom: "1px" };
 
-const activeLinkStyle = color => ({
+const activeLinkStyle = (color) => ({
   borderBottom: `5px solid rgb(${color})`,
-  color: "white"
+  color: "white",
 });
 
 const MenuElement = ({ label, href, slug, color, ...props }) => (
@@ -108,21 +134,21 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
         {label}
       </a>
     ) : (
-        <Link
-          to={`/${slug}/`}
-          partiallyActive
-          css={linkStyle}
-          activeStyle={activeLinkStyle(color)}
-          onClick={() =>
-            logAmplitudeEvent("Top menu tab clicked", {
-              slug
-            })
-          }
-        >
-          <CategoryIcon category={slug} style={iconStyle} />
-          {label}
-        </Link>
-      )}
+      <Link
+        to={`/${slug}/`}
+        partiallyActive
+        css={linkStyle}
+        activeStyle={activeLinkStyle(color)}
+        onClick={() =>
+          logAmplitudeEvent("Top menu tab clicked", {
+            slug,
+          })
+        }
+      >
+        <CategoryIcon category={slug} style={iconStyle} />
+        {label}
+      </Link>
+    )}
   </MenuElementWrapper>
 );
 
@@ -135,33 +161,39 @@ const Header = () => {
 
   return (
     <HeaderWrapper id="header">
-      <LogoWrapper>
-        <a href="/">
-          <LiveChatLogo style={{ margin: "0", display: "block" }} />
-        </a>
-        <VLine />
-        <Link to="/" css={linkCss}>
-          Platform Docs
-        </Link>
-      </LogoWrapper>
+      <PromoBanner>
+        We're running a textless communication hackathon. Curious?{" "}
+        <a href="/txtlss/">Read more</a>
+      </PromoBanner>
+      <MenuWrapper>
+        <LogoWrapper>
+          <a href="/">
+            <LiveChatLogo style={{ margin: "0", display: "block" }} />
+          </a>
+          <VLine />
+          <Link to="/" css={linkCss}>
+            Platform Docs
+          </Link>
+        </LogoWrapper>
 
-      <MenuListWrapper>
-        <MenuList>
-          {categories.map(({ title, slug }) => (
+        <MenuListWrapper>
+          <MenuList>
+            {categories.map(({ title, slug }) => (
+              <MenuElement
+                key={slug}
+                color={tabColor}
+                label={title}
+                slug={slug}
+              />
+            ))}
             <MenuElement
-              key={slug}
-              color={tabColor}
-              label={title}
-              slug={slug}
+              label={"Console"}
+              href={"/console/"}
+              style={{ alignSelf: "flex-end", marginLeft: "auto" }}
             />
-          ))}
-          <MenuElement
-            label={"Console"}
-            href={"/console/"}
-            style={{ alignSelf: "flex-end", marginLeft: "auto" }}
-          />
-        </MenuList>
-      </MenuListWrapper>
+          </MenuList>
+        </MenuListWrapper>
+      </MenuWrapper>
     </HeaderWrapper>
   );
 };
