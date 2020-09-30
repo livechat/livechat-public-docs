@@ -70,7 +70,7 @@ const SCOPES = [
     id: "agents-bot--all:ro",
     description:
       "Read permission for bot agents configuration (all in license)",
-    role: "administrator",
+    role: "normal",
   },
   {
     id: "agents-bot--all:rw",
