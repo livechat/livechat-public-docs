@@ -386,17 +386,24 @@ System message event is native system event sent in specific situations.
 
 | Field                            | Req./Opt. | Notes                                                                                 |
 | -------------------------------- | --------- | ------------------------------------------------------------------------------------- |
-| `agent_last_event_created_at`    | optional  |                                                                                       |
+| `id`                             | required  |                                                                                       |
+| `type`                           | required  | Always equal to "customer".                                                           |
+| `agent_last_event_created_at`    | optional  | RFC 3339 datetime string.                                                             |
 | `avatar`                         | optional  |                                                                                       |
-| `customer_last_event_created_at` | optional  |                                                                                       |
-| `created_at`                     | optional  |                                                                                       |
+| `customer_last_event_created_at` | optional  | RFC 3339 datetime string.                                                             |
+| `created_at`                     | optional  | RFC 3339 datetime string; the timestamp of the customer's creation.                   |
 | `email`                          | optional  |                                                                                       |
 | `session_fields`                 | optional  | An array of custom object-enclosed `key:value` pairs. Expires along with the session. |
 | `name`                           | optional  |                                                                                       |
-| `events_seen_up_to`              | optional  | RFC 3339 datetime string                                                              |
+| `events_seen_up_to`              | optional  | RFC 3339 datetime string.                                                             |
 | `last_visit`                     | optional  |                                                                                       |
 | `present`                        | optional  |                                                                                       |
 | `statistics`                     | optional  |                                                                                       |
+| `chats`                          | optional  |                                                                                       |
+| `followed`                       | optional  | `true` if the customer is followed by the agent.                                      |
+| `online`                         | optional  | `true` if the customer is logged in, `false` otherwise.                               |
+| `group_ids`                      | optional  | IDs of groups the customer is assigned to.                                            |
+| `state`                          | optional  | Possible values: `browsing`, `invited`, `chatting`, `queued`, `left`.                 |
 
 # Other common structures
 
@@ -490,7 +497,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                     |
+| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                     |
 | **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                   |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                   |
 
@@ -2606,12 +2613,12 @@ Creates a new [Customer](#customer) user type.
 
 #### Specifics
 
-|                        |                                          |
-| ---------------------- | ---------------------------------------- |
-| **Action**             | `create_customer`                        |
-| **Required scopes**    | `customers:rw`                           |
-| **Web API equivalent** | [`create_customer`](../#create-customer) |
-| **Push message**       | [`customer_created`](#customer_created)  |
+|                        |                                           |
+| ---------------------- | ----------------------------------------- |
+| **Action**             | `create_customer`                         |
+| **Required scopes**    | `customers:rw`                            |
+| **Web API equivalent** | [`create_customer`](../#create-customer)  |
+| **Push message**       | [`incoming_customer`](#incoming_customer) |
 
 #### Request
 
@@ -2793,6 +2800,119 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 <Section>
 <Text>
 
+### Follow Customer
+
+Marks a customer as followed. All changes to the customer will be sent to the requester until the customer leaves the website or is unfollowed. The customers in the requester's chats don't need to be followed. The requester will receive all customer pushes regardless of their follower status.
+
+#### Specifics
+
+|                        |                                                 |
+| ---------------------- | ----------------------------------------------- |
+| **Action**             | `follow_customer`                               |
+| **Required scopes**    | `customers:ro`                                  |
+| **Web API equivalent** | [`follow_customer`](../#follow-customer)        |
+| **Push message**       | [`incoming_customer`](#incoming_customer)**\*** |
+
+**\*)**
+It won't be sent when the requester already follows the customer or the customer is a member of the requester's chat.
+
+#### Request
+
+| Parameter  | Required | Data type |     |
+| ---------- | -------- | --------- | --- |
+| `id`       | Yes      | `string`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "follow_customer",
+  "payload": {
+    "id": "3cd19fff-f852-4402-59ce-ebd03af3f15a"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "follow_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Unfollow Customer
+
+Removes the requester from the customer followers. Calling this method on a customer the requester is chatting with will result in success, however, the requester will still receive pushes about customer's data updates. The unfollow will take effect once the chat ends.
+
+#### Specifics
+
+|                        |                                                 |
+| ---------------------- | ----------------------------------------------- |
+| **Action**             | `unfollow_customer`                             |
+| **Required scopes**    | -                                               |
+| **Web API equivalent** | [`unfollow_customer`](../#unfollow-customer)    |
+| **Push message**       | [`customer_unfollowed`](#customer_unfollowed)   |
+
+#### Request
+
+| Parameter  | Required | Data type |     |
+| ---------- | -------- | --------- | --- |
+| `id`       | Yes      | `string`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "unfollow_customer",
+  "payload": {
+    "id": "3cd19fff-f852-4402-59ce-ebd03af3f15a"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "unfollow_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
 ## Status
 
 ### Login
@@ -2822,9 +2942,15 @@ It returns the initial state of the current Agent.
 | `application.name`                  | No       | `string`  | Application name                                                                                                                 |
 | `application.version`               | No       | `string`  | Application version                                                                                                              |
 | `away` __*__                        | No       | `bool`    | When `true`, the connection is set to the `away` state. Defaults to `false`.                                                     |
+| `customer_push_level`               | No       | `string`  | Possible values: `my`, `engaged`, `online` __**__. Defaults to `my`.                                                             |
 
 __*__ You can use the `away` param to **prevent assigning chats** to Agents **after random reconnections** when their status was set to `not_accepting_chats` by the auto-away feature. When an Agent logs in with `away: true`, the connection is immediately recognized
 as `away`. [Read more...](#set-away-status)
+
+__**__ These values mean:
+* `my` - only the customers from chats the agent is assigned to,
+* `engaged` - all customers that are not just browsing the website (e.g. chatting or invited) within groups the agent is assigned to,
+* `online` - all customers visiting the website assigned to agent’s groups.
 
 #### Response
 
@@ -3440,9 +3566,9 @@ Here's what you need to know about **pushes**:
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                        |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                     |
+| **Customers**   | [`incoming_customers`](#incoming_customers) [`incoming_customer`](#incoming_customer) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_transferred`](#customer_transferred) [`customer_left`](#customer_left)                                         |
 | **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                         |
-| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated)                                               |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated) [`customer_unfollowed`](#customer-unfollowed) |
 
 </Text>
 
@@ -4055,61 +4181,18 @@ Informs that a chat thread was untagged.
 
 ## Customers
 
-### `customer_visit_started`
+### `incoming_customers`
 
-Informs that a Customer entered the tracked website.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
-  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "visit_id": 42,
-  "started_at": "2017-10-12T15:19:21.010200Z",
-  "ip": "<customer_ip>",
-  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
-  "geolocation": {
-    "latitude": "54.0805",
-    "longitude": "17.4211",
-    "country": "Poland",
-    "country_code": "PL",
-    "region": "Dolnoslaskie",
-    "city": "Wroclaw",
-    "timezone": "Europe/Warsaw"
-  }
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                          |
-| ---------------------- | ------------------------ |
-| **Action**             | `customer_visit_started` |
-| **Webhook equivalent** | -                        |
-
-### `customer_created`
-
-Informs that a new Customer registered.
+Informs about customers the agent should be aware of. It's sent after [`login`](#login).
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "customer": {
-  // "User > Customer" object
-  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "created_at": "2019-11-14T14:27:24.410018Z",
-  "name": "Thomas Anderson",
-  "email": "t.anderson@example.com",
-  "avatar": "https://example.com/avatars/1.jpg",
-  "session_fields": [{
-    "custom_key": "custom_value"
-  }, {
-    "another_custom_key": "another_custom_value"
+  "customer_push_level": "engaged",
+  "customers": [{
+    // "Customer" user object
   }]
-  }
 }
 ```
 
@@ -4117,10 +4200,32 @@ Informs that a new Customer registered.
 
 #### Specifics
 
-|                        |                                                                       |
-| ---------------------- | --------------------------------------------------------------------- |
-| **Action**             | `customer_created`                                                    |
-| **Webhook equivalent** | [`customer_created`](/management/configuration-api/#customer_created) |
+|                        |                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| **Action**             | `incoming_customer`                                                          |
+| **Webhook equivalent** | [`incoming_customer`](/management/configuration-api/v3.3/#incoming_customer) |
+
+
+### `incoming_customer`
+
+Informs that a new or returning Customer is available to the agent.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  // "Customer" user object
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| **Action**             | `incoming_customer`                                                          |
+| **Webhook equivalent** | [`incoming_customer`](/management/configuration-api/v3.3/#incoming_customer) |
 
 ### `customer_updated`
 
@@ -4206,17 +4311,19 @@ Informs that a Customer was banned for a specified number of days.
 | **Action**             | `customer_banned` |
 | **Webhook equivalent** | -                 |
 
-### `customer_visit_ended`
+### `customer_transferred`
 
-Informs that a Customer left the tracked website.
+Informs that the agent no longer has the access to a Customer.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "visit_id": 42,
-  "ended_at": "2017-10-12T15:19:21.010200Z"
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "transferred_to": {
+    "group_ids": [1]
+  },
+  "followed": true
 }
 ```
 
@@ -4226,7 +4333,29 @@ Informs that a Customer left the tracked website.
 
 |                        |                        |
 | ---------------------- | ---------------------- |
-| **Action**             | `customer_visit_ended` |
+| **Action**             | `customer_transferred` |
+| **Webhook equivalent** | -                      |
+
+### `customer_left`
+
+Informs that a Customer left the tracked website.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "left_at": "2017-10-12T15:19:21.010200Z"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                        |
+| ---------------------- | ---------------------- |
+| **Action**             | `customer_left`        |
 | **Webhook equivalent** | -                      |
 
 ## Status
@@ -4468,6 +4597,27 @@ New positions and wait times for queued chats.
 |                        |                           |
 | ---------------------- | ------------------------- |
 | **Action**             | `queue_positions_updated` |
+| **Webhook equivalent** | -                         |
+
+### `customer_unfollowed`
+
+Informs that a customer has been unfollowed. Useful in multiple connection scenarios, where one app/integration needs to know that another one unfollowed the customer.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "id": "3cd19fff-f852-4402-59ce-ebd03af3f15a"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                           |
+| ---------------------- | ------------------------- |
+| **Action**             | `customer_unfollowed`     |
 | **Webhook equivalent** | -                         |
 
 # Errors
