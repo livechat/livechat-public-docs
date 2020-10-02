@@ -285,7 +285,7 @@ const ERRORS = [
   {
     id: "limit_reached",
     message: "Resource limit reached",
-    description: "Resource cannot be created/modified because the change will exceed the limit",
+    description: "Resource cannot be created/modified because the change would exceed the limit",
   },
   {
     id: "misdirected_request",
