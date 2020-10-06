@@ -2802,9 +2802,12 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 ### Follow Customer
 
-Marks a customer as followed. All changes to the customer will be sent to the requester until the customer leaves the website or is unfollowed. The customers in the requester's chats don't need to be followed. The requester will receive all customer pushes regardless of their follower status.
+Marks a customer as followed. As a result, the requester (an agent) will receive the info about all the changes related to that customer via pushes. Once the customer leaves the website or is [unfollowed](#unfollow-customer), the agent will no longer receive that information. 
 
-If the agent is following a customer and the customer's access is outside of the agent's access, the follower status itself will not be broken (ie. the agent will still be following the customer) but the agent won't receive pushes about the customer. Once the customer's access matches the agent's access, the pushes will resume.
+Following a customer causes the agent to receive customer-related pushes as long as the followed customer is available. The followed customer may be transferred to a group the agent doesn't have access to, which makes the customer unavailable to the agent. At that moment, the agent stops receiving pushes related to that customer. When the customer is transferred back and becomes available again, the pushes resume. 
+
+Agents don't need to follow the customers they're chatting with in order to receive related pushes. Agents will be receiving pushes related to those customers as long as the chats last. 
+
 
 #### Specifics
 
@@ -2816,7 +2819,7 @@ If the agent is following a customer and the customer's access is outside of the
 | **Push message**       | [`incoming_customer`](#incoming_customer)**\*** |
 
 **\*)**
-It won't be sent when the requester already follows the customer or the customer is a member of the requester's chat.
+It won't be sent when the requester already follows the customer or is chatting with that customer.
 
 #### Request
 
@@ -2862,7 +2865,7 @@ It won't be sent when the requester already follows the customer or the customer
 
 ### Unfollow Customer
 
-Removes the requester from the customer followers. Calling this method on a customer the requester is chatting with will result in success, however, the requester will still receive pushes about customer's data updates. The unfollow will take effect once the chat ends.
+Removes the agent from the list of customer's followers. Calling this method on a customer the agent's chatting with will result in success, however, the agent will still receive pushes about the customer's data updates. The unfollowing will take effect once the chat ends.
 
 #### Specifics
 
@@ -2944,15 +2947,15 @@ It returns the initial state of the current Agent.
 | `application.name`                  | No       | `string`  | Application name                                                                                                                                            |
 | `application.version`               | No       | `string`  | Application version                                                                                                                                         |
 | `away` __*__                        | No       | `bool`    | When `true`, the connection is set to the `away` state. Defaults to `false`.                                                                                |
-| `customer_push_level`               | No       | `string`  | Possible values: `my`, `engaged`, `online` __**__. Defaults to `my` if login creates the first session, otherwise it preserves current customer_push_level. |
+| `customer_push_level`               | No       | `string`  | Possible values: `my`, `engaged`, `online` __**__. Defaults to `my` if [login](#login) creates the first session; otherwise it preserves the current `customer_push_level`. |
 
 __*__ You can use the `away` param to **prevent assigning chats** to Agents **after random reconnections** when their status was set to `not_accepting_chats` by the auto-away feature. When an Agent logs in with `away: true`, the connection is immediately recognized
 as `away`. [Read more...](#set-away-status)
 
 __**__ These values mean:
-* `my` - only the customers from chats the agent is assigned to,
-* `engaged` - all customers that are not just browsing the website (e.g. chatting or invited) within groups the agent is assigned to,
-* `online` - all customers visiting the website assigned to agent’s groups.
+* `my` - only the customers from chats the agent is assigned to
+* `engaged` - all customers that aren't just browsing the website (for example, they're chatting or being invited) within groups the agent is assigned to
+* `online` - all customers visiting the website assigned to the agent’s groups
 
 #### Response
 
@@ -4210,7 +4213,10 @@ Informs about customers the agent should be aware of. It's sent after [`login`](
 
 ### `incoming_customer`
 
-Informs that a new or returning Customer is available to the agent.
+Informs that a new or returning customer is available to the agent. It's sent when:
+- a new customer registers.
+- a customer, who previously left the tracked website, returns.
+- an already followed customer, who was temporarily unavailable to the agent, becomes available again (for example, the customer was transferred between groups).
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4315,7 +4321,7 @@ Informs that a Customer was banned for a specified number of days.
 
 ### `customer_transferred`
 
-Informs that the agent no longer has the access to a Customer.
+Informs that a customer is no longer available to the agent.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -4603,7 +4609,7 @@ New positions and wait times for queued chats.
 
 ### `customer_unfollowed`
 
-Informs that a customer has been unfollowed. Useful in multiple connection scenarios, where one app/integration needs to know that another one unfollowed the customer.
+Informs that a customer was unfollowed. Useful in multiple connection scenarios, where one app/integration needs to know that another one unfollowed the customer.
 
 <CodeResponse title={'Sample push payload'}>
 
