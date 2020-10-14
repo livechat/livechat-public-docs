@@ -283,6 +283,11 @@ const ERRORS = [
     description: "License with the specified ID doesn't exist.",
   },
   {
+    id: "limit_reached",
+    message: "Resource limit reached",
+    description: "Resource cannot be created/modified because the change would exceed the limit",
+  },
+  {
     id: "misdirected_request",
     message: "Wrong region",
     description:
