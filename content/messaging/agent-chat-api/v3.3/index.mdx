@@ -487,7 +487,7 @@ curl -X POST \
 | **Events**      | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                   |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                                           |
+| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                                         |
 | **Status**      | [`set_routing_status`](#set-routing-status)                                                                                                                                                                                                                                                                                                             |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                                         |
 
@@ -2298,12 +2298,12 @@ Creates a new [Customer](#customer) user type.
 
 #### Specifics
 
-|                        |                                                                       |
-| ---------------------- | --------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.3/agent/action/create_customer`       |
-| **Required scopes**    | `customers:rw`                                                        |
-| **RTM API equivalent** | [`create_customer`](rtm-reference/#create-customer)                   |
-| **Webhook**            | [`customer_created`](/management/configuration-api/#customer_created) |
+|                        |                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.3/agent/action/create_customer`              |
+| **Required scopes**    | `customers:rw`                                                               |
+| **RTM API equivalent** | [`create_customer`](rtm-reference/#create-customer)                          |
+| **Webhook**            | [`incoming_customer`](/management/configuration-api/v3.3/#incoming_customer) |
 
 #### Request
 
@@ -2451,10 +2451,102 @@ https://api.livechatinc.com/v3.3/agent/action/ban_customer \
 -H 'Authorization: Bearer <your_access_token>' \
 -H 'Content-Type: application/json' \
 -d '{
-   "id": "3cd19fff-f852-4402-59ce-ebd03af3f15a",
+   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
    "ban": {
      "days": 3
      }
+   }'
+```
+
+</CodeSample>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Follow Customer
+
+Marks a customer as followed. As a result, the requester (an agent) will receive the info about all the changes related to that customer via pushes. Once the customer leaves the website or is [unfollowed](#unfollow-customer), the agent will no longer receive that information. 
+
+Following a customer causes the agent to receive customer-related pushes as long as the followed customer is available. The followed customer may be transferred to a group the agent doesn't have access to, which makes the customer unavailable to the agent. At that moment, the agent stops receiving pushes related to that customer. When the customer is transferred back and becomes available again, the pushes resume. 
+
+Agents don't need to follow the customers they're chatting with in order to receive related pushes. Agents will be receiving pushes related to those customers as long as the chats last. 
+
+#### Specifics
+
+|                        |                                                                 |
+| ---------------------- | --------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.3/agent/action/follow_customer` |
+| **Required scopes**    | `customers:ro`                                                  |
+| **RTM API equivalent** | [`follow_customer`](rtm-reference/#follow-customer)             |
+| **Webhook**            | -                                                               |
+
+#### Request
+
+| Parameter     | Required | Data type |     |
+| ------------- | -------- | --------- | --- |
+| `id`          | Yes      | `string`  |     |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.3/agent/action/follow_customer \
+-H 'Authorization: Bearer <your_access_token>' \
+-H 'Content-Type: application/json' \
+-d '{
+   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+   }'
+```
+
+</CodeSample>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Unfollow Customer
+
+Removes the agent from the list of customer's followers. Calling this method on a customer the agent's chatting with will result in success, however, the agent will still receive pushes about the customer's data updates. The unfollowing will take effect once the chat ends.
+
+#### Specifics
+
+|                        |                                                                   |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.3/agent/action/unfollow_customer` |
+| **Required scopes**    | -                                                                 |
+| **RTM API equivalent** | [`unfollow_customer`](rtm-reference/#unfollow-customer)           |
+| **Webhook**            | -                                                                 |
+
+#### Request
+
+| Parameter     | Required | Data type |     |
+| ------------- | -------- | --------- | --- |
+| `id`          | Yes      | `string`  |     |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.3/agent/action/unfollow_customer \
+-H 'Authorization: Bearer <your_access_token>' \
+-H 'Content-Type: application/json' \
+-d '{
+   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
    }'
 ```
 
