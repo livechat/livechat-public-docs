@@ -158,14 +158,16 @@ const Header = () => {
 
         <MenuListWrapper>
           <MenuList>
-            {categories.map(({ title, slug }) => (
-              <MenuElement
-                key={slug}
-                color={tabColor}
-                label={title}
-                slug={slug}
-              />
-            ))}
+            {categories
+              .filter(({ hide }) => !hide)
+              .map(({ title, slug }) => (
+                <MenuElement
+                  key={slug}
+                  color={tabColor}
+                  label={title}
+                  slug={slug}
+                />
+              ))}
             <MenuElement
               label={"Console"}
               href={"/console/"}
