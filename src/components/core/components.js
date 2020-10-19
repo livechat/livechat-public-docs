@@ -127,6 +127,10 @@ export const Content = styled.article`
   @media (max-width: 768px) {
     grid-template-columns: minmax(0, 1fr) 0;
   }
+
+  &.redoc {
+    display: block;
+  }
 `;
 
 export const MainWrapper = styled.div`
@@ -147,8 +151,22 @@ export const MiddleColumn = styled.div`
   max-width: 100%;
   padding-bottom: 30vh;
   position: relative;
-  margin-left: 50px;
+  margin-left: ${({ noMargin }) => (noMargin ? "0" : "50px")};
   width: 100%;
+`;
+
+export const LeftColumnRedoc = styled.div`
+  position: sticky;
+  width: 250px;
+  background-color: #f6f6f7;
+  border-right: 1px solid #dedede;
+  top: 101px;
+  z-index: 1000;
+  display: block;
+
+  @media (max-width: 50rem) {
+    display: none;
+  }
 `;
 
 export const MenuWrapper = styled.div`

@@ -9,6 +9,7 @@ import "../components/core/fonts.css";
 import "../components/core/layout.css";
 import "../components/core/prism.css";
 import "../components/core/algolia.css";
+import "../components/core/redoc.css";
 
 import SideNav from "../components/core/SideNav";
 import Header from "../components/core/header";
@@ -20,26 +21,38 @@ import {
   MiddleColumn,
   Content,
   RatingWrapper,
+  LeftColumnRedoc,
+  NavHeader,
 } from "../components/core/components";
 
 import { Header as PageHeader } from "../components/core/Page";
+import { Search } from "../components/core/Search";
 import Rating from "../components/core/Rating";
 
-import { Headings, CodeBlocks, Scopes, Errors } from "../components/extensions";
+import {
+  Headings,
+  CodeBlocks,
+  Scopes,
+  Errors,
+  Redoc,
+} from "../components/extensions";
 import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 
-import { useLocalStorage, useRating } from "../hooks";
+import { useLocalStorage, useRating, useCategoryMeta } from "../hooks";
 import { VersionProvider, RatingProvider } from "../contexts";
 import { SCROLL_OFFSET } from "../constant";
+import { HomeIcon, ChevronRight } from "../components/core/icons";
 
 const components = {
   ...CodeBlocks,
   ...Headings,
+  Search,
   Scopes,
   RichMessagePreview,
   Link,
   Errors,
+  Redoc,
 };
 
 export default ({ data: { mdx, allMdx } }) => {
@@ -117,13 +130,14 @@ export default ({ data: { mdx, allMdx } }) => {
 
   useLayoutEffect(() => {
     const hash = window.location.hash;
-
     if (hash) {
-      const selector = document.querySelector(hash);
-      if (selector) {
-        selector.scrollIntoView();
-        window.scrollBy(0, -SCROLL_OFFSET);
-      }
+      try {
+        const selector = document.querySelector(hash);
+        if (selector) {
+          selector.scrollIntoView();
+          window.scrollBy(0, -SCROLL_OFFSET);
+        }
+      } catch (error) {}
     }
   }, []);
 
@@ -160,7 +174,9 @@ export default ({ data: { mdx, allMdx } }) => {
     items: versions,
   };
 
+  const categoryMeta = useCategoryMeta(category);
   const ratingContext = useRating({ slug });
+  const useRedocPage = ["authorization"].includes(category);
 
   return (
     <RatingProvider value={ratingContext}>
@@ -168,17 +184,19 @@ export default ({ data: { mdx, allMdx } }) => {
         <SEO desc={desc} title={title} />
         <Header />
         <MainWrapper>
-          <LeftColumn>
-            <SideNav
-              currentSlug={customSlug || slug}
-              category={category}
-              subcategory={subcategory}
-              expanded={expanded}
-              setExpanded={setExpanded}
-              versions={versions}
-            />
-          </LeftColumn>
-          <MiddleColumn>
+          {!useRedocPage && (
+            <LeftColumn>
+              <SideNav
+                currentSlug={customSlug || slug}
+                category={category}
+                subcategory={subcategory}
+                expanded={expanded}
+                setExpanded={setExpanded}
+                versions={versions}
+              />
+            </LeftColumn>
+          )}
+          <MiddleColumn noMargin={useRedocPage}>
             {currentApiVersion && (
               <Version
                 articleVersions={articlesVersions[category][subcategory][title]}
@@ -186,13 +204,31 @@ export default ({ data: { mdx, allMdx } }) => {
                 group={versionGroup}
               />
             )}
-            <Content>
+            <Content className={useRedocPage ? "redoc" : ""}>
               {title && (
                 <PageHeader
                   title={title}
                   timeToRead={timeToRead}
                   modifiedTime={modifiedTime}
                 />
+              )}
+              {useRedocPage && (
+                <LeftColumnRedoc>
+                  <NavHeader>
+                    <Link to={"/"} style={{ color: "inherit" }}>
+                      <span>
+                        <HomeIcon width={18} style={{ display: "block" }} />
+                      </span>
+                    </Link>
+                    <ChevronRight width={14} />
+                    <span style={{ marginBottom: "-3px" }}>
+                      {categoryMeta.title || "Home"}
+                    </span>
+                  </NavHeader>
+                  <NavHeader>
+                    <Search />
+                  </NavHeader>
+                </LeftColumnRedoc>
               )}
               <MDXProvider components={components}>
                 <MDXRenderer>{body}</MDXRenderer>
