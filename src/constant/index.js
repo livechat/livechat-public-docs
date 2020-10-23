@@ -196,6 +196,12 @@ const SCOPES = [
     role: "administrator",
   },
   {
+    id: "properties--configuration:rw",
+    description:
+      "Read/write permission for license/group/chat/thread/event properties configuration (for all integrations owned by my license)",
+    role: "administrator",
+  },
+  {
     id: "webhooks--my:ro",
     description:
       "Read permission for webhooks configuration (only my webhooks)",
