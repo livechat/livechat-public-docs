@@ -196,7 +196,7 @@ export default ({ data: { mdx, allMdx } }) => {
               />
             </LeftColumn>
           )}
-          <MiddleColumn noMargin={useRedocPage}>
+          <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
             {currentApiVersion && (
               <Version
                 articleVersions={articlesVersions[category][subcategory][title]}
@@ -234,9 +234,11 @@ export default ({ data: { mdx, allMdx } }) => {
                 <MDXRenderer>{body}</MDXRenderer>
               </MDXProvider>
 
-              <RatingWrapper>
-                <Rating label="Was this article helpful?" />
-              </RatingWrapper>
+              {!useRedocPage && (
+                <RatingWrapper>
+                  <Rating label="Was this article helpful?" />
+                </RatingWrapper>
+              )}
             </Content>
           </MiddleColumn>
         </MainWrapper>
