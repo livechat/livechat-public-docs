@@ -16,6 +16,12 @@ const placeholders = [
     to: "30,000",
     type: "text",
   },
+  {
+    from: "{{LIVECHAT_MARKETPLACE_URL}}",
+    to: "https://www.livechat.com/marketplace/",
+    type: "link",
+    label: "LiveChat Marketplace",
+  },
 ];
 
 module.exports = placeholders;
