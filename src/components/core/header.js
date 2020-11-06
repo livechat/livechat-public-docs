@@ -92,22 +92,6 @@ const VLine = styled.div`
   margin: 0 10px;
 `;
 
-const PromoBanner = styled.div`
-  width: 100%;
-  background-color: #ff5100;
-  color: white;
-  font-weight: 500;
-  padding: 8px;
-  text-align: center;
-  a,
-  a:visited,
-  a:active,
-  a:hover {
-    color: white;
-    text-decoration: underline;
-  }
-`;
-
 const linkStyle = {
   borderTop: "4px solid transparent",
   borderBottom: "4px solid transparent",
@@ -161,10 +145,6 @@ const Header = () => {
 
   return (
     <HeaderWrapper id="header">
-      <PromoBanner>
-        We're running a textless communication hackathon. Curious?{" "}
-        <a href="/txtlss/">Read more</a>
-      </PromoBanner>
       <MenuWrapper>
         <LogoWrapper>
           <a href="/">
