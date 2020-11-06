@@ -22,208 +22,355 @@ const SCOPES = [
     id: "agents--my:rw",
     description: "Write permission for my profile configuration",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents--my:ro",
     description: "Read permission for my profile configuration",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents--all:rw",
     description: "Write permission for all agents profiles configuration",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents--all:ro",
     description: "Read permission for all agents profiles configuration",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "access_rules:ro",
     description: "Read permission for auto chat scopes configuration",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "access_rules:rw",
     description: "Read/write permission for auto chat scopes configuration",
     role: "administrator",
-  },
-  {
-    id: "accounts--all:rc",
-    description:
-      "Permission for creating, but not managing, new accounts in LiveChat Accounts",
-    role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents-bot--my:ro",
     description:
       "Read permission for bot agents configuration (only my bot agents)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents-bot--my:rw",
     description:
       "Read/write permission for bot agents configuration (only my bot agents)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents-bot--all:ro",
     description:
       "Read permission for bot agents configuration (all in license)",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "agents-bot--all:rw",
     description:
       "Read/write permission for bot agents configuration (all in license, delete only)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "groups--my:rw",
     description: "Write/read permission for groups I'm a member of",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "groups--my:ro",
     description: "Read permission for groups I'm a member of",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "groups--all:rw",
     description: "Write/read permission for all groups within a license",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "groups--all:ro",
     description: "Read permission for all groups within a license",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats--all:ro",
     description:
       "Read permission for conversation and meta data of all license chats",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats--access:ro",
     description:
       "Read permission for conversation and meta data of chats with requester access",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats--my:ro",
     description:
       "Read permission for conversation and meta data of the chats with requester presence",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats.conversation--all:rw",
     description:
       "Write permission for conversation data of all license chats and Read permission for conversation and meta data of all license chats (chats--all:ro)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats.conversation--access:rw",
     description:
       "Write permission for conversation data of chats with requester access and Read permission for conversation and meta data of chats with requester access (chats--access:ro)",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats.conversation--my:rw",
     description:
       "Read/write permission for conversation data of chats with requester presence and Read permission for conversation and meta data of the chats with requester presence (chats--my:ro)",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats--all:rw",
     description:
       "Read/write permission for conversation and meta data of all license chats",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats--access:rw",
     description:
       "Read/write permission for conversation and meta data of chats with requester access",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "chats--my:rw",
     description:
       "Read/write permission for conversation and meta data of chats with requester presence",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "customers.ban:rw",
     description: "Permission for banning customers",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "customers:own",
     description: "Permission for managing customers identities",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "customers:ro",
     description: "Read permission for customers",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "customers:rw",
     description: "Read/write permission for customers",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "multicast:rw",
     description: "Permission for multicast data to agents or customers",
     role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "properties--my:ro",
     description:
       "Read permission for chat/thread/events properties configuration (only in my namespace)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "properties--my:rw",
     description:
       "Read/write permission for chat/thread/events properties configuration (only in my namespace)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "properties--all:ro",
     description:
       "Read permission for chat/thread/events properties configuration (all in license)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "properties--configuration:rw",
     description:
       "Read/write permission for license/group/chat/thread/event properties configuration (for all integrations owned by my license)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "webhooks--my:ro",
     description:
       "Read permission for webhooks configuration (only my webhooks)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "webhooks--my:rw",
     description:
       "Read/write permission for webhooks configuration (only my webhooks)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "webhooks--all:ro",
     description: "Read permission for webhooks configuration (all in license)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "webhooks--all:rw",
     description:
       "Read/write permission for webhooks configuration (all in license, delete only)",
     role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
   },
+  // ACCOUNT SCOPES
+  {
+    id: "accounts--my:ro",
+    description:
+      "Read permission for my account",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "accounts--my:rw",
+    description:
+      "Read and modify permission for my account",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "accounts--all:ro",
+    description:
+      "Read permission for all accounts in an organization",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "accounts--all:rw",
+    description:
+      "Read and modify permission for all accounts",
+    role: "administrator",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "accounts--all:rc",
+    description:
+      "Create and read accounts (mofidication is denied)",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "accounts.roles--all:ro",
+    description:
+      "Read all accounts roles",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "accounts.roles--all:rw",
+    description:
+      "Read and modify all accounts roles",
+    role: "administrator",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "sessions--my:ro",
+    description:
+      "Read my sessions",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "sessions--my:rw",
+    description:
+      "Read and modify my sessions",
+    role: "member",
+    role_type: "primary",
+    product: "Accounts",
+  },
+  {
+    id: "organization--my:rw",
+    description:
+      "Read and modify organization settings",
+    role: "owner",
+    role_type: "primary",
+    product: "Accounts",
+  }
 ];
 
 const ERRORS = [
