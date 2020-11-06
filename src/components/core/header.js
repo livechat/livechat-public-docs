@@ -10,7 +10,7 @@ import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
-  height: 100px;
+  height: 60px;
   display: none;
   align-items: center;
   position: sticky;
