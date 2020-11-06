@@ -48,7 +48,7 @@ const NavWrapper = styled.aside`
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    top: 100px;
+    top: 60px;
   }
 
   @media (min-width: 1024px) {

@@ -7,8 +7,8 @@ import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
   position: sticky;
-  top: 176px;
-  max-height: calc(100vh - 180px);
+  top: 136px;
+  max-height: calc(100vh - 110px);
   min-height: 0;
   display: flex;
   flex-direction: column;
