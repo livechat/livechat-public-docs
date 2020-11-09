@@ -491,7 +491,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 |                 |                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                           |
+| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                           |
 | **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
@@ -1061,6 +1061,7 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object`   |                                                                                                          |
 | `chat.thread.events`     | No       | `array`    | The list of initial chat events                                                                          |
 | `chat.thread.properties` | No       | `object`   |                                                                                                          |
+| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread; default: `true`.                                         |
 | `continuous`             | No       | `bool`     | Starts chat as continuous (online group is not required); default: `false`.                              |
 
 #### Response
@@ -1154,7 +1155,7 @@ When `chat.users` is defined, one of following scopes is required:
 <Section>
 <Text>
 
-### Activate Chat
+### Resume Chat
 
 Restarts an archived chat.
 
@@ -1162,9 +1163,9 @@ Restarts an archived chat.
 
 |                        |                                                                                          |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
-| **Action**             | `activate_chat`                                                                          |
+| **Action**             | `resume_chat`                                                                          |
 | **Required scopes \*** | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent** | [`activate_chat`](../#activate-chat)                                                     |
+| **Web API equivalent** | [`resume_chat`](../#resume-chat)                                                     |
 | **Push message**       | [`incoming_chat`](#incoming_chat)                                                        |
 
 **\*)**
@@ -1179,7 +1180,7 @@ When `chat.users` is defined, one of following scopes is required:
 | Request object           | Required | Type       | Notes                                                                                                    |
 | ------------------------ | -------- | ---------- | -------------------------------------------------------------------------------------------------------- |
 | `chat`                   | Yes      | `object`   |                                                                                                          |
-| `chat.id`                | Yes      | `string`   | The ID of the chat that will be activated.                                                               |
+| `chat.id`                | Yes      | `string`   | The ID of the chat that will be resumed.                                                                 |
 | `chat.access`            | No       | `object`   | Chat access to set, default: all agents.                                                                 |
 | `chat.properties`        | No       | `object`   | Initial chat properties                                                                                  |
 | `chat.users`             | No       | `[]object` | The list of existing users. Up to 4 additional (other than the requester) agents and 1 customer allowed. |
@@ -1188,6 +1189,7 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object`   |                                                                                                          |
 | `chat.thread.events`     | No       | `array`    | Initial chat events array                                                                                |
 | `chat.thread.properties` | No       | `object`   | Initial thread properties                                                                                |
+| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread. Default `true`.                                          |
 | `continuous`             | No       | `bool`     | Sets a chat to the continuous mode. When unset, leaves the mode unchanged.                               |
 
 #### Response
@@ -1195,7 +1197,7 @@ When `chat.users` is defined, one of following scopes is required:
 | Parameter   | Data type  | Notes                                                                                                                                                                     |
 | ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `thread_id` | `string`   |                                                                                                                                                                           |
-| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
 
 </Text>
 <Code>
@@ -1203,7 +1205,7 @@ When `chat.users` is defined, one of following scopes is required:
 
 ```json
 {
-  "action": "activate_chat",
+  "action": "resume_chat",
   "payload": {
   "chat": {
     "id": "PWJ8Y4THAV"
@@ -1213,47 +1215,6 @@ When `chat.users` is defined, one of following scopes is required:
 ```
 
 </CodeSample>
-
-<!-- > **`activate_chat`** sample **request** with optional params
-
-```json
-{
-  "request_id": "7676",
-  "action": "activate_chat",
-  "payload": {
-  "chat": {
-    "id": "PJ0MRSHTDG",
-    "access": {
-      "group_ids": [1]
-    },
-    "properties": {
-      "source": {
-        "type": "facebook"
-      }
-    },
-    "thread": {
-      "events": [{
-        "type": "message",
-        "custom_id": "31-0C-1C-07-DB-16",
-        "text": "hello there"
-      }, {
-        "type": "system_message",
-        "custom_id": "31-0C-1C-07-DB-16",
-        "text": "hello there"
-      }],
-      "properties": {
-        "source": {
-          "type": "facebook"
-        },
-        // ...
-      },
-      "tags": ["bug_report"]
-      }
-    }
-  },
-  "author_id": "<author_id>" // optional, applies only to bots
-}
-``` -->
 
 <CodeResponse>
 

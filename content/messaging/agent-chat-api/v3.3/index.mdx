@@ -481,7 +481,7 @@ curl -X POST \
 
 |                 |                                                                                                                                                                                                                                                                                                                                                         |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
+| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                 |
 | **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                           |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                                               |
 | **Events**      | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                   |
@@ -996,6 +996,7 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object`   |                                                                                                          |
 | `chat.thread.events`     | No       | `array`    | The list of initial chat events.                                                                         |
 | `chat.thread.properties` | No       | `object`   |                                                                                                          |
+| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread; default: `true`.                                         |
 | `continuous`             | No       | `bool`     | Starts chat as continuous (online group is not required); default: `false`.                              |
 
 #### Response
@@ -1035,7 +1036,7 @@ curl -X POST \
 <Section>
 <Text>
 
-### Activate Chat
+### Resume Chat
 
 Restarts an archived chat.
 
@@ -1043,9 +1044,9 @@ Restarts an archived chat.
 
 |                        |                                                                                          |
 |------------------------|------------------------------------------------------------------------------------------|
-| **Method URL**         | `https://api.livechatinc.com/v3.3/agent/action/activate_chat`                            |
+| **Method URL**         | `https://api.livechatinc.com/v3.3/agent/action/resume_chat`                            |
 | **Required scopes \*** | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **RTM API equivalent** | [`activate_chat`](rtm-reference/#activate-chat)                                          |
+| **RTM API equivalent** | [`resume_chat`](rtm-reference/#resume-chat)                                          |
 | **Webhook**            | [`incoming_chat`](/management/configuration-api/#incoming-chat-thread)                   |
 
 **\*)**
@@ -1060,7 +1061,7 @@ When `chat.users` is defined, one of following scopes is required:
 | Parameter                | Required | Data type  | Notes                                                                                                    |
 | ------------------------ | -------- | ---------- | -------------------------------------------------------------------------------------------------------- |
 | `chat`                   | Yes      | `object`   |                                                                                                          |
-| `chat.id`                | Yes      | `string`   | ID of the chat that will be activated.                                                                   |
+| `chat.id`                | Yes      | `string`   | ID of the chat that will be resumed.                                                                     |
 | `chat.access`            | No       | `object`   | Chat access to set, default: all agents.                                                                 |
 | `chat.properties`        | No       | `object`   | Initial chat properties                                                                                  |
 | `chat.users`             | No       | `[]object` | The list of existing users. Up to 4 additional (other than the requester) agents and 1 customer allowed. |
@@ -1068,7 +1069,8 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.users.type`        | Yes      | `string`   | `agent` or `customer`                                                                                    |
 | `chat.thread`            | No       | `object`   |                                                                                                          |
 | `chat.thread.events`     | No       | `array`    | Initial chat events array                                                                                |
-| `chat.thread.properties` | No       | `object`   | Initial thread properties                                                                           |
+| `chat.thread.properties` | No       | `object`   | Initial thread properties                                                                                |
+| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread; default: `true`.                                         |
 | `continuous`             | No       | `bool`     | Sets a chat to the continuous mode. When unset, leaves the mode unchanged.                               |
 
 #### Response
@@ -1076,7 +1078,7 @@ When `chat.users` is defined, one of following scopes is required:
 | Parameter   | Data type  | Notes                                                                                                                                                                     |
 | ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `thread_id` | `string`   |                                                                                                                                                                           |
-| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
 
 </Text>
 <Code>
@@ -1084,7 +1086,7 @@ When `chat.users` is defined, one of following scopes is required:
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.3/agent/action/activate_chat \
+  https://api.livechatinc.com/v3.3/agent/action/resume_chat \
   -H 'Authorization: Bearer <your_access_token>' \
   -H 'Content-Type: application/json' \
   -d '{
