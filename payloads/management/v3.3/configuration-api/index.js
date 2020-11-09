@@ -12,7 +12,7 @@ export { default as listGroups } from "./responses/groups/listGroups.json"
 
 export { default as listGroupProperties } from "./responses/properties/listGroupProperties.json"
 export { default as listLicenseProperties } from "./responses/properties/listLicenseProperties.json"
-export { default as listRegisteredProperties } from "./responses/properties/listRegisteredProperties.json"
+export { default as listProperties } from "./responses/properties/listProperties.json"
 
 export { default as registerWebhook } from "./responses/webhooks/registerWebhook.json"
 export { default as listRegisteredWebhooks } from "./responses/webhooks/listRegisteredWebhooks.json"
