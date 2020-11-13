@@ -137,7 +137,7 @@ export default ({ data: { mdx, allMdx } }) => {
           selector.scrollIntoView();
           window.scrollBy(0, -SCROLL_OFFSET);
         }
-      } catch (error) {}
+      } catch (error) { }
     }
   }, []);
 
@@ -176,7 +176,7 @@ export default ({ data: { mdx, allMdx } }) => {
 
   const categoryMeta = useCategoryMeta(category);
   const ratingContext = useRating({ slug });
-  const useRedocPage = ["authorization"].includes(category);
+  const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
 
   return (
     <RatingProvider value={ratingContext}>
@@ -205,7 +205,7 @@ export default ({ data: { mdx, allMdx } }) => {
               />
             )}
             <Content className={useRedocPage ? "redoc" : ""}>
-              {title && (
+              {title && !useRedocPage && (
                 <PageHeader
                   title={title}
                   timeToRead={timeToRead}

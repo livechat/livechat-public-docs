@@ -10,7 +10,6 @@ export default () => {
               slug
               title
               color
-              hide
               items {
                 slug
                 title
