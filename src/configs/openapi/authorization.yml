@@ -1,292 +1,390 @@
 openapi: 3.0.0
 info:
   title: Global Accounts API
-  description: API used to manage Organizations and Accounts for multiple products. Also responsible for authorization and authentication processes.
+  description: >-
+    API used to manage Organizations and Accounts for multiple products. Also
+    responsible for authorization and authentication processes.
   version: 2.0.0
 servers:
-  - url: https://accounts.livechat.com/v2
+  - url: "https://accounts.livechat.com/v2"
     description: Main production server URL
 paths:
-  /clients:
+  /accounts:
     get:
-      summary: List OAuth clients
-      description: List all clients using `organization_id` obtained from the access token
+      summary: List accounts
+      description: >-
+        Accounts are listed by using `organization_id` obtained from the access
+        token. The `accounts.roles--all:ro` scope is required for listing
+        accounts along with their roles.
       security:
-        - oAuth2:
-            - oauth_clients_manage
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts--all:ro"
+            - "accounts.roles--all:ro"
       tags:
-        - Clients
+        - Accounts
       responses:
         "200":
-          description: OK, returns clients list
+          description: "OK: Returns the list of accounts."
           content:
             application/json:
               schema:
                 type: array
-                items:
-                  $ref: "#/components/schemas/OAuthClient"
+                items: &ref_2
+                  description: "An entity of the account, used across all LiveChat products"
+                  type: object
+                  required:
+                    - email
+                  properties:
+                    account_id:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                      description: Unique account identifier
+                      example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+                    name:
+                      type: string
+                      description: "Account name (nick; first, second name; or both)"
+                      example: John
+                      exclusiveMaximum: false
+                      maxLength: 191
+                    email: &ref_15
+                      type: string
+                      format: email
+                      description: Account's email address
+                      example: john@example.com
+                      exclusiveMaximum: false
+                      maxLength: 128
+                    email_verified:
+                      type: boolean
+                      readOnly: true
+                      description: >-
+                        Specifies if an email was verified. (The account
+                        performed an email action or was validated by a
+                        third-party identity provider.)
+                      example: false
+                    default_product: &ref_0
+                      type: string
+                      description: Available product name
+                      example: Accounts
+                      enum:
+                        - LiveChat
+                        - Accounts
+                    default_organization_id:
+                      type: string
+                      format: uuid
+                      description: ID of default organization the account belongs to.
+                      example: b2185556-634c-4ecf-b4c9-bcf8b65bc853
+                      default: null
+                      nullable: true
+                    avatar_url:
+                      type: string
+                      description: Account's avatar
+                      example: null
+                      default: null
+                      nullable: true
+                      exclusiveMaximum: false
+                      maxLength: 255
+                    roles:
+                      type: array
+                      items: &ref_3
+                        description: Role groups account scopes into one permission entity.
+                        type: object
+                        properties:
+                          role_id:
+                            type: string
+                            description: Unique role definition ID
+                            example: 728b99be-848c-11ea-9b91-005056a007e9
+                          product: *ref_0
+                          role:
+                            type: string
+                            description: >-
+                              Role name; one of predefined roles or a custom
+                              name for a custom role.
+                            example: administrator
+                            enum:
+                              - owner
+                              - viceowner
+                              - administrator
+                              - normal
+                              - member
+                          type:
+                            type: string
+                            readOnly: true
+                            description: >-
+                              There are three role types: `primary` – an
+                              obligatory Accounts role, `secondary` – a basic
+                              product role, and `custom` – a customly-defined
+                              role.
+                            example: primary
+                          predefined:
+                            readOnly: true
+                            type: boolean
+                            description: >-
+                              If `true`, the role is common across all
+                              organizations. If `false`, the role is defined per
+                              organization.
+                            example: true
+                      description: >-
+                        Array of account roles; returned only when the access
+                        token contains the `accounts.roles--all:ro` scope.
+                    updated_at:
+                      readOnly: true
+                      type: string
+                      format: date-time
+                      description: Date of the account's last update
+                      example: 2019-09-03T10:53:04.000Z
+                    created_at:
+                      readOnly: true
+                      type: string
+                      format: date-time
+                      description: Date of the account's creation
+                      example: 2019-09-03T10:53:04.000Z
         "401":
-          description: Unauthorized (invalid, missing or expired access token)
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: &ref_4
+                allOf:
+                  - &ref_1
+                    description: Default error object
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: unauthorized
+                        enum:
+                          - bad_request
+                          - invalid_request
+                          - unauthorized_client
+                          - access_denied
+                          - unsupported_response_type
+                          - invalid_scope
+                          - server_error
+                          - temporarily_unavailable
+                          - unsupported_grant_type
+                          - invalid_grant
+                          - invalid_client
+                          - forbidden
+                          - conflict
+                          - resource_not_found
+                      error_description:
+                        type: string
+                        example: The account is not authorized.
+                      request_id:
+                        type: string
+                        format: uuid
+                        example: 5903c51b-89f0-41a9-a25d-4f39af100353
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: unauthorized
+                      error_description:
+                        type: string
+                        example: The account is not authorized.
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: &ref_5
+                allOf:
+                  - *ref_1
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: access_denied
+                      sub_error:
+                        type: string
+                        example: insufficient_scope
+                      error_description:
+                        type: string
+                        example: >-
+                          The resource owner or authorization server denied the
+                          request.
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema: &ref_6
+                allOf:
+                  - *ref_1
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: server_error
+                      error_description:
+                        type: string
+                        example: >-
+                          The server encountered an unexpected condition that
+                          prevented it from fulfilling the request.
     post:
-      summary: Create OAuth client
-      description: This method creates a new client for a given organization id
-      security:
-        - oAuth2:
-            - oauth_clients_manage
-            - dev_platform_admin
       tags:
-        - Clients
+        - Accounts
+      summary: Create a new account
+      description: >-
+        Create an account for a given `organization_id`. This endpoint is
+        idempotent. The `accounts.roles--all:rw` scope is required to create an
+        account with a role.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts--all:rw"
+            - "accounts--all:rc"
+            - "accounts.roles--all:rw"
       requestBody:
         required: true
         content:
           application/json:
             schema:
               allOf:
-                - $ref: "#/components/schemas/OAuthClient"
+                - *ref_2
                 - type: object
-                  required:
-                    - name
-                    - type
-                    - redirect_uri
+                  properties:
+                    email:
+                      required: true
+                    password: &ref_12
+                      type: string
+                      writeOnly: true
+                      exclusiveMaximum: false
+                      maxLength: 255
+                      exclusiveMinimum: false
+                      minLength: 8
+                      example: BG0SaleEBL
+                      description: Password for a given account
+                    roles:
+                      type: array
+                      items:
+                        description: >-
+                          The list of role definitions, which will be set for
+                          the account.
+                        type: object
+                        oneOf: &ref_10
+                          - allOf:
+                              - *ref_3
+                              - type: object
+                                properties:
+                                  role_id:
+                                    readOnly: true
+                                required:
+                                  - role_id
+                          - allOf:
+                              - *ref_3
+                              - type: object
+                                properties:
+                                  product:
+                                    readOnly: true
+                                  role:
+                                    readOnly: true
+                                required:
+                                  - product
+                                  - role
       responses:
         "200":
-          description: OK, returns created client
+          description: "OK: Returns the already existing account."
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/OAuthClient"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-  /clients/{client_id}:
-    patch:
-      summary: Update OAuth client
-      description: This method updates a client for a given client id
-      security:
-        - oAuth2:
-            - oauth_clients_manage
-            - dev_platform_admin
-      tags:
-        - Clients
-      parameters:
-        - in: path
-          name: client_id
-          schema:
-            type: string
-          required: true
-          description: Unique client ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/OAuthClient"
-      responses:
-        "200":
-          description: OK, returns updated client
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OAuthClient"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (client not found)
-        "500":
-          description: Server Error
-    delete:
-      summary: Delete OAuth client
-      description: This method removes an existing client and on successful call revoking all tokens related to the removed client
-      security:
-        - oAuth2:
-            - oauth_clients_manage
-      tags:
-        - Clients
-      parameters:
-        - in: path
-          name: client_id
-          schema:
-            type: string
-          required: true
-          description: Unique client ID
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (client not found)
-        "500":
-          description: Server Error
-  /clients/{client_id}/scopes:
-    put:
-      summary: Update OAuth client scopes
-      description: This method sets the scopes for a given client id. If the operation is successful, consents granted for an app are removed. Previously generated access tokens remains intact
-      security:
-        - oAuth2:
-            - oauth_clients_manage
-            - dev_platform_admin
-      tags:
-        - Clients
-      parameters:
-        - in: path
-          name: client_id
-          schema:
-            type: string
-          required: true
-          description: Unique client ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Scope"
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (client not found)
-        "500":
-          description: Server Error
-  /clients/{client_id}/consent:
-    delete:
-      summary: Revoke OAuth client consent
-      description: This method removes consent for an existing client. Successful call revokes all tokens related to removed consent. The client will be no longer able to obtain any data from the account or organization
-      security:
-        - oAuth2:
-            - oauth_clients_manage
-            - ""
-      tags:
-        - Clients
-      parameters:
-        - in: path
-          name: client_id
-          schema:
-            type: string
-          required: true
-          description: Unique client ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                coverage:
-                  type: string
-                  description: Default `account` - removes consent for a given account and organization, `organization` - removes consent for all accounts in a given organization
-                  enum:
-                    - account
-                    - organization
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (client not found)
-        "500":
-          description: Server Error
-  /accounts:
-    get:
-      summary: List all accounts
-      description: Accounts are listed by using `organization_id` obtained from the access token
-      security:
-        - oAuth2:
-            - accounts--all:ro
-            - accounts--all:ro accounts.roles--all:ro
-      tags:
-        - Accounts
-      responses:
-        "200":
-          description: OK, returns accounts list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Account"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-    post:
-      tags:
-        - Accounts
-      summary: Creates new account
-      description: Create an account for a given `organization_id`. This endpoint is idempotent. It's possible to set a password for a new account, but it should be done by reminding the password endpoint and custom postmark template
-      security:
-        - oAuth2:
-            - accounts--all:rw
-            - accounts--all:rw accounts.roles--all:rw
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                email:
-                  type: string
-                  description: Account email
-                  example: user@example.com
-                name:
-                  type: string
-                  description: Account name
-                  example: John Doe
-                password:
-                  type: string
-                  description: Password for new account
-                  minLength: 8
-                  example: test1234
-                roles:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/Role"
-                  default: null
-                  example: []
-              required:
-                - email
-                - roles
-      responses:
-        "200":
-          description: OK, returns existing account
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Account"
+              schema: *ref_2
         "201":
-          description: OK, returns created account
+          description: "OK: Returns the created account."
+          content:
+            application/json:
+              schema: *ref_2
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema: &ref_8
+                allOf:
+                  - *ref_1
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: bad_request
+                      error_description:
+                        type: string
+                        example: >-
+                          The server cannot or will not process the request due
+                          to an apparent client error (for example, malformed
+                          request syntax, size too large).
+        "401":
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "409":
+          description: >-
+            Conflict: The account already exists in a different organization.
+            This constraint is temporary.
+          content:
+            application/json:
+              schema: &ref_13
+                allOf:
+                  - *ref_1
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: conflict
+                      error_description:
+                        type: string
+                        example: >-
+                          The request couldn't be processed because of conflict
+                          in the current state of the resource.
+        "422":
+          description: "Validation error: Invalid email address, name too long, etc."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Account"
-        "400":
-          description: Bad request (incorrect JSON or Content-Type header)
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "409":
-          description: Conflict (account exists in other organization, this constraint is temporary)
-        "422":
-          description: Validation error (invalid email address, too long name)
+                allOf:
+                  - &ref_7
+                    allOf:
+                      - *ref_1
+                      - type: object
+                        properties:
+                          error:
+                            type: string
+                            example: invalid_request
+                          error_description:
+                            type: string
+                            example: >-
+                              The request is missing a required parameter,
+                              includes an invalid parameter value, includes a
+                              parameter more than once, or is otherwise
+                              malformed.
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: value too long
         "500":
           description: Server Error
-  /accounts/{account_id}:
+          content:
+            application/json:
+              schema: *ref_6
+  "/accounts/{account_id}":
     get:
-      summary: Gets account
-      description: Gets account by provided `id` or could be used by `me` for getting requester account
+      summary: Get an account
+      description: >-
+        Get an account for a given `account_id`. The ID can be replaced with
+        `me` to get the account that performs the request. To get an account
+        along with its role, you need the `accounts.roles--all:ro` scope.
       security:
-        - oAuth2:
-            - accounts--my:ro
-            - accounts--my:ro accounts.roles--all:ro
-            - accounts--all:ro
-            - accounts--all:ro accounts.roles--all:ro
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts--my:ro"
+            - "accounts.roles--all:ro"
       tags:
         - Accounts
       parameters:
@@ -294,172 +392,240 @@ paths:
           name: account_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique account ID or `me` for account ID obtained from an access token
+          description: Unique account ID or `me`
       responses:
         "200":
-          description: OK, returns account
+          description: "OK: Returns the account."
+          content:
+            application/json:
+              schema: *ref_2
+        "401":
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: The account doesn't exist."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Account"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Organization not found for given account ID
+                allOf:
+                  - &ref_9
+                    allOf:
+                      - *ref_1
+                      - type: object
+                        properties:
+                          error:
+                            type: string
+                            example: resource_not_found
+                          error_description:
+                            type: string
+                            example: The requested resource couldn't be found.
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: account
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "422":
-          description: Validation error (wrong account_id uuid format format)
+          description: "Validation error: Invalid uuid"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            example: invalid uuid
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
     patch:
       tags:
         - Accounts
-      summary: Updates account
-      description: Updates account properties
+      summary: Update an account
+      description: >-
+        Update an account for a given `account_id`. The ID can be replaced with
+        `me` to update the account that performs the request. To set a role for
+        an account, you need the `accounts.roles--all:rw` scope.
       security:
-        - oAuth2:
-            - accounts--all:rw
-            - accounts--all:rw accounts.roles--all:rw
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts--all:rw"
+            - "accounts.roles--all:rw"
       parameters:
         - in: path
           name: account_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique account ID or `me` for account ID obtained from an access token
+          description: Unique account ID or `me`
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Account"
+              allOf:
+                - *ref_2
+                - type: object
+                  properties:
+                    email:
+                      readOnly: true
+                    roles:
+                      readOnly: true
       responses:
         "200":
-          description: OK, returns updated account
+          description: "OK: Returns the updated account."
+          content:
+            application/json:
+              schema: *ref_2
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema: *ref_8
+        "401":
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: The account doesn't exist."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Account"
-        "400":
-          description: Bad request (incorrect JSON or Content-Type header)
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Account not found for given account ID
-        "409":
-          description: Tried to set default product where it's not used by organization or organization is null when product is provided
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: account
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "422":
-          description: Validation error (invalid email address, too long name)
+          description: "Validation error: Invalid email address, name too long, etc."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            example: value too long
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
     delete:
       tags:
         - Accounts
-      summary: Delete account
-      description: Deletes selected account
+      summary: Delete an account
+      description: >-
+        Deletes an account for a given `account_id`. The ID can be replaced with
+        `me` to delete the account that performs the request.
       security:
-        - oAuth2:
-            - accounts--my:rw
-            - accounts--all:rw
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts--my:rw"
       parameters:
         - in: path
           name: account_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique account ID or `me` for account ID obtained from an access token
+          description: Unique account ID or `me`
       responses:
         "200":
-          description: OK, returns empty object
+          description: "OK: Returns no content."
         "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Account not found for given account ID
-        "422":
-          description: Validation error (wrong uuid account ID format)
-        "500":
-          description: Server Error
-  /v2/accounts/me/invitation_token:
-    get:
-      tags:
-        - Accounts
-      summary: Returns invitation token
-      description: This method returns an active invite access token. This scope allows for creating unlimited accounts for a given organization. The token is not revoked after a successful call. The token can be safely attached to an invitation link or email. The token lifetime is limited to 14 days
-      security:
-        - oAuth2:
-            - accounts--all:rw
-      responses:
-        "200":
-          description: OK, returns invitation token
+          description: "Unauthorized, missing, or invalid authorization"
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/AccessToken"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-    post:
-      tags:
-        - Accounts
-      summary: Generate invitation token
-      description: This method creates an invitation access token. Creating a new token revokes the previous one
-      security:
-        - oAuth2:
-            - accounts--all:rw
-      responses:
-        "200":
-          description: OK, returns invitation token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AccessToken"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-  /v2/accounts/me/transfer_ownership:
-    post:
-      tags:
-        - Accounts
-      summary: Transfers ownership
-      description: Adds the ability for the owner to transfer ownership to another account. After the operation, current owner becomes an administrator
-      security:
-        - oAuth2:
-            - agents_transfer_ownership
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                account_id:
-                  type: string
-                  description: New owners account ID
-                  example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-              required:
-                - account_id
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
+              schema: *ref_4
         "403":
-          description: Forbidden (the request is not performed by an owner)
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
         "404":
-          description: Not found (account not found)
+          description: Not found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: account
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "422":
-          description: Validation error (wrong account_id uuid format)
+          description: "Validation error: Invalid email address, name too long, etc."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            example: value too long
         "500":
           description: Server Error
-  /accounts/{account_id}/roles:
+          content:
+            application/json:
+              schema: *ref_6
+  "/accounts/{account_id}/roles":
     put:
       summary: Set account roles
-      description: Set or delete the roles for a given `account_id`. Set overwrites a role group in case of conflicts. For example setting an administrator role for LiveChat will create or overwrite existing LiveChat role. Can't set or remove owner with this method
+      description: >-
+        Set or delete roles for a given `account_id`. Set overwrites a role
+        group in case of conflicts.
       security:
-        - oAuth2:
-            - accounts.roles--all:rw
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts.roles--all:rw"
       tags:
         - Accounts
       parameters:
@@ -467,8 +633,9 @@ paths:
           name: account_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique account ID or `me` for account ID obtained from an access token
+          description: Unique account ID or `me`
       requestBody:
         required: true
         content:
@@ -478,946 +645,876 @@ paths:
               properties:
                 set_roles:
                   type: array
-                  items:
-                    $ref: "#/components/schemas/Role"
-                  description: List of role definitions which will be set for the account
+                  items: &ref_11
+                    type: object
+                    oneOf: *ref_10
+                  description: >-
+                    The list of role definitions that will be set for the
+                    account.
                 delete_roles:
                   type: array
-                  items:
-                    $ref: "#/components/schemas/Role"
-                  description: List of role definitions which will be deleted from the account
+                  items: *ref_11
+                  description: >-
+                    The list of role definitions that will be deleted from the
+                    account.
       responses:
         "200":
-          description: OK, returns existing account
+          description: "OK: Returns the updated account."
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Account"
+              schema: *ref_2
         "400":
-          description: Bad request (incorrect JSON or Content-Type header)
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Account not found for given account ID
-        "422":
-          description: Validation error (wrong uuid account ID format)
-        "500":
-          description: Server Error
-  /organizations:
-    get:
-      tags:
-        - Organizations
-      summary: Get organizations
-      description: Lists all organizations that the account belongs to, based on authorization
-      responses:
-        "200":
-          description: OK, returns organizations
+          description: Bad Request
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Organization"
+              schema: *ref_8
         "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-    post:
-      tags:
-        - Organizations
-      summary: Create organization
-      description: Create an organization and account. This endpoint does not send any emails. You can also use Bearer/Basic authorization then instead of creating a new account for an organization, and there will be created a new organization for an account associated with the token
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                email:
-                  type: string
-                  description: New account created along with organization email. Required if no authorization is provided
-                  example: user@example.com
-                password:
-                  type: string
-                  description: Password for new account
-                  minLength: 8
-                  example: test1234
-                organization:
-                  $ref: "#/components/schemas/Organization"
-              required:
-                - email
-      responses:
-        "200":
-          description: OK, returns account and organization
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: Account ID or role ID were not found."
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: "#/components/schemas/Account"
+                  - *ref_9
                   - type: object
                     properties:
-                      organization:
-                        $ref: "#/components/schemas/Organization"
-        "400":
-          description: Bad request (incorrect JSON or Content-Type header)
-        "409":
-          description: Conflict (account exists in other organization)
+                      resource_name:
+                        type: string
+                        example: account
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "422":
-          description: Validation error (invalid email address, too long name)
-        "500":
-          description: Server Error
-  /organizations/{organization_id}:
-    get:
-      summary: Get organization
-      description: Returns single organization by it's id, could use `my` for obtaining organization from authorization
-      tags:
-        - Organizations
-      parameters:
-        - in: path
-          name: organization_id
-          schema:
-            type: string
-          required: true
-          description: Unique organization ID or `my` for organization ID obtained from an access token
-      responses:
-        "200":
-          description: OK, returns organization
+          description: "Validation error: Invalid uuid, etc."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Organization"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Organization not found for given organization ID
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            example: value too long
         "500":
           description: Server Error
-    patch:
-      tags:
-        - Organizations
-      summary: Update organization
-      description: Updates organization properties
-      security:
-        - oAuth2:
-            - organization--my:rw
-      parameters:
-        - in: path
-          name: organization_id
-          schema:
-            type: string
-          required: true
-          description: Unique organization ID or `my` for organization ID obtained from an access token
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Organization"
-      responses:
-        "200":
-          description: OK, returns updated organization
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Organization"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Organization not found for given organization ID
-        "422":
-          description: Validation error (wrong organization_id UUID format or missing organization_name)
-        "500":
-          description: Server Error
-  /personal_token:
-    get:
-      tags:
-        - Personal Access
-      summary: List Personal Tokens
-      description: List all personal tokens for a given account.
-      security:
-        - oAuth2:
-            - personal_access_manage
-      responses:
-        "200":
-          description: OK, returns tokens
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PersonalToken"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-  /personal_token/info:
-    get:
-      tags:
-        - Personal Access
-      summary: Check if the personal token is valid.
-      description: Check personal token provided in `Basic` auth.
-      responses:
-        "200":
-          description: OK, returns token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PersonalToken"
-        "400":
-          description: Bad request (wrong or missing basic authorization encoding)
-        "401":
-          description: Unauthorized (wrong personal token)
-        "500":
-          description: Server Error
-  /v2/personal_token/{personal_token_id}:
-    delete:
-      summary: Delete personal token
-      description: Invalidate and remove the personal token for provided id.
-      tags:
-        - Personal Access
-      security:
-        - oAuth2:
-            - personal_access_manage
-      parameters:
-        - in: path
-          name: personal_token_id
-          schema:
-            type: string
-          required: true
-          description: Unique token ID.
-      responses:
-        "200":
-          description: OK, return empty body
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Personal token not found
-        "500":
-          description: Server Error
-  /scopes:
-    get:
-      summary: Lists scopes
-      description: List all available scopes
-      security:
-        - oAuth2:
-            - dev_platform_admin
-            - ""
-      tags:
-        - Scopes
-      responses:
-        "200":
-          description: OK, returns scopes list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ScopeSimple"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-  /accounts/{account_id}/password/resettable:
+              schema: *ref_6
+  "/accounts/{account_id}/password/reset":
     post:
-      summary: Check ability for reset password
-      description: This method checks if a new password can be set using reset endpoint
+      summary: Set a password
+      description: >-
+        This method sets a new password. A successful call revokes all session
+        tokens. It's possible to set a password for other accounts only when
+        they belong to a single organization.
       security:
-        - oAuth2:
-            - accounts.password--my:rw
-            - accounts.password--all:rw
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts.password--my:rw"
       tags:
-        - Passwords
+        - Accounts
       parameters:
         - in: path
           name: account_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique account ID or `me` for account ID obtained from an access token
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "409":
-          description: Account is assigned to many organizations
-        "422":
-          description: Password requirements not met
-        "500":
-          description: Server Error
-  /accounts/{account_id}/password/reset:
-    post:
-      summary: Set account password
-      description: This method sets new password. Successful call revokes all session tokens
-      security:
-        - oAuth2:
-            - accounts.password--my:rw
-            - accounts.password--all:rw
-      tags:
-        - Passwords
-      parameters:
-        - in: path
-          name: account_id
-          schema:
-            type: string
-          required: true
-          description: Unique account ID or `me` for account ID obtained from an access token
+          description: Unique account ID or `me`
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                password:
-                  type: string
-                  description: Password for new account
-                  minLength: 8
-                  example: test1234
+                password: *ref_12
               required:
                 - password
       responses:
         "200":
-          description: OK, returns empty object
+          description: "OK: Returns an empty object."
+          content:
+            application/json:
+              schema: *ref_2
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema: *ref_8
         "401":
-          description: Unauthorized (invalid, missing or expired access token)
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: The account ID was not found."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: account
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "409":
-          description: Account is assigned to many organizations
+          description: "Conflict: The account is assigned to more than one organization."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_13
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: account
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "422":
-          description: Password requirements not met
+          description: "Validation error: Invalid uuid, etc."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          account_id:
+                            type: string
+                            example: value too long
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
   /roles:
     get:
       summary: List roles
-      description: List roles for an organization
+      description: >-
+        List the roles available for an organization. The result combines
+        predefined and user-defined roles.
       security:
-        - oAuth2:
-            - accounts.roles--all:ro
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts.roles--all:ro"
       tags:
         - Roles
       responses:
         "200":
-          description: OK, returns roles list
+          description: "OK: Returns the list of roles."
+          content:
+            application/json:
+              schema:
+                type: array
+                items: *ref_3
+        "401":
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+  "/roles/{role_id}":
+    get:
+      summary: Get a role
+      description: >-
+        Get a single role for a given `role_id`. The role is returned with the
+        scopes assigned to it.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts.roles--all:ro"
+      tags:
+        - Roles
+      parameters:
+        - in: path
+          name: role_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Unique role ID
+      responses:
+        "200":
+          description: "OK: Returns the role."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_3
+                  - type: object
+                    properties:
+                      scope:
+                        type: string
+                        description: >-
+                          Scopes assigned to the role, separated by a comma
+                          (`,`)
+                        example: "accounts--all:rw,accounts.roles--all:ro"
+        "401":
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: The role doesn't exist."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: role
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: 97f365b7-5e7d-4e6d-bf48-ef7bb96580a4
+        "422":
+          description: "Validation error: Invalid uuid"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          role_id:
+                            type: string
+                            example: invalid uuid
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+    delete:
+      summary: Delete a role
+      description: >-
+        Delete a single role for a given `role_id`. Only the `custom` role can
+        be deleted. All tokens related to a given role will be revoked.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "accounts.roles--all:rw"
+      tags:
+        - Roles
+      parameters:
+        - in: path
+          name: role_id
+          schema:
+            type: string
+          required: true
+          description: Unique role ID
+      responses:
+        "200":
+          description: "OK: Returns no content."
+        "401":
+          description: "Unauthorized, missing or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: The role doesn't exist."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: role
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: 97f365b7-5e7d-4e6d-bf48-ef7bb96580a4
+        "422":
+          description: "Validation error: Invalid uuid"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          role_id:
+                            type: string
+                            example: invalid uuid
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+  /sessions:
+    get:
+      summary: List sessions
+      description: >-
+        Returns all sessions for a given account ID. The account ID is obtained
+        from an authorization grant.
+      security:
+        - OAuth2 Bearer Token:
+            - "sessions--my:ro"
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: "OK: Returns the list of sessions."
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Role"
+                  description: Scope describe user single permission
+                  type: object
+                  properties:
+                    account_id:
+                      type: string
+                      format: uuid
+                      description: Unique account identifier
+                      example: 28df1a50-84fa-490c-9615-5b77d507c393
+                      readOnly: true
+                    session_id: &ref_14
+                      type: string
+                      format: uuid
+                      description: Unique session identifier
+                      example: bfeeb033-bc8e-467f-982d-22dcef274fa1
+                      readOnly: true
+                    current:
+                      type: boolean
+                      description: >-
+                        Returns `true` if the access token that was used to
+                        request the data belongs to the current session.
+                      example: true
+                      readOnly: true
+                    user_agent:
+                      type: string
+                      description: >-
+                        Name of the user agent (device) on which the session was
+                        established.
+                      example: >-
+                        Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:69.0)
+                        Gecko/20100101 Firefox/69.0
+                      readOnly: true
+                    identity_source:
+                      type: string
+                      description: Type of identity source
+                      enum:
+                        - credentials
+                        - explicit
+                        - google
+                        - token
+                        - microsoft
+                        - apple
+                      example: credentials
+                      readOnly: true
+                    ip:
+                      type: string
+                      description: >-
+                        IP address of the computer on which the session was
+                        established.
+                      example: 194.181.146.158
+                      readOnly: true
+                    applications:
+                      type: array
+                      items:
+                        description: Basic information about application
+                        properties:
+                          name:
+                            type: string
+                            readOnly: true
+                            example: LiveChat Application
+                          client_id:
+                            type: string
+                            readOnly: true
+                            example: 238ac4c3c3628880aca289c6d700d2c5
+                          session_id: *ref_14
         "401":
-          description: Unauthorized (invalid, missing or expired access token)
+          description: "Unauthorized, missing or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
         "500":
           description: Server Error
-    post:
-      summary: Create role
-      description: Create custom role for an organization
+          content:
+            application/json:
+              schema: *ref_6
+    delete:
+      summary: Remove all sessions
+      description: >-
+        Removes all sessions for a given account ID. The account ID is obtained
+        from an authorization grant. It's impossible to remove a session for
+        other accounts. All access tokens related to the sessions will be
+        revoked.
       security:
-        - oAuth2:
-            - accounts.roles--all:rw
+        - OAuth2 Bearer Token:
+            - "accounts--all:ro"
+            - "accounts.roles--all:ro"
       tags:
-        - Roles
+        - Sessions
+      responses:
+        "200":
+          description: "OK: Returns no content."
+        "401":
+          description: "Unauthorized, missing or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+  "/sessions/{session_id}":
+    delete:
+      summary: Remove a session
+      description: >-
+        Removes a specific session for a given account ID. The account ID is
+        obtained from an authorization grant. It's impossible to remove a
+        session for other accounts. All access tokens related to the sessions
+        will be revoked.
+      security:
+        - OAuth2 Bearer Token:
+            - "sessions--my:rw"
+      tags:
+        - Sessions
+      parameters:
+        - in: path
+          name: session_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Unique session ID
+      responses:
+        "200":
+          description: "OK: Returns no content."
+        "401":
+          description: "Unauthorized, missing or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
+        "404":
+          description: "Not found: The session doesn't exist"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: session
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: b68698d6-fdac-4fb5-9ac1-017cf13ca221
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+  /organizations:
+    get:
+      tags:
+        - Organizations
+      summary: List organizations
+      description: >-
+        Lists all organizations that an account belongs to, based on
+        authorization.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token: null
+      responses:
+        "200":
+          description: "OK: Returns organizations."
+          content:
+            application/json:
+              schema:
+                type: array
+                items: &ref_16
+                  description: >-
+                    Organization groups accounts into a single unit. Each
+                    organization must contain at least one account and one
+                    owner. An account can be assigned to many organizations at
+                    once. The default organization is the first assigned to a
+                    given account.
+                  type: object
+                  properties:
+                    organization_id:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                      description: Unique organization identifier
+                      example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
+                    name:
+                      type: string
+                      description: Organization name
+                      example: Organization Name
+                      exclusiveMaximum: false
+                      maxLength: 127
+                    company:
+                      description: Basic company information
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                          description: Company phone number
+                          example: +48 123 456 789
+                          exclusiveMaximum: false
+                          maxLength: 20
+                        website:
+                          type: string
+                          description: Primary company website
+                          example: example.com
+                          exclusiveMaximum: false
+                          maxLength: 255
+        "401":
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+    post:
+      tags:
+        - Organizations
+      summary: Create an organization
+      description: >-
+        Creates an organization and an account. Calling this endpoint won't
+        result in email notifications. Alternatively, you can use Bearer/Basic
+        authorization instead of creating a new account for an organization; it
+        will create a new organization for the account associated with the
+        token.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Role"
+              properties:
+                email: *ref_15
+                password: *ref_12
+                organization: *ref_16
+              required:
+                - email
       responses:
         "200":
-          description: OK, returns new role
+          description: "OK: Returns the account and the organization."
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Role"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "403":
-          description: Missing scopes for one that role declares
+                allOf:
+                  - *ref_2
+                  - type: object
+                    properties:
+                      organization: *ref_16
+                      access_token:
+                        type: string
+                        example: "dal:eDqDuTRZoK03C3rzD2dcfA=="
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema: *ref_8
+        "409":
+          description: "Conflict: The account already exists."
+          content:
+            application/json:
+              schema: *ref_13
+        "422":
+          description: "Validation error: Invalid email address, name too long, etc."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: invalid email format
         "500":
           description: Server Error
-  /roles/{role_id}:
+          content:
+            application/json:
+              schema: *ref_6
+  "/organizations/{organization_id}":
     get:
-      summary: Get role
-      description: Get single role
+      summary: Get an organization
+      description: >-
+        Returns a single organization for a given organization ID. The ID can be
+        replaced with `me` to get the account that sends the request.
       security:
-        - oAuth2:
-            - accounts.roles--all:rw
+        - Personal Access Token: null
+        - OAuth2 Bearer Token: null
       tags:
-        - Roles
+        - Organizations
       parameters:
         - in: path
-          name: role_id
+          name: organization_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique role ID
+          description: Unique account ID or `me`
       responses:
         "200":
-          description: OK, returns role
+          description: "OK: Returns the organization."
+          content:
+            application/json:
+              schema: *ref_16
+        "401":
+          description: "Unauthorized, missing, or invalid authorization."
+          content:
+            application/json:
+              schema: *ref_4
+        "404":
+          description: "Not found: The organization doesn't exist."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Role"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (role not found)
-        "422":
-          description: Validation error (wrong `role_id` uuid format)
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: organization
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "500":
           description: Server Error
-    delete:
-      summary: Delete role
-      description: Delete single role
-      security:
-        - oAuth2:
-            - accounts.roles--all:rw
+          content:
+            application/json:
+              schema: *ref_6
+    patch:
       tags:
-        - Roles
+        - Organizations
+      summary: Update an organization
+      description: Updates an organization
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - "organization--my:rw"
       parameters:
         - in: path
-          name: role_id
+          name: organization_id
           schema:
             type: string
+            format: uuid
           required: true
-          description: Unique role ID
+          description: Unique account ID or `me`
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: *ref_16
       responses:
         "200":
-          description: OK, returns empty object
+          description: "OK: Returns the updated organization."
+          content:
+            application/json:
+              schema: *ref_16
         "401":
-          description: Unauthorized (invalid, missing or expired access token)
+          description: "Unauthorized, missing, or invalid authorization"
+          content:
+            application/json:
+              schema: *ref_4
+        "403":
+          description: "Forbidden: Insufficient scope"
+          content:
+            application/json:
+              schema: *ref_5
         "404":
-          description: Not found (role not found)
+          description: "Not found: The organization doesn't exist."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      resource_name:
+                        type: string
+                        example: organization
+                      resource_id:
+                        type: string
+                        format: uuid
+                        example: def31e95-5ca4-4817-b176-732e4544daca
         "422":
-          description: Validation error (wrong `role_id` uuid format)
+          description: "Validation error: Name too long, etc."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: value too long
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
   /info:
     get:
-      summary: Get token info
+      summary: Get token details
+      description: >-
+        Some access tokens are paired with a refresh token. The access token can
+        be provided via authorization or a query string.
+      security:
+        - OAuth2 Bearer Token: null
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+            example: "fra-a:vky95357S7KM1E4dXwv1DQ"
       tags:
         - Tokens
       responses:
         "200":
-          description: OK, returns token information
+          description: "OK: Returns token details."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccessToken"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-    delete:
-      summary: Revoke an access token or refresh token. A refresh token is revoked with a related access token.
-      tags:
-        - Tokens
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-  /sessions:
-    get:
-      summary: List sessions
-      description: This method returns all sessions for a given account id. The account id is obtained from an authorization grant
-      security:
-        - oAuth2:
-            - sessions-my:ro
-      tags:
-        - Sessions
-      responses:
-        "200":
-          description: OK, returns session list
+                description: OAuth 2 `Bearer` token
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token value
+                    example: "fra-a:vky95357S7KM1E4dXwv1DQ"
+                  account_id:
+                    type: string
+                    format: uuid
+                    description: Account ID for which the token was issued
+                    example: 28df1a50-84fa-490c-9615-5b77d507c393
+                  expires_in:
+                    type: integer
+                    format: uint64
+                    description: Access token lifetime (in seconds)
+                    example: 432000
+                  organization_id:
+                    type: string
+                    format: uuid
+                    description: Organization ID for which the token was issued
+                    example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
+                  refresh_token:
+                    type: string
+                    description: Refresh token value
+                    example: "fra-a:0SEkeLZ2Qy2Nm2cg42xIyg"
+                  scope:
+                    type: string
+                    description: "Scopes assigned to token, separated by a comma (`,`)"
+                    example: "accounts--all:rc,accounts--all:ro"
+                  token_type:
+                    type: string
+                    description: Access token type
+                    example: Bearer
+        "422":
+          description: Invalid request
           content:
             application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Session"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-    delete:
-      summary: Remove sessions
-      description: Remove all sessions for a given account id. The account id is obtained from an authorization grant
-      security:
-        - oAuth2:
-            - sessions-my:rw
-      tags:
-        - Sessions
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "500":
-          description: Server Error
-  /sessions/{session_id}:
-    get:
-      summary: Get session
-      description: Get a single session
-      security:
-        - oAuth2:
-            - sessions-my:ro
-      tags:
-        - Sessions
-      parameters:
-        - in: path
-          name: session_id
-          schema:
-            type: string
-          required: true
-          description: Unique session ID
-      responses:
-        "200":
-          description: OK, returns session
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Session"
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (session id not found)
-        "500":
-          description: Server Error
-    delete:
-      summary: Remove session
-      description: Remove specific session for a given account id. The account id is obtained from an authorization grant
-      security:
-        - oAuth2:
-            - sessions-my:rw
-      tags:
-        - Sessions
-      parameters:
-        - in: path
-          name: session_id
-          schema:
-            type: string
-          required: true
-          description: Unique session ID
-      responses:
-        "200":
-          description: OK, returns empty object
-        "401":
-          description: Unauthorized (invalid, missing or expired access token)
-        "404":
-          description: Not found (session id not found)
-        "500":
-          description: Server Error
-  /sessions/tagged:
-    get:
-      summary: Check session tag
-      description: Returns HTTP `200` when the account cookie exists (the cookie can be invalid)
-      tags:
-        - Sessions
-      responses:
-        "200":
-          description: OK
-        "404":
-          description: Not found
+              schema: *ref_7
         "500":
           description: Server Error
 components:
-  schemas:
-    Organization:
-      description: Organizations group accounts into one set. Each organization must contain at least one account and one owner (it's possible to have more owners). An account can be assigned to many organizations at once. The default organization is the first assigned to a given account.
-      type: object
-      properties:
-        organization_id:
-          type: string
-          readOnly: true
-          description: Unique organization identifier
-          example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-        name:
-          type: string
-          description: Organization name
-          example: Organization Name
-        company:
-          $ref: "#/components/schemas/Company"
-    Account:
-      description: Entity of account used across LiveChat products
-      type: object
-      properties:
-        account_id:
-          type: string
-          readOnly: true
-          description: Unique account identifier
-          example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
-        name:
-          type: string
-          description: Account name (nick, first, second name or both)
-          example: User Name
-        email_verified:
-          readOnly: true
-          type: boolean
-          description: Email is correct (account performed some email action or is validated in third party)
-          example: false
-        default_product:
-          $ref: "#/components/schemas/Product"
-        default_organization_id:
-          type: string
-          example: b2185556-634c-4ecf-b4c9-bcf8b65bc853
-          description: Id of default organization that accounts belongs to
-        avatar_url:
-          type: string
-          description: Account's avatar
-          example: null
-          default: null
-        roles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Role"
-          description: Array of account roles, returned only when access token contains scope `accounts.roles--all:ro`
-        updated_at:
-          readOnly: true
-          type: string
-          format: date-time
-          description: Date of account last update
-          example: "2019-09-03T12:53:04+02:00"
-        created_at:
-          readOnly: true
-          type: string
-          format: date-time
-          description: Date of account creation
-          example: "2019-09-03T12:53:04+02:00"
-    Role:
-      description: Role groups account scopes into one permission entity
-      type: object
-      properties:
-        role_id:
-          readOnly: true
-          type: string
-          description: Unique role definition id
-          example: 728b99be-848c-11ea-9b91-005056a007e9
-        product:
-          $ref: "#/components/schemas/Product"
-        role:
-          type: string
-          description: Role name, one of predefined or custom name for custom role
-          example: owner
-          enum:
-            - owner
-            - viceowner
-            - administrator
-            - normal
-            - member
-        type:
-          type: string
-          readOnly: true
-          description: Every role has one of three types - `primary` - it's obligatory Accounts role, `secondary` - these are basic product roles and `custom` for custom defined roles
-          example: primary
-        scope:
-          type: string
-          description: Scopes which are assigned to the role, separated by comma (`,`)
-          example: accounts--all:rw,accounts.roles--all:ro
-        predefined:
-          readOnly: true
-          type: boolean
-          description: If `true` the role is common across all organizations, `false` if the role is defined only for the organization
-          example: true
-    OAuthClient:
-      description: OAuth client is an application that has access to a resource using a bearer token. The bearer token is authenticated by the resource owner.
-      type: object
-      properties:
-        id:
-          readOnly: true
-          type: integer
-          format: uint64
-          description: Unique client identifier
-          example: 1
-        name:
-          type: string
-          description: Application name
-          example: App Name
-        type:
-          type: string
-          description: Application type, `server_side_app` for authentication using backend web servers and refresh tokens, `javascript_app` for single-page javascript apps, `mobile` for mobile apps. `mobile` apps have the same flow as `javascript_app` but the different token expiration time
-          enum:
-            - server_side_app
-            - javascript_app
-            - mobile
-          example: server_side_app
-        visibility:
-          type: string
-          description: Application visibility, describes if an application is `private`, `public` or `lc`, private applications authenticate accounts from a single license, and application is not visible in the market for others, `lc` doesn't require scopes confirmation
-          enum:
-            - private
-            - public
-            - lc
-          example: private
-        redirect_uri:
-          type: string
-          description: List of possible redirection URIs separated by a comma (`,`), a schema is required (using `HTTP` is not recommended), query strings, users and fragments are forbidden
-          example: http://localhost:9000
-        scopes:
-          type: array
-          items:
-            $ref: "#/components/schemas/Scope"
-          description: Array of authorization scopes required by the client
-        secret:
-          type: string
-          description: Obtained when creating an application, required for a token refresh, useful only for `server_side_app`, could be changed
-          example: a2f6762c711e611d39a429c1deb42aa3
-        organization_id:
-          readOnly: true
-          type: string
-          description: Organization which created a client
-          example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-        configuration_uri:
-          type: string
-          description: If defined it receives a webhook with an access token, the webhook is sent only once - on first authorization for a given organization, account and client
-          default: null
-          example: null
-    AccessToken:
-      description: Structure of `Bearer` token response describing it's parameters
-      type: object
-      properties:
-        access_token:
-          type: string
-          description: Access token value
-          example: fra-a:vky95357S7KM1E4dXwv1DQ
-        account_id:
-          type: string
-          description: Account ID for which token was issued
-          example: 28df1a50-84fa-490c-9615-5b77d507c393
-        expires_in:
-          type: integer
-          format: uint64
-          description: Time in which token will expire, in seconds
-          example: 432000
-        organization_id:
-          type: string
-          description: Organization ID for which token was issued
-          example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-        refresh_token:
-          type: string
-          description: Refresh token value
-          example: fra-a:0SEkeLZ2Qy2Nm2cg42xIyg
-        scope:
-          type: string
-          description: Scopes which are assigned to token, separated by comma (`,`)
-          example: accounts--all:rc
-        token_type:
-          type: string
-          description: Access token type
-          example: Bearer
-    PersonalToken:
-      description: Personal access tokens are lifetime tokens used to perform simple API tasks. They are designed as basic authentication API keys.
-      type: object
-      properties:
-        personal_token_id:
-          readOnly: true
-          type: string
-          description: Unique personal token identifier
-          example: 9647bb14-066d-40e4-8799-1fc80f40
-        name:
-          type: string
-          description: Custom token name
-          example: Test token
-        personal_token:
-          type: string
-          example: fra-a:KJ1C0SmdT-SJ6SsNBSSs3Q
-          description: Personal token value
-        organization_id:
-          readOnly: true
-          type: string
-          description: Token owner`s organization
-          example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-        account_id:
-          readOnly: true
-          type: string
-          description: Token owner`s account id
-          example: 28df1a50-84fa-490c-9615-5b77d507c393
-        scope:
-          type: array
-          description: Granted scopes
-          items:
-            $ref: "#/components/schemas/Scope"
-        created_at:
-          readOnly: true
-          type: string
-          format: date-time
-          description: Date when the token was created
-          example: "2019-09-03T12:53:04+02:00"
-    ScopeSimple:
-      description: Scope describe user single permission
-      type: object
-      properties:
-        scope:
-          type: string
-          description: Unique value of a scope
-          example: accounts--my:rw
-        description:
-          type: string
-          description: Short explanation of the scope and permissions it gives
-          example: modify my account
-    Scope:
-      description: Scope describe user single permission
-      allOf:
-        - $ref: "#/components/schemas/ScopeSimple"
-        - type: object
-          properties:
-            product:
-              $ref: "#/components/schemas/Product"
-            required:
-              type: boolean
-              example: false
-              description: If the scope is required authorization can't be obtained when resource owner lacks given scope, otherwise authorization is completed without the scope - in other words for optional requirement, the access token can contain given scope, and it depends on account privileges
-    Session:
-      description: Scope describe user single permission
-      type: object
-      properties:
-        account_id:
-          type: string
-          description: Unique account identifier
-          example: 28df1a50-84fa-490c-9615-5b77d507c393
-        session_id:
-          type: string
-          description: Unique session identifier
-          example: bfeeb033-bc8e-467f-982d-22dcef274fa1
-        current:
-          type: boolean
-          description: Returns `true` if the access token is related to current session
-          example: true
-        user_agent:
-          type: string
-          description: Name of the client on which session was established (browser)
-          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:69.0) Gecko/20100101 Firefox/69.0
-        identity_source:
-          type: string
-          description: Kind of identity source
-          enum:
-            - credentials
-            - explicit
-            - google
-            - token
-          example: credentials
-        ip:
-          type: string
-          description: Ip address of the computer on which session was established
-          example: 194.181.146.158
-    Company:
-      description: Holds basic information about company which is used in organization
-      type: object
-      properties:
-        phone:
-          type: string
-          description: Company phone number
-          example: +48 123 456 789
-        website:
-          type: string
-          description: Primary company website
-          example: example.com
-    Product:
-      type: string
-      description: Supported products names
-      default: ""
-      example: Accounts
-      enum:
-        - LiveChat
-        - Accounts
-        - ""
+  schemas: {}
   securitySchemes:
-    oAuth2:
+    Personal Access Token:
+      type: https
+      scheme: basic
+    OAuth2 Bearer Token:
       type: oauth2
       description: This API uses OAuth 2 with the implicit grant flow.
       flows:
         implicit:
-          authorizationUrl: https://accounts.livechat.com
-          scopes:
-            access_rules:ro: Read auto chat scopes configuration
-            access_rules:rw: Add auto chat scopes configuration
-            accounts--all:rc: Read or create an account
-            accounts--all:ro: Read all accounts
-            accounts--all:rw: Modify all accounts
-            accounts--my:ro: Read my account
-            accounts--my:rw: Modify my account
-            accounts.roles--all:ro: Read all roles
-            accounts.roles--all:rw: Modify all roles
-            agents--all:ro: Read any agents profiles configuration
-            agents--all:rw: Update any agents profiles configuration
-            agents--my:ro: Read my profile configuration
-            agents--my:rw: Update my profile configuration
-            agents-bot--all:ro: Read any bot agents configuration
-            agents-bot--all:rw: Delete and edit any bot agents configuration except status
-            agents-bot--my:ro: Read my bot agents configuration
-            agents-bot--my:rw: Add and update bot agents configuration
-            agents_read: Read agents list
-            agents_write: Manage agents list
-            archives_read: Read chat archives
-            archives_write: Add chat tags
-            ban_customer: Ban customers
-            banlist_read: Read banned customers list
-            banlist_write: Manage banned customers
-            billing--all:ro: Access to read all billing resources, invoices, account informations, subscriptions and in-app payments
-            billing_manage: Offer in-app payments
-            buttons_manage: Configure chat buttons
-            canned_responses_read: Read canned responses list
-            canned_responses_write: Add, update and delete canned responses
-            chat_logos_manage: Change chat window logo
-            chats--access:ro: Read chats with my access
-            chats--access:rw: Update chats metadata in user access
-            chats--all:ro: Read any chats
-            chats--all:rw: Update any chats metadata
-            chats--my:ro: Read my chats
-            chats--my:rw: Update my chats metadata
-            chats.conversation--access:rw: Update chats contents in user access
-            chats.conversation--all:rw: Update any chats contents
-            chats.conversation--my:rw: Update my chats contents
-            customers.ban:rw: Ban customers
-            customers:own: Manage customers identities
-            customers:ro: Read customers
-            customers:rw: Add and update customers
-            domain_manage: Manage trusted domains
-            eye_catcher_manage: Add, update and delete eye catchers
-            forms_manage: Add, update and delete offline forms
-            goals_read: Read goals list
-            goals_write: Add, update and delete goals
-            greetings_read: Read greetings list
-            greetings_write: Add, update and delete greetings
-            groups--all:ro: Read any groups
-            groups--all:rw: Create, update and delete any groups
-            groups--my:ro: Read my groups
-            groups--my:rw: Create, update and delete my groups
-            groups_read: Read groups list
-            groups_write: Add, update and delete groups
-            in_app_msg_manage: Read in-app messages
-            integrations_read: Read integrations list
-            languages_read: Read languages
-            languages_write: Add, update and delete languages
-            ledger_read: Read developers financial activity and balance
-            multicast:rw: Multicast
-            onboarding_manage: Manage onboarding
-            organization--my:rw: Manage organization properties
-            properties--all:ro: Read any properties configuration
-            properties--my:ro: Read my properties configuration
-            properties--my:rw: Add my properties configuration
-            properties_manage: Manage license, group and agent properties
-            properties_read: Read license, group and agent properties
-            reports_read: Read reports
-            routing_read: Read url rules list
-            routing_write: Add, update and delete url rules
-            sessions--my:ro: Read my sessions
-            sessions--my:rw: Modify my sessions, signout
-            surveys_manage: Add, update & delete chat surveys
-            surveys_read: Read chat surveys
-            tags_read: Read tags list
-            tags_write: Add, update and delete tags
-            tickets_manage: Update tickets settings
-            tickets_read: Read tickets list
-            tickets_write: Create and update tickets
-            unban_customer: Remove customers from banned list
-            visitors_read: Read visitors list
-            webhooks--all:ro: Read any webhooks configuration
-            webhooks--all:rw: Delete any webhooks configuration
-            webhooks--my:ro: Read my webhooks configuration
-            webhooks--my:rw: Add and delete my webhooks configuration
-            webhooks_manage: Add, update and delete webhooks
-            webhooks_write: Modify webhooks
+          authorizationUrl: "https://accounts.livechat.com"
+        authorizationCode:
+          authorizationUrl: "https://accounts.livechat.com"
+          tokenUrl: "https://accounts.livechat.com/token"
