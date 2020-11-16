@@ -95,6 +95,8 @@ const Body = styled.div`
 
 const SelectLanguage = styled.select`
   padding: 4px;
+  padding: 0;
+  max-width: 115px;
   appearance: none;
   background-color: transparent;
   border: 0;
@@ -105,6 +107,7 @@ const SelectLanguage = styled.select`
   font-weight: 500;
   line-height: 20px;
   outline: 0;
+  text-overflow: ellipsis;
   white-space: nowrap;
 `;
 
