@@ -160,7 +160,7 @@ export const LeftColumnRedoc = styled.div`
   width: 250px;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
-  top: 101px;
+  top: 60px;
   z-index: 1000;
   display: block;
 
@@ -245,14 +245,14 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      <MenuLink to={url} active={active ? 1 : 0} title={title}>
-        <ArticleIcon
-          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-        />
+        <MenuLink to={url} active={active ? 1 : 0} title={title}>
+          <ArticleIcon
+            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+          />
         &nbsp;
-        <span>{title}</span>
-      </MenuLink>
-    )}
+          <span>{title}</span>
+        </MenuLink>
+      )}
   </Li>
 );
 

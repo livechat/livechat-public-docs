@@ -7,7 +7,7 @@ const Redoc = () => {
     <RedocStandalone
       spec={authorizationSpec}
       options={{
-        scrollYOffset: "220",
+        scrollYOffset: "180",
         disableSearch: true,
         hideLoading: true,
         theme: {
