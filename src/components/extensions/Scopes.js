@@ -9,11 +9,13 @@ const Scopes = ({ scopes }) => {
 
     return [
       <code className="language-text">{newScope.id}</code>,
+      newScope.product,
       newScope.role,
+      newScope.role_type,
       newScope.description
     ];
   })
-  return <Table headings={["Scope", "Role", "Description"]} bodyItems={formattedScopes} />
+  return <Table headings={["Scope", "Product", "Role", "Role Type", "Description"]} bodyItems={formattedScopes} />
 };
 
 export default Scopes;
