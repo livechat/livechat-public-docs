@@ -1609,11 +1609,13 @@ curl -X POST \
 
 <Text>
 
-Properties are key-value storages. They can be set within a specific [location](#property-locations).
+Properties are key-value storages, which can be set within a specific [location](#property-locations).
 
-You can register properties within a license and configure them using the **Configuration API**. Properties are grouped in _namespaces_, which helps distinguishing which property belongs to a given integration. Your namespace is always named after your **Client Id**.
+You can register, unregister, and publish properties for **Client Ids** owned by your organization, and configure them using the **Configuration API**. Properties are grouped in _namespaces_, which helps distinguishing which property belongs to a given integration. The namespace is always named after the **Client Id** that owns the property.
 
 You can configure the property [type](#property-types), [location](#property-locations), and [domain](#property-domain).
+
+Unpublished (private) properties can only be accessed using tokens belonging to the **Client Id** that owns those properties. Published properties are accessible using any token. Published properties cannot be unregistered.
 
 ## Property types
 
@@ -1697,30 +1699,32 @@ The `tokenized_string` property is similar to the `string` type. The values of a
 
 <Text>
 
-### Register Properties
+### Register Property
+
+Registers a new private property for a given **Client Id**.
 
 #### Specifics
 
-|                 |                                                                             |
-| --------------- | --------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/register_properties` |
-| Required scopes | `properties--my:rw`(to create my _properties_ in my _namespace_)            |
+|                 |                                                                           |
+| --------------- | ------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/register_property` |
+| Required scopes | `properties--configuration:rw`                                            |
 
 #### Request
 
-| Parameter                                                  | Required            | Data type  | Notes                                                                                 |
-| ---------------------------------------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------- |
-| `<property_name>.type`                                     | Yes                 | `string`   | Possible values: `int`, `string`, `bool`, and `tokenized_string`                      |
-| `<property_name>.locations`                                | Yes                 | `object`   |                                                                                       |
-| `<property_name>.locations.<location>`                     | min. one `location` | `object`   | Possible values: `chat`, `thread`, `event`, `license`, `group`                        |
-| `<property_name>.locations.<location>.access.<user>`       | min. one `user`     | `object`   | Possible values: `agent`, `customer`                                                  |
-| `<property_name>.locations.<location>.access.<user>.read`  | Yes                 | `bool`     | If set to `true`, then `<user>` can read this property.                               |
-| `<property_name>.locations.<location>.access.<user>.write` | Yes                 | `bool`     | If set to `true`, then `<user>` can write to this property.                           |
-| `<property_name>.description`                              | No                  | `string`   | Property description                                                                  |
-| `<property_name>.domain` __*__                             | No                  | `[<type>]` | Array of values that properties can be set to.                                        |
-| `<property_name>.range` __*__                              | No                  | `object`   | Range of values that properties can be set to.                                        |
-| `<property_name>.range.from`                               | No                  | `int`      | Only values **equal** or **greater** than this parameter can be set to this property. |
-| `<property_name>.range.to`                                 | No                  | `int`      | Only values **equal** or **lower** than this parameter can be set to this property.   |
+| Parameter                  | Required            | Data type  | Notes                                                                                 |
+| -------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| `name`                     | Yes                 | `string`   | Property name                                                                         |
+| `owner_client_id`          | Yes                 | `string`   | **Client Id** that will own the property; must be owned by your organization.         |
+| `type`                     | Yes                 | `string`   | Possible values: `int`, `string`, `bool`, and `tokenized_string`                      |
+| `access`                   | Yes                 | `object`   |                                                                                       |
+| `access.<location>`        | min. one `location` | `object`   | Possible values: `chat`, `thread`, `event`, `license`, `group`                        |
+| `access.<location>.<user>` | min. one `user`     | `[string]` | Possible `<user>` values: `agent`, `customer`; possible values: `read`, `write`       |
+| `description`              | No                  | `string`   | Property description                                                                  |
+| `domain` __*__             | No                  | `[<type>]` | Array of values that properties can be set to                                         |
+| `range` __*__              | No                  | `object`   | Range of values that properties can be set to                                         |
+| `range.from`               | No                  | `int`      | Only values **equal** or **greater** than this parameter can be set to this property  |
+| `range.to`                 | No                  | `int`      | Only values **equal** or **lower** than this parameter can be set to this property    |
 
 __*)__ Only one `domain` and one `range` can be set for a single property.
 
@@ -1736,30 +1740,22 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/register_properties \
+  https://api.livechatinc.com/v3.3/configuration/action/register_property \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
-    "string_property": {
-        "type": "string",
-        "locations": {
-            "chat": {
-                "access": {
-                    "agent": {
-                        "read": true,
-                        "write": true
-                    },
-                    "customer": {
-                        "read": true,
-                        "write": true
-                    }
-                }
-            },
-        //  "thread": {},
-        //  "event": {},
-        //  "license": {},
-        //  "group": {}
-        }
+    "name": "string_property",
+    "owner_client_id": "0805e283233042b37f460ed8fbf22160",
+    "type": "string",
+    "access": {
+      "chat": {
+        "agent": ["read"],
+        "customer": ["read", "write"]
+      },
+      //  "thread": {},
+      //  "event": {},
+      //  "license": {},
+      //  "group": {}
     }
 }'
 ```
@@ -1774,20 +1770,27 @@ curl -X POST \
 
 <Text>
 
-### List Registered Properties
+### Unregister Property
+
+Unregisters a private property.
 
 #### Specifics
 
-|                 |                                                                                    |
-| --------------- | ---------------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/list_registered_properties` |
-| Required scopes | `properties--my:ro` `properties--all:ro` (to list properties in all _namespaces_)  |
+|                 |                                                                             |
+| --------------- | --------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/unregister_property` |
+| Required scopes | `properties--configuration:rw`                                              |
 
 #### Request
 
-| Parameter | Required | Data type | Notes                                                                                 |
-| --------- | -------- | --------- | ------------------------------------------------------------------------------------- |
-| `all`     | No       | `bool`    | If set to `true`, it returns all properties within a given license; default: `false`. |
+| Parameter         | Required | Data type  | Notes                                                                     |
+| ----------------- | -------- | ---------- | ------------------------------------------------------------------------- |
+| `name`            | Yes      | `string`   | Property name                                                             |
+| `owner_client_id` | Yes      | `string`   | **Client Id** that owns the property; must be owned by your organization |
+
+#### Response
+
+No response payload (`200 OK`).
 
 </Text>
 
@@ -1797,15 +1800,112 @@ curl -X POST \
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/list_registered_properties \
+  https://api.livechatinc.com/v3.3/configuration/action/unregister_property \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
-  -d '{}'
+  -d '{
+    "name": "string_property",
+    "owner_client_id": "0805e283233042b37f460ed8fbf22160"
+}'
 ```
 
 </CodeSample>
 
-<CodeResponse type="configuration" version="v3.3" json="listRegisteredProperties"/>
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Publish Property
+
+Publishes a private property. A published property cannot be unpublished or unregistered. Published properties can be accessed by tokens belonging to any **Client Id**.
+
+#### Specifics
+
+|                 |                                                                          |
+| --------------- | ------------------------------------------------------------------------ |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/publish_property` |
+| Required scopes | `properties--configuration:rw`                                           |
+
+#### Request
+
+| Parameter         | Required            | Data type  | Notes                                                                                                        |
+| ------------------| ------------------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
+| `name`            | Yes                 | `string`   | Property name                                                                                                |
+| `owner_client_id` | Yes                 | `string`   | **Client Id** that owns the property; must be owned by your organization.                                    |
+| `access_type`     | Yes                 | `[string]` | Possible values: `read`, `write`. It determines the access level for the **Client Ids** different than `owner_client_id`. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/publish_property \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "name": "string_property",
+    "owner_client_id": "0805e283233042b37f460ed8fbf22160",
+    "access_type": ["read"]
+}'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Properties
+
+Lists private and public properties owned by a given **Client Id**.
+
+#### Specifics
+
+|                 |                                                                         |
+| --------------- | ----------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/list_properties` |
+| Required scopes | `properties--configuration:rw`                                          |
+
+#### Request
+
+| Parameter         | Required            | Data type  | Notes                                                                       |
+| ------------------| ------------------- | ---------- | --------------------------------------------------------------------------- |
+| `owner_client_id` | Yes                 | `string`   | **Client Id** that owns the properties; must be owned by your organization. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/list_properties \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "owner_client_id": "0805e283233042b37f460ed8fbf22160"
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.3" json="listProperties"/>
 
 </Code>
 
