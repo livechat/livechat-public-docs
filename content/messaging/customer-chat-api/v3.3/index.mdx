@@ -483,7 +483,7 @@ curl -X POST \
 
 |                  |                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**        | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                                                                                                                                                                     |
+| **Chats**        | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                                                                                                                                                                     |
 | **Configuration** | [`get_dynamic_configuration`](#get-dynamic-configuration) [`get_configuration`](#get-configuration)                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Events**       | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                                                                                                                 |
 | **Localization** | [`get_localization`](#get-localization)                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -804,6 +804,7 @@ Starts a chat.
 | `chat.thread`            | No       | `object`  |                                                                             |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
 | `chat.thread.properties` | No       | `object`  | Initial thread properties                                                   |
+| `active`                 | No       | `bool`    | When set to `false`, creates an inactive thread; default: `true`.            |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
 #### Response
@@ -849,7 +850,7 @@ curl -X POST \
 
 <Text>
 
-### Activate Chat
+### Resume Chat
 
 Used to restart an archived chat.
 
@@ -857,8 +858,8 @@ Used to restart an archived chat.
 
 |                        |                                                                  |
 |------------------------|------------------------------------------------------------------|
-| **Method URL**         | `https://api.livechatinc.com/v3.3/customer/action/activate_chat` |
-| **RTM API equivalent** | [`activate_chat`](rtm-reference/#activate-chat)                  |
+| **Method URL**         | `https://api.livechatinc.com/v3.3/customer/action/resume_chat` |
+| **RTM API equivalent** | [`resume_chat`](rtm-reference/#resume-chat)                  |
 | **Webhook**            | [`incoming_chat`](/management/configuration-api/#incoming_chat)  |
 
 #### Request
@@ -866,12 +867,13 @@ Used to restart an archived chat.
 | Parameter                | Required | Data type| Notes                                                                      |
 |--------------------------|----------|----------|----------------------------------------------------------------------------|
 | `chat`                   | Yes      | `object` |                                                                            |
-| `chat.id`                | Yes      | `string` | ID of the chat that will be activated.                                     |
+| `chat.id`                | Yes      | `string` | ID of the chat that will be resumed.                                       |
 | `chat.access`            | No       | `object` | Chat access to set; default: all agents.                                   |
 | `chat.properties`        | No       | `object` | Initial chat properties                                                    |
 | `chat.thread`            | No       | `object` |                                                                            |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                                  |
 | `chat.thread.properties` | No       | `object` | Initial thread properties                                                  |
+| `active`                 | No       | `bool`   | When set to `false`, creates an inactive thread; default: `true`.           |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
 #### Response
@@ -879,7 +881,7 @@ Used to restart an archived chat.
 | Field       | Data type  | Notes                                                                                                                                                                     |
 | ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `thread_id` | `string`   |                                                                                                                                                                           |
-| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
 
 </Text>
 
@@ -889,7 +891,7 @@ Used to restart an archived chat.
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.3/customer/action/activate_chat?license_id=<license_id> \
+  https://api.livechatinc.com/v3.3/customer/action/resume_chat?license_id=<license_id> \
   -H 'Content-Type: <content-type>' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{

@@ -486,7 +486,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 |                |                                                                                                                                                                                                                                                                                                                                     |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**      | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                                             |
+| **Chats**      | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                                             |
 | **Events**     | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                       |
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                 |
@@ -859,6 +859,7 @@ Starts a chat.
 | `chat.thread`            | No       | `object`  |                                                                             |
 | `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
 | `chat.thread.properties` | No       | `object`  | Initial thread properties                                                   |
+| `active`                 | No       | `bool`    | When set to `false`, creates an inactive thread; default: `true`.            |
 | `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
 
 #### Response
@@ -905,49 +906,11 @@ Starts a chat.
 
 </Section>
 
-<!-- > **`start_chat`** sample **request** with optional params
-
-```json
-{
-  "action": "start_chat",
-  "payload": {
-  "chat": {
-    "access": {
-      "group_ids": [1]
-    },
-    "properties": {
-      "source": {
-        "type": "facebook"
-      }
-    },
-    "thread": {
-      "events": [{
-        "type": "message",
-        "custom_id": "31-0C-1C-07-DB-16",
-        "text": "hello there"
-      }, {
-        "type": "system_message",
-        "custom_id": "31-0C-1C-07-DB-16",
-        "text": "hello there"
-      }],
-      "properties": {
-        "source": {
-          "type": "facebook"
-        },
-        // ...
-      }
-    }
-  },
-  "continuous": true
-  }
-}
-``` -->
-
 <Section>
 
 <Text>
 
-### Activate Chat
+### Resume Chat
 
 Used to restart an archived chat.
 
@@ -955,8 +918,8 @@ Used to restart an archived chat.
 
 |                        |                                      |
 | ---------------------- | ------------------------------------ |
-| **Action**             | `activate_chat`                      |
-| **Web API equivalent** | [`activate_chat`](../#activate-chat) |
+| **Action**             | `resume_chat`                      |
+| **Web API equivalent** | [`resume_chat`](../#resume-chat) |
 | **Push message**       | [`incoming_chat`](#incoming_chat)    |
 
 #### Request
@@ -964,12 +927,13 @@ Used to restart an archived chat.
 | Request object           | Required | Type     | Notes                                                                      |
 | ------------------------ | -------- | -------- | -------------------------------------------------------------------------- |
 | `chat`                   | Yes      | `object` |                                                                            |
-| `chat.id`                | Yes      | `string` | The ID of the chat that will be activated.                                 |
+| `chat.id`                | Yes      | `string` | The ID of the chat that will be resumed.                                   |
 | `chat.access`            | No       | `object` | Chat access to set, default: all agents.                                   |
 | `chat.properties`        | No       | `object` | Initial chat properties                                                    |
 | `chat.thread`            | No       | `object` |                                                                            |
 | `chat.thread.events`     | No       | `array`  | Initial chat events array                                                  |
 | `chat.thread.properties` | No       | `object` | Initial thread properties                                                  |
+| `active`                 | No       | `bool`   | When set to `false`, creates an inactive thread; default: `true`.           |
 | `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
 
 #### Response
@@ -977,7 +941,7 @@ Used to restart an archived chat.
 | Parameter   | Data type  | Notes                                                                                                                                                                     |
 | ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `thread_id` | `string`   |                                                                                                                                                                           |
-| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
 
 </Text>
 
@@ -987,7 +951,7 @@ Used to restart an archived chat.
 
 ```json
 {
-  "action": "activate_chat",
+  "action": "resume_chat",
   "payload": {
   "chat": {
     "id": "PWJ8Y4THAV"
@@ -1003,7 +967,7 @@ Used to restart an archived chat.
 ```json
 {
   "request_id": "<request_id>", // optional
-  "action": "activate_chat",
+  "action": "resume_chat",
   "type": "response",
   "success": true,
   "payload": {
@@ -1017,45 +981,6 @@ Used to restart an archived chat.
 </Code>
 
 </Section>
-
-<!-- > **`activate_chat`** sample **request** with optional params
-
-```json
-{
-  "request_id": "7676",
-  "action": "activate_chat",
-  "payload": {
-  "chat": {
-    "id": "PJ0MRSHTDG",
-    "access": {
-      "group_ids": [1]
-    },
-    "properties": {
-      "source": {
-        "type": "facebook"
-      }
-    },
-    "thread": {
-      "events": [{
-        "type": "message",
-        "custom_id": "31-0C-1C-07-DB-16",
-        "text": "hello there"
-      }, {
-        "type": "system_message",
-        "custom_id": "31-0C-1C-07-DB-16",
-        "text": "hello there"
-      }],
-      "properties": {
-        "source": {
-          "type": "facebook"
-        },
-        // ...
-        }
-      }
-    }
-  }
-}
-``` -->
 
 <Section>
 
