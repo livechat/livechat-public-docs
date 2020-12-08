@@ -455,7 +455,7 @@ const ERRORS = [
   {
     id: "service_unavailable",
     message: "Not accepting new requests",
-    description: "Temporarly new requests are not accepted",
+    description: "New requests are temporarily not being accepted.",
   },
   {
     id: "unsupported_version",
