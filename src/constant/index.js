@@ -453,6 +453,11 @@ const ERRORS = [
     description: "Timeout threshold is 15 seconds.",
   },
   {
+    id: "service_unavailable",
+    message: "Not accepting new requests",
+    description: "New requests are temporarily not being accepted.",
+  },
+  {
     id: "unsupported_version",
     message: "Unsupported version",
     description: "Unsupported protocol version.",
