@@ -260,32 +260,39 @@ const SCOPES = [
     product: "LiveChat",
   },
   {
-    id: "webhooks--my:ro",
+    id: "webhooks.state--my:ro",
     description:
-      "Read permission for webhooks configuration (only my webhooks)",
+      "Read permission for the webhook state (only my webhooks)",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
   },
   {
-    id: "webhooks--my:rw",
+    id: "webhooks.state--my:rw",
     description:
-      "Read/write permission for webhooks configuration (only my webhooks)",
+      "Read/write permission for enabling/disabling webhooks (only my webhooks)",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
   },
   {
-    id: "webhooks--all:ro",
-    description: "Read permission for webhooks configuration (all in license)",
+    id: "webhooks.state--all:ro",
+    description: "Read permission for the webhook state (all within a license)",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
   },
   {
-    id: "webhooks--all:rw",
+    id: "webhooks.state--all:rw",
     description:
-      "Read/write permission for webhooks configuration (all in license, delete only)",
+      "Read/write permission for enabling/disabling webhooks (all within a license)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks.configuration:rw",
+    description: "Read/write permission for adding and updating the webhook configuration",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
