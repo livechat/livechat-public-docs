@@ -1,42 +1,20 @@
-import React from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { RedocStandalone } from "redoc";
-import authorizationSpec from "../../configs/openapi/authorization.yml";
+import specs from "../../configs/redoc/specs";
+import configs from "../../configs/redoc/configs";
 
-const Redoc = () => {
+const Redoc = ({ name }) => {
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
+
+  useLayoutEffect(() => {
+    setShowPlaceholder(false);
+  }, []);
+
   return (
-    <RedocStandalone
-      spec={authorizationSpec}
-      options={{
-        scrollYOffset: "180",
-        disableSearch: true,
-        hideLoading: true,
-        theme: {
-          colors: {
-            primary: {
-              main: "#424d57",
-            },
-          },
-          typography: {
-            fontSize: "16px",
-            fontFamily:
-              "Source Sans Pro,Helvetica Neue,Helvetica,Roboto,sans-serif",
-            headings: {
-              fontFamily:
-                "Source Sans Pro,Helvetica Neue,Helvetica,Roboto,sans-serif",
-            },
-          },
-          sidebar: {
-            width: "250px",
-            backgroundColor: "#f6f6f7",
-            textColor: "#424d57",
-            activeTextColor: "#4384f5",
-            arrow: {
-              size: "1.2em",
-            },
-          },
-        },
-      }}
-    />
+    <>
+      <RedocStandalone spec={specs[name]} options={configs[name]} />
+      {showPlaceholder && <div>%%REDOC_SSR%%</div>}
+    </>
   );
 };
 
