@@ -260,32 +260,47 @@ const SCOPES = [
     product: "LiveChat",
   },
   {
-    id: "webhooks.state--my:ro",
+    id: "webhooks--my:ro",
     description:
-      "Read permission for the webhook state (only my webhooks)",
+      "Read permission for webhooks configuration (only my webhooks)",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
   },
   {
-    id: "webhooks.state--my:rw",
+    id: "webhooks--my:rw",
+    description:
+      "Read/write permission for webhooks configuration (only my webhooks)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks--all:ro",
+    description: "Read permission for webhooks configuration (all in license)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks--all:rw",
+    description:
+      "Read/write permission for webhooks configuration (all in license, delete only)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks.state:ro",
+    description: "Read permission for the webhook state (only my webhooks)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks.state:rw",
     description:
       "Read/write permission for enabling/disabling webhooks (only my webhooks)",
-    role: "administrator",
-    role_type: "secondary",
-    product: "LiveChat",
-  },
-  {
-    id: "webhooks.state--all:ro",
-    description: "Read permission for the webhook state (all within a license)",
-    role: "administrator",
-    role_type: "secondary",
-    product: "LiveChat",
-  },
-  {
-    id: "webhooks.state--all:rw",
-    description:
-      "Read/write permission for enabling/disabling webhooks (all within a license)",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
