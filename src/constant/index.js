@@ -290,6 +290,28 @@ const SCOPES = [
     role_type: "secondary",
     product: "LiveChat",
   },
+  {
+    id: "webhooks.state:ro",
+    description: "Read permission for the webhook state (only my webhooks)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks.state:rw",
+    description:
+      "Read/write permission for enabling/disabling webhooks (only my webhooks)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "webhooks.configuration:rw",
+    description: "Read/write permission for adding and updating the webhook configuration",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
   // ACCOUNT SCOPES
   {
     id: "accounts--my:ro",
