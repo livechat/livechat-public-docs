@@ -17,3 +17,5 @@ export { default as listProperties } from "./responses/properties/listProperties
 export { default as registerWebhook } from "./responses/webhooks/registerWebhook.json"
 export { default as listRegisteredWebhooks } from "./responses/webhooks/listRegisteredWebhooks.json"
 export { default as listWebhookNames } from "./responses/webhooks/listWebhookNames.json"
+
+export { default as getWebhooksState } from "./responses/webhooks/getWebhooksState.json"
