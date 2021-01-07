@@ -1,1 +1,1 @@
-export { default as agentChattingDuration } from "./responses/chats/agentChattingDuration.json";
+export { default as agentsChattingDuration } from "./responses/chats/agentsChattingDuration.json";
