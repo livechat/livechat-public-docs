@@ -11,6 +11,12 @@ const VERSIONS_GROUPS = {
     DEV_PREVIEW_VERSION: "",
     ALL_VERSIONS: ["1.0", "2.0"],
   },
+  "data-reporting": {
+    STABLE_VERSION: "3.2",
+    LEGACY_VERSIONS: ["2.0"],
+    DEV_PREVIEW_VERSION: "3.3",
+    ALL_VERSIONS: ["3.3", "3.2", "2.0"],
+  },
 };
 
 const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];
