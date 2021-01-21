@@ -2264,13 +2264,13 @@ Here's what you need to know about **webhooks**:
 |                 |                                                                                                                                                                                                                                                                                                                                                 |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                       |
-| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked)                                                                                                                                                                                                               |
+| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                             |
 | **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                       |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_deleted`](#thread_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
 | **Status**      | [`routing_status_set`](#routing_status_set) [`agent_deleted`](#agent_deleted)                                                                                                                                                                                                                                                                   |
-| **Customers**   | [`incoming_customer`](#incoming_customer) [`customer_session_fields_updated`](#customer_session_fields_updated)                                                                                                                                                                                                                                                                                                       |
+| **Customers**   | [`incoming_customer`](#incoming_customer) [`customer_session_fields_updated`](#customer_session_fields_updated)                                                                                                                                                                                                                                 |
 | **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                               |
 
 </Text>
@@ -2513,6 +2513,69 @@ Informs that access to a certain chat was revoked.
   "additional_data": {
     "chat_properties": { //optional
         // chat properties
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `chat_transferred`
+
+Informs that a chat was transferred to a different group or to an agent.
+
+#### Specifics
+
+|                        |                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| **Action**             | `chat_transferred`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_transferred) |
+
+#### Webhook payload
+
+| Object           | Notes                                                                    |
+| ---------------- | ------------------------------------------------------------------------ |
+| `thread_id`      | Present if the chat is active.                                           |
+| `transferred_to` | IDs of the groups and agents the chat is assigned to after the transfer. |
+| `reason` **\***  | Informs why the chat was transferred.                                    |
+| `queue`          | Present if the chat is queued after the transfer.                        |
+
+**\*)**
+Possible reasons: `manual`, `inactive`, `assigned`, `unassigned`, `other`.
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_access_revoked",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "requester_id": "jones@example.com",
+    "reason": "manual",
+    "transferred_to": {
+      "group_ids": [ 19 ],
+      "agent_ids": ["smith@example.com"],
+    },
+    "queue": {
+      "position": 42,
+      "wait_time": 1337,
+      "queued_at": "2019-12-09T12:01:18.909000Z"
     }
   }
 }
