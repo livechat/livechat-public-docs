@@ -20,37 +20,12 @@ Use cases:
 
 ### Upgrade info
 
-<Section>
-<Text>
-
 - Start the upgrade creation by giving it a **name** and a short **description**, which will be displayed to your app users.
 - Then, provide us with a **URL** that will receive a webhook whenever users try to buy or deactivate the upgrade. In this case LiveChat works as a proxy, passing along the message. **You need to handle enabling and disabling the upgrade for users on your side.** [Read more...](#handling-actions)
 
 <div style="max-width: 400px">
   <img src="./new-upgrade-livechat.png" alt="LiveChat In-App Upgrades Info" />
 </div>
-
-</Text>
-
-<Code>
-<CodeResponse title={'sample webhook payload'}>
-
-```json
-{
-  "resource": {
-    "id": "351aksdghgash",
-    "name": "Extra Accounts"
-  },
-  "transaction": "9sSL-efMR",
-  "license": "123456",
-  "type": "DISABLE", // or ENABLE
-  "quantity": 1
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
 
 ### Upgrade type
 
@@ -72,7 +47,47 @@ Since you're the app owner, you're not allowed to buy your own upgrade. To check
 
 ## Handling actions
 
+<Section>
+
+<Text>
+
 As mentioned above, we'll send you a webhook whenever a user tries to disable or enable an upgrade, but you need to handle the actual action on your side. For successful actions, respond to the incoming webhook with **HTTP 200**. For unsuccessful actions, return **HTTP 4xx** along with the text message that says what went wrong. Make sure the message is specific, concise, and easy to understand.
+
+| Field             |  Notes                                                                                     |
+| ----------------- |  ----------------------------------------------------------------------------------------- |
+| `id`              | In-app upgrade ID.                                                                         |
+| `transaction`     | Transaction ID. All `ENABLE` transactions  for the same organization, license, and upgrade will have the same ID. Similarly for `DISABLE`. |
+| `organization`    | The ID of the organization that enables/disables the upgrade.                              |
+| `license`         | The license that enables/disables the upgrade.                                             |
+| `name`            | In-app upgrade name.                                                                       |
+| `type`            | Action type. `ENABLE` or `DISABLE`.                                                        |
+| `quantity` __*__  | In-app upgrade quantity selected for enablement/disablement. The quantities to disable have to exactly match the quantities that were enabled. **See the example below.** |
+
+__*)__ ** An example for `quantity`:**
+
+1. An upgrade was enabled for the first time with `quantity: 1`.
+2. Then, the customer purchased it again with `quantity: 2`.
+3. To disable the upgrade, two actions need to be performed: a disable action with `quantity: 1` and another disable action with `quantity: 2` (the order of actions doesn't matter). The important thing is, it cannot be a single action with `quantity: 3`.
+
+</Text>
+<Code>
+<CodeResponse title={'sample webhook payload'}>
+
+```json
+{
+  "id": "stsmuqjb",
+  "transaction": "DLcvjaYGR",
+  "organization": "Starz",
+  "license": "123456",
+  "name": "Extra Accounts",
+  "type": "DISABLE",
+  "quantity": 1
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
 
 ## Tests & review
 
