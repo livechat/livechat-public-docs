@@ -1629,58 +1629,16 @@ curl -X POST \
 
 <Text>
 
-Properties are key-value storages, which can be set within a specific [location](#property-locations).
+Properties are key-value storages. Property configuration is owned by a **Client Id** (integration). In this document, we call a Client Id that owns a property the **owner Client Id**.
 
-You can register, unregister, and publish properties for **Client Ids** owned by your organization, and configure them using the **Configuration API**. Properties are grouped in _namespaces_, which helps distinguishing which property belongs to a given integration. The namespace is always named after the **Client Id** that owns the property.
+Properties can be private or public.
 
-You can configure the property [type](#property-types), [location](#property-locations), and [domain](#property-domain).
+- **Private** properties can be accessed only by their **owner Client Id**. [Read more...](#private-properties)
+- **Public** properties can be accessed by **any Client Id**. [Read more...](#public-properties)
 
-Unpublished (private) properties can only be accessed using tokens belonging to the **Client Id** that owns those properties. Published properties are accessible using any token. Published properties cannot be unregistered.
+Properties are grouped in _namespaces_, which helps to distinguish which property belongs to a given Client Id. The property _namespace_ is named after the **Client Id** a property belongs to.
 
-## Property types
-
-There are four property types:
-
-- `int` (int32)
-- `bool`
-- `string`
-- `tokenized_string`
-
-The `tokenized_string` type is a string split to tokens before indexing in our search engine. It can be useful for longer strings, such as messages. It should not be used for keywords.
-
-## Property locations
-
-Properties can be set within the following locations:
-
-- chat
-- thread
-- event
-- license
-- group
-
-You can configure access to properties within those locations. For example, you could create a property visible only to agents in a chat and thread, but not in an event.
-
-## Property domain
-
-The **property domain** is a set of values that a property can be assigned to.
-
-Property domain can be configured in two ways:
-
-- by defining a set of values explicitly allowed in this property (for example `[1, 2, 3]`).
-- by defining a range. All values within the range are allowed in this property. It works only for numeric types (for example a range from `1` to `3`).
-
-### Test properties
-
-Each license has some test properties that you can use to play with properties.
-
-| Namespace | Property                    | Type               | Access                     |
-| --------- | --------------------------- | ------------------ | -------------------------- |
-| `test`    | `bool_property`             | `bool`             | rw for everyone everywhere |
-| `test`    | `int_property`              | `int`              | rw for everyone everywhere |
-| `test`    | `string_property`           | `string`           | rw for everyone everywhere |
-| `test`    | `tokenized_string_property` | `tokenized_string` | rw for everyone everywhere |
-
-The `tokenized_string` property is similar to the `string` type. The values of a `tokenized_string` are split in tokens to enable searching for each word separately.
+You can configure the property [type](#property-types), [location access](#property-locations), and [domain](#property-domain).
 
 </Text>
 
@@ -1704,6 +1662,97 @@ The `tokenized_string` property is similar to the `string` type. The values of a
 </Code>
 
 </Section>
+
+## Property types
+
+There are four property types:
+
+- `int` (int32)
+- `bool`
+- `string`
+- `tokenized_string`
+
+The `tokenized_string` type is a string split to tokens before indexing in our search engine. It can be useful for longer strings, such as messages. It should not be used for keywords.
+
+## Property locations
+
+Properties can be set within the following locations:
+
+- event
+- thread
+- chat
+- group
+- license
+
+You can configure access to properties within those locations. For example, you could create a property visible only to agents in a chat and thread, but not in an event.
+
+## Property domain
+
+The **property domain** is a set of values that a property can be assigned to.
+
+Property domain can be configured in two ways:
+
+- by defining a set of values explicitly allowed in this property (for example `[1, 2, 3]`).
+- by defining a range. All values within the range are allowed in this property. It works only for numeric types (for example a range from `1` to `3`).
+
+## Private properties
+
+You can register, unregister, and configure a property for a **Client Id** owned by your organization. Unpublished (private) properties can be access only with a token belonging to the **owner Client Id**.  If you want other integrations to be able to access your private property, you need to publish it.
+
+## Public properties
+
+Once you publish a private property, it becomes accessible to other integrations. The public access to your property can be `read` and/or `write`. Consider an example:
+
+You register a private chat property with the `read` and `write` access.
+
+```json
+{
+    "name": "string_property",
+    "owner_client_id": "0805e283233042b37f460ed8fbf22160",
+    "type": "string",
+    "access": {
+      "chat": {
+        "agent": ["read"],
+        "customer": ["read", "write"]
+      }
+    }
+}
+```
+
+While publishing the property, you can narrow down its public access to `read`.
+
+```bash
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/publish_property \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "name": "string_property",
+    "owner_client_id": "0805e283233042b37f460ed8fbf22160",
+    "access_type": ["read"]
+}'
+```
+
+In this case, tokens belonging to the owner Client Id will be able to **read** and **write** to that property. Any other token will only be able to **read** it.
+
+💡 Published properties cannot be unregistered.
+
+### Test properties
+
+Each license has some test properties that you can use to play with properties.
+
+| Namespace | Property                    | Type               | Access                     |
+| --------- | --------------------------- | ------------------ | -------------------------- |
+| `test`    | `bool_property`             | `bool`             | rw for everyone everywhere |
+| `test`    | `int_property`              | `int`              | rw for everyone everywhere |
+| `test`    | `string_property`           | `string`           | rw for everyone everywhere |
+| `test`    | `tokenized_string_property` | `tokenized_string` | rw for everyone everywhere |
+
+The `tokenized_string` property is similar to the `string` type. The values of a `tokenized_string` are split in tokens to enable searching for each word separately.
+
+### Predefined properties
+
+There are also [predefined public properties](/messaging/references/default-properties/#available-properties) used mainly by the LiveChat backend integration.
 
 ## Methods
 
