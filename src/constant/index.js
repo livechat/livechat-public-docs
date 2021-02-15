@@ -207,7 +207,7 @@ const SCOPES = [
   },
   {
     id: "customers:own",
-    description: "Permission for managing customers identities",
+    description: "Permission for owning and managing customer identities. It allows for creating new customers via the Customer Chat API.",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
@@ -221,7 +221,7 @@ const SCOPES = [
   },
   {
     id: "customers:rw",
-    description: "Read/write permission for customers",
+    description: "Read/write permission for existing customers. It allows for creating new customers via the Agent Chat API.",
     role: "normal",
     role_type: "secondary",
     product: "LiveChat",
