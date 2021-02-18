@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
+import { setUrlParams } from "../utils";
 import throttle from "lodash.throttle";
 
-const getHeadingsOffsetMap = selector =>
+const getHeadingsOffsetMap = (selector) =>
   [...document.querySelectorAll(selector)].map(
     ({ id, nodeName, offsetTop }) => ({
       id,
       nodeName,
-      offsetTop
+      offsetTop,
     })
   );
 
@@ -22,7 +23,7 @@ export const useScrollSpy = (selector = ".heading", callback) => {
     const map = getHeadingsOffsetMap(selector);
     if (!!(typeof window !== "undefined")) {
       const onScroll = throttle(
-        e => {
+        (e) => {
           const currentPosition =
             window.scrollY || document.documentElement.scrollTop;
 
@@ -33,6 +34,7 @@ export const useScrollSpy = (selector = ".heading", callback) => {
           // dirty hack
           if (elem && elem.nodeName !== "H5" && elem.nodeName !== "H6") {
             setActive(`#${elem.id}`);
+            setUrlParams(elem.id);
           }
         },
         200,

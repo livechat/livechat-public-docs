@@ -32,14 +32,14 @@ export const setupDocsearch = () => {
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
-    handleSelected: function (input, event, suggestion, datasetNumber, context) {
+    handleSelected: function(input, event, suggestion, datasetNumber, context) {
       if (
         context.selectionMethod === "click" ||
         context.selectionMethod === "enterKey"
       ) {
         logAmplitudeEvent("Suggestion selected, input entered", {
           url: suggestion.url,
-          input: input.getVal()
+          input: input.getVal(),
         });
 
         // removes the hardcoded path from Algolia
@@ -47,11 +47,11 @@ export const setupDocsearch = () => {
           suggestion.url.replace("https://developers.livechat.com/docs/", "")
         );
       }
-    }
+    },
   });
 };
 
-export const versionToString = number =>
+export const versionToString = (number) =>
   Number.isInteger(number) ? `${number}.0` : `${number}`;
 
 export const getVersionColor = (version, groupVersions) => {
@@ -62,7 +62,15 @@ export const getVersionColor = (version, groupVersions) => {
 };
 
 export const openChatWindow = (e) => {
-  e.preventDefault()
-  const LC_API = window.LC_API || {}
-  LC_API.open_chat_window()
+  e.preventDefault();
+  const LC_API = window.LC_API || {};
+  LC_API.open_chat_window();
+};
+
+export const setUrlParams = (section) => {
+  const params = window.location.pathname + "#" + section;
+
+  if (window.history.replaceState) {
+    window.history.replaceState(null, null, params);
+  }
 };
