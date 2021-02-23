@@ -215,9 +215,25 @@ const iframe = new Iframe(instance, instance.options);
 
 #### **iframe.authorize()** - Returns promise which resolves with user authorization data or error.
 
+```js
+  iframe.authorize().then((authorizeData) => {
+    console.log("authorize data acquired: " + authorizeData);
+  }).catch(e => {
+    console.error("Failed to acquire authorization data: " + e);
+  });
+```
+
 #### **iframe.iframeID()** - Returns created iframe id.
 
+```js
+  const iID = iframe.iframeID();
+```
+
 #### **iframe.removeIframe()** - Removes created iframe.
+
+```js
+  iframe.removeIframe();
+```
 
 <aside class="notice">
   Running authorization through iframe is not recommended due to ITP (Intelligent Tracking Prevention) 2.0
@@ -248,6 +264,14 @@ const popup = new Popup(instance, instance.options);
 
 #### **popup.authorize()** - Returns promise which resolves with user authorization data or error.
 
+```js
+  popup.authorize().then((authorizeData) => {
+    console.log("authorize data acquired: " + authorizeData);
+  }).catch(e => {
+    console.error("Failed to acquire authorization data: " + e);
+  });
+```
+
 ### **Redirect**
 
 Class responsible for acquiring user authorization data through `redirect` method.
@@ -273,22 +297,106 @@ const redirect = new Redirect(instance, instance.options);
 
 #### **redirect.authorize()** - Starts redirect authorization flow.
 
+```js
+  redirect.authorize();
+```
+
 #### **redirect.authorizeData()** - Checks if the current origin was redirected to with authorize data and returns promise which resolves with user authorization data or error.
+
+```js
+  redirect.authorizeData().then((authorizeData) => {
+    console.log("authorize data acquired: " + authorizeData);
+  }).catch(e => {
+    console.error("Failed to acquire authorization data: " + e);
+    redirect.authorize(); // Try to redirect user to authorization once more
+  });
+```
 
 ### **Transaction**
 
-#### **constructor(options)**
+#### **constructor(options)** - Creates new instance of transaction helper. Constructor accepts `options` object with the same parameters as `AccountsSDK`.
 
-Constructor accepts `options` object with the same parameters as `AccountsSDK`.
-
-#### **constructor(options)** - Creates new instance of transaction helper
+```js
+  const transaction = new Transaction({});
+```
 
 #### **generate(params)** - Generates new transaction from params and stores it in cookie/local storage for 30 minutes.
 
+```js
+  transaction.generate({
+    user_page: "/login_test",
+    state: "fdac3321gfd"
+  });
+```
+
 #### **get(state)** - Returns transaction generated for given state.
+
+```js
+  const transactionData = transaction.get("fdac3321gfd");
+```
 
 #### **clear(state)** - Removes transaction generated for provided state.
 
+```js
+  transaction.clear("fdac3321gfd");
+
+  transaction.get("fdac3321gfd"); // Will return `{}` object
+```
+
+## Exchanging code for tokens using PKCE extension
+
+In order to acquire both `access_token` and `refresh_token` by frontend application we should use [PKCE](https://www.oauth.com/oauth2-servers/oauth-native-apps/pkce/) Extension which prevents usage of hijacked redirect by malicious apps.
+
+In order to use it we should start with providing to PKCE enabled options to SDK instance:
+
+```js
+  const instance = new AccountsSDK({
+    client_id: '<your_app_client_id>',
+    redirect_uri: '<your_app_redirect_uri>',
+    response_type: "code",
+    pkce: {
+      enabled: true
+    }
+  });
+```
+
+Then using `redirect` flow we are able to receive code authorization data:
+
+```js
+  instance.redirect().authorizeData().then((authorizeData) => {
+    const transactionData = instance.verify(authorizeData);
+    if (transactionData === null) {
+      console.log("Failed to verify authorization data");
+      return;
+    }
+    fetch(instance.options.server_url + "/v2/token", {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({
+          grant_type: "authorization_code",
+          code: authorizeData.code,
+          client_id: transactionData.client_id,
+          redirect_uri: transactionData.redirect_uri,
+          code_verifier: transactionData.code_verifier,
+      })
+    })
+    .then((res) => { res.json()}).then((data) => {console.log("User tokens: " + data)})
+    .catch((e) => { console.log("Failed to exchange code: " + e) })
+  }).catch(e => {
+    // As we don't have any authorization data, then we can try o authorize user
+    const wasRedirected = sessionStorage.getItem('lc_accounts');
+    if (wasRedirected === "yes") {
+      console.error("Couldn't authorize user: " + e);
+      return
+    }
+    sessionStorage.setItem('lc_accounts', yes);
+    instance.redirect().authorize(); // Initiate authorization redirect flow
+
+  })
+```
 
 ## Response format
 
