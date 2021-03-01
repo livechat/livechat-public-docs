@@ -137,7 +137,7 @@ export default ({ data: { mdx, allMdx } }) => {
           selector.scrollIntoView();
           window.scrollBy(0, -SCROLL_OFFSET);
         }
-      } catch (error) { }
+      } catch (error) {}
     }
   }, []);
 
