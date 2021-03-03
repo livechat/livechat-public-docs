@@ -1013,16 +1013,10 @@ Creates a new Bot.
 | `groups`                               | No       | `object[]` | Groups the Bot belongs to.                                                                                                             |
 | `groups[].id`                          | No       | `int`      | Group ID; required only when `group`'s included.                                                                                       |
 | `groups[].priority` __*__              | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                      |
-| `webhooks`                             | No       | `object`   | Webhooks sent to the Bot; for more info on possible values and payload, see [Webhooks](#webhooks). Webhooks work only for online Bots. |
-| `webhooks.url`                         | Yes      | `string`   | Destination URL for webhooks; required only when `webhooks` is included.                                                               |
-| `webhooks.secret_key`                  | Yes      | `string`   | Secret sent in webhooks to verify webhook's source; required only when `webhooks`'s included.                                          |
-| `webhooks.actions`                     | Yes      | `object[]` | [Triggering actions](#triggering-actions); required only when `webhooks`'s included.                                                   |
-| `webhooks.actions[].name`              | Yes      | `string`   | The name of the triggering action; required only when `webhooks` is included.                                                          |
-| `webhooks.actions[].filters`           | No       | `object`   | Filters to check if a webhook should be triggered. For more info on filters, see [Register webhook](#register-webhook).                |
-| `webhooks.actions[].additional_data`   | No       | `string[]` | Additional data that will arrive with webhooks.                                                                                        |
 | `work_scheduler`                       | No       | `object`   | Work scheduler options to set for the new Bot.                                                                                         |
 | `work_scheduler.**.<work_scheduler>`   | No       | `object`   | `<work_scheduler>` values __***__.                                                                                                     |
 | `timezone`                             | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate. Required only if `work_scheduler` is provided.                                       |
+| `owner_client_id` __*****__            | Yes      | `string`   | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
 
 __*__ Possible values for the `groups[].priority` parameter:
 
@@ -1054,6 +1048,8 @@ __****__ The table below presents the possible values for the `default_group_pri
 | `first`         | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.  |
 | `normal`        | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
 | `last`          | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.   |
+
+__\*\*\*\*\*__ The number of sent webhooks depends on the number of webhooks registered for an `owner_client_id`, not the number of bots belonging to that `owner_client_id`.
 
 </Text>
 
@@ -1141,26 +1137,19 @@ Updates an existing Bot.
 
 #### Request
 
-| Parameter                            | Required | Data type | Notes                                                                                                                   |
-| ------------------------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `id`                                 | Yes      | `string`  | Bot ID                                                                                                                  |
-| `name`                               | No       | `string`  | Display name                                                                                                            |
-| `avatar`                             | No       | `string`  | Avatar URL                                                                                                              |
-| `max_chats_count`                    | No       | `int`     | Maximum incoming chats that can be routed to the Bot.                                                                   |
-| `groups`                             | No       | `object[]`| Groups the Bot belongs to                                                                                               |
-| `groups[].id`                        | Yes      | `uint`    | Group ID, required only when `groups`'s present.                                                                        |
-| `groups[].priority` __*__            | Yes      | `string`  | Bot's priority in the group; required only when `groups` is included.                                                   |
-| `default_group_priority` __**__      | No       | `string`  | The default routing priority for a group without defined priority.                                                      |
-| `webhooks`                           | No       | `object`  | Webhooks sent to the Bot. Webhooks work only for online Bots.                                                           |
-| `webhooks.url`                       | Yes      | `string`  | Destination URL for webhooks; required only when `webhooks` is present.                                                 |
-| `webhooks.secret_key`                | Yes      | `string`  | Secret sent in webhooks to verify the webhook's source; required when `webhooks` is included.                           |
-| `webhooks.actions`                   | Yes      | `object[]`| [Triggering actions](#triggering-actions); required only when `webhooks` is included.                                   |
-| `webhooks.actions[].name`            | Yes      | `string`  | The name of the triggering action; required only when `webhooks` is included.                                           |
-| `webhooks.actions[].filters`         | No       | `object`  | Filters to check if a webhook should be triggered. For more info on filters, see [Register webhook](#register-webhook). |
-| `webhooks.actions[].additional_data` | No       | `string[]`| Additional data arriving with the webhook.                                                                              |
-| `work_scheduler`                     | No       | `object`  | Work scheduler options to set for the new Bot.                                                                          |
-| `work_scheduler.***.<work_scheduler>`| No       | `object`  | `<work_scheduler>` values __****__.                                                                                      |
-| `timezone`                           | No       | `string`  | The time zone in which the Bot's work scheduler should operate. Required if `work_scheduler` is provided.                        |
+| Parameter                            | Required | Data type | Notes                                                                                                     |
+| ------------------------------------ | -------- | --------- | --------------------------------------------------------------------------------------------------------- |
+| `id`                                 | Yes      | `string`  | Bot ID                                                                                                    |
+| `name`                               | No       | `string`  | Display name                                                                                              |
+| `avatar`                             | No       | `string`  | Avatar URL                                                                                                |
+| `max_chats_count`                    | No       | `int`     | Maximum incoming chats that can be routed to the Bot.                                                     |
+| `groups`                             | No       | `object[]`| Groups the Bot belongs to                                                                                 |
+| `groups[].id`                        | Yes      | `uint`    | Group ID, required only when `groups`'s present.                                                          |
+| `groups[].priority` __*__            | Yes      | `string`  | Bot's priority in the group; required only when `groups` is included.                                     |
+| `default_group_priority` __**__      | No       | `string`  | The default routing priority for a group without defined priority.                                        |
+| `work_scheduler`                     | No       | `object`  | Work scheduler options to set for the new Bot.                                                            |
+| `work_scheduler.***.<work_scheduler>`| No       | `object`  | `<work_scheduler>` values __****__.                                                                       |
+| `timezone`                           | No       | `string`  | The time zone in which the Bot's work scheduler should operate. Required if `work_scheduler` is provided. |
 
 __*__ The table below presents the possible values for the `groups[].priority` parameter:
 
@@ -3861,7 +3850,7 @@ Enables the webhooks [registered](#register-webhook) for a given **Client Id** (
 
 | Parameter         | Required | Data type | Notes                                                                                                                  |
 | ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `owner_client_id` | No       | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
+| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
 
 #### Response
 
@@ -3905,7 +3894,7 @@ Disables the [enabled webhooks](#enable-license-webhooks).
 
 | Parameter         | Required | Data type | Notes                                                                                                                  |
 | ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `owner_client_id` | No       | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
+| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
 
 #### Response
 
@@ -3949,7 +3938,7 @@ Gets the state of the webhooks registered for a given **Client Id** (application
 
 | Parameter         | Required | Data type | Notes                                                                                                                  |
 | ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `owner_client_id` | No       | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
+| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
 
 </Text>
 
