@@ -9,9 +9,9 @@ desc: 'Some apps you build may need to access data from the LiveChat users accou
 
 # Introduction
 
-## User flow
+The **Sign in with LiveChat** flow is the easiest way to get access to basic information in LiveChat accounts. It allows you to quickly build an app that can access that info.
 
-Th **Sign in with LiveChat** flow is the easiest way to get access to basic information in LiveChat accounts. It allows you to quickly build an app that can access that info.
+## User flow
 
 Users start the flow by clicking the **Sign in with LiveChat** button:
 
@@ -56,7 +56,7 @@ With the **Sign in with LiveChat** flow, you can easily build an app that:
 
 - Gets access to the LiveChat user's email, account ID, or organization ID.
 - Receives an `access_token` that can be used to perform different LiveChat API calls.
-- Receives a `code` using the PKCE extension, which could be used to obtain the account's `refresh_token` and `access_token`.
+- Receives a `code` using the PKCE extension, which could be then used to obtain the account's `refresh_token` and `access_token`.
 
 # Setup
 
@@ -139,15 +139,17 @@ During the creation of the Sign in LiveChat button, you can use [LiveChat Design
 
 </Warning>
 
-# SDK documentation
+# Accounts SDK
 
 ## Classes
 
-### **AccountsSDK**
+- [AccountsSDK](#accountssdk)
+- [Popup](#popup-1)
+- [Redirect](#redirect-1)
+
+## AccountsSDK
 
 The main instance of the SDK used to authorize users in LiveChat Accounts.
-
-#### **constructor(options = {})**
 
 <CodeSample path={'Example class creation'}>
 
@@ -159,78 +161,96 @@ const instance = new AccountsSDK({
 
 </CodeSample>
 
-##### options object
-
 The constructor accepts an `options` object with the following properties:
 
-| Property                             | Required | Description                                                                                                                                                                                                     |
-|--------------------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `client_id`                          | yes      | Application **Client Id** (can be found in <a href="https://developers.livechat.com/console/" rel="noopener nofollow" target="_blank">Developer Console</a>)                                                    |
-| `prompt`                             | no       | Use `consent` to force the consent prompt in a popup and the redirect flows. ([See the warning.](#step-3-prepare-button-container)). Default: `''`                                                              |
-| `response_type`                      | no       | OAuth response type. Possible values: `token` or `code`. Default: `token`                                                                                                                                       |
-| `popup_flow`                         | no       | `auto` – close the popup automatically if the user is already logged in; `manual` - always show the popup that requires the user to provide their credentials; default: `auto`                                         |
-| `state`                              | no       | OAuth state parameter. Use it for better security.                                                                                                                                                              |
-| `verify_state`                       | no       | Check if `state` matches after the redirect; default: `true`                                                                                                                                                    |
-| `scope`                              | no       | The scopes your application will request from the user; if not provided, then all application scopes will be requested. It must be configured for a given `client id`, a comma-separated string, default: `null` |
-| `redirect_uri`                       | yes      | OAuth redirect URI; default: the current location                                                                                                                                                               |
-| `email_hint`                         | no       | Fill in email in forms                                                                                                                                                                                          |
-| `server_url`                         | no       | Authorization server URL                                                                                                                                                                                        |
-| `tracking`                           | no       | Tracking query string parameters                                                                                                                                                                                |
-| [`transaction`](#transaction-object) | no       | An object with options for the transaction manager                                                                                                                                                              |
-| [`pkce`](#pkce-object)               | no       | An object with the PKCE configuration                                                                                                                                                                           |
+| Property                      | Required | Data type | Description                                                                                                                                                                                                      |
+| ----------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `client_id`                   | yes      | `string`  | Application **Client Id** (can be found in <a href="https://developers.livechat.com/console/" rel="noopener nofollow" target="_blank">Developer Console</a>)                                                     |
+| `prompt`                      | no       | `string`  | Use `consent` to force the consent prompt in a popup and the redirect flows. ([See the warning.](#step-3-prepare-button-container)). Default: `''`                                                               |
+| `response_type`               | no       | `string`  | OAuth response type. Possible values: `token` or `code`. Default: `token`                                                                                                                                        |
+| `popup_flow`                  | no       | `string`  | `auto` – close the popup automatically if the user is already logged in; `manual` - always show the popup that requires the user to provide their credentials; default: `auto`                                   |
+| `state`                       | no       | `string`  | OAuth state parameter. Use it for better security.                                                                                                                                                               |
+| `verify_state`                | no       | `bool`    | Check if `state` matches after the redirect; default: `true`                                                                                                                                                     |
+| `scope`                       | no       | `array`   | The scopes your application will request from the user; if not provided, then all application scopes will be requested. It must be configured for a given `client id`, a comma-separated string, default: `null` |
+| `redirect_uri`                | yes      | `string`  | OAuth redirect URI; default: the current location                                                                                                                                                                |
+| `email_hint`                  | no       | `bool`    | Fill in email in forms                                                                                                                                                                                           |
+| `server_url`                  | no       | `string`  | Authorization server URL                                                                                                                                                                                         |
+| `tracking`                    | no       | `bool`    | Tracking query string parameters                                                                                                                                                                                 |
+| `transaction`<sup>**1**</sup> | no       | `object`  | An object with options for the transaction manager                                                                                                                                                               |
+| `pkce`<sup>**2**</sup>        | no       | `object`  | An object with the PKCE configuration                                                                                                                                                                            |
 
-##### transaction object
+**1)** The `transaction` object consists of the following parameters:
 
-The `transaction` object consists of the following parameters:
+| Property              | Required | Data type | Description                                                  |
+| --------------------- | -------- | --------- | ------------------------------------------------------------ |
+| `namespace`           | no       | `string`  | Transaction key prefix; default: `'com.livechat.accounts'`   |
+| `key_length`          | no       | `string`  | Transaction random state length; default: `32`               |
+| `force_local_storage` | no       | `bool`    | Try to use localStorage instead of cookies; default: `false` |
 
-| Property              | Required | Description                                                  |
-| --------------------- | -------- | ------------------------------------------------------------ |
-| `namespace`           | no       | Transaction key prefix; default: `'com.livechat.accounts'`   |
-| `key_length`          | no       | Transaction random state length; default: `32`               |
-| `force_local_storage` | no       | Try to use localStorage instead of cookies; default: `false` |
+💡 You need to use the PKCE extension if your JavaScript application will try to acquire the authorization `code` in order to exchange it for tokens.
 
-##### pkce object
+**2)** In the `pkce` object, define the following configuration properties:
 
-You need to use the PKCE extension if your JavaScript application will try to acquire the authorization `code` in order to exchange it for tokens.
+| Property                | Required | Data type | Description                                                                                                                                                                                                               |
+| ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`               | yes      | `bool`    | Enable OAuth 2.1 PKCE extension; default: `true`                                                                                                                                                                          |
+| `code_verifier`         | no       | `string`  | Override the auto-generated code verifier.                                                                                                                                                                                |
+| `code_verifier_length`  | no       | `string`  | Define the length of the code verifier. It should be between 43 and 128 characters; default: `128`. <a href=" https://tools.ietf.org/html/rfc7636#section-4.1" target="_blank" rel="noopener noreferrer">Read more...</a> |
+| `code_challange_method` | no       | `string`  | Define the code challenge method. Possible values: `S256` or `plain`; default: `S256`                                                                                                                                     |
 
-In the `pkce` object, define the following configuration properties:
+**Available class methods:**
 
-| Property                | Required | Description                                                                                                                                                                                                               |
-| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`               | yes      | Enable OAuth 2.1 PKCE extension; default: `true`                                                                                                                                                                          |
-| `code_verifier`         | no       | Override the auto-generated code verifier.                                                                                                                                                                                |
-| `code_verifier_length`  | no       | Define the length of the code verifier. It should be between 43 and 128 characters; default: `128`. <a href=" https://tools.ietf.org/html/rfc7636#section-4.1" target="_blank" rel="noopener noreferrer">Read more...</a> |
-| `code_challange_method` | no       | Define the code challenge method. Possible values: `S256` or `plain`; default: `S256`                                                                                                                                     |
+- [popup](#popup)
+- [redirect](#redirect)
+- [authorizeURL](#authorizeurl)
+- [verify](#verify)
 
-#### **instance.popup(options = {})**  
+### popup  
 
 Returns a `Popup` object instance built on top of `sdk`.
+
+| Parameter             | Data type | Description                                                     |
+| --------------------- | --------- | --------------------------------------------------------------- |
+| [`options`](#options) | `object`  | An object with the same parameters as provided in `AccountsSDK` |
 
 ```js
   const popup = instance.popup();
 ```
 
-#### **instance.redirect(options = {})**  
+### redirect  
 
 Returns a `Redirect` object instance built on top of `sdk`.
+
+| Parameter             | Data type | Description                                                     |
+| --------------------- | --------- | --------------------------------------------------------------- |
+| [`options`](#options) | `object`  | An object with the same parameters as provided in `AccountsSDK` |
 
 ```js
   const redirect = instance.redirect();
 ```
 
-#### **instance.authorizeURL(options = {}, flow = '')**
+### authorizeURL
 
 Creates an authorization URL for the given flow and parameters.
+
+| Parameter             | Data type | Description                                                     |
+| --------------------- | --------- | --------------------------------------------------------------- |
+| [`options`](#options) | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+| `flow`                | `string`  | `code` or `token`                                               |
 
 ```js
   const authURL = instance.authorizeURL();
 ```
 
-#### **instance.verify(authorizeData)**
+### verify
 
-This function verifies if the redirect transaction parameters are valid. It they are, it returns `Transaction`. Otherwise, it returns `null`.
+Verifies if the `state` parameter from the redirect matched the one provided upon initialization, If it does, the method returns `Transaction`. Otherwise, it returns `null`.
 
 In all methods of the `AccountsSDK` object, the `options` objects is used to overwrite the data provided upon initialization.
+
+| Parameter       | Data type | Description                     |
+| --------------- | --------- | ------------------------------- |
+| `authorizeData` | `object`  | Data returned from the redirect |
 
 <CodeSample path={'instance.verify(authorizeData)'}>
 
@@ -245,13 +265,14 @@ In all methods of the `AccountsSDK` object, the `options` objects is used to ove
 
 </CodeSample>
 
-### **Popup**
+## Popup
 
 A class responsible for acquiring the user authorization data through a popup window.
 
-#### **constructor(sdk, options)**
-
-The constructor accepts an `sdk` instance and `options` object with the same parameters as `AccountsSDK`.
+| Parameter             | Data type | Description                                                     |
+| --------------------- | --------- | --------------------------------------------------------------- |
+| [`options`](#options) | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+| [`sdk`](#options)     | `object`  | An `sdk` instance                                               |
 
 <CodeSample path={'constructor(sdk, options)'}>
 
@@ -271,7 +292,11 @@ A popup object instance could be also created via `sdk` with:
   const popup = instance.popup();
   ```
 
-#### **popup.authorize()**
+ **Available class methods:**
+
+- [authorize](#authorize)
+
+### authorize
 
 Returns a promise that resolves with the user authorization data or an error.
 
@@ -287,13 +312,14 @@ Returns a promise that resolves with the user authorization data or an error.
 
 </CodeSample>
 
-### **Redirect**
+## Redirect
 
 A class responsible for acquiring the user authorization data through the `redirect` method.
 
-#### **constructor(sdk, options)**
-
-The constructor accepts an `sdk` instance and the `options` object with the same parameters as `AccountsSDK`.
+| Parameter             | Data type | Description                                                     |
+| --------------------- | --------- | --------------------------------------------------------------- |
+| [`options`](#options) | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+| [`sdk`](#options)     | `object`  | An `sdk` instance                                               |
 
 <CodeSample path={'constructor(sdk, options)'}>
 
@@ -321,7 +347,12 @@ const redirect = instance.redirect();
 
 </CodeSample>
 
-#### **redirect.authorize()**
+ **Available class methods:**
+
+- [authorize](#authorize-1)
+- [authorizeData](#authorizedata)
+
+### authorize
 
 Starts the redirect authorization flow.
 
@@ -329,7 +360,7 @@ Starts the redirect authorization flow.
   redirect.authorize();
 ```
 
-#### **redirect.authorizeData()**
+### authorizeData
 
 Checks if a user was redirected to the current origin with the authorization data. It returns a promise that resolves with the user authorization data or with an error.
 
@@ -345,51 +376,6 @@ Checks if a user was redirected to the current origin with the authorization dat
 ```
 
 </CodeSample>
-
-### **Transaction**
-
-A class responsible for validating the received authorization data against. The class allows you to compare the value of `state` before the auth flow was started and after it was completed.
-
-#### **constructor(options)**
-
-Creates a new instance of the transaction helper. The constructor accepts the `options` object with the same parameters as `AccountsSDK`.
-
-```js
-  const transaction = new Transaction({});
-```
-
-#### **generate(params)**
-
-Generates a new transaction from parameters and stores the transaction in cookies or in localStorage for 30 minutes.
-
-<CodeSample path={'generate(params)'}>
-
-```js
-  transaction.generate({
-    user_page: "/login_test",
-    state: "fdac3321gfd"
-  });
-```
-
-</CodeSample>
-
-#### **get(state)**
-
- Returns the transaction generated for a given state.
-
-```js
-  const transactionData = transaction.get("fdac3321gfd");
-```
-
-#### **clear(state)**
-
-Removes the transaction generated for the provided state.
-
-```js
-  transaction.clear("fdac3321gfd");
-
-  transaction.get("fdac3321gfd"); // Will return `{}` object
-```
 
 ## Exchanging code for tokens with the PKCE extension
 
