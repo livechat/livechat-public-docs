@@ -161,7 +161,17 @@ const Header = () => {
 
   return (
     <HeaderWrapper id="header">
-      <PromoBanner> Promo Banner. Text has to be changed.</PromoBanner>
+      <PromoBanner>
+        We're running a live coding session on web app authorization.{" "}
+        <a
+          href="https://developers.livechat.com/live-coding-authorizing-web-apps/"
+          rel="noopener nofollow"
+          target="_blank"
+        >
+          Join us
+        </a>{" "}
+        on 03/19/2021!
+      </PromoBanner>
       <MenuWrapper>
         <LogoWrapper>
           <a href="/">
