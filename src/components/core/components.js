@@ -48,7 +48,7 @@ const NavWrapper = styled.aside`
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    top: 60px;
+    top: 100px;
   }
 
   @media (min-width: 1024px) {
@@ -160,7 +160,7 @@ export const LeftColumnRedoc = styled.div`
   width: 250px;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
-  top: 60px;
+  top: 100px;
   z-index: 1000;
   display: block;
 
@@ -174,7 +174,7 @@ export const MenuWrapper = styled.div`
   overflow-y: scroll;
   padding: 20px;
   @media (min-width: 768px) {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 140px);
   }
 `;
 
@@ -245,14 +245,14 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-        <MenuLink to={url} active={active ? 1 : 0} title={title}>
-          <ArticleIcon
-            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-          />
+      <MenuLink to={url} active={active ? 1 : 0} title={title}>
+        <ArticleIcon
+          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+        />
         &nbsp;
-          <span>{title}</span>
-        </MenuLink>
-      )}
+        <span>{title}</span>
+      </MenuLink>
+    )}
   </Li>
 );
 

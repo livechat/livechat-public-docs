@@ -161,10 +161,7 @@ const Header = () => {
 
   return (
     <HeaderWrapper id="header">
-      <PromoBanner>
-        We're running a textless communication hackathon. Curious?{" "}
-        <a href="/txtlss/">Read more</a>
-      </PromoBanner>
+      <PromoBanner> Promo Banner. Text has to be changed.</PromoBanner>
       <MenuWrapper>
         <LogoWrapper>
           <a href="/">

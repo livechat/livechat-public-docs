@@ -5,7 +5,7 @@ import {
   MenuWrapper,
   Ul,
   CollapsableSection,
-  MenuElement
+  MenuElement,
 } from "../components";
 import { Search } from "../Search";
 import { HomeIcon, ChevronRight } from "../icons";
@@ -13,7 +13,7 @@ import {
   useAllArticlesInCategory,
   useCategoryMeta,
   useAllCategoriesMeta,
-  useScrollSpy
+  useScrollSpy,
 } from "../../../hooks";
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
@@ -52,7 +52,8 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
           </Fragment>
         );
       })}
-    </Ul>)
+    </Ul>
+  );
 };
 
 const SideNav = ({
@@ -60,7 +61,7 @@ const SideNav = ({
   subcategory,
   currentSlug,
   expanded,
-  setExpanded
+  setExpanded,
 }) => {
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
@@ -71,10 +72,10 @@ const SideNav = ({
     selectedVersion
   );
 
-  const categories = useAllCategoriesMeta().map(item => ({
+  const categories = useAllCategoriesMeta().map((item) => ({
     ...item,
     url: `/${item.slug}/`,
-    items: null
+    items: null,
   }));
 
   const menuItems = category ? articles : categories;
@@ -84,11 +85,11 @@ const SideNav = ({
     : [currentSlug];
 
   const [activePath, setActivePath] = useState(initialPath);
-  const toggleState = path => () => setActivePath(path);
+  const toggleState = (path) => () => setActivePath(path);
 
   const categoryMeta = useCategoryMeta(category);
 
-  useScrollSpy(".heading", url => url && setActivePath(getArticlePath(url)));
+  useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
 
   const navColor = getVersionColor(selectedVersion, versions);
 
