@@ -164,18 +164,18 @@ const instance = new AccountsSDK({
 The constructor accepts an `options` object with the following properties:
 
 | Property                      | Required | Data type | Description                                                                                                                                                                                                      |
-| ----------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------------|----------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `client_id`                   | yes      | `string`  | Application **Client Id** (can be found in <a href="https://developers.livechat.com/console/" rel="noopener nofollow" target="_blank">Developer Console</a>)                                                     |
 | `prompt`                      | no       | `string`  | Use `consent` to force the consent prompt in a popup and the redirect flows. ([See the warning.](#step-3-prepare-button-container)). Default: `''`                                                               |
 | `response_type`               | no       | `string`  | OAuth response type. Possible values: `token` or `code`. Default: `token`                                                                                                                                        |
 | `popup_flow`                  | no       | `string`  | `auto` – close the popup automatically if the user is already logged in; `manual` - always show the popup that requires the user to provide their credentials; default: `auto`                                   |
 | `state`                       | no       | `string`  | OAuth state parameter. Use it for better security.                                                                                                                                                               |
 | `verify_state`                | no       | `bool`    | Check if `state` matches after the redirect; default: `true`                                                                                                                                                     |
-| `scope`                       | no       | `string`   | The scopes your application will request from the user; if not provided, then all application scopes will be requested. It must be configured for a given `client id`, a comma-separated string, default: `null` |
+| `scope`                       | no       | `string`  | The scopes your application will request from the user; if not provided, then all application scopes will be requested. It must be configured for a given `client id`, a comma-separated string, default: `null` |
 | `redirect_uri`                | yes      | `string`  | OAuth redirect URI; default: the current location                                                                                                                                                                |
 | `email_hint`                  | no       | `bool`    | Fill in email in forms                                                                                                                                                                                           |
 | `server_url`                  | no       | `string`  | Authorization server URL                                                                                                                                                                                         |
-| `tracking`                    | no       | `bool`    | Tracking query string parameters                                                                                                                                                                                 |
+| `tracking`                    | no       | `object`  | Object with tracking query string params                                                                                                                                                                         |
 | `transaction`<sup>**1**</sup> | no       | `object`  | An object with options for the transaction manager                                                                                                                                                               |
 | `pkce`<sup>**2**</sup>        | no       | `object`  | An object with the PKCE configuration                                                                                                                                                                            |
 
@@ -192,10 +192,10 @@ The constructor accepts an `options` object with the following properties:
 **2)** In the `pkce` object, define the following configuration properties:
 
 | Property                | Required | Data type | Description                                                                                                                                                                                                               |
-| ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------------|----------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `enabled`               | yes      | `bool`    | Enable OAuth 2.1 PKCE extension; default: `true`                                                                                                                                                                          |
 | `code_verifier`         | no       | `string`  | Override the auto-generated code verifier.                                                                                                                                                                                |
-| `code_verifier_length`  | no       | `string`  | Define the length of the code verifier. It should be between 43 and 128 characters; default: `128`. <a href=" https://tools.ietf.org/html/rfc7636#section-4.1" target="_blank" rel="noopener noreferrer">Read more...</a> |
+| `code_verifier_length`  | no       | `integer` | Define the length of the code verifier. It should be between 43 and 128 characters; default: `128`. <a href=" https://tools.ietf.org/html/rfc7636#section-4.1" target="_blank" rel="noopener noreferrer">Read more...</a> |
 | `code_challange_method` | no       | `string`  | Define the code challenge method. Possible values: `S256` or `plain`; default: `S256`                                                                                                                                     |
 
 **Available class methods:**
@@ -236,7 +236,7 @@ Creates an authorization URL for the given flow and parameters.
 | Parameter             | Data type | Description                                                     |
 | --------------------- | --------- | --------------------------------------------------------------- |
 | [`options`](#options) | `object`  | An object with the same parameters as provided in `AccountsSDK` |
-| `flow`                | `string`  | `code` or `token`                                               |
+| `flow`                | `string`  | `code` or `token`. Code could be only used with `PKCE` flow     |
 
 ```js
   const authURL = instance.authorizeURL();
@@ -244,7 +244,7 @@ Creates an authorization URL for the given flow and parameters.
 
 ### verify
 
-Verifies if the `state` parameter from the redirect matched the one provided upon initialization, If it does, the method returns `Transaction`. Otherwise, it returns `null`.
+Verifies if the `state` parameter from the redirect matched the one provided upon initialization, If it does, the method returns `Transaction`, which is used under the hood for `state` verification. Otherwise, it returns `null`.
 
 In all methods of the `AccountsSDK` object, the `options` objects is used to overwrite the data provided upon initialization.
 
