@@ -9,25 +9,31 @@ desc: 'Some apps you build may need to access data from the LiveChat users accou
 
 # Introduction
 
+The **Sign in with LiveChat** flow is the easiest way to get access to basic information in LiveChat accounts. It allows you to quickly build an app that can access that info.
+
 ## User flow
 
-"Sign in with LiveChat" flow is the easiest way to get access to basic information in LiveChat accounts. It allows you to quickly build an app that can access this information.
+Users start the flow by clicking the **Sign in with LiveChat** button:
 
-User starts the flow by clicking the "Sign in with LiveChat" button:
+<button class="lc-btn" type="button" style="margin-right:auto; display:block; margin-bottom: 20px;">
+  Sign in with LiveChat
+</button>
 
-![Sign in with LiveChat](images/sign-in-with-livechat-btn.png)
+If a user is not signed in to LiveChat, they'll be asked to do that:
 
-If user is not signed in to LiveChat, he is asked to do that:
+<div style="max-width: 550px">
+  <img src="./images/log-in-livechat.png" alt="Log in to LiveChat view" />
+</div>
 
-![Log in to LiveChat](images/log-in-livechat.png)
+Then, the user must give the app access to the specified parts of their LiveChat account:
 
-Then, user must allow the app to access specified parts of his LiveChat account:
-
-![Grant access to LiveChat app](images/grant-access-livechat.png)
+<div style="max-width: 550px">
+  <img src="./images/grant-access-livechat.png" alt="Grant access to LiveChat app" />
+</div>
 
 Finally, the app receives an `access_token` that allows it perform LiveChat API calls, limited to what the user agreed to in the prompt.
 
-For example, you can display the LiveChat tracking code, which already includes the user's account number:
+For example, you can display the LiveChat tracking code which already includes the user's account license number:
 
 <CodeSample path={'TRACKING CODE'}>
 
@@ -46,18 +52,19 @@ For example, you can display the LiveChat tracking code, which already includes 
 
 ## Use cases
 
-With the "Sign in with LiveChat" flow, you can easily build an app which:
+With the **Sign in with LiveChat** flow, you can easily build an app that:
 
-- obtains access to LiveChat user's email or license number,
-- will receive an `access_token` that can be used to perform different LiveChat API calls.
+- Gets access to the LiveChat user's email, account ID, or organization ID.
+- Receives an `access_token` that can be used to perform different LiveChat API calls.
+- Receives a `code` using the PKCE extension, which could be then used to obtain the account's `refresh_token` and `access_token`.
 
 # Setup
 
 ## Step 1: Create a new app
 
-Create a new "LiveChat OAuth 2.1 Client" app in <a href="https://developers.livechatinc.com/console/">Developers Console</a>. You will receive a new `client_id` that can be used in the next steps.
+Create a new **LiveChat OAuth 2.1 Client** app in <a href="https://developers.livechat.com/console/" rel="noopener nofollow" target="_blank">Developer Console</a>. You will receive a new `client_id` that can be used in the next steps.
 
-Please note that **Redirect URI** field must match the URL of the website that has the "Sign in with LiveChat" button installed. The button will not work with any other URL addresses.
+Please note that **Redirect URI** field must match the URL of the website that has the **Sign in with LiveChat** button installed. The button will not work with any other URL addresses.
 
 ## Step 2: Include the SDK library
 
@@ -65,80 +72,66 @@ The SDK is available in two formats: an NPM module and a CDN-hosted library.
 
 ### NPM module
 
+<CodeSample path={'NPM module installation'}>
+
 ```bash
-npm install --save @livechat/accounts-sdk
+npm install --save @livechat/accounts-sdk@^2.0.0
 ```
+
+</CodeSample>
+
+<CodeSample path={'NPM module import'}>
 
 ```js
-import { accountsSdk } from "@livechat/accounts-sdk";
+import AccountsSDK from '@livechat/accounts-sdk';
 ```
 
-If you build an app using Webpack, you can just import the `accountsSdk` module from the NPM.
+</CodeSample>
 
-### CDN-hosted library
-
-```html
-<script src="//cdn.livechatinc.com/accounts/accounts-sdk.min.js"></script>
-```
-
-If you do not use Webpack, you can still include the library using a `<script>` tag in your HTML. This will create an `AccountsSDK` global object.
-
----
-
-**Note:** SDK objects from NPM and CDN-hosted libraries have different names:
-
-- NPM module: `accountsSdk`
-- CDN-hosted library: `AccountsSDK`
-
-If you use the CDN-hosted version of this SDK, change `accountsSdk` that you see in all examples in this documentation to `AccountsSDK`.
+If you build an app using Webpack, you can just import the `AccountsSDK` module from NPM.
 
 ## Step 3: Prepare button container
 
-> Native "Sign in with LiveChat" button
+Prepare the login button, which will invoke the authorization flow when a user clicks it.
 
 ```html
-<div class="livechat-login-button"></div>
+<div id="login-button" style="background: url(.../livechat_sign_in.png)"></div>
 ```
 
-> Custom "Sign in with LiveChat" button
+<CodeSample path={'Prepare the button container'}>
 
 ```js
 // javascript
-const instance = accountsSdk.init({ ... });
-```
+const instance = new AccountsSDK({
+  client_id: '<your_app_client_id>',
+  redirect_uri: '<your_app_redirect_uri>'
+});
 
-```html
-<!-- html -->
-<a href="" onclick="instance.openPopup()">Sign in with LiveChat</a>
-```
+document.getElementById('login-button').onclick = (e) => {
+  if (e && e.preventDefault) {
+    e.preventDefault();
+  }
 
-Insert HTML code to prepare the container for the "Sign in with LiveChat" button. Its `class` attribute must have value of `livechat-login-button`. The button will be automatically inserted into the container.
-
-If you prefer to design your own button, you can do that, too. Just bind the [`openPopup()`](#instanceopenpopup) method of `AccountsSDK` instance to the `onclick` attribute of your link or button.
-
-## Step 4: Initialize the SDK
-
-```html
-<script>
-  const instance = accountsSdk.init({
-    client_id: "<your_client_id>",
-    onIdentityFetched: (error, data) => {
-      if (data) {
-        console.log("User authorized!");
-        console.log("License number: " + data.license);
-      }
+  sdk.popup().authorize().then((authorizeData)=>{
+    const transaction = sdk.verify(authorizeData);
+    if (transaction != null) {
+      // authorization success
+      // authorizeData contains `accessToken` or `code`
+      // transaction contains state and optional code_verifier (code + PKCE)
+      console.log("User access token: " + transaction.accessToken)
+      document.getElementById('login-button').style.display = "none"
+    } else {
+      console.log("Redirect state don't matches previous one")
     }
-  });
-</script>
+  }).catch((e)=>{
+    console.error("Failed to authorize user", e)
+  })
+};
 ```
 
-Insert the JavaScript code you can see above **before the closing `</body>` tag**.
+</CodeSample>
 
-That's it!
-
-Your users will see the "Sign in with LiveChat" button if they are not yet logged in or they didn't grant access for your app.
-
-If they are already logged in, you will immediately receive valuable information about your user, such as their `access_token` or `license` number.
+During the creation of the Sign in LiveChat button, you can use [LiveChat Designs](https://livechat.design/).
 
 <Warning>
 
@@ -146,188 +139,376 @@ If they are already logged in, you will immediately receive valuable information
 
 </Warning>
 
-# SDK documentation
+# Accounts SDK
 
-## Methods
+## Classes
 
-### **accountsSdk.init({ ... })**
+- [AccountsSDK](#accountssdk)
+- [Popup](#popup-1)
+- [Redirect](#redirect-1)
 
-> Example `init()` method usage
+## AccountsSDK
+
+The main instance of the SDK used to authorize users in LiveChat Accounts.
+
+<CodeSample path={'Example class creation'}>
 
 ```js
-const instance = accountsSdk.init({
-  client_id: "<your_client_id>",
-  onIdentityFetched: (error, data) => {
-    // ...
-  }
+const instance = new AccountsSDK({
+  client_id: '<your_app_client_id>'
 });
 ```
 
-This method initiates the SDK and returns the `accountsSdk` object instance. It accepts an object with the following properties:
+</CodeSample>
 
-- **client_id** – obtained from the [Developers Console](https://developers.livechatinc.com/console/) when you create your app.
+The constructor accepts an `options` object with the following properties:
 
-- **response_type** – (optional, defaults to `token`) Defines the type of the response that you will receive in `onIdentityFetched` callback. Two options are supported:
+| Property                      | Required | Data type | Description                                                                                                                                                                                                      |
+| ----------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `client_id`                   | yes      | `string`  | Application **Client Id** (can be found in <a href="https://developers.livechat.com/console/" rel="noopener nofollow" target="_blank">Developer Console</a>)                                                     |
+| `prompt`                      | no       | `string`  | Use `consent` to force the consent prompt in a popup and the redirect flows. ([See the warning.](#step-3-prepare-button-container)). Default: `''`                                                               |
+| `response_type`               | no       | `string`  | OAuth response type. Possible values: `token` or `code`. Default: `token`                                                                                                                                        |
+| `popup_flow`                  | no       | `string`  | `auto` – close the popup automatically if the user is already logged in; `manual` - always show the popup that requires the user to provide their credentials; default: `auto`                                   |
+| `state`                       | no       | `string`  | OAuth state parameter. Use it for better security.                                                                                                                                                               |
+| `verify_state`                | no       | `bool`    | Check if `state` matches after the redirect; default: `true`                                                                                                                                                     |
+| `scope`                       | no       | `string`  | The scopes your application will request from the user; if not provided, then all application scopes will be requested. It must be configured for a given `client id`, a comma-separated string, default: `null` |
+| `redirect_uri`                | yes      | `string`  | OAuth redirect URI; default: the current location                                                                                                                                                                |
+| `email_hint`                  | no       | `bool`    | Fill in email in forms                                                                                                                                                                                           |
+| `server_url`                  | no       | `string`  | Authorization server URL                                                                                                                                                                                         |
+| `tracking`                    | no       | `object`  | Object with tracking query string params                                                                                                                                                                         |
+| `transaction`<sup>**1**</sup> | no       | `object`  | An object with options for the transaction manager                                                                                                                                                               |
+| `pkce`<sup>**2**</sup>        | no       | `object`  | An object with the PKCE configuration                                                                                                                                                                            |
 
-  - **token** (default) – the response will include `access_token` that can be immediately used for calling LiveChat APIs. Best suitable for client-side apps.
-  - **code** – the response will include `code` that can be exchanged for `access_token` and `refresh_token`. Best suitable for backend apps that authorize a user only once and refresh the `access_token` themselves from that moment.<br/><br/>Read more about client-side and backend apps in <a href="https://developers.google.com/identity/protocols/OAuth2#webserver">Google OAuth tutorial</a>.
+**1)** The `transaction` object consists of the following parameters:
 
-- **onIdentityFetched(error, data)** – the callback executed when user's identity is fetched. The callback will include either `error` or `data` object depending on the current user authorization status. You will find the detailed documentation in <a href="#response-format">Response format</a> section.
+| Property              | Required | Data type | Description                                                  |
+| --------------------- | -------- | --------- | ------------------------------------------------------------ |
+| `namespace`           | no       | `string`  | Transaction key prefix; default: `'com.livechat.accounts'`   |
+| `key_length`          | no       | `string`  | Transaction random state length; default: `32`               |
+| `force_local_storage` | no       | `bool`    | Try to use localStorage instead of cookies; default: `false` |
 
-- **linkLabel** – (optional, defaults to empty string) allows to change default _Sign in with LiveChat_ label with custom text.
+💡 You need to use the PKCE extension if your JavaScript application will try to acquire the authorization `code` in order to exchange it for tokens.
 
-- **popupRoute** – (optional, defaults to empty string) it lets you change the default popup endpoint. Possible values are:
-  - `''` (default) – an empty string, which will show the sign-in view.
-  - `'signup'` – it will point a user directly to the first step of the signup.
+**2)** In the `pkce` object, define the following configuration properties:
 
-<aside class="notice">
-  <code>accountsSdk</code> object exposes only one method: <code>init()</code>.
-  All other methods must be called by the object instance returned by the{" "}
-  <code>init()</code> method.
-</aside>
+| Property                | Required | Data type | Description                                                                                                                                                                                                               |
+| ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`               | yes      | `bool`    | Enable OAuth 2.1 PKCE extension; default: `true`                                                                                                                                                                          |
+| `code_verifier`         | no       | `string`  | Override the auto-generated code verifier.                                                                                                                                                                                |
+| `code_verifier_length`  | no       | `integer` | Define the length of the code verifier. It should be between 43 and 128 characters; default: `128`. <a href=" https://tools.ietf.org/html/rfc7636#section-4.1" target="_blank" rel="noopener noreferrer">Read more...</a> |
+| `code_challange_method` | no       | `string`  | Define the code challenge method. Possible values: `S256` or `plain`; default: `S256`                                                                                                                                     |
 
-### **instance.updateOptions()**
+**Available class methods:**
 
-> Example `updateOptions()` method usage:
+- [popup](#popup)
+- [redirect](#redirect)
+- [authorizeURL](#authorizeurl)
+- [verify](#verify)
 
-```js
-// javascript
-const instance = accountsSdk.init({ ... });
+### popup  
 
- document.getElementById('signup-button').onclick = function() {
-   instance.updateOptions({
-     popupRoute: 'signup'
-   });
-   instance.openPopup();
- };
+Returns a `Popup` object instance built on top of `sdk`.
 
- document.getElementById('signin-button').onclick = function() {
-   instance.updateOptions({
-     popupRoute: ''
-   });
-   instance.openPopup();
- };
-```
+| Parameter | Data type | Description                                                     |
+| --------- | --------- | --------------------------------------------------------------- |
+| `options` | `object`  | An object with the same parameters as provided in `AccountsSDK` |
 
-```html
-<button id="signup-button">Sign up with LiveChat!</button>
-<button id="signin-button">Already have an account? Sign in!</button>
-```
-
-Allows to update SDK options after calling `init()` method. It accepts an object with same schema as `init()` method.
-
-### **instance.openPopup()**
-
-> Example `openPopup()` method usage:
-
-```js
-// javascript
-const instance = accountsSdk.init({ ... });
-```
-
-```html
-<!-- html -->
-<a href="" onclick="instance.openPopup()">Sign in with LiveChat</a>
-```
-
-Binds `onclick` param for custom HTML `<a>` element that replaces the "Sign in with LiveChat" button. See the example of custom button in [Prepare button container](#3-prepare-button-container) section.
-
-### **instance.signOut(callback)**
-
-> Sample `signOut()` method usage:
+<CodeSample path={'popup(options={})'}>
 
 ```js
-// javascript
-const instance = accountsSdk.init({ ... });
+  const popup = instance.popup({
+  client_id: '<your_app_client_id>'
+});
+```
 
-function signMeOut(e) {
-  e.preventDefault();
+</CodeSample>
 
-  instance.signOut(function() {
-    console.log('User signed out');
+### redirect  
+
+Returns a `Redirect` object instance built on top of `sdk`.
+
+| Parameter | Data type | Description                                                     |
+| --------- | --------- | --------------------------------------------------------------- |
+| `options` | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+
+<CodeSample path={'redirect(options={})'}>
+
+```js
+  const redirect = instance.redirect({
+  client_id: '<your_app_client_id>'
+});
+```
+
+</CodeSample>
+
+### authorizeURL
+
+Creates an authorization URL for the given flow and parameters.
+
+| Parameter | Data type | Description                                                     |
+| --------- | --------- | --------------------------------------------------------------- |
+| `options` | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+| `flow`    | `string`  | `code` or `token`. `code` can only be used with the `PKCE` flow |
+
+<CodeSample path={'authorizeURL(options={},flow)'}>
+
+```js
+  const authURL = instance.authorizeURL({
+  client_id: '<your_app_client_id>'
+}, "token");
+```
+
+</CodeSample>
+
+### verify
+
+Verifies if the `state` parameter from the redirect matched the one provided upon initialization, If it does, the method returns `Transaction`, which is used under the hood for `state` verification. Otherwise, it returns `null`.
+
+In all methods of the `AccountsSDK` object, the `options` objects is used to overwrite the data provided upon initialization.
+
+| Parameter       | Data type | Description                     |
+| --------------- | --------- | ------------------------------- |
+| `authorizeData` | `object`  | Data returned from the redirect |
+
+<CodeSample path={'verify(authorizeData)'}>
+
+```js
+  const transactionData = instance.verify(authorizeData);
+  if (transactionData) {
+    console.log("Verified correctly");
+  } else {
+    console.log("Url/state mismatch");
+  }
+```
+
+</CodeSample>
+
+## Popup
+
+A class responsible for acquiring the user authorization data through a popup window.
+
+| Parameter | Data type | Description                                                     |
+| --------- | --------- | --------------------------------------------------------------- |
+| `options` | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+| `sdk`     | `object`  | An `sdk` instance                                               |
+
+<CodeSample path={'constructor(sdk, options)'}>
+
+```js
+const instance = new AccountsSDK({
+  client_id: '<your_app_client_id>'
+});
+
+const popup = new Popup(instance, instance.options);
+```
+
+</CodeSample>
+
+A popup object instance could be also created via `sdk` with:
+
+  ```js
+  const popup = instance.popup();
+  ```
+
+ **Available class methods:**
+
+- [authorize](#authorize)
+
+### authorize
+
+Returns a promise that resolves with the user authorization data or an error.
+
+<CodeSample path={'authorize()'}>
+
+```js
+  popup.authorize().then((authorizeData) => {
+    console.log("authorize data acquired: " + authorizeData);
+  }).catch(e => {
+    console.error("Failed to acquire authorization data: " + e);
   });
-}
 ```
 
-```html
-<a href="" onclick="signMeOut(event)">Sign out</a>
-```
+</CodeSample>
 
-It signs the user out and executes the `callback` function (with no arguments) when it's done.
+## Redirect
 
-### **instance.displayButtons()**
+A class responsible for acquiring the user authorization data through the `redirect` method.
 
-> Sample `displayButtons()` method usage:
+| Parameter | Data type | Description                                                     |
+| --------- | --------- | --------------------------------------------------------------- |
+| `options` | `object`  | An object with the same parameters as provided in `AccountsSDK` |
+| `sdk`     | `object`  | An `sdk` instance                                               |
+
+<CodeSample path={'constructor(sdk, options)'}>
 
 ```js
-const instance = accountsSdk.init({ ... });
+const instance = new AccountsSDK({
+  client_id: '<your_app_client_id>'
+});
 
-// some DOM changes which cause buttons to disappear from DOM
-// (...)
-
-// inject buttons once again
-instance.displayButtons();
+const redirect = new Redirect(instance, instance.options);
 ```
 
-It re-renders the "Sign in with LiveChat" buttons in the DOM. It's helpful when you reload the app's state and the DOM is cleared. This method is automatically executed by the `init` method.
+</CodeSample>
+  
+<Text>
+
+A redirect object instance could be also created via `sdk` with:
+
+</Text>
+
+<CodeSample path={'redirect()'}>
+
+```js
+const redirect = instance.redirect();
+```
+
+</CodeSample>
+
+ **Available class methods:**
+
+- [authorize](#authorize-1)
+- [authorizeData](#authorizedata)
+
+### authorize
+
+Starts the redirect authorization flow.
+
+<CodeSample path={'authorize()'}>
+
+```js
+  redirect.authorize();
+```
+
+</CodeSample>
+
+### authorizeData
+
+Checks if a user was redirected to the current origin with the authorization data. It returns a promise that resolves with the user authorization data or with an error.
+
+<CodeSample path={'authorizeData()'}>
+
+```js
+  redirect.authorizeData().then((authorizeData) => {
+    console.log("Authorization data acquired: " + authorizeData);
+  }).catch(e => {
+    console.error("Failed to acquire authorization data: " + e);
+    redirect.authorize(); // Try to redirect user to authorization once more
+  });
+```
+
+</CodeSample>
+
+## Exchanging code for tokens with the PKCE extension
+
+In order to acquire both `access_token` and `refresh_token` by a frontend application, you should use the <a href="https://www.oauth.com/oauth2-servers/oauth-native-apps/pkce/" rel="noopener nofollow" target="_blank">PKCE Extension</a>, which prevents the usage of a hijacked redirect by malicious apps.
+
+1. Start by enabling PKCE. To do so, provide `AccountsSDK` instance with PKCE options.
+
+<CodeSample path={'Enable PKCE'}>
+
+```js
+  const instance = new AccountsSDK({
+    client_id: '<your_app_client_id>',
+    redirect_uri: '<your_app_redirect_uri>',
+    response_type: "code",
+    pkce: {
+      enabled: true
+    }
+  });
+```
+
+</CodeSample>
+
+2. Then, using the `redirect` flow, you're able to receive the `code` authorization data:
+
+<CodeSample path={'Receive authorization code data'}>
+
+```js
+  instance.redirect().authorizeData().then((authorizeData) => {
+    const transactionData = instance.verify(authorizeData);
+    if (transactionData === null) {
+      console.log("Failed to verify authorization data");
+      return;
+    }
+    fetch(instance.options.server_url + "/v2/token", {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({
+          grant_type: "authorization_code",
+          code: authorizeData.code,
+          client_id: transactionData.client_id,
+          redirect_uri: transactionData.redirect_uri,
+          code_verifier: transactionData.code_verifier,
+      })
+    })
+    .then((res) => { res.json()}).then((data) => {console.log("User tokens: " + data)})
+    .catch((e) => { console.log("Failed to exchange code: " + e) })
+  }).catch(e => {
+    // As we don't have any authorization data, then we can try o authorize user
+    const wasRedirected = sessionStorage.getItem('lc_accounts');
+    if (wasRedirected === "yes") {
+      console.error("Couldn't authorize user: " + e);
+      return
+    }
+    sessionStorage.setItem('lc_accounts', yes);
+    instance.redirect().authorize(); // Initiate authorization redirect flow
+
+  })
+```
+
+</CodeSample>
 
 ## Response format
 
-`onIdentityFetched` callback is the heart of this SDK. It will be fired when user's authorization status is fetched. This is where you pass authorization `access_token` to your app to build what you need.
+All `authorize` methods return the user authorization data when resolving with success, or return an error when something goes wrong.
 
 ### Success
 
-If the user passes through "Sign in with LiveChat" flow, `error` param will be null and `data` param will include authorization data, depending on `response_code` param value.
+For successful user authorization processes, the returned data will consists of the following elements:
 
-If `response_code` was set to **access_token**:
+| Field             | Returned                               | Description                                                                                                                                                  |
+| ----------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `access_token`    | only for `response_type: access_token` | Used for authorizing LiveChat API calls.                                                                                                                     |
+| `code`            | only for `response_type: code`         | Must be exchanged for `access_token` and `refresh_token`                                                                                                     |
+| `scopes`          | for both response types                | An array of scopes that `access_token` has.                                                                                                                  |
+| `expires_in`      | for both response types                | Defines for how long `access_token` will be valid.                                                                                                           |
+| `account_id`      | for both response types                | LiveChat Accounts user ID (can be found in <a href="https://developers.livechat.com/console/" rel="noopener nofollow" target="_blank">Developer Console</a>) |
+| `organization_id` | for both response types                | LiveChat Accounts organization ID to which the account is logged in.                                                                                         |
+| `client_id`       | for both response types                | `client_id` that you passed in the `init` method.                                                                                                            |
 
-- **access_token** – used for authorization in LiveChat API calls,
-- **scopes** – array of scopes that `access_token` has access to,
-- **expires_in** – number of seconds from now that `access_token` will be valid,
-- **entity_id** – LiveChat user email,
-- **license** – LiveChat license number,
-- **client_id** – `client_id` that you passed in the `init` method.
-
-If `response_code` was set to **code**:
-
-- **code** – must be exchanged to `access_token` and `refresh_token`,
-- **scopes** – array of scopes that `access_token` generated by this code will have access to,
-- **expires_in** – number of seconds from now that `code` will be valid,
-- **entity_id** – LiveChat user email,
-- **license** – LiveChat license number,
-- **client_id** – `client_id` that you passed in the `init` method.
+💡 You can validate an access token by calling `/v2/info`. [Read more...](/authorization/authorizing-api-calls/#validating-the-access-token)
 
 ### Error
 
-If the user is not logged in to LiveChat, `data` param will be `null` and `error` param will include the following properties:
+If the authorization process fails, the promise will be rejected with an error. The error will have the following properties:
+
+```js
+  {
+    "oauth_exception": "<exception_name>"
+    "identity_exception": "<exception_name>"
+    "description": "<exception_description>"
+  }
+```
 
 #### Authentication errors
 
-- **identity_exception** – error type. Possible values:<br/><br/>
-  - `invalid_request` – request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once or is otherwise malformed.<br/><br/>
-  - `unauthorized` – request is valid, but identity data is wrong or identity does not exists. If identity id is known, it's added to querystring as `entity_id`.<br/><br/>
-  - `server_error` – server encountered an unexpected condition that prevented it from determining identity.<br/><br/>
-  - `access_denied` – identity is known, but access is denied because of business reasons. For example identity can be banned or has wrong unsupported account version.<br/><br/>
+##### identity_exception
+
+Possible values:
+
+- `unauthorized` – The resource owner identity is uknown or the consent is missing.
 
 #### Authorization errors
 
-- **oauth_exception** – error type. Possible values:<br/><br/>
+##### oauth_exception
 
-  - `invalid_request` – request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once or is otherwise malformed. Examples: wrong HTTP method, invalid HTTP body encoding.<br/><br/>
-  - `unauthorized_client` – client is not authorized to request a token using this method. Examples: missing `client_id` param, incorrect `client_id` value, `refresh_token` not found, invalid `client_secret`, invalid `redirect_uri`.<br/><br/>
-  - `access_denied` – resource owner or authorization server denied the request. For example, requested scope includes a scope not originally granted by the resource owner.<br/><br/>
-  - `unsupported_response_type` – authorization server does not support obtaining a token using this method. For example, `response_type` is not `token` or `code`.<br/><br/>
-  - `invalid_scope` – requested scope is invalid, insufficient, unknown or malformed. Examples: scope not found, scope name not found.<br/><br/>
-  - `server_error` – authorization server encountered an unexpected condition that prevented it from fulfilling the request. For example, server is not responding.<br/><br/>
-  - `temporarily_unavailable` – authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.<br/><br/>
-  - `unsupported_grant_type` – authorization grant type is not supported by the authorization server. For example, user is using disabled authorization grant type, such as <a href="https://tools.ietf.org/html/rfc6749#section-4.4">client credentials grant</a>.<br/><br/>
-  - `invalid_grant` – provided authorization grant (authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request or was issued to another client. Examples: refresh token expired, access token expires.<br/><br/>
-  - `invalid_client` client authentication failed (unknown client, no client authentication included, unsupported authentication method). For example, user is using refresh token with wrong `client_id`.<br/><br/>
-  - `missing_grant` – client is missing granted rights. Examples: grants were rejected, grants were never given, client changed required grants.<br/><br/>
+Possible values:
 
-- **exception_details** – error description. It is returned only in some cases. Possible values:<br/><br/>
-  - `client_id_not_found` – wrong `client_id`, `client_id` does not exist.<br/><br/>
-  - `redirect_uri_not_set` – client misconfiguration, client has not set redirect uri.<br/><br/>
-  - `invalid_redirect_uri` – redirect uri is not one of client's allowed redirects.<br/><br/>
-  - `too_many_redirects` – server has detected redirect loop, client should not redirect too many times.
-
+- `invalid_request` – The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed. Examples: wrong HTTP method, invalid HTTP body encoding.
+- `unauthorized_client` – The client is not authorized to request a token using this method. Examples: missing `client_id` param, incorrect `client_id` value, `refresh_token` not found, invalid `client_secret`, invalid `redirect_uri`.
+- `access_denied` – The resource owner or authorization server denied the request. For example, the requested scope includes a scope not originally granted by the resource owner.
+- `unsupported_response_type` – The authorization server doesn't support acquiring a token using this method. For example, `response_type` is not `token` or `code`.
