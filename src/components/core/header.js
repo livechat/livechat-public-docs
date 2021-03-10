@@ -10,7 +10,7 @@ import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
-  height: 60px;
+  height: 100px;
   display: none;
   align-items: center;
   position: sticky;
@@ -92,6 +92,22 @@ const VLine = styled.div`
   margin: 0 10px;
 `;
 
+const PromoBanner = styled.div`
+  width: 100%;
+  background-color: #ff5100;
+  color: white;
+  font-weight: 500;
+  padding: 8px;
+  text-align: center;
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    color: white;
+    text-decoration: underline;
+  }
+`;
+
 const linkStyle = {
   borderTop: "4px solid transparent",
   borderBottom: "4px solid transparent",
@@ -145,6 +161,17 @@ const Header = () => {
 
   return (
     <HeaderWrapper id="header">
+      <PromoBanner>
+        We're running a live coding session on web app authorization.{" "}
+        <a
+          href="https://developers.livechat.com/live-coding-authorizing-web-apps/"
+          rel="noopener nofollow"
+          target="_blank"
+        >
+          Join us
+        </a>{" "}
+        on 03/19/2021!
+      </PromoBanner>
       <MenuWrapper>
         <LogoWrapper>
           <a href="/">
