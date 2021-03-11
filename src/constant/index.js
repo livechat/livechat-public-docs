@@ -21,7 +21,7 @@ const VERSIONS_GROUPS = {
 
 const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];
 
-const SCROLL_OFFSET = 130;
+const SCROLL_OFFSET = 170;
 
 const SCOPES = [
   {
@@ -207,7 +207,8 @@ const SCOPES = [
   },
   {
     id: "customers:own",
-    description: "Permission for owning and managing customer identities. It allows for acquiring a customer token (for both existing and new customers) and using it to call the Customer Chat API as a customer.",
+    description:
+      "Permission for owning and managing customer identities. It allows for acquiring a customer token (for both existing and new customers) and using it to call the Customer Chat API as a customer.",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
@@ -221,7 +222,8 @@ const SCOPES = [
   },
   {
     id: "customers:rw",
-    description: "Read/write permission for existing customers. It also allows for creating new customers via the Agent Chat API.",
+    description:
+      "Read/write permission for existing customers. It also allows for creating new customers via the Agent Chat API.",
     role: "normal",
     role_type: "secondary",
     product: "LiveChat",
@@ -313,7 +315,8 @@ const SCOPES = [
   },
   {
     id: "webhooks.configuration:rw",
-    description: "Read/write permission for adding and updating the webhook configuration",
+    description:
+      "Read/write permission for adding and updating the webhook configuration",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
@@ -321,84 +324,74 @@ const SCOPES = [
   // ACCOUNT SCOPES
   {
     id: "accounts--my:ro",
-    description:
-      "Read permission for my account",
+    description: "Read permission for my account",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "accounts--my:rw",
-    description:
-      "Read and modify permission for my account",
+    description: "Read and modify permission for my account",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "accounts--all:ro",
-    description:
-      "Read permission for all accounts in an organization",
+    description: "Read permission for all accounts in an organization",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "accounts--all:rw",
-    description:
-      "Read and modify permission for all accounts",
+    description: "Read and modify permission for all accounts",
     role: "administrator",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "accounts--all:rc",
-    description:
-      "Create and read accounts (mofidication is denied)",
+    description: "Create and read accounts (mofidication is denied)",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "accounts.roles--all:ro",
-    description:
-      "Read all accounts roles",
+    description: "Read all accounts roles",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "accounts.roles--all:rw",
-    description:
-      "Read and modify all accounts roles",
+    description: "Read and modify all accounts roles",
     role: "administrator",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "sessions--my:ro",
-    description:
-      "Read my sessions",
+    description: "Read my sessions",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "sessions--my:rw",
-    description:
-      "Read and modify my sessions",
+    description: "Read and modify my sessions",
     role: "member",
     role_type: "primary",
     product: "Accounts",
   },
   {
     id: "organization--my:rw",
-    description:
-      "Read and modify organization settings",
+    description: "Read and modify organization settings",
     role: "owner",
     role_type: "primary",
     product: "Accounts",
-  }
+  },
 ];
 
 const ERRORS = [
