@@ -174,7 +174,7 @@ export const MenuWrapper = styled.div`
   overflow-y: scroll;
   padding: 20px;
   @media (min-width: 768px) {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 227px);
   }
 `;
 
