@@ -1,9 +1,9 @@
 import { useContext } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
-import { Link } from "gatsby";
+import Link from "next/link";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon } from "./icons";
-import { useAllCategoriesMeta } from "../../hooks";
+import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
@@ -134,19 +134,19 @@ const MenuElement = ({ label, href, slug, color, ...props }) => (
         {label}
       </a>
     ) : (
-      <Link
-        to={`/${slug}/`}
-        partiallyActive
-        css={linkStyle}
-        activeStyle={activeLinkStyle(color)}
-        onClick={() =>
-          logAmplitudeEvent("Top menu tab clicked", {
-            slug,
-          })
-        }
-      >
-        <CategoryIcon category={slug} style={iconStyle} />
-        {label}
+      <Link href={`/${slug}/`} partiallyActive passHref>
+        <a
+          css={linkStyle}
+          activeStyle={activeLinkStyle(color)}
+          onClick={() =>
+            logAmplitudeEvent("Top menu tab clicked", {
+              slug,
+            })
+          }
+        >
+          <CategoryIcon category={slug} style={iconStyle} />
+          {label}
+        </a>
       </Link>
     )}
   </MenuElementWrapper>
@@ -156,7 +156,6 @@ const Header = () => {
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
   );
-  const categories = useAllCategoriesMeta();
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
 
@@ -169,8 +168,8 @@ const Header = () => {
             <LiveChatLogo style={{ margin: "0", display: "block" }} />
           </a>
           <VLine />
-          <Link to="/" css={linkCss}>
-            Platform Docs
+          <Link href="/">
+            <a css={linkCss}>Platform Docs</a>
           </Link>
         </LogoWrapper>
 
