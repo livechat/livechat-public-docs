@@ -1,11 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { node, object } from "prop-types";
 
-import Layout from "../Layout";
+import { VersionProvider, RatingProvider } from "../../contexts";
+import { canUseWindow } from "../../utils";
+import { useRating } from "../../hooks";
+import Version, { getVersionsByGroup } from "../core/version";
+import SEO from "../core/seo";
+import Header from "../core/header";
+import {
+  MainWrapper,
+  // LeftColumn,
+  // MiddleColumn,
+  // Content,
+  // RatingWrapper,
+  // LeftColumnRedoc,
+  // NavHeader,
+} from "../core/components";
 
 const Page = ({ frontMatter, children }) => {
   console.log("frontMatter", frontMatter);
-  return <Layout>{children}</Layout>;
+  const {
+    title,
+    category,
+    desc,
+    subcategory,
+    apiVersion: currentApiVersion,
+    versionGroup,
+  } = frontMatter;
+
+  const versions = getVersionsByGroup(versionGroup);
+
+  const [selectedVersion, setSelectedVersion] = useState(
+    versions.STABLE_VERSION
+  );
+
+  useEffect(() => {
+    const pathname = window.location.pathname;
+
+    versions.ALL_VERSIONS.filter(
+      (version) => version !== versions.STABLE_VERSION
+    ).forEach((version) => {
+      if (pathname.includes(version)) {
+        setSelectedVersion(version);
+      }
+    });
+    // eslint-disable-next-line
+  }, []);
+
+  useLayoutEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      try {
+        const selector = document.querySelector(hash);
+        if (selector) {
+          selector.scrollIntoView();
+          window.scrollBy(0, -SCROLL_OFFSET);
+        }
+      } catch (error) {}
+    }
+  }, []);
+
+  const versionContext = {
+    selected: selectedVersion,
+    items: versions,
+  };
+
+  // TODO: make sure this works in build
+  const slug = canUseWindow ? window.location.pathname : "";
+  const ratingContext = useRating({ slug });
+
+  return (
+    <RatingProvider value={ratingContext}>
+      <VersionProvider value={versionContext}>
+        <SEO desc={desc} title={title} />
+        <Header />
+        <MainWrapper>{children}</MainWrapper>
+      </VersionProvider>
+    </RatingProvider>
+  );
 };
 
 Page.propTypes = {
