@@ -1,5 +1,3 @@
-import { navigate } from "gatsby";
-
 let amplitude;
 
 if (typeof window !== "undefined") {
@@ -43,9 +41,11 @@ export const setupDocsearch = () => {
         });
 
         // removes the hardcoded path from Algolia
-        navigate(
-          suggestion.url.replace("https://developers.livechat.com/docs/", "")
+        const url = suggestion.url.replace(
+          "https://developers.livechat.com/docs/",
+          ""
         );
+        window.location.href = url;
       }
     },
   });
@@ -97,3 +97,7 @@ export const getCategoryTitle = (menuItems) => {
 
   window.categoryTitle = categoryTitle;
 };
+
+export const canUseWindow = !!(
+  typeof window !== "undefined" && window.document
+);

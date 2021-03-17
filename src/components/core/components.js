@@ -3,7 +3,7 @@ import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { PromotionContext } from "../../contexts";
-import { Link } from "gatsby";
+import Link from "next/link";
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
@@ -200,7 +200,7 @@ export const Li = styled.li`
   margin: 0;
 `;
 
-export const MenuLink = styled(Link)`
+export const MenuLink = styled.a`
   font-size: 15px;
   line-height: 1.3em;
   padding: 0.6em 12px;
@@ -247,13 +247,15 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      <MenuLink to={url} active={active ? 1 : 0} title={title}>
-        <ArticleIcon
-          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-        />
-        &nbsp;
-        <span>{title}</span>
-      </MenuLink>
+      <Link to={url} title={title}>
+        <MenuLink active={active ? 1 : 0}>
+          <ArticleIcon
+            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+          />
+          &nbsp;
+          <span>{title}</span>
+        </MenuLink>
+      </Link>
     )}
   </Li>
 );
