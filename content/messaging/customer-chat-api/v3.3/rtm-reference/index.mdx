@@ -513,6 +513,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 ```json
 {
+  "version": "<api_version>", // optional, defaults to the version of the RTM connection; versions lower than the version of the RTM connection are prohibited
   "request_id": "<request_id>", // optional
   "action": "<action>",
   "payload": {
@@ -1975,24 +1976,25 @@ It returns the initial state of the current Customer.
 
 #### Request
 
-| Parameter                     | Required | Data type  | Notes                                                                              |
-| ----------------------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
-| `token`                       | Yes      | `string`   | OAuth token from the Customer's account                                            |
-| `customer`                    | No       | `object`   |                                                                                    |
-| `customer.avatar`             | No       | `string`   | The URL of the Customer's avatar                                                   |
-| `customer.email`              | No       | `string`   |                                                                                    |
-| `customer.name`               | No       | `string`   |                                                                                    |
-| `customer.session_fields`     | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
-| `customer_page.title`         | No       | `string`   |                                                                                    |
-| `customer_page.url`           | No       | `string`   |                                                                                    |
-| `customer_side_storage`**\*** | No       | `object`   | A map in the `"key": "value"` format                                               |
-| `is_mobile`                   | No       | `bool`     | Informs if logging in is performed from a mobile device.                           |
-| `group_id`                    | No       | `number`   |                                                                                    |
-| `referrer`                    | No       | `string`   |                                                                                    |
-| `application`                 | No       | `object`   | Application info                                                                   |
-| `application.name`            | No       | `string`   | Application name                                                                   |
-| `application.version`         | No       | `string`   | Application version                                                                |
-| `application.channel_type`    | No       | `string`   | Application channel type                                                           |
+| Parameter                     | Required | Data type  | Notes                                                                                                                    |
+| ----------------------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `token`                       | Yes      | `string`   | OAuth token from the Customer's account                                                                                  |
+| `customer`                    | No       | `object`   |                                                                                                                          |
+| `customer.avatar`             | No       | `string`   | The URL of the Customer's avatar                                                                                         |
+| `customer.email`              | No       | `string`   |                                                                                                                          |
+| `customer.name`               | No       | `string`   |                                                                                                                          |
+| `customer.session_fields`     | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items.                                       |
+| `customer_page.title`         | No       | `string`   |                                                                                                                          |
+| `customer_page.url`           | No       | `string`   |                                                                                                                          |
+| `customer_side_storage`**\*** | No       | `object`   | A map in the `"key": "value"` format                                                                                     |
+| `is_mobile`                   | No       | `bool`     | Informs if logging in is performed from a mobile device.                                                                 |
+| `group_id`                    | No       | `number`   |                                                                                                                          |
+| `referrer`                    | No       | `string`   |                                                                                                                          |
+| `application`                 | No       | `object`   | Application info                                                                                                         |
+| `application.name`            | No       | `string`   | Application name                                                                                                         |
+| `application.version`         | No       | `string`   | Application version                                                                                                      |
+| `application.channel_type`    | No       | `string`   | Application channel type                                                                                                 |
+| `pushes`                      | No       | `object`   | A map of push subscriptions. By default, it's set to `all` for the version of your currently established RTM connection. |
 
 **\*)** We use `customer_side_storage` to keep some data on the client side. You should pass a map from the `customer_side_storage_updated` push payload to this field.
 
@@ -2006,8 +2008,12 @@ It returns the initial state of the current Customer.
 {
   "action": "login",
   "payload": {
-    "token": "Bearer dal:test_1fgTbfXmgthj4cZSA"
+    "token": "Bearer dal:test_1fgTbfXmgthj4cZSA",
+    "pushes": {
+      "v3.2": ["incoming_chat", "incoming_multicast"],
+      "v3.3": ["all"]
     }
+}
 }
 ```
 
@@ -2570,6 +2576,7 @@ Here's what you need to know about **pushes**:
 
 ```json
 {
+  "version": "<api_version>",
   "request_id": "<request_id>", // optional, applies only to the requester
   "action": "<action>",
   "type": "push",
