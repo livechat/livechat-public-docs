@@ -722,24 +722,26 @@ Creates an `auto access` data structure, which is a set of conditions for the tr
 | -------------------------------------- | ------------ | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `access`                               | Yes          | `object`                     | Destination access                                                                                      |
 | `access.groups`                        | Yes          | `[]int`                      | Destination groups                                                                                      |
-| `conditions`__**__                     | Yes          | `object`                     | Conditions to check                                                                                     |
-| `conditions.customer_url`              | No           | `object`                     | The condition that matches on `customer_page.url` from **Login** or `url` from **Update Customer Page** |
-| `conditions.customer_domain`           | No           | `object`                     | The condition that matches on the domain of the `customer_url`                                          |
-| `conditions.customer_*.values`         | No           | `[]match_object`_*_          | Positive match, may not be used together with `exclude_values`                                          |
-| `conditions.customer_*.exclude_values` | No           | `[]match_object`             | Negative match                                                                                          |
+| `conditions`__*__                     | Yes          | `object`                     | Conditions to check                                                                                     |
+| `conditions.url`                       | No           | `object`                     | The condition that matches on `customer_page.url` from **Login** or `url` from **Update Customer Page** |
+| `conditions.domain`                    | No           | `object`                     | The condition that matches on the domain of the `customer_url`                                          |
+| `conditions.{url,domain}.values`         | No           | `[]match_object`_**_          | Positive match, may not be used together with `exclude_values`                                          |
+| `conditions.{url,domain}.exclude_values` | No           | `[]match_object`             | Negative match                                                                                          |
 | `conditions.geolocation`               | No           | `object`                     | The condition that matches on the customer's geolocation                                                |
-| `conditions.geolocation.values`        | Yes          | `[]geolocation_object`__**__ | An array of objects; matches when at least one subcondition matches.                                    |
+| `conditions.geolocation.values`        | Yes          | `[]geolocation_object`__***__ | An array of objects; matches when at least one subcondition matches.                                    |
 | `description`                          | No           | `string`                     | Description of the auto access                                                                          |
 | `next_id`                              | No           | `string`                     | ID of an existing auto access. Leave empty if the new auto access should be the last one on the list.   |
 
-__*__ `<match_object>` structure:
+_*_ `conditions` must have at least one of `url`, `domain`, `geolocation` set.
+
+__**__ `<match_object>` structure:
 
 | Parameter     | Required | Data type | Notes                                                                                                   |
 | ------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------- |
 | `value`       | Yes      | `string`  | A value to match                                                                                        |
 | `exact_match` | No       | `bool`    | If set to `false`, a `match_object.value` will be matched as a substring of the customer URL or domain. |
 
-__**__ the `geolocation_object` structure.  The condition is fulfilled only when all of the specified fields match:
+__***__ the `geolocation_object` structure.  The condition is fulfilled only when all of the specified fields match.  At least one field must be specified.
 
 | Parameter      | Required | Data type | Example         |
 | -------------- | -------- | --------- | --------------- |
@@ -925,23 +927,58 @@ curl -X POST \
 
 <Text>
 
-### Reorder Auto Access
+### Update Auto Access
 
-Moves an existing `auto access` data structure, specified by `id`, before another one, specified by `next_id`. 
-If `next_id` is empty, then the auto access will be placed at the end of the list.
+Updates existing `auto access`.  Only specified fields are updated (overwritten), leaving unspecified fields unchanged.
 
 #### Specifics
 
 |                |                                                                                  |
 | -------------- | -------------------------------------------------------------------------------- |
-| Method URL     | `https://api.livechatinc.com/v3.3/configuration/action/reorder_auto_access`      |
+| Method URL     | `https://api.livechatinc.com/v3.3/configuration/action/update_auto_access`      |
 | Required scopes| `access_rules:rw`                                                                |
 
 
-| Parameter              | Required     | Data type | Notes                                                                                                                                    |
-| ---------------------- | ------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                   | Yes          | `string`  | ID of the auto access to move                                                                                                            |
-| `next_id`              | No           | `string`  | ID of the auto access that should follow the moved auto access. Leave empty if the moved auto access should be the last one on the list. |
+| Parameter                             | Required     | Data type                     | Notes                                                                                                                                    |
+| ------------------------------------- | ------------ | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                  | Yes          | `string`                      | ID of the auto access to modify                                                                                                            |
+| `access`                              | No           | `object`                      | Destination access                                                                                      |
+| `access.groups`                       | Yes          | `[]int`                       | Destination groups                                                                                      |
+| `conditions`__*__                     | No          | `object`                       | Conditions to check                                                                                     |
+| `conditions.url`                      | No           | `object`                      | The condition that matches on `customer_page.url` from **Login** or `url` from **Update Customer Page** |
+| `conditions.domain`                   | No           | `object`                      | The condition that matches on the domain of the `customer_url`                                          |
+| `conditions.{url,domain}.values`         | No        | `[]match_object`_**_          | Positive match, may not be used together with `exclude_values`                                          |
+| `conditions.{url,domain}.exclude_values` | No        | `[]match_object`              | Negative match                                                                                          |
+| `conditions.geolocation`               | No          | `object`                      | The condition that matches on the customer's geolocation                                                |
+| `conditions.geolocation.values`        | Yes         | `[]geolocation_object`__***__ | An array of objects; matches when at least one subcondition matches.                                    |
+| `description`                          | No          | `string`                      | Description of the auto access                                                                          |
+| `next_id`__****__                      | No          | `string`                      | ID of an existing auto access. Empty string moves the auto access to the end of the list. |
+
+_*_ `conditions` must have at least one of `url`, `domain`, `geolocation` set.
+
+__**__ `<match_object>` structure:
+
+| Parameter     | Required | Data type | Notes                                                                                                   |
+| ------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| `value`       | Yes      | `string`  | A value to match                                                                                        |
+| `exact_match` | No       | `bool`    | If set to `false`, a `match_object.value` will be matched as a substring of the customer URL or domain. |
+
+__***__ the `geolocation_object` structure.  The condition is fulfilled only when all of the specified fields match.  At least one field must be specified.
+
+| Parameter      | Required | Data type | Example         |
+| -------------- | -------- | --------- | --------------- |
+| `country`      | No       | `string`  | "United States  |
+| `country_code` | No       | `string`  | "US"            |
+| `region`       | No       | `string`  | "California"    |
+| `city`         | No       | `string`  | "Mountain View" |
+
+
+__****__ Modifying `next_id` reorders `auto access` specified by `id`, before another one, specified by `next_id`.
+If `next_id` is empty string, then the auto access will be placed at the end of the list. If the rule is not supposed to be moved at all, do not set the field in request.
+
+An example of move, arrow indicates `next_id` relation, so A will have `next_id` set to B:
+
+Given list A -> B -> C -> D -> null, `update_auto_access` with payload `{"id": "C", "next_id": "B"}` will result in a A -> C -> B -> D -> null sequence, maintaining consistency.
 
 #### Response
 
@@ -955,11 +992,14 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/reorder_auto_access \
+  https://api.livechatinc.com/v3.3/configuration/action/update_auto_access \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <your_access_token>' \
   -d '{
     "id": "pqi8oasdjahuakndw9nsad9na",
+    "access": {
+      groups: [0, 42]
+    },
     "next_id": "1faad6f5f1d6e8fdf27e8af9839783b7"
   }'
 ```
