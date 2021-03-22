@@ -21,7 +21,7 @@ const VERSIONS_GROUPS = {
 
 const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];
 
-const SCROLL_OFFSET = 170;
+const SCROLL_OFFSET = 130;
 
 const SCOPES = [
   {

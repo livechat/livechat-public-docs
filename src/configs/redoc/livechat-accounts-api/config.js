@@ -1,5 +1,5 @@
 module.exports = {
-  scrollYOffset: "220",
+  scrollYOffset: "180",
   disableSearch: true,
   hideLoading: true,
   theme: {

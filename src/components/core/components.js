@@ -51,8 +51,8 @@ const NavWrapper = styled.aside`
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    top: 100px;
-    height: calc(100vh - 100px);
+    top: 60px;
+    height: calc(100vh - 60px);
   }
 
   @media (min-width: 1024px) {
@@ -164,7 +164,7 @@ export const LeftColumnRedoc = styled.div`
   width: 250px;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
-  top: 100px;
+  top: 60px;
   z-index: 1000;
   display: block;
 
