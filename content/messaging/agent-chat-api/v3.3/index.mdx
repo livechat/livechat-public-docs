@@ -70,6 +70,7 @@ Apart from events, there are also [Properties](#properties), [Users](#users), an
 These are the available **event types**:
 
 - [File](#file)
+- [Form](#form)
 - [Filled form](#filled-form)
 - [Message](#message)
 - [Rich message](#rich-message)
@@ -85,7 +86,7 @@ The **File** event informs about an uploaded file.
 
 ### Request
 
-| Parameter              | Required | Data type |                                                                                                                                     Notes |
+| Parameter          | Required | Data type |                                                                                                                                     Notes |
 | ------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------: |
 | `custom_id`        | no       | `string`  |                                                                                                                                           |
 | `type`             | yes      | `string`  |                                                                                                                                    `file` |
@@ -118,20 +119,19 @@ The **File** event informs about an uploaded file.
 </Code>
 </Section>
 
-## Filled form
+## Form
 
 <Section>
 <Text>
 
-The **Filled form** event contains data from a form (prechat or postchat survey).
+The **Form** event contains an empty form to be filled out by the customer. It doesn't matter how the form is configured or what fields it has – it can be any event of type `form`.
 
 ### Request
 
-| Parameter        | Required | Data type | Notes                                                                    |
+| Field        | Required | Data type | Notes                                                                    |
 | ------------ | -------- | --------- | ------------------------------------------------------------------------ |
 | `custom_id`  | no       | `string`  |                                                                          |
-| `type`       | yes      | `string`  | `filled_form`                                                            |
-| `recipients` | yes      | `string`  | Possible values: `all` (default), `agents`                               |
+| `type`       | yes      | `string`  | `form`                                                                   |
 | `properties` | no       | `object`  | [Properties](#properties)                                                |
 | `form_id`    | yes      | `string`  |                                                                          |
 | `fields`     | yes      | `array`   | The fields a form contains. See [form fields](#form-fields) for details. |
@@ -150,6 +150,51 @@ The **Filled form** event contains data from a form (prechat or postchat survey)
 | `form_id`    | always     |                                                                     |
 | `fields`     | always     | An array of [form fields](#form-fields)                             |
 
+**A sample use case:** sending a form in the chat after a pre-determined agent's inactivity period. This could be a way of gathering contact info from customers so that the overloaded agent can contact them later.
+
+<div style="max-width: 300px">
+  <img src="../form-event-image.png" alt="Gather contact info with LiveChat form event" />
+</div>
+
+</Text>
+
+<Code>
+<CodeResponse version="v3.3" type="agent" title={'Sample Form in response'} json="form"/>
+</Code>
+</Section>
+
+## Filled form
+
+<Section>
+<Text>
+
+The **Filled form** event contains data from a form (prechat or postchat survey).
+
+### Request
+
+| Field        | Required | Data type | Notes                                                                                  |
+| ------------ | -------- | --------- | -------------------------------------------------------------------------------------- |
+| `custom_id`  | no       | `string`  |                                                                                        |
+| `type`       | yes      | `string`  | `filled_form`                                                                          |
+| `recipients` | yes      | `string`  | Possible values: `all` (default), `agents`                                             |
+| `properties` | no       | `object`  | [Properties](#properties)                                                              |
+| `form_id`    | yes      | `string`  |                                                                                        |
+| `fields`     | yes      | `array`   | The fields a form contains. See [filled form fields](#filled-form-fields) for details. |
+
+### Response
+
+| Field        | Returned   | Notes                                                                                  |
+| ------------ | ---------- | -------------------------------------------------------------------------------------- |
+| `id`         | always     |                                                                                        |
+| `custom_id`  | optionally |                                                                                        |
+| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`.                    |
+| `type`       | always     |                                                                                        |
+| `author_id`  | always     |                                                                                        |
+| `recipients` | always     |                                                                                        |
+| `properties` | optionally |                                                                                        |
+| `form_id`    | always     |                                                                                        |
+| `fields`     | always     | The fields a form contains. See [filled form fields](#filled-form-fields) for details. |
+
 </Text>
 
 <Code>
@@ -166,7 +211,7 @@ The **Message** event contains text message to other chat users.
 
 ### Request
 
-| Parameter                | Required | Data type | Notes                                                                                                                        |
+| Parameter            | Required | Data type | Notes                                                                                                                        |
 | -------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `custom_id`          | no       | `string`  |                                                                                                                              |
 | `text`               | yes      | `string`  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
@@ -214,7 +259,7 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 
 ### Request
 
-| Parameter                             | Required | Data type | Notes                                                                                                                                                                                                                                            |
+| Parameter                         | Required | Data type | Notes                                                                                                                                                                                                                                            |
 | --------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `custom_id`                       | no       | `string`  | You can give your RM a custom ID.                                                                                                                                                                                                                |
 | `type`                            | yes      | `string`  | Event type: `rich_message`                                                                                                                                                                                                                       |
@@ -274,7 +319,7 @@ Custom event is an event with customizable payload.
 
 ### Request
 
-| Parameter        | Required | Data type | Notes                                                               |  |
+| Parameter    | Required | Data type | Notes                                                               |  |
 | ------------ | -------- | --------- | ------------------------------------------------------------------- |
 | `custom_id`  | no       | `string`  | You can give the event a custom ID.                                 |
 | `type`       | yes      | `string`  | Event type: `custom`                                                |
@@ -310,14 +355,14 @@ System message event is native system event sent in specific situations.
 
 ### Request
 
-| Parameter                 | Required | Data type |                                                                                                                            Notes |
-| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`           | no       | `string`  |                                                                                     You can give the system message a custom ID. |
-| `type`                | yes      | `string`  |                                                                                                                 `system_message` |
-| `text`                | no       | `string`  |                                                                                                     Text displayed to recipients |
-| `system_message_type` | yes      | `string`  |                                                                    [System message type](/messaging/references/system-messages/) |
+| Parameter             | Required | Data type | Notes                                                                                                                            |
+| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `custom_id`           | no       | `string`  | You can give the system message a custom ID.                                                                                     |
+| `type`                | yes      | `string`  | `system_message`                                                                                                                 |
+| `text`                | no       | `string`  | Text displayed to recipients                                                                                                     |
+| `system_message_type` | yes      | `string`  | [System message type](/messaging/references/system-messages/)                                                                    |
 | `recipients`          | no       | `string`  | It can be specified when sending system messages via the [**Send Event**](#send-event) method. Possible values: `all`, `agents`. |
-| `text_vars`           | no       | `object`  |                                                                                                       Variables used in the text |
+| `text_vars`           | no       | `object`  | Variables used in the text                                                                                                       |
 
 ### Response
 
@@ -388,6 +433,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 - [Chats](#chats)
 - [Chat summaries](#chat-summaries)
 - [Form fields](#form-fields)
+- [Filled form fields](#filled-form-fields)
 - [Properties](#properties)
 - [Threads](#threads)
 
@@ -416,9 +462,22 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 ## Form fields
 
-A component of the [Filled form](#filled-form) event.
+A component of the [Form](#form) event.
 
 <CodeResponse version="v3.3" type="agent" title={'Sample Form fields'} json="formFields"/>
+
+| Field    | Required | Data type          | Notes                                                                                                               |
+| -------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `fields` | yes      | `array of objects` | The fields a form contains.                                                                                         |
+| `type`   | yes      | `string`           | Possible values: `checkbox`, `email`, `name`, `question`, `subject`, `textarea`, `group_chooser`, `radio`, `select` |
+| `id`     | yes      | `string`           | Field id, for all field types                                                                                       |
+| `label`  | yes      | `string`           | Field label; for all field types                                                                                    |
+
+## Filled form fields
+
+A component of the [Filled form](#filled-form) event.
+
+<CodeResponse version="v3.3" type="agent" title={'Sample Form fields'} json="filledFormFields"/>
 
 | Field             | Required | Data type          |                                                                                                               Notes |
 | ----------------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------: |
@@ -542,7 +601,7 @@ There's only one value allowed for a single property.
 
 #### Response
 
-| Field          | Data type | Notes                                                                                                        |
+| Field              | Data type | Notes                                                                                                        |
 | ------------------ | --------- | ------------------------------------------------------------------------------------------------------------ |
 | `chats_summary`    | `array`   | An array of [Chat summary](#chat-summaries) data structures                                                  |
 | `next_page_id`     | `string`  | In relation to `page_id` specified in the request. Appears in the response only when there's a next page.    |
@@ -1018,7 +1077,7 @@ When `chat.users` is defined, one of following scopes is required:
 
 #### Response
 
-| Field   | Data type  | Notes                                                                                                                                                                   |
+| Field       | Data type  | Notes                                                                                                                                                                   |
 | ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `chat_id`   | `string`   |                                                                                                                                                                         |
 | `thread_id` | `string`   |                                                                                                                                                                         |
@@ -1094,7 +1153,7 @@ When `chat.users` is defined, one of following scopes is required:
 
 #### Response
 
-| Field   | Data type  | Notes                                                                                                                                                                   |
+| Field       | Data type  | Notes                                                                                                                                                                   |
 | ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `thread_id` | `string`   |                                                                                                                                                                         |
 | `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
@@ -1436,7 +1495,7 @@ Adds a user to the chat. You can't add more than one `customer` user type to the
 
 #### Request
 
-| Parameter          | Required | Type     | Notes                                                                                        |
+| Parameter               | Required | Type     | Notes                                                                                        |
 | ----------------------- | -------- | -------- | -------------------------------------------------------------------------------------------- |
 | `chat_id`               | Yes      | `string` |                                                                                              |
 | `user_id`               | Yes      | `string` |                                                                                              |
@@ -1486,11 +1545,11 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 
 #### Request
 
-| Parameter | Required | Type     | Notes                                     |
-| -------------- | -------- | -------- | ----------------------------------------- |
-| `chat_id`      | Yes      | `string` |                                           |
-| `user_id`      | Yes      | `string` |                                           |
-| `user_type`    | Yes      | `string` | Possible values are `agent` or `customer` |
+| Parameter   | Required | Type     | Notes                                     |
+| ----------- | -------- | -------- | ----------------------------------------- |
+| `chat_id`   | Yes      | `string` |                                           |
+| `user_id`   | Yes      | `string` |                                           |
+| `user_type` | Yes      | `string` | Possible values are `agent` or `customer` |
 
 #### Response
 
@@ -1540,15 +1599,15 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 #### Request
 
-| Parameter               | Required | Data type | Notes                                                                                                         |
-| ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------- |
-| `chat_id`               | Yes      | `string`  | Id of the chat you want to send a message to.                                                                 |
-| `event`                 | Yes      | `object`  | Event object                                                                                                  |
+| Parameter               | Required | Data type | Notes                                                                                                                                                             |
+| ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`               | Yes      | `string`  | Id of the chat you want to send a message to.                                                                                                                     |
+| `event`                 | Yes      | `object`  | Event object                                                                                                                                                      |
 | `attach_to_last_thread` | No       | `bool`    | The flag is ignored for active chats. For inactive chats: `true` – the event will be added to the last thread; `false` – the request will fail. Default: `false`. |
 
 #### Response
 
-| Field  | Data type |
+| Field      | Data type |
 | ---------- | --------- |
 | `event_id` | `string`  |
 
@@ -2111,7 +2170,7 @@ Returns the info about the Customer with a given `id`.
 
 #### Response
 
-| Field        | Data type | Notes                                                                                                                             |
+| Field            | Data type | Notes                                                                                                                             |
 | ---------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `id`             | string    | [Customer's](#customer) ID.                                                                                                       |
 | `type`           | string    | `customer`                                                                                                                        |
@@ -2221,7 +2280,7 @@ It returns the list of Customers.
 All parameters are optional.
 
 | Parameter                                                                        | Data type | Notes                        |
-|----------------------------------------------------------------------------------|-----------|------------------------------|
+| -------------------------------------------------------------------------------- | --------- | ---------------------------- |
 | `page_id`                                                                        | `string`  |                              |
 | `limit`                                                                          | `number`  | Default: 10, maximum: 100    |
 | `sort_order` **\***                                                              | `string`  | Default: `desc`              |
@@ -2297,7 +2356,7 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
 
 #### Response
 
-| Field          | Data type | Notes                                              |
+| Field              | Data type | Notes                                              |
 | ------------------ | --------- | -------------------------------------------------- |
 | `next_page_id`     | `string`  | In relation to `page_id` specified in the request. |
 | `previous_page_id` | `string`  | In relation to `page_id` specified in the request. |
