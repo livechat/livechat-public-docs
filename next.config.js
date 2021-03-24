@@ -1,4 +1,5 @@
 const withMdxEnhanced = require("next-mdx-enhanced");
+const readingTime = require("reading-time");
 
 module.exports = withMdxEnhanced({
   layoutPath: "src/components/Page",
@@ -8,8 +9,12 @@ module.exports = withMdxEnhanced({
   rehypePlugins: [],
   usesSrc: false,
   extendFrontMatter: {
-    process: (mdxContent, frontMatter) => {},
-    phase: "prebuild|loader|both",
+    process: (mdxContent, frontMatter) => {
+      return {
+        timeToRead: readingTime(mdxContent),
+      };
+    },
+    phase: "both",
   },
   reExportDataFetching: false,
 })(/* your normal nextjs config */);
