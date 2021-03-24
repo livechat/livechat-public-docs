@@ -3,11 +3,11 @@ import styled from "@emotion/styled";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
-import { Link } from "gatsby";
+// import { Link } from "gatsby";
 
-import imgMessaging from "images/livechat-platform-messaging.png";
-import imgExtendUI from "images/livechat-platform-extend-interfaces.png";
-import imgDataReporting from "images/livechat-platform-data-reporting.png";
+// import imgMessaging from "images/livechat-platform-messaging.png";
+// import imgExtendUI from "images/livechat-platform-extend-interfaces.png";
+// import imgDataReporting from "images/livechat-platform-data-reporting.png";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -58,7 +58,7 @@ const A = ({ children, ...props }) => {
   return <a {...props}>{children}</a>;
 };
 
-export const getText = children => {
+export const getText = (children) => {
   if (typeof children !== "string") {
     return children;
   }
@@ -127,59 +127,59 @@ const Image = ({ to }) => {
   }
 };
 
-const SectionBanner = ({ title, desc, to, image }) => (
-  <SectionBannerWrapper>
-    {image && (
-      <SectionColumn style={{ padding: 0 }}>
-        <Link to={to} style={{ display: "block" }}>
-          <Image to={to} />
-        </Link>
-      </SectionColumn>
-    )}
-    <SectionColumn>
-      <h2>{title}</h2>
-      <p>{desc}</p>
-      <Link to={to}>
-        <Button>Learn more</Button>
-      </Link>
-    </SectionColumn>
-  </SectionBannerWrapper>
-);
+// const SectionBanner = ({ title, desc, to, image }) => (
+//   <SectionBannerWrapper>
+//     {image && (
+//       <SectionColumn style={{ padding: 0 }}>
+//         <Link to={to} style={{ display: "block" }}>
+//           <Image to={to} />
+//         </Link>
+//       </SectionColumn>
+//     )}
+//     <SectionColumn>
+//       <h2>{title}</h2>
+//       <p>{desc}</p>
+//       <Link to={to}>
+//         <Button>Learn more</Button>
+//       </Link>
+//     </SectionColumn>
+//   </SectionBannerWrapper>
+// );
 
-const SectionGatsbyLink = styled(Link)`
-  font-weight: 600;
-  &:after {
-    content: "";
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 1px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
-  }
-`;
+// const SectionGatsbyLink = styled(Link)`
+//   font-weight: 600;
+//   &:after {
+//     content: "";
+//     width: 16px;
+//     height: 16px;
+//     display: inline-block;
+//     vertical-align: middle;
+//     margin-bottom: 1px;
+//     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+//   }
+// `;
 
-const SectionALink = styled.a`
-  font-weight: 600;
-  &:after {
-    content: "";
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 1px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
-  }
-`;
+// const SectionALink = styled.a`
+//   font-weight: 600;
+//   &:after {
+//     content: "";
+//     width: 16px;
+//     height: 16px;
+//     display: inline-block;
+//     vertical-align: middle;
+//     margin-bottom: 1px;
+//     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+//   }
+// `;
 
-const SectionLink = ({ to, href, ...rest }) =>
-  to ? (
-    <SectionGatsbyLink to={to} {...rest} />
-  ) : (
-    <SectionALink href={href} target={"_blank"} {...rest} />
-  );
+// const SectionLink = ({ to, href, ...rest }) =>
+//   to ? (
+//     <SectionGatsbyLink to={to} {...rest} />
+//   ) : (
+//     <SectionALink href={href} target={"_blank"} {...rest} />
+//   );
 
-const makeHeading = size => ({ children, ...props }) => {
+const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
   const newProps = { ...props, className };
 
@@ -239,11 +239,11 @@ export default {
   h6: makeHeading("h6"),
   a: A,
   Warning,
-  SectionBanner,
-  SectionLink,
+  // SectionBanner,
+  // SectionLink,
   table: ({ children }) => (
     <TableWrapper>
       <table>{children}</table>
     </TableWrapper>
-  )
+  ),
 };
