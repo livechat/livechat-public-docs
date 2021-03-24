@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { node, object } from "prop-types";
+import { MDXProvider } from "@mdx-js/react";
 
 import { VersionProvider, RatingProvider } from "../../contexts";
 import { canUseWindow } from "../../utils";
@@ -17,8 +18,13 @@ import {
   // NavHeader,
 } from "../core/components";
 import Rating from "../core/Rating";
+import { Headings } from "../extensions";
 
 import { Header as PageHeader } from "../core/Page";
+
+const components = {
+  ...Headings,
+};
 
 const Page = ({ frontMatter, children }) => {
   console.log("frontMatter", frontMatter);
@@ -31,7 +37,6 @@ const Page = ({ frontMatter, children }) => {
     apiVersion: currentApiVersion,
     versionGroup,
     timeToRead,
-    modifiedTime, // TODO
   } = frontMatter;
 
   const versions = getVersionsByGroup(versionGroup);
@@ -96,7 +101,7 @@ const Page = ({ frontMatter, children }) => {
                 <PageHeader title={title} timeToRead={timeToRead} />
               )}
 
-              <div>{children}</div>
+              <MDXProvider components={components}>{children}</MDXProvider>
 
               {!useRedocPage && (
                 <RatingWrapper>
