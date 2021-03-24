@@ -9,16 +9,20 @@ import SEO from "../core/seo";
 import Header from "../core/header";
 import {
   MainWrapper,
-  // LeftColumn,
-  // MiddleColumn,
-  // Content,
-  // RatingWrapper,
+  LeftColumn,
+  MiddleColumn,
+  Content,
+  RatingWrapper,
   // LeftColumnRedoc,
   // NavHeader,
 } from "../core/components";
+import Rating from "../core/Rating";
+
+import { Header as PageHeader } from "../core/Page";
 
 const Page = ({ frontMatter, children }) => {
   console.log("frontMatter", frontMatter);
+
   const {
     title,
     category,
@@ -26,6 +30,8 @@ const Page = ({ frontMatter, children }) => {
     subcategory,
     apiVersion: currentApiVersion,
     versionGroup,
+    timeToRead,
+    modifiedTime, // TODO
   } = frontMatter;
 
   const versions = getVersionsByGroup(versionGroup);
@@ -68,13 +74,38 @@ const Page = ({ frontMatter, children }) => {
   // TODO: make sure this works in build
   const slug = canUseWindow ? window.location.pathname : "";
   const ratingContext = useRating({ slug });
+  const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
 
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>
         <SEO desc={desc} title={title} />
         <Header />
-        <MainWrapper>{children}</MainWrapper>
+        <MainWrapper>
+          {!useRedocPage && <LeftColumn>TODO</LeftColumn>}
+          <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
+            {currentApiVersion && (
+              <Version
+                articleVersions={articlesVersions[category][subcategory][title]}
+                redirectToVersion={redirectToVersion}
+                group={versionGroup}
+              />
+            )}
+            <Content className={useRedocPage ? "redoc" : ""}>
+              {title && !useRedocPage && (
+                <PageHeader title={title} timeToRead={timeToRead} />
+              )}
+
+              <div>{children}</div>
+
+              {!useRedocPage && (
+                <RatingWrapper>
+                  <Rating label="Was this article helpful?" />
+                </RatingWrapper>
+              )}
+            </Content>
+          </MiddleColumn>
+        </MainWrapper>
       </VersionProvider>
     </RatingProvider>
   );
