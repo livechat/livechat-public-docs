@@ -381,13 +381,13 @@ System message event is a native system event sent in specific situations.
 
 <CodeResponse version="v3.3" type="customer" title={'Sample Customer data structure'} json="customer"/>
 
-| Field            | Req./Opt. | Notes                                                                                     |
-| ---------------- | --------- | ----------------------------------------------------------------------------------------- |
-| `avatar`         | optional  |                                                                                           |
-| `email`          | optional  |                                                                                           |
-| `email_verified` | optional  |                                                                                           |
-| `name`           | optional  |                                                                                           |
-| `session_fields` | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration. |
+| Field            | Req./Opt. | Notes                                                                                                                   |
+| ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `avatar`         | optional  |                                                                                                                         |
+| `email`          | optional  |                                                                                                                         |
+| `email_verified` | optional  | Specifies if the customer confirmed their email address. See [Request Email Verification](#request-email-verification). |
+| `name`           | optional  |                                                                                                                         |
+| `session_fields` | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration.                               |
 
 ## Agent
 
@@ -2584,14 +2584,14 @@ curl -X POST \
 
 ### Request Email Verification
 
-Requests verification of customer's email address by sending them verification email with link to confirm identity.
+Requests the verification of the customer's email address by sending them a verification email with the identity confirmation link.
 
-Once Customer verifies their identity, a POST callback is sent to URL provided in `callback_uri` request parameter with verified email in payload.
+Once the customer verifies their identity, we'll send a POST callback to the URL you provided in the `callback_uri` request parameter. The callback will contain the verified email in the payload.
 
-Identity verification mechanism has following restraints:
-- you can stack multiple verification requests, but only 10 least recently requested callbacks will be triggered
-- after 7 days since last verification request, all callbacks are voided and will not be sent
-- if Customer already has their email verified, callback will be sent immediately without prompting Customer to verify again
+The identity verification mechanism has the following constraints:
+- We'll store multiple verification requests until a customer confirms their identity. Once the identity is confirmed, we'll send a callback only for the 10 most recent verification requests, not for all stored requests.
+- Seven days after the last verification request, all callbacks are voided and, as a result, won't be sent.
+- If a customer has already verified their email, the callback will be sent immediately, without prompting the customer to verify it again.
 
 #### Specifics
 
@@ -2603,9 +2603,9 @@ Identity verification mechanism has following restraints:
 
 #### Request
 
-| Parameter      | Required | Data type | Notes                                                                                                       |
-| -------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------- |
-| `callback_uri` | Yes      | `string`  | URI to be called after Customer confirms their email address. Should return 200 code. There are no retries. |
+| Parameter      | Required | Data type | Notes                                                                                                           |
+| -------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `callback_uri` | Yes      | `string`  | URI to be called after the customer confirms their email address. Should return 200 code. There are no retries. |
 
 #### Response
 
@@ -2619,7 +2619,7 @@ No response payload (`200 OK`).
 
 ```shell
 curl -X POST \
-  'https://api.livechatinc.com/v3.2/customer/action/request_email_verification?license_id=<license_id>' \
+  'https://api.livechatinc.com/v3.3/customer/action/request_email_verification?license_id=<license_id>' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
