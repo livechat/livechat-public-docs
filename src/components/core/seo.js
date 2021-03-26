@@ -11,7 +11,6 @@ const defaultSiteMetadata = {
 };
 
 function SEO({ desc, keywords, title }) {
-  console.log("title", title);
   const metaDescription = desc || defaultSiteMetadata;
 
   return (
