@@ -27,8 +27,6 @@ const components = {
 };
 
 const Page = ({ frontMatter, children }) => {
-  console.log("frontMatter", frontMatter);
-
   const {
     title,
     category,
