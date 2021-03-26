@@ -381,12 +381,13 @@ System message event is a native system event sent in specific situations.
 
 <CodeResponse version="v3.3" type="customer" title={'Sample Customer data structure'} json="customer"/>
 
-| Field            | Req./Opt. | Notes                                                                                     |
-| ---------------- | --------- | ----------------------------------------------------------------------------------------- |
-| `avatar`         | optional  |                                                                                           |
-| `email`          | optional  |                                                                                           |
-| `name`           | optional  |                                                                                           |
-| `session_fields` | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration. |
+| Field            | Req./Opt. | Notes                                                                                                                   |
+| ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `avatar`         | optional  |                                                                                                                         |
+| `email`          | optional  |                                                                                                                         |
+| `email_verified` | optional  | Specifies if the customer confirmed their email address. See [Request Email Verification](#request-email-verification). |
+| `name`           | optional  |                                                                                                                         |
+| `session_fields` | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration.                               |
 
 ## Agent
 
@@ -555,7 +556,7 @@ curl -X POST \
 | **Properties**    | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) [`list_license_properties`](#list-license-properties) [`list_group_properties`](#list-group-properties) |
 | **Customers**     | [`update_customer`](#update-customer) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                                                                                                         |
 | **Status**        | [`list_group_statuses`](#list-group-statuses)                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Other**         | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                                                                                               |
+| **Other**         | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting) [`request_email_verification`](#request-email-verification)                                                                                                                   |
 
 ## Chats
 
@@ -2568,6 +2569,61 @@ curl -X POST \
   -H 'Authorization: Bearer <customer_access_token>' \
   -d '{
     "unique_id": "Q10X0W041P"
+    }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Request Email Verification
+
+Requests the verification of the customer's email address by sending them a verification email with the identity confirmation link.
+
+Once the customer verifies their identity, we'll send a POST callback to the URL you provided in the `callback_uri` request parameter. The callback will contain the verified email in the payload.
+
+The identity verification mechanism has the following constraints:
+- We'll store multiple verification requests until a customer confirms their identity. Once the identity is confirmed, we'll send a callback only for the 10 most recent verification requests, not for all stored requests.
+- Seven days after the last verification request, all callbacks are voided and, as a result, won't be sent.
+- If a customer has already verified their email, the callback will be sent immediately, without prompting the customer to verify it again.
+
+#### Specifics
+
+|                        |                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.3/customer/action/request_email_verification` |
+| **RTM API equivalent** | -                                                                             |
+| **Webhook**            | -                                                                             |
+
+#### Request
+
+| Parameter      | Required | Data type | Notes                                                                                                           |
+| -------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `callback_uri` | Yes      | `string`  | URI to be called after the customer confirms their email address. Should return 200 code. There are no retries. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.3/customer/action/request_email_verification?license_id=<license_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{
+    "callback_uri": "http://example.com"
     }'
 ```
 
