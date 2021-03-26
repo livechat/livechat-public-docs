@@ -17,4 +17,6 @@ module.exports = withMdxEnhanced({
     phase: "both",
   },
   reExportDataFetching: false,
-})(/* your normal nextjs config */);
+})({
+  target: "serverless",
+});
