@@ -1,8 +1,8 @@
 const VERSIONS_GROUPS = {
   DEFAULT: {
-    STABLE_VERSION: "3.2",
-    LEGACY_VERSIONS: ["2.0", "3.1"],
-    DEV_PREVIEW_VERSION: "3.3",
+    STABLE_VERSION: "3.3",
+    LEGACY_VERSIONS: ["2.0", "3.1", "3.2"],
+    DEV_PREVIEW_VERSION: "",
     ALL_VERSIONS: ["3.3", "3.2", "3.1", "2.0"],
   },
   "chat-widget": {

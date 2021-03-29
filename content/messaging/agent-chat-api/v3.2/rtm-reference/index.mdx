@@ -5,14 +5,14 @@ subcategory: "agent-chat-api"
 title: "RTM API Reference"
 tagline: "Interact with the chat as an Agent."
 desc: "Build powerful LiveChat integrations with an open messaging protocol. Use the Agent Chat RTM API to send messages, manage access and properties."
-apiVersion: "3.3"
+apiVersion: "3.2"
 ---
 
 # Introduction
 
 ## Versioning
 
-This documentation describes the **Agent Chat Real-Time Messaging API v3.3**. This is the latest stable version recommended for the production use. [Read more about versioning...](/messaging/#api-versioning)
+This documentation describes the **Agent Chat Real-Time Messaging API v3.2**. This is the latest stable version recommended for the production use. [Read more about versioning...](/messaging/#api-versioning)
 
 ## What is RTM API
 
@@ -71,25 +71,13 @@ LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). Th
 For backend applications, you can specify the region in the request header. The mechanism is the same as in [Agent Chat Web API reference](../#data-centers). It doesn't work for frontend applications, though.
 Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL.
 
-**`fra`:** `wss://api-fra.livechatinc.com/v3.3/agent/rtm/ws`
+**`fra`:** `wss://api-fra.livechatinc.com/v3.2/agent/rtm/ws`
 
-**`dal`:** `wss://api.livechatinc.com/v3.3/agent/rtm/ws`
+**`dal`:** `wss://api.livechatinc.com/v3.2/agent/rtm/ws`
 
 ## Rate limits
 
 To prevent sending a massive number of requests, there are rate limits for method calls. After exceeding those limits, the requester will get a `Too many requests` error in the response of a specific request. After some time, the request will be unblocked so it can be sent again.
-
-## Pagination
-
-Pagination is a mechanism that allows splitting the database output into more manageable chunks of data.
-Based on the `limit` and `sort order` parameters, pagination is able to decide how many records will be returned at once and whether it should fetch the oldest or the latest data first.
-
-Any filters that could be applied should be provided in first pagination request. In the response, you'll get the `next_page_id` and `previous_page_id` parameters.
-You should make the subsequent request using one of these parameters as `page_id`, depending on the direction of iteration: forward or backward.
-
-The `filters`, `limit`, and `sort_order` parameters can't be provided along with `page_id`.
-
-💡 The maximum duration of the `page_id` parameter before it expires is one month.
 
 # Events
 
@@ -99,7 +87,6 @@ Apart from events, there are also [Properties](#properties), [Users](#users), an
 These are the available **event types**:
 
 - [File](#file)
-- [Form](#form)
 - [Filled form](#filled-form)
 - [Message](#message)
 - [Rich message](#rich-message)
@@ -115,14 +102,13 @@ The **File** event informs about an uploaded file.
 
 ### Request
 
-| Parameter          | Required | Data type |                                                                                                                                     Notes |
-| ------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`        | no       | `string`  |                                                                                                                                           |
-| `type`             | yes      | `string`  |                                                                                                                                    `file` |
-| `recipients`       | yes      | `string`  |                                                                                                Possible values: `all` (default), `agents` |
-| `properties`       | no       | `object`  |                                                                                                                 [Properties](#properties) |
-| `url`              | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/customer-chat-api/#upload-file). |
-| `alternative_text` | no       | `string`  |                                                                                                                 Only applicable to images |
+| Parameter    | Required | Data type |                                                                                                                                     Notes |
+| ------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`  | no       | `string`  |                                                                                                                                           |
+| `type`       | yes      | `string`  |                                                                                                                                    `file` |
+| `recipients` | yes      | `string`  |                                                                                                Possible values: `all` (default), `agents` |
+| `properties` | no       | `object`  |                                                                                                                 [Properties](#properties) |
+| `url`        | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/customer-chat-api/#upload-file). |
 
 ### Response
 
@@ -140,54 +126,10 @@ The **File** event informs about an uploaded file.
 | `thumbnail_url`, `thumbnail2x_url` | only for images |                                                                     |
 | `content_type`                     | always          |                                                                     |
 | `size`, `width`, `height`          | only for images |                                                                     |
-| `alternative_text`                 | only for images |                                                                     |
 
 </Text>
 <Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample File in response'} json="file"/>
-</Code>
-</Section>
-
-## Form
-
-<Section>
-<Text>
-
-The **Form** event contains an empty form to be filled out by the customer. It doesn't matter how the form is configured or what fields it has – it can be any event of type `form`.
-
-### Request
-
-| Field        | Required | Data type | Notes                                                                    |
-| ------------ | -------- | --------- | ------------------------------------------------------------------------ |
-| `custom_id`  | no       | `string`  |                                                                          |
-| `type`       | yes      | `string`  | `form`                                                                   |
-| `properties` | no       | `object`  | [Properties](#properties)                                                |
-| `form_id`    | yes      | `string`  |                                                                          |
-| `fields`     | yes      | `array`   | The fields a form contains. See [form fields](#form-fields) for details. |
-
-### Response
-
-| Field        | Returned   | Notes                                                               |
-| ------------ | ---------- | ------------------------------------------------------------------- |
-| `id`         | always     |                                                                     |
-| `custom_id`  | optionally |                                                                     |
-| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`. |
-| `type`       | always     |                                                                     |
-| `author_id`  | optionally | If the form is generated by `system`, then this field is omitted.   |
-| `properties` | optionally |                                                                     |
-| `form_id`    | always     |                                                                     |
-| `fields`     | always     | An array of [form fields](#form-fields)                             |
-
-**A sample use case:** sending a form in the chat after a pre-determined agent's inactivity period. This could be a way of gathering contact info from customers so that the overloaded agent can contact them later.
-
-<div style="max-width: 300px">
-  <img src="../../form-event-image.png" alt="Gather contact info with LiveChat form event" />
-</div>
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample Form in response'} json="form"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample File in response'} json="file"/>
 </Code>
 </Section>
 
@@ -200,7 +142,7 @@ The **Filled form** event contains data from a form (prechat or postchat survey)
 
 ### Request
 
-| Field        | Required | Data type | Notes                                                                                  |
+| Parameter    | Required | Data type | Notes                                                                                  |
 | ------------ | -------- | --------- | -------------------------------------------------------------------------------------- |
 | `custom_id`  | no       | `string`  |                                                                                        |
 | `type`       | yes      | `string`  | `filled_form`                                                                          |
@@ -211,22 +153,22 @@ The **Filled form** event contains data from a form (prechat or postchat survey)
 
 ### Response
 
-| Field        | Returned   | Notes                                                                                  |
-| ------------ | ---------- | -------------------------------------------------------------------------------------- |
-| `id`         | always     |                                                                                        |
-| `custom_id`  | optionally |                                                                                        |
-| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`.                    |
-| `type`       | always     |                                                                                        |
-| `author_id`  | always     |                                                                                        |
-| `recipients` | always     |                                                                                        |
-| `properties` | optionally |                                                                                        |
-| `form_id`    | always     |                                                                                        |
-| `fields`     | always     | The fields a form contains. See [filled form fields](#filled-form-fields) for details. |
+| Field        | Returned   | Notes                                                               |
+| ------------ | ---------- | ------------------------------------------------------------------- |
+| `id`         | always     |                                                                     |
+| `custom_id`  | optionally |                                                                     |
+| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`. |
+| `type`       | always     |                                                                     |
+| `author_id`  | always     |                                                                     |
+| `recipients` | always     |                                                                     |
+| `properties` | optionally |                                                                     |
+| `form_id`    | always     |                                                                     |
+| `fields`     | always     | An array of [filled form fields](#filled-form-fields)               |
 
 </Text>
 
 <Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample Filled form in response'} json="filledForm"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Filled form in response'} json="filledForm"/>
 </Code>
 </Section>
 
@@ -274,7 +216,7 @@ The **Message** event contains text message to other chat users.
 
 </Text>
 <Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample Message in response'} json="message"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Message in response'} json="message"/>
 </Code>
 </Section>
 
@@ -297,7 +239,7 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 | `elements`                        | no       | `array`   | Can contain up to 10 `element` objects.                                                                                                                                                                                                                                                                |
 | `elements.title`                  | yes      | `string`  | Displays formatted text on RMs.                                                                                                                                                                                                                                                                        |
 | `elements.subtitle`               | yes      | `string`  | Displays formatted text on RMs.                                                                                                                                                                                                                                                                        |
-| `elements.image`                  | yes      | `image`   | Displays images on RMs. Required param: `url`; Optional params: `name`, `content_type`, `size`, `width`, `height`, `alternative_text`.                                                                                                                                                                 |
+| `elements.image`                  | yes      | `image`   | Displays images on RMs. Required param: `url`; Optional params: `name`, `content_type`, `size`, `width`, `height`.                                                                                                                                                                                     |
 | `elements.buttons`                | no       | `array`   | Displays buttons. Can contain up to 13 `button` objects.                                                                                                                                                                                                                                               |
 | `elements.buttons.text`           | yes      | `string`  | Text displayed on a button.                                                                                                                                                                                                                                                                            |
 | `elements.buttons.type`           | yes      | `string`  | Defines the behavior after a user clicks the button. Should be used together with `elements.buttons.value` (when  one of them is present, the other is required). Possible values: `webview`, `message`, `url`, `phone`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started) |
@@ -305,7 +247,6 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 | `elements.buttons.webview_height` | yes      | `string`  | Required only for the `webview` button`type`. Possible values: `compact`, `full`, `tall`.                                                                                                                                                                                                              |
 | `elements.buttons.postback_id`    | yes      | `string`  | A description of the sent action. Describes the action sent via `send_rich_message_postback`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started)                                                                                                                            |
 | `elements.buttons.user_ids`       | yes      | `array`   | Describes users that sent the postback with `"toggled": true`.                                                                                                                                                                                                                                         |
-| `elements.buttons.target`         | no       | `string`  | Should be used for the `url` button `type`. Specifies if the URL should open in the current or a new tab. Possible values: `new`, `current`.                                                                                                                                                           |
 
 ### Response
 
@@ -330,11 +271,10 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 | `elements.buttons.webview_height` | always     | Unless button `type` is different than `webview`.                                          |
 | `elements.buttons.postback_id`    | always     |                                                                                            |
 | `elements.buttons.user_ids`       | always     |                                                                                            |
-| `elements.buttons.target`         | optionally |                                                                                            |
 
 </Text>
 <Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample Rich message in response'} json="richMessage"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Rich message in response'} json="richMessage"/>
 </Code>
 </Section>
 
@@ -370,7 +310,7 @@ Custom event is an event with customizable payload.
 
 </Text>
 <Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample Custom event in response'} json="custom"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Custom event in response'} json="custom"/>
 </Code>
 </Section>
 
@@ -383,14 +323,14 @@ System message event is native system event sent in specific situations.
 
 ### Request
 
-| Parameter             | Required | Data type | Notes                                                                                                                            |
-| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `custom_id`           | no       | `string`  | You can give the system message a custom ID.                                                                                     |
-| `type`                | yes      | `string`  | `system_message`                                                                                                                 |
-| `text`                | no       | `string`  | Text displayed to recipients                                                                                                     |
-| `system_message_type` | yes      | `string`  | [System message type](/messaging/references/system-messages/)                                                                    |
+| Parameter             | Required | Data type |                                                                                                                            Notes |
+| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------: |
+| `custom_id`           | no       | `string`  |                                                                                     You can give the system message a custom ID. |
+| `type`                | yes      | `string`  |                                                                                                                 `system_message` |
+| `text`                | no       | `string`  |                                                                                                     Text displayed to recipients |
+| `system_message_type` | yes      | `string`  |                                                                    [System message type](/messaging/references/system-messages/) |
 | `recipients`          | no       | `string`  | It can be specified when sending system messages via the [**Send Event**](#send-event) method. Possible values: `all`, `agents`. |
-| `text_vars`           | no       | `object`  | Variables used in the text                                                                                                       |
+| `text_vars`           | no       | `object`  |                                                                                                       Variables used in the text |
 
 ### Response
 
@@ -407,7 +347,7 @@ System message event is native system event sent in specific situations.
 </Text>
 
 <Code>
-<CodeResponse version="v3.3" type="agent" title={'Sample System message in response'} json="systemMessage"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample System message in response'} json="systemMessage"/>
 </Code>
 </Section>
 
@@ -421,7 +361,7 @@ System message event is native system event sent in specific situations.
 
 ## Agent
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Agent data structure'} json="agent"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Agent data structure'} json="agent"/>
 
 | Field               | Req./Opt. |                                                                                                                            Note |
 | ------------------- | :-------: | ------------------------------------------------------------------------------------------------------------------------------: |
@@ -430,7 +370,7 @@ System message event is native system event sent in specific situations.
 
 ### My profile
 
-<CodeResponse version="v3.3" type="agent" title={'Sample My profile data structure'} json="myProfile"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample My profile data structure'} json="myProfile"/>
 
 | Field               | Req./Opt. | Notes                                                                                                                           |
 | ------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -438,29 +378,21 @@ System message event is native system event sent in specific situations.
 
 ## Customer
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Customer data structure'} json="customer"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Customer data structure'} json="customer"/>
 
-| Field                            | Req./Opt. | Notes                                                                                                                                                     |
-| -------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                             | required  |                                                                                                                                                           |
-| `type`                           | required  | Always equal to "customer".                                                                                                                               |
-| `agent_last_event_created_at`    | optional  | RFC 3339 datetime string.                                                                                                                                 |
-| `avatar`                         | optional  |                                                                                                                                                           |
-| `customer_last_event_created_at` | optional  | RFC 3339 datetime string.                                                                                                                                 |
-| `created_at`                     | optional  | RFC 3339 datetime string; the timestamp of the customer's creation.                                                                                       |
-| `email`                          | optional  |                                                                                                                                                           |
-| `email_verified`                 | optional  | Specifies if the customer confirmed their email address. See [Request Email Verification](/messaging/customer-chat-api/v3.3/#request-email-verification). |
-| `session_fields`                 | optional  | An array of custom object-enclosed `key:value` pairs. Expires along with the session.                                                                     |
-| `name`                           | optional  |                                                                                                                                                           |
-| `events_seen_up_to`              | optional  | RFC 3339 datetime string.                                                                                                                                 |
-| `last_visit`                     | optional  |                                                                                                                                                           |
-| `present`                        | optional  |                                                                                                                                                           |
-| `statistics`                     | optional  |                                                                                                                                                           |
-| `chats`                          | optional  |                                                                                                                                                           |
-| `followed`                       | optional  | `true` if the customer is followed by the agent.                                                                                                          |
-| `online`                         | optional  | `true` if the customer is logged in, `false` otherwise.                                                                                                   |
-| `group_ids`                      | optional  | IDs of groups the customer is assigned to.                                                                                                                |
-| `state`                          | optional  | Possible values: `browsing`, `invited`, `chatting`, `queued`, `left`.                                                                                     |
+| Field                            | Req./Opt. | Notes                                                                                 |
+| -------------------------------- | --------- | ------------------------------------------------------------------------------------- |
+| `agent_last_event_created_at`    | optional  |                                                                                       |
+| `avatar`                         | optional  |                                                                                       |
+| `customer_last_event_created_at` | optional  |                                                                                       |
+| `created_at`                     | optional  |                                                                                       |
+| `email`                          | optional  |                                                                                       |
+| `session_fields`                 | optional  | An array of custom object-enclosed `key:value` pairs. Expires along with the session. |
+| `name`                           | optional  |                                                                                       |
+| `events_seen_up_to`              | optional  | RFC 3339 datetime string                                                              |
+| `last_visit`                     | optional  |                                                                                       |
+| `present`                        | optional  |                                                                                       |
+| `statistics`                     | optional  |                                                                                       |
 
 # Other common structures
 
@@ -469,14 +401,13 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 - [Access](#access)
 - [Chats](#chats)
 - [Chat summaries](#chat-summaries)
-- [Form fields](#form-fields)
 - [Filled form fields](#filled-form-fields)
 - [Properties](#properties)
 - [Threads](#threads)
 
 ## Access
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Access data structure'} json="access"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Access data structure'} json="access"/>
 
 | Field       | Req./Opt. |                                        Note |
 | ----------- | :-------: | ------------------------------------------: |
@@ -484,7 +415,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 ## Chats
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Chat data structure'} json="chat"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Chat data structure'} json="chat"/>
 
 | Field        | Req./Opt. | Note |
 | ------------ | :-------: | ---: |
@@ -495,48 +426,34 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 **Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_thread_summary` and `last_event_per_type`.
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Chat summary data structure'} json="chatSummary"/>
-
-## Form fields
-
-A component of the [Form](#form) event.
-
-<CodeResponse version="v3.3" type="agent" title={'Sample Form fields'} json="formFields"/>
-
-| Field    | Required | Data type          | Notes                                                                                                               |
-| -------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `fields` | yes      | `array of objects` | The fields a form contains.                                                                                         |
-| `type`   | yes      | `string`           | Possible values: `checkbox`, `email`, `name`, `question`, `subject`, `textarea`, `group_chooser`, `radio`, `select` |
-| `id`     | yes      | `string`           | Field id, for all field types                                                                                       |
-| `label`  | yes      | `string`           | Field label; for all field types                                                                                    |
+<CodeResponse version="v3.2" type="agent" title={'Sample Chat summary data structure'} json="chatSummary"/>
 
 ## Filled form fields
 
-
 A component of the [Filled form](#filled-form) event.
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Form fields'} json="filledFormFields"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Filled form fields'} json="filledFormFields"/>
 
-| Field             | Required | Data type          |                                                                                                               Notes |
-| ----------------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------: |
-| `fields`          | yes      | `array of objects` |                                                                                         The fields a form contains. |
-| `type`            | yes      | `string`           | Possible values: `checkbox`, `email`, `name`, `question`, `subject`, `textarea`, `group_chooser`, `radio`, `select` |
-| `id`              | yes      | `string`           |                                                                                       Field id, for all field types |
-| `label`           | yes      | `string`           |                                                                                    Field label; for all field types |
-| `answer`          | yes      | `any`              |                                                                                                 For all field types |
-| `answer.id`       | yes      | `string`           |                                            An identifier of each option a Customer can choose. For all field types. |
-| `answer.label`    | yes      | `string`           |                                                                                   Answer label; for all field types |
-| `answer.group_id` | yes      | `number`           |                                                                                                 For `group_chooser` |
+| Field             | Required | Data type          | Notes                                                                                                    |
+| ----------------- | -------- | ------------------ | -------------------------------------------------------------------------------------------------------- |
+| `fields`          | yes      | `array of objects` | The fields a form contains.                                                                              |
+| `type`            | yes      | `string`           | Possible values: `checkbox`, `email`, `name`, `question`, `textarea`, `group_chooser`, `radio`, `select` |
+| `id`              | yes      | `string`           | Field id, for all field types                                                                            |
+| `label`           | yes      | `string`           | Field label; for all field types                                                                         |
+| `answer`          | yes      | `any`              | For all field types                                                                                      |
+| `answer.id`       | yes      | `string`           | An identifier of each option a Customer can choose. For all field types.                                 |
+| `answer.label`    | yes      | `string`           | Answer label; for all field types                                                                        |
+| `answer.group_id` | yes      | `number`           | For `group_chooser`                                                                                      |
 
 ## Properties
 
 Properties are **key-value storages**. They can be set within a chat, a thread, or an event. You can read more about properties in the [Configuration API](https://developers.livechatinc.com/docs/management/configuration-api/#properties) document.
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Properties data structure'} json="properties"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Properties data structure'} json="properties"/>
 
 ## Threads
 
-<CodeResponse version="v3.3" type="agent" title={'Sample Thread data structure'} json="thread"/>
+<CodeResponse version="v3.2" type="agent" title={'Sample Thread data structure'} json="thread"/>
 
 | Field                | Req./Opt. | Note                                                                                                       |
 | -------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
@@ -558,20 +475,20 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 | The API endpoint                              |
 | --------------------------------------------- |
-| `wss://api.livechatinc.com/v3.3/agent/rtm/ws` |
+| `wss://api.livechatinc.com/v3.2/agent/rtm/ws` |
 
 ## Available methods
 
 |                 |                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                               |
+| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`activate_chat`](#activate-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                           |
 | **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                     |
-| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout) [`list_routing_statuses`](#list-routing-statuses)                                                                                                 |
+| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer)                                                                                                                                                     |
+| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout)                                                                                                                                                   |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                   |
 
 </Text>
@@ -580,7 +497,6 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 ```json
 {
-  "version": "<api_version>", // optional, defaults to the version of the RTM connection; versions lower than the version of the RTM connection are prohibited
   "request_id": "<request_id>", // optional
   "action": "<action>",
   "payload": {
@@ -631,7 +547,7 @@ It returns [summaries](#chat-summaries) of the chats an Agent has access to.
 
 | Parameter                                             | Required | Type     | Notes                                                                                       |
 | ----------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------- |
-| `filters`                                             | No       | `object` | When paginating, `filters` provided in the first request are remembered and automatically used for the subsequent requests. Providing a new `filters` object will result in a `validation` error. To reset the filters, start paginating with a new set of filters.|
+| `filters`                                             | No       | `object` | Mustn't change between requests for subsequent pages. Otherwise, the behavior is undefined. |
 | `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.                |
 | `filters.include_chats_without_threads`               | No       | `bool`   | Defines if the returned chat summary includes chats without any threads; default: `true`.   |
 | `filters.group_ids`                                   | No       | `array`  | Array of group IDs. Max array size: 200                                                     |
@@ -765,11 +681,8 @@ It returns threads that the current Agent has access to in a given chat.
 | `limit`            | No       | `number`  | Default: 3, maximum: 100                                                                                                                                                                                                                                    |
 | `page_id`          | No       | `string`  |                                                                                                                                                                                                                                                             |
 | `min_events_count` | No       | `number`  | Range: 1-100; Specifies the minimum number of events to be returned in the response. It's the **total** number of events, so they can come from more than one thread. You'll get as many latest threads as needed to meet the `min_events_count` condition. |
-| `filters`          | No       | `object`  |                                                                                                                                                                                                                                                             |
-| `filters.from`     | No       | `string`  | Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`                                                                                                                                                        |
-| `filters.to`       | No       | `string`  | Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`                                                                                                                                                        |
 
-You cannot use either `limit` and `min_events_count` or `filters` and `min_events_count` at the same time.
+You cannot use both `limit` and `min_events_count` at the same time.
 
 </Text>
 <Code>
@@ -1109,8 +1022,6 @@ There's only one value allowed for a single property.
 
 Starts a chat.
 
-The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
-
 #### Specifics
 
 |                        |                                                                                          |
@@ -1140,7 +1051,6 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object`   |                                                                                                          |
 | `chat.thread.events`     | No       | `array`    | The list of initial chat events                                                                          |
 | `chat.thread.properties` | No       | `object`   |                                                                                                          |
-| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread; default: `true`.                                        |
 | `continuous`             | No       | `bool`     | Starts chat as continuous (online group is not required); default: `false`.                              |
 
 #### Response
@@ -1164,6 +1074,54 @@ When `chat.users` is defined, one of following scopes is required:
 
 </CodeSample>
 
+<!-- > **`start_chat`** sample **request** with optional params
+
+```json
+{
+  "action": "start_chat",
+  "payload": {
+  "chat": {
+    "properties": {
+      "source": {
+        "type": "facebook"
+      },
+      // ...
+    },
+    "users": [{
+      "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+      "type": "customer"
+    }],
+    "thread": {
+      "events": [{
+        "type": "message",
+        "custom_id": "31-0C-1C-07-DB-16",
+        "text": "hello there",
+        "recipients": "all"
+      }, {
+        "type": "system_message",
+        "custom_id": "31-0C-1C-07-DB-16",
+        "text": "hello there",
+        "recipients": "agents"
+      }],
+      "properties": {
+        "source": {
+          "type": "facebook"
+        },
+        // ...
+      },
+      "tags": ["bug_report"]
+    }
+    "access": {
+      "group_ids": [1]
+    },
+    "is_followed": true
+  },
+  "continuous": true
+  },
+  "author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
+
 <CodeResponse>
 
 ```json
@@ -1186,19 +1144,17 @@ When `chat.users` is defined, one of following scopes is required:
 <Section>
 <Text>
 
-### Resume Chat
+### Activate Chat
 
 Restarts an archived chat.
-
-The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
 
 #### Specifics
 
 |                        |                                                                                          |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
-| **Action**             | `resume_chat`                                                                            |
+| **Action**             | `activate_chat`                                                                          |
 | **Required scopes \*** | `chats.conversation--all:rw` `chats.conversation--access:rw` `chats.conversation--my:rw` |
-| **Web API equivalent** | [`resume_chat`](../#resume-chat)                                                         |
+| **Web API equivalent** | [`activate_chat`](../#activate-chat)                                                     |
 | **Push message**       | [`incoming_chat`](#incoming_chat)                                                        |
 
 **\*)**
@@ -1213,7 +1169,7 @@ When `chat.users` is defined, one of following scopes is required:
 | Parameter                | Required | Type       | Notes                                                                                                    |
 | ------------------------ | -------- | ---------- | -------------------------------------------------------------------------------------------------------- |
 | `chat`                   | Yes      | `object`   |                                                                                                          |
-| `chat.id`                | Yes      | `string`   | The ID of the chat that will be resumed.                                                                 |
+| `chat.id`                | Yes      | `string`   | The ID of the chat that will be activated.                                                               |
 | `chat.access`            | No       | `object`   | Chat access to set, default: all agents.                                                                 |
 | `chat.properties`        | No       | `object`   | Initial chat properties                                                                                  |
 | `chat.users`             | No       | `[]object` | The list of existing users. Up to 4 additional (other than the requester) agents and 1 customer allowed. |
@@ -1222,15 +1178,14 @@ When `chat.users` is defined, one of following scopes is required:
 | `chat.thread`            | No       | `object`   |                                                                                                          |
 | `chat.thread.events`     | No       | `array`    | Initial chat events array                                                                                |
 | `chat.thread.properties` | No       | `object`   | Initial thread properties                                                                                |
-| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread. Default `true`.                                         |
 | `continuous`             | No       | `bool`     | Sets a chat to the continuous mode. When unset, leaves the mode unchanged.                               |
 
 #### Response
 
-| Field       | Data type  | Notes                                                                                                                                                                   |
-| ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `thread_id` | `string`   |                                                                                                                                                                         |
-| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+| Field       | Data type  | Notes                                                                                                                                                                     |
+| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `thread_id` | `string`   |                                                                                                                                                                           |
+| `event_ids` | `[]string` | Returned only when the chat was activated with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
 
 </Text>
 <Code>
@@ -1238,7 +1193,7 @@ When `chat.users` is defined, one of following scopes is required:
 
 ```json
 {
-  "action": "resume_chat",
+  "action": "activate_chat",
   "payload": {
   "chat": {
     "id": "PWJ8Y4THAV"
@@ -1248,6 +1203,47 @@ When `chat.users` is defined, one of following scopes is required:
 ```
 
 </CodeSample>
+
+<!-- > **`activate_chat`** sample **request** with optional params
+
+```json
+{
+  "request_id": "7676",
+  "action": "activate_chat",
+  "payload": {
+  "chat": {
+    "id": "PJ0MRSHTDG",
+    "access": {
+      "group_ids": [1]
+    },
+    "properties": {
+      "source": {
+        "type": "facebook"
+      }
+    },
+    "thread": {
+      "events": [{
+        "type": "message",
+        "custom_id": "31-0C-1C-07-DB-16",
+        "text": "hello there"
+      }, {
+        "type": "system_message",
+        "custom_id": "31-0C-1C-07-DB-16",
+        "text": "hello there"
+      }],
+      "properties": {
+        "source": {
+          "type": "facebook"
+        },
+        // ...
+      },
+      "tags": ["bug_report"]
+      }
+    }
+  },
+  "author_id": "<author_id>" // optional, applies only to bots
+}
+``` -->
 
 <CodeResponse>
 
@@ -1287,7 +1283,7 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 
 | Parameter | Required | Data type |     |
 | --------- | -------- | --------- | --- |
-| `id`      | Yes      | `string`  |     |
+| `chat_id` | Yes      | `string`  |     |
 
 </Text>
 <Code>
@@ -1297,7 +1293,7 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 {
   "action": "deactivate_chat",
   "payload": {
-    "id": "PJ0MRSHTDG"
+  "chat_id": "PJ0MRSHTDG"
   }
 }
 ```
@@ -1345,7 +1341,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 
 | Parameter | Required | Data type |     |
 | --------- | -------- | --------- | --- |
-| `id`      | Yes      | `string`  |     |
+| `chat_id` | Yes      | `string`  |     |
 
 </Text>
 <Code>
@@ -1355,7 +1351,7 @@ It won't be sent when the requester already follows the chat or is the chat memb
 {
   "action": "follow_chat",
   "payload": {
-    "id": "PW94SJTGW6"
+  "chat_id": "PW94SJTGW6"
   }
 }
 ```
@@ -1400,7 +1396,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 | Parameter | Required | Data type |     |
 | --------- | -------- | --------- | --- |
-| `id`      | Yes      | `string`  |     |
+| `chat_id` | Yes      | `string`  |     |
 
 </Text>
 <Code>
@@ -1410,7 +1406,7 @@ Removes the requester from the chat followers. After that, only key changes to t
 {
   "action": "unfollow_chat",
   "payload": {
-    "id": "PJ0MRSHTDG"
+  "chat_id": "PWF6BACIKO"
   }
 }
 ```
@@ -1426,7 +1422,7 @@ Removes the requester from the chat followers. After that, only key changes to t
   "type": "response",
   "success": true,
   "payload": {
-    "chat_id": "PJ0MRSHTDG"
+  "chat_id": "PWF6BACIKO"
   }
 }
 ```
@@ -1564,7 +1560,7 @@ Grants access to a new chat without overwriting the existing ones.
 
 ### Transfer Chat
 
-Transfers a chat to an agent or a group.
+Transfers a chat to an Agent or a group.
 
 #### Specifics
 
@@ -1579,11 +1575,11 @@ Transfers a chat to an agent or a group.
 
 | Parameter     | Required | Data ype | Notes                                                                                                                           |
 | ------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `id`          | Yes      | `string` | Chat Id                                                                                                                         |
+| `chat_id`     | Yes      | `string` | Chat Id                                                                                                                         |
 | `target`      | No       | `object` | If missing, the chat will be transferred within the current group.                                                              |
 | `target.type` | Yes      | `string` | `group` or `agent`                                                                                                              |
 | `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                                    |
-| `force`       | No       | `bool`   | If `true`, always transfers chats. Otherwise, fails when unable to assign any agent from the requested groups; default `false`. |
+| `force`       | No       | `bool`   | If `true`, always transfers chats. Otherwise, fails when unable to assign any Agent from the requested groups; default `false`. |
 
 </Text>
 <Code>
@@ -1593,11 +1589,11 @@ Transfers a chat to an agent or a group.
 {
   "action": "transfer_chat",
   "payload": {
-    "id": "PJ0MRSHTDG",
-    "target": {
-      "type": "group",
-      "ids": [19]
-    }
+  "chat_id": "PWF6BACIKO",
+  "target": {
+    "type": "group",
+    "ids": [19]
+  }
   }
 }
 ```
@@ -1768,7 +1764,7 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 #### Request
 
-| Parameters              | Required | Data type | Notes                                                                                                                                                             |
+| Parameter               | Required | Data type | Notes                                                                                                                                                             |
 | ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `chat_id`               | Yes      | `string`  | Id of the chat you want to send the message to.                                                                                                                   |
 | `event`                 | Yes      | `object`  | Event object                                                                                                                                                      |
@@ -1898,7 +1894,7 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 | Parameter    | Required | Data type | Notes                                                                                                                                                                        |
 | ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`         | Yes      | `string`  | Id of the chat you to set a property for.                                                                                                                                    |
+| `chat_id`    | Yes      | `string`  | Id of the chat you to set a property for.                                                                                                                                    |
 | `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
 
 </Text>
@@ -1909,10 +1905,10 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 {
   "action": "update_chat_properties",
   "payload": {
-    "id": "Q1VZR7AJCE",
-    "properties": {
-      "0805e283233042b37f460ed8fbf22160": {
-        "string_property": "Chat property value updated by Agent"
+  "chat_id": "Q1VZR7AJCE",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Chat property value updated by Agent"
       }
     }
   }
@@ -1957,7 +1953,7 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 | Parameter    | Required | Data type | Notes                                           |
 | ------------ | -------- | --------- | ----------------------------------------------- |
-| `id`         | Yes      | `string`  | Id of the chat you want to delete property for. |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for. |
 | `properties` | Yes      | `object`  | Chat properties to delete.                      |
 
 </Text>
@@ -1968,10 +1964,10 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 {
   "action": "delete_chat_properties",
   "payload": {
-    "id": "Q1VZR7AJCE",
-    "properties": {
-      "0805e283233042b37f460ed8fbf22160": [
-        "string_property"
+  "chat_id": "Q1VZR7AJCE",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": [
+      "string_property"
       ]
     }
   }
@@ -2369,7 +2365,7 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 ### Get Customer
 
-Returns the info about the Customer with a given `id`.
+Returns the info about the Customer with a given `customer_id`.
 
 #### Specifics
 
@@ -2382,9 +2378,9 @@ Returns the info about the Customer with a given `id`.
 
 #### Request
 
-| Parameter | Required | Data type | Notes |
-| --------- | -------- | --------- | ----- |
-| `id`      | Yes      | string    |       |
+| Parameter     | Required | Data type | Notes |
+| ------------- | -------- | --------- | ----- |
+| `customer_id` | Yes      | string    |       |
 
 #### Response
 
@@ -2409,7 +2405,7 @@ Returns the info about the Customer with a given `id`.
 {
   "action": "get_customer",
   "payload": {
-    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
   }
 }
 ```
@@ -2437,7 +2433,6 @@ Returns the info about the Customer with a given `id`.
     }],
     "last_visit": {
       "started_at": "2017-10-12T15:19:21.010200Z",
-      "ended_at": "2017-10-12T15:20:22.010200Z",
       "referrer": "http://www.google.com/",
       "ip": "<customer_ip>",
       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
@@ -2502,60 +2497,40 @@ It returns the list of Customers.
 
 All parameters are optional.
 
-| Parameter                                                                        | Data type | Notes                        |
-| -------------------------------------------------------------------------------- | --------- | ---------------------------- |
-| `page_id`                                                                        | `string`  |                              |
-| `limit`                                                                          | `number`  | Default: 10, maximum: 100    |
-| `sort_order` **\***                                                              | `string`  | Default: `desc`              |
-| `sort_by` **\*\***                                                               | `string`  | Default: `created_at`        |
-| `filters`                                                                        | `object`  |                              |
-| `filters.country.<string_filter_type>` **\*\*\***                                | `object`  |                              |
-| `filters.email.<string_filter_type>` **\*\*\***                                  | `object`  |                              |
-| `filters.name.<string_filter_type>` **\*\*\***                                   | `object`  |                              |
-| `filters.customer_id.<string_filter_type>` **\*\*\***                            | `object`  |                              |
-| `filters.chats_count.<range_filter_type>` **\*\*\*\***                           | `object`  |                              |
-| `filters.threads_count.<range_filter_type>` **\*\*\*\***                         | `object`  |                              |
-| `filters.visits_count.<range_filter_type>` **\*\*\*\***                          | `object`  |                              |
-| `filters.created_at.<date_range_filter_type>`**\*\*\*\*\***                      | `object`  |                              |
-| `filters.agent_last_event_created_at.<date_range_filter_type>` **\*\*\*\*\***    | `object`  |                              |
-| `filters.customer_last_event_created_at.<date_range_filter_type>` **\*\*\*\*\*** | `object`  |                              |
-| `filters.chat_group_ids.<integer_filter_type>`  **\*\*\***                       | `object`  | Maximum 40 group ids at once |
-| `filters.include_customers_without_chats`                                        | `bool`    |                              |
+| Parameter                                                                      | Data type | Notes                     |
+| ------------------------------------------------------------------------------ | --------- | ------------------------- |
+| `page_id`                                                                      | `string`  |                           |
+| `limit`                                                                        | `number`  | Default: 10, maximum: 100 |
+| `sort_order` **\***                                                            | `string`  | Default: `desc`           |
+| `filters`                                                                      | `object`  |                           |
+| `filters.country.<string_filter_type>` **\*\***                                | `object`  |                           |
+| `filters.email.<string_filter_type>` **\*\***                                  | `object`  |                           |
+| `filters.name.<string_filter_type>` **\*\***                                   | `object`  |                           |
+| `filters.customer_id.<string_filter_type>` **\*\***                            | `object`  |                           |
+| `filters.chats_count.<range_filter_type>` **\*\*\***                           | `object`  |                           |
+| `filters.threads_count.<range_filter_type>` **\*\*\***                         | `object`  |                           |
+| `filters.visits_count.<range_filter_type>` **\*\*\***                          | `object`  |                           |
+| `filters.created_at.<date_range_filter_type>`**\*\*\*\***                      | `object`  |                           |
+| `filters.agent_last_event_created_at.<date_range_filter_type>` **\*\*\*\***    | `object`  |                           |
+| `filters.customer_last_event_created_at.<date_range_filter_type>` **\*\*\*\*** | `object`  |                           |
 
 **\*)**
 
 `sort_order` can take the following values:
 
-- `asc`
-- `desc`
+- `asc` - oldest customers first
+- `desc` - newest customers first
 
 **\*\*)**
-
-`sort_by` can take the following values:
-
-- `created_at`
-- `threads_count`
-- `visits_count`
-- `agent_last_event`
-- `customer_last_event`
-
-When sorting by fields other than `created_at`, the entries with identical values will be additionally sorted by their creation time.
-
-**\*\*\*)**
 
 `<string_filter_type>` can take the following values :
 
 - `values` (`string[]` - an array of strings)
 - `exclude_values` (`string[]` - an array of strings)
 
-`<integer_filter_type>` can take the following values:
-
-- `values` (`int[]` - an array of integers)
-- `exclude_values` (`int[]` - an array of integers)
-
 There's only one value allowed for a single filter.
 
-**\*\*\*\*)**
+**\*\*\*)**
 
 `<range_filter_type>` can take the following values:
 
@@ -2565,7 +2540,7 @@ There's only one value allowed for a single filter.
 - `gt` (`int` - greater than given value)
 - `eq` (`int` - equal to given value)
 
-**\*\*\*\*\*)**
+**\*\*\*\*)**
 
 `<date_range_filter_type>` can take the following values:
 
@@ -2610,7 +2585,6 @@ Dates are represented in ISO 8601 format with microseconds resolution, e.g. `201
     // an array of "User > Customer" objects
   ],
   "total_customers": 2340,
-  "limited_customers": 120, // optional
   "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
   "previous_page_id": "MTUxNzM5ODEzMTQ5Ng==" // optional
   }
@@ -2630,12 +2604,12 @@ Creates a new [Customer](#customer) user type.
 
 #### Specifics
 
-|                        |                                           |
-| ---------------------- | ----------------------------------------- |
-| **Action**             | `create_customer`                         |
-| **Required scopes**    | `customers:rw`                            |
-| **Web API equivalent** | [`create_customer`](../#create-customer)  |
-| **Push message**       | [`incoming_customer`](#incoming_customer) |
+|                        |                                          |
+| ---------------------- | ---------------------------------------- |
+| **Action**             | `create_customer`                        |
+| **Required scopes**    | `customers:rw`                           |
+| **Web API equivalent** | [`create_customer`](../#create-customer) |
+| **Push message**       | [`customer_created`](#customer_created)  |
 
 #### Request
 
@@ -2706,13 +2680,13 @@ Updates Customer's properties.
 
 | Parameter        | Required | Data type  | Notes                                                                              |
 | ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
-| `id`             | Yes      | `string`   | UUID v4 format is required.                                                        |
+| `customer_id`    | Yes      | `string`   | UUID v4 format is required.                                                        |
 | `name`           | No       | `string`   |                                                                                    |
 | `email`          | No       | `string`   |                                                                                    |
 | `avatar`         | No       | `string`   | URL of the Customer's avatar                                                       |
 | `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
 
-Apart from `id`, which is a required parameter, you also need to include **one of the optional** parameters.
+Apart from `customer_id`, which is a required parameter, you also need to include **one of the optional** parameters.
 
 </Text>
 <Code>
@@ -2722,15 +2696,15 @@ Apart from `id`, which is a required parameter, you also need to include **one o
 {
   "action": "update_customer",
   "payload": {
-    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-    "name": "Thomas Anderson",
-    "email": "t.anderson@example.com",
-    "avatar": "example.com/avatars/1.png",
-    "session_fields": [{
-      "custom_key": "custom_value"
-    }, {
-      "another_custom_key": "another_custom_value"
-    }]
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "name": "Thomas Anderson",
+  "email": "t.anderson@example.com",
+  "avatar": "example.com/avatars/1.png",
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
   }
 }
 ```
@@ -2772,11 +2746,11 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 
 #### Request
 
-| Parameter  | Required | Data type |     |
-| ---------- | -------- | --------- | --- |
-| `id`       | Yes      | `string`  |     |
-| `ban`      | Yes      | `object`  |     |
-| `ban.days` | Yes      | `number`  |     |
+| Parameter     | Required | Data type |     |
+| ------------- | -------- | --------- | --- |
+| `customer_id` | Yes      | `string`  |     |
+| `ban`         | Yes      | `object`  |     |
+| `ban.days`    | Yes      | `number`  |     |
 
 </Text>
 <Code>
@@ -2786,10 +2760,10 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 {
   "action": "ban_customer",
   "payload": {
-    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-    "ban": {
-      "days": 3
-    }
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "ban": {
+    "days": 3
+  }
   }
 }
 ```
@@ -2802,122 +2776,6 @@ Bans the customer for a specific period of time. It immediately disconnects all 
 {
   "request_id": "<request_id>", // optional
   "action": "ban_customer",
-  "type": "response",
-  "success": true,
-  "payload": {
-  // no response payload
-  }
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
-### Follow Customer
-
-Marks a customer as followed. As a result, the requester (an agent) will receive the info about all the changes related to that customer via pushes. Once the customer leaves the website or is [unfollowed](#unfollow-customer), the agent will no longer receive that information.
-
-Following a customer causes the agent to receive customer-related pushes as long as the followed customer is available. The followed customer may be transferred to a group the agent doesn't have access to, which makes the customer unavailable to the agent. At that moment, the agent stops receiving pushes related to that customer. When the customer is transferred back and becomes available again, the pushes resume.
-
-Agents don't need to follow the customers they're chatting with in order to receive related pushes. Agents will be receiving pushes related to those customers as long as the chats last.
-#### Specifics
-
-|                        |                                                 |
-| ---------------------- | ----------------------------------------------- |
-| **Action**             | `follow_customer`                               |
-| **Required scopes**    | `customers:ro`                                  |
-| **Web API equivalent** | [`follow_customer`](../#follow-customer)        |
-| **Push message**       | [`incoming_customer`](#incoming_customer)**\*** |
-
-**\*)**
-It won't be sent when the requester already follows the customer or is chatting with that customer.
-
-#### Request
-
-| Parameter | Required | Data type |     |
-| --------- | -------- | --------- | --- |
-| `id`      | Yes      | `string`  |     |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "follow_customer",
-  "payload": {
-    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
-  }
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "follow_customer",
-  "type": "response",
-  "success": true,
-  "payload": {
-  // no response payload
-  }
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
-### Unfollow Customer
-
-Removes the agent from the list of customer's followers. Calling this method on a customer the agent's chatting with will result in success, however, the agent will still receive pushes about the customer's data updates. The unfollowing will take effect once the chat ends.
-
-#### Specifics
-
-|                        |                                               |
-| ---------------------- | --------------------------------------------- |
-| **Action**             | `unfollow_customer`                           |
-| **Required scopes**    | -                                             |
-| **Web API equivalent** | [`unfollow_customer`](../#unfollow-customer)  |
-| **Push message**       | [`customer_unfollowed`](#customer_unfollowed) |
-
-#### Request
-
-| Parameter | Required | Data type |     |
-| --------- | -------- | --------- | --- |
-| `id`      | Yes      | `string`  |     |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "unfollow_customer",
-  "payload": {
-    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
-  }
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "unfollow_customer",
   "type": "response",
   "success": true,
   "payload": {
@@ -2950,30 +2808,21 @@ It returns the initial state of the current Agent.
 
 #### Request
 
-| Parameter                           | Required | Data type | Notes                                                                                                                                                                                         |
-| ----------------------------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `token`                             | Yes      | `string`  | OAuth token from the Agent's account                                                                                                                                                          |
-| `timezone`                          | No       | `string`  |                                                                                                                                                                                               |
-| `reconnect`                         | No       | `bool`    | Reconnecting sets the status to the last known state instead of the default one.                                                                                                              |
-| `push_notifications`                | No       | `object`  |                                                                                                                                                                                               |
-| `push_notifications.firebase_token` | No       | `string`  | Firebase device token to allow connecting this instance with the existing push notification instance (to be seen as 1 instance).                                                              |
-| `push_notifications.platform`       | Yes      | `string`  | OS platform; possible values:`ios`, `android`. Required only when `push_notifications` is included.                                                                                           |
-| `application`                       | No       | `object`  |                                                                                                                                                                                               |
-| `application.name`                  | No       | `string`  | Application name                                                                                                                                                                              |
-| `application.version`               | No       | `string`  | Application version                                                                                                                                                                           |
-| `away` __*__                        | No       | `bool`    | When `true`, the connection is set to the `away` state. Defaults to `false`.                                                                                                                  |
-| `customer_monitoring_level`         | No       | `string`  | Possible values: `my`, `chatting`, `invited`, `online` __**__. Defaults to `my` if [login](#login) creates the first session; otherwise it preserves the current `customer_monitoring_level`. |
-| `pushes`                            | No       | `object`  | A map of push subscriptions. By default, it's set to `all` for the version of your currently established RTM connection.                                                                      |
+| Parameter                           | Required | Data type | Notes                                                                                                                            |
+| ----------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `token`                             | Yes      | `string`  | OAuth token from the Agent's account                                                                                             |
+| `timezone`                          | No       | `string`  |                                                                                                                                  |
+| `reconnect`                         | No       | `bool`    | Reconnecting sets the status to the last known state instead of the default one.                                                 |
+| `push_notifications`                | No       | `object`  |                                                                                                                                  |
+| `push_notifications.firebase_token` | No       | `string`  | Firebase device token to allow connecting this instance with the existing push notification instance (to be seen as 1 instance). |
+| `push_notifications.platform`       | Yes      | `string`  | OS platform; possible values:`ios`, `android`. Required only when `push_notifications` is included.                              |
+| `application`                       | No       | `object`  |                                                                                                                                  |
+| `application.name`                  | No       | `string`  | Application name                                                                                                                 |
+| `application.version`               | No       | `string`  | Application version                                                                                                              |
+| `away` __*__                        | No       | `bool`    | When `true`, the connection is set to the `away` state. Defaults to `false`.                                                     |
 
 __*__ You can use the `away` param to **prevent assigning chats** to Agents **after random reconnections** when their status was set to `not_accepting_chats` by the auto-away feature. When an Agent logs in with `away: true`, the connection is immediately recognized
 as `away`. [Read more...](#set-away-status)
-
-__**__ These values mean:
-
-* `my` - only the customers from chats the agent is assigned to
-* `chatting` - all customers that are chatting within the groups the agent is assigned to
-* `invited` - all customers that are invited to chat within the groups the agent is assigned to
-* `online` - all customers visiting the website assigned to the agent’s groups
 
 #### Response
 
@@ -2990,13 +2839,9 @@ __**__ These values mean:
 {
   "action": "login",
   "payload": {
-    "token": "Bearer dal:test_1fgTbfXmgthj4cZSA",
-    "pushes": {
-      "v3.2": ["incoming_chat", "incoming_multicast"],
-      "v3.3": ["all"]
+    "token": "Bearer dal:test_1fgTbfXmgthj4cZSA"
     }
   }
-}
 ```
 
 </CodeSample>
@@ -3301,70 +3146,6 @@ Logs the Agent out.
 </Code>
 </Section>
 
-<Section>
-<Text>
-
-### List Routing Statuses
-
-Returns the current routing status of each agent selected by the provided filters.
-
-#### Specifics
-
-|                        |                                                      |
-| ---------------------- | ---------------------------------------------------- |
-| **Action**             | `list_routing_statuses`                              |
-| **Required scopes**    | `agents--all:ro`, `agents-bot--all:ro`               |
-| **Web API equivalent** | [`list_routing_statuses`](../#list-routing-statuses) |
-| **Push message**       | -                                                    |
-
-#### Request
-
-| Parameter           | Required | Type     | Notes |
-| ------------------- | -------- | -------- | ----- |
-| `filters`           | No       | `object` |       |
-| `filters.group_ids` | No       | `array`  |       |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "list_routing_statuses",
-  "payload": {
-    "filters": {
-      "group_ids": [
-        0
-      ]
-    }
-  }
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "list_routing_statuses",
-  "type": "response",
-  "success": true,
-  "payload": [{
-    "agent_id": "smith@example.com",
-    "status": "accepting_chats"
-  }, {
-    "agent_id": "agent@example.com",
-    "status": "not_accepting_chats"
-  }]
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
 ## Other
 
 <Section>
@@ -3646,7 +3427,7 @@ Here's what you need to know about **pushes**:
 - They notify you when specific events occur.
 - Can be **delivered** only in the websocket transport.
 - You don't need to register pushes to receive them.
-- Their equivalents in Web API are [webhooks](/management/configuration-api/v3.3/#webhooks). Pushes and webhooks have similar payloads.
+- Their equivalents in Web API are [webhooks](/management/configuration-api/#webhooks). Pushes and webhooks have similar payloads.
 - There are no retries for pushes. To determine if a user has seen an event, compare the [event's](#response) `created_at` parameter with the [user's](#users) `events_seen_up_to` field.
 
 |                 |                                                                                                                                                                                                                                                                                                                                                 |
@@ -3657,9 +3438,9 @@ Here's what you need to know about **pushes**:
 | **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                        |
 | **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
 | **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`incoming_customers`](#incoming_customers) [`incoming_customer`](#incoming_customer) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_transferred`](#customer_transferred) [`customer_left`](#customer_left)                                         |
+| **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                     |
 | **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                         |
-| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated) [`customer_unfollowed`](#customer-unfollowed) |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated)                                               |
 
 </Text>
 
@@ -3669,7 +3450,6 @@ Here's what you need to know about **pushes**:
 
 ```json
 {
-  "version": "<api_version>",
   "request_id": "<request_id>", // optional, applies only to the requester
   "action": "<action>",
   "type": "push",
@@ -3780,7 +3560,7 @@ Informs that new, single access to a chat was granted. The existing access isn't
 |                        |                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------- |
 | **Action**             | `chat_access_granted`                                                            |
-| **Webhook equivalent** | [`chat_access_granted`](/management/configuration-api/v3.3/#chat_access_granted) |
+| **Webhook equivalent** | [`chat_access_granted`](/management/configuration-api/v3.2/#chat_access_granted) |
 
 #### Push payload
 
@@ -3810,7 +3590,7 @@ Informs that access to a certain chat was revoked.
 |                        |                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------- |
 | **Action**             | `chat_access_revoked`                                                            |
-| **Webhook equivalent** | [`chat_access_revoked`](/management/configuration-api/v3.3/#chat_access_revoked) |
+| **Webhook equivalent** | [`chat_access_revoked`](/management/configuration-api/v3.2/#chat_access_revoked) |
 
 #### Push payload
 
@@ -3820,7 +3600,7 @@ Informs that access to a certain chat was revoked.
 
 ### `chat_transferred`
 
-Informs that a chat was transferred to a different group or to an agent.
+Informs that a chat was transferred to a different group or to an Agent.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3828,10 +3608,9 @@ Informs that a chat was transferred to a different group or to an agent.
 {
   "chat_id": "PJ0MRSHTDG",
   "thread_id": "K600PKZON8",
-  "requester_id": "jones@example.com",
-  "reason": "manual",
+  "requester_id": "cb531744-e6a4-4ded-b3eb-b3eb4ded4ded",
   "transferred_to": {
-    "group_ids": [ 19 ],
+    "group_ids": [ 1 ],
     "agent_ids": ["smith@example.com"],
   },
   "queue": {
@@ -3846,22 +3625,25 @@ Informs that a chat was transferred to a different group or to an agent.
 
 #### Specifics
 
-|                        |                                                                            |
-| ---------------------- | -------------------------------------------------------------------------- |
-| **Action**             | `chat_transferred`                                                         |
-| **Webhook equivalent** | [`chat_transferred`](/management/configuration-api/v3.3/#chat_transferred) |
+|                        |                    |
+| ---------------------- | ------------------ |
+| **Action**             | `chat_transferred` |
+| **Webhook equivalent** | -                  |
 
 #### Push payload
 
-| Field            | Notes                                                                    |
-| ---------------- | ------------------------------------------------------------------------ |
-| `thread_id`      | Present if the chat is active.                                           |
-| `transferred_to` | IDs of the groups and agents the chat is assigned to after the transfer. |
-| `reason` **\***  | Informs why the chat was transferred.                                    |
-| `queue`          | Present if the chat is queued after the transfer.                        |
+| Field                   | Notes                                                |
+| ----------------------- | ---------------------------------------------------- |
+| `thread_id`             | Present if the chat is active                        |
+| `transferred_to` **\*** | IDs of groups and Agents the chat is now assigned to |
+| `queue`                 | Present if the chat is queued after the transfer     |
 
 **\*)**
-Possible reasons: `manual`, `inactive`, `assigned`, `unassigned`, `other`.
+One of the following combinations of IDs is possible:
+
+- Both `group_ids` and `agent_ids`. In situations when a chat was transferred to a group and it was immediately assigned to an Agent (even if the chat transfer occurred in the same group).
+- Only `group_ids`. When a chat was transferred to a group and no Agents were available; the queue will be present.
+- Only `agent_ids`. When a chat was transferred directly to an Agent; there'll be no queue.
 
 ## Chat users
 
@@ -4278,18 +4060,28 @@ Informs that a chat thread was untagged.
 
 ## Customers
 
-### `incoming_customers`
+### `customer_visit_started`
 
-Informs about customers the agent should be aware of. It's sent after [`login`](#login).
+Informs that a Customer entered the tracked website.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "customer_monitoring_level": "invited",
-  "customers": [{
-    // "Customer" user object
-  }]
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "visit_id": 42,
+  "started_at": "2017-10-12T15:19:21.010200Z",
+  "ip": "<customer_ip>",
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+  "geolocation": {
+    "latitude": "54.0805",
+    "longitude": "17.4211",
+    "country": "Poland",
+    "country_code": "PL",
+    "region": "Dolnoslaskie",
+    "city": "Wroclaw",
+    "timezone": "Europe/Warsaw"
+  }
 }
 ```
 
@@ -4297,54 +4089,66 @@ Informs about customers the agent should be aware of. It's sent after [`login`](
 
 #### Specifics
 
-|                        |                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| **Action**             | `incoming_customer`                                                          |
-| **Webhook equivalent** | [`incoming_customer`](/management/configuration-api/v3.3/#incoming_customer) |
+|                        |                          |
+| ---------------------- | ------------------------ |
+| **Action**             | `customer_visit_started` |
+| **Webhook equivalent** | -                        |
 
-### `incoming_customer`
+### `customer_created`
 
-Informs that a new or returning customer is available to the agent. It's sent when:
-
-- a new customer registers.
-- a customer, who previously left the tracked website, returns.
-- an already followed customer, who was temporarily unavailable to the agent, becomes available again (for example, the customer was transferred between groups).
+Informs that a new Customer registered.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  // "Customer" user object
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| **Action**             | `incoming_customer`                                                          |
-| **Webhook equivalent** | [`incoming_customer`](/management/configuration-api/v3.3/#incoming_customer) |
-
-### `customer_updated`
-
-Informs that customer's data changed. The push payload contains the updated fields.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
+  "customer": {
+  // "User > Customer" object
   "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "created_at": "2019-11-14T14:27:24.410018Z",
   "name": "Thomas Anderson",
   "email": "t.anderson@example.com",
   "avatar": "https://example.com/avatars/1.jpg",
-  "type": "customer",
   "session_fields": [{
     "custom_key": "custom_value"
   }, {
     "another_custom_key": "another_custom_value"
   }]
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                       |
+| ---------------------- | --------------------------------------------------------------------- |
+| **Action**             | `customer_created`                                                    |
+| **Webhook equivalent** | [`customer_created`](/management/configuration-api/#customer_created) |
+
+### `customer_updated`
+
+Informs that Customer's data was updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer": {
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "name": "Thomas Anderson",
+  "email": "t.anderson@example.com",
+  "avatar": "https://example.com/avatars/1.jpg",
+  "type": "customer",
+  "present": false,
+  "banned": false,
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
+  }
 }
 ```
 
@@ -4406,19 +4210,17 @@ Informs that a Customer was banned for a specified number of days.
 | **Action**             | `customer_banned` |
 | **Webhook equivalent** | -                 |
 
-### `customer_transferred`
+### `customer_visit_ended`
 
-Informs that a customer is no longer available to the agent.
+Informs that a Customer left the tracked website.
 
 <CodeResponse title={'Sample push payload'}>
 
 ```json
 {
-  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "transferred_to": {
-    "group_ids": [1]
-  },
-  "followed": true
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "visit_id": 42,
+  "ended_at": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
@@ -4428,30 +4230,8 @@ Informs that a customer is no longer available to the agent.
 
 |                        |                        |
 | ---------------------- | ---------------------- |
-| **Action**             | `customer_transferred` |
+| **Action**             | `customer_visit_ended` |
 | **Webhook equivalent** | -                      |
-
-### `customer_left`
-
-Informs that a Customer left the tracked website.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
-  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "left_at": "2017-10-12T15:19:21.010200Z"
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                 |
-| ---------------------- | --------------- |
-| **Action**             | `customer_left` |
-| **Webhook equivalent** | -               |
 
 ## Status
 
@@ -4475,7 +4255,7 @@ Informs that an Agent's or Bot Agent's status was changed.
 |                        |                                                                                |
 | ---------------------- | ------------------------------------------------------------------------------ |
 | **Action**             | `routing_status_set`                                                           |
-| **Webhook equivalent** | [`routing_status_set`](/management/configuration-api/v3.3/#routing_status_set) |
+| **Webhook equivalent** | [`routing_status_set`](/management/configuration-api/v3.2/#routing_status_set) |
 
 ### `agent_disconnected`
 
@@ -4694,27 +4474,6 @@ New positions and wait times for queued chats.
 | **Action**             | `queue_positions_updated` |
 | **Webhook equivalent** | -                         |
 
-### `customer_unfollowed`
-
-Informs that a customer was unfollowed. Useful in multiple connection scenarios, where one app/integration needs to know that another one unfollowed the customer.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
-  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                       |
-| ---------------------- | --------------------- |
-| **Action**             | `customer_unfollowed` |
-| **Webhook equivalent** | -                     |
-
 # Errors
 
 <CodeResponse title={'Format of error payload'}>
@@ -4736,7 +4495,7 @@ Informs that a customer was unfollowed. Useful in multiple connection scenarios,
 
 ## Possible errors
 
-<Errors errors="authentication,authorization,chat_inactive,internal,license_expired,pending_requests_limit_reached,requester_already_offline,requester_awaiting_approval,request_timeout,requester_suspended,seats_limit_exceeded,service_unavailable,too_many_requests,validation,wrong_product_version"/>
+<Errors errors="authentication,authorization,chat_inactive,internal,license_expired,pending_requests_limit_reached,requester_already_offline,requester_awaiting_approval,request_timeout,requester_suspended,seats_limit_exceeded,too_many_requests,validation,wrong_product_version"/>
 
 # Contact us
 
