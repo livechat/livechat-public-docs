@@ -21,7 +21,35 @@ Before you start, you'll need to have a basic knowledge about [webhooks](https:/
 
 This tutorial will not answer questions on building integrations that pull data on demand (not in reaction to some LiveChat event). If you want to pull LiveChat reports on request, you should be using [Data & Reporting APIs](/data-reporting/).
 
-# Basic tutorial
+## Webhooks reference
+
+LiveChat can send notifications when some specific actions are performed. Such a notification is called a **webhook** – it’s a simple HTTP request that LiveChat sends to your server when a particular event occurs. Please see the following documents for reference on how to manage webhooks:
+
+- How to [set up](/management/configuration-api/#register-webhook) webhooks
+- A list of available webhooks along with their [format samples](/management/configuration-api/#webhooks)
+
+<Warning>
+
+When your server receives a webhook from LiveChat, it should respond with **HTTP 200** response. Otherwise, LiveChat will retry sending the webhook to your service a number of times until it receives the correct **HTTP 200** response.
+
+The timeout is set to ~10 seconds. If we don't receive **HTTP 200** response within that time period,  we'll retry sending the webhook up to 10 times within 6 hours.
+
+</Warning>
+
+If your endpoint is responsible for both receiving data from our webhook and making further actions, like creating a record in your database, then the whole process may take longer than 10 seconds.
+In such a case, we believe the best solution would be to split your mechanism into two separate actions:
+
+1) Retrieving data from the LiveChat webhook (sending **HTTP 200** back to us immediately).
+
+2) Further processing of the data and passing it to other services.
+
+That would prevent situations in which the process takes longer than our webhook timeout and data isn't pushed from our side again.
+
+Note: LiveChat webhooks are sent with `Content-Type: application/json` header, so please make sure that your service can handle such requests.
+
+# Basic tutorial (webhooks v2)
+
+Please note that this configuration uses [Configuration API v2 webhooks](/management/configuration-api/v2.0/#create-a-new-webhook), which are now deprecated. We highly recommend using the [Configuration API v3 webhooks](/management/configuration-api/#webhooks).
 
 ## 1. Sign in to Developer Console
 
@@ -73,11 +101,9 @@ Once you have the LiveChat credentials, you can register your webhooks with the 
 - [Configuration API v3](/management/configuration-api/#webhooks)
 - [Configuration API v2](/management/configuration-api/v2.0/#create-a-new-webhook) (deprecated)
 
-### Seting up webhooks for development
+### Seting up webhooks v2 for development
 
-One of the possible development options is to set up your webhooks from within the LiveChat Agent App. However, please note that this configuration uses [Configuration API v2 webhooks](/management/configuration-api/v2.0/#create-a-new-webhook), which are now deprecated. We highly recommend using the [Configuration API v3 webhooks](/management/configuration-api/#webhooks).
-
-To configure webhooks v2 within the LiveChat Agent App, go to **Settings > Integrations > [Webhooks](https://my.livechatinc.com/settings/webhooks)** and set up your webhook URLs.
+One of the possible development options is to set up your webhooks from within the LiveChat Agent App. To do so, go to **Settings > Integrations > [Webhooks](https://my.livechatinc.com/settings/webhooks)** and set up your webhook URLs.
 
 ![LiveChat Webhooks](./images/livechat-platform-webhooks-settings.png)
 
@@ -87,14 +113,7 @@ Each webhook consists of the following properties:
 - **Data type** – allows you to select which information will be included in the webhook.
 - **Target URL** – the address of your web server the webhook will be sent to.
 
-# Webhooks reference
-
-Please see the following documents for reference on how to manage webhooks:
-
-- How to [set up](/management/configuration-api/#register-webhook) webhooks
-- A list of available webhooks along with their [format samples](/management/configuration-api/#webhooks)
-
-## Webhooks v2 reference (deprecated)
+# Webhooks v2 reference (deprecated)
 
 <Warning>
 
@@ -102,9 +121,7 @@ Please see the following documents for reference on how to manage webhooks:
 
 </Warning>
 
-LiveChat can send notifications when some specific actions are performed. Such a notification is called a **webhook** – it’s a simple HTTP request that LiveChat sends to your server when a particular event occurs. You can find a basic auth example below.
-
-### HTTP Basic Auth
+## HTTP Basic Auth example
 
 For security reasons it's recommended to use HTTP basic authentication. Credentials should be passed in this format: `https://user:password@www.my-website.com`. We recommend using https:// in webhook URL.
 
@@ -135,7 +152,7 @@ https://livechat:password@www.my-website.com
 
 </CodeResponse>
 
-### Webhook format
+## Webhook format
 
 Each webhook is a HTTP POST request made to the URL that you provide in the web app. The request's POST body contains webhook information in JSON format.
 
@@ -157,28 +174,7 @@ Each webhook contains the following properties:
 - `token` and `license_id` – your authentication credentials that let you call LiveChat Configuration API v2 methods. You won’t need to use them unless you want to make a call to the LiveChat API right when you receive a webhook. In that case, you just need to pass the `token` and `license_id` credentials in your API call.
 - additional information – please read the [Webhook data types](#webhook-data-types) section.
 
-<Warning>
-
-When your server receives a webhook from LiveChat, it should respond with **HTTP 200** response. Otherwise, LiveChat will retry sending the webhook to your service a number of times until it receives the correct **HTTP 200** response.
-
-The timeout is set to ~10 seconds. If we don't receive **HTTP 200** response within that time period,  we'll retry sending the webhook up to 10 times within 6 hours.
-
-</Warning>
-
-If your endpoint is responsible for both receiving data from our webhook and making further actions, like creating a record in your database, then the whole process may take longer than 10 seconds.
-In such a case, we believe the best solution would be to split your mechanism into two separate actions:
-
-1) Retrieving data from the LiveChat webhook (sending **HTTP 200** back to us immediately).
-
-2) Further processing of the data and passing it to other services.
-
-That would prevent situations in which the process takes longer than our webhook timeout and data isn't pushed from our side again.
-
-Note: LiveChat webhooks are sent with `Content-Type: application/json` header, so please make sure that your service can handle such requests.
-
-Note: `chat_changed` event type is sent only when the tag list for a particular chat was changed, no matter if the chat is currently active or not.
-
-### Webhook data types
+## Webhook data types
 
 <CodeResponse title={"Example webhook payload"}>
 
@@ -210,7 +206,9 @@ For example, when the chat starts, you may want to know the exact chat start tim
 | `ticket_created`          | `ticket`                             |
 | `canned_response_changed` | `canned_response`                    |
 
-#### `chat`
+Note: `chat_changed` event type is sent only when the tag list for a particular chat was changed, no matter if the chat is currently active or not.
+
+### `chat`
 
 ```json
 {
@@ -247,7 +245,7 @@ For example, when the chat starts, you may want to know the exact chat start tim
 
 Include this data type if you need to know chat start and end time or the full chat transcript.
 
-#### `visitor`
+### `visitor`
 
 ```json
 "visitor": {
@@ -265,7 +263,7 @@ Include this data type if you need to know chat start and end time or the full c
 
 This data type includes visitor’s name and e-mail address.
 
-#### `pre_chat_survey`
+### `pre_chat_survey`
 
 ```json
 "pre_chat_survey": [
@@ -309,7 +307,7 @@ Include this data type if you need to know the exact results of the pre-chat sur
   array. You don't need to write additional code to handle these cases.
 </aside>
 
-#### `ticket`
+### `ticket`
 
 ```json
 "ticket":{
@@ -358,7 +356,7 @@ Include this data type if you need to know the exact results of the pre-chat sur
 
 This data type includes the details of a ticket.
 
-#### `canned_response_changed`
+### `canned_response_changed`
 
 ```json
 "canned_response":{
