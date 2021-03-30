@@ -12,9 +12,9 @@ const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["1.0", "2.0"],
   },
   "data-reporting": {
-    STABLE_VERSION: "3.2",
-    LEGACY_VERSIONS: ["2.0"],
-    DEV_PREVIEW_VERSION: "3.3",
+    STABLE_VERSION: "3.3",
+    LEGACY_VERSIONS: ["2.0", "3.2"],
+    DEV_PREVIEW_VERSION: "",
     ALL_VERSIONS: ["3.3", "3.2", "2.0"],
   },
 };
