@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
 import innerText from "react-innertext";
-import payloads from "payloads";
+import payloads from "../../../payloads";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
 
 const StickyWrapper = styled.div`
@@ -245,7 +245,7 @@ const JSONHighlighter = ({ source, language = "javascript" }) => {
   }, [source, ref]);
 
   return (
-    <div className="gatsby-highlight" data-language={language}>
+    <div className="remark-highlight" data-language={language}>
       <pre ref={ref} className={`language-${language}`}>
         <code className={`language-${language}`}>{body}</code>
       </pre>
