@@ -692,22 +692,6 @@ The timeout is set to ~10 seconds. If we don't receive **HTTP 200** response wit
 
 </Warning>
 
-
-#### Available webhooks:
-
-|                 |                                                                                                                                                                                                                                                                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`incoming_chat_thread`](#incoming_chat_thread) [`thread_closed`](#thread_closed)                                                                                                                                                                                                                                                                                   |
-| **Chat access** | [`access_granted`](#access_granted) [`access_revoked`](#access_revoked) [`access_set`](#access_set)                                                                                                                                                                                                                                                                 |
-| **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
-| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                           |
-| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
-| **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
-| **Status**      | [`agent_status_changed`](#agent_status_changed) [`agent_deleted`](#agent_deleted)| 
-| **Customers**   | [`customer_created`](#customer_created)                                                                                                                                                                                                                                                                                                                             |
-| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                                       |
-
-
 </Text>
 
 <Code>
@@ -734,6 +718,221 @@ The timeout is set to ~10 seconds. If we don't receive **HTTP 200** response wit
 </Code>
 
 </Section>
+
+## Methods
+
+
+| HTTP method  | The Webhooks API endpoint |
+|-------|--------|
+| `POST`|`https://api.livechatinc.com/v3.1/configuration/action/<action>`   |
+
+
+| Required header   |      Value      |   |
+|----------|:-------------:|------:|
+| `Content-Type`	 |  `application/json`  |  |
+
+
+<Section>
+<Text>
+
+### Register Webhook
+
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| Method URL   | `https://api.livechatinc.com/v3.1/configuration/action/register_webhook`  |
+| Required scopes| `webhooks--my:rw`  |
+
+
+| Parameter                           | Required   | Data type  | Notes                                                                                                           |
+| ---------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
+| `action`__*__                            | Yes        | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                              | 
+| `secret_key`                             | Yes        | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                              |
+| `url`                                    | Yes        | `string`   | Destination URL for the webhook                                                                                 |
+| `additional_data`__**__                  | No         | `[]string` | Additional data that will arrive with the webhook.                                                              |
+| `description`                            | No         | `string`   | Webhook description                                                                                             |
+| `filters`                                | No         | `object`   | Filters to check if a webhook should be triggered.                                                              |
+| `filters.author_type`                    | No         | `string`   | Possible values: `customer`, `agent`; allowed only for `incoming_event` and `event_updated` actions.            |
+| `filters.only_my_chats`                  | No         | `bool`     | `true` or `false`; triggers webhooks only for chats with the property `source.client_id` set to my `client_id`. |
+| `filters.chat_member_ids`                | No         | `object`   | Only one filter (`agents_any` or `agents_exclude`) is allowed.                                                  |
+| `filters.chat_member_ids.agents_any`     | No         | `[]string` | Array of Agents' ids; if any specified Agent is in the chat, the webhook will be triggered.                     |
+| `filters.chat_member_ids.agents_exclude` | No         | `[]string` | Array of Agents' ids; If any specified Agent is in the chat, the webhook will not be triggered.                 |
+
+#### Triggering actions
+
+__*__ The table below presents the possible values for the `action` parameter.
+
+| Possible action                   | Informs about                                                                                                    | Available filters                                 |
+| --------------------------------- |:----------------------------------------------------------------------------------------------------------------:| -------------------------------------------------:|
+| `incoming_chat_thread`            | [`incoming_chat_thread`](/messaging/agent-chat-api/v3.1/rtm-reference/#incoming_chat_thread)                     | `chat_member_ids`, `only_my_chats`                |
+| `incoming_event`                  | [`incoming_event`](/messaging/agent-chat-api/v3.1/rtm-reference/#incoming_event)                                 | `chat_member_ids`, `author_type`, `only_my_chats` |
+| `event_updated`                   | [`event_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#event_updated)                                   | `chat_member_ids`, `author_type`, `only_my_chats` |
+| `incoming_rich_message_postback`  | [`incoming_rich_message_postback`](/messaging/agent-chat-api/v3.1/rtm-reference/#incoming_rich_message_postback) | `chat_member_ids`, `only_my_chats`                |
+| `last_seen_timestamp_updated`     | [`last_seen_timestamp_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#last_seen_timestamp_updated)       | `chat_member_ids`, `only_my_chats`                |
+| `thread_closed`                   | [`thread_closed`](/messaging/agent-chat-api/v3.1/rtm-reference/#thread_closed)                                   | `chat_member_ids`, `only_my_chats`                |
+| `chat_properties_updated`         | [`chat_properties_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_properties_updated)               | `chat_member_ids`, `only_my_chats`                |
+| `chat_properties_deleted`         | [`chat_properties_deleted`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_properties_deleted)               | `chat_member_ids`, `only_my_chats`                |
+| `chat_thread_properties_updated`  | [`chat_thread_properties_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_properties_updated) | `chat_member_ids`, `only_my_chats`                |
+| `chat_thread_properties_deleted`  | [`chat_thread_properties_deleted`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_properties_deleted) | `chat_member_ids`, `only_my_chats`                |
+| `chat_user_added`                 | [`chat_user_added`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_user_added)                               | `chat_member_ids`, `only_my_chats`                |
+| `chat_user_removed`               | [`chat_user_removed`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_user_removed)                           | `chat_member_ids`, `only_my_chats`                |
+| `chat_thread_tagged`              | [`chat_thread_tagged`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_tagged)                         | `chat_member_ids`, `only_my_chats`                |
+| `chat_thread_untagged`            | [`chat_thread_untagged`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_untagged)                     | `chat_member_ids`, `only_my_chats`                |
+| `agent_status_changed`            | [`agent_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#agent_updated)                                   | `chat_member_ids`                                 |
+| `agent_deleted`                   | An Agent's account being deleted from the license                                                                | `agent_ids`                                       |
+
+
+__*__ The table below presents the possible values for the `additional_data` parameter:
+
+| Possible value      | Available for actions                                              |
+| ------------------- |:------------------------------------------------------------------:|
+| `access`            | `incoming_event`, `chat_user_added`                                |
+| `chat_properties`   | All actions, except for `agent_status_changed` and `agent_deleted` |
+| `thread_id`         | `chat_user_added`                                                  |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/configuration/action/register_webhook \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "url": "http://myservice.com/webhooks",
+        "description": "Test webhook",
+        "action": "thread_closed",
+        "secret_key": "laudla991lamda0pnoaa0"  
+		}'
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "webhook_id": "pqi8oasdjahuakndw9nsad9na"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+
+<Section>
+<Text>
+
+### Get Webhooks Config
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| Method URL   | `https://api.livechatinc.com/v3.1/configuration/action/get_webhooks_config`  |
+| Required scopes| `webhooks--my:ro` `webhooks--all:ro` |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/configuration/action/get_webhooks_config \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+[
+    {
+      "webhook_id": "pqi8oasdjahuakndw9nsad9na",
+      "url": "http://myservice.com/webhooks",
+      "description": "Test webhook",
+      "action": "thread_closed",
+      "filters": {
+        "chat_member_ids": {
+          "agents_any": ["johndoe@mail.com"]
+        }
+      },
+      "owner_client_id": "asXdesldiAJSq9padj"
+    }
+]
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+
+<Section>
+<Text>
+
+### Unregister Webhook
+
+
+#### Specifics
+
+|  |  |
+|-------|--------|
+| Method URL   | `https://api.livechatinc.com/v3.1/configuration/action/unregister_webhook`  |
+| Required scopes| `webhooks--my:rw` `webhooks--all:rw`  |
+
+
+#### Request
+
+| Parameter    | Required | Data type| Notes      |
+| -------------| -------- | -------- | ---------- |
+| `webhook_id` | Yes      | `string` | Webhook ID |
+
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.1/configuration/action/unregister_webhook \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "webhook_id": "pqi8oasdjahuakndw9nsad9na"
+		  }'
+```
+
+</CodeSample>
+
+</Code>
+</Section>
+
+<Text>
+
+## Available webhooks
+
+|                 |                                                                                                                                                                                                                                                                                                                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**       | [`incoming_chat_thread`](#incoming_chat_thread) [`thread_closed`](#thread_closed)                                                                                                                                                                                                                                                                                   |
+| **Chat access** | [`access_granted`](#access_granted) [`access_revoked`](#access_revoked) [`access_set`](#access_set)                                                                                                                                                                                                                                                                 |
+| **Chat users**  | [`chat_user_added`](#chat_user_added) [`chat_user_removed`](#chat_user_removed)                                                                                                                                                                                                                                                                                     |
+| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                           |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`chat_thread_properties_deleted`](#chat_thread_properties_deleted) [`chat_thread_properties_updated`](#chat_thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Thread tags** | [`chat_thread_tagged`](#chat_thread_tagged) [`chat_thread_untagged`](#chat_thread_untagged)                                                                                                                                                                                                                                                                         |
+| **Status**      | [`agent_status_changed`](#agent_status_changed) [`agent_deleted`](#agent_deleted)| 
+| **Customers**   | [`customer_created`](#customer_created)                                                                                                                                                                                                                                                                                                                             |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                                       |
+
+</Text>
 
 ## Chats
 
@@ -1877,203 +2076,6 @@ Informs that a user has seen events up to a specific time.
 
 </Code>
 
-</Section>
-
-## Methods
-
-
-| HTTP method  | The Webhooks API endpoint |
-|-------|--------|
-| `POST`|`https://api.livechatinc.com/v3.1/configuration/action/<action>`   |
-
-
-| Required header   |      Value      |   |
-|----------|:-------------:|------:|
-| `Content-Type`	 |  `application/json`  |  |
-
-
-<Section>
-<Text>
-
-### Register Webhook
-
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| Method URL   | `https://api.livechatinc.com/v3.1/configuration/action/register_webhook`  |
-| Required scopes| `webhooks--my:rw`  |
-
-
-| Parameter                           | Required   | Data type  | Notes                                                                                                           |
-| ---------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `action`__*__                            | Yes        | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                              | 
-| `secret_key`                             | Yes        | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                              |
-| `url`                                    | Yes        | `string`   | Destination URL for the webhook                                                                                 |
-| `additional_data`__**__                  | No         | `[]string` | Additional data that will arrive with the webhook.                                                              |
-| `description`                            | No         | `string`   | Webhook description                                                                                             |
-| `filters`                                | No         | `object`   | Filters to check if a webhook should be triggered.                                                              |
-| `filters.author_type`                    | No         | `string`   | Possible values: `customer`, `agent`; allowed only for `incoming_event` and `event_updated` actions.            |
-| `filters.only_my_chats`                  | No         | `bool`     | `true` or `false`; triggers webhooks only for chats with the property `source.client_id` set to my `client_id`. |
-| `filters.chat_member_ids`                | No         | `object`   | Only one filter (`agents_any` or `agents_exclude`) is allowed.                                                  |
-| `filters.chat_member_ids.agents_any`     | No         | `[]string` | Array of Agents' ids; if any specified Agent is in the chat, the webhook will be triggered.                     |
-| `filters.chat_member_ids.agents_exclude` | No         | `[]string` | Array of Agents' ids; If any specified Agent is in the chat, the webhook will not be triggered.                 |
-
-#### Triggering actions
-
-__*__ The table below presents the possible values for the `action` parameter.
-
-| Possible action                   | Informs about                                                                                                    | Available filters                                 |
-| --------------------------------- |:----------------------------------------------------------------------------------------------------------------:| -------------------------------------------------:|
-| `incoming_chat_thread`            | [`incoming_chat_thread`](/messaging/agent-chat-api/v3.1/rtm-reference/#incoming_chat_thread)                     | `chat_member_ids`, `only_my_chats`                |
-| `incoming_event`                  | [`incoming_event`](/messaging/agent-chat-api/v3.1/rtm-reference/#incoming_event)                                 | `chat_member_ids`, `author_type`, `only_my_chats` |
-| `event_updated`                   | [`event_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#event_updated)                                   | `chat_member_ids`, `author_type`, `only_my_chats` |
-| `incoming_rich_message_postback`  | [`incoming_rich_message_postback`](/messaging/agent-chat-api/v3.1/rtm-reference/#incoming_rich_message_postback) | `chat_member_ids`, `only_my_chats`                |
-| `last_seen_timestamp_updated`     | [`last_seen_timestamp_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#last_seen_timestamp_updated)       | `chat_member_ids`, `only_my_chats`                |
-| `thread_closed`                   | [`thread_closed`](/messaging/agent-chat-api/v3.1/rtm-reference/#thread_closed)                                   | `chat_member_ids`, `only_my_chats`                |
-| `chat_properties_updated`         | [`chat_properties_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_properties_updated)               | `chat_member_ids`, `only_my_chats`                |
-| `chat_properties_deleted`         | [`chat_properties_deleted`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_properties_deleted)               | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_properties_updated`  | [`chat_thread_properties_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_properties_updated) | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_properties_deleted`  | [`chat_thread_properties_deleted`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_properties_deleted) | `chat_member_ids`, `only_my_chats`                |
-| `chat_user_added`                 | [`chat_user_added`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_user_added)                               | `chat_member_ids`, `only_my_chats`                |
-| `chat_user_removed`               | [`chat_user_removed`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_user_removed)                           | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_tagged`              | [`chat_thread_tagged`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_tagged)                         | `chat_member_ids`, `only_my_chats`                |
-| `chat_thread_untagged`            | [`chat_thread_untagged`](/messaging/agent-chat-api/v3.1/rtm-reference/#chat_thread_untagged)                     | `chat_member_ids`, `only_my_chats`                |
-| `agent_status_changed`            | [`agent_updated`](/messaging/agent-chat-api/v3.1/rtm-reference/#agent_updated)                                   | `chat_member_ids`                                 |
-| `agent_deleted`                   | An Agent's account being deleted from the license                                                                | `agent_ids`                                       |
-
-
-__*__ The table below presents the possible values for the `additional_data` parameter:
-
-| Possible value      | Available for actions                                              |
-| ------------------- |:------------------------------------------------------------------:|
-| `access`            | `incoming_event`, `chat_user_added`                                |
-| `chat_properties`   | All actions, except for `agent_status_changed` and `agent_deleted` |
-| `thread_id`         | `chat_user_added`                                                  |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/configuration/action/register_webhook \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-        "url": "http://myservice.com/webhooks",
-        "description": "Test webhook",
-        "action": "thread_closed",
-        "secret_key": "laudla991lamda0pnoaa0"  
-		}'
-```
-
-</CodeSample>
-<CodeResponse>
-
-```json
-{
-  "webhook_id": "pqi8oasdjahuakndw9nsad9na"
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-
-<Section>
-<Text>
-
-### Get Webhooks Config
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| Method URL   | `https://api.livechatinc.com/v3.1/configuration/action/get_webhooks_config`  |
-| Required scopes| `webhooks--my:ro` `webhooks--all:ro` |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/configuration/action/get_webhooks_config \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{}'
-```
-
-</CodeSample>
-<CodeResponse>
-
-```json
-[
-    {
-      "webhook_id": "pqi8oasdjahuakndw9nsad9na",
-      "url": "http://myservice.com/webhooks",
-      "description": "Test webhook",
-      "action": "thread_closed",
-      "filters": {
-        "chat_member_ids": {
-          "agents_any": ["johndoe@mail.com"]
-        }
-      },
-      "owner_client_id": "asXdesldiAJSq9padj"
-    }
-]
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-
-<Section>
-<Text>
-
-### Unregister Webhook
-
-
-#### Specifics
-
-|  |  |
-|-------|--------|
-| Method URL   | `https://api.livechatinc.com/v3.1/configuration/action/unregister_webhook`  |
-| Required scopes| `webhooks--my:rw` `webhooks--all:rw`  |
-
-
-#### Request
-
-| Parameter    | Required | Data type| Notes      |
-| -------------| -------- | -------- | ---------- |
-| `webhook_id` | Yes      | `string` | Webhook ID |
-
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.1/configuration/action/unregister_webhook \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-        "webhook_id": "pqi8oasdjahuakndw9nsad9na"
-		  }'
-```
-
-</CodeSample>
-
-</Code>
 </Section>
 
 # Contact us
