@@ -18,12 +18,15 @@ import {
   // NavHeader,
 } from "../core/components";
 import Rating from "../core/Rating";
-import { Headings } from "../extensions";
+import { Headings, CodeBlocks, Scopes, Errors } from "../extensions";
 
 import { Header as PageHeader } from "../core/Page";
 
 const components = {
+  ...CodeBlocks,
   ...Headings,
+  Scopes,
+  Errors,
 };
 
 const Page = ({ frontMatter, children }) => {
