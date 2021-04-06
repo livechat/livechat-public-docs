@@ -56,6 +56,7 @@ const Rating = ({ label, className }) => {
             isSelected={isSelected}
             isRated={isRated}
             text={RATES[i]}
+            id={`rating-${i}`}
           />
         );
       })}
