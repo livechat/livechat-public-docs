@@ -33,6 +33,8 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
         shell.cp("-Rn", `${source}`, `${destination}`);
 
+        shell.exec(`git add ${destination}`);
+
         process.stdout.write("Done\n");
       }
 
@@ -49,12 +51,15 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         if (baseVersion === `v${stableVersion}`) {
           source = `${AGENT_CHAT_API_BASE_URL}/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
 
           source = `${AGENT_CHAT_API_BASE_URL}/rtm-reference/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}/rtm-reference`);
+          shell.exec(`git add ${destination}`);
         } else {
           source = `${AGENT_CHAT_API_BASE_URL}/${baseVersion}/.`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
         }
 
         process.stdout.write("Done\n");
@@ -73,12 +78,15 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         if (baseVersion === `v${stableVersion}`) {
           source = `${CUSTOMER_CHAT_API_BASE_URL}/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
 
           source = `${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}/rtm-reference`);
+          shell.exec(`git add ${destination}`);
         } else {
           source = `${CUSTOMER_CHAT_API_BASE_URL}/${baseVersion}/.`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
         }
 
         process.stdout.write("Done\n");
@@ -105,6 +113,7 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         }
 
         shell.cp("-Rn", `${source}`, `${destination}`);
+        shell.exec(`git add ${destination}`);
 
         process.stdout.write("Done\n");
       }
@@ -125,6 +134,7 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         }
 
         shell.cp("-Rn", `${source}`, `${destination}`);
+        shell.exec(`git add ${destination}`);
 
         process.stdout.write("Done\n");
       }
@@ -150,6 +160,7 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         }
 
         shell.cp("-Rn", `${source}`, `${destination}`);
+        shell.exec(`git add ${destination}`);
 
         process.stdout.write("Done\n");
       
