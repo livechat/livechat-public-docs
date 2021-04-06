@@ -28,7 +28,7 @@ const BlueStar = styled(StarIcon)`
   }
 `;
 
-const Star = ({ isHover, isSelected, isRated, text, ...props }) => {
+const Star = ({ isHover, isSelected, isRated, text, id, ...props }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const onMouseEnter = () => {
@@ -49,6 +49,7 @@ const Star = ({ isHover, isSelected, isRated, text, ...props }) => {
       isVisible={isVisible}
       trigger={
         <Container
+          id={id}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           onClick={props.handleClick}
