@@ -2366,20 +2366,6 @@ Here's what you need to know about **webhooks**:
 - You **register** webhook definitions per Client ID (application).
 - You **enable** webhooks for the licences that install your application.
 
-## Available webhooks
-
-|                 |                                                                                                                                                                                                                                                                                                                                                 |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                       |
-| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                             |
-| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
-| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                       |
-| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_deleted`](#thread_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
-| **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
-| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_deleted`](#agent_deleted)                                                                                                                                                                                                                                                                   |
-| **Customers**   | [`incoming_customer`](#incoming_customer) [`customer_session_fields_updated`](#customer_session_fields_updated)                                                                                                                                                                                                                                 |
-| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                               |
-
 </Text>
 
 <Code>
@@ -2410,6 +2396,391 @@ Here's what you need to know about **webhooks**:
 </Code>
 
 </Section>
+
+## Methods
+
+| HTTP method | The Webhooks API endpoint                                        |
+| ----------- | ---------------------------------------------------------------- |
+| `POST`      | `https://api.livechatinc.com/v3.3/configuration/action/<action>` |
+
+| Required header |       Value        |      |
+| --------------- | :----------------: | ---: |
+| `Content-Type`  | `application/json` |      |
+
+<Section>
+
+<Text>
+
+### Register Webhook
+
+Registers a webhook for the Client ID (application) provided in the request. Later on, registered webhooks can be [enabled](#enable-license-webhooks) for a given license.
+
+#### Specifics
+
+|                 |                                                                          |
+| --------------- | ------------------------------------------------------------------------ |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/register_webhook` |
+| Required scopes | `webhooks.configuration:rw`                                              |
+
+| Parameter                                       | Required | Data type  | Notes                                                                                                                                                                               |
+| ----------------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`__*__                                   | yes      | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                                                                                                  |
+| `secret_key`                                    | yes      | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                                                                                                  |
+| `url`                                           | yes      | `string`   | Destination URL for the webhook                                                                                                                                                     |
+| `additional_data`                               | no       | `[]string` | Additional data arriving with the webhook. Value: `chat properties`, `chat_presence_user_ids` (all actions except for `agent_status_changed`, `agent_deleted`, `incoming_customer`) |
+| `description`                                   | no       | `string`   | Webhook description                                                                                                                                                                 |
+| `filters`                                       | no       | `object`   | Filters to check if a webhook should be triggered.                                                                                                                                  |
+| `filters.author_type`                           | no       | `string`   | Possible values: `customer`, `agent`; allowed only for the `incoming_event` and `event_updated` actions.                                                                            |
+| `filters.only_my_chats`                         | no       | `bool`     | `true` or `false`; triggers webhooks only for chats with the property `source.client_id` set to my `client_id`.                                                                     |
+| `filters.chat_presence`                         | no       | `object`   | Filters to check if a webhook should be triggered based on user's presence in the chat.                                                                                             |
+| `filters.chat_presence.user_ids`                | no       | `object`   | Only one filter (`values` or `exclude_values`) is allowed. Supports every user type (Agent, Customer, Bot).                                                                         |
+| `filters.chat_presence.user_ids.values`         | no       | `[]string` | Array of Users' ids; if any specified User is in the chat, the webhook will be triggered.                                                                                           |
+| `filters.chat_presence.user_ids.exclude_values` | no       | `[]string` | Array of Users' ids; if any specified Users is in the chat, the webhook will not be triggered.                                                                                      |
+| `filters.chat_presence.my_bots`                 | no       | `bool`     | If any bot owned by `owner_client_id` is in the chat, the webhook will be triggered.                                                                                                |
+| `owner_client_id`                               | yes      | `string`   | The Client ID for which the webhook will be registered.                                                                                                                             |
+| `type`                                          | yes      | `string`   | `bot` or `license`                                                                                                                                                                  |
+
+#### Triggering actions
+
+__*__ The table below presents the possible values for the `action` parameter.
+
+| Possible action                                                       |                               Available filters |
+| --------------------------------------------------------------------- | ----------------------------------------------: |
+| [`incoming_chat`](#incoming_chat)                                     |                `chat_presence`, `only_my_chats` |
+| [`chat_deactivated`](#chat_deactivated)                               |                `chat_presence`, `only_my_chats` |
+| [`chat_access_granted`](#chat_access_granted)                         |                `chat_presence`, `only_my_chats` |
+| [`chat_access_revoked`](#chat_access_revoked)                         |                `chat_presence`, `only_my_chats` |
+| [`user_added_to_chat`](#user_added_to_chat)                           |                `chat_presence`, `only_my_chats` |
+| [`user_removed_from_chat`](#user_removed_from_chat)                   |                `chat_presence`, `only_my_chats` |
+| [`incoming_event`](#incoming_event)                                   | `chat_presence`, `author_type`, `only_my_chats` |
+| [`event_updated`](#event_updated)                                     | `chat_presence`, `author_type`, `only_my_chats` |
+| [`incoming_rich_message_postback`](#incoming_rich_message_postback)   |                `chat_presence`, `only_my_chats` |
+| [`chat_properties_updated`](#chat_properties_updated)                 |                `chat_presence`, `only_my_chats` |
+| [`chat_properties_deleted`](#chat_properties_deleted)                 |                `chat_presence`, `only_my_chats` |
+| [`thread_properties_updated`](#thread_properties_updated)             |                `chat_presence`, `only_my_chats` |
+| [`thread_properties_deleted`](#thread_properties_deleted)             |                `chat_presence`, `only_my_chats` |
+| [`event_properties_updated`](#event_properties_updated)               |                `chat_presence`, `only_my_chats` |
+| [`event_properties_deleted`](#event_properties_deleted)               |                `chat_presence`, `only_my_chats` |
+| [`thread_tagged`](#thread_tagged)                                     |                `chat_presence`, `only_my_chats` |
+| [`thread_untagged`](#thread_untagged)                                 |                `chat_presence`, `only_my_chats` |
+| [`routing_status_set`](#routing_status_set)                           |                                               - |
+| [`agent_deleted`](#agent_deleted)                                     |                                     `agent_ids` |
+| [`incoming_customer`](#incoming_customer)                             |                                               - |
+| [`customer_session_fields_updated`](#customer_session_fields_updated) |                                 `chat_presence` |
+| [`events_marked_as_seen`](#events_marked_as_seen)                     |                `chat_presence`, `only_my_chats` |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/register_webhook \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "url": "http://myservice.com/webhooks",
+        "description": "Test webhook",
+        "action": "chat_deactivated",
+        "secret_key": "laudla991lamda0pnoaa0",
+        "owner_client_id": "asXdesldiAJSq9padj",
+        "type": "license"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.3" json="registerWebhook"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Webhooks
+
+Lists all webhooks registered for the given Client ID.
+
+#### Specifics
+
+|                 |                                                                       |
+| --------------- | --------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/list_webhooks` |
+| Required scopes | `webhooks.configuration:rw`                                           |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                                                  |
+| ----------------- | -------- | --------- | ---------------------------------------------------------------------- |
+| `owner_client_id` | yes      | `string`  | The webhook owner (the Client ID for which the webhook is registered). |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/list_webhooks \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.3" json="listWebhooks"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Unregister Webhook
+
+Unregisters a webhook previously [registered](#register-webhook) for a Client ID (application).
+
+#### Specifics
+
+|                 |                                                                            |
+| --------------- | -------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/unregister_webhook` |
+| Required scopes | `webhooks.configuration:rw`                                                |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                                                  |
+| ----------------- | -------- | --------- | ---------------------------------------------------------------------- |
+| `id`              | Yes      | `string`  | Webhook ID                                                             |
+| `owner_client_id` | Yes      | `string`  | The webhook owner (the Client ID for which the webhook is registered). |
+
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/unregister_webhook \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "id": "pqi8oasdjahuakndw9nsad9na"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Webhook Names
+
+Lists all webhooks that are supported in a given API version. This method requires no authorization.
+
+#### Specifics
+
+|                 |                                                                            |
+| --------------- | -------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/list_webhook_names` |
+| Required scopes | -                                                                          |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                                      |
+| --------- | -------- | --------- | ------------------------------------------ |
+| `version` | No       | `string`  | Defaults to the current stable API version |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/list_webhook_names \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "version": "3.3"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.3" json="listWebhookNames"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Enable License Webhooks
+
+Enables the webhooks [registered](#register-webhook) for a given **Client Id** (application) for the license associated with the access token used in the request.
+
+#### Specifics
+
+|                 |                                                                                 |
+| --------------- | ------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/enable_license_webhooks` |
+| Required scopes | `webhooks.state:rw`                                                             |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                                                                                                  |
+| ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/enable_license_webhooks \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Disable License Webhooks
+
+Disables the [enabled webhooks](#enable-license-webhooks).
+
+#### Specifics
+
+|                 |                                                                                  |
+| --------------- | -------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/disable_license_webhooks` |
+| Required scopes | `webhooks.state:rw`                                                              |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                                                                                                  |
+| ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/disable_license_webhooks \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get License Webhooks State
+
+Gets the state of the webhooks registered for a given **Client Id** (application) on the license associated with the access token used in the request.
+
+#### Specifics
+
+|                 |                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/get_license_webhooks_state` |
+| Required scopes | `webhooks.state:ro`                                                                |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                                                                                                  |
+| ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.3/configuration/action/get_license_webhooks_state \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.3" json="getWebhooksState"/>
+
+</Code>
+
+</Section>
+
+<Text>
+
+## Available webhooks
+
+|                 |                                                                                                                                                                                                                                                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                       |
+| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                             |
+| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
+| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                       |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_deleted`](#thread_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_deleted`](#agent_deleted)                                                                                                                                                                                                                                                                   |
+| **Customers**   | [`incoming_customer`](#incoming_customer) [`customer_session_fields_updated`](#customer_session_fields_updated)                                                                                                                                                                                                                                 |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                               |
+
+</Text>
 
 ## Chats
 
@@ -3697,373 +4068,6 @@ Informs that a user has seen events up to a specific time.
 ```
 
 </CodeResponse>
-
-</Code>
-
-</Section>
-
-## Methods
-
-| HTTP method | The Webhooks API endpoint                                        |
-| ----------- | ---------------------------------------------------------------- |
-| `POST`      | `https://api.livechatinc.com/v3.3/configuration/action/<action>` |
-
-| Required header |       Value        |      |
-| --------------- | :----------------: | ---: |
-| `Content-Type`  | `application/json` |      |
-
-<Section>
-
-<Text>
-
-### Register Webhook
-
-Registers a webhook for the Client ID (application) provided in the request. Later on, registered webhooks can be [enabled](#enable-license-webhooks) for a given license.
-
-#### Specifics
-
-|                 |                                                                          |
-| --------------- | ------------------------------------------------------------------------ |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/register_webhook` |
-| Required scopes | `webhooks.configuration:rw`                                              |
-
-| Parameter                                       | Required | Data type  | Notes                                                                                                                                                                               |
-| ----------------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action`__*__                                   | yes      | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                                                                                                  |
-| `secret_key`                                    | yes      | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                                                                                                  |
-| `url`                                           | yes      | `string`   | Destination URL for the webhook                                                                                                                                                     |
-| `additional_data`                               | no       | `[]string` | Additional data arriving with the webhook. Value: `chat properties`, `chat_presence_user_ids` (all actions except for `agent_status_changed`, `agent_deleted`, `incoming_customer`) |
-| `description`                                   | no       | `string`   | Webhook description                                                                                                                                                                 |
-| `filters`                                       | no       | `object`   | Filters to check if a webhook should be triggered.                                                                                                                                  |
-| `filters.author_type`                           | no       | `string`   | Possible values: `customer`, `agent`; allowed only for the `incoming_event` and `event_updated` actions.                                                                            |
-| `filters.only_my_chats`                         | no       | `bool`     | `true` or `false`; triggers webhooks only for chats with the property `source.client_id` set to my `client_id`.                                                                     |
-| `filters.chat_presence`                         | no       | `object`   | Filters to check if a webhook should be triggered based on user's presence in the chat.                                                                                             |
-| `filters.chat_presence.user_ids`                | no       | `object`   | Only one filter (`values` or `exclude_values`) is allowed. Supports every user type (Agent, Customer, Bot).                                                                         |
-| `filters.chat_presence.user_ids.values`         | no       | `[]string` | Array of Users' ids; if any specified User is in the chat, the webhook will be triggered.                                                                                           |
-| `filters.chat_presence.user_ids.exclude_values` | no       | `[]string` | Array of Users' ids; if any specified Users is in the chat, the webhook will not be triggered.                                                                                      |
-| `filters.chat_presence.my_bots`                 | no       | `bool`     | If any bot owned by `owner_client_id` is in the chat, the webhook will be triggered.                                                                                                |
-| `owner_client_id`                               | yes      | `string`   | The Client ID for which the webhook will be registered.                                                                                                                             |
-| `type`                                          | yes      | `string`   | `bot` or `license`                                                                                                                                                                  |
-
-#### Triggering actions
-
-__*__ The table below presents the possible values for the `action` parameter.
-
-| Possible action                                                       |                                 Available filters |
-| --------------------------------------------------------------------- | ------------------------------------------------: |
-| [`incoming_chat`](#incoming_chat)                                     |                  `chat_presence`, `only_my_chats` |
-| [`chat_deactivated`](#chat_deactivated)                               |                  `chat_presence`, `only_my_chats` |
-| [`chat_access_granted`](#chat_access_granted)                         |                  `chat_presence`, `only_my_chats` |
-| [`chat_access_revoked`](#chat_access_revoked)                         |                  `chat_presence`, `only_my_chats` |
-| [`user_added_to_chat`](#user_added_to_chat)                           |                  `chat_presence`, `only_my_chats` |
-| [`user_removed_from_chat`](#user_removed_from_chat)                   |                  `chat_presence`, `only_my_chats` |
-| [`incoming_event`](#incoming_event)                                   |   `chat_presence`, `author_type`, `only_my_chats` |
-| [`event_updated`](#event_updated)                                     |   `chat_presence`, `author_type`, `only_my_chats` |
-| [`incoming_rich_message_postback`](#incoming_rich_message_postback)   |                  `chat_presence`, `only_my_chats` |
-| [`chat_properties_updated`](#chat_properties_updated)                 |                  `chat_presence`, `only_my_chats` |
-| [`chat_properties_deleted`](#chat_properties_deleted)                 |                  `chat_presence`, `only_my_chats` |
-| [`thread_properties_updated`](#thread_properties_updated)             |                  `chat_presence`, `only_my_chats` |
-| [`thread_properties_deleted`](#thread_properties_deleted)             |                  `chat_presence`, `only_my_chats` |
-| [`event_properties_updated`](#event_properties_updated)               |                  `chat_presence`, `only_my_chats` |
-| [`event_properties_deleted`](#event_properties_deleted)               |                  `chat_presence`, `only_my_chats` |
-| [`thread_tagged`](#thread_tagged)                                     |                  `chat_presence`, `only_my_chats` |
-| [`thread_untagged`](#thread_untagged)                                 |                  `chat_presence`, `only_my_chats` |
-| [`routing_status_set`](#routing_status_set)                           |                                                 - |
-| [`agent_deleted`](#agent_deleted)                                     |                                       `agent_ids` |
-| [`incoming_customer`](#incoming_customer)                             |                                                 - |
-| [`customer_session_fields_updated`](#customer_session_fields_updated) |                                   `chat_presence` |
-| [`events_marked_as_seen`](#events_marked_as_seen)                     |                  `chat_presence`, `only_my_chats` |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/register_webhook \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-        "url": "http://myservice.com/webhooks",
-        "description": "Test webhook",
-        "action": "chat_deactivated",
-        "secret_key": "laudla991lamda0pnoaa0",
-        "owner_client_id": "asXdesldiAJSq9padj",
-        "type": "license"
-      }'
-```
-
-</CodeSample>
-
-<CodeResponse type="configuration" version="v3.3" json="registerWebhook"/>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### List Webhooks
-
-Lists all webhooks registered for the given Client ID.
-
-#### Specifics
-
-|                 |                                                                       |
-| --------------- | --------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/list_webhooks` |
-| Required scopes | `webhooks.configuration:rw`                                           |
-
-#### Request
-
-| Parameter         | Required | Data type | Notes                                                                  |
-| ----------------- | -------- | --------- | ---------------------------------------------------------------------- |
-| `owner_client_id` | yes      | `string`  | The webhook owner (the Client ID for which the webhook is registered). |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/list_webhooks \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{}'
-```
-
-</CodeSample>
-
-<CodeResponse type="configuration" version="v3.3" json="listWebhooks"/>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### Unregister Webhook
-
-Unregisters a webhook previously [registered](#register-webhook) for a Client ID (application).
-
-#### Specifics
-
-|                 |                                                                            |
-| --------------- | -------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/unregister_webhook` |
-| Required scopes | `webhooks.configuration:rw`                                                |
-
-#### Request
-
-| Parameter         | Required | Data type | Notes                                                                  |
-| ----------------- | -------- | --------- | ---------------------------------------------------------------------- |
-| `id`              | Yes      | `string`  | Webhook ID                                                             |
-| `owner_client_id` | Yes      | `string`  | The webhook owner (the Client ID for which the webhook is registered). |
-
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/unregister_webhook \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
-  -d '{
-        "id": "pqi8oasdjahuakndw9nsad9na"
-      }'
-```
-
-</CodeSample>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### List Webhook Names
-
-Lists all webhooks that are supported in a given API version. This method requires no authorization.
-
-#### Specifics
-
-|                 |                                                                            |
-| --------------- | -------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/list_webhook_names` |
-| Required scopes | -                                                                          |
-
-#### Request
-
-| Parameter | Required | Data type | Notes                                      |
-| --------- | -------- | --------- | ------------------------------------------ |
-| `version` | No       | `string`  | Defaults to the current stable API version |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/list_webhook_names \
-  -H 'Content-Type: application/json' \
-  -d '{
-        "version": "3.3"
-      }'
-```
-
-</CodeSample>
-
-<CodeResponse type="configuration" version="v3.3" json="listWebhookNames"/>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### Enable License Webhooks
-
-Enables the webhooks [registered](#register-webhook) for a given **Client Id** (application) for the license associated with the access token used in the request.
-
-#### Specifics
-
-|                 |                                                                                 |
-| --------------- | ------------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/enable_license_webhooks` |
-| Required scopes | `webhooks.state:rw`                                                             |
-
-#### Request
-
-| Parameter         | Required | Data type | Notes                                                                                                                  |
-| ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/enable_license_webhooks \
-  -H 'Content-Type: application/json' \
-  -d '{}'
-```
-
-</CodeSample>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### Disable License Webhooks
-
-Disables the [enabled webhooks](#enable-license-webhooks).
-
-#### Specifics
-
-|                 |                                                                                  |
-| --------------- | -------------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/disable_license_webhooks` |
-| Required scopes | `webhooks.state:rw`                                                              |
-
-#### Request
-
-| Parameter         | Required | Data type | Notes                                                                                                                  |
-| ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/disable_license_webhooks \
-  -H 'Content-Type: application/json' \
-  -d '{}'
-```
-
-</CodeSample>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
-### Get License Webhooks State
-
-Gets the state of the webhooks registered for a given **Client Id** (application) on the license associated with the access token used in the request.
-
-#### Specifics
-
-|                 |                                                                                    |
-| --------------- | ---------------------------------------------------------------------------------- |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/get_license_webhooks_state` |
-| Required scopes | `webhooks.state:ro`                                                                |
-
-#### Request
-
-| Parameter         | Required | Data type | Notes                                                                                                                  |
-| ----------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `owner_client_id` | Yes      | `string`  | Required when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens); ignored otherwise. |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  https://api.livechatinc.com/v3.3/configuration/action/get_license_webhooks_state \
-  -H 'Content-Type: application/json' \
-  -d '{}'
-```
-
-</CodeSample>
-
-<CodeResponse type="configuration" version="v3.3" json="getWebhooksState"/>
 
 </Code>
 
