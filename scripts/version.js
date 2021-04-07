@@ -7,6 +7,7 @@ const AGENT_CHAT_API_BASE_URL = "./content/messaging/agent-chat-api";
 const CUSTOMER_CHAT_API_BASE_URL = "./content/messaging/customer-chat-api";
 const CUSTOMER_SDK_BASE_URL = "./content/extending-chat-widget/customer-sdk";
 const JS_API_BASE_URL = "./content/extending-chat-widget/javascript-api";
+const REPORTS_API_BASE_URL = "./content/data-reporting/reports-api";
 
 const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
   const stableVersion = VERSIONS_GROUPS[group].STABLE_VERSION;
@@ -32,6 +33,8 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
         shell.cp("-Rn", `${source}`, `${destination}`);
 
+        shell.exec(`git add ${destination}`);
+
         process.stdout.write("Done\n");
       }
 
@@ -48,12 +51,15 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         if (baseVersion === `v${stableVersion}`) {
           source = `${AGENT_CHAT_API_BASE_URL}/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
 
           source = `${AGENT_CHAT_API_BASE_URL}/rtm-reference/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}/rtm-reference`);
+          shell.exec(`git add ${destination}`);
         } else {
           source = `${AGENT_CHAT_API_BASE_URL}/${baseVersion}/.`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
         }
 
         process.stdout.write("Done\n");
@@ -72,19 +78,22 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         if (baseVersion === `v${stableVersion}`) {
           source = `${CUSTOMER_CHAT_API_BASE_URL}/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
 
           source = `${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}/rtm-reference`);
+          shell.exec(`git add ${destination}`);
         } else {
           source = `${CUSTOMER_CHAT_API_BASE_URL}/${baseVersion}/.`;
           shell.cp("-Rn", `${source}`, `${destination}`);
+          shell.exec(`git add ${destination}`);
         }
 
         process.stdout.write("Done\n");
       }
       break;
     }
-
+    
     case "chat-widget": {
       let source;
       let destination;
@@ -104,6 +113,7 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         }
 
         shell.cp("-Rn", `${source}`, `${destination}`);
+        shell.exec(`git add ${destination}`);
 
         process.stdout.write("Done\n");
       }
@@ -124,9 +134,36 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         }
 
         shell.cp("-Rn", `${source}`, `${destination}`);
+        shell.exec(`git add ${destination}`);
 
         process.stdout.write("Done\n");
       }
+      break;
+    }
+
+    case "data-reporting": {
+      let source;
+      let destination;
+
+      // reports-api
+        process.stdout.write(`Creating reports-api for ${newVersion}...`);
+
+        destination = `${REPORTS_API_BASE_URL}/${newVersion}`;
+
+        shell.mkdir(`${destination}`);
+
+        // Check if base version is a stable (without folder version)
+        if (baseVersion === `v${stableVersion}`) {
+          source = `${REPORTS_API_BASE_URL}/index.mdx`;
+        } else {
+          source = `${REPORTS_API_BASE_URL}/${baseVersion}/.`;
+        }
+
+        shell.cp("-Rn", `${source}`, `${destination}`);
+        shell.exec(`git add ${destination}`);
+
+        process.stdout.write("Done\n");
+      
       break;
     }
   }
@@ -235,6 +272,19 @@ const makeStable = (version, group, exclude = []) => {
 
         process.stdout.write("Done\n");
       }
+      break;
+
+    case "data-reporting":
+        process.stdout.write("Moving reports-api...");
+        shell.mkdir(`${REPORTS_API_BASE_URL}/${stableVersion}`);
+        shell.exec(
+          `git mv ${REPORTS_API_BASE_URL}/index.mdx ${REPORTS_API_BASE_URL}/${stableVersion}`
+        );
+        shell.exec(
+          `git mv ${REPORTS_API_BASE_URL}/${version}/index.mdx ${REPORTS_API_BASE_URL}/`
+        );
+        shell.rm("-R", `${REPORTS_API_BASE_URL}/${version}`);
+        process.stdout.write("Done\n");       
       break;
   }
 
