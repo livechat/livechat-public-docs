@@ -24,7 +24,7 @@ if (clientID === "") {
 
 var query = {}
 
-request.get(`https://accounts.livechatinc.com/info?code=${agentAccessToken}`)
+request.get(`https://accounts.livechat.com/info?code=${agentAccessToken}`)
 	.then(JSON.parse)
 	.then(function(token){
 		if (clientID != token.client_id) {
@@ -69,7 +69,7 @@ request.get(`https://accounts.livechatinc.com/info?code=${agentAccessToken}`)
 			}
 		}
 
-		return request.post(`https://accounts.livechatinc.com/customer/?${qs.stringify(query)}`,options)
+		return request.post(`https://accounts.livechat.com/customer/?${qs.stringify(query)}`,options)
 	})
 	.catch(function(err){
 		console.error(err.message)
@@ -94,7 +94,7 @@ request.get(`https://accounts.livechatinc.com/info?code=${agentAccessToken}`)
 			}
 		}
 
-		return request.post(`https://accounts.livechatinc.com/customer/?${qs.stringify(query)}`,options)
+		return request.post(`https://accounts.livechat.com/customer/?${qs.stringify(query)}`,options)
 	})
 	.catch(function(err){
 		console.error(err.message)

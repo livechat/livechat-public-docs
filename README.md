@@ -77,4 +77,4 @@ Options:
 
 ## Support & Feedback
 
-Please let us know if you have any thoughts on making this collection complete. We are eager to make the documentations better and better! Drop us a line at developers@livechatinc.com or submit a pull request.
+Please let us know if you have any thoughts on making this collection complete. We are eager to make the documentations better and better! Drop us a line at developers@livechat.com or submit a pull request.
