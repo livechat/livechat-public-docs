@@ -2,8 +2,8 @@ const VERSIONS_GROUPS = {
   DEFAULT: {
     STABLE_VERSION: "3.3",
     LEGACY_VERSIONS: ["2.0", "3.1", "3.2"],
-    DEV_PREVIEW_VERSION: "",
-    ALL_VERSIONS: ["3.3", "3.2", "3.1", "2.0"],
+    DEV_PREVIEW_VERSION: "3.4",
+    ALL_VERSIONS: ["3.4", "3.3", "3.2", "3.1", "2.0"],
   },
   "chat-widget": {
     STABLE_VERSION: "2.0",
@@ -14,8 +14,8 @@ const VERSIONS_GROUPS = {
   "data-reporting": {
     STABLE_VERSION: "3.3",
     LEGACY_VERSIONS: ["2.0", "3.2"],
-    DEV_PREVIEW_VERSION: "",
-    ALL_VERSIONS: ["3.3", "3.2", "2.0"],
+    DEV_PREVIEW_VERSION: "3.4",
+    ALL_VERSIONS: ["3.4", "3.3", "3.2", "2.0"],
   },
 };
 
