@@ -13,7 +13,7 @@ const placeholders = [
   },
   {
     from: "{{NUMBER_OF_CUSTOMERS}}",
-    to: "31,000",
+    to: "32,000",
     type: "text",
   },
   {
