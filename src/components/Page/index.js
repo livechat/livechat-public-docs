@@ -88,15 +88,17 @@ const Page = ({ frontMatter, children }) => {
         <SEO desc={desc} title={title} />
         <Header />
         <MainWrapper>
-          {!useRedocPage && <LeftColumn>TODO</LeftColumn>}
+          {!useRedocPage && <LeftColumn />}
           <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
+            {/* INFO: Will be fixed in DPS-2741
+            
             {currentApiVersion && (
               <Version
                 articleVersions={articlesVersions[category][subcategory][title]}
                 redirectToVersion={redirectToVersion}
                 group={versionGroup}
               />
-            )}
+            )} */}
             <Content className={useRedocPage ? "redoc" : ""}>
               {title && !useRedocPage && (
                 <PageHeader title={title} timeToRead={timeToRead} />

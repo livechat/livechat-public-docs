@@ -49,16 +49,26 @@ const CodeLink = styled.a`
 
 const A = ({ children, ...props }) => {
   // hack for code-links
-  if (children.props && children.props.originalType === "code") {
+  if (children.props && children.props.mdxType === "inlineCode") {
     return (
-      <CodeLink {...props}>
-        {children}
-        <LinkIcon />
-      </CodeLink>
+      <Link href={props.href}>
+        <CodeLink {...props}>
+          {children}
+          <LinkIcon />
+        </CodeLink>
+      </Link>
     );
   }
 
-  return <a {...props}>{children}</a>;
+  if (children.props && children.props.mdxType === "strong") {
+    return (
+      <Link href={props.href}>
+        <a>{children}</a>
+      </Link>
+    );
+  }
+
+  return <Link {...props}>{children}</Link>;
 };
 
 export const getText = (children) => {
