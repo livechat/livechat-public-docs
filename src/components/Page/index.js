@@ -2,11 +2,13 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 import { VersionProvider, RatingProvider } from "../../contexts";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
+import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
 import Header from "../core/header";
 import {
@@ -15,8 +17,8 @@ import {
   MiddleColumn,
   Content,
   RatingWrapper,
-  // LeftColumnRedoc,
-  // NavHeader,
+  LeftColumnRedoc,
+  NavHeader,
 } from "../core/components";
 import SideNav from "../core/SideNav";
 import { useLocalStorage } from "../../hooks";
@@ -27,7 +29,9 @@ import {
   Scopes,
   Errors,
   Placeholder,
+  Redoc,
 } from "../extensions";
+import categories from "../../configs/categories";
 
 import { Header as PageHeader } from "../core/Page";
 
@@ -37,6 +41,7 @@ const components = {
   Scopes,
   Errors,
   Placeholder,
+  Redoc,
 };
 
 const Page = ({ frontMatter, children }) => {
@@ -125,6 +130,7 @@ const Page = ({ frontMatter, children }) => {
   const slug = canUseWindow ? window.location.pathname : "";
   const ratingContext = useRating({ slug });
   const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
+  const categoryMeta = categories.find((item) => item.slug === category);
 
   return (
     <RatingProvider value={ratingContext}>
@@ -155,6 +161,22 @@ const Page = ({ frontMatter, children }) => {
             <Content className={useRedocPage ? "redoc" : ""}>
               {title && !useRedocPage && (
                 <PageHeader title={title} timeToRead={timeToRead} />
+              )}
+
+              {useRedocPage && (
+                <LeftColumnRedoc>
+                  <NavHeader>
+                    <Link href={"/"} style={{ color: "inherit" }}>
+                      <span>
+                        <HomeIcon width={18} style={{ display: "block" }} />
+                      </span>
+                    </Link>
+                    <ChevronRight width={14} />
+                    <span style={{ marginBottom: "-3px" }}>
+                      {categoryMeta.title || "Home"}
+                    </span>
+                  </NavHeader>
+                </LeftColumnRedoc>
               )}
 
               <MDXProvider components={components}>{children}</MDXProvider>
