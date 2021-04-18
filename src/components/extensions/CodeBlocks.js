@@ -71,6 +71,12 @@ const CodeSampleTopbar = styled.div`
     flex-grow: 2;
     word-break: break-all;
   }
+
+  .code-sample-header {
+    border: none;
+    background-color: #383f54;
+    color: #dee5e8;
+  }
 `;
 
 const ResponseTopbar = styled.div`
@@ -177,7 +183,7 @@ export const CodeSample = ({ path, children }) => {
     <CodeSampleWrapper>
       {path && (
         <CodeSampleTopbar>
-          <code>{path}</code>
+          <code className="code-sample-header">{path}</code>
           <ActionsWrapper>
             {count > 1 && (
               <SelectLanguage onChange={(e) => setSample(e.target.value)}>

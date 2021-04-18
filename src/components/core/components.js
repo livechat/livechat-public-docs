@@ -40,10 +40,10 @@ const NavWrapper = styled.aside`
   --page-theme-color: ${({ color }) => color};
   transition: margin 0.3s ease-out, box-shadow 0.3s ease-out;
   top: 0;
+  position: fixed;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
 
-  position: fixed;
   z-index: 50;
   width: 300px;
   height: 100vh;
@@ -152,7 +152,15 @@ export const MainWrapper = styled.div`
   }
 `;
 
-export const LeftColumn = styled.div``;
+export const LeftColumn = styled.div`
+  height: 100vh;
+  width: 297px;
+  background-color: #f6f6f7;
+  border-right: 1px solid #e8e8e8;
+  position: sticky;
+  top: 0;
+`;
+
 export const MiddleColumn = styled.div`
   max-width: 100%;
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
