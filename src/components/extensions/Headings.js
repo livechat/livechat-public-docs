@@ -1,5 +1,8 @@
-import React from "react";
+// import React from "react";
+/** @jsx jsx */
+import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
+import Link from "next/link";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
@@ -46,16 +49,26 @@ const CodeLink = styled.a`
 
 const A = ({ children, ...props }) => {
   // hack for code-links
-  if (children.props && children.props.originalType === "code") {
+  if (children.props && children.props.mdxType === "inlineCode") {
     return (
-      <CodeLink {...props}>
-        {children}
-        <LinkIcon />
-      </CodeLink>
+      <Link href={props.href}>
+        <CodeLink {...props}>
+          {children}
+          <LinkIcon />
+        </CodeLink>
+      </Link>
     );
   }
 
-  return <a {...props}>{children}</a>;
+  if (children.props && children.props.mdxType === "strong") {
+    return (
+      <Link href={props.href}>
+        <a>{children}</a>
+      </Link>
+    );
+  }
+
+  return <Link {...props}>{children}</Link>;
 };
 
 export const getText = (children) => {
@@ -146,18 +159,20 @@ const Image = ({ to }) => {
 //   </SectionBannerWrapper>
 // );
 
-// const SectionGatsbyLink = styled(Link)`
-//   font-weight: 600;
-//   &:after {
-//     content: "";
-//     width: 16px;
-//     height: 16px;
-//     display: inline-block;
-//     vertical-align: middle;
-//     margin-bottom: 1px;
-//     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
-//   }
-// `;
+const StyledLink = styled.a`
+  font-weight: 600;
+  cursor: pointer;
+
+  &:after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 1px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  }
+`;
 
 // const SectionALink = styled.a`
 //   font-weight: 600;
@@ -172,12 +187,25 @@ const Image = ({ to }) => {
 //   }
 // `;
 
-// const SectionLink = ({ to, href, ...rest }) =>
-//   to ? (
-//     <SectionGatsbyLink to={to} {...rest} />
-//   ) : (
-//     <SectionALink href={href} target={"_blank"} {...rest} />
-//   );
+const SectionLink = ({ to, href, children, ...rest }) => {
+  if (href) {
+    return (
+      <Link href={href} target="_blank" {...rest}>
+        <StyledLink>{children}</StyledLink>
+      </Link>
+    );
+  }
+
+  if (to) {
+    return (
+      <Link href={to} {...rest}>
+        <StyledLink>{children}</StyledLink>
+      </Link>
+    );
+  }
+
+  return <StyledLink>{children}</StyledLink>;
+};
 
 const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
@@ -240,7 +268,7 @@ export default {
   a: A,
   Warning,
   // SectionBanner,
-  // SectionLink,
+  SectionLink,
   table: ({ children }) => (
     <TableWrapper>
       <table>{children}</table>
