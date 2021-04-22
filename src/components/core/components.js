@@ -254,14 +254,16 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      <Link to={url} title={title}>
-        <MenuLink active={active ? 1 : 0}>
-          <ArticleIcon
-            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-          />
-          &nbsp;
-          <span>{title}</span>
-        </MenuLink>
+      <Link href={url} title={title}>
+        <a>
+          <MenuLink active={active ? 1 : 0}>
+            <ArticleIcon
+              style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+            />
+            &nbsp;
+            <span>{title}</span>
+          </MenuLink>
+        </a>
       </Link>
     )}
   </Li>

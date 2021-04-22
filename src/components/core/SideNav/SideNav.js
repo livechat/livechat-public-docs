@@ -11,12 +11,14 @@ import {
 } from "../components";
 import { Search } from "../Search";
 import { HomeIcon, ChevronRight } from "../icons";
-// import {
-//   useAllArticlesInCategory,
-//   useCategoryMeta,
-//   useAllCategoriesMeta,
-//   useScrollSpy,
-// } from "../../../hooks";
+import {
+  useAllArticlesInCategory,
+  useCategoryMeta,
+  useAllCategoriesMeta,
+  useScrollSpy,
+} from "../../../hooks";
+import Link from "next/link";
+import { PopperTooltip } from "@livechat/design-system";
 import { VersionContext } from "../../../contexts";
 import { getVersionColor } from "../../../utils";
 
@@ -62,15 +64,15 @@ const SideNav = ({
   currentSlug,
   expanded,
   setExpanded,
+  headings,
 }) => {
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
   );
-  // const [articles, getArticlePath] = useAllArticlesInCategory(
-  //   category,
-  //   currentSlug,
-  //   selectedVersion
-  // );
+  const [articles, getArticlePath] = useAllArticlesInCategory(
+    category,
+    headings
+  );
 
   const categories = [];
   // useAllCategoriesMeta().map((item) => ({
@@ -104,11 +106,14 @@ const SideNav = ({
               triggerActionType={"hover"}
               trigger={
                 <span>
-                  <HomeIcon width={18} style={{ display: "block" }} />
+                  <HomeIcon
+                    width={18}
+                    style={{ display: "block", color: "#424D57" }}
+                  />
                 </span>
               }
               closeOnOutsideClick
-              zIndex={1000}
+              zIndex={20}
             >
               {"Home"}
             </PopperTooltip>

@@ -1,109 +1,77 @@
-import { useAllArticlesGroupedByCategory } from "./";
-import useCategoryMeta from "./useCategoryMeta";
+import articles from "../configs/articles.json";
+import { canUseWindow } from "../utils";
 
-const appendPathsToNodes = (items, path = []) => {
-  return items.map(item => {
-    return {
-      ...item,
-      path: [...path, item.url],
-      items: item.items
-        ? appendPathsToNodes(item.items, [...path, item.url])
-        : undefined
-    };
-  });
-};
-
-const generatePathsMap = (items, acc = {}) => {
+const generatePathsMap = (items = [], acc = {}) => {
   for (let i = 0; i < items.length; i++) {
     let item = items[i];
 
     acc = { ...acc, [item.url]: item.path };
     if (item.items && item.url) {
       acc = {
-        ...generatePathsMap(item.items, acc)
+        ...generatePathsMap(item.items, acc),
       };
     }
   }
   return acc;
 };
 
-export default (category, currentSlug, currentApiVersion) => {
-  const byCategory = useAllArticlesGroupedByCategory().filter(item => {
-    if (category) {
-      return item.fieldValue === category;
-    }
-    return item;
-  })[0];
+export default (category, headings) => {
+  //Find the currently displayed category
+  const path = canUseWindow ? window.location.pathname + "/" : "";
+  const articlesGroupedByCategory = articles.find(
+    (item) => item[0].category === category
+  );
 
-  let articles = byCategory.edges
-    .map(({ node }) => ({
-      id: node.id,
-      url: node.frontmatter.slug || node.fields.slug,
-      title: node.frontmatter.title,
-      weight: node.frontmatter.weight || 999,
-      items: node.tableOfContents.items,
-      category: node.frontmatter.category,
-      subcategory: node.frontmatter.subcategory,
-      apiVersion: node.frontmatter.apiVersion,
-      article: true
-    }))
-    // filtering out non-current api versions (dirty)
-    .filter(
-      ({ apiVersion }) =>
-        apiVersion === currentApiVersion || apiVersion === null
-    )
-    // keep toc only for current article
-    .map(item => {
-      if (item.url !== currentSlug) {
-        return { ...item, items: null };
+  const formattedHeadings = [];
+
+  headings &&
+    headings.forEach((heading) => {
+      //build heading object
+      const headingObj = {};
+      headingObj["title"] = heading
+        .substring(heading.indexOf(" "))
+        .substring(1);
+      headingObj["url"] =
+        "#" + headingObj["title"].replace("/ /g", "-").toLowerCase();
+      headingObj["path"] = [path, headingObj["url"]];
+      headingObj["items"] = undefined;
+
+      if (heading.startsWith("# ")) {
+        formattedHeadings.push(headingObj);
+      } else if (heading.startsWith("## ")) {
+        if (
+          formattedHeadings[formattedHeadings.length - 1] &&
+          formattedHeadings[formattedHeadings.length - 1].items === undefined
+        ) {
+          formattedHeadings[formattedHeadings.length - 1].items = [];
+          formattedHeadings[formattedHeadings.length - 1].items.push(
+            headingObj
+          );
+        } else if (formattedHeadings[formattedHeadings.length - 1]) {
+          formattedHeadings[formattedHeadings.length - 1].items.push(
+            headingObj
+          );
+        }
+      } else if (heading.startsWith("### ")) {
+        //TODO
       }
-      return item;
-    })
-    .sort(({ title: titleA }, { title: titleB }) =>
-      titleA.localeCompare(titleB)
-    )
-    .sort(({ weight: weightA }, { weight: weightB }) => weightA - weightB);
+    });
 
-  // this parts kind of tricky;
-  // if you have an idea on how to
-  // make it simple, fire away!
-  articles = articles.reduce((acc, cur) => {
-    const rest = acc[cur.subcategory] ? acc[cur.subcategory].items : [];
-
-    const subcategoryMeta = useCategoryMeta(cur.category).items.filter(
-      item => item.slug === cur.subcategory
-    )[0];
-
-    return {
-      ...acc,
-      [cur.subcategory]: {
-        ...subcategoryMeta,
-        url: "/" + category + "/" + cur.subcategory + "/",
-        article: true,
-        isSubcategory: true,
-        apiVersion: cur.apiVersion,
-        items: [...rest, cur]
+  //add headings to related base item
+  articlesGroupedByCategory &&
+    articlesGroupedByCategory.forEach((article) => {
+      if (article.url === path && article.items.length === 0) {
+        article.items = formattedHeadings;
+      } else {
+        article.items.forEach((subArticle) => {
+          if (subArticle.url === path) {
+            subArticle.items = formattedHeadings;
+          }
+        });
       }
-    };
-  }, {});
+    });
 
-  // squeezing the reduced object into array
-  articles = Object.entries(articles)
-    .map(item => {
-      return { ...item[1] };
-    })
-    .reduce((acc, item) => {
-      if (item.title) {
-        return [...acc, item];
-      }
-      return [...acc, ...item.items];
-    }, []);
-
-  // last piece of data: a flat array of url & paths,
-  // plus a getter for the path
-  articles = appendPathsToNodes(articles);
-  const pathsMap = generatePathsMap(articles);
-  const getArticlePath = url => pathsMap[url];
-
-  return [articles, getArticlePath];
+  const pathsMap = generatePathsMap(articlesGroupedByCategory);
+  const getArticlePath = (url) => pathsMap[url];
+  return [articlesGroupedByCategory, getArticlePath];
 };

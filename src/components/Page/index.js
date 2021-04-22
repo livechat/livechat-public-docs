@@ -8,6 +8,7 @@ import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
 import SEO from "../core/seo";
+import SideNav from "../../components/core/SideNav";
 import Header from "../core/header";
 import {
   MainWrapper,
@@ -19,6 +20,7 @@ import {
   // NavHeader,
 } from "../core/components";
 import SideNav from "../core/SideNav";
+import { useLocalStorage } from "../../hooks";
 import Rating from "../core/Rating";
 import { Headings, CodeBlocks, Scopes, Errors } from "../extensions";
 
@@ -43,6 +45,8 @@ const Page = ({ frontMatter, children }) => {
     slug: customSlug,
   } = frontMatter;
   const router = useRouter();
+
+  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -125,11 +129,11 @@ const Page = ({ frontMatter, children }) => {
           {!useRedocPage && (
             <LeftColumn>
               <SideNav
-                currentSlug={""} //customSlug || slug
+                currentSlug={slug}
                 category={category}
                 subcategory={subcategory}
-                expanded={true} //expanded
-                setExpanded={() => {}} // setExpanded
+                expanded={expanded}
+                setExpanded={setExpanded}
                 versions={versions}
               />
             </LeftColumn>

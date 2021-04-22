@@ -1,26 +1,5 @@
-import { useStaticQuery, graphql } from "gatsby";
+import categories from "../configs/categories.json";
 
 export default () => {
-  const categoryMeta = useStaticQuery(graphql`
-    query getAllCategoriesMeta {
-      allContentJson {
-        edges {
-          node {
-            categories {
-              slug
-              title
-              color
-              items {
-                slug
-                title
-                color
-              }
-            }
-          }
-        }
-      }
-    }
-  `).allContentJson.edges[0].node.categories;
-
-  return categoryMeta ? categoryMeta : [];
+  return categories;
 };
