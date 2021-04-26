@@ -97,6 +97,7 @@ const Body = styled.div`
   min-height: 0;
   display: flex;
   max-width: 100%;
+  overflow: scroll;
 `;
 
 const SelectLanguage = styled.select`
