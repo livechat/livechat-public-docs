@@ -25,8 +25,9 @@ export const setupDocsearch = () => {
   ) {
     return;
   }
+
   window.docsearch({
-    apiKey: process.env.GATSBY_ALGOLIA_API_KEY,
+    apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
@@ -39,7 +40,6 @@ export const setupDocsearch = () => {
           url: suggestion.url,
           input: input.getVal(),
         });
-
         // removes the hardcoded path from Algolia
         const url = suggestion.url.replace(
           "https://developers.livechat.com/docs/",

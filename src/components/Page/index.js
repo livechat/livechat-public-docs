@@ -7,6 +7,7 @@ import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
 import SEO from "../core/seo";
+import { Search } from "../core/Search";
 import Header from "../core/header";
 import {
   MainWrapper,
@@ -15,7 +16,7 @@ import {
   Content,
   RatingWrapper,
   // LeftColumnRedoc,
-  // NavHeader,
+  NavHeader,
 } from "../core/components";
 import Rating from "../core/Rating";
 import { Headings, CodeBlocks, Scopes, Errors } from "../extensions";
@@ -25,6 +26,7 @@ import { Header as PageHeader } from "../core/Page";
 const components = {
   ...CodeBlocks,
   ...Headings,
+  Search,
   Scopes,
   Errors,
 };
@@ -88,7 +90,13 @@ const Page = ({ frontMatter, children }) => {
         <SEO desc={desc} title={title} />
         <Header />
         <MainWrapper>
-          {!useRedocPage && <LeftColumn />}
+          {!useRedocPage && (
+            <LeftColumn>
+              <NavHeader>
+                <Search />
+              </NavHeader>
+            </LeftColumn>
+          )}
           <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
             {/* INFO: Will be fixed in DPS-2741
             
