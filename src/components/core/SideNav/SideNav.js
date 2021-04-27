@@ -79,7 +79,7 @@ const SideNav = ({
   //   items: null,
   // }));
 
-  const menuItems = category ? articles : categories;
+  // const menuItems = category ? articles : categories;
 
   const initialPath = subcategory
     ? [`/${category}/${subcategory}/`, currentSlug]
@@ -97,22 +97,24 @@ const SideNav = ({
     <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
       <NavHeader>
         <Link href="/" style={{ color: "inherit" }}>
-          <PopperTooltip
-            isVisible={true}
-            placement={"bottom-start"}
-            triggerActionType={"hover"}
-            trigger={
-              <span>
-                <HomeIcon width={18} style={{ display: "block" }} />
-              </span>
-            }
-            closeOnOutsideClick
-            zIndex={1000}
-          >
-            {"Home"}
-          </PopperTooltip>
+          <a style={{ color: "#8a9097", marginTop: "1px" }}>
+            <PopperTooltip
+              isVisible={true}
+              placement={"bottom-start"}
+              triggerActionType={"hover"}
+              trigger={
+                <span>
+                  <HomeIcon width={18} style={{ display: "block" }} />
+                </span>
+              }
+              closeOnOutsideClick
+              zIndex={1000}
+            >
+              {"Home"}
+            </PopperTooltip>
+          </a>
         </Link>
-        <ChevronRight width={14} />
+        <ChevronRight width={14} style={{ marginTop: "2px" }} />
         <span style={{ marginBottom: "-3px" }}>
           Home
           {/*  {categoryMeta.title || "Home"} */}
