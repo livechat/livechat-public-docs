@@ -1,4 +1,3 @@
-import "docsearch.js/dist/cdn/docsearch.min.css";
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
 import "../components/core/fonts.css";

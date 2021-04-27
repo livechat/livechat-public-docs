@@ -55,7 +55,7 @@ export const setupDocsearch = () => {
     apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
     indexName: "livechatinc",
     inputSelector: "#search",
-    debug: true, //false,
+    debug: false,
     handleSelected: function(input, event, suggestion, datasetNumber, context) {
       if (
         context.selectionMethod === "click" ||

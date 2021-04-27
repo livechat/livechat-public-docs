@@ -1,6 +1,5 @@
 import React, { useState, Fragment, useContext } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { PopperTooltip } from "@livechat/design-system";
 import {
   Nav,
