@@ -1,4 +1,6 @@
 import React, { useState, Fragment, useContext } from "react";
+import Link from "next/link";
+import { PopperTooltip } from "@livechat/design-system";
 import {
   Nav,
   NavHeader,
@@ -9,14 +11,12 @@ import {
 } from "../components";
 import { Search } from "../Search";
 import { HomeIcon, ChevronRight } from "../icons";
-import {
-  useAllArticlesInCategory,
-  useCategoryMeta,
-  useAllCategoriesMeta,
-  useScrollSpy,
-} from "../../../hooks";
-import { Link } from "gatsby";
-import { PopperTooltip } from "@livechat/design-system";
+// import {
+//   useAllArticlesInCategory,
+//   useCategoryMeta,
+//   useAllCategoriesMeta,
+//   useScrollSpy,
+// } from "../../../hooks";
 import { VersionContext } from "../../../contexts";
 import { getVersionColor } from "../../../utils";
 
@@ -66,19 +66,20 @@ const SideNav = ({
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
   );
-  const [articles, getArticlePath] = useAllArticlesInCategory(
-    category,
-    currentSlug,
-    selectedVersion
-  );
+  // const [articles, getArticlePath] = useAllArticlesInCategory(
+  //   category,
+  //   currentSlug,
+  //   selectedVersion
+  // );
 
-  const categories = useAllCategoriesMeta().map((item) => ({
-    ...item,
-    url: `/${item.slug}/`,
-    items: null,
-  }));
+  const categories = [];
+  // useAllCategoriesMeta().map((item) => ({
+  //   ...item,
+  //   url: `/${item.slug}/`,
+  //   items: null,
+  // }));
 
-  const menuItems = category ? articles : categories;
+  // const menuItems = category ? articles : categories;
 
   const initialPath = subcategory
     ? [`/${category}/${subcategory}/`, currentSlug]
@@ -87,42 +88,44 @@ const SideNav = ({
   const [activePath, setActivePath] = useState(initialPath);
   const toggleState = (path) => () => setActivePath(path);
 
-  const categoryMeta = useCategoryMeta(category);
-
-  useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
+  // const categoryMeta = useCategoryMeta(category);
+  // useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
 
   const navColor = getVersionColor(selectedVersion, versions);
 
   return (
     <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
       <NavHeader>
-        <Link to={"/"} style={{ color: "inherit" }}>
-          <PopperTooltip
-            isVisible={true}
-            placement={"bottom-start"}
-            triggerActionType={"hover"}
-            trigger={
-              <span>
-                <HomeIcon width={18} style={{ display: "block" }} />
-              </span>
-            }
-            closeOnOutsideClick
-            zIndex={2}
-          >
-            {"Home"}
-          </PopperTooltip>
+        <Link href="/" style={{ color: "inherit" }}>
+          <a style={{ color: "#8a9097", marginTop: "1px" }}>
+            <PopperTooltip
+              isVisible={true}
+              placement={"bottom-start"}
+              triggerActionType={"hover"}
+              trigger={
+                <span>
+                  <HomeIcon width={18} style={{ display: "block" }} />
+                </span>
+              }
+              closeOnOutsideClick
+              zIndex={1000}
+            >
+              {"Home"}
+            </PopperTooltip>
+          </a>
         </Link>
-        <ChevronRight width={14} />
+        <ChevronRight width={14} style={{ marginTop: "2px" }} />
         <span style={{ marginBottom: "-3px" }}>
-          {categoryMeta.title || "Home"}
+          Home
+          {/*  {categoryMeta.title || "Home"} */}
         </span>
       </NavHeader>
       <NavHeader>
         <Search />
       </NavHeader>
-      <MenuWrapper>
+      {/* <MenuWrapper>
         {printItems(menuItems, toggleState, activePath, undefined)}
-      </MenuWrapper>
+      </MenuWrapper> */}
     </Nav>
   );
 };
