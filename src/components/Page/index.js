@@ -17,6 +17,7 @@ import {
   // LeftColumnRedoc,
   // NavHeader,
 } from "../core/components";
+import SideNav from "../core/SideNav";
 import Rating from "../core/Rating";
 import { Headings, CodeBlocks, Scopes, Errors } from "../extensions";
 
@@ -88,7 +89,18 @@ const Page = ({ frontMatter, children }) => {
         <SEO desc={desc} title={title} />
         <Header />
         <MainWrapper>
-          {!useRedocPage && <LeftColumn />}
+          {!useRedocPage && (
+            <LeftColumn>
+              <SideNav
+                currentSlug={""} //customSlug || slug
+                category={category}
+                subcategory={subcategory}
+                expanded={true} //expanded
+                setExpanded={() => {}} // setExpanded
+                versions={versions}
+              />
+            </LeftColumn>
+          )}
           <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
             {/* INFO: Will be fixed in DPS-2741
             
