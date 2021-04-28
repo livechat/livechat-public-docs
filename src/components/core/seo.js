@@ -27,6 +27,7 @@ function SEO({ desc, keywords, title }) {
       {keywords.length > 0 && (
         <meta name="keywords" content={metaDescription} />
       )}
+      <script src="https://cdn.jsdelivr.net/npm/docsearch.js@2.6.3/dist/cdn/docsearch.min.js"></script>
 
       <script type="text/javascript">
         {`
