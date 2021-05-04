@@ -8,7 +8,6 @@ import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
 import SEO from "../core/seo";
-import SideNav from "../../components/core/SideNav";
 import Header from "../core/header";
 import {
   MainWrapper,

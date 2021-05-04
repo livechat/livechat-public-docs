@@ -17,12 +17,11 @@ import {
   useAllCategoriesMeta,
   useScrollSpy,
 } from "../../../hooks";
-import Link from "next/link";
-import { PopperTooltip } from "@livechat/design-system";
 import { VersionContext } from "../../../contexts";
-import { getVersionColor } from "../../../utils";
+import { getVersionColor, canUseWindow } from "../../../utils";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => {
+  const arrayOfSlugs = items.map((item) => item.url);
   return (
     <Ul>
       {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
@@ -37,14 +36,25 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
           activeUrls.includes(url) &&
           url.includes(activeUrls[depth]);
 
-        let redirectUrl = url || "#";
+        /*
+        const slug = canUseWindow ? window.location.pathname : "";
+        const titleSlug = "#" + title.toLowerCase().replace(/ /g, "-");
+        const isActive = titleSlug === activeUrls;
+
+        const projectPath = path && path.length > 0 ? path[0] : "/";
+        const isExpanded =
+          slug + "/" === projectPath &&
+          (isSubcategory !== true || arrayOfSlugs.includes(activeUrls));
+
+        let redirectUrl = url || "#";*/
+
         return (
           <Fragment key={`toc-${depth}-${url}`}>
             <MenuElement
               url={redirectUrl}
               title={title}
               active={isActiveItem}
-              onClick={toggleState(path)}
+              onClick={toggleState(projectPath)}
             />
             {itemsInside && (
               <CollapsableSection expanded={isActiveSection}>
@@ -74,14 +84,13 @@ const SideNav = ({
     headings
   );
 
-  const categories = [];
-  // useAllCategoriesMeta().map((item) => ({
-  //   ...item,
-  //   url: `/${item.slug}/`,
-  //   items: null,
-  // }));
+  const categories = useAllCategoriesMeta().map((item) => ({
+    ...item,
+    url: `/${item.slug}/`,
+    items: null,
+  }));
 
-  // const menuItems = category ? articles : categories;
+  const menuItems = category ? articles : categories;
 
   const initialPath = subcategory
     ? [`/${category}/${subcategory}/`, currentSlug]
@@ -90,8 +99,8 @@ const SideNav = ({
   const [activePath, setActivePath] = useState(initialPath);
   const toggleState = (path) => () => setActivePath(path);
 
-  // const categoryMeta = useCategoryMeta(category);
-  // useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
+  const categoryMeta = useCategoryMeta(category);
+  useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
 
   const navColor = getVersionColor(selectedVersion, versions);
 
@@ -121,16 +130,15 @@ const SideNav = ({
         </Link>
         <ChevronRight width={14} style={{ marginTop: "2px" }} />
         <span style={{ marginBottom: "-3px" }}>
-          Home
-          {/*  {categoryMeta.title || "Home"} */}
+          {categoryMeta.title || "Home"}
         </span>
       </NavHeader>
       <NavHeader>
         <Search />
       </NavHeader>
-      {/* <MenuWrapper>
+      <MenuWrapper>
         {printItems(menuItems, toggleState, activePath, undefined)}
-      </MenuWrapper> */}
+      </MenuWrapper>
     </Nav>
   );
 };

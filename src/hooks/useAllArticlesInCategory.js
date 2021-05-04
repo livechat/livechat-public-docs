@@ -15,7 +15,19 @@ const generatePathsMap = (items = [], acc = {}) => {
   return acc;
 };
 
-export default (category, headings) => {
+const appendPathsToNodes = (items = [], path = []) => {
+  return items.map((item) => {
+    return {
+      ...item,
+      path: [...path, item.url],
+      items: item.items
+        ? appendPathsToNodes(item.items, [...path, item.url])
+        : undefined,
+    };
+  });
+};
+
+const useAllArticlesInCategory = (category, headings) => {
   //Find the currently displayed category
   const path = canUseWindow ? window.location.pathname + "/" : "";
   const articlesGroupedByCategory = articles.find(
@@ -32,28 +44,68 @@ export default (category, headings) => {
         .substring(heading.indexOf(" "))
         .substring(1);
       headingObj["url"] =
-        "#" + headingObj["title"].replace("/ /g", "-").toLowerCase();
+        "#" + headingObj["title"].replace(/\s+/g, "-").toLowerCase();
       headingObj["path"] = [path, headingObj["url"]];
+      headingObj["isSubcategory"] = false;
       headingObj["items"] = undefined;
 
       if (heading.startsWith("# ")) {
         formattedHeadings.push(headingObj);
       } else if (heading.startsWith("## ")) {
-        if (
-          formattedHeadings[formattedHeadings.length - 1] &&
-          formattedHeadings[formattedHeadings.length - 1].items === undefined
-        ) {
-          formattedHeadings[formattedHeadings.length - 1].items = [];
-          formattedHeadings[formattedHeadings.length - 1].items.push(
-            headingObj
-          );
-        } else if (formattedHeadings[formattedHeadings.length - 1]) {
-          formattedHeadings[formattedHeadings.length - 1].items.push(
-            headingObj
-          );
+        headingObj["isSubcategory"] = true;
+        if (headings.length === 1) {
+          formattedHeadings.push(headingObj);
+        } else {
+          if (
+            formattedHeadings[formattedHeadings.length - 1] &&
+            formattedHeadings[formattedHeadings.length - 1].items === undefined
+          ) {
+            formattedHeadings[formattedHeadings.length - 1].items = [];
+            formattedHeadings[formattedHeadings.length - 1].items.push(
+              headingObj
+            );
+          } else if (formattedHeadings[formattedHeadings.length - 1]) {
+            formattedHeadings[formattedHeadings.length - 1].items.push(
+              headingObj
+            );
+          }
         }
       } else if (heading.startsWith("### ")) {
-        //TODO
+        headingObj["isSubcategory"] = true;
+        if (headings.length === 1) {
+          formattedHeadings.push(headingObj);
+        } else {
+          if (
+            formattedHeadings[formattedHeadings.length - 1] &&
+            formattedHeadings[formattedHeadings.length - 1].items === undefined
+          ) {
+            formattedHeadings[formattedHeadings.length - 1].items = [];
+            formattedHeadings[formattedHeadings.length - 1].items.push(
+              headingObj
+            );
+          } else if (
+            formattedHeadings[formattedHeadings.length - 1] &&
+            formattedHeadings[formattedHeadings.length - 1].items[
+              formattedHeadings[formattedHeadings.length - 1].items.length - 1
+            ].items === undefined
+          ) {
+            formattedHeadings[formattedHeadings.length - 1].items[
+              formattedHeadings[formattedHeadings.length - 1].items.length - 1
+            ].items = [];
+            formattedHeadings[formattedHeadings.length - 1].items[
+              formattedHeadings[formattedHeadings.length - 1].items.length - 1
+            ].items.push(headingObj);
+          } else if (
+            formattedHeadings[formattedHeadings.length - 1] &&
+            formattedHeadings[formattedHeadings.length - 1].items[
+              formattedHeadings[formattedHeadings.length - 1].items.length - 1
+            ].items.length > 0
+          ) {
+            formattedHeadings[formattedHeadings.length - 1].items[
+              formattedHeadings[formattedHeadings.length - 1].items.length - 1
+            ].items.push(headingObj);
+          }
+        }
       }
     });
 
@@ -71,7 +123,10 @@ export default (category, headings) => {
       }
     });
 
+  const a = appendPathsToNodes(articlesGroupedByCategory);
   const pathsMap = generatePathsMap(articlesGroupedByCategory);
   const getArticlePath = (url) => pathsMap[url];
-  return [articlesGroupedByCategory, getArticlePath];
+  return [a, getArticlePath];
 };
+
+export default useAllArticlesInCategory;

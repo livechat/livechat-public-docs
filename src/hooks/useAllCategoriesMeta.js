@@ -1,5 +1,7 @@
 import categories from "../configs/categories.json";
 
-export default () => {
+const useAllCategoriesMeta = () => {
   return categories;
 };
+
+export default useAllCategoriesMeta;

@@ -89,7 +89,7 @@ export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
         expanded={expanded}
         onClick={(e) => {
           e.preventDefault();
-          setExpanded(!expanded);
+          // setExpanded(expanded);
         }}
       >
         <ChevronRight />
@@ -157,7 +157,7 @@ export const LeftColumn = styled.div`
   border-right: 1px solid #e8e8e8;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10;
 `;
 
 export const MiddleColumn = styled.div`
@@ -255,15 +255,13 @@ export const MenuElement = ({ url, title, onClick, active }) => (
       </MenuAnchorLink>
     ) : (
       <Link href={url} title={title}>
-        <a>
-          <MenuLink active={active ? 1 : 0}>
-            <ArticleIcon
-              style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-            />
-            &nbsp;
-            <span>{title}</span>
-          </MenuLink>
-        </a>
+        <MenuLink active={active ? 1 : 0}>
+          <ArticleIcon
+            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+          />
+          &nbsp;
+          <span>{title}</span>
+        </MenuLink>
       </Link>
     )}
   </Li>
