@@ -59,6 +59,11 @@ const DesktopNote = styled.div`
   }
 `;
 
+const ButtonBody = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const labelStyle = {
   marginRight: "10px",
 };
@@ -199,18 +204,20 @@ const Version = ({ articleVersions, redirectToVersion }) => {
             onClose={closeDropdown}
             placement={"bottom-end"}
             triggerRenderer={({ ref }) => (
-              <Button onClick={openDropdown} ref={ref}>
-                {formatVersion(selectedVersion)}
+              <Button kind="secondary" onClick={openDropdown} ref={ref}>
+                <ButtonBody>
+                  {formatVersion(selectedVersion)}
 
-                <svg
-                  width="24px"
-                  height="24px"
-                  viewBox="0 0 24 24"
-                  fill="#424d57"
-                  style={{ marginLeft: "5px", marginRight: "-10px" }}
-                >
-                  <path d="M7 10l5 5 5-5H7z"></path>
-                </svg>
+                  <svg
+                    width="24px"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    fill="#424d57"
+                    style={{ marginLeft: "5px", marginRight: "-10px" }}
+                  >
+                    <path d="M7 10l5 5 5-5H7z"></path>
+                  </svg>
+                </ButtonBody>
               </Button>
             )}
           >
