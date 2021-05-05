@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
+import { useRouter } from "next/router";
 
 import { VersionProvider, RatingProvider } from "../../contexts";
 import { canUseWindow } from "../../utils";
@@ -39,7 +40,9 @@ const Page = ({ frontMatter, children }) => {
     apiVersion: currentApiVersion,
     versionGroup,
     timeToRead,
+    slug: customSlug,
   } = frontMatter;
+  const router = useRouter();
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -73,6 +76,36 @@ const Page = ({ frontMatter, children }) => {
     }
   }, []);
 
+  const redirectToVersion = (version) => {
+    setSelectedVersion(version);
+
+    const pathname = window.location.pathname;
+    let currentSlug = customSlug || pathname;
+
+    if (selectedVersion !== version) {
+      if (selectedVersion === versions.STABLE_VERSION) {
+        currentSlug = currentSlug.replace(
+          subcategory,
+          `${subcategory}/v${version}`
+        );
+      } else {
+        if (version === versions.STABLE_VERSION) {
+          currentSlug = currentSlug.replace(
+            `${subcategory}/v${selectedVersion}`,
+            subcategory
+          );
+        } else {
+          currentSlug = currentSlug.replace(
+            `${subcategory}/v${selectedVersion}`,
+            `${subcategory}/v${version}`
+          );
+        }
+      }
+
+      router.push(currentSlug);
+    }
+  };
+
   const versionContext = {
     selected: selectedVersion,
     items: versions,
@@ -102,15 +135,13 @@ const Page = ({ frontMatter, children }) => {
             </LeftColumn>
           )}
           <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
-            {/* INFO: Will be fixed in DPS-2741
-            
             {currentApiVersion && (
               <Version
-                articleVersions={articlesVersions[category][subcategory][title]}
+                articleVersions={versions.ALL_VERSIONS}
                 redirectToVersion={redirectToVersion}
                 group={versionGroup}
               />
-            )} */}
+            )}
             <Content className={useRedocPage ? "redoc" : ""}>
               {title && !useRedocPage && (
                 <PageHeader title={title} timeToRead={timeToRead} />
