@@ -45,8 +45,8 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
         const isExpanded =
           slug + "/" === projectPath &&
           (isSubcategory !== true || arrayOfSlugs.includes(activeUrls));
-
-        let redirectUrl = url || "#";*/
+*/
+        let redirectUrl = url || "#";
 
         return (
           <Fragment key={`toc-${depth}-${url}`}>
@@ -54,7 +54,7 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
               url={redirectUrl}
               title={title}
               active={isActiveItem}
-              onClick={toggleState(projectPath)}
+              onClick={toggleState(path)}
             />
             {itemsInside && (
               <CollapsableSection expanded={isActiveSection}>

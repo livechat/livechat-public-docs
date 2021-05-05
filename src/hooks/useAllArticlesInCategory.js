@@ -20,9 +20,10 @@ const appendPathsToNodes = (items = [], path = []) => {
     return {
       ...item,
       path: [...path, item.url],
-      items: item.items
-        ? appendPathsToNodes(item.items, [...path, item.url])
-        : undefined,
+      items:
+        item.items && item.items.length > 0
+          ? appendPathsToNodes(item.items, [...path, item.url])
+          : undefined,
     };
   });
 };
@@ -123,10 +124,10 @@ const useAllArticlesInCategory = (category, headings) => {
       }
     });
 
-  const a = appendPathsToNodes(articlesGroupedByCategory);
-  const pathsMap = generatePathsMap(articlesGroupedByCategory);
+  const appendedArticles = appendPathsToNodes(articlesGroupedByCategory);
+  const pathsMap = generatePathsMap(appendedArticles);
   const getArticlePath = (url) => pathsMap[url];
-  return [a, getArticlePath];
+  return [appendedArticles, getArticlePath];
 };
 
 export default useAllArticlesInCategory;
