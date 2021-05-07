@@ -2,12 +2,6 @@ const withMdxEnhanced = require("next-mdx-enhanced");
 const readingTime = require("reading-time");
 
 module.exports = withMdxEnhanced({
-  scan: {
-    headings: {
-      pattern: /^[\#]+ (.*)/gm,
-      transform: (arr) => [...arr],
-    },
-  },
   layoutPath: "src/components/Page",
   defaultLayout: true,
   fileExtensions: ["mdx"],

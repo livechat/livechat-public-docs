@@ -2,142 +2,128 @@ const fs = require("fs");
 const path = require("path");
 const matter = require("gray-matter");
 const glob = require("glob");
+const { v4: uuidv4 } = require("uuid");
 
 const articlesDirectory = path.join(process.cwd(), "..", "src/pages/");
 
-fs.readFile("../src/configs/categories.json", (err, data) => {
-  if (err) throw err;
-  const categories = JSON.parse(data);
+const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
-  const getDirectories = (src, callback) => glob(src + "/**/*", callback);
+getDirectories(articlesDirectory, (err, res) => {
+  const paths = res
+    .filter((item) => item.endsWith(".mdx"))
+    .map((item) => item.replace(articlesDirectory, ""));
 
-  const articles = [];
+  const items = [];
 
-  categories.forEach((element) => {
-    const articleGroupedByCategory = [];
-    const category = element["slug"];
+  paths.forEach((filePath) => {
+    const item = {};
 
-    const article = {};
-    article["category"] = element["slug"];
-    article["article"] = true;
-    article["url"] = "/" + element["slug"] + "/";
-    article["path"] = [article["url"]];
-    article["items"] = [];
+    const fileContents = fs.readFileSync(articlesDirectory + filePath, "utf8");
+    const { data, content } = matter(fileContents);
 
-    if (
-      fs.existsSync(
-        articlesDirectory + article["url"].substring(1) + "index.mdx"
-      )
-    ) {
-      const fileContents = fs.readFileSync(
-        articlesDirectory + article["url"].substring(1) + "index.mdx",
-        "utf8"
-      );
-      const { data, content } = matter(fileContents);
+    const regex = /^[\#]+ (.*)/gm;
+    const matches = content.match(regex);
 
-      article["title"] = data["title"];
-    } else {
-      article["title"] = element["slug"];
-    }
-
-    articleGroupedByCategory.push(article);
-
-    element.items.forEach((item) => {
-      const article = {};
-      article["title"] = item["title"];
-      article["category"] = item["slug"];
-      article["article"] = true;
-      article["url"] = "/" + category + "/" + item["slug"] + "/";
-      article["path"] = [article["url"]];
-      article["items"] = [];
-
-      articleGroupedByCategory.push(article);
-    });
-
-    articles.push(articleGroupedByCategory);
-  });
-
-  getDirectories(articlesDirectory, (err, res) => {
-    const paths = res
-      .filter((item) => item.endsWith(".mdx"))
-      .map((item) => item.replace(articlesDirectory, ""));
-
-    const pathsObjects = paths.map((item) => {
-      return { category: "/" + item.split("/", 2).join("/") + "/", path: item };
-    });
-
-    //Add articles to related sections
-    articles.forEach((articleGroup) => {
-      articleGroup.forEach((article) => {
-        if (articleGroup.length === 1) {
-          const subArticlesInGroup = pathsObjects.filter((item) =>
-            item.category.startsWith(article.url)
-          );
-          const subArticlesCategory = subArticlesInGroup.filter((item) =>
-            item.path.match(
-              article.url.substring(1) + "([A-Za-z0-9-]+)/index.mdx"
-            )
-          );
-          subArticlesCategory.forEach((item) => {
-            const articleObj = {};
-            const fileContents = fs.readFileSync(
-              articlesDirectory + item.path,
-              "utf8"
-            );
-            const { data, content } = matter(fileContents);
-            articleObj["url"] = "/" + item.path.replace("index.mdx", "");
-            articleObj["path"] = [item["url"]];
-            articleObj["article"] = true;
-            articleObj["weight"] = data["weight"];
-            articleObj["category"] = data["category"];
-            articleObj["title"] = data["title"];
-            articleObj["items"] = [];
-
-            articles
-              .find((item) => item[0].url === article.url)
-              .push(articleObj);
-          });
-        } else {
-          const subArticles = pathsObjects.filter(
-            (item) => item.category === article.url
-          );
-
-          subArticles.forEach((subArticle) => {
-            const item = {};
-
-            const fileContents = fs.readFileSync(
-              articlesDirectory + subArticle.path,
-              "utf8"
-            );
-            const { data, content } = matter(fileContents);
-            item["url"] = "/" + subArticle.path.replace("index.mdx", "");
-            item["path"] = [item["url"]];
-            item["article"] = true;
-            item["weight"] = data["weight"];
-            item["category"] = data["category"];
-            item["title"] = data["title"];
-            item["items"] = [];
-
-            article.items.push(item);
-          });
-
-          article.items
-            .sort(({ title: titleA }, { title: titleB }) =>
-              titleA.localeCompare(titleB)
-            )
-            .sort(
-              ({ weight: weightA }, { weight: weightB }) => weightA - weightB
-            );
+    //TODO this requires refactoring
+    const subItems = [];
+    matches &&
+      matches.forEach((match) => {
+        if (match.startsWith("# ")) {
+          const title = match.substring(2);
+          let slug = title;
+          slug = slug.toLowerCase();
+          slug = slug.replace(/\s/g, "-");
+          slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+          subItems.push({ title: title, url: "#" + slug });
+        } else if (match.startsWith("## ")) {
+          const title = match.substring(3);
+          let slug = title;
+          slug = slug.toLowerCase();
+          slug = slug.replace(/\s/g, "-");
+          slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+          if (subItems.length === 0) {
+            subItems.push({ title: title, url: "#" + slug });
+          } else {
+            if (subItems[subItems.length - 1].items === undefined) {
+              subItems[subItems.length - 1].items = [];
+              subItems[subItems.length - 1].items.push({
+                title: title,
+                url: "#" + slug,
+              });
+            } else {
+              subItems[subItems.length - 1].items.push({
+                title: title,
+                url: "#" + slug,
+              });
+            }
+          }
+        } else if (match.startsWith("### ")) {
+          const title = match.substring(4);
+          let slug = title;
+          slug = slug.toLowerCase();
+          slug = slug.replace(/\s/g, "-");
+          slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+          if (subItems.length === 0) {
+            subItems.push({ title: title, url: "#" + slug });
+          } else {
+            if (subItems[subItems.length - 1].items === undefined) {
+              subItems[subItems.length - 1].items = [];
+              subItems[subItems.length - 1].items.push({
+                title: title,
+                url: "#" + slug,
+              });
+            } else {
+              if (
+                subItems[subItems.length - 1].items[
+                  subItems[subItems.length - 1].items.length - 1
+                ].items === undefined
+              ) {
+                subItems[subItems.length - 1].items[
+                  subItems[subItems.length - 1].items.length - 1
+                ].items = [];
+                subItems[subItems.length - 1].items[
+                  subItems[subItems.length - 1].items.length - 1
+                ].items.push({ title: title, url: "#" + slug });
+              } else {
+                subItems[subItems.length - 1].items[
+                  subItems[subItems.length - 1].items.length - 1
+                ].items.push({ title: title, url: "#" + slug });
+              }
+            }
+          }
         }
       });
-    });
 
-    const articlesJSON = JSON.stringify(articles);
+    item["apiVersion"] = data["apiVersion"] || null;
+    item["article"] = true;
+    item["category"] = filePath.split("/")[0];
+    if (item["category"].endsWith(".mdx")) {
+      return;
+    }
+    item["id"] = uuidv4();
+    if (subItems.length > 0) {
+      item["items"] = subItems;
+    } else {
+      item["items"] = null;
+    }
+    item["subcategory"] =
+      filePath.split("/").length > 1 && !filePath.split("/")[1].endsWith(".mdx")
+        ? filePath.split("/")[1]
+        : null;
+    item["title"] = data["title"];
+    item["url"] = "/" + filePath.replace("index.mdx", "");
+    item["weight"] = data["weight"];
 
-    fs.writeFile("../src/configs/articles.json", articlesJSON, (err) => {
-      if (err) {
-        throw err;
-      }
-    });
+    if (data["hidden"] != true) {
+      items.push(item);
+    }
+  });
+
+  const articlesJSON = JSON.stringify(items);
+
+  fs.writeFile("../src/configs/articles.json", articlesJSON, (err) => {
+    if (err) {
+      throw err;
+    }
   });
 });

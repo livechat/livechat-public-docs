@@ -1,4 +1,4 @@
-import useAllArticlesInCategory from "./useAllArticlesInCategory";
+import useArticlesInCategory from "./useArticlesInCategory";
 import useCategoryMeta from "./useCategoryMeta";
 import useAllCategoriesMeta from "./useAllCategoriesMeta";
 import useScrollSpy from "./useScrollSpy";
@@ -6,7 +6,7 @@ import useLocalStorage from "./useLocalStorage";
 import useRating from "./useRating";
 
 export {
-  useAllArticlesInCategory,
+  useArticlesInCategory,
   useCategoryMeta,
   useAllCategoriesMeta,
   useScrollSpy,

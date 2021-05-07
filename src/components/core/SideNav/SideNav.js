@@ -12,16 +12,15 @@ import {
 import { Search } from "../Search";
 import { HomeIcon, ChevronRight } from "../icons";
 import {
-  useAllArticlesInCategory,
   useCategoryMeta,
   useAllCategoriesMeta,
   useScrollSpy,
+  useArticlesInCategory,
 } from "../../../hooks";
 import { VersionContext } from "../../../contexts";
 import { getVersionColor, canUseWindow } from "../../../utils";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => {
-  const arrayOfSlugs = items.map((item) => item.url);
   return (
     <Ul>
       {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
@@ -36,16 +35,6 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
           activeUrls.includes(url) &&
           url.includes(activeUrls[depth]);
 
-        /*
-        const slug = canUseWindow ? window.location.pathname : "";
-        const titleSlug = "#" + title.toLowerCase().replace(/ /g, "-");
-        const isActive = titleSlug === activeUrls;
-
-        const projectPath = path && path.length > 0 ? path[0] : "/";
-        const isExpanded =
-          slug + "/" === projectPath &&
-          (isSubcategory !== true || arrayOfSlugs.includes(activeUrls));
-*/
         let redirectUrl = url || "#";
 
         return (
@@ -74,14 +63,15 @@ const SideNav = ({
   currentSlug,
   expanded,
   setExpanded,
-  headings,
 }) => {
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
   );
-  const [articles, getArticlePath] = useAllArticlesInCategory(
+
+  const [articles, getArticlePath] = useArticlesInCategory(
     category,
-    headings
+    currentSlug,
+    selectedVersion
   );
 
   const categories = useAllCategoriesMeta().map((item) => ({

@@ -34,7 +34,10 @@ export const useScrollSpy = (selector = ".heading", callback) => {
 
           // dirty hack
           if (elem && elem.nodeName !== "H5" && elem.nodeName !== "H6") {
-            const slug = elem.outerText.toLowerCase().replaceAll(" ", "-");
+            let slug = elem.outerText;
+            slug = slug.toLowerCase();
+            slug = slug.replace(/\s/g, "-");
+            slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
             setActive(`#${slug}`);
             setUrlParams(slug);
           }

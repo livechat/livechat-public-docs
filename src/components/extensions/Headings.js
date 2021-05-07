@@ -211,6 +211,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
 
   let id = getText(children);
+  id = id.toString();
   id = id.toLowerCase();
   id = id.replace(/\s/g, "-");
   id = id.replace(/[^a-zA-Z0-9-]+/g, "");
