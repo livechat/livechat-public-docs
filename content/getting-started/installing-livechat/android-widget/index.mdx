@@ -89,7 +89,7 @@ There are two recommended ways to use the **ChatWindow**:
 
 All you need to do is to create, attach and initialize the chat window. For example:
 
-```js
+```java
 public void startFullScreenChat() {
     if (fullScreenChatWindow == null) {
         fullScreenChatWindow = ChatWindowView.createAndAttachChatWindowInstance(getActivity());
@@ -124,7 +124,7 @@ ChatWindowView chatWindowView = new ChatWindowView(MainActivity.this);
 
 and then initializing the **ChatWindow** with the full screen window approach:
 
-```js
+```java
 public void startEmmbeddedChat(View view) {
     if (!emmbeddedChatWindow.isInitialized()) {
         emmbeddedChatWindow.setUpWindow(configuration);
@@ -141,18 +141,39 @@ Depending on your use case you may want to hide the **ChatWindow** if a user hit
 You can use our `onBackPressed()` function which hides the view if it's visible and returns `true`.
 Add the following to your activity/fragment:
 
-```js
+```java
 @Override
 public boolean onBackPressed() {
     return fullScreenChatWindow != null && fullScreenChatWindow.onBackPressed();
 }
 ```
 
+# ChatWindowEventsListener
+
+The `ChatWindowEventsListener` listener allows you to:
+
+- handle a case when a user wants to attach a file in the **ChatWindow**
+- get notified if a new message has arrived in a chat (this comes in handy if you want to show a prompt for a user to read the new message)
+- react to visibility changes (the users can hide the view on their own)
+- handle user-selected links in a custom way
+- react to and handle errors coming from the chat window
+
 ## File sharing
 
-If you want the users to be able to send files, you need to set **ChatWindowEventsListener** on your **ChatWindowView** and allow the view to handle the activity result:
+To provide your users with the option to send files, you need to set `ChatWindowEventsListener` on your `ChatWindowView`.
 
-```js
+Your listener should override the `onStartFilePickerActivity` method and call `startActivityForResult` with `intent` and `requestCode`.
+
+```java
+@Override
+public void onStartFilePickerActivity(Intent intent, int requestCode) {
+    startActivityForResult(intent, requestCode);
+}
+```
+
+Then, enable the view to handle the activity result, for example, in the following way:
+
+```java
 @Override
 public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (fullChatWindow != null) fullChatWindow.onActivityResult(requestCode, resultCode, data);
@@ -160,13 +181,37 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
-## ChatWindowEventsListener
+## Handling URLs
 
-This listener allows you to:
+You can disable chat widget's default behavior when a user selects a link by implementing the `handleUri` method from `ChatWindowEventsListener`.
 
-- handle a case when a user wants to attach a file in the **ChatWindow**
-- get notified if a new message has arrived in a chat (this comes in handy if you want to show a prompt for a user to read the new message)
-- react to visibility changes (the users can hide the view on their own)
+```java
+@Override
+public boolean handleUri(Uri uri) {
+	// Handle uri here...
+	return true; // Return true to disable default behavior.
+}
+```
+
+## Error handling
+
+You might want to customize the user experience when encountering errors, such as problems with internet connection. By returning `true` in the `onError` callback method, you're taking responsibility for handling errors coming from the chat window.
+
+Please keep in mind that the chat window, once it's loaded, can handle connection issues by sporadically trying to reconnect. This case can be detected by implementing the following condition in the `onError` callback method:
+
+```java
+@Override
+public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
+    if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2 && chatWindow.isChatLoaded()) {
+        //Chat window can handle reconnection. You might want to delegate this to chat window
+        return false;
+    } else {
+        reloadChatBtn.setVisibility(View.VISIBLE);
+    }
+    Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
+    return true;
+}
+```
 
 # Sample application
 
@@ -192,7 +237,7 @@ There are two ways to open the chat window – by using an Activity or a Fragmen
 In order to open a chat window in a new Activity, you need to declare **ChatWindowActivity** in your manifest. Add the following line to **AndroidManifest.xml**, between `<application></application>` tags:
 
 ```xml
-    <activity android:name="com.livechatinc.inappchat.ChatWindowActivity" android:configChanges="orientation|screenSize" />
+<activity android:name="com.livechatinc.inappchat.ChatWindowActivity" android:configChanges="orientation|screenSize" />
 ```
 
 <div class="clear"></div>
@@ -200,10 +245,10 @@ In order to open a chat window in a new Activity, you need to declare **ChatWind
 Finally, add the following code to your application, in the place where you want to open the chat window (e.g. button listener). You need to provide a **Context** (your Activity or Application object), your LiveChat licence number (taken from the [tracking code](https://my.livechatinc.com/settings/code)) and, optionally, the ID of a group:
 
 ```java
-    Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
-    intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_GROUP_ID, "your_group_id");
-    intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_LICENCE_NUMBER, "your_license_number");
-    context.startActivity(intent);
+Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
+intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_GROUP_ID, "your_group_id");
+intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_LICENCE_NUMBER, "your_license_number");
+context.startActivity(intent);
 ```
 
 <div class="clear"></div>
@@ -211,8 +256,8 @@ Finally, add the following code to your application, in the place where you want
 It’s also possibile to automatically login to the chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and add the following lines to the previous code:
 
 ```java
-    intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_NAME, "your_name");
-    intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_EMAIL, "your_email");
+intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_NAME, "your_name");
+intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_EMAIL, "your_email");
 ```
 
 ## Fragment
@@ -220,11 +265,11 @@ It’s also possibile to automatically login to the chat window by providing vis
 In order to open chat window in a new Fragment, you need to add the following code to your application, in the place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat licence number and a group ID:
 
 ```java
-    getFragmentManager()
-       .beginTransaction()
-       .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment")
-       .addToBackStack("chat_fragment")
-       .commit();
+getFragmentManager()
+   .beginTransaction()
+   .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment")
+   .addToBackStack("chat_fragment")
+   .commit();
 ```
 
 <div class="clear"></div>
@@ -236,11 +281,11 @@ In order to open chat window in a new Fragment, you need to add the following co
 It’s also possible to automatically login to the chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and use a different `newInstance()` method:
 
 ```java
-    getFragmentManager()
-       .beginTransaction()
-       .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment")
-       .addToBackStack("chat_fragment")
-       .commit();
+getFragmentManager()
+   .beginTransaction()
+   .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment")
+   .addToBackStack("chat_fragment")
+   .commit();
 ```
 
 # Alternative usage
@@ -251,7 +296,7 @@ If you don't need the chat to work in the background nor to receive messages whe
 
 If you don't want the chat window to reload its content every time a device orientation changes, add this line to your Activity in the manifest:
 
-```js
+```java
 android: configChanges = "orientation|screenSize";
 ```
 
