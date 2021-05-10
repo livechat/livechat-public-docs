@@ -2,3 +2,5 @@ export { default as agentsChattingDuration } from "./responses/chats/agentsChatt
 export { default as tags } from "./responses/chats/tags.json";
 export { default as totalChats } from "./responses/chats/totalChats.json";
 export { default as filters } from "./filters.json";
+export { default as ranking } from "./responses/chats/ranking.json";
+export { default as rating } from "./responses/chats/rating.json";
