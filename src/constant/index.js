@@ -6,10 +6,10 @@ const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["3.4", "3.3", "3.2", "3.1", "2.0"],
   },
   "chat-widget": {
-    STABLE_VERSION: "2.0",
-    LEGACY_VERSIONS: ["1.0"],
+    STABLE_VERSION: "3.0",
+    LEGACY_VERSIONS: ["1.0", "2.0"],
     DEV_PREVIEW_VERSION: "",
-    ALL_VERSIONS: ["1.0", "2.0"],
+    ALL_VERSIONS: ["1.0", "2.0", "3.0"],
   },
   "data-reporting": {
     STABLE_VERSION: "3.3",
