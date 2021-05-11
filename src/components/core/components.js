@@ -89,7 +89,7 @@ export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
         expanded={expanded}
         onClick={(e) => {
           e.preventDefault();
-          // setExpanded(expanded);
+          setExpanded(!expanded);
         }}
       >
         <ChevronRight />
@@ -150,15 +150,7 @@ export const MainWrapper = styled.div`
   }
 `;
 
-export const LeftColumn = styled.div`
-  height: 100vh;
-  width: 297px;
-  background-color: #f6f6f7;
-  border-right: 1px solid #e8e8e8;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-`;
+export const LeftColumn = styled.div``;
 
 export const MiddleColumn = styled.div`
   max-width: 100%;
