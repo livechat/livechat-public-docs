@@ -11,14 +11,18 @@ import {
 } from "../components";
 import { Search } from "../Search";
 import { HomeIcon, ChevronRight } from "../icons";
-// import {
-//   useAllArticlesInCategory,
-//   useCategoryMeta,
-//   useAllCategoriesMeta,
-//   useScrollSpy,
-// } from "../../../hooks";
+import {
+  useCategoryMeta,
+  useAllCategoriesMeta,
+  useScrollSpy,
+  useArticlesInCategory,
+} from "../../../hooks";
 import { VersionContext } from "../../../contexts";
+<<<<<<< HEAD
 import { getVersionColor, getCategoryTitle } from "../../../utils";
+=======
+import { getVersionColor, canUseWindow } from "../../../utils";
+>>>>>>> 9e6a9d61 ((DPS-2739) Migrate SideNav component  (#899))
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => {
   return (
@@ -36,6 +40,7 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
           url.includes(activeUrls[depth]);
 
         let redirectUrl = url || "#";
+
         return (
           <Fragment key={`toc-${depth}-${url}`}>
             <MenuElement
@@ -66,20 +71,20 @@ const SideNav = ({
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
   );
-  // const [articles, getArticlePath] = useAllArticlesInCategory(
-  //   category,
-  //   currentSlug,
-  //   selectedVersion
-  // );
 
-  const categories = [];
-  // useAllCategoriesMeta().map((item) => ({
-  //   ...item,
-  //   url: `/${item.slug}/`,
-  //   items: null,
-  // }));
+  const [articles, getArticlePath] = useArticlesInCategory(
+    category,
+    currentSlug,
+    selectedVersion
+  );
 
-  // const menuItems = category ? articles : categories;
+  const categories = useAllCategoriesMeta().map((item) => ({
+    ...item,
+    url: `/${item.slug}/`,
+    items: null,
+  }));
+
+  const menuItems = category ? articles : categories;
 
   const initialPath = subcategory
     ? [`/${category}/${subcategory}/`, currentSlug]
@@ -109,11 +114,14 @@ const SideNav = ({
               triggerActionType={"hover"}
               trigger={
                 <span>
-                  <HomeIcon width={18} style={{ display: "block" }} />
+                  <HomeIcon
+                    width={18}
+                    style={{ display: "block", color: "#424D57" }}
+                  />
                 </span>
               }
               closeOnOutsideClick
-              zIndex={1000}
+              zIndex={20}
             >
               {"Home"}
             </PopperTooltip>
@@ -121,16 +129,15 @@ const SideNav = ({
         </Link>
         <ChevronRight width={14} style={{ marginTop: "2px" }} />
         <span style={{ marginBottom: "-3px" }}>
-          Home
-          {/*  {categoryMeta.title || "Home"} */}
+          {categoryMeta.title || "Home"}
         </span>
       </NavHeader>
       <NavHeader>
         <Search />
       </NavHeader>
-      {/* <MenuWrapper>
+      <MenuWrapper>
         {printItems(menuItems, toggleState, activePath, undefined)}
-      </MenuWrapper> */}
+      </MenuWrapper>
     </Nav>
   );
 };
