@@ -33,6 +33,7 @@ module.exports = {
           return {
             category: window.categoryTitle,
             label: window.location.href,
+            isUniquePageView: !window.location.href.includes("#"),
           };
         },
       },
