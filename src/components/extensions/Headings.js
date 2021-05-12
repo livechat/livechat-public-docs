@@ -209,10 +209,17 @@ const SectionLink = ({ to, href, children, ...rest }) => {
 
 const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
-  const newProps = { ...props, className };
+
+  let id = getText(children);
+  id = id.toString();
+  id = id.toLowerCase();
+  id = id.replace(/\s/g, "-");
+  id = id.replace(/[^a-zA-Z0-9-]+/g, "");
+
+  const newProps = { ...props, className, id };
 
   const Content = () => (
-    <HeadingLink href={`#${props.id}`}>{getText(children)}</HeadingLink>
+    <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
   );
 
   switch (size) {
