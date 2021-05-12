@@ -67,10 +67,16 @@ export const openChatWindow = (e) => {
   LC_API.open_chat_window();
 };
 
-export const setUrlParams = (section) => {
-  const params = window.location.pathname + "#" + section;
+export const filterUrlParams = (section) => {
+  const url = window.location.href;
+  const index = url.lastIndexOf("#");
+  if (index === -1) {
+    return;
+  }
+  const urlSlug = url.slice(index + 1);
+  const pathname = window.location.pathname;
 
-  if (window.history.replaceState) {
-    window.history.replaceState(null, null, params);
+  if (window.history.replaceState && section !== urlSlug) {
+    window.history.replaceState(null, null, pathname);
   }
 };

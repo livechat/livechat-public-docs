@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { setUrlParams } from "../utils";
+import { filterUrlParams } from "../utils";
 import throttle from "lodash.throttle";
 
 const getHeadingsOffsetMap = (selector) =>
@@ -34,7 +34,7 @@ export const useScrollSpy = (selector = ".heading", callback) => {
           // dirty hack
           if (elem && elem.nodeName !== "H5" && elem.nodeName !== "H6") {
             setActive(`#${elem.id}`);
-            setUrlParams(elem.id);
+            filterUrlParams(elem.id);
           }
         },
         200,
