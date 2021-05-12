@@ -1,14 +1,15 @@
-import { useAllArticlesGroupedByCategory } from "./";
 import useCategoryMeta from "./useCategoryMeta";
 
+import rawArticles from "../configs/articles.json";
+
 const appendPathsToNodes = (items, path = []) => {
-  return items.map(item => {
+  return items.map((item) => {
     return {
       ...item,
       path: [...path, item.url],
       items: item.items
         ? appendPathsToNodes(item.items, [...path, item.url])
-        : undefined
+        : undefined,
     };
   });
 };
@@ -20,7 +21,7 @@ const generatePathsMap = (items, acc = {}) => {
     acc = { ...acc, [item.url]: item.path };
     if (item.items && item.url) {
       acc = {
-        ...generatePathsMap(item.items, acc)
+        ...generatePathsMap(item.items, acc),
       };
     }
   }
@@ -28,33 +29,16 @@ const generatePathsMap = (items, acc = {}) => {
 };
 
 export default (category, currentSlug, currentApiVersion) => {
-  const byCategory = useAllArticlesGroupedByCategory().filter(item => {
-    if (category) {
-      return item.fieldValue === category;
-    }
-    return item;
-  })[0];
-
-  let articles = byCategory.edges
-    .map(({ node }) => ({
-      id: node.id,
-      url: node.frontmatter.slug || node.fields.slug,
-      title: node.frontmatter.title,
-      weight: node.frontmatter.weight || 999,
-      items: node.tableOfContents.items,
-      category: node.frontmatter.category,
-      subcategory: node.frontmatter.subcategory,
-      apiVersion: node.frontmatter.apiVersion,
-      article: true
-    }))
+  let articles = rawArticles
+    .filter((item) => item.category === category)
     // filtering out non-current api versions (dirty)
     .filter(
       ({ apiVersion }) =>
         apiVersion === currentApiVersion || apiVersion === null
     )
     // keep toc only for current article
-    .map(item => {
-      if (item.url !== currentSlug) {
+    .map((item) => {
+      if (item.url !== currentSlug + "/") {
         return { ...item, items: null };
       }
       return item;
@@ -63,7 +47,6 @@ export default (category, currentSlug, currentApiVersion) => {
       titleA.localeCompare(titleB)
     )
     .sort(({ weight: weightA }, { weight: weightB }) => weightA - weightB);
-
   // this parts kind of tricky;
   // if you have an idea on how to
   // make it simple, fire away!
@@ -71,7 +54,7 @@ export default (category, currentSlug, currentApiVersion) => {
     const rest = acc[cur.subcategory] ? acc[cur.subcategory].items : [];
 
     const subcategoryMeta = useCategoryMeta(cur.category).items.filter(
-      item => item.slug === cur.subcategory
+      (item) => item.slug === cur.subcategory
     )[0];
 
     return {
@@ -82,14 +65,14 @@ export default (category, currentSlug, currentApiVersion) => {
         article: true,
         isSubcategory: true,
         apiVersion: cur.apiVersion,
-        items: [...rest, cur]
-      }
+        items: [...rest, cur],
+      },
     };
   }, {});
 
   // squeezing the reduced object into array
   articles = Object.entries(articles)
-    .map(item => {
+    .map((item) => {
       return { ...item[1] };
     })
     .reduce((acc, item) => {
@@ -103,7 +86,7 @@ export default (category, currentSlug, currentApiVersion) => {
   // plus a getter for the path
   articles = appendPathsToNodes(articles);
   const pathsMap = generatePathsMap(articles);
-  const getArticlePath = url => pathsMap[url];
+  const getArticlePath = (url) => pathsMap[url];
 
   return [articles, getArticlePath];
 };

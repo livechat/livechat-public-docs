@@ -4,10 +4,11 @@ import throttle from "lodash.throttle";
 
 const getHeadingsOffsetMap = (selector) =>
   [...document.querySelectorAll(selector)].map(
-    ({ id, nodeName, offsetTop }) => ({
+    ({ id, nodeName, offsetTop, outerText }) => ({
       id,
       nodeName,
       offsetTop,
+      outerText,
     })
   );
 
@@ -33,8 +34,12 @@ export const useScrollSpy = (selector = ".heading", callback) => {
 
           // dirty hack
           if (elem && elem.nodeName !== "H5" && elem.nodeName !== "H6") {
-            setActive(`#${elem.id}`);
-            setUrlParams(elem.id);
+            let slug = elem.outerText;
+            slug = slug.toLowerCase();
+            slug = slug.replace(/\s/g, "-");
+            slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+            setActive(`#${slug}`);
+            setUrlParams(slug);
           }
         },
         200,
@@ -47,7 +52,6 @@ export const useScrollSpy = (selector = ".heading", callback) => {
 
     // eslint-disable-next-line
   }, []);
-
   return active;
 };
 
