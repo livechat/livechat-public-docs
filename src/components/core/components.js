@@ -150,6 +150,7 @@ export const MainWrapper = styled.div`
   }
 `;
 
+
 export const LeftColumn = styled.div`
   height: 100vh;
   width: 297px;
@@ -203,6 +204,7 @@ export const Ul = styled.ul`
 `;
 
 export const Li = styled.li`
+  cursor: pointer;
   padding: 0;
   margin: 0;
 `;
@@ -254,7 +256,7 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      <Link to={url} title={title}>
+      <Link href={url} title={title}>
         <MenuLink active={active ? 1 : 0}>
           <ArticleIcon
             style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}

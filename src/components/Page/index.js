@@ -19,6 +19,7 @@ import {
   // NavHeader,
 } from "../core/components";
 import SideNav from "../core/SideNav";
+import { useLocalStorage } from "../../hooks";
 import Rating from "../core/Rating";
 import { Headings, CodeBlocks, Scopes, Errors } from "../extensions";
 
@@ -43,6 +44,8 @@ const Page = ({ frontMatter, children }) => {
     slug: customSlug,
   } = frontMatter;
   const router = useRouter();
+
+  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -125,11 +128,11 @@ const Page = ({ frontMatter, children }) => {
           {!useRedocPage && (
             <LeftColumn>
               <SideNav
-                currentSlug={""} //customSlug || slug
+                currentSlug={slug}
                 category={category}
                 subcategory={subcategory}
-                expanded={true} //expanded
-                setExpanded={() => {}} // setExpanded
+                expanded={expanded}
+                setExpanded={setExpanded}
                 versions={versions}
               />
             </LeftColumn>
