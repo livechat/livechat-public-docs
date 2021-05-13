@@ -150,7 +150,6 @@ export const MainWrapper = styled.div`
   }
 `;
 
-
 export const LeftColumn = styled.div`
   height: 100vh;
   width: 297px;
