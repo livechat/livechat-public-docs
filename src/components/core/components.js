@@ -157,7 +157,7 @@ export const LeftColumn = styled.div`
   border-right: 1px solid #e8e8e8;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 98;
 `;
 
 export const MiddleColumn = styled.div`
