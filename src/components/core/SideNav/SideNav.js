@@ -18,11 +18,7 @@ import {
   useArticlesInCategory,
 } from "../../../hooks";
 import { VersionContext } from "../../../contexts";
-<<<<<<< HEAD
 import { getVersionColor, getCategoryTitle } from "../../../utils";
-=======
-import { getVersionColor, canUseWindow } from "../../../utils";
->>>>>>> 9e6a9d61 ((DPS-2739) Migrate SideNav component  (#899))
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => {
   return (
