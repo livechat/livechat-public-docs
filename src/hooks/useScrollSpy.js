@@ -4,11 +4,10 @@ import throttle from "lodash.throttle";
 
 const getHeadingsOffsetMap = (selector) =>
   [...document.querySelectorAll(selector)].map(
-    ({ id, nodeName, offsetTop, outerText }) => ({
+    ({ id, nodeName, offsetTop }) => ({
       id,
       nodeName,
       offsetTop,
-      outerText,
     })
   );
 
