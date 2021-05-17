@@ -29,6 +29,11 @@ module.exports = {
         // Specify optional GTM environment details.
         // gtmAuth: "YOUR_GOOGLE_TAGMANAGER_ENVIROMENT_AUTH_STRING",
         // gtmPreview: "YOUR_GOOGLE_TAGMANAGER_ENVIROMENT_PREVIEW_NAME",
+        defaultDataLayer: () => {
+          return {
+            pageType: window.pageType,
+          };
+        },
       },
     },
     {
