@@ -31,7 +31,8 @@ module.exports = {
         // gtmPreview: "YOUR_GOOGLE_TAGMANAGER_ENVIROMENT_PREVIEW_NAME",
         defaultDataLayer: () => {
           return {
-            pageType: window.pageType,
+            category: window.categoryTitle,
+            label: window.location.href,
           };
         },
       },

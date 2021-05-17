@@ -12,17 +12,21 @@ const getHeadingsOffsetMap = (selector) =>
     })
   );
 
-export const useScrollSpy = (selector = ".heading", callback) => {
+export const useScrollSpy = (
+  selector = ".heading",
+  callback,
+  updateDataLayer
+) => {
   const [active, setActive] = useState("");
 
   useEffect(() => {
     callback(active);
+    updateDataLayer();
     // eslint-disable-next-line
   }, [active]);
 
   useEffect(() => {
     const map = getHeadingsOffsetMap(selector);
-    console.log([...document.querySelectorAll(selector)]);
     if (!!(typeof window !== "undefined")) {
       const onScroll = throttle(
         (e) => {

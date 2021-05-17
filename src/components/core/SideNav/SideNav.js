@@ -18,7 +18,7 @@ import {
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
 import { VersionContext } from "../../../contexts";
-import { getVersionColor } from "../../../utils";
+import { getVersionColor, getCategoryTitle } from "../../../utils";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => {
   return (
@@ -56,42 +56,6 @@ const printItems = (items, toggleState, activeUrls, depth = 0) => {
   );
 };
 
-const getCategoryTitle = (menuItems, category) => {
-  const pathname = window.location.pathname;
-
-  const iterate = (obj) => {
-    if (obj.url === pathname) {
-      return obj.title;
-    }
-    if (obj.items && obj.items.length > 0) {
-      obj.items.forEach((item) => {
-        iterate(item);
-      });
-    }
-    return "";
-  };
-  let a;
-  menuItems.forEach((item) => {
-    const c = iterate(item);
-    if (c !== "") {
-      a = c;
-    }
-  });
-  console.log(a);
-
-  /*const iterate = (obj) => {
-    Object.keys(obj).forEach((key) => {
-      console.log(`key: ${key}, value: ${obj[key]}`);
-
-      if (typeof obj[key] === "object") {
-        iterate(obj[key]);
-      }
-    });
-  };
-
-  console.log(iterate(menuItems[0]));*/
-};
-
 const SideNav = ({
   category,
   subcategory,
@@ -125,9 +89,11 @@ const SideNav = ({
 
   const categoryMeta = useCategoryMeta(category);
 
-  getCategoryTitle(menuItems, category);
-
-  useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
+  useScrollSpy(
+    ".heading",
+    (url) => url && setActivePath(getArticlePath(url)),
+    () => getCategoryTitle(menuItems)
+  );
 
   const navColor = getVersionColor(selectedVersion, versions);
 
