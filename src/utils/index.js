@@ -80,19 +80,19 @@ export const getCategoryTitle = (menuItems) => {
 
   var categoryTitle = "";
 
-  const iterate = (obj) => {
-    if (obj.url === pathname) {
-      categoryTitle = obj.title;
+  const findTitle = (item) => {
+    if (item.url === pathname) {
+      categoryTitle = item.title;
     }
-    if (obj.items && obj.items.length > 0) {
-      obj.items.forEach((item) => {
-        iterate(item);
+    if (item.items && item.items.length > 0) {
+      item.items.forEach((item) => {
+        findTitle(item);
       });
     }
   };
 
   menuItems.forEach((item) => {
-    iterate(item);
+    findTitle(item);
   });
 
   window.categoryTitle = categoryTitle;
