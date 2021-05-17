@@ -78,7 +78,7 @@ export const setUrlParams = (section) => {
 export const getCategoryTitle = (menuItems) => {
   const pathname = window.location.pathname;
 
-  var categoryTitle = "";
+  let categoryTitle = "";
 
   const findTitle = (item) => {
     if (item.url === pathname) {
