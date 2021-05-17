@@ -98,6 +98,10 @@ const Body = styled.div`
   display: flex;
   max-width: 100%;
   overflow: scroll;
+
+  code {
+    display: inline-block;
+  }
 `;
 
 const SelectLanguage = styled.select`
