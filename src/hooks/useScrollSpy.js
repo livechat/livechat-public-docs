@@ -11,11 +11,16 @@ const getHeadingsOffsetMap = (selector) =>
     })
   );
 
-export const useScrollSpy = (selector = ".heading", callback) => {
+export const useScrollSpy = (
+  selector = ".heading",
+  callback,
+  updateDataLayer
+) => {
   const [active, setActive] = useState("");
 
   useEffect(() => {
     callback(active);
+    updateDataLayer();
     // eslint-disable-next-line
   }, [active]);
 

@@ -18,7 +18,7 @@ import {
 import { Link } from "gatsby";
 import { PopperTooltip } from "@livechat/design-system";
 import { VersionContext } from "../../../contexts";
-import { getVersionColor } from "../../../utils";
+import { getVersionColor, getCategoryTitle } from "../../../utils";
 
 const printItems = (items, toggleState, activeUrls, depth = 0) => {
   return (
@@ -89,7 +89,11 @@ const SideNav = ({
 
   const categoryMeta = useCategoryMeta(category);
 
-  useScrollSpy(".heading", (url) => url && setActivePath(getArticlePath(url)));
+  useScrollSpy(
+    ".heading",
+    (url) => url && setActivePath(getArticlePath(url)),
+    () => getCategoryTitle(menuItems)
+  );
 
   const navColor = getVersionColor(selectedVersion, versions);
 

@@ -74,3 +74,26 @@ export const setUrlParams = (section) => {
     window.history.replaceState(null, null, params);
   }
 };
+
+export const getCategoryTitle = (menuItems) => {
+  const pathname = window.location.pathname;
+
+  let categoryTitle = "";
+
+  const findTitle = (item) => {
+    if (item.url === pathname) {
+      categoryTitle = item.title;
+    }
+    if (item.items && item.items.length > 0) {
+      item.items.forEach((item) => {
+        findTitle(item);
+      });
+    }
+  };
+
+  menuItems.forEach((item) => {
+    findTitle(item);
+  });
+
+  window.categoryTitle = categoryTitle;
+};
