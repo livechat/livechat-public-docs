@@ -32,8 +32,9 @@ module.exports = {
         defaultDataLayer: () => {
           return {
             category: window.categoryTitle,
-            label: window.location.href,
-            isUniquePageView: !window.location.href.includes("#"),
+            path: window.location.href,
+            isUniquePageView:
+              !window.location.hash || window.location.hash.length === 0,
           };
         },
       },
