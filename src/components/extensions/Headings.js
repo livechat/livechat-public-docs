@@ -165,7 +165,9 @@ const SectionBanner = ({ title, desc, to, image }) => (
     {image && (
       <SectionColumn style={{ padding: 0 }}>
         <Link href={to} style={{ display: "block" }}>
-          <BannerImage to={to} />
+          <a>
+            <BannerImage to={to} />
+          </a>
         </Link>
       </SectionColumn>
     )}
@@ -173,7 +175,9 @@ const SectionBanner = ({ title, desc, to, image }) => (
       <h2>{title}</h2>
       <p>{desc}</p>
       <Link href={to}>
-        <Button>Learn more</Button>
+        <a>
+          <Button>Learn more</Button>
+        </a>
       </Link>
     </SectionColumn>
   </SectionBannerWrapper>
