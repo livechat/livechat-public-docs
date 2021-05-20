@@ -540,6 +540,40 @@ const ERRORS = [
     description:
       "Displayed on the attempt of logging in. All seats within a given license are already taken.",
   },
+  {
+    id: "agent_offline",
+    message: "Agent offline",
+    description:
+      "",
+  },
+  {
+    id: "not_allowed",
+    message: "Not allowed",
+    description:
+      "Action is not allowed in current state.",
+  },
+  {
+    id: "chat_anonymized",
+    message: "Chat anonymized",
+    description:
+      "",
+  },
+  {
+    id: "already_exist",
+    message: "Already exist",
+    description:
+      "",
+  },
+  {
+    id: "not_found",
+    message: "Not found",
+    description: "",
+  },
+  {
+    id: "transfer_ownership",
+    message: "Transfer ownership",
+    description: "",
+  },
 ];
 
 const constants = {
