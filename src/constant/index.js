@@ -574,6 +574,11 @@ const ERRORS = [
     message: "Transfer ownership",
     description: "",
   },
+  {
+    id: "missing_access",
+    message: "Missing access",
+    description: "",
+  },
 ];
 
 const constants = {
