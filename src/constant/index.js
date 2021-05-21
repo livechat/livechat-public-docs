@@ -544,7 +544,7 @@ const ERRORS = [
     id: "agent_offline",
     message: "Agent offline",
     description:
-      "",
+      "Request couldn't be performed when agent is offline",
   },
   {
     id: "not_allowed",
@@ -556,7 +556,7 @@ const ERRORS = [
     id: "chat_anonymized",
     message: "Chat anonymized",
     description:
-      "",
+      "Request couldn't be performed on anonymized chat.",
   },
   {
     id: "already_exist",
@@ -567,12 +567,12 @@ const ERRORS = [
   {
     id: "not_found",
     message: "Not found",
-    description: "",
+    description: "Requested resource was not found.",
   },
   {
     id: "transfer_ownership",
     message: "Transfer ownership",
-    description: "",
+    description: "Ownership cannot be transfered to this account (bot, suspended agent).",
   },
   {
     id: "missing_access",
