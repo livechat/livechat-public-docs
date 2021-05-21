@@ -544,7 +544,7 @@ const ERRORS = [
     id: "agent_offline",
     message: "Agent offline",
     description:
-      "Request couldn't be performed when agent is offline",
+      "Request couldn't be performed when agent is offline.",
   },
   {
     id: "not_allowed",
@@ -562,7 +562,7 @@ const ERRORS = [
     id: "already_exist",
     message: "Already exist",
     description:
-      "",
+      "Resource cannot be created because it already exist.",
   },
   {
     id: "not_found",
@@ -577,7 +577,7 @@ const ERRORS = [
   {
     id: "missing_access",
     message: "Missing access",
-    description: "",
+    description: "Requester don't have access to resource.",
   },
 ];
 
