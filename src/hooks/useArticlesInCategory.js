@@ -28,7 +28,7 @@ const generatePathsMap = (items, acc = {}) => {
   return acc;
 };
 
-export default (category, currentSlug, currentApiVersion) => {
+const useArticlesInCategory = (category, currentSlug, currentApiVersion) => {
   let articles = rawArticles
     .filter((item) => item.category === category)
     // filtering out non-current api versions (dirty)
@@ -90,3 +90,5 @@ export default (category, currentSlug, currentApiVersion) => {
 
   return [articles, getArticlePath];
 };
+
+export default useArticlesInCategory;

@@ -21,7 +21,13 @@ import {
 import SideNav from "../core/SideNav";
 import { useLocalStorage } from "../../hooks";
 import Rating from "../core/Rating";
-import { Headings, CodeBlocks, Scopes, Errors } from "../extensions";
+import {
+  Headings,
+  CodeBlocks,
+  Scopes,
+  Errors,
+  Placeholder,
+} from "../extensions";
 
 import { Header as PageHeader } from "../core/Page";
 
@@ -30,6 +36,7 @@ const components = {
   ...Headings,
   Scopes,
   Errors,
+  Placeholder,
 };
 
 const Page = ({ frontMatter, children }) => {
