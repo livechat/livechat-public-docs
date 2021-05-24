@@ -1,16 +1,12 @@
-// import React from "react";
+import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import Image from "next/image";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
-// import { Link } from "gatsby";
-
-// import imgMessaging from "images/livechat-platform-messaging.png";
-// import imgExtendUI from "images/livechat-platform-extend-interfaces.png";
-// import imgDataReporting from "images/livechat-platform-data-reporting.png";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -127,37 +123,66 @@ export const Warning = styled.div`
   background-color: #ffd000;
 `;
 
-const Image = ({ to }) => {
+const BannerImage = ({ to }) => {
   switch (to) {
     case "/messaging/":
-      return <StyledImage src={imgMessaging} />;
+      return (
+        <Image
+          src="/images/livechat-platform-messaging.png"
+          alt="Livechat platform messaging"
+          layout="responsive"
+          width={782}
+          height={682}
+        />
+      );
+
     case "/extending-agent-app/":
-      return <StyledImage src={imgExtendUI} />;
+      return (
+        <Image
+          src="/images/livechat-platform-extend-interfaces.png"
+          alt="Livechat platform extend interfaces"
+          layout="responsive"
+          width={782}
+          height={682}
+        />
+      );
     case "/data-reporting/":
-      return <StyledImage src={imgDataReporting} />;
+      return (
+        <Image
+          src="/images/livechat-platform-data-reporting.png"
+          alt="Livechat platform data reporting"
+          layout="responsive"
+          width={782}
+          height={682}
+        />
+      );
     default:
       return null;
   }
 };
 
-// const SectionBanner = ({ title, desc, to, image }) => (
-//   <SectionBannerWrapper>
-//     {image && (
-//       <SectionColumn style={{ padding: 0 }}>
-//         <Link to={to} style={{ display: "block" }}>
-//           <Image to={to} />
-//         </Link>
-//       </SectionColumn>
-//     )}
-//     <SectionColumn>
-//       <h2>{title}</h2>
-//       <p>{desc}</p>
-//       <Link to={to}>
-//         <Button>Learn more</Button>
-//       </Link>
-//     </SectionColumn>
-//   </SectionBannerWrapper>
-// );
+const SectionBanner = ({ title, desc, to, image }) => (
+  <SectionBannerWrapper>
+    {image && (
+      <SectionColumn style={{ padding: 0 }}>
+        <Link href={to} style={{ display: "block" }}>
+          <a>
+            <BannerImage to={to} />
+          </a>
+        </Link>
+      </SectionColumn>
+    )}
+    <SectionColumn>
+      <h2>{title}</h2>
+      <p>{desc}</p>
+      <Link href={to}>
+        <a>
+          <Button>Learn more</Button>
+        </a>
+      </Link>
+    </SectionColumn>
+  </SectionBannerWrapper>
+);
 
 const StyledLink = styled.a`
   font-weight: 600;
@@ -274,7 +299,7 @@ export default {
   h6: makeHeading("h6"),
   a: A,
   Warning,
-  // SectionBanner,
+  SectionBanner,
   SectionLink,
   table: ({ children }) => (
     <TableWrapper>
