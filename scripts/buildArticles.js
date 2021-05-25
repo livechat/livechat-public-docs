@@ -26,21 +26,55 @@ getDirectories(articlesDirectory, (err, res) => {
 
     //TODO this requires refactoring
     const subItems = [];
+    const occurrences = [];
+
     matches &&
       matches.forEach((match) => {
         if (match.startsWith("# ")) {
           const title = match.substring(2);
           let slug = title;
           slug = slug.toLowerCase();
+          slug = slug.trim();
           slug = slug.replace(/\s/g, "-");
           slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+
+          if (
+            occurrences.some((o) => {
+              return o["value"] === slug;
+            })
+          ) {
+            occurrences.find((item) => item.value === slug).number += 1;
+            slug =
+              slug +
+              "-" +
+              occurrences.find((item) => item.value === slug).number.toString();
+          } else {
+            occurrences.push({ value: slug, number: 0 });
+          }
+
           subItems.push({ title: title, url: "#" + slug });
         } else if (match.startsWith("## ")) {
           const title = match.substring(3);
           let slug = title;
           slug = slug.toLowerCase();
+          slug = slug.trim();
           slug = slug.replace(/\s/g, "-");
           slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+
+          if (
+            occurrences.some((o) => {
+              return o["value"] === slug;
+            })
+          ) {
+            occurrences.find((item) => item.value === slug).number += 1;
+            slug =
+              slug +
+              "-" +
+              occurrences.find((item) => item.value === slug).number.toString();
+          } else {
+            occurrences.push({ value: slug, number: 0 });
+          }
+
           if (subItems.length === 0) {
             subItems.push({ title: title, url: "#" + slug });
           } else {
@@ -61,8 +95,24 @@ getDirectories(articlesDirectory, (err, res) => {
           const title = match.substring(4);
           let slug = title;
           slug = slug.toLowerCase();
+          slug = slug.trim();
           slug = slug.replace(/\s/g, "-");
           slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+
+          if (
+            occurrences.some((o) => {
+              return o["value"] === slug;
+            })
+          ) {
+            occurrences.find((item) => item.value === slug).number += 1;
+            slug =
+              slug +
+              "-" +
+              occurrences.find((item) => item.value === slug).number.toString();
+          } else {
+            occurrences.push({ value: slug, number: 0 });
+          }
+
           if (subItems.length === 0) {
             subItems.push({ title: title, url: "#" + slug });
           } else {
