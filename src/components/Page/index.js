@@ -3,9 +3,13 @@ import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 
-import { VersionProvider, RatingProvider } from "../../contexts";
+import {
+  VersionProvider,
+  RatingProvider,
+  UniqueIDsProvider,
+} from "../../contexts";
 import { canUseWindow } from "../../utils";
-import { useRating } from "../../hooks";
+import { useRating, useUniqueIDs } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
 import SEO from "../core/seo";
 import Header from "../core/header";
@@ -125,48 +129,51 @@ const Page = ({ frontMatter, children }) => {
   const slug = canUseWindow ? window.location.pathname : "";
   const ratingContext = useRating({ slug });
   const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
+  const idsContext = useUniqueIDs();
 
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>
-        <SEO desc={desc} title={title} />
-        <Header />
-        <MainWrapper>
-          {!useRedocPage && (
-            <LeftColumn>
-              <SideNav
-                currentSlug={slug}
-                category={category}
-                subcategory={subcategory}
-                expanded={expanded}
-                setExpanded={setExpanded}
-                versions={versions}
-              />
-            </LeftColumn>
-          )}
-          <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
-            {currentApiVersion && (
-              <Version
-                articleVersions={versions.ALL_VERSIONS}
-                redirectToVersion={redirectToVersion}
-                group={versionGroup}
-              />
+        <UniqueIDsProvider value={idsContext}>
+          <SEO desc={desc} title={title} />
+          <Header />
+          <MainWrapper>
+            {!useRedocPage && (
+              <LeftColumn>
+                <SideNav
+                  currentSlug={slug}
+                  category={category}
+                  subcategory={subcategory}
+                  expanded={expanded}
+                  setExpanded={setExpanded}
+                  versions={versions}
+                />
+              </LeftColumn>
             )}
-            <Content className={useRedocPage ? "redoc" : ""}>
-              {title && !useRedocPage && (
-                <PageHeader title={title} timeToRead={timeToRead} />
+            <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
+              {currentApiVersion && (
+                <Version
+                  articleVersions={versions.ALL_VERSIONS}
+                  redirectToVersion={redirectToVersion}
+                  group={versionGroup}
+                />
               )}
+              <Content className={useRedocPage ? "redoc" : ""}>
+                {title && !useRedocPage && (
+                  <PageHeader title={title} timeToRead={timeToRead} />
+                )}
 
-              <MDXProvider components={components}>{children}</MDXProvider>
+                <MDXProvider components={components}>{children}</MDXProvider>
 
-              {!useRedocPage && (
-                <RatingWrapper>
-                  <Rating label="Was this article helpful?" />
-                </RatingWrapper>
-              )}
-            </Content>
-          </MiddleColumn>
-        </MainWrapper>
+                {!useRedocPage && (
+                  <RatingWrapper>
+                    <Rating label="Was this article helpful?" />
+                  </RatingWrapper>
+                )}
+              </Content>
+            </MiddleColumn>
+          </MainWrapper>
+        </UniqueIDsProvider>
       </VersionProvider>
     </RatingProvider>
   );
