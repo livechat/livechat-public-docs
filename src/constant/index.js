@@ -544,30 +544,30 @@ const ERRORS = [
     id: "agent_offline",
     message: "Agent offline",
     description:
-      "Request couldn't be performed when agent is offline.",
+      "The server couldn't process the request because the agent was offline.",
   },
   {
     id: "not_allowed",
     message: "Not allowed",
     description:
-      "Action is not allowed in current state.",
+      "The action is not allowed.",
   },
   {
     id: "chat_anonymized",
     message: "Chat anonymized",
     description:
-      "Request couldn't be performed on anonymized chat.",
+      "The request couldn't be performed on an anonymized chat.",
   },
   {
     id: "already_exist",
     message: "Already exist",
     description:
-      "Resource cannot be created because it already exist.",
+      "It's impossible to create the resource as it already exists.",
   },
   {
     id: "not_found",
     message: "Not found",
-    description: "Requested resource was not found.",
+    description: "The requested resource wasn't found.",
   },
   {
     id: "transfer_ownership",
@@ -577,7 +577,7 @@ const ERRORS = [
   {
     id: "missing_access",
     message: "Missing access",
-    description: "Requester don't have access to resource.",
+    description: "The requester doesn't have access to a given resource.",
   },
 ];
 
