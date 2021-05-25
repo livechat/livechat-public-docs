@@ -44,9 +44,10 @@ getDirectories(articlesDirectory, (err, res) => {
             })
           ) {
             occurrences.find((item) => item.value === slug).number += 1;
-            slug += occurrences
-              .find((item) => item.value === slug)
-              .number.toString();
+            slug =
+              slug +
+              "-" +
+              occurrences.find((item) => item.value === slug).number.toString();
           } else {
             occurrences.push({ value: slug, number: 0 });
           }
@@ -66,9 +67,10 @@ getDirectories(articlesDirectory, (err, res) => {
             })
           ) {
             occurrences.find((item) => item.value === slug).number += 1;
-            slug += occurrences
-              .find((item) => item.value === slug)
-              .number.toString();
+            slug =
+              slug +
+              "-" +
+              occurrences.find((item) => item.value === slug).number.toString();
           } else {
             occurrences.push({ value: slug, number: 0 });
           }
@@ -103,9 +105,10 @@ getDirectories(articlesDirectory, (err, res) => {
             })
           ) {
             occurrences.find((item) => item.value === slug).number += 1;
-            slug += occurrences
-              .find((item) => item.value === slug)
-              .number.toString();
+            slug =
+              slug +
+              "-" +
+              occurrences.find((item) => item.value === slug).number.toString();
           } else {
             occurrences.push({ value: slug, number: 0 });
           }

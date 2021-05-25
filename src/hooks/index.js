@@ -4,7 +4,6 @@ import useAllCategoriesMeta from "./useAllCategoriesMeta";
 import useScrollSpy from "./useScrollSpy";
 import useLocalStorage from "./useLocalStorage";
 import useRating from "./useRating";
-import useUniqueIDs from "./useUniqueIDs";
 
 export {
   useArticlesInCategory,
@@ -13,5 +12,4 @@ export {
   useScrollSpy,
   useLocalStorage,
   useRating,
-  useUniqueIDs,
 };
