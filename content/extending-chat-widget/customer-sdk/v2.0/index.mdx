@@ -6,7 +6,7 @@ title: "Customer SDK"
 tagline: "Build your own Chat Widget."
 desc: "If our default widget is not enough, feel free to build your own. Customer JS SDK is your way to go."
 versionGroup: "chat-widget"
-apiVersion: "3.0"
+apiVersion: "2.0"
 ---
 
 # Introduction
@@ -46,6 +46,12 @@ customerSDK.auth.getToken().then(token => {
 
 If you have any questions, you can start a chat with our [24/7 Support](https://direct.lc.chat/1520/125).
 
+## Examples
+
+We have prepared a sample chat widget implementation to present the features of LiveChat Customer JS SDK:
+
+- [Sample widget at CodeSandbox](https://codesandbox.io/s/rm3prxw88n)
+
 # How to start
 
 This tutorial is here to help you get started with LiveChat Customer SDK.
@@ -74,7 +80,7 @@ Or use the node-style `require` call:
 
 ### Using a script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/customer-sdk@3.0.0"></script>`
+`<script src="https://unpkg.com/@livechat/customer-sdk@2.0.1"></script>`
 
 If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://codesandbox.io/s/rm3prxw88n).
@@ -209,7 +215,7 @@ You can read more about key concepts of the LiveChat messaging in the [Messaging
   type: 'agent',
   name: 'Jane Doe',
   jobTitle: 'Agent',
-  avatar: 'https://cdn.livechat.com/cloud/?uri=https://livechat.s3.amazonaws.com/default/avatars/a7.png',
+  avatar: 'https://cdn.livechatinc.com/cloud/?uri=https://livechat.s3.amazonaws.com/default/avatars/a7.png',
 }
 ```
 
@@ -220,7 +226,7 @@ You can read more about key concepts of the LiveChat messaging in the [Messaging
   id: 'ed9d0195-45d6-428d-5093-f8ec7f1471b9',
   type: 'customer',
   name: 'Jon Doe',
-  avatar: 'https://cdn.livechat.com/cloud/?uri=https://livechat.s3.amazonaws.com/default/avatars/a6.png',
+  avatar: 'https://cdn.livechatinc.com/cloud/?uri=https://livechat.s3.amazonaws.com/default/avatars/a6.png',
   fields: {
     custom_property: 'BasketValue=10usd',
   }
@@ -306,6 +312,44 @@ Parameters:
 
 - `GREETING_NOT_FOUND` - a given `uniqueId` couldn't be found on the server
 
+## activateChat
+
+Activates an archived chat.
+
+```js
+customerSDK
+  .activateChat({
+    chat: {
+      id: 'OU0V0P0OWT',
+      thread: {
+        events: [],
+      },
+    },
+  })
+  .then(chat => {
+    console.log(chat)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters                  | type    | description                                                                                                       |
+| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| data.continuous             | boolean | Optional                                                                                                          |
+| data.chat.id                | string  |                                                                                                                   |
+| data.chat.access            | Access  | Optional                                                                                                          |
+| data.chat.properties        | object  | Optional, [Default properties docs](https://developers.livechat.com/docs/messaging/references/default-properties) |
+| data.chat.thread.events     | Event[] | Optional; you can pass initial events which will immediately become part of the created thread.                   |
+| data.chat.thread.properties | object  | Optional, [Default properties docs](https://developers.livechat.com/docs/messaging/references/default-properties) |
+
+### Errors
+
+- `CHAT_ALREADY_ACTIVE` - the chat is already active and you can't activate it again.
+- `GROUPS_OFFLINE` - a group in the targeted chat is offline. It can happen for licenses without continuous chats enabled.
+
 ## cancelGreeting
 
 Cancels a greeting (an invitation to the chat). For example, Customers could cancel greetings by clicking close icon on the displayed greeting.
@@ -366,7 +410,7 @@ Starts the connection process to our servers. It is needed when:
 
 ```js
 customerSDK
-  .deactivateChat({ id: 'ON0X0R0L67' })
+  .deactivateChat({ chatId: 'ON0X0R0L67' })
   .then(response => {
     console.log(response)
   })
@@ -379,7 +423,7 @@ Parameters:
 
 | parameters | type   | description                               |
 | ---------- | ------ | ----------------------------------------- |
-| id         | string | Chat ID in which thread should get closed |
+| chatId     | string | Chat ID in which thread should get closed |
 
 Returned value:
 
@@ -394,7 +438,7 @@ Deletes given chat properties.
 ```js
 customerSDK
   .deleteChatProperties({
-    id: 'ON0X0R0L67',
+    chatId: 'ON0X0R0L67',
     properties: {
       property_namespace: ['sample'],
     },
@@ -411,7 +455,7 @@ Parameters:
 
 | parameters | type   | description                                         |
 | ---------- | ------ | --------------------------------------------------- |
-| id         | string | ID of the chat whose properties you want to delete. |
+| chatId     | string | ID of the chat whose properties you want to delete. |
 | properties | object | Chat properties to delete                           |
 
 Returned value:
@@ -677,18 +721,6 @@ Parameters:
 | ---------- | ------ | ----------- |
 | groupId    | number | Optional    |
 
-Returned value:
-
-| properties     | type    | description                                                   |
-| -------------- | ------- | ------------------------------------------------------------- |
-| agent          | object  |                                                               |
-| agent.id       | string  |                                                               |
-| agent.name     | string  |                                                               |
-| agent.jobTitle | string  |                                                               |
-| agent.type     | 'agent' |                                                               |
-| agent.isBot    | boolean |                                                               |
-| queue          | boolean | True when the current group has reached concurrent chat limit |
-
 ### Errors
 
 - `GROUP_OFFLINE` - the requested group is offline, and it was not possible to return a predicted Agent for it.
@@ -945,45 +977,6 @@ Returned value:
 
 - `MISSING_CHAT_THREAD` - the targeted chat cannot be rated because it has no threads.
 
-## resumeChat
-
-Resumes an archived chat.
-
-```js
-customerSDK
-  .resumeChat({
-    chat: {
-      id: 'OU0V0P0OWT',
-      thread: {
-        events: [],
-      },
-    },
-  })
-  .then(chat => {
-    console.log(chat)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters                  | type    | description                                                                                                       |
-| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| data.active                 | boolean | Optional; defaults to `true` but can be used to create threads that are immediately inactive                      |
-| data.continuous             | boolean | Optional                                                                                                          |
-| data.chat.id                | string  |                                                                                                                   |
-| data.chat.access            | Access  | Optional                                                                                                          |
-| data.chat.properties        | object  | Optional, [Default properties docs](https://developers.livechat.com/docs/messaging/references/default-properties) |
-| data.chat.thread.events     | Event[] | Optional; you can pass initial events which will immediately become part of the created thread.                   |
-| data.chat.thread.properties | object  | Optional, [Default properties docs](https://developers.livechat.com/docs/messaging/references/default-properties) |
-
-### Errors
-
-- `CHAT_ALREADY_ACTIVE` - the chat is already active and you can't activate it again.
-- `GROUPS_OFFLINE` - a group in the targeted chat is offline. It can happen for licenses without continuous chats enabled.
-
 ## sendEvent
 
 Sends a provided object as an event with a specified type.
@@ -1181,7 +1174,6 @@ Parameters:
 
 | parameters             | type    | description                                                                                                       |
 | ---------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| active                 | boolean | Optional, defaults to `true` but can be used to create threads that are immediately inactive                      |
 | continuous             | boolean | Optional                                                                                                          |
 | chat.access            | access  | Optional                                                                                                          |
 | chat.properties        | object  | Optional, [Default properties docs](https://developers.livechat.com/docs/messaging/references/default-properties) |
@@ -1202,7 +1194,7 @@ const properties = {
   },
 }
 customerSDK
-  .updateChatProperties({ id: 'ON0X0R0L67', properties })
+  .updateChatProperties({ chatId: 'ON0X0R0L67', properties })
   .then(response => {
     console.log(response)
   })
@@ -1215,7 +1207,7 @@ Parameters:
 
 | parameters | type   | description                                                                                             |
 | ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| id         | string | ID of the chat whose properties you want to update.                                                     |
+| chatId     | string | ID of the chat whose properties you want to update.                                                     |
 | properties | object | [Default properties docs](https://developers.livechat.com/docs/messaging/references/default-properties) |
 
 ## updateCustomer
@@ -1572,18 +1564,18 @@ The Customer moved to another page, for example by following a link on your webs
 
 ```js
 customerSDK.on('customer_page_updated', payload => {
-  const { url, title, openedAt } = payload
-  console.log('customer_page_updated', { url, title, openedAt })
+  const { url, title, timestamp } = payload
+  console.log('customer_page_updated', ({ url, title, timestamp })
 })
 ```
 
 Payload:
 
-| properties | type   |                                                      |
-| ---------- | ------ | ---------------------------------------------------- |
-| url        | string | URL of the Customer current website                  |
-| title      | string | Title of the Customer current website                |
-| openedAt   | string | Date of the last update in RFC 3339 date-time format |
+| properties | type   |                                       |
+| ---------- | ------ | ------------------------------------- |
+| url        | string | URL of the Customer current website   |
+| title      | string | Title of the Customer current website |
+| timestamp  | string | Timestamp of the latest change        |
 
 ## Customer updated
 
@@ -1591,31 +1583,32 @@ Informs that Customer's data was updated.
 Each property in payload is available only if it was updated.
 
 ```js
-customerSDK.on('customer_updated', customer => {
-  if (customer.name) {
-    console.log(`Name got updated to: ${customer.name}`)
+customerSDK.on('customer_updated', payload => {
+  if (payload.customer.name) {
+    console.log(`Name got updated to: ${payload.customer.name}`)
   }
-  if (customer.email) {
-    console.log(`Email got updated to: ${customer.email}`)
+  if (payload.customer.email) {
+    console.log(`Email got updated to: ${payload.customer.email}`)
   }
-  if (customer.avatar) {
-    console.log(`Avatar got updated to: ${customer.avatar}`)
+  if (payload.customer.avatar) {
+    console.log(`Avatar got updated to: ${payload.customer.avatar}`)
   }
-  if (customer.fields) {
+  if (payload.customer.fields) {
     console.log(`Fields got updated:`)
-    console.log(customer.fields)
+    console.log(payload.customer.fields)
   }
 })
 ```
 
 Payload:
 
-| properties | type   |
-| ---------- | ------ |
-| name       | string |
-| email      | string |
-| avatar     | string |
-| fields     | object |
+| properties      | type   |
+| --------------- | ------ |
+| customer        |        |
+| customer.name   | string |
+| customer.email  | string |
+| customer.avatar | string |
+| customer.fields | object |
 
 ## Disconnected
 
@@ -2062,10 +2055,6 @@ The Customer didn't chat or change the page in the past 30 minutes. Customer SDK
 
 Internal error. Customer SDK reconnects on its own.
 
-## License expired
-
-The license with the specified ID has expired. You should make sure that there are no unpaid invoices for it.
-
 ## License not found
 
 The license with the specified ID doesn't exist. You should check the options passed in to Customer SDK and make sure that the license parameter is correct.
@@ -2096,7 +2085,7 @@ This internally destroys the current instance of Customer SDK, so it won't be po
 
 The maximum number of Customers connected at the same time has been reached. This can only be received immediately after we try to connect to our servers, because once you get authorized, you stay that way. The limit is different for each plan, and you can check the exact values on our [pricing page](https://www.livechat.com/pricing/).
 
-This internally disconnects from the current instance of the Customer SDK. After that, the manual `connect()` call will be required, preferably linked to the user's action rather than automated.
+This internally destroys the current instance of the Customer SDK, so it won't be possible to reuse it.
 
 # Errors
 
@@ -2128,10 +2117,6 @@ You have sent out too many requests in a too short time period without waiting f
 ## Request timeout
 
 The request has timed out.
-
-## Service unavailable
-
-The backend service is under heavy traffic and it had to restrict creation of a new resource.
 
 ## Validation
 
@@ -2176,37 +2161,6 @@ customerSDK.on('disconnected', ({ reason }) => {
 
 # Changelog
 
-## [v3.0.0] - 2021-05-25
-
-### Fixed
-
-- Chat structures can now have `thread` set to `null` since it's possible for threads to be removed
-- Prevented additional connections to be created in the case when SDK gets destroyed in the middle of the `login` flow
-
-### Changed
-
-- Switched to using Customer API 3.3:
-  - `activateChat` method has been renamed to `resumeChat`.
-  - In the `deactivateChat` method, the `chat_id` parameter was renamed to `id`.
-  - In the `updateChatProperties` method, the `chat_id` parameter was renamed to `id`.
-  - In the `deleteChatProperties` method, the `chat_id` parameter was renamed to `id`.
-  - In the `getPredictedAgent` method, agent properties are grouped in `agent` property and additional `queue` parameter is returned.
-  - In the `customer_page_updated` event the `timestamp` property has been replaced with `openedAt`.
-  - In the `customer_updated` event customer data is no longer grouped in the `customer` object but rather all properties are returned at the top level.
-- The communication with the server is done now using WebSocket endpoint, without the SockJS overhead.
-- Users limit handling changed from destroying the instance to disconnecting.
-
-### Added
-
-- `active` parameter to the `startChat` & `resumeChat` methods. It defaults to `true` but can be used to create threads that are immediately inactive.
-- Greetings can now have a `subtype` property.
-- Support for `alternative_text` image property in:
-  - image attachments
-  - rich greetings
-  - rich messages
-- `cancel` button type in rich messages.
-- Support for the events of type `"custom"`
-
 ## [v2.0.4] - 2020-10-28
 
 ### Added
@@ -2221,7 +2175,7 @@ customerSDK.on('disconnected', ({ reason }) => {
 
 ## [v2.0.2] - 2020-08-21
 
-## Fixed
+### Fixed
 
 - Updated the `@livechat/file-upload` dependency to resolve compatibility issues.
 
