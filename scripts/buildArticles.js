@@ -36,7 +36,7 @@ getDirectories(articlesDirectory, (err, res) => {
           slug = slug.toLowerCase();
           slug = slug.trim();
           slug = slug.replace(/\s/g, "-");
-          slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+          slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
 
           if (
             occurrences.some((o) => {
@@ -59,7 +59,7 @@ getDirectories(articlesDirectory, (err, res) => {
           slug = slug.toLowerCase();
           slug = slug.trim();
           slug = slug.replace(/\s/g, "-");
-          slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+          slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
 
           if (
             occurrences.some((o) => {
@@ -97,7 +97,7 @@ getDirectories(articlesDirectory, (err, res) => {
           slug = slug.toLowerCase();
           slug = slug.trim();
           slug = slug.replace(/\s/g, "-");
-          slug = slug.replace(/[^a-zA-Z0-9-]+/g, "");
+          slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
 
           if (
             occurrences.some((o) => {
