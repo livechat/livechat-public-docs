@@ -540,6 +540,45 @@ const ERRORS = [
     description:
       "Displayed on the attempt of logging in. All seats within a given license are already taken.",
   },
+  {
+    id: "agent_offline",
+    message: "Agent offline",
+    description:
+      "The server couldn't process the request because the agent was offline.",
+  },
+  {
+    id: "not_allowed",
+    message: "Not allowed",
+    description:
+      "The action is not allowed.",
+  },
+  {
+    id: "chat_anonymized",
+    message: "Chat anonymized",
+    description:
+      "The request couldn't be performed on an anonymized chat.",
+  },
+  {
+    id: "already_exist",
+    message: "Already exist",
+    description:
+      "It's impossible to create the resource as it already exists.",
+  },
+  {
+    id: "not_found",
+    message: "Not found",
+    description: "The requested resource wasn't found.",
+  },
+  {
+    id: "transfer_ownership",
+    message: "Transfer ownership",
+    description: "Ownership cannot be transfered to this account (bot, suspended agent).",
+  },
+  {
+    id: "missing_access",
+    message: "Missing access",
+    description: "The requester doesn't have access to a given resource.",
+  },
 ];
 
 const constants = {
