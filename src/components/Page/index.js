@@ -9,6 +9,7 @@ import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
 import SEO from "../core/seo";
 import Header from "../core/header";
+import articlesVersions from "../../configs/articlesVersions.json";
 import {
   MainWrapper,
   LeftColumn,
@@ -147,7 +148,7 @@ const Page = ({ frontMatter, children }) => {
           <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
             {currentApiVersion && (
               <Version
-                articleVersions={versions.ALL_VERSIONS}
+                articleVersions={articlesVersions[category][subcategory][title]}
                 redirectToVersion={redirectToVersion}
                 group={versionGroup}
               />
