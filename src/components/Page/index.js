@@ -2,11 +2,13 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 import { VersionProvider, RatingProvider } from "../../contexts";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
+import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
 import Header from "../core/header";
 import articlesVersions from "../../configs/articlesVersions.json";
@@ -16,9 +18,10 @@ import {
   MiddleColumn,
   Content,
   RatingWrapper,
-  // LeftColumnRedoc,
-  // NavHeader,
+  LeftColumnRedoc,
+  NavHeader,
 } from "../core/components";
+import { Search } from "../core/Search";
 import SideNav from "../core/SideNav";
 import { useLocalStorage } from "../../hooks";
 import Rating from "../core/Rating";
@@ -156,6 +159,29 @@ const Page = ({ frontMatter, children }) => {
             <Content className={useRedocPage ? "redoc" : ""}>
               {title && !useRedocPage && (
                 <PageHeader title={title} timeToRead={timeToRead} />
+              )}
+              {useRedocPage && (
+                <LeftColumnRedoc>
+                  <NavHeader>
+                    <Link href={"/"} style={{ color: "inherit" }}>
+                      <span>
+                        <HomeIcon width={18} style={{ display: "block" }} />
+                      </span>
+                    </Link>
+                    <ChevronRight width={14} />
+                    <span
+                      style={{
+                        marginBottom: "-3px",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {category}
+                    </span>
+                  </NavHeader>
+                  <NavHeader>
+                    <Search />
+                  </NavHeader>
+                </LeftColumnRedoc>
               )}
 
               <MDXProvider components={components}>{children}</MDXProvider>
