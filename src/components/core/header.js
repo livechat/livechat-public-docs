@@ -1,6 +1,7 @@
 import { useContext } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon } from "./icons";
 import categories from "../../configs/categories";
@@ -121,36 +122,51 @@ const activeLinkStyle = (color) => ({
   color: "white",
 });
 
-const MenuElement = ({ label, href, slug, color, ...props }) => (
-  <MenuElementWrapper {...props}>
-    {href ? (
-      <a
-        href={href}
-        css={linkStyle}
-        onClick={() => logAmplitudeEvent("External link clicked", { href })}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {label}
-      </a>
-    ) : (
-      <Link href={`/${slug}/`} partiallyActive passHref>
+const MenuElement = ({ label, href, slug, color, ...props }) => {
+  const { asPath } = useRouter();
+  const isActive = asPath.includes(`/${slug}`);
+
+  return (
+    <MenuElementWrapper {...props}>
+      {href ? (
         <a
+          href={href}
           css={linkStyle}
-          activeStyle={activeLinkStyle(color)}
-          onClick={() =>
-            logAmplitudeEvent("Top menu tab clicked", {
-              slug,
-            })
-          }
+          onClick={() => logAmplitudeEvent("External link clicked", { href })}
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <CategoryIcon category={slug} style={iconStyle} />
           {label}
         </a>
-      </Link>
-    )}
-  </MenuElementWrapper>
-);
+      ) : (
+        <Link href={`/${slug}/`} partiallyActive passHref>
+          <a
+            css={css`
+              border-top: 4px solid transparent;
+              border-bottom: 4px solid transparent;
+              transition: color 60ms ease-out;
+
+              ${isActive &&
+                `
+              border-bottom: 5px solid rgb(${color});
+              color: white;
+              
+              `}
+            `}
+            onClick={() =>
+              logAmplitudeEvent("Top menu tab clicked", {
+                slug,
+              })
+            }
+          >
+            <CategoryIcon category={slug} style={iconStyle} />
+            {label}
+          </a>
+        </Link>
+      )}
+    </MenuElementWrapper>
+  );
+};
 
 const Header = () => {
   const { items: versions, selected: selectedVersion } = useContext(
