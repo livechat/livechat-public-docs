@@ -171,7 +171,7 @@ getDirectories(articlesDirectory, (err, res) => {
 
   const articlesJSON = JSON.stringify(items, null, "\t");
 
-  fs.writeFile("../src/configs/articles.json", articlesJSON, (err) => {
+  fs.writeFile("./src/configs/articles.json", articlesJSON, (err) => {
     if (err) {
       throw err;
     }
