@@ -4,7 +4,7 @@ const matter = require("gray-matter");
 const glob = require("glob");
 const { v4: uuidv4 } = require("uuid");
 
-const articlesDirectory = path.join(process.cwd(), "..", "src/pages/");
+const articlesDirectory = path.join(process.cwd(), "src/pages/");
 
 const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
