@@ -93,7 +93,9 @@ export const setupDocsearch = () => {
           "https://developers.livechat.com/docs/",
           ""
         );
-        window.location.href = url;
+
+        const newLocation = `${process.env.NEXT_PUBLIC_DOCS_URL}/${url}`;
+        window.location.replace(newLocation);
       }
     },
   });
