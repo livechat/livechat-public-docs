@@ -98,14 +98,14 @@ const SectionBannerWrapper = styled.div`
 `;
 
 export const SectionColumn = styled.div`
-  flex-shrink: 1;
+  flex-shrink: 2;
   padding: 2em;
   h2 {
     margin-top: 0;
   }
 
   @media (min-width: 480px) {
-    min-width: 400px;
+    min-width: 350px;
   }
 `;
 
