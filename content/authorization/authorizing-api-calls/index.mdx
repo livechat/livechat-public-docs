@@ -27,18 +27,25 @@ Decide which authorization flow to choose based on your use case.
 
 | Use case                              | Recommended flow                                                                                                                                                                                                                                           |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Sending requests to LiveChat API**  | [Personal Access Tokens](#personal-access-tokens) is the fastest way, but all other flows are also possible                                                                                                                                                |
-| **Testing an app during development** | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) is the fastest, but all other flows are also possible                                                                                                                       |
+| **Sending requests to LiveChat API**  | [Personal Access Tokens](#personal-access-tokens) is the fastest way, but all other flows are also possible.                                                                                                                                               |
+| **Testing an app during development** | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) is the fastest, but all other flows are also possible.                                                                                                                      |
 | **Building public web apps**          | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Implicit grant](#implicit-grant)                                                                                                                                          |
 | **Building private web apps**         | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Implicit grant](#implicit-grant)                                                                                                                                          |
 | **Building public server-side apps**  | [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/), [Authorization code grant](#authorization-code-grant)                                                                                                                      |
-| **Building private server-side apps** | [Personal Access Tokens](#personal-access-tokens) for the personal use of the app, [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) or [Authorization code grant](#authorization-code-grant) for all Agents within a license |
+| **Building private server-side apps** | [Personal Access Tokens](#personal-access-tokens) for the personal use of the app, [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) or [Authorization code grant](#authorization-code-grant) for all agents within a license |
 
 Read more about [creating LiveChat apps](/getting-started/guides/#creating-livechat-apps) or go straight to <a href="https://developers.livechat.com/console/" target="_blank" rel="noopener noreferrer">Developer Console</a>  and start building.
 
 # Agent authorization flows
 
-All of the following authorization flows let your app acquire an `access_token`. With this token, the app can make calls to the Agent Chat API and Configuration on behalf of an Agent.
+All of the following authorization flows let your app acquire an `access_token`. With this token, the app can call the following APIs on behalf of an agent:
+
+- the Agent Chat API
+- the Configuration API
+- LiveChat Accounts API
+- HelpDesk API
+- Reports API (no support for Personal Access Tokens)
+
 To make calls to Customer Chat API, you need a different `access_token`. For that, see [Customer authorization flow](#customer-authorization-flow).
 
 ## Personal Access Tokens
@@ -62,11 +69,11 @@ Personal Access Tokens use the <a href="https://developer.mozilla.org/en-US/docs
 
 Use:
 
-- **Account ID** as the **username** for the [Agent Chat API v3](/messaging/agent-chat-api/), [Configuration API v3](/management/configuration-api/), and the [LiveChat Accounts API v2](/authorization/livechat-accounts-api/)
+- **Account ID** as the **username** for the [Agent Chat API v3](/messaging/agent-chat-api/), [Configuration API v3](/management/configuration-api/), [LiveChat Accounts API](/authorization/livechat-accounts-api/), and [HelpDesk API](https://api.helpdesk.com/docs)
 - **Entity ID (your LiveChat login)** as the **username** for the [Configuration API v2](/management/configuration-api/v2.0/) (the legacy version)
 - **PAT** as the **password** for the APIs v2 and v3
 
-Once you have your credentials, you can call the Agent Chat API, Configuration API, or LiveChat Accounts API. Other LiveChat APIs don't support PAT authorization.
+Once you have your credentials, you can call the Agent Chat API, Configuration API, LiveChat Accounts API, or HelpDesk API. Other LiveChat APIs don't support PAT authorization.
 
 ## Implicit grant
 
@@ -126,7 +133,9 @@ https://accounts.livechat.com/
 
 At this point, the app should ask the user to allow it to access certain resources and perform certain actions. The list of resources and actions is automatically created based on the scopes selected for your app in Developer Console.
 
-![Access Grant Request](../images/grant-access-livechat.png)
+<div style="max-width: 600px">
+  <img src="../images/grant-access-livechat.png" alt="LiveChat Access Grant Request Modal" />
+</div>
 
 Keep in mind that as the app author, you won't see this screen. Use `prompt:consent` to verify this step from the user perspective.
 This step is also omitted for private web apps installed by Agents from the same license.  
@@ -719,7 +728,7 @@ The response is a JSON with the following parameters:
 | `client_id`    | **Client Id** of your app                                                                                                                                                                                                                                        |
 | `entity_id`    | The ID of the newly created customer                                                                                                                                                                                                                             |
 | `expires_in`   | A number in seconds specifying how long the `access_token` will be valid; 28800 sec by default. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details). |
-| `token_type`   | Value: `Bearer`                                                                                                                                                                 |
+| `token_type`   | Value: `Bearer`                                                                                                                                                                                                                                                  |
 
 💡 **Got stuck? See common** [**Errors**](#errors).
 
