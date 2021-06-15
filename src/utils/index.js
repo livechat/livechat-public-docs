@@ -89,12 +89,12 @@ export const setupDocsearch = () => {
           input: input.getVal(),
         });
         // removes the hardcoded path from Algolia
-        const url = suggestion.url.replace(
+        const path = suggestion.url.replace(
           "https://developers.livechat.com/docs/",
           ""
         );
 
-        const newLocation = `${process.env.NEXT_PUBLIC_DOCS_URL}/${url}`;
+        const newLocation = `${window.location.origin}/${path}`;
         window.location.replace(newLocation);
       }
     },
