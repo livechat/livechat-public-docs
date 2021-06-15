@@ -2420,24 +2420,30 @@ Here's what you need to know about **webhooks**:
 
 ### Register Webhook
 
-Registers a webhook for the Client ID (application) provided in the request. To receive webhooks, you need to enable them after registration. You can do that by calling the [Enable License Webhooks](#enable-license-webhooks) method that will install your registered webhooks for a given license. Keep in mind this two-step process applies to **license webhooks**.
+Registers a webhook for the Client ID (application) provided in the request.
 
-For **bot webhooks**, you need to [create a bot](#create-bot), [register webhooks](#register-webhook), and then, use [Set Routing Status](/messaging/agent-chat-api/#set-routing-status).
+For the [`license`](#request-29) type webhooks, you need to enable them after registration. You can do that by calling the [Enable License Webhooks](#enable-license-webhooks) method that will install your registered webhooks for a given license.
 
-As an alternative to calling Register Webhook, you can register webhooks via {{DEVELOPER_CONSOLE_URL}} by configuring the Chat Webhooks building block. In such a case, you don't need to give your app the `webhooks.configuration:rw` scope. Also, you won't have to support enabling webhooks as LiveChat will do that under the hood when someone installs your app. [Learn more...](/getting-started/app-guides/chat-webhooks/)
+For the [`bot`](#request-29) type webhooks, you need to [create a bot](#create-bot), [register webhooks](#register-webhook), and then, call [Set Routing Status](/messaging/agent-chat-api/#set-routing-status).
+
+As an alternative to calling Register Webhook, you can register webhooks via {{DEVELOPER_CONSOLE_URL}} by configuring the Chat Webhooks building block. In such a case, you won't have to support enabling webhooks as LiveChat will do that under the hood when someone installs your app. [Learn more...](/getting-started/app-guides/chat-webhooks/)
 
 One Client ID can register up to three webhooks for every `action`.
 
 #### Specifics
 
-|                 |                                                                          |
-| --------------- | ------------------------------------------------------------------------ |
-| Method URL      | `https://api.livechatinc.com/v3.3/configuration/action/register_webhook` |
-| Required scopes | `webhooks.configuration:rw`                                              |
+|                                        |                                                                          |
+| -------------------------------------- | ------------------------------------------------------------------------ |
+| Method URL                             | `https://api.livechatinc.com/v3.3/configuration/action/register_webhook` |
+| Required token scopes <sup>**1**</sup> | `webhooks.configuration:rw`                                              |
+
+**1)** Token scopes are assigned to an access token, not to an application (Client ID). For this method, we recommend authorizing with a [Personal Access Token (PAT)](/authorization/authorizing-api-calls/#personal-access-tokens). Make sure, your PAT has the `webhooks.configuration:rw` scope.
+
+#### Request
 
 | Parameter                                       | Required | Data type  | Notes                                                                                                                                                                                          |
 | ----------------------------------------------- | -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action`__*__                                   | yes      | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                                                                                                             |
+| `action`<sup>**2**</sup>                        | yes      | `string`   | The [action](#triggering-actions) that triggers sending a webhook.                                                                                                                             |
 | `secret_key`                                    | yes      | `string`   | The secret key sent in webhooks to verify the source of a webhook.                                                                                                                             |
 | `url`                                           | yes      | `string`   | Destination URL for the webhook                                                                                                                                                                |
 | `additional_data`                               | no       | `[]string` | Additional data arriving with the webhook. Value: `chat properties`, `chat_presence_user_ids` (all actions except for `agent_status_changed`, `agent_deleted`, `incoming_customer`)            |
@@ -2455,7 +2461,7 @@ One Client ID can register up to three webhooks for every `action`.
 
 #### Triggering actions
 
-__*__ The table below presents the possible values for the `action` parameter.
+__2)__ The table below presents the possible values for the `action` parameter.
 
 | Possible action                                                       |                               Available filters |
 | --------------------------------------------------------------------- | ----------------------------------------------: |
@@ -2492,7 +2498,7 @@ __*__ The table below presents the possible values for the `action` parameter.
 curl -X POST \
   https://api.livechatinc.com/v3.3/configuration/action/register_webhook \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Authorization: Basic <your_username>:<your_PAT>' \
   -d '{
         "url": "http://myservice.com/webhooks",
         "description": "Test webhook",
