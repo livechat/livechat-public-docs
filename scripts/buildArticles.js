@@ -4,7 +4,7 @@ const matter = require("gray-matter");
 const glob = require("glob");
 const { v4: uuidv4 } = require("uuid");
 
-const articlesDirectory = path.join(process.cwd(), "..", "src/pages/");
+const articlesDirectory = path.join(process.cwd(), "src/pages/");
 
 const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
@@ -169,9 +169,9 @@ getDirectories(articlesDirectory, (err, res) => {
     }
   });
 
-  const articlesJSON = JSON.stringify(items);
+  const articlesJSON = JSON.stringify(items, null, "\t");
 
-  fs.writeFile("../src/configs/articles.json", articlesJSON, (err) => {
+  fs.writeFile("./src/configs/articles.json", articlesJSON, (err) => {
     if (err) {
       throw err;
     }
