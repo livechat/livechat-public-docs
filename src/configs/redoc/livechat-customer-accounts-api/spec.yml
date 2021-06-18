@@ -1,0 +1,237 @@
+openapi: 3.0.0
+info:
+  title: Customer Accounts API
+  description: API responsible for authorization and authentication processes of customers.
+  version: 1.0.0
+servers:
+  - url: 'https://accounts.livechat.com/customer'
+    description: Main production server URL
+paths:
+  /info:
+    get:
+      summary: Get token details
+      description: The access token can be provided via authorization or a query string.
+      security:
+        - OAuth2 Bearer Token: []
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+            example: 'fra-a:vky95357S7KM1E4dXwv1DQ'
+      tags:
+        - Tokens
+      responses:
+        '200':
+          description: 'OK: Returns token details.'
+          content:
+            application/json:
+              schema:
+                description: OAuth 2 `Bearer` token
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token value
+                    example: 'fra-a:vky95357S7KM1E4dXwv1DQ'
+                  client_id:
+                    type: string
+                    format: hex
+                    description: Client ID for which the token was issued
+                    example: c6e4f62e2a2dab12531235b12c5a2a6b
+                  entity_id:
+                    type: string
+                    format: uuid
+                    description: Entity ID for which the token was issued
+                    example: 3aa138c1-c137-41c6-6b26-cface5857378
+                  expires_in:
+                    type: integer
+                    format: uint64
+                    description: Access token lifetime (in seconds)
+                    example: 28800
+                  license_id:
+                    type: integer
+                    format: uint64
+                    description: License ID for which the token was issued
+                    example: 2491303
+                  token_type:
+                    type: string
+                    description: Access token type
+                    example: Bearer
+        '401':
+          description: Unauthorized, missing or invalid authorization
+          content:
+            application/json:
+              schema: &ref_0
+                description: Default error object
+                type: object
+                properties:
+                  oauth_exception:
+                    type: string
+                    example: invalid_request
+                    enum:
+                      - bad_request
+                      - invalid_request
+                      - unauthorized_client
+                      - access_denied
+                      - unsupported_response_type
+                      - invalid_scope
+                      - server_error
+                      - temporarily_unavailable
+                      - unsupported_grant_type
+                      - invalid_grant
+                      - invalid_client
+                      - forbidden
+                      - conflict
+                      - resource_not_found
+                  exception_description:
+                    type: string
+                    example: >-
+                      The request is missing a required parameter, includes an invalid parameter value,
+                      includes a parameter more than once, or is otherwise malformed.
+        '500':
+          description: Server Error
+  /token:
+    post:
+      summary: Create a token
+      description: Creates a token
+      security:
+        - OAuth2 Agent Bearer Token: []
+        - Cookie Auth: []
+      tags:
+        - Tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - agent_token
+                    - cookie
+                  example: agent_token
+                  description: Grant type
+                response_type:
+                  type: string
+                  enum:
+                    - token
+                  example: token
+                  description: Response type
+                client_id:
+                  type: string
+                  format: hex
+                  description: Client ID for which the token is being issued
+                  example: c6e4f62e2a2dab12531235b12c5a2a6b
+                redirect_uri:
+                  type: string
+                  format: url
+                  example: https://my-application.com
+                  description: Redirect URI, default is `Origin` header value, required only if `grant_type=cookie`
+                license_id:
+                  type: integer
+                  format: uint64
+                  description: License ID for which the token is being issued, required only if `grant_type=cookie`
+                  example: 2491303
+              required:
+                - grant_type
+                - response_type
+                - client_id
+      responses:
+        '200':
+          description: 'OK: Returns token details.'
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                description: Customer ID cookie, returned only if `grant_type=cookie`
+                example: >-
+                  __lc_cid=3aa138c1-c137-41c6-6b26-cface5857378; Path=/customer; Domain=accounts.livechat.com;
+                  Expires=Sun, 18 Jun 2023 12:26:02 GMT; Max-Age=63072000; HttpOnly; Secure; SameSite=None
+            "\0Set-Cookie":
+              schema: 
+                type: string
+                description: Customer Secure Token cookie, returned only if `grant_type=cookie`
+                example: >-
+                  __lc_cst=87b9d0222e63e349da85535d07c81e1e1fb938de41f4e16e1d9ba5965f25db4aeea46b39d0fb;
+                  Path=/customer; Domain=accounts.livechat.com; Expires=Sun, 18 Jun 2023 12:26:02 GMT;
+                  Max-Age=63072000; HttpOnly; Secure; SameSite=None
+          content:
+            application/json:
+              schema:
+                description: OAuth 2 `Bearer` token
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token value
+                    example: 'fra-a:vky95357S7KM1E4dXwv1DQ'
+                  entity_id:
+                    type: string
+                    format: uuid
+                    description: Entity ID for which the token was issued
+                    example: 3aa138c1-c137-41c6-6b26-cface5857378
+                  expires_in:
+                    type: integer
+                    format: uint64
+                    description: Access token lifetime (in seconds)
+                    example: 28800
+                  token_type:
+                    type: string
+                    description: Access token type
+                    example: Bearer
+        '401':
+          description: Unauthorized, missing or invalid authorization
+          content:
+            application/json:
+              schema: *ref_0
+        '500':
+          description: Server Error
+    delete:
+      summary: Revoke token
+      description: >-
+        Revoke a token provided via authorization
+        The access token can be provided via authorization.
+      security:
+        - OAuth2 Bearer Token: []
+      tags:
+        - Tokens
+      responses:
+        '200':
+          description: 'OK: Returns no content.'
+        '401':
+          description: Unauthorized, missing or invalid authorization
+          content:
+            application/json:
+              schema: *ref_0
+        '500':
+          description: Server Error
+components:
+  schemas: {}
+  securitySchemes:
+    OAuth2 Bearer Token:
+      description: This API uses OAuth2 token for customers
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.livechat.com/customer'
+    OAuth2 Agent Bearer Token:
+      description: >-
+        This API uses OAuth2 for agents with the implicit grant flow. <a
+        href="https://developers.livechat.com/docs/authorization/authorizing-api-calls/#implicit-grant">Learn
+        about the implicit grant flow.</a>
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.livechat.com'
+        authorizationCode:
+          authorizationUrl: 'https://accounts.livechat.com'
+          tokenUrl: 'https://accounts.livechat.com/token'
+    Cookie Auth:
+      type: apiKey
+      in: cookie
+      name:
+        - __lc_cid
+        - __lc_cst
