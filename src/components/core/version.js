@@ -9,7 +9,7 @@ import {
 import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
 import { WarningIcon } from "./icons";
-import { VersionContext } from "../../contexts";
+import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
 
 export const getVersionsByGroup = (group) =>
@@ -35,7 +35,7 @@ const Container = styled.div`
   margin-right: -20px;
 
   @media (min-width: 768px) {
-    top: 60px;
+    top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
   }
 
   @media (min-width: 1024px) {
@@ -164,8 +164,10 @@ const Version = ({ articleVersions, redirectToVersion }) => {
   // Extra case for stable version to match the sidebar colors
   const isStable = selectedVersion === versions.STABLE_VERSION;
 
+  const { isActive } = useContext(PromotionContext);
+
   return (
-    <Container>
+    <Container promoIsActive={isActive}>
       <Content
         bgColor={
           isStable ? "rgb(241, 246, 248)" : `rgba(${versionColor}, 0.07)`
