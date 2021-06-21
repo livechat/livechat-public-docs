@@ -40,27 +40,32 @@ Customer Identity Provider is essentially a singleton function that you can defi
 
 The aforementioned function assigned to `custom_identity_provider` property should return a set of the following promises:
 
-- `getToken` - resolving [token](#Token). If you want to cache the token in some way, this should return cached token instead of fresh request to API.
-- `getFreshToken` - resolving [token](#Token). This should always make a call for fresh token from accounts API.
+- `getToken` - resolving [Chat Widget token](#chat-widget-token). If you want to cache the token in some way, this should return cached token instead of fresh request to API.
+- `getFreshToken` - resolving [Chat Widget token](#chat-widget-token). This should always make a call for fresh token from accounts API.
 - `hasToken` - resolving boolean. Determining whether token has been acquired.
 - `invalidate` - resolving nothing. When called should remove current token. There is no need to do anything else as new token will be requested by `getFreshToken` afterwards.
 
-# Token
+# Chat Widget Token
 
-LiveChat authorization token you are willing to resolve in functions should have the following shape:
+LiveChat authorization token you are willing to resolve in functions should contain the following properties:
 
-| Parameter      | Description                                                                 |
-| -------------- | --------------------------------------------------------------------------- |
-| `accessToken`  | A token you can use to call LiveChat APIs on behalf of the user (customer). |
-| `entityId`     | The ID of customer.                                                         |
-| `expiresIn`    | A number in seconds specifying how long the `accessToken` will be valid.    |
-| `tokenType`    | Value: `Bearer`.                                                            |
-| `creationDate` | Unix timestamp specyfing the time of creation of the token.                  |
-| `licenseId`    | LiveChat license ID.                                                        |
+| Parameter      | Description                                                                      |
+| -------------- | -------------------------------------------------------------------------------- |
+| `accessToken`  | A token you can use to call LiveChat APIs on behalf of the user (customer).      |
+| `entityId`     | The ID of customer.                                                              |
+| `expiresIn`    | A number in **milliseconds** specifying how long the `accessToken` will be valid.|
+| `tokenType`    | Value: `Bearer`.                                                                 |
+| `creationDate` | Unix timestamp specyfing the time of creation of the token.                       |
+| `licenseId`    | LiveChat license ID.                                                             |
+
+## How to acquire it?
+
+In order to get the token you need to implement authorizing function making a call to accounts' `/customer` endpoint. To do so, you can follow [creating new customer flow](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#creating-a-new-customer) or have a look at our [example](https://github.com/livechat/identity-provider-example/blob/master/lib/get-customer-token.ts) using cookies. Mind the fact that the [data](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#response-4) returned from this endpoint is not 1:1 with token shape described above. You will have to add the `creationDate` and `licenseId` fields. Additionally, we expect `expiresIn` to be defined in milliseconds while endpoint operates in seconds, therefore you should just multiply the provided value by `1000` before passing it further.
+
 
 # Examples
 
-Here are our suggested implementations of Customer Identity Provider. The `fetchLiveChatToken()` method used in examples is used to acquire the [token](#token). To implement it you can follow [creating new customer flow](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#creating-a-new-customer) or have a look at our [example](https://github.com/livechat/identity-provider-example/blob/master/lib/get-customer-token.ts) using cookies.
+Here are our suggested implementations of Customer Identity Provider. The `fetchLiveChatToken()` method used in examples is used to acquire the [Chat Widget token](#chat-widget-token).
 
 ## Without caching
 
