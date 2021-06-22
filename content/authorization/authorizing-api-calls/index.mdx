@@ -697,16 +697,20 @@ curl "https://accounts.livechat.com/v2/info"
 To authorize requests to the [Customer Chat API](/messaging/customer-chat-api/), you'll need a different access token than the one used for the [Agent Chat API](/messaging/agent-chat-api/) and [Configuration API](/management/configuration-api/).
 Throughout the whole API documentation, we'll refer to it as `customer_access_token`.
 
+Customer authorization flows allow you to receive an identity of a customer. You can do it via [Cookie grant](#cookie-grant) or [Agent token grant](#agent-token-grant).
+
 ## Cookie grant
 
-You can receive an identity of a customer. The identity data is stored in cookies: `__lc_cid` and `__lc_cst`. These cookies are protected with `Secure` and `HttpOnly` flags so they are sent only via HTTPS and are accessible only by a specific server. They are valid for 2 years from the first request and are extended in every next call. These cookies are necessary to recognize the customer when an access token is being issued.
+Cookie grant is based on the `__lc_cid` and `__lc_cst` cookies, which store your customer identity data. These cookies are protected with the `Secure` and `HttpOnly` flags, which means that one can send the cookies only via HTTPS and only specific servers can access them.
+
+The cookies are valid for 2 years, and each next call to `https://accounts.livechat.com/customer/token` extends their lifetime. The `__lc_cid` and `__lc_cst` cookies are necessary to recognize a customer when an access token is being issued.
 
 <Section>
 <Text>
 
-### Step 1: New customer
+### Case: New customer
 
-You can acquire an access token for a new customer by making a HTTP POST request to the following URL:
+Use this variant to receive a new customer identity. To acquire an access token, make an HTTP POST request to the following URL:
 
 ```url
 https://accounts.livechat.com/customer/token
@@ -720,7 +724,7 @@ https://accounts.livechat.com/customer/token
 | `client_id`     | yes      | Client ID of your application                                                                                                                                                                                        |
 | `response_type` | yes      | Value: `token`                                                                                                                                                                                                       |
 | `license_id`    | yes      | License ID for which the token is being issued                                                                                                                                                                       |
-| `redirect_uri`  | no       | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization. The default is `Origin` header value. |
+| `redirect_uri`  | no       | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization. Default: the value of the `Origin` header. |
 
 
 #### Response
@@ -735,20 +739,20 @@ The response is a JSON with the following parameters:
 | `expires_in`   | A number in seconds specifying how long the `access_token` will be valid; 28800 sec by default. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details). |
 | `token_type`   | Value: `Bearer`                                                                                                                                                                                                                                                  |
 
-The response also includes important headers with cookies, for example:
+The response also includes headers with the `__lc_cid` and `__lc_cst` cookies, for example:
 ```
 Set-Cookie: __lc_cid=3aa138c1-c137-41c6-6b26-cface5857378; Path=/customer; Domain=accounts.livechat.com; Expires=Sun, 18 Jun 2023 12:26:02 GMT; Max-Age=63072000; HttpOnly; Secure; SameSite=None
 
 Set-Cookie: __lc_cst=87b9d0222e63e349da85535d07c81e1e1fb938de41f4e16e1d9ba5965f25db4aeea46b39d0fb; Path=/customer; Domain=accounts.livechat.com; Expires=Sun, 18 Jun 2023 12:26:02 GMT; Max-Age=63072000; HttpOnly; Secure; SameSite=None
 ```
 
-These cookies will be automatically stored by a web browser and attached to the next requests to acquire new access tokens. 
+Your web browser will automatically store and attach these cookies to future requests when you try to acquire a new access token.
 
 💡 **Got stuck? See common** [**Errors**](#errors).
 
 </Text>
 <Code>
-<CodeSample path={'NEW CUSTOMER'}>
+<CodeSample path={'COOKIE GRANT: NEW CUSTOMER'}>
 
 ```shell
 curl "https://accounts.livechat.com/customer/token" \
@@ -779,37 +783,41 @@ curl "https://accounts.livechat.com/customer/token" \
 </Code>
 </Section>
 
-### Step 2: Existing customer
+### Case: Existing customer
 
-If you need a new access token for the identity, you have to make the same request like the one described in Step 1. However, this time, the web browser will attach cookies to the server and you'll be recognized as an existing customer. You'll get a new access token and the cookies will be extended - they will be still valid for 2 years from the last request.
+Use this option to generate a new access token for an already existing customer identity.
+
+To achieve that, make the same exact same request as in [Case: New customer](#case-new-customer-1). 
+
+Your `entity_id`, or any other customer identity data, won' be overwritten. The web browser will attach cookies to the server allowing it to recognize you as an existing customer. You'll get a new access token, and cookies' lifetime will be extended, too. They will be valid for 2 years from your last request to `https://accounts.livechat.com/customer/token`.
 
 ## Agent token grant
 
-You can create an identity of a new customer and later use it to perform actions on behalf of the customer. To start with this flow, you'll need an **agent access token** with a scope: `customers:own`. You can get it from one of the [Agent authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows).
+Agent token grant lets you create a customer identity and use it to act on behalf of a customer. To begin, you'll need an **agent access token** with the `customers:own` scope. You can get it via one of the [Agent authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows).
 
-You may want to use this flow if there's a need to reflect customers and their messages from other systems (like Facebook Messenger or Whatsapp) in LiveChat. An integration that follows this authorization flow behaves like a middleman between these systems and LiveChat.
+We recommend this flow if you want to to impersonate customers and simulate them sending messages from other systems, like Facebook Messenger or WhatsApp, in LiveChat. An integration that follows this authorization flow behaves like a middleman between these systems and LiveChat.
 
 <Section>
 <Text>
 
-### Step 1: New customer
+### Case: New customer
 
-First of all, make a HTTP POST request to create a new customer identity by using the following URL:
+First of all, make a HTTP POST request to create a new customer identity by calling the following URL:
 
 ```url
 https://accounts.livechat.com/customer/token
 ```
 
-Remember to authorize using agent access token by adding `Authorization` header to the request.
+Remember to authorize your request using the `Authorization` header with an **agent access token**.
 
 #### Request
 
-| Parameter       | Required | Description                                                                                                                                                                                                                                                                                        |
-|-----------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `grant_type`    | yes      | Use `agent_token` for this authorization flow                                                                                                                                                                                                                                                      |
-| `client_id`     | yes      | Client ID of your application                                                                                                                                                                                                                                                                      |
-| `response_type` | yes      | Value: `token`                                                                                                                                                                                                                                                                                     |
-| `entity_id`     | no       | Customer ID. If you don't specify it, a new customer will be created (Step 1). Specify it (described in Step 2) if you want to [acquire a new token for an existing customer](/getting-started/authorization/faq/#the-access-token-of-my-customer-has-expired-do-i-need-to-create-a-new-customer). |
+| Parameter       | Required | Description                                                                                                                                                                                                                                                                                                                             |
+|-----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `grant_type`    | yes      | Use `access_token` (agent access token) for this authorization flow.                                                                                                                                                                                                                                                                    |
+| `client_id`     | yes      | Client ID of your application                                                                                                                                                                                                                                                                                                           |
+| `response_type` | yes      | Value: `token`                                                                                                                                                                                                                                                                                                                          |
+| `entity_id`     | no       | Customer ID. If you don't specify it, a new customer identity will be created ([Case: New customer](#case-existing-customer-1)). Specify it if you want to [acquire a new token for an existing customer identity](/getting-started/authorization/faq/#the-access-token-of-my-customer-has-expired-do-i-need-to-create-a-new-customer). |
 
 #### Response
 
@@ -820,14 +828,14 @@ The response is a JSON with the following parameters:
 | `access_token` | A token you can use to call LiveChat APIs on behalf of the user (customer).                                                                                                                                                                                      |
 | `client_id`    | **Client Id** of your app                                                                                                                                                                                                                                        |
 | `entity_id`    | The ID of the newly created customer                                                                                                                                                                                                                             |
-| `expires_in`   | A number in seconds specifying how long the `access_token` will be valid; 28800 sec by default. When it expires, you will need to generate new `access_token` using `refresh_token` (read [Using the refresh token](#using-the-refresh-token) for more details). |
+| `expires_in`   | A number in seconds specifying how long the `access_token` will be valid; 28800 sec by default. When it expires, you will need to generate new `access_token` following [Case: Existing customer](#case-existing-customer-1)). |
 | `token_type`   | Value: `Bearer`                                                                                                                                                                                                                                                  |
 
 💡 **Got stuck? See common** [**Errors**](#errors).
 
 </Text>
 <Code>
-<CodeSample path={'NEW CUSTOMER'}>
+<CodeSample path={'AGENT TOKEN GRANT: NEW CUSTOMER'}>
 
 ```shell
 curl "https://accounts.livechat.com/customer/token" \
@@ -860,15 +868,17 @@ curl "https://accounts.livechat.com/customer/token" \
 <Section>
 <Text>
 
-### Step 2: Existing customer
+### Case: Existing customer
 
-After creating a new customer identity and using it to perform actions on behalf of the customer, you may want to acquire a new access token for the existing customer - the one you have just created. Make the same request as earlier but this time add an additional parameter: `entity_id`. It can be found in the response in Step 1.
+Use this case to get a new access token for an already existing customer identity.
+
+Make the same request as in [Case: New customer](#case-new-customer-1), but this time, specify `entity_id` to avoid creating a new identity. You can find your `entity_id` [in the response](#response-5) of the request to create a new customer identity.
 
 
 
 </Text>
 <Code>
-<CodeSample path={'EXISTING CUSTOMER'}>
+<CodeSample path={'AGENT TOKEN GRANT: EXISTING CUSTOMER'}>
 
 ```shell
 curl "https://accounts.livechat.com/customer/token" \
