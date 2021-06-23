@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
 import innerText from "react-innertext";
 import payloads from "payloads";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
+import { PromotionContext } from "../../contexts";
 
 const StickyWrapper = styled.div`
   position: sticky;
-  top: 136px;
+  top: ${(props) => (props.promotionIsActive ? "176px" : "136px")};
+  max-height: ${(props) =>
+    props.promotionIsActive ? "calc(100vh - 180px)" : "calc(100vh - 110px)"};
   max-height: calc(100vh - 110px);
   min-height: 0;
   display: flex;
@@ -228,11 +231,14 @@ export const CodeResponse = ({
   );
 };
 
-export const Code = ({ children }) => (
-  <CodeWrapper>
-    <StickyWrapper>{children}</StickyWrapper>
-  </CodeWrapper>
-);
+export const Code = ({ children }) => {
+  const { isActive } = useContext(PromotionContext);
+  return (
+    <CodeWrapper promotionIsActive={isActive}>
+      <StickyWrapper>{children}</StickyWrapper>
+    </CodeWrapper>
+  );
+};
 
 const JSONHighlighter = ({ source, language = "javascript" }) => {
   const ref = React.createRef();

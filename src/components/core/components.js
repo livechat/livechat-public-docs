@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
+import { PromotionContext } from "../../contexts";
 import { Link } from "gatsby";
 
 const COLLAPSED = "COLLAPSED";
@@ -51,7 +52,7 @@ const NavWrapper = styled.aside`
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    top: 60px;
+    top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
     height: calc(100vh - 60px);
   }
 
@@ -82,8 +83,9 @@ const NavSwitch = styled.a`
 `;
 
 export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
+  const { isActive } = useContext(PromotionContext);
   return (
-    <NavWrapper expanded={expanded} {...rest}>
+    <NavWrapper expanded={expanded} {...rest} promoIsActive={isActive}>
       <NavSwitch
         href="#toggle-nav"
         expanded={expanded}

@@ -5,12 +5,12 @@ import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon } from "./icons";
 import { useAllCategoriesMeta } from "../../hooks";
 import { getVersionColor } from "../../utils";
-import { VersionContext } from "../../contexts";
+import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
-  height: 60px;
+  height: ${(props) => (props.promoIsActive ? "100px" : "60px")};
   display: none;
   align-items: center;
   position: sticky;
@@ -30,6 +30,22 @@ const MenuWrapper = styled.div`
   width: 100%;
   font-family: "Colfax";
   display: flex;
+`;
+
+const PromoBanner = styled.div`
+  width: 100%;
+  background-color: #ff5100;
+  color: white;
+  font-weight: 500;
+  padding: 8px;
+  text-align: center;
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    color: white;
+    text-decoration: underline;
+  }
 `;
 
 const LogoWrapper = styled.nav`
@@ -142,9 +158,11 @@ const Header = () => {
   );
   const categories = useAllCategoriesMeta();
   const tabColor = getVersionColor(selectedVersion, versions);
+  const { isActive, content } = useContext(PromotionContext);
 
   return (
-    <HeaderWrapper id="header">
+    <HeaderWrapper id="header" promoIsActive={isActive}>
+      {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
           <a href="/">

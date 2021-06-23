@@ -40,7 +40,11 @@ import SEO from "../components/core/seo";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 
 import { useLocalStorage, useRating, useCategoryMeta } from "../hooks";
-import { VersionProvider, RatingProvider } from "../contexts";
+import {
+  VersionProvider,
+  RatingProvider,
+  PromotionProvider,
+} from "../contexts";
 import { SCROLL_OFFSET } from "../constant";
 import { HomeIcon, ChevronRight } from "../components/core/icons";
 
@@ -112,6 +116,7 @@ export default ({ data: { mdx, allMdx } }) => {
   const [selectedVersion, setSelectedVersion] = useState(
     versions.STABLE_VERSION
   );
+  const promotionContext = { isActive: false, content: <div /> };
 
   const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
@@ -135,11 +140,14 @@ export default ({ data: { mdx, allMdx } }) => {
         const selector = document.querySelector(hash);
         if (selector) {
           selector.scrollIntoView();
-          window.scrollBy(0, -SCROLL_OFFSET);
+          window.scrollBy(
+            0,
+            -(SCROLL_OFFSET + (promotionContext.isActive ? 40 : 0))
+          );
         }
       } catch (error) {}
     }
-  }, []);
+  }, [promotionContext.isActive]);
 
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
@@ -181,67 +189,71 @@ export default ({ data: { mdx, allMdx } }) => {
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>
-        <SEO desc={desc} title={title} />
-        <Header />
-        <MainWrapper>
-          {!useRedocPage && (
-            <LeftColumn>
-              <SideNav
-                currentSlug={customSlug || slug}
-                category={category}
-                subcategory={subcategory}
-                expanded={expanded}
-                setExpanded={setExpanded}
-                versions={versions}
-              />
-            </LeftColumn>
-          )}
-          <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
-            {currentApiVersion && (
-              <Version
-                articleVersions={articlesVersions[category][subcategory][title]}
-                redirectToVersion={redirectToVersion}
-                group={versionGroup}
-              />
+        <PromotionProvider value={promotionContext}>
+          <SEO desc={desc} title={title} />
+          <Header />
+          <MainWrapper>
+            {!useRedocPage && (
+              <LeftColumn>
+                <SideNav
+                  currentSlug={customSlug || slug}
+                  category={category}
+                  subcategory={subcategory}
+                  expanded={expanded}
+                  setExpanded={setExpanded}
+                  versions={versions}
+                />
+              </LeftColumn>
             )}
-            <Content className={useRedocPage ? "redoc" : ""}>
-              {title && !useRedocPage && (
-                <PageHeader
-                  title={title}
-                  timeToRead={timeToRead}
-                  modifiedTime={modifiedTime}
+            <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
+              {currentApiVersion && (
+                <Version
+                  articleVersions={
+                    articlesVersions[category][subcategory][title]
+                  }
+                  redirectToVersion={redirectToVersion}
+                  group={versionGroup}
                 />
               )}
-              {useRedocPage && (
-                <LeftColumnRedoc>
-                  <NavHeader>
-                    <Link to={"/"} style={{ color: "inherit" }}>
-                      <span>
-                        <HomeIcon width={18} style={{ display: "block" }} />
+              <Content className={useRedocPage ? "redoc" : ""}>
+                {title && !useRedocPage && (
+                  <PageHeader
+                    title={title}
+                    timeToRead={timeToRead}
+                    modifiedTime={modifiedTime}
+                  />
+                )}
+                {useRedocPage && (
+                  <LeftColumnRedoc>
+                    <NavHeader>
+                      <Link to={"/"} style={{ color: "inherit" }}>
+                        <span>
+                          <HomeIcon width={18} style={{ display: "block" }} />
+                        </span>
+                      </Link>
+                      <ChevronRight width={14} />
+                      <span style={{ marginBottom: "-3px" }}>
+                        {categoryMeta.title || "Home"}
                       </span>
-                    </Link>
-                    <ChevronRight width={14} />
-                    <span style={{ marginBottom: "-3px" }}>
-                      {categoryMeta.title || "Home"}
-                    </span>
-                  </NavHeader>
-                  <NavHeader>
-                    <Search />
-                  </NavHeader>
-                </LeftColumnRedoc>
-              )}
-              <MDXProvider components={components}>
-                <MDXRenderer>{body}</MDXRenderer>
-              </MDXProvider>
+                    </NavHeader>
+                    <NavHeader>
+                      <Search />
+                    </NavHeader>
+                  </LeftColumnRedoc>
+                )}
+                <MDXProvider components={components}>
+                  <MDXRenderer>{body}</MDXRenderer>
+                </MDXProvider>
 
-              {!useRedocPage && (
-                <RatingWrapper>
-                  <Rating label="Was this article helpful?" />
-                </RatingWrapper>
-              )}
-            </Content>
-          </MiddleColumn>
-        </MainWrapper>
+                {!useRedocPage && (
+                  <RatingWrapper>
+                    <Rating label="Was this article helpful?" />
+                  </RatingWrapper>
+                )}
+              </Content>
+            </MiddleColumn>
+          </MainWrapper>
+        </PromotionProvider>
       </VersionProvider>
     </RatingProvider>
   );
