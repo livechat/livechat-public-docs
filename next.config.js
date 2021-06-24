@@ -14,7 +14,17 @@ module.exports = withPlugins(
         layoutPath: "src/components/Page",
         defaultLayout: true,
         fileExtensions: ["mdx"],
-        remarkPlugins: [],
+        remarkPlugins: [
+          [
+            require("remark-prism"),
+            {
+              classPrefix: "language-",
+              aliases: {},
+              showLineNumbers: false,
+              noInlineHighlight: false,
+            },
+          ],
+        ],
         rehypePlugins: [
           require("rehype-slug"),
           require("rehype-autolink-headings"),
