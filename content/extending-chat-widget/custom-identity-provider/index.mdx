@@ -12,7 +12,7 @@ versionGroup: "chat-widget"
 
 ## What is it for?
 
-If you have a more advanced service, handling user sessions, you can pair LiveChat customer identity with your own. As a result, your customers will never lose chats they made with your support. What is more, if you also use LiveChat on other platfroms (e.g., in mobile applications), their conversations will sync, making the communication even more seamless and natural.
+If you have a more advanced service, handling user sessions, you can pair LiveChat customer identity with your own. As a result, your customers will never lose chats they made with your support. What is more, if you also use LiveChat on other platfroms (e.g., in mobile applications), their conversations will sync, making the communication even more seamless and natural. Mind the fact that Customer Identity is not customer metadata like name or email. If you would like to pass those you are probably looking for [updating session variables](https://developers.labs.livechat.com/docs/feature/CW-2556-custom-identity-provider-docs/extending-chat-widget/javascript-api/#update-session-variables).
 
 ## Setup
 Customer Identity Provider is essentially a singleton function. You can define as a part of `LiveChatWidget` object from the tracking code used to install ChatWidget on your website or any other place accessing `window.__lc` object, however - **it has to be provided before widget initialization**.
@@ -31,12 +31,14 @@ Customer Identity Provider is essentially a singleton function. You can define a
 
 # Methods
 
-The aforementioned function assigned to `custom_identity_provider` property should return a set of the following promises:
+In order to make it work, you'll have to properly implement and provide a set of following methods:
 
 - `getToken` - resolving [Chat Widget token](#chat-widget-token). If you want to cache the token somehow, this should return the cached token instead of a fresh request to API.
 - `getFreshToken` - resolving [Chat Widget token](#chat-widget-token). This should always make a call for a fresh token from accounts API.
 - `hasToken` - resolving boolean. Determining whether a token has been acquired.
 - `invalidate` - resolving nothing. When called should remove the current token. There is no need to do anything else, as a new token will be requested by `getFreshToken` afterward.
+
+All of them will have to be returned in a function assigned to `window.__lc.custom_identity_provider`.
 
 # Chat Widget Token
 
@@ -45,7 +47,7 @@ LiveChat authorization token you are willing to resolve in functions should cont
 | Parameter      | Description                                                                      |
 | -------------- | -------------------------------------------------------------------------------- |
 | `accessToken`  | A token you can use to call LiveChat APIs on behalf of the user (customer).      |
-| `entityId`     | The ID of the customer.                                                              |
+| `entityId`     | The ID of the customer.                                                          |
 | `expiresIn`    | A number in **milliseconds** specifying how long the `accessToken` will be valid.|
 | `tokenType`    | Value: `Bearer`.                                                                 |
 | `creationDate` | Unix timestamp specyfing the time of creation of the token.                       |
@@ -81,7 +83,7 @@ If you don't need to cache the token, the fetching logic shall occur on every re
 
     return {
         getToken: () => tokenPromise || fetchToken(),
-        getFreshToken: () => Promise.resolve(),
+        getFreshToken: () => tokenPromise || fetchToken(),
         hasToken: () => Promise.resolve(false),
         invalidate: () => Promise.resolve()
     }
@@ -141,6 +143,10 @@ window.__lc.custom_identity_provider = () => {
                 window.sessionStorage.setItem(cacheKey, JSON.stringify(token))
                 cachedToken = token
                 return token
+            },
+            error => {
+                retrievingToken = null
+                throw error
             }
         )
     }
