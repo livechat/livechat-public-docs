@@ -32,8 +32,12 @@ module.exports = withPlugins(
         usesSrc: false,
         extendFrontMatter: {
           process: (mdxContent, frontMatter) => {
+            const time = readingTime(mdxContent);
+            if (time.minutes < 0.5) {
+              time.minutes = 1;
+            }
             return {
-              timeToRead: readingTime(mdxContent),
+              timeToRead: time,
             };
           },
           phase: "both",
