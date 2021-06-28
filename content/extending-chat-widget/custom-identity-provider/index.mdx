@@ -12,10 +12,12 @@ versionGroup: "chat-widget"
 
 ## What is it for?
 
-If you have a more advanced service, handling user sessions, you can pair LiveChat customer identity with your own. As a result, your customers will never lose chats they made with your support. What is more, if you also use LiveChat on other platfroms (e.g., in mobile applications), their conversations will sync, making the communication even more seamless and natural. Mind the fact that Customer Identity is not customer metadata like name or email. If you would like to pass those you are probably looking for [updating session variables](https://developers.labs.livechat.com/docs/feature/CW-2556-custom-identity-provider-docs/extending-chat-widget/javascript-api/#update-session-variables).
+_Customer identity_ is an id thats assigned to each customer by our API. Basing on that we can match data and chat history with certain person using our services.
+
+**Customer Identity Provider** was created for those who build more advanced integrations that handle user sessions. It allows you to match customer identities in LiveChat with those stored in your service. As a result, your customers will never lose chats they had with your support. What is more, if you also use LiveChat on other platforms (for example, in mobile applications), customer conversations will sync, making the communication even more seamless and natural. Mind the fact that _customer identity_ is not customer metadata such as name or email. If you would like to pass one of those, you are probably looking for [updating session variables](/extending-chat-widget/javascript-api/#update-session-variables).
 
 ## Setup
-Customer Identity Provider is essentially a singleton function. You can define as a part of `LiveChatWidget` object from the tracking code used to install ChatWidget on your website or any other place accessing `window.__lc` object, however - **it has to be provided before widget initialization**.
+Custom Identity Provider is essentially a singleton function. You can define it as a part of the `LiveChatWidget` object from the tracking code used to install ChatWidget on your website or any other place accessing `window.__lc` object. However, **it has to be provided before widget initialization**.
 
 ```js
     // Custom Identity Provider
@@ -31,16 +33,16 @@ Customer Identity Provider is essentially a singleton function. You can define a
 
 # Methods
 
-In order to make it work, you'll have to properly implement and provide a set of following methods:
+In order to make Custom Identity Provider work, you'll have to properly implement and provide a set of following methods:
 
-- `getToken` - resolving [Chat Widget token](#chat-widget-token). If you want to cache the token somehow, this should return the cached token instead of a fresh request to API.
-- `getFreshToken` - resolving [Chat Widget token](#chat-widget-token). This should always make a call for a fresh token from accounts API.
-- `hasToken` - resolving boolean. Determining whether a token has been acquired.
-- `invalidate` - resolving nothing. When called should remove the current token. There is no need to do anything else, as a new token will be requested by `getFreshToken` afterward.
+- `getToken` - resolving [Chat Widget token](#chat-widget-token). If you want to cache the token, this should return the cached token instead of a fresh request to API.
+- `getFreshToken` - resolving [Chat Widget token](#chat-widget-token). This should always make a call for a fresh token from `https://accounts.livechat.com/customer/` endpoint.
+- `hasToken` - resolving boolean. It determines whether a token has been acquired.
+- `invalidate` - resolving nothing. When called, it should remove the current token. There is no need to do anything else as a new token will be requested by `getFreshToken` afterward.
 
-All of them will have to be returned in a function assigned to `window.__lc.custom_identity_provider`.
+All of the above will have to be returned in a function assigned to `window.__lc.custom_identity_provider`.
 
-# Chat Widget Token
+# Chat Widget token
 
 LiveChat authorization token you are willing to resolve in functions should contain the following properties:
 
@@ -55,16 +57,17 @@ LiveChat authorization token you are willing to resolve in functions should cont
 
 ## How to acquire it?
 
-In order to get the token, you need to implement a function that follows authorization flow by making a call to a `/customer` endpoint from LiveChat Accounts API. To do so, you can follow [creating a new customer flow](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#creating-a-new-customer) or have a look at our [example](https://github.com/livechat/identity-provider-example/blob/master/lib/get-customer-token.ts) using cookies. Mind the fact that the [data](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#response-4) returned from this endpoint is not 1:1 with the token shape described above. You will have to add the `creationDate` and `licenseId` fields. Additionally, we expect `expiresIn` to be defined in milliseconds while the endpoint operates in seconds. Therefore you should multiply the provided value by `1000` before passing it further.
-
+In order to get a Chat Widget token, you need to implement a function that calls the `https://accounts.livechat.com/customer/` endpoint. To do so, you can [create a new customer](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#creating-a-new-customer) or have a look at our [example](https://github.com/livechat/identity-provider-example/blob/master/lib/get-customer-token.ts) that uses cookies. For the first time, if you do not have pair between our `customer_id` (`entity_id`) and identity in your application, you will be creating new customer. For any further execution of this logic you will be able to provide `entity_id` and therefore you will be just refreshing the token. Mind the fact that the [data](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#response-4) returned from the endpoint is not 1:1 with the token shape described above. You'll have to make the following adjustments to your token before passing it further:
+- Add the `creationDate` and `licenseId` fields.
+- Multiply `expiresIn` by 1000. It's because we expect `expiresIn` to be expressed in milliseconds while the endpoint operates in seconds.
 
 # Examples
 
-Here are our suggested implementations of Customer Identity Provider. The `fetchLiveChatToken()` method used in examples is used to acquire the [Chat Widget token](#chat-widget-token).
+Here are our suggested implementations of Customer Identity Provider. The `fetchLiveChatToken()` method is used in the examples to acquire the [Chat Widget token](#chat-widget-token).
 
 ## Without caching
 
-If you don't need to cache the token, the fetching logic shall occur on every refresh of your application page. In such a case, the implementation can be very simple - we only have to ensure handling of `getToken` promise and simply resolve others.
+If you don't need to cache the token, the fetching logic shall occur on every refresh of your application page. In such a case, the implementation can be very simple – we only have to ensure the handling of the `getToken` promise, and resolve other promises.
 
 ```js
  window.__lc.custom_identity_provider = () => {
