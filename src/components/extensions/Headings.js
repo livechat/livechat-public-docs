@@ -133,6 +133,7 @@ const BannerImage = ({ to }) => {
           layout="responsive"
           width={782}
           height={682}
+          priority
         />
       );
 
@@ -144,6 +145,7 @@ const BannerImage = ({ to }) => {
           layout="responsive"
           width={782}
           height={682}
+          priority
         />
       );
     case "/data-reporting/":
@@ -154,6 +156,7 @@ const BannerImage = ({ to }) => {
           layout="responsive"
           width={782}
           height={682}
+          priority
         />
       );
     default:
