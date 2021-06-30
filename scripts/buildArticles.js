@@ -34,11 +34,11 @@ getDirectories(articlesDirectory, (err, res) => {
       }
 
       if (array && array.length === 0) {
-        array.push({ title, items: [], url: url, depth: depth });
+        array.push({ title, items: [], url, depth });
         return array;
       }
       if (index === depth || array[array.length - 1].depth === depth) {
-        array.push({ title, items: [], url: url, depth: depth });
+        array.push({ title, items: [], url, depth });
         return array;
       }
       iterate(array[array.length - 1].items, title, depth, index + 1, url);
