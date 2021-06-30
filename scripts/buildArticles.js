@@ -24,124 +24,55 @@ getDirectories(articlesDirectory, (err, res) => {
     const regex = /^[\#]+ (.*)/gm;
     const matches = content.match(regex);
 
-    //TODO this requires refactoring
-    const subItems = [];
     const occurrences = [];
+
+    const subItems = [];
+
+    const iterate = (array, title, depth, index, url) => {
+      if (index > 2) {
+        return array;
+      }
+
+      if (array && array.length === 0) {
+        array.push({ title, items: [], url, depth });
+        return array;
+      }
+      if (index === depth || array[array.length - 1].depth === depth) {
+        array.push({ title, items: [], url, depth });
+        return array;
+      }
+      iterate(array[array.length - 1].items, title, depth, index + 1, url);
+    };
 
     matches &&
       matches.forEach((match) => {
-        if (match.startsWith("# ")) {
-          const title = match.substring(2);
-          let slug = title;
-          slug = slug.toLowerCase();
-          slug = slug.trim();
-          slug = slug.replace(/\s/g, "-");
-          slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
+        const reg = /([#]+[\s]{1})/gm;
+        const filter = /([\`\*]{1})/gm;
+        const title = match.replace(reg, "").replace(filter, "");
+        const depth = match.indexOf(" ") - 1;
 
-          if (
-            occurrences.some((o) => {
-              return o["value"] === slug;
-            })
-          ) {
-            occurrences.find((item) => item.value === slug).number += 1;
-            slug =
-              slug +
-              "-" +
-              occurrences.find((item) => item.value === slug).number.toString();
-          } else {
-            occurrences.push({ value: slug, number: 0 });
-          }
+        let slug = title;
+        slug = slug.toLowerCase();
+        slug = slug.trim();
+        slug = slug.replace(/\s/g, "-");
+        slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
 
-          subItems.push({ title: title, url: "#" + slug });
-        } else if (match.startsWith("## ")) {
-          const title = match.substring(3);
-          let slug = title;
-          slug = slug.toLowerCase();
-          slug = slug.trim();
-          slug = slug.replace(/\s/g, "-");
-          slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
-
-          if (
-            occurrences.some((o) => {
-              return o["value"] === slug;
-            })
-          ) {
-            occurrences.find((item) => item.value === slug).number += 1;
-            slug =
-              slug +
-              "-" +
-              occurrences.find((item) => item.value === slug).number.toString();
-          } else {
-            occurrences.push({ value: slug, number: 0 });
-          }
-
-          if (subItems.length === 0) {
-            subItems.push({ title: title, url: "#" + slug });
-          } else {
-            if (subItems[subItems.length - 1].items === undefined) {
-              subItems[subItems.length - 1].items = [];
-              subItems[subItems.length - 1].items.push({
-                title: title,
-                url: "#" + slug,
-              });
-            } else {
-              subItems[subItems.length - 1].items.push({
-                title: title,
-                url: "#" + slug,
-              });
-            }
-          }
-        } else if (match.startsWith("### ")) {
-          const title = match.substring(4);
-          let slug = title;
-          slug = slug.toLowerCase();
-          slug = slug.trim();
-          slug = slug.replace(/\s/g, "-");
-          slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
-
-          if (
-            occurrences.some((o) => {
-              return o["value"] === slug;
-            })
-          ) {
-            occurrences.find((item) => item.value === slug).number += 1;
-            slug =
-              slug +
-              "-" +
-              occurrences.find((item) => item.value === slug).number.toString();
-          } else {
-            occurrences.push({ value: slug, number: 0 });
-          }
-
-          if (subItems.length === 0) {
-            subItems.push({ title: title, url: "#" + slug });
-          } else {
-            if (subItems[subItems.length - 1].items === undefined) {
-              subItems[subItems.length - 1].items = [];
-              subItems[subItems.length - 1].items.push({
-                title: title,
-                url: "#" + slug,
-              });
-            } else {
-              if (
-                subItems[subItems.length - 1].items[
-                  subItems[subItems.length - 1].items.length - 1
-                ].items === undefined
-              ) {
-                subItems[subItems.length - 1].items[
-                  subItems[subItems.length - 1].items.length - 1
-                ].items = [];
-                subItems[subItems.length - 1].items[
-                  subItems[subItems.length - 1].items.length - 1
-                ].items.push({ title: title, url: "#" + slug });
-              } else {
-                subItems[subItems.length - 1].items[
-                  subItems[subItems.length - 1].items.length - 1
-                ].items.push({ title: title, url: "#" + slug });
-              }
-            }
-          }
+        if (
+          occurrences.some((o) => {
+            return o["value"] === slug;
+          })
+        ) {
+          occurrences.find((item) => item.value === slug).number += 1;
+          slug =
+            slug +
+            "-" +
+            occurrences.find((item) => item.value === slug).number.toString();
+        } else {
+          occurrences.push({ value: slug, number: 0 });
         }
+
+        const url = "#" + slug;
+        iterate(subItems, title, depth, 0, url);
       });
 
     item["apiVersion"] = data["apiVersion"] || null;
