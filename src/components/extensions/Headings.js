@@ -58,13 +58,32 @@ const A = ({ children, ...props }) => {
 
   if (children.props && children.props.mdxType === "strong") {
     return (
-      <Link href={props.href}>
+      <Link href={props.href} passHref>
         <a>{children}</a>
       </Link>
     );
   }
 
-  return <Link {...props}>{children}</Link>;
+  if (children.props && children.props.originalType === "img") {
+    return (
+      <Link href={props.href} passHref>
+        <a>{children}</a>
+      </Link>
+    );
+  }
+
+  if (
+    children.props &&
+    (children.props.parentName === "a" || children.props.mdxType === "a")
+  ) {
+    return <Link href={props.href}>{children}</Link>;
+  }
+
+  return (
+    <Link {...props} passHref>
+      <a>{children}</a>
+    </Link>
+  );
 };
 
 export const getText = (children) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
+import "prismjs/components/prism-json";
 import innerText from "react-innertext";
 import payloads from "../../../payloads";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
@@ -245,7 +246,7 @@ export const Code = ({ children }) => (
   </CodeWrapper>
 );
 
-const JSONHighlighter = ({ source, language = "javascript" }) => {
+const JSONHighlighter = ({ source, language = "json" }) => {
   const ref = React.createRef();
   const body = JSON.stringify(source, null, "\t");
 

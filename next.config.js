@@ -5,6 +5,7 @@ const readingTime = require("reading-time");
 
 const nextConfig = {
   target: "serverless",
+  trailingSlash: true,
 };
 
 module.exports = withPlugins(
