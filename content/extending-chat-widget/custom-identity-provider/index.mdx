@@ -17,7 +17,7 @@ versionGroup: "chat-widget"
 From the technical perspective, _customer identity_ is an ID assigned to each customer by our API. Based on that ID, we can match customer data and chat history with a specific person using our services. _Customer identity_ is not customer metadata such as name or email. If you would like to pass one of those, you are probably looking for [updating session variables](/extending-chat-widget/javascript-api/#update-session-variables).
 
 ## Setup
-Custom Identity Provider is essentially a singleton function. You can define it as a part of the [LiveChatWidget object](https://developers.livechat.com/docs/extending-chat-widget/javascript-api/#getting-started) from the tracking code used to install ChatWidget on your website or any other place accessing `window.__lc` object. However, **it has to be provided before widget initialization**.
+Custom Identity Provider is essentially a singleton function. You can define it as a part of the [LiveChatWidget object](https://developers.livechat.com/docs/extending-chat-widget/javascript-api/#getting-started) from the tracking code used to install ChatWidget on your website or from any other place that has access to the `window._lc` object (in case of more advanced applications). However, **it has to be provided before widget initialization**.
 
 ```js
     // Custom Identity Provider
@@ -57,7 +57,9 @@ LiveChat authorization token you want to resolve in functions should contain the
 
 ## How to acquire it?
 
-In order to get a Chat Widget token, you need to implement a function that calls the `https://accounts.livechat.com/customer/token` endpoint. To do so, you can follow [customer authorization flows](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#customer-authorization-flows) or have a look at our [example](https://github.com/livechat/identity-provider-example/blob/master/lib/get-customer-token.ts) that uses cookies. For the first time, if you do not have pair between our `customer_id` (`entity_id`) and identity in your application, you will be creating new customer identity. For any further execution of this logic you will be able to provide `entity_id` and therefore you will be just refreshing the token. Mind the fact that the [data](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#response-4) returned from the endpoint is not 1:1 with the token shape described above. You'll have to make the following adjustments to your token before passing it further:
+In order to get a Chat Widget token, you need to implement a function that calls the `https://accounts.livechat.com/customer/token` endpoint. To do so, you can follow [customer authorization flows](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#customer-authorization-flows) or have a look at our [example](https://github.com/livechat/identity-provider-example/blob/master/lib/get-customer-token.ts) that uses cookies.
+
+The first time you execute this logic, the connection between our `customer_id` (`entity_id`) and the identity from your service doesn't exist yet. Start by creating a new customer identity. Next time you execute this logic, you'll be able to provide `entity_id`, and therefore, you will only need to refresh the token. Mind the fact that the [data](https://developers.livechat.com/docs/authorization/authorizing-api-calls/#response-4) returned from the endpoint is not 1:1 with the token shape described above. You'll have to make the following adjustments to your token before passing it further:
 - Add the `creationDate` and `licenseId` fields.
 - Multiply `expiresIn` by 1000. It's because we expect `expiresIn` to be expressed in milliseconds while the endpoint operates in seconds.
 
@@ -179,5 +181,5 @@ window.__lc.custom_identity_provider = () => {
 
 ## Repository
 
-Still hungry for knowledge? We have also prepared the example application presenting the usage of the Custom Identity Provider mechanism. You can check it out [here](https://github.com/livechat/identity-provider-example/).
+Still hungry for knowledge? We have also prepared an example application presenting the usage of the Custom Identity Provider mechanism. You can check it out [here](https://github.com/livechat/identity-provider-example/).
 
