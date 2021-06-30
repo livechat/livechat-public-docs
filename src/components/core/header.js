@@ -184,7 +184,7 @@ const Header = () => {
             <LiveChatLogo style={{ margin: "0", display: "block" }} />
           </a>
           <VLine />
-          <Link href="/">
+          <Link href="/" passHref>
             <a css={linkCss}>Platform Docs</a>
           </Link>
         </LogoWrapper>
