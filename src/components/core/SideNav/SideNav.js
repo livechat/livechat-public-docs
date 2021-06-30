@@ -110,10 +110,7 @@ const SideNav = ({
               triggerActionType={"hover"}
               trigger={
                 <span>
-                  <HomeIcon
-                    width={18}
-                    style={{ display: "block", color: "#424D57" }}
-                  />
+                  <HomeIcon width={18} style={{ display: "block" }} />
                 </span>
               }
               closeOnOutsideClick
