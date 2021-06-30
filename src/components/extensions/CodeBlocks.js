@@ -37,7 +37,7 @@ const CodeResponseWrapper = styled.div`
   margin: 0 0 20px;
   max-width: 100%;
 
-  & .gatsby-highlight {
+  & .remark-highlight {
     min-height: 0;
   }
   & pre {

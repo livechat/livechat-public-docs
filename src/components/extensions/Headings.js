@@ -43,6 +43,12 @@ const CodeLink = styled.a`
   }
 `;
 
+const Img = ({ ...props }) => {
+  return (
+    <img {...props} src={`${process.env.NEXT_PUBLIC_BASE_PATH}${props.src}`} />
+  );
+};
+
 const A = ({ children, ...props }) => {
   // hack for code-links
   if (children.props && children.props.mdxType === "inlineCode") {
@@ -147,7 +153,7 @@ const BannerImage = ({ to }) => {
     case "/messaging/":
       return (
         <Image
-          src="/images/livechat-platform-messaging.png"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-messaging.png`}
           alt="Livechat platform messaging"
           layout="responsive"
           width={782}
@@ -159,7 +165,7 @@ const BannerImage = ({ to }) => {
     case "/extending-agent-app/":
       return (
         <Image
-          src="/images/livechat-platform-extend-interfaces.png"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-extend-interfaces.png`}
           alt="Livechat platform extend interfaces"
           layout="responsive"
           width={782}
@@ -170,7 +176,7 @@ const BannerImage = ({ to }) => {
     case "/data-reporting/":
       return (
         <Image
-          src="/images/livechat-platform-data-reporting.png"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-data-reporting.png`}
           alt="Livechat platform data reporting"
           layout="responsive"
           width={782}
@@ -316,6 +322,7 @@ export default {
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
   a: A,
+  img: Img,
   Warning,
   SectionBanner,
   SectionLink,
