@@ -4,7 +4,11 @@ import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { VersionProvider, RatingProvider } from "../../contexts";
+import {
+  VersionProvider,
+  RatingProvider,
+  PromotionProvider,
+} from "../../contexts";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import Version, { getVersionsByGroup } from "../core/version";
@@ -63,6 +67,8 @@ const Page = ({ frontMatter, children }) => {
   const [selectedVersion, setSelectedVersion] = useState(
     versions.STABLE_VERSION
   );
+
+  const promotionContext = { isActive: false, content: <div /> };
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -133,67 +139,71 @@ const Page = ({ frontMatter, children }) => {
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>
-        <SEO desc={desc} title={title} />
-        <Header />
-        <MainWrapper>
-          {!useRedocPage && (
-            <LeftColumn>
-              <SideNav
-                currentSlug={slug}
-                category={category}
-                subcategory={subcategory}
-                expanded={expanded}
-                setExpanded={setExpanded}
-                versions={versions}
-              />
-            </LeftColumn>
-          )}
-          <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
-            {currentApiVersion && (
-              <Version
-                articleVersions={articlesVersions[category][subcategory][title]}
-                redirectToVersion={redirectToVersion}
-                group={versionGroup}
-              />
+        <PromotionProvider value={promotionContext}>
+          <SEO desc={desc} title={title} />
+          <Header />
+          <MainWrapper>
+            {!useRedocPage && (
+              <LeftColumn>
+                <SideNav
+                  currentSlug={slug}
+                  category={category}
+                  subcategory={subcategory}
+                  expanded={expanded}
+                  setExpanded={setExpanded}
+                  versions={versions}
+                />
+              </LeftColumn>
             )}
-            <Content className={useRedocPage ? "redoc" : ""}>
-              {title && !useRedocPage && (
-                <PageHeader title={title} timeToRead={timeToRead} />
+            <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
+              {currentApiVersion && (
+                <Version
+                  articleVersions={
+                    articlesVersions[category][subcategory][title]
+                  }
+                  redirectToVersion={redirectToVersion}
+                  group={versionGroup}
+                />
               )}
-              {useRedocPage && (
-                <LeftColumnRedoc>
-                  <NavHeader>
-                    <Link href={"/"} style={{ color: "inherit" }}>
-                      <span>
-                        <HomeIcon width={18} style={{ display: "block" }} />
+              <Content className={useRedocPage ? "redoc" : ""}>
+                {title && !useRedocPage && (
+                  <PageHeader title={title} timeToRead={timeToRead} />
+                )}
+                {useRedocPage && (
+                  <LeftColumnRedoc>
+                    <NavHeader>
+                      <Link href={"/"} style={{ color: "inherit" }}>
+                        <span>
+                          <HomeIcon width={18} style={{ display: "block" }} />
+                        </span>
+                      </Link>
+                      <ChevronRight width={14} />
+                      <span
+                        style={{
+                          marginBottom: "-3px",
+                          textTransform: "capitalize",
+                        }}
+                      >
+                        {category}
                       </span>
-                    </Link>
-                    <ChevronRight width={14} />
-                    <span
-                      style={{
-                        marginBottom: "-3px",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {category}
-                    </span>
-                  </NavHeader>
-                  <NavHeader>
-                    <Search />
-                  </NavHeader>
-                </LeftColumnRedoc>
-              )}
+                    </NavHeader>
+                    <NavHeader>
+                      <Search />
+                    </NavHeader>
+                  </LeftColumnRedoc>
+                )}
 
-              <MDXProvider components={components}>{children}</MDXProvider>
+                <MDXProvider components={components}>{children}</MDXProvider>
 
-              {!useRedocPage && (
-                <RatingWrapper>
-                  <Rating label="Was this article helpful?" />
-                </RatingWrapper>
-              )}
-            </Content>
-          </MiddleColumn>
-        </MainWrapper>
+                {!useRedocPage && (
+                  <RatingWrapper>
+                    <Rating label="Was this article helpful?" />
+                  </RatingWrapper>
+                )}
+              </Content>
+            </MiddleColumn>
+          </MainWrapper>
+        </PromotionProvider>
       </VersionProvider>
     </RatingProvider>
   );
