@@ -909,6 +909,133 @@ curl "https://accounts.livechat.com/customer/token" \
 </Code>
 </Section>
 
+## Identity token grant
+
+Identity token grant lets you transfer a customer identity from one place to another (eg. transfer between different machines or web browsers). To begin, you'll need a valid **agent access token** or **customer access token**.
+
+First you need to generate an identity transfer token by calling the following URL:
+
+```url
+https://accounts.livechatinc.com/customer/identity_transfer
+```
+
+Remember to authorize your request using the `Authorization` header with an **agent access token** or a **customer access token**.
+
+<Section>
+<Text>
+
+#### Request
+
+| Parameter        | Required | Description                                                                                                           |
+| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `bearer_type`    | yes      | `agent` when authorizing with **agent access token**, `customer` when authorizing with **customer access token**      |
+| `client_id`      | yes      | Client ID of your application                                                                                         |
+| `customer_id`    | no       | Customer ID of the customer whose identity will be transferred; required when authorizing with **agent access token** |
+| `code_challenge` | no       | Code challenge, as described in [PKCE extension](#pkce-extension)                                                     |
+
+#### Response
+
+The response is a JSON with the following parameters:
+
+| Parameter                 | Description                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `identity_transfer_token` | A token you can use to transfer identity; you can exchange it for **customer access token**             |
+| `expires_in`              | A number in seconds specifying how long your identity transfer token will be valid; 3600 sec by default |
+
+</Text>
+<Code>
+<CodeSample path={'IDENTITY TRANSFER: TOKEN GENERATION'}>
+
+```shell
+curl "https://accounts.livechat.com/customer/identity_transfer" \
+  -H "Authorization: Bearer <access_token>" \
+  -X POST
+  -d '{
+    "bearer_type": "agent",
+    "client_id": "9cbf3a968289727cb3cdfe83ab1d9836",
+    "customer_id": "bf18d1a8-1afe-4a3e-4cc0-a3148f1143db"
+}'
+```
+
+</CodeSample>
+<CodeResponse title={'Sample response'}>
+
+```json
+{
+  "identity_transfer_token": "dal:test_SZhSSbShcZxrv580FA",
+  "expires_in": 28800,
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+After you've obtained **identity transfer token**, you are able to exchange it for **customer access token** using **identity_transfer** grant type. To do so, call:
+
+```url
+https://accounts.livechatinc.com/customer/token
+```
+
+No authorization is required for this call.
+
+<Section>
+<Text>
+
+#### Request
+
+| Parameter       | Required | Description                                                      |
+| --------------- | -------- | ---------------------------------------------------------------- |
+| `grant_type`    | yes      | Use `identity_token` for this authorization flow                 |
+| `client_id`     | yes      | Client ID of your application                                    |
+| `response_type` | yes      | Value: `token`                                                   |
+| `code`          | yes      | **identity transfer token**                                      |
+| `code_verifier` | no       | Code verifier, as described in [PKCE extension](#pkce-extension) |
+
+#### Response
+
+The response is a JSON with the following parameters:
+
+| Parameter      | Description                                                                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `access_token` | A token you can use to call LiveChat APIs on behalf of the user (customer).                                                                                                                                                           |
+| `client_id`    | **Client Id** of your app                                                                                                                                                                                                             |
+| `entity_id`    | The ID of the newly created customer                                                                                                                                                                                                  |
+| `expires_in`   | A number in seconds specifying how long you customer `access_token` will be valid; 28800 sec by default. When it expires, you will need to generate new `access_token` following [Case: Existing customer](#case-existing-customer)). |
+| `token_type`   | Value: `Bearer`                                                                                                                                                                                                                       |
+
+</Text>
+<Code>
+<CodeSample path={'IDENTITY TRANSFER: TOKEN EXCHANGE'}>
+
+```shell
+curl "https://accounts.livechat.com/customer/token" \
+  -X POST
+  -d '{
+    "grant_type": "identity_token",
+    "client_id": "9cbf3a968289727cb3cdfe83ab1d9836",
+    "response_type": "token",
+    "code": "dal:test_SZhSSbShcZxrv580FA"
+}'
+```
+
+</CodeSample>
+<CodeResponse title={'Sample response'}>
+
+```json
+{
+  "access_token": "dal:test_SZhSSbShcZxrv580FA",
+  "client_id": "9cbf3a968289727cb3cdfe83ab1d9836",
+  "entity_id": "bf18d1a8-1afe-4a3e-4cc0-a3148f1143db",
+  "expires_in": 28800,
+  "token_type": "Bearer"
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
 ## Revoking tokens
 
 Look at the [Customer Accounts API specification](/authorization/customer-accounts-api/#tag/Tokens/paths/~1token/delete) to find more details about revoking customer tokens.
