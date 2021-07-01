@@ -153,12 +153,13 @@ const BannerImage = ({ to }) => {
     case "/messaging/":
       return (
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-extend-interfaces.png`}
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-messaging.jpg`}
           alt="Livechat platform messaging"
           layout="responsive"
           width={782}
           height={682}
           priority
+          quality={100}
         />
       );
 
