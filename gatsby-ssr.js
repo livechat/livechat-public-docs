@@ -13,9 +13,9 @@ exports.replaceRenderer = async ({
   const tmpDir = "./tmp";
 
   if (fs.existsSync(tmpDir)) {
-    if (pathname === "/authorization/livechat-accounts-api/") {
+    if (pathname === "/authorization/global-accounts-api/") {
       const content = fs.readFileSync(
-        `${tmpDir}/redoc-livechat-accounts-api.html`
+        `${tmpDir}/redoc-global-accounts-api.html`
       );
 
       let bodyHTML = renderToString(bodyComponent);

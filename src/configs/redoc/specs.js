@@ -1,8 +1,8 @@
-const livechatAccountsApiSpec = require("./livechat-accounts-api/spec.yml");
+const globalAccountsApiSpec = require("./global-accounts-api/spec.yml");
 const customerAccountsApiSpec = require("./customer-accounts-api/spec.yml");
 
 const specs = {
-  "livechat-accounts-api": livechatAccountsApiSpec,
+  "global-accounts-api": globalAccountsApiSpec,
   "customer-accounts-api": customerAccountsApiSpec,
 };
 

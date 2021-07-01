@@ -184,7 +184,7 @@ export default ({ data: { mdx, allMdx } }) => {
 
   const categoryMeta = useCategoryMeta(category);
   const ratingContext = useRating({ slug });
-  const useRedocPage = ["livechat-accounts-api", "customer-accounts-api"].includes(subcategory);
+  const useRedocPage = ["global-accounts-api", "customer-accounts-api"].includes(subcategory);
 
   return (
     <RatingProvider value={ratingContext}>

@@ -33,7 +33,7 @@ async function generateRedocHtml(name) {
 }
 
 async function runAll() {
-  await generateRedocHtml("livechat-accounts-api");
+  await generateRedocHtml("global-accounts-api");
   await generateRedocHtml("customer-accounts-api");
 }
 
