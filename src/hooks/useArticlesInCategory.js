@@ -38,8 +38,15 @@ const useArticlesInCategory = (category, currentSlug, currentApiVersion) => {
     )
     // keep doc only for current article
     .map((item) => {
-      if (item.url !== currentSlug) {
-        return { ...item, items: null };
+      const ver = currentSlug.split("/").pop();
+      if (/([v]{1}[1-9]{1}[.]{1}[0-9]+)/.test(ver)) {
+        if (item.url !== currentSlug + "/") {
+          return { ...item, items: null };
+        }
+      } else {
+        if (item.url !== currentSlug) {
+          return { ...item, items: null };
+        }
       }
       return item;
     })
