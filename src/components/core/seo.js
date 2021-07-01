@@ -11,11 +11,11 @@ const defaultSiteMetadata = {
 };
 
 function SEO({ desc, keywords, title }) {
-  const metaDescription = desc || defaultSiteMetadata;
+  const metaDescription = desc || defaultSiteMetadata.description;
 
   return (
     <Head>
-      <title>{`${title} | ${defaultSiteMetadata}`}</title>
+      <title>{`${title} | ${defaultSiteMetadata.title}`}</title>
       <meta name="description" content={metaDescription} />
       <meta name="og:title" content={title} />
       <meta name="og:description" content={metaDescription} />
