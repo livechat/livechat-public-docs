@@ -159,14 +159,13 @@ const BannerImage = ({ to }) => {
           width={782}
           height={682}
           priority
-          quality={100}
         />
       );
 
     case "/extending-agent-app/":
       return (
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-extend-interfaces.png`}
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-extend-interfaces.jpg`}
           alt="Livechat platform extend interfaces"
           layout="responsive"
           width={782}
@@ -177,7 +176,7 @@ const BannerImage = ({ to }) => {
     case "/data-reporting/":
       return (
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-data-reporting.png`}
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-data-reporting.jpg`}
           alt="Livechat platform data reporting"
           layout="responsive"
           width={782}
