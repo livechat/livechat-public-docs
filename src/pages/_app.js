@@ -8,8 +8,12 @@ import "../components/core/layout.css";
 import "../components/core/prism.css";
 import "../components/core/algolia.css";
 import "../components/core/redoc.css";
+import { setupAmplitude } from "../utils";
 
 function MyApp({ Component, pageProps }) {
+  if (typeof window !== "undefined") {
+    setupAmplitude();
+  }
   useEffect(() => {
     TagManager.initialize({
       gtmId:
