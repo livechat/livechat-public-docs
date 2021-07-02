@@ -5,7 +5,6 @@ const readingTime = require("reading-time");
 
 const nextConfig = {
   target: "serverless",
-  trailingSlash: true,
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
 };
 

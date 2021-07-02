@@ -132,7 +132,13 @@ const Page = ({ frontMatter, children }) => {
   };
 
   // TODO: make sure this works in build
-  const slug = canUseWindow ? window.location.pathname : "";
+  let slug = canUseWindow ? window.location.pathname : "";
+
+  // FIXME: there is a netlify limitation with removing trailing slash https://github.com/netlify/netlify-plugin-nextjs/issues/256
+  // For now we are adding manually slash in order to work with hooks and components. 
+  // This is due to migration to next and netlify.
+  slug = slug[slug.length - 1] === '/' ? slug : `${slug}/`
+  
   const ratingContext = useRating({ slug });
   const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
 
