@@ -45,7 +45,7 @@ const CodeLink = styled.a`
 
 const Img = ({ ...props }) => {
   return (
-    <img {...props} src={`${process.env.NEXT_PUBLIC_BASE_PATH}${props.src}`} />
+    <img {...props} src={`${props.src}`} />
   );
 };
 
@@ -153,7 +153,7 @@ const BannerImage = ({ to }) => {
     case "/messaging/":
       return (
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-messaging.jpg`}
+          src={`/images/livechat-platform-messaging.jpg`}
           alt="Livechat platform messaging"
           layout="responsive"
           width={782}
@@ -165,7 +165,7 @@ const BannerImage = ({ to }) => {
     case "/extending-agent-app/":
       return (
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-extend-interfaces.jpg`}
+          src={`/images/livechat-platform-extend-interfaces.jpg`}
           alt="Livechat platform extend interfaces"
           layout="responsive"
           width={782}
@@ -176,7 +176,7 @@ const BannerImage = ({ to }) => {
     case "/data-reporting/":
       return (
         <Image
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/images/livechat-platform-data-reporting.jpg`}
+          src={`/images/livechat-platform-data-reporting.jpg`}
           alt="Livechat platform data reporting"
           layout="responsive"
           width={782}
