@@ -9,7 +9,7 @@ export const setupAmplitude = () => {
     return;
   }
 
-  amplitude.getInstance().init(process.env.GATSBY_APP_AMPLITUDE_KEY);
+  amplitude.getInstance().init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY);
 };
 
 export const logAmplitudeEvent = (name, properties) => {
