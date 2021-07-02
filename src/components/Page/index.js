@@ -11,6 +11,7 @@ import {
 } from "../../contexts";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
+import { SCROLL_OFFSET } from "../../constant";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
@@ -88,13 +89,17 @@ const Page = ({ frontMatter, children }) => {
     if (hash) {
       try {
         const selector = document.querySelector(hash);
+        
         if (selector) {
           selector.scrollIntoView();
-          window.scrollBy(0, -SCROLL_OFFSET);
+          window.scrollBy(
+            0,
+            -(SCROLL_OFFSET + (promotionContext.isActive ? 40 : 0))
+          );
         }
       } catch (error) {}
     }
-  }, []);
+  }, [promotionContext.isActive]);
 
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
@@ -140,7 +145,7 @@ const Page = ({ frontMatter, children }) => {
   slug = slug[slug.length - 1] === '/' ? slug : `${slug}/`
   
   const ratingContext = useRating({ slug });
-  const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
+  const useRedocPage = ["global-accounts-api", "customer-accounts-api"].includes(subcategory);
 
   return (
     <RatingProvider value={ratingContext}>
