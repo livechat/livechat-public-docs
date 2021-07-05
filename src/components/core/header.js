@@ -117,11 +117,6 @@ const linkStyle = {
 
 const iconStyle = { marginRight: "5px", marginBottom: "1px" };
 
-const activeLinkStyle = (color) => ({
-  borderBottom: `5px solid rgb(${color})`,
-  color: "white",
-});
-
 const MenuElement = ({ label, href, slug, color, ...props }) => {
   const { asPath } = useRouter();
   const isActive = asPath.includes(`/${slug}`);
