@@ -38,7 +38,9 @@ const PageHeader = ({ title, timeToRead }) => (
       <span>{title}</span>
       <StyledRating label="Rate this page:" />
     </PageTitle>
-    <PageSubtitle>{timeToRead} minutes reading time</PageSubtitle>
+    <PageSubtitle>
+      {Math.round(timeToRead.minutes)} minutes reading time
+    </PageSubtitle>
   </PageHeaderWrapper>
 );
 

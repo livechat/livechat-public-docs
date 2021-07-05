@@ -4,10 +4,11 @@ import throttle from "lodash.throttle";
 
 const getHeadingsOffsetMap = (selector) =>
   [...document.querySelectorAll(selector)].map(
-    ({ id, nodeName, offsetTop }) => ({
+    ({ id, nodeName, offsetTop, outerText }) => ({
       id,
       nodeName,
       offsetTop,
+      outerText,
     })
   );
 
@@ -52,7 +53,6 @@ export const useScrollSpy = (
 
     // eslint-disable-next-line
   }, []);
-
   return active;
 };
 

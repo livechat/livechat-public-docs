@@ -15,7 +15,7 @@ export default function useLocalStorage(key, initialValue) {
     }
   });
 
-  const setValue = value => {
+  const setValue = (value) => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
