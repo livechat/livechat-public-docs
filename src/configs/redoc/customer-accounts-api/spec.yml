@@ -98,6 +98,7 @@ paths:
       summary: Create a token
       description: Creates a new customer access token.
       security:
+        - {}
         - Cookie Auth: []
         - OAuth2 Agent Bearer Token: []
       tags:
@@ -114,6 +115,7 @@ paths:
                   enum:
                     - agent_token
                     - cookie
+                    - identity_token
                   example: agent_token
                   description: Grant type
                 response_type:
@@ -145,6 +147,22 @@ paths:
                     Entity ID for which the token is being issued; the entity (customer) should already exist;
                     it can be used only for `grant_type=agent_token`
                   example: 3aa138c1-c137-41c6-6b26-cface5857378
+                expires_in:
+                  type: integer
+                  format: uint64
+                  description: Access token lifetime (in seconds)
+                  example: 28800
+                code:
+                  type: string
+                  description: >-
+                    Code is an identity transfer token; it can be used only for `grant_type=identity_token`
+                  example: fra-a:vky95357S7KM1E4dXwv1DV
+                code_verifier:
+                  type: string
+                  description: >-
+                    Code verifier, as in OAuth2 PKCE flow; it can be used only for `grant_type=identity_token`
+                  example: y4jtqb2noru3vc23pefs
+
               required:
                 - grant_type
                 - response_type
@@ -222,6 +240,76 @@ paths:
               schema: *ref_0
         '500':
           description: Server Error
+  /identity_transfer:
+    post:
+      summary: Create an identity transfer token
+      description: Creates a new identity transfer token, which can be exchanged for a customer access token.
+      security:
+        - OAuth2 Bearer Token: []
+        - OAuth2 Agent Bearer Token: []
+      tags:
+        - Tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bearer_type:
+                  type: string
+                  enum:
+                    - agent
+                    - customer
+                  example: agent
+                  description: Authorization token type; `agent` for OAuth2 Agent Bearer Token and `customer` for OAuth2 Bearer Token
+                customer_id:
+                  type: string
+                  format: uuid
+                  description: >-
+                    Customer ID for which the identity transfer token is being issued; the customer should already exist;
+                    required only if `bearer_type=agent`
+                  example: 3aa138c1-c137-41c6-6b26-cface5857378
+                client_id:
+                  type: string
+                  format: hex
+                  description: Client ID for which the token is being issued
+                  example: c6e4f62e2a2dab12531235b12c5a2a6b
+                code_challenge:
+                  type: string
+                  description: Code challenge, as in OAuth2 <a href="https://developers.livechat.com/docs/authorization/authorizing-api-calls/#pkce-extension">PKCE flow.</a>
+                  example: 9_r7xBQQ8RJ3NOr0AMDBqASrf5ZT41PG1qjuLEYDs-c
+
+              required:
+                - bearer_type
+                - client_id
+      responses:
+        '200':
+          description: 'OK: returns identity transfer token details.'
+          content:
+            application/json:
+              schema:
+                description: Identity transfer token
+                type: object
+                properties:
+                  identity_transfer_token:
+                    type: string
+                    description: Identity transfer token value
+                    example: fra-a:vky95357S7KM1E4dXwv1DV
+                  expires_in:
+                    type: integer
+                    format: uint64
+                    description: Identity transfer token lifetime (in seconds)
+                    example: 3600
+        '401':
+          description: Unauthorized, missing or invalid authorization
+          content:
+            application/json:
+              schema: *ref_0
+        '500':
+          description: Server Error
+
+
 components:
   schemas: {}
   securitySchemes:
