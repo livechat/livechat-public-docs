@@ -89,7 +89,7 @@ const Page = ({ frontMatter, children }) => {
     if (hash) {
       try {
         const selector = document.querySelector(hash);
-        
+
         if (selector) {
           selector.scrollIntoView();
           window.scrollBy(
@@ -140,12 +140,15 @@ const Page = ({ frontMatter, children }) => {
   let slug = canUseWindow ? window.location.pathname : "";
 
   // FIXME: there is a netlify limitation with removing trailing slash https://github.com/netlify/netlify-plugin-nextjs/issues/256
-  // For now we are adding manually slash in order to work with hooks and components. 
+  // For now we are adding manually slash in order to work with hooks and components.
   // This is due to migration to next and netlify.
-  slug = slug[slug.length - 1] === '/' ? slug : `${slug}/`
-  
+  slug = slug[slug.length - 1] === "/" ? slug : `${slug}/`;
+
   const ratingContext = useRating({ slug });
-  const useRedocPage = ["livechat-accounts-api"].includes(subcategory);
+  const useRedocPage = [
+    "livechat-accounts-api",
+    "customer-accounts-api",
+  ].includes(subcategory);
 
   return (
     <RatingProvider value={ratingContext}>

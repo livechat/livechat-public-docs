@@ -44,9 +44,7 @@ const CodeLink = styled.a`
 `;
 
 const Img = ({ ...props }) => {
-  return (
-    <img {...props} src={`${props.src}`} />
-  );
+  return <img {...props} src={`${props.src}`} />;
 };
 
 const A = ({ children, ...props }) => {

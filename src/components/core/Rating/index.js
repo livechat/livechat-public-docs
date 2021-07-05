@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 
 import Star from "./star";
@@ -25,8 +25,12 @@ const Label = styled.label`
 const Rating = ({ label, className }) => {
   const { selectedStar, saveRating } = useContext(RatingContext);
   const [hoverStar, setHoverStar] = useState(-1);
-
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleStarClick = (i) => {
     saveRating(i);
@@ -35,7 +39,7 @@ const Rating = ({ label, className }) => {
     }
   };
 
-  if (typeof window === "undefined") {
+  if (!isMounted) {
     return null;
   }
 
