@@ -245,6 +245,7 @@ export const CodeResponse = ({
 
 export const Code = ({ children }) => {
   const { isActive } = useContext(PromotionContext);
+
   return (
     <CodeWrapper promotionIsActive={isActive}>
       <StickyWrapper>{children}</StickyWrapper>

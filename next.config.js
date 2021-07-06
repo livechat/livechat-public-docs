@@ -15,20 +15,11 @@ module.exports = withPlugins(
         layoutPath: "src/components/Page",
         defaultLayout: true,
         fileExtensions: ["mdx"],
-        remarkPlugins: [
-          [
-            require("remark-prism"),
-            {
-              classPrefix: "language-",
-              aliases: {},
-              showLineNumbers: false,
-              noInlineHighlight: false,
-            },
-          ],
-        ],
+        remarkPlugins: [],
         rehypePlugins: [
           require("rehype-slug"),
           require("rehype-autolink-headings"),
+          require("@mapbox/rehype-prism"),
         ],
         usesSrc: false,
         extendFrontMatter: {
