@@ -1,8 +1,8 @@
-const livechatAccountsApiConfig = require("./livechat-accounts-api/config");
+const globalAccountsApiConfig = require("./global-accounts-api/config");
 const customerAccountsApiConfig = require("./customer-accounts-api/config");
 
 const configs = {
-  "livechat-accounts-api": livechatAccountsApiConfig,
+  "global-accounts-api": globalAccountsApiConfig,
   "customer-accounts-api": customerAccountsApiConfig,
 };
 
