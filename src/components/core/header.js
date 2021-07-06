@@ -175,7 +175,7 @@ const Header = () => {
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
-          <a href="/">
+          <a href="https://developers.livechat.com/">
             <LiveChatLogo style={{ margin: "0", display: "block" }} />
           </a>
           <VLine />
