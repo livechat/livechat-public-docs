@@ -11,6 +11,7 @@ const nextConfig = {
   images: {
     path: `docs/_next/image`,
   },
+  productionBrowserSourceMaps: true,
 };
 
 module.exports = withPlugins(
