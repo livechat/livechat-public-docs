@@ -38,7 +38,7 @@ const useArticlesInCategory = (category, currentSlug, currentApiVersion) => {
     )
     // keep doc only for current article
     .map((item) => {
-      if (item.url !== currentSlug) {
+      if ("/docs" + item.url !== currentSlug) {
         return { ...item, items: null };
       }
       return item;
