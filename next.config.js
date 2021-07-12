@@ -5,8 +5,8 @@ const readingTime = require("reading-time");
 
 const nextConfig = {
   target: "serverless",
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH,
-  distDir: `dist${process.env.NEXT_PUBLIC_BASE_PATH}`,
+  basePath: "/docs",
+  distDir: `dist/docs`,
 };
 
 module.exports = withPlugins(
