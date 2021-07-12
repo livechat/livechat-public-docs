@@ -84,7 +84,7 @@ const SideNav = ({
 
   const initialPath = subcategory
     ? [`/${category}/${subcategory}/`, currentSlug]
-    : [currentSlug];
+    : [currentSlug.replace("/docs", "")];
 
   const [activePath, setActivePath] = useState(initialPath);
   const toggleState = (path) => () => setActivePath(path);
