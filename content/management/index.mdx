@@ -8,54 +8,127 @@ desc: "There are dedicated APIs for the resource management. Use the Configurati
 
 # Introduction
 
-LiveChat Platform provides multiple APIs for managing resources.
-
-# Configuration API
+The Configuration API allows you to manage resources such as **agents, auto access, bots, groups, properties, and webhooks**. You can use it to build advanced integrations as well as alter the configuration of your resources directly via the API.
 
 ## Use cases
 
-The [**Configuration API**](/management/configuration-api/) allows for:
+Here are some of the most common use cases of the Configuration API:
 
-- storing license configurations
-- creating chat, thread, and event [properties](/management/configuration-api/#properties)
-- managing [webhooks](/management/configuration-api/#webhooks), for example registering and unregistering
-- managing [Bots](/management/configuration-api/#bots), for example creating and removing
+- Build integrations that connect LiveChat with other services via **webhooks**. React to events happening in the chat.
+- Create automation solutions with the use of **bots**. Connect LiveChat with various AI solutions.
+- Use **properties** to store information about chats, threads, or events.
 
-In the near future, it will allow for groups configuration. For now, refer to [**Configuration API v2**](/management/configuration-api/v2.0/#groups) to manage groups properties.
+<!-- In the near future, it will allow for groups configuration. For now, refer to [**Configuration API v2**](/management/configuration-api/v2.0/#groups) to manage groups properties. -->
 
-## Properties
+## API versioning
 
-Properties are **key-value storages**. They can be set within a chat, a thread, or an event. You can create properties within a license and configure them using the [Configuration API](/management/configuration-api/). It's possible to configure the property [type](../management/configuration-api/#property-types), [location](../management/configuration-api/#property-locations), and [domain](../management/configuration-api/#property-domain).
+The LiveChat Configuration API adopts the following versioning convention:
 
-Refer to the [Configuration API](/management/configuration-api/) document to read more about the [property format](/management/configuration-api/#properties) and available [endpoints](/management/configuration-api/#methods-1).
+- **stable**
 
-## Webhooks
+  The latest stable version we encourage developers to use. You can only expect bug fixes; no new new functionalities or breaking changes will be introduced.
 
-In general, actions invoked by the use of Messaging APIs result in events. You can be notified about those events with **webhooks**. LiveChat provides a number of webhooks, which you can register and manage via the [Configuration API](../management/configuration-api/#webhooks).
-We distinguish **global webhooks** and **bot-specific webhooks**. Once **global webhooks** are set up, you will always receive them. **Bot-specific** webhooks are strongly coupled with the bot's status (`accepting chats`, `not accepting chats`, `offline`). If the bot is offline, webhooks won't be received.
-Webhook equivalents in the websocket transport (RTM API) are **pushes**.
+- **developer preview (dev preview)**
+
+  The unstable version that provides a preview of the upcoming functionalities. **It's not open for public use by default.** If you want to use it, contact us at developers@livechat.com or <a href="#open-chat" onClick={openChatWindow}>ask on the chat</a>, and we'll give you access.
+
+- **legacy**
+
+  The old version we still support. We highly encourage you to switch to the latest stable version.
+
+**Currently:**
+
+|                 | Configuration API |
+| --------------- | ----------------- |
+| **stable**      | 3.3               |
+| **dev preview** | 3.4               |
+| **legacy**      | 2.0, 3.1, 3.2     |
+
+<Warning>
+
+Currently, Configuration API v2 and v3 cover different resources. However, if you're still using v2, we encourage you to switch to v3 as more and more resources are being migrated to v3.
+
+</Warning>
+
+# Resources
+
+## Agents
+
+An agent is a type of user who communicates with customers. You can see the agent data structure [here](/messaging/agent-chat-api/#agent). The Configuration API allows for multiple agent-related actions, including creating, updating, deleting, and suspending agents.
+
+<SectionLink to={"/management/configuration-api/#agents"}>
+  See agent methods
+</SectionLink>
+
+## Auto access
+
+Auto access is a functionality that allows for assigning customers to dedicated groups based on the URL or the customer's geolocation.
+
+<SectionLink to={"/management/configuration-api/#auto-access"}>
+  See auto access methods
+</SectionLink>
 
 ## Bots
 
-Bots are similar to their human counterparts. They can join chats and post messages, but they also have a special feature: you can attach [webhooks](/management/configuration-api/#webhooks) to them.
+Bots are similar to regular agents. The main difference between them is that bots have a greater potental for automation, for example, they can listen for and react to incoming webhooks and pushes.
 
-Bots are created and managed via the [Configuration API](/management/configuration-api/#bots). As standard agents, Bots can use Agent Chat API by the web API or websocket connection ([see the difference](#rtm-api-vs-web-api)).
+Bots are created and managed via the Configuration API. Just as regualar agents, bots can call Agent Chat API by the Web or RTM API.
 
-Bots are authorized with the use of the Agent's token. Using Bots requires sending the `X-Author-Id` header for the [Web API Reference](messaging/agent-chat-api/#methods) and the `author_id` property for the websocket connection.
-They can listen for incoming webhooks (or [pushes](/messaging/agent-chat-api/rtm-reference/#pushes)) and react to them.
+Bots are authorized with the use of the [agent token](/authorization/authorizing-api-calls/#agent-authorization-flows). Using bots requires sending the `X-Author-Id` header for the Web API and the `author_id` property for the RTM API.
 
-## New Configuration APIs
-
-Configuration API is a service for storing configuration of license. It allows you to set up custom properties, bot agents and webhooks. You'll be using this API together with [Messaging APIs](../messaging/).
-
-<SectionLink to={"/management/configuration-api/"}>
-  Configuration API Reference
+<SectionLink to={"s/management/configuration-api/#bots"}>
+  See bot methods
 </SectionLink>
 
-## Old Configuration APIs
+## Groups
 
-Use Configuration API v2 for handling agents, goals and other product related features.
+Groups let you organize your work by creating teams with agent and bot members. You can use groups to do configuration based on shared settings (language, working hours, department) and to separate chat routing.
+
+<SectionLink to={"/management/configuration-api/#groups"}>
+  See group methods
+</SectionLink>
+
+## Properties
+
+Properties are key-value storages. Depending on the API version, they can be set within the following locations: a chat, a thread, an event, a group, and a license. Property configuration is owned by a Client Id (integration), not by license (v3.3+). Properties can be public or private.
+
+<SectionLink to={"/management/configuration-api/#properties"}>
+  Learn more about properties
+</SectionLink>
+
+<SectionLink to={"/management/configuration-api/#methods-4"}>
+  See property methods
+</SectionLink>
+
+## Webhooks
+
+In a nutshell, actions invoked by the use of Messaging APIs or the Configuration API result in events. You can be notified about those events with webhooks. LiveChat provides a number of webhooks, which you can register and manage via the Configuration API. Just like properties, webhooks are registered per Client Id (integration), not per license (v3.3+).
+
+We can distinguish two types of webhooks:
+
+- license webhooks
+- bot webhooks
+
+Once **license webhooks** are set up, you will always receive them. Read our tutorial on [how to configure LiveChat license webhooks via the Configuration API](https://developers.livechat.com/updates/setting-up-webhooks-with-livechat-api/).
+
+**Bot webhooks** are strongly coupled with the bot's status (`accepting chats`, `not accepting chats`, `offline`). If the bot is offline, webhooks won't be received.
+
+<SectionLink to={"/management/configuration-api/#webhooks"}>
+  Learn more about webhooks
+</SectionLink>
+
+<SectionLink to={"/management/configuration-api/#available-webhooks"}>
+  See available webhooks
+</SectionLink>
+
+<SectionLink to={"/management/configuration-api/#methods-5"}>
+  See webhook methods
+</SectionLink>
+
+## Other
+
+To manage other product-related resources, such as canned responses, goals, greetings, tags, tickets, visitors, see the Configuration API v2 (the old API reference). We highly encourage you to migrate to the current stable version of the Configuration API.
 
 <SectionLink to={"/management/configuration-api/v2.0/"}>
-  Configuration API v2 Reference
+  See the old API reference
 </SectionLink>
