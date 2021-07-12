@@ -7,6 +7,9 @@ import Image from "next/image";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
+import platformMessagingImage from "../../../public/images/livechat-platform-messaging.jpg";
+import platformExtendIntefacesImage from "../../../public/images/livechat-platform-extend-interfaces.jpg";
+import platformDataReportingImage from "../../../public/images/livechat-platform-data-reporting.jpg";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -151,7 +154,7 @@ const BannerImage = ({ to }) => {
     case "/messaging/":
       return (
         <Image
-          src={`/docs/images/livechat-platform-messaging.jpg`}
+          src={platformMessagingImage}
           alt="Livechat platform messaging"
           layout="responsive"
           width={782}
@@ -163,7 +166,7 @@ const BannerImage = ({ to }) => {
     case "/extending-agent-app/":
       return (
         <Image
-          src={`/docs/images/livechat-platform-extend-interfaces.jpg`}
+          src={platformExtendIntefacesImage}
           alt="Livechat platform extend interfaces"
           layout="responsive"
           width={782}
@@ -174,7 +177,7 @@ const BannerImage = ({ to }) => {
     case "/data-reporting/":
       return (
         <Image
-          src={`/docs/images/livechat-platform-data-reporting.jpg`}
+          src={platformDataReportingImage}
           alt="Livechat platform data reporting"
           layout="responsive"
           width={782}
