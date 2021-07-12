@@ -8,9 +8,6 @@ const nextConfig = {
   target: "serverless",
   basePath: "/docs",
   distDir: `dist/docs`,
-  images: {
-    path: `docs/_next/image`,
-  },
   productionBrowserSourceMaps: true,
 };
 
