@@ -7,7 +7,7 @@ const withImages = require("next-images");
 const nextConfig = {
   target: "serverless",
   basePath: "/docs",
-  distDir: `dist/docs`,
+  distDir: `dist/`,
   productionBrowserSourceMaps: true,
 };
 
