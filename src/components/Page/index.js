@@ -56,7 +56,6 @@ const Page = ({ frontMatter, children }) => {
     subcategory,
     apiVersion: currentApiVersion,
     versionGroup,
-    timeToRead,
     slug: customSlug,
   } = frontMatter;
   const router = useRouter();
@@ -127,7 +126,7 @@ const Page = ({ frontMatter, children }) => {
         }
       }
 
-      router.push(currentSlug);
+      router.push(currentSlug.replace("/docs", ""));
     }
   };
 
@@ -136,7 +135,6 @@ const Page = ({ frontMatter, children }) => {
     items: versions,
   };
 
-  // TODO: make sure this works in build
   let slug = canUseWindow ? window.location.pathname : "";
 
   // FIXME: there is a netlify limitation with removing trailing slash https://github.com/netlify/netlify-plugin-nextjs/issues/256
@@ -177,9 +175,7 @@ const Page = ({ frontMatter, children }) => {
                 />
               )}
               <Content className={useRedocPage ? "redoc" : ""}>
-                {title && !useRedocPage && (
-                  <PageHeader title={title} timeToRead={timeToRead} />
-                )}
+                {title && !useRedocPage && <PageHeader title={title} />}
                 {useRedocPage && (
                   <LeftColumnRedoc>
                     <NavHeader>
