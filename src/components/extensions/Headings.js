@@ -3,13 +3,9 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import Image from "next/image";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
-// import platformMessagingImage from "../../../public/images/livechat-platform-messaging.jpg";
-// import platformExtendIntefacesImage from "../../../public/images/livechat-platform-extend-interfaces.jpg";
-// import platformDataReportingImage from "../../../public/images/livechat-platform-data-reporting.jpg";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -47,7 +43,7 @@ const CodeLink = styled.a`
 `;
 
 const Img = ({ ...props }) => {
-  return <img {...props} src={`${props.src}`} />;
+  return <img {...props} src={`/docs${props.src}`} />;
 };
 
 const A = ({ children, ...props }) => {
@@ -152,28 +148,25 @@ export const Warning = styled.div`
 const BannerImage = ({ to }) => {
   switch (to) {
     case "/messaging/":
-      return <img src="/images/livechat-platform-messaging.jpg" />;
+      return (
+        <img
+          src="/docs/images/livechat-platform-messaging.jpg"
+          alt="Livechat platform messaging"
+        />
+      );
 
     case "/extending-agent-app/":
       return (
-        <Image
-          src="/images/livechat-platform-messaging.jpg"
+        <img
+          src="/docs/images/livechat-platform-extend-interfaces.jpg"
           alt="Livechat platform extend interfaces"
-          layout="responsive"
-          width={782}
-          height={682}
-          priority
         />
       );
     case "/data-reporting/":
       return (
-        <Image
-          src="/docs/images/livechat-platform-messaging.jpg"
+        <img
+          src="/docs/images/livechat-platform-data-reporting.jpg"
           alt="Livechat platform data reporting"
-          layout="responsive"
-          width={782}
-          height={682}
-          priority
         />
       );
     default:
