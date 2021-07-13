@@ -32,15 +32,12 @@ const StyledRating = styled(Rating)`
   }
 `;
 
-const PageHeader = ({ title, timeToRead }) => (
+const PageHeader = ({ title }) => (
   <PageHeaderWrapper>
     <PageTitle>
       <span>{title}</span>
       <StyledRating label="Rate this page:" />
     </PageTitle>
-    <PageSubtitle>
-      {Math.round(timeToRead.minutes)} minutes reading time
-    </PageSubtitle>
   </PageHeaderWrapper>
 );
 
