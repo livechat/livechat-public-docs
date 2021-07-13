@@ -2,13 +2,12 @@ const withPlugins = require("next-compose-plugins");
 const withMdxEnhanced = require("next-mdx-enhanced");
 const withYaml = require("next-plugin-yaml");
 const readingTime = require("reading-time");
-const withImages = require("next-images");
+// const withImages = require("next-images");
 
 const nextConfig = {
   target: "serverless",
   basePath: "/docs",
-  distDir: `dist/`,
-  productionBrowserSourceMaps: true,
+  distDir: `dist/docs`,
 };
 
 module.exports = withPlugins(
@@ -41,7 +40,7 @@ module.exports = withPlugins(
       }),
     ],
     [withYaml],
-    [withImages],
+    // [withImages],
   ],
   nextConfig
 );
