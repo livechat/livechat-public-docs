@@ -47,7 +47,7 @@ const CodeLink = styled.a`
 `;
 
 const Img = ({ ...props }) => {
-  return <img {...props} src={`/docs${props.src}`} />;
+  return <img {...props} src={`${props.src}`} />;
 };
 
 const A = ({ children, ...props }) => {
@@ -166,7 +166,7 @@ const BannerImage = ({ to }) => {
     case "/extending-agent-app/":
       return (
         <Image
-          src="/docs/images/livechat-platform-messaging.jpg"
+          src="/images/livechat-platform-messaging.jpg"
           alt="Livechat platform extend interfaces"
           layout="responsive"
           width={782}
