@@ -152,16 +152,7 @@ export const Warning = styled.div`
 const BannerImage = ({ to }) => {
   switch (to) {
     case "/messaging/":
-      return (
-        <Image
-          src="/docs/images/livechat-platform-messaging.jpg"
-          alt="Livechat platform messaging"
-          layout="responsive"
-          width={782}
-          height={682}
-          priority
-        />
-      );
+      return <img src="/images/livechat-platform-messaging.jpg" />;
 
     case "/extending-agent-app/":
       return (
