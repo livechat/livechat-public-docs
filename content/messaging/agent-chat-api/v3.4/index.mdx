@@ -560,7 +560,7 @@ curl -X POST \
 |                 |                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                               |
-| **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
+| **Chat access** | [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
 | **Events**      | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                               |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
@@ -1343,109 +1343,9 @@ https://api.livechatinc.com/v3.4/agent/action/unfollow_chat \
 <Section>
 <Text>
 
-### Grant Chat Access
-
-Grants access to a new chat without overwriting the existing ones.
-
-#### Specifics
-
-|                        |                                                                                  |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.4/agent/action/grant_chat_access`                |
-| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                               |
-| **RTM API equivalent** | [`grant_chat_access`](rtm-reference/#grant-chat-access)                          |
-| **Webhook**            | [`chat_access_granted`](/management/configuration-api/v3.4/#chat_access_granted) |
-
-#### Request
-
-| Parameter     | Required | Data ype | Notes   |
-| ------------- | -------- | -------- | ------- |
-| `id`          | Yes      | `string` | Chat Id |
-| `access`      | Yes      | `object` |         |
-| `access.type` | Yes      | `string` | `group` |
-| `access.id`   | Yes      | any      |         |
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-https://api.livechatinc.com/v3.4/agent/action/grant_chat_access \
--H 'Authorization: Bearer <your_access_token>' \
--H 'Content-Type: application/json' \
--d '{
-  "id": "PW94SJTGW6",
-  "access": {
-    "type": "group",
-    "id": 19
-    }
-  }'
-```
-
-</CodeSample>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
-### Revoke Chat Access
-
-#### Specifics
-
-|                        |                                                                                  |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.4/agent/action/revoke_chat_access`               |
-| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                               |
-| **RTM API equivalent** | [`revoke_chat_access`](rtm-reference/#revoke-chat-access)                        |
-| **Webhook**            | [`chat_access_revoked`](/management/configuration-api/v3.4/#chat_access_revoked) |
-
-#### Request
-
-| Parameter     | Required | Data type | Notes              |
-| ------------- | -------- | --------- | ------------------ |
-| `id`          | Yes      | `string`  | Chat Id            |
-| `access`      | Yes      | `object`  |                    |
-| `access.type` | Yes      | `string`  | `group` or `agent` |
-| `access.id`   | Yes      | `number`  |                    |
-
-#### Response
-
-No response payload (`200 OK`).
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-https://api.livechatinc.com/v3.4/agent/action/revoke_chat_access \
--H 'Authorization: Bearer <your_access_token>' \
--H 'Content-Type: application/json' \
--d '{
-   "id": "PW94SJTGW6",
-   "access": {
-     "type": "group",
-     "id": 19
-     }
-   }'
-```
-
-</CodeSample>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
 ### Transfer Chat
 
-Transfers a chat to an agent or a group. When transferring directly to an agent, the agent must have access to the transferred chat.
+Transfers a chat to an agent or a group. The transferred chat must be active. When transferring directly to an agent, the agent must have access to the transferred chat.
 
 #### Specifics
 
@@ -1458,13 +1358,13 @@ Transfers a chat to an agent or a group. When transferring directly to an agent,
 
 #### Request
 
-| Parameter     | Required | Data ype | Notes                                                                                                                           |
-| ------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `id`          | Yes      | `string` | Chat Id                                                                                                                         |
-| `target`      | No       | `object` | If missing, chat will be transferred within the current group.                                                                  |
-| `target.type` | Yes      | `string` | `group` or `agent`                                                                                                              |
-| `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                                    |
-| `force`       | No       | `bool`   | If `true`, always transfers chats. Otherwise, fails when unable to assign any agent from the requested groups; default `false`. |
+| Parameter     | Required | Data ype | Notes                                                                                                                                  |
+| ------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`          | Yes      | `string` | Chat Id                                                                                                                                |
+| `target`      | No       | `object` | If missing, chat will be transferred within the current group.                                                                         |
+| `target.type` | Yes      | `string` | `group` or `agent`                                                                                                                     |
+| `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                                           |
+| `force`       | No       | `bool`   | If `true`, always transfers active chats. Otherwise, fails when unable to assign any agent from the requested groups; default `false`. |
 
 #### Response
 
