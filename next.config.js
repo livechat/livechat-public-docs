@@ -5,7 +5,6 @@ const withYaml = require("next-plugin-yaml");
 const nextConfig = {
   target: "serverless",
   basePath: "/docs",
-  // distDir: `dist/docs`,
 };
 
 module.exports = withPlugins(

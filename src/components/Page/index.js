@@ -3,7 +3,7 @@ import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
+import FullStory from "react-fullstory";
 import {
   VersionProvider,
   RatingProvider,
@@ -148,10 +148,14 @@ const Page = ({ frontMatter, children }) => {
     "customer-accounts-api",
   ].includes(subcategory);
 
+  const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
+
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>
         <PromotionProvider value={promotionContext}>
+          {ORG_ID && <FullStory org={ORG_ID} />}
+
           <SEO desc={desc} title={title} />
           <Header />
           <MainWrapper>

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const defaultSiteMetadata = {
   siteUrl: "https://developers.livechat.com",
@@ -11,11 +12,14 @@ const defaultSiteMetadata = {
 };
 
 function SEO({ desc, keywords, title }) {
+  const router = useRouter();
   const metaDescription = desc || defaultSiteMetadata.description;
+  const canonicalUrl = `${defaultSiteMetadata.siteUrl}${router.basePath}${router.pathname}/`;
 
   return (
     <Head>
       <title>{`${title} | ${defaultSiteMetadata.title}`}</title>
+      <link rel="canonical" href={canonicalUrl}></link>
       <meta name="description" content={metaDescription} />
       <meta name="og:title" content={title} />
       <meta name="og:description" content={metaDescription} />
