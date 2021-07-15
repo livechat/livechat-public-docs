@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }) {
     require("smooth-scroll")('a[href*="#"]:not([href="#open-chat"])', {
       speed: 160,
       speedAsDuration: true,
-      offset: SCROLL_OFFSET
+      offset: SCROLL_OFFSET,
     });
 
     setupAmplitude();
