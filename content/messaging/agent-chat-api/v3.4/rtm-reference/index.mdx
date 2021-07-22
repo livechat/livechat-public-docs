@@ -571,7 +571,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 |                 |                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                               |
-| **Chat access** | [`grant_chat_access`](#grant-chat-access) [`revoke_chat_access`](#revoke-chat-access) [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
+| **Chat access** | [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
@@ -1458,131 +1458,9 @@ Removes the requester from the chat followers. After that, only key changes to t
 <Section>
 <Text>
 
-### Grant Chat Access
-
-Grants access to a new chat without overwriting the existing ones.
-
-#### Specifics
-
-|                        |                                               |
-| ---------------------- | --------------------------------------------- |
-| **Action**             | `grant_chat_access`                           |
-| **Required scopes**    | `chats--all:rw` `chats--access:rw`            |
-| **Web API equivalent** | [`grant_chat_access`](../#grant-chat-access)  |
-| **Push message**       | [`chat_access_granted`](#chat_access_granted) |
-
-#### Request
-
-| Parameter     | Required | Data ype | Notes   |
-| ------------- | -------- | -------- | ------- |
-| `id`          | Yes      | `string` | Chat Id |
-| `access`      | Yes      | `object` |         |
-| `access.type` | Yes      | `string` | `group` |
-| `access.id`   | Yes      | any      |         |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "grant_chat_access",
-  "payload": {
-  "id": "PW94SJTGW6",
-  "access": {
-    "type": "group",
-    "id": 19
-  }
-  }
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "grant_chat_access",
-  "type": "response",
-  "success": true,
-  "payload": {
-  // no response payload
-  }
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
-### Revoke Chat Access
-
-#### Specifics
-
-|                        |                                                |
-| ---------------------- | ---------------------------------------------- |
-| **Action**             | `revoke_chat_access`                           |
-| **Required scopes**    | `chats--all:rw` `chats--access:rw`             |
-| **Web API equivalent** | [`revoke_chat_access`](../#revoke-chat-access) |
-| **Push message**       | [`chat_access_revoked`](#chat_access_revoked)  |
-
-#### Request
-
-| Parameter     | Required | Data type | Notes              |
-| ------------- | -------- | --------- | ------------------ |
-| `id`          | Yes      | `string`  | Chat Id            |
-| `access`      | Yes      | `object`  |                    |
-| `access.type` | Yes      | `string`  | `group` or `agent` |
-| `access.id`   | Yes      | `number`  |                    |
-
-</Text>
-<Code>
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "revoke_chat_access",
-  "payload": {
-  "id": "PW94SJTGW6",
-  "access": {
-    "type": "group",
-    "id": 19
-  }
-  }
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "revoke_chat_access",
-  "type": "response",
-  "success": true,
-  "payload": {
-  // no response payload
-  }
-}
-```
-
-</CodeResponse>
-</Code>
-</Section>
-
-<Section>
-<Text>
-
 ### Transfer Chat
 
-Transfers a chat to an agent or a group. When transferring directly to an agent, the agent must have access to the transferred chat.
+Transfers a chat to an agent or a group. The transferred chat must be active. When transferring directly to an agent, the agent must have access to the transferred chat.
 
 #### Specifics
 
@@ -3680,7 +3558,7 @@ Here's what you need to know about **pushes**:
 |                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**         | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated) [`chat_deleted`](#chat_deleted) [`thread_deleted`](#thread_deleted) [`threads_deleted`](#threads_deleted)                                                                                                                                                                                                                                                                                                                                                                             |
-| **Chat access**   | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Chat access**   | [`chat_access_updated`](#chat_access_updated) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Chat users**    | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Events**        | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Properties**    | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted)                                                                                                                                                                                                                 |
@@ -3853,9 +3731,9 @@ Informs that several threads from a specific date range or with the same tag wer
 
 ## Chat access
 
-### `chat_access_granted`
+### `chat_access_updated`
 
-Informs that new, single access to a chat was granted. The existing access isn't overwritten.
+Informs about the update of a user's access to a particular chat. It contains the updated [access](#access-1) data structure.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3863,7 +3741,7 @@ Informs that new, single access to a chat was granted. The existing access isn't
 {
   "id": "PJ0MRSHTDG",
   "access": {
-  "group_ids": [1]
+    "group_ids": [0, 1]
   }
 }
 ```
@@ -3874,44 +3752,15 @@ Informs that new, single access to a chat was granted. The existing access isn't
 
 |                        |                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------- |
-| **Action**             | `chat_access_granted`                                                            |
-| **Webhook equivalent** | [`chat_access_granted`](/management/configuration-api/v3.4/#chat_access_granted) |
+| **Action**             | `chat_access_updated`                                                            |
+| **Webhook equivalent** | [`chat_access_updated`](/management/configuration-api/v3.4/#chat_access_updated) |
 
 #### Push payload
 
-| Field | Notes   |
-| ----- | ------- |
-| `id`  | Chat id |
-
-### `chat_access_revoked`
-
-Informs that access to a certain chat was revoked.
-
-<CodeResponse title={'Sample push payload'}>
-
-```json
-{
-  "id": "PJ0MRSHTDG",
-  "access": {
-  "group_ids": [1]
-  }
-}
-```
-
-</CodeResponse>
-
-#### Specifics
-
-|                        |                                                                                  |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| **Action**             | `chat_access_revoked`                                                            |
-| **Webhook equivalent** | [`chat_access_revoked`](/management/configuration-api/v3.4/#chat_access_revoked) |
-
-#### Push payload
-
-| Field | Notes   |
-| ----- | ------- |
-| `id`  | Chat Id |
+| Field    | Notes                                             |
+| -------- | ------------------------------------------------- |
+| `id`     | Chat ID                                           |
+| `access` | The updated chat [access](#access-1) data structure |
 
 ### `chat_transferred`
 
