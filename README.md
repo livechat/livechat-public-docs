@@ -1,5 +1,7 @@
 # LiveChat Docs
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/64c9d8bf-8fe6-4481-91d9-4258c3b9ae91/deploy-status)](https://app.netlify.com/sites/livechat-public-docs/deploys)
+
 Hello 👋!
 
 The source (markdown & assets) for all of the APIs documentations. Rendered here: https://developers.livechat.com/docs/
