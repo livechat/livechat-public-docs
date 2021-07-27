@@ -94,7 +94,8 @@ export const setupDocsearch = () => {
           ""
         );
 
-        const newLocation = `${window.location.origin}/${path}`;
+        const newLocation = `${window.location.origin}/docs/${path}`;
+
         window.location.replace(newLocation);
       }
     },
