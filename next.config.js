@@ -5,6 +5,7 @@ const withYaml = require("next-plugin-yaml");
 const nextConfig = {
   target: "serverless",
   basePath: "/docs",
+  productionBrowserSourceMaps: true,
 };
 
 module.exports = withPlugins(
