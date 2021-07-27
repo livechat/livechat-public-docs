@@ -12,7 +12,17 @@ The source (markdown & assets) for all of the APIs documentations. Rendered here
 
 1. Fetch the repository
 2. Run `npm install`
-3. Run `npm start`
+3. Run `npm run dev`
+
+## Production
+
+We are using **Netlify** to serve the docs in production.
+
+**Important:** `master` branch is automatically deployed to production.
+
+## Feature branch / Deploy Preview
+
+In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url.
 
 ## Versioning
 
