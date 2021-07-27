@@ -20,6 +20,11 @@ We are using **Netlify** to serve the docs in production.
 
 **Important:** `master` branch is automatically deployed to production.
 
+You can simulate the production build process locally by running.
+
+1. Run `npm run build`
+2. Run `npm start`
+
 ## Feature branch / Deploy Preview
 
 In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url.
