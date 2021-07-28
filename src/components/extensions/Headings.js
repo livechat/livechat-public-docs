@@ -42,6 +42,14 @@ const CodeLink = styled.a`
   }
 `;
 
+const Pre = ({ children, ...props }) => {
+  return (
+    <div className="remark-highlight">
+      <pre {...props}>{children}</pre>
+    </div>
+  );
+};
+
 const Img = ({ ...props }) => {
   return <img {...props} src={`/docs${props.src}`} />;
 };
@@ -129,12 +137,6 @@ export const SectionColumn = styled.div`
   @media (min-width: 480px) {
     min-width: 350px;
   }
-`;
-
-const StyledImage = styled.img`
-  display: block;
-  margin: 0;
-  max-width: 100%;
 `;
 
 export const Warning = styled.div`
@@ -295,6 +297,7 @@ export default {
   h6: makeHeading("h6"),
   a: A,
   img: Img,
+  pre: Pre,
   Warning,
   SectionBanner,
   SectionLink,
