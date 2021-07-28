@@ -77,6 +77,7 @@ const CodeSampleTopbar = styled.div`
     border: none;
     background-color: #383f54;
     color: #dee5e8;
+    padding: 0.2em 0;
   }
 `;
 

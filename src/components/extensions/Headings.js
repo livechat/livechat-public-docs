@@ -84,7 +84,7 @@ const A = ({ children, ...props }) => {
 
   return (
     <Link {...props} passHref>
-      <a>{children}</a>
+      <a {...props}>{children}</a>
     </Link>
   );
 };
@@ -211,19 +211,6 @@ const StyledLink = styled.a`
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
   }
 `;
-
-// const SectionALink = styled.a`
-//   font-weight: 600;
-//   &:after {
-//     content: "";
-//     width: 16px;
-//     height: 16px;
-//     display: inline-block;
-//     vertical-align: middle;
-//     margin-bottom: 1px;
-//     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
-//   }
-// `;
 
 const SectionLink = ({ to, href, children, ...rest }) => {
   if (href) {

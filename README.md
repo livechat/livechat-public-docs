@@ -10,11 +10,16 @@ The source (markdown & assets) for all of the APIs documentations. Rendered here
 
 [LiveChat](https://www.livechat.com/) is an online customer service software with live support, help desk software and web analytics capabilities. It's used by more than 30,000 companies all over the world. You can find more information here: [LiveChat for Developers](https://developers.livechat.com/).
 
+## Node version
+
+We require node version 14.x.
+
 ## Development
 
 1. Fetch the repository
 2. Run `npm install`
 3. Run `npm run dev`
+4. Open http://localhost:3000/docs
 
 ## Production
 
