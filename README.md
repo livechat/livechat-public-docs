@@ -1,5 +1,7 @@
 # LiveChat Docs
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/64c9d8bf-8fe6-4481-91d9-4258c3b9ae91/deploy-status)](https://app.netlify.com/sites/livechat-public-docs/deploys)
+
 Hello 👋!
 
 The source (markdown & assets) for all of the APIs documentations. Rendered here: https://developers.livechat.com/docs/
@@ -8,11 +10,31 @@ The source (markdown & assets) for all of the APIs documentations. Rendered here
 
 [LiveChat](https://www.livechat.com/) is an online customer service software with live support, help desk software and web analytics capabilities. It's used by more than 30,000 companies all over the world. You can find more information here: [LiveChat for Developers](https://developers.livechat.com/).
 
+## Node version
+
+We require node version 14.x.
+
 ## Development
 
 1. Fetch the repository
 2. Run `npm install`
-3. Run `npm start`
+3. Run `npm run dev`
+4. Open http://localhost:3000/docs
+
+## Production
+
+We are using **Netlify** to serve the docs in production.
+
+**Important:** `master` branch is automatically deployed to production.
+
+You can simulate the production build process locally by running.
+
+1. Run `npm run build`
+2. Run `npm start`
+
+## Feature branch / Deploy Preview
+
+In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url.
 
 ## Versioning
 

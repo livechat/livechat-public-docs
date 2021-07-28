@@ -1,5 +1,3 @@
-import { navigate } from "gatsby";
-
 let amplitude;
 
 if (typeof window !== "undefined") {
@@ -11,44 +9,13 @@ export const setupAmplitude = () => {
     return;
   }
 
-  amplitude.getInstance().init(process.env.GATSBY_APP_AMPLITUDE_KEY);
+  amplitude.getInstance().init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY);
 };
 
 export const logAmplitudeEvent = (name, properties) => {
   if (amplitude) {
     amplitude.getInstance().logEvent(name, properties);
   }
-};
-
-export const setupDocsearch = () => {
-  if (
-    typeof window === "undefined" ||
-    typeof window.docsearch === "undefined"
-  ) {
-    return;
-  }
-  window.docsearch({
-    apiKey: process.env.GATSBY_ALGOLIA_API_KEY,
-    indexName: "livechatinc",
-    inputSelector: "#search",
-    debug: false,
-    handleSelected: function(input, event, suggestion, datasetNumber, context) {
-      if (
-        context.selectionMethod === "click" ||
-        context.selectionMethod === "enterKey"
-      ) {
-        logAmplitudeEvent("Suggestion selected, input entered", {
-          url: suggestion.url,
-          input: input.getVal(),
-        });
-
-        // removes the hardcoded path from Algolia
-        navigate(
-          suggestion.url.replace("https://developers.livechat.com/docs/", "")
-        );
-      }
-    },
-  });
 };
 
 export const versionToString = (number) =>
@@ -96,4 +63,41 @@ export const getCategoryTitle = (menuItems) => {
   });
 
   window.categoryTitle = categoryTitle;
+};
+
+export const canUseWindow = !!(
+  typeof window !== "undefined" && window.document
+);
+
+export const setupDocsearch = () => {
+  if (!canUseWindow) {
+    return;
+  }
+
+  window.docsearch({
+    apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
+    indexName: "livechatinc",
+    inputSelector: "#search",
+    debug: false,
+    handleSelected: function(input, event, suggestion, datasetNumber, context) {
+      if (
+        context.selectionMethod === "click" ||
+        context.selectionMethod === "enterKey"
+      ) {
+        logAmplitudeEvent("Suggestion selected, input entered", {
+          url: suggestion.url,
+          input: input.getVal(),
+        });
+        // removes the hardcoded path from Algolia
+        const path = suggestion.url.replace(
+          "https://developers.livechat.com/docs/",
+          ""
+        );
+
+        const newLocation = `${window.location.origin}/docs/${path}`;
+
+        window.location.replace(newLocation);
+      }
+    },
+  });
 };

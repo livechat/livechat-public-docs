@@ -1,13 +1,11 @@
 import React from "react";
+/** @jsx jsx */
+import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
+import Link from "next/link";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
-import { Link } from "gatsby";
-
-import imgMessaging from "images/livechat-platform-messaging.png";
-import imgExtendUI from "images/livechat-platform-extend-interfaces.png";
-import imgDataReporting from "images/livechat-platform-data-reporting.png";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -44,21 +42,62 @@ const CodeLink = styled.a`
   }
 `;
 
+const Pre = ({ children, ...props }) => {
+  return (
+    <div className="remark-highlight">
+      <pre {...props}>{children}</pre>
+    </div>
+  );
+};
+
+const Img = ({ ...props }) => {
+  return <img {...props} src={`/docs${props.src}`} />;
+};
+
 const A = ({ children, ...props }) => {
   // hack for code-links
-  if (children.props && children.props.originalType === "code") {
+  if (children.props && children.props.mdxType === "inlineCode") {
     return (
-      <CodeLink {...props}>
-        {children}
-        <LinkIcon />
-      </CodeLink>
+      <Link href={props.href}>
+        <CodeLink {...props}>
+          {children}
+          <LinkIcon />
+        </CodeLink>
+      </Link>
     );
   }
 
-  return <a {...props}>{children}</a>;
+  if (children.props && children.props.mdxType === "strong") {
+    return (
+      <Link href={props.href} passHref>
+        <a>{children}</a>
+      </Link>
+    );
+  }
+
+  if (children.props && children.props.originalType === "img") {
+    return (
+      <Link href={props.href} passHref>
+        <a>{children}</a>
+      </Link>
+    );
+  }
+
+  if (
+    children.props &&
+    (children.props.parentName === "a" || children.props.mdxType === "a")
+  ) {
+    return <Link href={props.href}>{children}</Link>;
+  }
+
+  return (
+    <Link {...props} passHref>
+      <a {...props}>{children}</a>
+    </Link>
+  );
 };
 
-export const getText = children => {
+export const getText = (children) => {
   if (typeof children !== "string") {
     return children;
   }
@@ -89,21 +128,15 @@ const SectionBannerWrapper = styled.div`
 `;
 
 export const SectionColumn = styled.div`
-  flex-shrink: 1;
+  flex-shrink: 2;
   padding: 2em;
   h2 {
     margin-top: 0;
   }
 
   @media (min-width: 480px) {
-    min-width: 400px;
+    min-width: 350px;
   }
-`;
-
-const StyledImage = styled.img`
-  display: block;
-  margin: 0;
-  max-width: 100%;
 `;
 
 export const Warning = styled.div`
@@ -114,14 +147,30 @@ export const Warning = styled.div`
   background-color: #ffd000;
 `;
 
-const Image = ({ to }) => {
+const BannerImage = ({ to }) => {
   switch (to) {
     case "/messaging/":
-      return <StyledImage src={imgMessaging} />;
+      return (
+        <img
+          src="/docs/images/livechat-platform-messaging.jpg"
+          alt="Livechat platform messaging"
+        />
+      );
+
     case "/extending-agent-app/":
-      return <StyledImage src={imgExtendUI} />;
+      return (
+        <img
+          src="/docs/images/livechat-platform-extend-interfaces.jpg"
+          alt="Livechat platform extend interfaces"
+        />
+      );
     case "/data-reporting/":
-      return <StyledImage src={imgDataReporting} />;
+      return (
+        <img
+          src="/docs/images/livechat-platform-data-reporting.jpg"
+          alt="Livechat platform data reporting"
+        />
+      );
     default:
       return null;
   }
@@ -131,23 +180,29 @@ const SectionBanner = ({ title, desc, to, image }) => (
   <SectionBannerWrapper>
     {image && (
       <SectionColumn style={{ padding: 0 }}>
-        <Link to={to} style={{ display: "block" }}>
-          <Image to={to} />
+        <Link href={to} style={{ display: "block" }}>
+          <a>
+            <BannerImage to={to} />
+          </a>
         </Link>
       </SectionColumn>
     )}
     <SectionColumn>
       <h2>{title}</h2>
       <p>{desc}</p>
-      <Link to={to}>
-        <Button>Learn more</Button>
+      <Link href={to}>
+        <a>
+          <Button>Learn more</Button>
+        </a>
       </Link>
     </SectionColumn>
   </SectionBannerWrapper>
 );
 
-const SectionGatsbyLink = styled(Link)`
+const StyledLink = styled.a`
   font-weight: 600;
+  cursor: pointer;
+
   &:after {
     content: "";
     width: 16px;
@@ -159,32 +214,35 @@ const SectionGatsbyLink = styled(Link)`
   }
 `;
 
-const SectionALink = styled.a`
-  font-weight: 600;
-  &:after {
-    content: "";
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 1px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' fill='%232200ff'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+const SectionLink = ({ to, href, children, ...rest }) => {
+  if (href) {
+    return (
+      <Link href={href} target="_blank" {...rest}>
+        <StyledLink>{children}</StyledLink>
+      </Link>
+    );
   }
-`;
 
-const SectionLink = ({ to, href, ...rest }) =>
-  to ? (
-    <SectionGatsbyLink to={to} {...rest} />
-  ) : (
-    <SectionALink href={href} target={"_blank"} {...rest} />
-  );
+  if (to) {
+    return (
+      <Link href={to} {...rest}>
+        <StyledLink>{children}</StyledLink>
+      </Link>
+    );
+  }
 
-const makeHeading = size => ({ children, ...props }) => {
+  return <StyledLink>{children}</StyledLink>;
+};
+
+const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
-  const newProps = { ...props, className };
+
+  const id = props.id;
+
+  const newProps = { ...props, className, id };
 
   const Content = () => (
-    <HeadingLink href={`#${props.id}`}>{getText(children)}</HeadingLink>
+    <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
   );
 
   switch (size) {
@@ -238,6 +296,8 @@ export default {
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
   a: A,
+  img: Img,
+  pre: Pre,
   Warning,
   SectionBanner,
   SectionLink,
@@ -245,5 +305,5 @@ export default {
     <TableWrapper>
       <table>{children}</table>
     </TableWrapper>
-  )
+  ),
 };

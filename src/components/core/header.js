@@ -1,9 +1,10 @@
 import { useContext } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
-import { Link } from "gatsby";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon } from "./icons";
-import { useAllCategoriesMeta } from "../../hooks";
+import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
@@ -116,47 +117,56 @@ const linkStyle = {
 
 const iconStyle = { marginRight: "5px", marginBottom: "1px" };
 
-const activeLinkStyle = (color) => ({
-  borderBottom: `5px solid rgb(${color})`,
-  color: "white",
-});
+const MenuElement = ({ label, href, slug, color, ...props }) => {
+  const { asPath } = useRouter();
+  const isActive = asPath.includes(`/${slug}`);
 
-const MenuElement = ({ label, href, slug, color, ...props }) => (
-  <MenuElementWrapper {...props}>
-    {href ? (
-      <a
-        href={href}
-        css={linkStyle}
-        onClick={() => logAmplitudeEvent("External link clicked", { href })}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {label}
-      </a>
-    ) : (
-      <Link
-        to={`/${slug}/`}
-        partiallyActive
-        css={linkStyle}
-        activeStyle={activeLinkStyle(color)}
-        onClick={() =>
-          logAmplitudeEvent("Top menu tab clicked", {
-            slug,
-          })
-        }
-      >
-        <CategoryIcon category={slug} style={iconStyle} />
-        {label}
-      </Link>
-    )}
-  </MenuElementWrapper>
-);
+  return (
+    <MenuElementWrapper {...props}>
+      {href ? (
+        <a
+          href={href}
+          css={linkStyle}
+          onClick={() => logAmplitudeEvent("External link clicked", { href })}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {label}
+        </a>
+      ) : (
+        <Link href={`/${slug}/`} partiallyActive passHref>
+          <a
+            css={css`
+              border-top: 4px solid transparent;
+              border-bottom: 4px solid transparent;
+              transition: color 60ms ease-out;
+
+              ${isActive &&
+                `
+              border-bottom: 5px solid rgb(${color});
+              color: white;
+              
+              `}
+            `}
+            onClick={() =>
+              logAmplitudeEvent("Top menu tab clicked", {
+                slug,
+              })
+            }
+          >
+            <CategoryIcon category={slug} style={iconStyle} />
+            {label}
+          </a>
+        </Link>
+      )}
+    </MenuElementWrapper>
+  );
+};
 
 const Header = () => {
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
   );
-  const categories = useAllCategoriesMeta();
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
 
@@ -165,12 +175,12 @@ const Header = () => {
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
-          <a href="/">
+          <a href="https://developers.livechat.com/">
             <LiveChatLogo style={{ margin: "0", display: "block" }} />
           </a>
           <VLine />
-          <Link to="/" css={linkCss}>
-            Platform Docs
+          <Link href="/" passHref>
+            <a css={linkCss}>Platform Docs</a>
           </Link>
         </LogoWrapper>
 

@@ -3,7 +3,7 @@ import posed from "react-pose";
 import styled from "@emotion/styled";
 import { HashtagIcon, ArticleIcon, ChevronRight } from "./icons";
 import { PromotionContext } from "../../contexts";
-import { Link } from "gatsby";
+import Link from "next/link";
 
 const COLLAPSED = "COLLAPSED";
 const EXPANDED = "EXPANDED";
@@ -40,10 +40,10 @@ const NavWrapper = styled.aside`
   --page-theme-color: ${({ color }) => color};
   transition: margin 0.3s ease-out, box-shadow 0.3s ease-out;
   top: 0;
+  position: fixed;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
 
-  position: fixed;
   z-index: 50;
   width: 300px;
   height: 100vh;
@@ -153,6 +153,7 @@ export const MainWrapper = styled.div`
 `;
 
 export const LeftColumn = styled.div``;
+
 export const MiddleColumn = styled.div`
   max-width: 100%;
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
@@ -196,11 +197,12 @@ export const Ul = styled.ul`
 `;
 
 export const Li = styled.li`
+  cursor: pointer;
   padding: 0;
   margin: 0;
 `;
 
-export const MenuLink = styled(Link)`
+export const MenuLink = styled.a`
   font-size: 15px;
   line-height: 1.3em;
   padding: 0.6em 12px;
@@ -247,13 +249,15 @@ export const MenuElement = ({ url, title, onClick, active }) => (
         <span>{title}</span>
       </MenuAnchorLink>
     ) : (
-      <MenuLink to={url} active={active ? 1 : 0} title={title}>
-        <ArticleIcon
-          style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
-        />
-        &nbsp;
-        <span>{title}</span>
-      </MenuLink>
+      <Link href={url} title={title}>
+        <MenuLink active={active ? 1 : 0}>
+          <ArticleIcon
+            style={{ marginRight: "4px", marginBottom: "-2px", opacity: 0.6 }}
+          />
+          &nbsp;
+          <span>{title}</span>
+        </MenuLink>
+      </Link>
     )}
   </Li>
 );

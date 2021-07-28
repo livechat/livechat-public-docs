@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "@emotion/styled";
 import Prism from "prismjs";
+import "prismjs/components/prism-json";
 import innerText from "react-innertext";
-import payloads from "payloads";
+import payloads from "../../../payloads";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
 import { PromotionContext } from "../../contexts";
 
@@ -36,7 +37,7 @@ const CodeResponseWrapper = styled.div`
   margin: 0 0 20px;
   max-width: 100%;
 
-  & .gatsby-highlight {
+  & .remark-highlight {
     min-height: 0;
   }
   & pre {
@@ -71,6 +72,13 @@ const CodeSampleTopbar = styled.div`
     flex-grow: 2;
     word-break: break-all;
   }
+
+  .code-sample-header {
+    border: none;
+    background-color: #383f54;
+    color: #dee5e8;
+    padding: 0.2em 0;
+  }
 `;
 
 const ResponseTopbar = styled.div`
@@ -94,6 +102,11 @@ const Body = styled.div`
   min-height: 0;
   display: flex;
   max-width: 100%;
+  overflow: scroll;
+
+  code {
+    display: inline-block;
+  }
 `;
 
 const SelectLanguage = styled.select`
@@ -177,7 +190,7 @@ export const CodeSample = ({ path, children }) => {
     <CodeSampleWrapper>
       {path && (
         <CodeSampleTopbar>
-          <code>{path}</code>
+          <code className="code-sample-header">{path}</code>
           <ActionsWrapper>
             {count > 1 && (
               <SelectLanguage onChange={(e) => setSample(e.target.value)}>
@@ -233,6 +246,7 @@ export const CodeResponse = ({
 
 export const Code = ({ children }) => {
   const { isActive } = useContext(PromotionContext);
+
   return (
     <CodeWrapper promotionIsActive={isActive}>
       <StickyWrapper>{children}</StickyWrapper>
@@ -240,7 +254,7 @@ export const Code = ({ children }) => {
   );
 };
 
-const JSONHighlighter = ({ source, language = "javascript" }) => {
+const JSONHighlighter = ({ source, language = "json" }) => {
   const ref = React.createRef();
   const body = JSON.stringify(source, null, "\t");
 
@@ -251,7 +265,7 @@ const JSONHighlighter = ({ source, language = "javascript" }) => {
   }, [source, ref]);
 
   return (
-    <div className="gatsby-highlight" data-language={language}>
+    <div className="remark-highlight" data-language={language}>
       <pre ref={ref} className={`language-${language}`}>
         <code className={`language-${language}`}>{body}</code>
       </pre>

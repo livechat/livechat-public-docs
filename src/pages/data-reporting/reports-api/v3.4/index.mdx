@@ -1,0 +1,419 @@
+---
+weight: 10
+category: "data-reporting"
+subcategory: "reports-api"
+title: "Reports API"
+tagline: "Access and extract data from Reports."
+desc: "See how you can access and extract data from Reports with the use of Reports API."
+versionGroup: "data-reporting"
+apiVersion: "3.4"
+---
+
+import { openChatWindow } from "../../../../utils/index";
+
+# Introduction
+
+Reports API allows you to **access** and **extract** all the [Reports](https://www.livechat.com/kb/reporting-options-available-in-livechat/) data available in LiveChat.
+
+## Versioning
+
+This document describes the **LiveChat Reports API v3.4**. This is the developer preview version that provides a preview of the upcoming changes to the API. **It's not open to public use.** However, if you want to test some features, contact us at developers@livechat.com or <a href="#open-chat" onClick={openChatWindow}>ask on the chat</a>, and we'll give you access.
+
+## Authorization
+
+To call the Reports API, you need to use a Bearer access token. [Learn how to get it.](/authorization/authorizing-api-calls/#implicit-grant)
+
+# Methods
+
+| The API endpoint                                               |
+| -------------------------------------------------------------- |
+| `https://api.livechatinc.com/v3.4/reports/<resource>/<action>` |
+
+## Headers
+
+**Common headers for all methods:**
+
+| Header          | Value            | Required | Notes                                                |
+| --------------- | ---------------- | -------- | ---------------------------------------------------- |
+| `Authorization` | `Bearer <token>` | Yes      | Your access token                                    |
+| `X-API-Version` | `3.4`            | No       | The API version. You can also specify it in the URL. |
+
+**Additional headers specifically for the POST methods:**
+
+| Header         | Value              | Required |
+| -------------- | ------------------ | -------- |
+| `Content-Type` | `application/json` | Yes      |
+
+<Section>
+<Text>
+
+## Available methods
+
+|           |                                                                                                                                                   |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats** | [`agents_chatting_duration`](#agents-chatting-duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) |
+
+## Available parameters and filters
+
+| Parameter                                                             | Required | Data type | Notes                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `distribution`                                                        | No       | `string`  | Allowed values: `hour`, `day`, `day-hours`, `month` or `year`. Defaults to `day`.                                                                                                                                                           |
+| `timezone`                                                            | No       | `string`  | IANA [Time Zone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix). Defaults to the requester's timezone. When the requester's timezone isn't present, then `filters.from` is parsed to get the timezone. |
+| `filters`                                                             | No       | `object`  | If none provided, your report will span the last seven days.                                                                                                                                                                                |
+| `filters.from`                                                        | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
+| `filters.to`                                                          | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
+| `filters.properties.<namespace>.<name>.<filter_type>`<sup>**1**</sup> | No       | `any`     | Described below.                                                                                                                                                                                                                            |
+| `filters.agents.<string_filter_type>`<sup>**2**</sup>                 | No       | `any`     | Described below; `exists` set to `false` will return unassigned chats; `true` will return the assigned ones.                                                                                                                                |
+| `filters.tags.<string_filter_type>`<sup>**2**</sup>                   | No       | `any`     | Described below.                                                                                                                                                                                                                            |
+| `filters.sales.<integer_filter_type>`<sup>**3**</sup>                 | No       | `any`     | Described below.                                                                                                                                                                                                                            |
+| `filters.goals.<integer_filter_type>`<sup>**3**</sup>                 | No       | `any`     | Described below.                                                                                                                                                                                                                            |
+| `filters.surveys.<survey>`<sup>**4**</sup>                            | No       | `array`   | Described below.                                                                                                                                                                                                                            |
+| `filters.event_types.<event_type_filter_type>`<sup>**5**</sup>        | No       | `any`     | Described below.                                                                                                                                                                                                                            |
+| `filters.groups.values`                                               | No       | `array`   | Array of group IDs.                                                                                                                                                                                                                         |
+
+</Text>
+<Code>
+</Code>
+</Section>
+
+**1)** `<filter_type>` can take the following values:
+
+- `exists` (`bool`)
+- `values` (`type[]` - an array with a specific type for property: `string`, `int` or `bool`)
+- `exclude_values` (`type[]` - an array with a specific type for property: `string`, `int` or `bool`)
+
+There's only one value allowed for a single property.
+
+List of default properties can be found [**here**](/messaging/references/default-properties/#reference).
+
+**2)** `<string_filter_type>` can take the following values:
+
+- `exists` (`bool`)
+- `values` (`string[]` - an array of strings)
+- `exclude_values` (`string[]` - an array of strings)
+- `require_every_value` (`bool`) - if set to `true`, will return only those chats that have all elements passed in `values` or `exclude_values`
+
+You can pass only one of the following values at a time: `exists`, `values` or `exclude_values`.
+
+**3)** `<integer_filter_type>` can take the following values:
+
+- `exists` (`bool`)
+- `values` (`int[]` - an array of integers)
+- `exclude_values` (`int[]` - an array of integers)
+- `require_every_value` (`bool`) - if set to `true`, will return only those chats that have all elements passed in `values` or `exclude_values`
+
+You can pass only one of the following values at a time: `exists`, `values` or `exclude_values`.
+
+**4)** `<survey>` contains the following fields:
+
+- `type` (`string`) - allowed values: `pre_chat`, `post_chat`
+- `answer_id` (`string`)
+
+**5)** `<event_type_filter_type>` can take the following values:
+
+- `values` (`string[]` - an array of [Event](/messaging/agent-chat-api/v3.4/#events) types, duplicates are ignored)
+- `exclude_values` (`string[]` - an array of [Event](/messaging/agent-chat-api/v3.4/#events) types, duplicates are ignored)
+- `require_every_value` (`bool`) - if set to `true`, will return only those chats that have all elements passed in `values` or `exclude_values`
+
+You can pass only one of the following values at a time: `exists`, `values` or `exclude_values`.
+
+<CodeResponse version="v3.4" type="reports" title={'Sample filters'} json="filters" />
+
+The JSON payload above translates into the following query string:
+
+<CodeSample path={'FILTERS AS QUERY STRING PARAMS'}>
+
+```shell
+?filters.from=2021-03-01T23:59:59-00:00
+&filters.to=2021-04-13T23:59:59-00:00
+&filters.properties[routing][continuous].values=true
+&filters.agents.values=joe@acme.com
+&filters.agents.values=alice@acme.com
+&filters.tags.exclude_values=spam
+&filters.event_types.values=file
+```
+
+</CodeSample>
+
+💡 Notice the square brackets `[]` when using GET query string params to define `properties.<namespace>` and `properties.<namespace>.<name>`.
+
+## Chats
+
+<Section>
+<Text>
+
+### Agents Chatting Duration
+
+Shows the average chatting duration of agents within a license.
+
+#### Specifics
+
+|                     |                                                                           |
+| ------------------- | ------------------------------------------------------------------------- |
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/chats/agents_chatting_duration` |
+| **HTTP method**     | POST, GET                                                                 |
+| **Required scopes** | `reports_read`                                                            |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters).
+
+#### Response
+
+| Field                 | Notes                                                  |
+| --------------------- | ------------------------------------------------------ |
+| `total`               | The total number of chats in the specified date range. |
+| `records`             | Contains `distribution` objects, for example, `day`.   |
+| `records.day.count`   | The total number of chats `agents` had that `day`.     |
+| `records.day.seconds` | The average chat duration `agents` had that `day`.     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/chats/agents_chatting_duration \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "distribution": "day",
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="agentsChattingDuration"/>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Tags
+
+Shows the distribution of tags for chats.
+
+#### Specifics
+
+|                     |                                                       |
+| ------------------- | ----------------------------------------------------- |
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/chats/tags` |
+| **HTTP method**     | POST, GET                                             |
+| **Required scopes** | `reports_read`                                        |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters).
+
+#### Response
+
+| Field               | Notes                                                    |
+| ------------------- | -------------------------------------------------------- |
+| `total`             | The total number of chats in the specified date range.   |
+| `records`           | Contains the `distribution` objects, for example, `day`. |
+| `records.day.<tag>` | The total number of chats tagged with `<tag>`.           |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/chats/tags \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "distribution": "day",
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="tags"/>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Total Chats
+
+Shows how many chats occurred during the specified period.
+
+#### Specifics
+
+|                     |                                                              |
+| ------------------- | ------------------------------------------------------------ |
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/chats/total_chats` |
+| **HTTP method**     | POST, GET                                                    |
+| **Required scopes** | `reports_read`                                               |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters).
+
+#### Response
+
+| Field                    | Notes                                                    |
+| ------------------------ | -------------------------------------------------------- |
+| `total`                  | The total number of chats in the specified date range.   |
+| `records`                | Contains the `distribution` objects, for example, `day`. |
+| `records.day.total`      | The total number of chats that `day`.                    |
+| `records.day.continuous` | The number of continuous chats that `day`.               |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/chats/total_chats \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "distribution": "day",
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="totalChats"/>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Ratings
+
+Shows the number of rated chats along with their ratings during a specified period of time.
+
+#### Specifics
+
+|                     |                                                              |
+| ------------------- | ------------------------------------------------------------ |
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/chats/ratings`     |
+| **HTTP method**     | POST, GET                                                    |
+| **Required scopes** | `reports_read`                                               |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters).
+
+#### Response
+
+| Field                    | Notes                                                    |
+| ------------------------ | -------------------------------------------------------- |
+| `total`                  | The total number of chats in the specified date range.   |
+| `records`                | Contains the `distribution` objects, for example, `day`. |
+| `records.day.chats`      | The total number of chats that `day`.                    |
+| `records.day.bad`        | The number of chats rated `bad` that `day`.              |
+| `records.day.good`       | The number of chats rated `good` that `day`.             |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/chats/ratings \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "distribution": "day",
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="ratings"/>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Ranking
+
+Shows the ratio of good to bad ratings for each operator.
+
+#### Specifics
+
+|                     |                                                              |
+| ------------------- | ------------------------------------------------------------ |
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/chats/ranking`     |
+| **HTTP method**     | POST, GET                                                    |
+| **Required scopes** | `reports_read`                                               |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters). 💡 Notice that the distribution parameter will have no effect on the response of this method.
+
+#### Response
+
+| Field                    | Notes                                                                                                                  |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `ranking`                | Contains the `agent` objects.                                                                                          |
+| `ranking.agent.total`    | The total number of chats an agent had in the specified period.                                                        |
+| `ranking.agent.good`     | The number of agent's chats rated `good`.                                                                              |
+| `ranking.agent.bad`      | The number of agent's chats rated `bad`.                                                                               |
+| `ranking.agent.score`    | The agent's score. [Read more about how we calculate agent rankings...](https://www.livechat.com/help/agent-rankings/) |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/chats/ranking \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="ranking"/>
+
+</Code>
+</Section>
+
+# Contact us
+
+If you found a bug or a typo, you can create an issue on [GitHub](https://github.com/livechat/livechat-public-docs/). In case of any questions or feedback, don't hesitate to contact us at [developers@livechat.com](mailto:developers@livechat.com)

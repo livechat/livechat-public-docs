@@ -1,12 +1,11 @@
-# ❗️ Feature branch
+# ❗️ Feature branch / Deploy Preview
 
-Remember to start your branch name with `feature/`, for example, `feature/DPS-2947`. This will generate a preview on labs and allow us to test your changes.
+We suggest to name your branch with `feature/`, for example, `feature/DPS-2947`. See below notifications from **Netlify** about the url.
 
 # 🚀 Links
 
 Replace the placeholder data in links 👇
 
-- [Feature branch](https://developers.labs.livechat.com/docs/feature/BRANCHNAME)
 - [Jira](https://livechatinc.atlassian.net/browse/XXX-XXX)
 
 # 📓 Description
