@@ -573,7 +573,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 |                 |                                                                                                                                                                                                                                                                                                                                     |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                               |
-| **Chat access** | [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                             |
+| **Chat access** | [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                                                                                                                   |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
@@ -1297,6 +1297,8 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 Deactivates a chat by closing the currently open thread. Sending messages to this thread will no longer be possible.
 
+The requester must be present on the list of chat users. You can override it by setting the `ignore_requester_presence` parameter.
+
 #### Specifics
 
 |                        |                                          |
@@ -1308,9 +1310,10 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 
 #### Request
 
-| Parameter | Required | Data type |     |
-| --------- | -------- | --------- | --- |
-| `id`      | Yes      | `string`  |     |
+| Parameter                   | Required | Data type | Notes                                                                                           |
+| --------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------- |
+| `id`                        | Yes      | `string`  |                                                                                                 |
+| `ignore_requester_presence` | No       | `bool`    | If `true`, the requester doesn't need to be present on the list of chat users; default `false`. |
 
 </Text>
 <Code>
@@ -1465,7 +1468,12 @@ Removes the requester from the chat followers. After that, only key changes to t
 
 ### Transfer Chat
 
-Transfers a chat to an agent or a group. The transferred chat must be active. When transferring directly to an agent, the agent must have access to the transferred chat.
+Transfers a chat to an agent or a group. The following restrictions apply:
+
+- The transferred chat must be active.
+- The requester must be present on the list of chat users.
+  - You can override it by setting the `ignore_requester_presence` parameter.
+- When transferring directly to an agent, the agent must have access to the transferred chat.
 
 #### Specifics
 
@@ -1478,13 +1486,14 @@ Transfers a chat to an agent or a group. The transferred chat must be active. Wh
 
 #### Request
 
-| Parameter     | Required | Data ype | Notes                                                                                                                           |
-| ------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `id`          | Yes      | `string` | Chat Id                                                                                                                         |
-| `target`      | No       | `object` | If missing, the chat will be transferred within the current group.                                                              |
-| `target.type` | Yes      | `string` | `group` or `agent`                                                                                                              |
-| `target.ids`  | Yes      | `array`  | `group` or `agent` IDs array                                                                                                    |
-| `force`       | No       | `bool`   | If `true`, always transfers chats. Otherwise, fails when unable to assign any agent from the requested groups; default `false`. |
+| Parameter                    | Required | Data ype | Notes                                                                                                                                                                  |
+| ---------------------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                         | Yes      | `string` | Chat ID                                                                                                                                                                |
+| `target`                     | No       | `object` | If missing, the chat will be transferred within the current group.                                                                                                     |
+| `target.type`                | Yes      | `string` | `group` or `agent`                                                                                                                                                     |
+| `target.ids`                 | Yes      | `array`  | `group` or `agent` IDs array                                                                                                                                           |
+| `ignore_agents_availability` | No       | `bool`   | If `true`, allows the chat to be enqueued after the transfer. Otherwise, fails when unable to immediately assign any agent from the requested groups; default `false`. |
+| `ignore_requester_presence`  | No       | `bool`   | If `true`, the requester doesn't need to be present on the list of chat users; default `false`.                                                                        |
 
 </Text>
 <Code>
@@ -1533,6 +1542,8 @@ Transfers a chat to an agent or a group. The transferred chat must be active. Wh
 Adds a user to the chat. The following restrictions apply:
 
 - The chat must be active.
+- The requester must be present on the list of chat users.
+  - You can override it by setting the `ignore_requester_presence` parameter.
 - You can't have more than one `customer` in the chat.
 - Additional agents must also have access to the chat.
 - `customer` must be added with `visibility:all`.
@@ -1548,12 +1559,13 @@ Adds a user to the chat. The following restrictions apply:
 
 #### Request
 
-| Parameter    | Required | Type     | Notes                                  |
-| ------------ | -------- | -------- | -------------------------------------- |
-| `chat_id`    | Yes      | `string` |                                        |
-| `user_id`    | Yes      | `string` |                                        |
-| `user_type`  | Yes      | `string` | Possible values: `agent` or `customer` |
-| `visibility` | Yes      | `string` | Possible values: `all` or `agents`     |
+| Parameter                   | Required | Type     | Notes                                                                                           |
+| --------------------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `chat_id`                   | Yes      | `string` |                                                                                                 |
+| `user_id`                   | Yes      | `string` |                                                                                                 |
+| `user_type`                 | Yes      | `string` | Possible values: `agent` or `customer`                                                          |
+| `visibility`                | Yes      | `string` | Possible values: `all` or `agents`                                                              |
+| `ignore_requester_presence` | No       | `bool`   | If `true`, the requester doesn't need to be present on the list of chat users; default `false`. |
 
 </Text>
 <Code>
@@ -1596,7 +1608,11 @@ Adds a user to the chat. The following restrictions apply:
 
 ### Remove User from Chat
 
-Removes a user from chat. Removing `customer` user type is not allowed. It's always possible to remove the requester from chat.
+Removes a user from chat. The following restrictions apply:
+
+- You can't remove the `customer`.
+- The requester must be present on the list of chat users.
+  - You can override it by setting the `ignore_requester_presence` parameter.
 
 #### Specifics
 
@@ -1609,11 +1625,12 @@ Removes a user from chat. Removing `customer` user type is not allowed. It's alw
 
 #### Request
 
-| Parameter   | Required | Type     | Notes                                     |
-| ----------- | -------- | -------- | ----------------------------------------- |
-| `chat_id`   | Yes      | `string` |                                           |
-| `user_id`   | Yes      | `string` |                                           |
-| `user_type` | Yes      | `string` | Possible values are `agent` or `customer` |
+| Parameter                   | Required | Type     | Notes                                                                                           |
+| --------------------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `chat_id`                   | Yes      | `string` |                                                                                                 |
+| `user_id`                   | Yes      | `string` |                                                                                                 |
+| `user_type`                 | Yes      | `string` | Possible values are `agent` or `customer`                                                       |
+| `ignore_requester_presence` | No       | `bool`   | If `true`, the requester doesn't need to be present on the list of chat users; default `false`. |
 
 </Text>
 <Code>
@@ -3762,9 +3779,9 @@ Informs about the update of a user's access to a particular chat. It contains th
 
 #### Push payload
 
-| Field    | Notes                                             |
-| -------- | ------------------------------------------------- |
-| `id`     | Chat ID                                           |
+| Field    | Notes                                               |
+| -------- | --------------------------------------------------- |
+| `id`     | Chat ID                                             |
 | `access` | The updated chat [access](#access-1) data structure |
 
 ### `chat_transferred`
