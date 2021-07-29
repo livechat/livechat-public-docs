@@ -24,12 +24,18 @@ function SEO({ desc, keywords, title }) {
       <meta property="og:title" content={title} />
       <meta property="og:description" content={metaDescription} />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content="/images/livechat-docs-og.png" />
+      <meta
+        property="og:image"
+        content="https://developers.livechat.com/docs/images/livechat-docs-og.png"
+      />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:creator" content={defaultSiteMetadata.author} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content="/images/livechat-docs-og.png" />
+      <meta
+        name="twitter:image"
+        content="https://developers.livechat.com/docs/images/livechat-docs-og.png"
+      />
       {keywords.length > 0 && (
         <meta name="keywords" content={metaDescription} />
       )}
