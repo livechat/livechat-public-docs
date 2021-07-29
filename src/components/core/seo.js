@@ -21,13 +21,15 @@ function SEO({ desc, keywords, title }) {
       <title>{`${title} | ${defaultSiteMetadata.title}`}</title>
       <link rel="canonical" href={canonicalUrl}></link>
       <meta name="description" content={metaDescription} />
-      <meta name="og:title" content={title} />
-      <meta name="og:description" content={metaDescription} />
-      <meta name="og:type" content="website" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content="/images/livechat-docs-og.png" />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:creator" content={defaultSiteMetadata.author} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
+      <meta name="twitter:image" content="/images/livechat-docs-og.png" />
       {keywords.length > 0 && (
         <meta name="keywords" content={metaDescription} />
       )}
