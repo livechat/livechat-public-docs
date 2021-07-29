@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import TagManager from "react-gtm-module";
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import "@livechat/design-system/dist/design-system.css";
@@ -12,6 +13,7 @@ import { setupAmplitude } from "../utils";
 import { SCROLL_OFFSET } from "../constant";
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
   if (typeof window !== "undefined") {
     // use #open-chat when adding openChatWindow to links, otherwise it'll scroll up upon click
 
@@ -30,6 +32,11 @@ function MyApp({ Component, pageProps }) {
         process.env.NODE_ENV === "production" ? "GTM-M58RLCQ" : "GTM-5DVQQC",
     });
   }, []);
+
+  useEffect(() => {
+    window.dataLayer.push({ event: "next-route-change" });
+  }, [router.pathname]);
+
   return <Component {...pageProps} />;
 }
 
