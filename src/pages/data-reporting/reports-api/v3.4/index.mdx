@@ -49,11 +49,14 @@ To call the Reports API, you need to use a Bearer access token. [Learn how to ge
 
 ## Available methods
 
-|           |                                                                                                                                                   |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats** | [`agents_chatting_duration`](#agents-chatting-duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) |
+|            |                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**  | [`agents_chatting_duration`](#agents-chatting-duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) |
+| **Agents** | [`availability`](#availability)                                                                                                                   |
 
 ## Available parameters and filters
+
+### For the Chats reports
 
 | Parameter                                                             | Required | Data type | Notes                                                                                                                                                                                                                                       |
 | --------------------------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,6 +73,19 @@ To call the Reports API, you need to use a Bearer access token. [Learn how to ge
 | `filters.surveys.<survey>`<sup>**4**</sup>                            | No       | `array`   | Described below.                                                                                                                                                                                                                            |
 | `filters.event_types.<event_type_filter_type>`<sup>**5**</sup>        | No       | `any`     | Described below.                                                                                                                                                                                                                            |
 | `filters.groups.values`                                               | No       | `array`   | Array of group IDs.                                                                                                                                                                                                                         |
+
+### For the Agents reports
+
+| Parameter                                                             | Required | Data type | Notes                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `distribution`                                                        | No       | `string`  | Allowed values: `hour`, `day`. Defaults to `day`.                                                                                                                                                                                           |
+| `timezone`                                                            | No       | `string`  | IANA [Time Zone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix). Defaults to the requester's timezone. When the requester's timezone isn't present, then `filters.from` is parsed to get the timezone. |
+| `filters`                                                             | No       | `object`  | If none provided, your report will span the last seven days.                                                                                                                                                                                |
+| `filters.from`                                                        | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
+| `filters.to`                                                          | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
+| `filters.agents.<string_filter_type>`<sup>**2**</sup>                 | No       | `any`     | Described below.                                                                                                                                                                                                                            |
+| `filters.groups.values`                                               | No       | `array`   | Array of group IDs.                                                                                                                                                                                                                         |
+
 
 </Text>
 <Code>
@@ -88,7 +104,7 @@ List of default properties can be found [**here**](/messaging/references/default
 
 **2)** `<string_filter_type>` can take the following values:
 
-- `exists` (`bool`)
+- `exists` (`bool`) - 💡 available only for the [Chats](/data-reporting/reports-api/v3.4#for-chats-reports) parameter value
 - `values` (`string[]` - an array of strings)
 - `exclude_values` (`string[]` - an array of strings)
 - `require_every_value` (`bool`) - if set to `true`, will return only those chats that have all elements passed in `values` or `exclude_values`
@@ -382,11 +398,11 @@ See [available parameters and filters](#available-parameters-and-filters). 💡 
 
 | Field                    | Notes                                                                                                                  |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `ranking`                | Contains the `agent` objects.                                                                                          |
-| `ranking.agent.total`    | The total number of chats an agent had in the specified period.                                                        |
-| `ranking.agent.good`     | The number of agent's chats rated `good`.                                                                              |
-| `ranking.agent.bad`      | The number of agent's chats rated `bad`.                                                                               |
-| `ranking.agent.score`    | The agent's score. [Read more about how we calculate agent rankings...](https://www.livechat.com/help/agent-rankings/) |
+| `records`                | Contains the `agent` objects.                                                                                          |
+| `records.agent.total`    | The total number of chats an agent had in the specified period.                                                        |
+| `records.agent.good`     | The number of agent's chats rated `good`.                                                                              |
+| `records.agent.bad`      | The number of agent's chats rated `bad`.                                                                               |
+| `records.agent.score`    | The agent's score. [Read more about how we calculate agent rankings...](https://www.livechat.com/help/agent-rankings/) |
 
 </Text>
 <Code>
@@ -410,6 +426,62 @@ https://api.livechatinc.com/v3.4/reports/chats/ranking \
 </CodeSample>
 
 <CodeResponse type="reports" version="v3.4" json="ranking"/>
+
+</Code>
+</Section>
+
+## Agents
+
+<Section>
+<Text>
+
+### Availability
+
+Shows for how long an agent, group, or the whole account was available for chatting during a specified period of time.
+
+#### Specifics
+
+|                     |                                                                    |
+| ------------------- | -------------------------------------------------------------------|
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/agents/availability`     |
+| **HTTP method**     | POST, GET                                                          |
+| **Required scopes** | `reports_read`                                                     |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters). Depending on the distribution parameter the response will contain a different time resolution.
+
+#### Response
+
+| Field                    | Notes                                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------------------|
+| `total`                  | Total time the chat was available in the specified date range.                                     |
+| `records`                | Contains the `distribution` objects, for example, `day`.                                           |
+| `records.hours`          | The total number of hours the chat was available that `day` (only for the `day` distribution).     |
+| `records.minutes`        | The total number of minutes the chat was available that `hour` (only for the `hour` distribution). |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/agents/availability \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="availability"/>
 
 </Code>
 </Section>
