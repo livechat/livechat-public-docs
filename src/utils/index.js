@@ -79,6 +79,9 @@ export const setupDocsearch = () => {
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
+    algoliaOptions: {
+      hitsPerPage: 7,
+    },
     handleSelected: function(input, event, suggestion, datasetNumber, context) {
       if (
         context.selectionMethod === "click" ||
