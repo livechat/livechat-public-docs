@@ -36,6 +36,14 @@ You can simulate the production build process locally by running.
 
 In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url.
 
+## Sitemap
+
+Currently we are generating sitemaps manually. Due to trailing slash issue on Netlify. In order to generate new sitemap run:
+
+1. Run `npm run build`
+2. Run `npm run sitemap`
+3. Edit the `/public/sitemap.xml` file and add trailing slashes.
+
 ## Versioning
 
 Currently, versioning for the Agent Chat API, Customer Chat API, and Configuration API is as follows:
