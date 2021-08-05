@@ -51,7 +51,11 @@ const Pre = ({ children, ...props }) => {
 };
 
 const Img = ({ ...props }) => {
-  return <img {...props} src={`/docs${props.src}`} />;
+  if (!props?.src) return null
+
+  const src = props.src.startsWith('http') ? props.src : `/docs${props.src}`
+
+  return <img {...props} src={src} />;
 };
 
 const A = ({ children, ...props }) => {
