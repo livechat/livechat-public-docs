@@ -51,9 +51,9 @@ const Pre = ({ children, ...props }) => {
 };
 
 const Img = ({ ...props }) => {
-  if (!props?.src) return null
+  if (!props?.src) return null;
 
-  const src = props.src.startsWith('http') ? props.src : `/docs${props.src}`
+  const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
 
   return <img {...props} src={src} />;
 };
@@ -155,25 +155,55 @@ const BannerImage = ({ to }) => {
   switch (to) {
     case "/messaging/":
       return (
-        <img
-          src="/docs/images/livechat-platform-messaging.jpg"
-          alt="Livechat platform messaging"
-        />
+        <picture>
+          <source
+            srcset="/docs/images/livechat-platform-messaging.webp"
+            type="image/webp"
+          />
+          <source
+            srcset="/docs/images/livechat-platform-messaging.jpg"
+            type="image/jpeg"
+          />
+          <img
+            src="/docs/images/livechat-platform-messaging.jpg"
+            alt="Livechat platform messaging"
+          />
+        </picture>
       );
 
     case "/extending-agent-app/":
       return (
-        <img
-          src="/docs/images/livechat-platform-extend-interfaces.jpg"
-          alt="Livechat platform extend interfaces"
-        />
+        <picture>
+          <source
+            srcset="/docs/images/livechat-platform-extend-interfaces.webp"
+            type="image/webp"
+          />
+          <source
+            srcset="/docs/images/livechat-platform-extend-interfaces.jpg"
+            type="image/jpeg"
+          />
+          <img
+            src="/docs/images/livechat-platform-extend-interfaces.jpg"
+            alt="Livechat platform extend interfaces"
+          />
+        </picture>
       );
     case "/data-reporting/":
       return (
-        <img
-          src="/docs/images/livechat-platform-data-reporting.jpg"
-          alt="Livechat platform data reporting"
-        />
+        <picture>
+          <source
+            srcset="/docs/images/livechat-platform-data-reporting.webp"
+            type="image/webp"
+          />
+          <source
+            srcset="/docs/images/livechat-platform-data-reporting.jpg"
+            type="image/jpeg"
+          />
+          <img
+            src="/docs/images/livechat-platform-data-reporting.jpg"
+            alt="Livechat platform data reporting"
+          />
+        </picture>
       );
     default:
       return null;
