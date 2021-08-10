@@ -1,0 +1,1322 @@
+---
+weight: 10
+category: "management"
+subcategory: "webhooks"
+title: "Webhooks"
+tagline: "The refrence of LiveChat webhooks."
+desc: "The refrence of available LiveChat webhooks. Use webhooks to build automated flows in your integrations."
+apiVersion: "3.3"
+---
+
+This document contains a reference of available webhooks. Webhooks are helpful for building applications that execute particular behavior in response to various actions, allowing you to create automated flows.
+In orderd to receive webhooks, you need to [register](/management/configuration-api/#register-webhook) them first.
+
+💡 Not what you're looking for? Try these instead:
+
+- [See webhook methods.](/management/configuration-api/#webhooks)
+- [Learn how to use webhooks with the LiveChat API.](https://developers.livechat.com/updates/setting-up-webhooks-with-livechat-api/)
+- [Read the Changelog.](changelog/)
+
+## Available webhooks
+
+|                 |                                                                                                                                                                                                                                                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                       |
+| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                             |
+| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
+| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                       |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_deleted`](#thread_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_deleted`](#agent_deleted)                                                                                                                                                                                                                                                                   |
+| **Customers**   | [`incoming_customer`](#incoming_customer) [`customer_session_fields_updated`](#customer_session_fields_updated)                                                                                                                                                                                                                                 |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen)                                                                                                                                                                                                                                                                                               |
+
+## Chats
+
+<Section>
+
+<Text>
+
+### `incoming_chat`
+
+Informs about a chat coming with a new thread. The webhook payload contains the whole chat data structure. If the chat was started with some initial events, the thread object contains them.
+
+#### Specifics
+
+|                        |                                                                                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `incoming_chat`                                                                                                                                                       |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#incoming_chat) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#incoming_chat) |
+
+#### Webhook payload
+
+| Field  | Notes                                                   |
+| ------ | ------------------------------------------------------- |
+| `chat` | [Chat data structure](/messaging/agent-chat-api/#chats) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "incoming_chat",
+  "license_id": 104130623,
+  "payload": {
+    "chat": {
+    "id": "PJ0MRSHTDG",
+    "users": [
+      // array of "User" objects
+    ],
+    "properties": {
+      // "Property" object
+    },
+    "thread": {
+      // "Thread" object
+      }
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `chat_deactivated`
+
+Informs that a chat was deactivated by closing the currently open thread.
+
+#### Specifics
+
+|                        |                                                                                                                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `chat_deactivated`                                                                                                                                                          |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_deactivated) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#chat_deactivated) |
+
+#### Webhook payload
+
+| Field     | Notes                                         |
+| --------- | --------------------------------------------- |
+| `user_id` | Missing if a thread was closed by the router. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_deactivated",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Chat access
+
+<Section>
+
+<Text>
+
+### `chat_access_granted`
+
+Informs that new, single access to a chat was granted. The existing access isn't overwritten.
+
+#### Specifics
+
+|                        |                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| **Action**             | `chat_access_granted`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_access_granted) |
+
+#### Webhook payload
+
+| Field | Notes   |
+| ----- | ------- |
+| `id`  | Chat ID |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_access_granted",
+  "license_id": 104130623,
+  "payload": {
+    "id": "PJ0MRSHTDG",
+    "access": {
+      "group_ids": [1]
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `chat_access_revoked`
+
+Informs that access to a certain chat was revoked.
+
+#### Specifics
+
+|                        |                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| **Action**             | `chat_access_revoked`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_access_revoked) |
+
+#### Webhook payload
+
+| Field | Notes   |
+| ----- | ------- |
+| `id`  | Chat Id |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_access_revoked",
+  "license_id": 104130623,
+  "payload": {
+    "id": "PJ0MRSHTDG",
+    "access": {
+      "group_ids": [1]
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `chat_transferred`
+
+Informs that a chat was transferred to a different group or to an agent.
+
+#### Specifics
+
+|                        |                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| **Action**             | `chat_transferred`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_transferred) |
+
+#### Webhook payload
+
+| Field            | Notes                                                                    |
+| ---------------- | ------------------------------------------------------------------------ |
+| `thread_id`      | Present if the chat is active.                                           |
+| `transferred_to` | IDs of the groups and agents the chat is assigned to after the transfer. |
+| `reason` **\***  | Informs why the chat was transferred.                                    |
+| `queue`          | Present if the chat is queued after the transfer.                        |
+
+**\*)**
+Possible reasons: `manual`, `inactive`, `assigned`, `unassigned`, `other`.
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_access_revoked",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "requester_id": "jones@example.com",
+    "reason": "manual",
+    "transferred_to": {
+      "group_ids": [ 19 ],
+      "agent_ids": ["smith@example.com"],
+    },
+    "queue": {
+      "position": 42,
+      "wait_time": 1337,
+      "queued_at": "2019-12-09T12:01:18.909000Z"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Chat users
+
+<Section>
+
+<Text>
+
+### `user_added_to_chat`
+
+Informs that a user (Customer or Agent) was added to a chat.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `user_added_to_chat`                                                                                                                                                            |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#user_added_to_chat) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#user_added_to_chat) |
+
+#### Webhook payload
+
+| Field       | Notes                                |
+| ----------- | ------------------------------------ |
+| `user_type` | Possible values: `agent`, `customer` |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "user_added_to_chat",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "user": {
+      // "User > Customer" or "User > Agent" object
+    },
+    "reason": "manual",
+    "requester_id": "smith@example.com"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+      // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `user_removed_from_chat`
+
+Informs that a user (Customer or Agent) was removed from a chat.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `user_removed_from_chat`                                                                                                                                                                |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#user_removed_from_chat) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#user_removed_from_chat) |
+
+#### Webhook payload
+
+| Field       | Notes                                |
+| ----------- | ------------------------------------ |
+| `user_type` | Possible values: `agent`, `customer` |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "user_removed_from_chat",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "user_id": "agent@example.com",
+    "reason": "manual",
+    "requester_id": "smith@example.com"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+      // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Events
+
+<Section>
+
+<Text>
+
+### `incoming_event`
+
+Informs about an incoming [event](/messaging/agent-chat-api/v3.3/#events) sent to a chat.
+
+#### Specifics
+
+|                        |                                                                                                                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `incoming_event`                                                                                                                                                        |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#incoming_event) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#incoming_event) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "incoming_event",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "event": {
+      // "Event" object
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `event_updated`
+
+Informs that an [event](/messaging/agent-chat-api/v3.3/#events) was updated.
+
+#### Specifics
+
+|                        |                                                                                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `event_updated`                                                                                                                                                       |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#event_updated) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#event_updated) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "event_updated",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "event": {
+      // "Event" object
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `incoming_rich_message_postback`
+
+Informs about an incoming [rich message](/messaging/agent-chat-api/v3.3/#rich-message) postback. The webhook payload contains the info on the postback itself, as well as the chat it was sent in.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `incoming_rich_message_postback`                                                                                                                                                                        |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#incoming_rich_message_postback) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#incoming_rich_message_postback) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "incoming_rich_message_postback",
+  "license_id": 104130623,
+  "payload": {
+    "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "event_id": "0affb00a-82d6-4e07-ae61-56ba5c36f743",
+    "postback": {
+      "id": "action_yes",
+      "toggled": true
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Properties
+
+<Section>
+
+<Text>
+
+### `chat_properties_updated`
+
+Informs about those chat properties that were updated.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `chat_properties_updated`                                                                                                                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_properties_updated) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#chat_properties_updated) |
+
+#### Webhook payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_properties_updated",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "string value"
+      }
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `chat_properties_deleted`
+
+Informs about those chat properties that were deleted.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `chat_properties_deleted`                                                                                                                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#chat_properties_deleted) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#chat_properties_deleted) |
+
+#### Webhook payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "chat_properties_deleted",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": [
+        "string_property"
+      ]
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `thread_properties_updated`
+
+Informs about those thread properties that were updated.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `thread_properties_updated`                                                                                                                                                                   |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#thread_properties_updated) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#thread_properties_updated) |
+
+#### Webhook payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "thread_properties_updated",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "string value"
+      }
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `thread_properties_deleted`
+
+Informs about those thread properties that were deleted.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `thread_properties_deleted`                                                                                                                                                                   |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#thread_properties_deleted) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#thread_properties_deleted) |
+
+#### Webhook payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "thread_properties_deleted",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": [
+        "string_property"
+          ]
+      }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `event_properties_updated`
+
+Informs about those event properties that were updated.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `event_properties_updated`                                                                                                                                                                  |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#event_properties_updated) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#event_properties_updated) |
+
+#### Webhook payload
+
+| Field        | Notes                                                                                                           |
+| ------------ | --------------------------------------------------------------------------------------------------------------- |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "event_properties_updated",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "event_id": "0affb00a-82d6-4e07-ae61-56ba5c36f743",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "property_value"
+      }
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `event_properties_deleted`
+
+Informs about those event properties that were deleted.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `event_properties_deleted`                                                                                                                                                                  |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#event_properties_deleted) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#event_properties_deleted) |
+
+#### Webhook payload
+
+| Field        | Notes                                                                                                           |
+| ------------ | --------------------------------------------------------------------------------------------------------------- |
+| `properties` | This is not a full `properties` object. This webhook shows only the properties that have been recently updated. |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "event_properties_deleted",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "event_id": "0affb00a-82d6-4e07-ae61-56ba5c36f743",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": [
+        "string_property"
+          ]
+      }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Thread tags
+
+<Section>
+
+<Text>
+
+### `thread_tagged`
+
+Informs that a thread was tagged.
+
+#### Specifics
+
+|                        |                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Action**             | `thread_tagged`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#thread_tagged) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "thread_tagged",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "tag": "bug_report"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `thread_untagged`
+
+Informs that a thread was untagged.
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `thread_untagged`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#thread_untagged) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "thread_untagged",
+  "license_id": 104130623,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "tag": "bug_report"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Status
+
+<Section>
+
+<Text>
+
+### `routing_status_set`
+
+Informs that an Agent's or Bot's status has changed.
+
+#### Specifics
+
+|                        |                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| **Action**             | `routing_status_set`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#routing_status_set) |
+
+#### Webhook payload
+
+| Field    | Notes                                                                                |
+| -------- | ------------------------------------------------------------------------------------ |
+| `status` | Possible values: `accepting chats`, `not accepting chats`, `offline` (for Bots only) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "routing_status_set",
+  "license_id": 104130623,
+  "payload": {
+    "agent_id":"agent1@example.com",
+    "status": "accepting chats"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `agent_deleted`
+
+Informs that an Agent's account was deleted.
+
+#### Specifics
+
+|                        |                 |
+| ---------------------- | --------------- |
+| **Action**             | `agent_deleted` |
+| **Push equivalent in** | -               |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "agent_deleted",
+  "license_id": 104130623,
+  "payload": {
+    "agent_id": "agent1@example.com"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Customers
+
+<Section>
+
+<Text>
+
+### `incoming_customer`
+
+Informs that a new Customer registered.
+
+#### Specifics
+
+|                        |                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| **Action**             | `incoming_customer`                                                                 |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#incoming_customer) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "incoming_customer",
+  "license_id": 104130623,
+  "payload": {
+    "customer": {
+    // "User > Customer" object
+    }
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### `customer_session_fields_updated`
+
+Informs that a chatting Customer's session fields were updated. The webhook will be sent for each active chat the Customer has.
+
+#### Specifics
+
+|            |                                   |
+| ---------- | --------------------------------- |
+| **Action** | `customer_session_fields_updated` |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "customer_session_fields_updated",
+  "license_id": 104130623,
+  "payload": {
+    "id": "5280e68c-9692-4212-4ba9-85f7d8af55cd",
+    "active_chat": {
+        "chat_id": "PJ0MRSHTDG",
+        "thread_id": "K600PKZON8"
+    },
+    "session_fields": [
+      {
+        "key": "value"
+      }
+    ]
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Other
+
+<Section>
+
+<Text>
+
+### `events_marked_as_seen`
+
+Informs that a user has seen events up to a specific time.
+
+#### Specifics
+
+|                        |                                                                                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `events_marked_as_seen`                                                                                                                                                               |
+| **Push equivalent in** | [`Agent Chat API`](/messaging/agent-chat-api/v3.3/rtm-reference/#events_marked_as_seen) [`Customer Chat API`](/messaging/customer-chat-api/v3.3/rtm-reference/#events_marked_as_seen) |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Sample webhook'}>
+
+```json
+{
+  "webhook_id": "<webhook_id>",
+  "secret_key": "<secret_key>",
+  "action": "events_marked_as_seen",
+  "license_id": 104130623,
+  "payload": {
+    "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "chat_id": "PJ0MRSHTDG",
+    "seen_up_to": "2017-10-12T15:19:21.010200Z"
+  },
+  "additional_data": {
+    "chat_properties": { //optional
+        // chat properties
+    },
+    "chat_presence_user_ids": [ //optional
+      // User IDs
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
