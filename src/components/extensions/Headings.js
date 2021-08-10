@@ -62,7 +62,7 @@ const A = ({ children, ...props }) => {
   // hack for code-links
   if (children.props && children.props.mdxType === "inlineCode") {
     return (
-      <Link href={props.href}>
+      <Link href={props.href} passHref>
         <CodeLink {...props}>
           {children}
           <LinkIcon />
@@ -71,15 +71,11 @@ const A = ({ children, ...props }) => {
     );
   }
 
-  if (children.props && children.props.mdxType === "strong") {
-    return (
-      <Link href={props.href} passHref>
-        <a>{children}</a>
-      </Link>
-    );
-  }
-
-  if (children.props && children.props.originalType === "img") {
+  if (
+    children.props &&
+    (children.props.mdxType === "strong" ||
+      children.props.originalType === "img")
+  ) {
     return (
       <Link href={props.href} passHref>
         <a>{children}</a>
