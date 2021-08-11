@@ -83,21 +83,27 @@ const Page = ({ frontMatter, children }) => {
     // eslint-disable-next-line
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const hash = window.location.hash;
-    if (hash) {
-      try {
-        const selector = document.querySelector(hash);
+    const timeout = setTimeout(() => {
+      if (hash) {
+        try {
+          const selector = document.querySelector(hash);
 
-        if (selector) {
-          selector.scrollIntoView();
-          window.scrollBy(
-            0,
-            -(SCROLL_OFFSET + (promotionContext.isActive ? 40 : 0))
-          );
-        }
-      } catch (error) {}
-    }
+          if (selector) {
+            selector.scrollIntoView();
+            window.scrollBy(
+              0,
+              -(SCROLL_OFFSET + (promotionContext.isActive ? 40 : 0))
+            );
+          }
+        } catch (error) {}
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [promotionContext.isActive]);
 
   const redirectToVersion = (version) => {
@@ -143,7 +149,10 @@ const Page = ({ frontMatter, children }) => {
   slug = slug[slug.length - 1] === "/" ? slug : `${slug}/`;
 
   const ratingContext = useRating({ slug });
-  const useRedocPage = ["global-accounts-api", "customer-accounts-api"].includes(subcategory);
+  const useRedocPage = [
+    "global-accounts-api",
+    "customer-accounts-api",
+  ].includes(subcategory);
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
