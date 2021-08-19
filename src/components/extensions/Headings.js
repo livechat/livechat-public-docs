@@ -153,11 +153,11 @@ const BannerImage = ({ to }) => {
       return (
         <picture>
           <source
-            srcset="/docs/images/livechat-platform-messaging.webp"
+            srcSet="/docs/images/livechat-platform-messaging.webp"
             type="image/webp"
           />
           <source
-            srcset="/docs/images/livechat-platform-messaging.jpg"
+            srcSet="/docs/images/livechat-platform-messaging.jpg"
             type="image/jpeg"
           />
           <img
@@ -171,11 +171,11 @@ const BannerImage = ({ to }) => {
       return (
         <picture>
           <source
-            srcset="/docs/images/livechat-platform-extend-interfaces.webp"
+            srcSet="/docs/images/livechat-platform-extend-interfaces.webp"
             type="image/webp"
           />
           <source
-            srcset="/docs/images/livechat-platform-extend-interfaces.jpg"
+            srcSet="/docs/images/livechat-platform-extend-interfaces.jpg"
             type="image/jpeg"
           />
           <img
@@ -188,11 +188,11 @@ const BannerImage = ({ to }) => {
       return (
         <picture>
           <source
-            srcset="/docs/images/livechat-platform-data-reporting.webp"
+            srcSet="/docs/images/livechat-platform-data-reporting.webp"
             type="image/webp"
           />
           <source
-            srcset="/docs/images/livechat-platform-data-reporting.jpg"
+            srcSet="/docs/images/livechat-platform-data-reporting.jpg"
             type="image/jpeg"
           />
           <img

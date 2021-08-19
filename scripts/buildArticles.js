@@ -8,9 +8,20 @@ const articlesDirectory = path.join(process.cwd(), "src/pages/");
 
 const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
+const redocTitles = {
+  "customer-accounts-api": {
+    title: "Customer Accounts API",
+    weight: 30,
+  },
+  "global-accounts-api": {
+    title: "Global Accounts API",
+    weight: 20,
+  },
+};
+
 getDirectories(articlesDirectory, (err, res) => {
   const paths = res
-    .filter((item) => item.endsWith(".mdx"))
+    .filter((item) => item.endsWith(".mdx") || item.endsWith(".js"))
     .map((item) => item.replace(articlesDirectory, ""));
 
   const items = [];
@@ -78,7 +89,7 @@ getDirectories(articlesDirectory, (err, res) => {
     item["apiVersion"] = data["apiVersion"] || null;
     item["article"] = true;
     item["category"] = filePath.split("/")[0];
-    if (item["category"].endsWith(".mdx")) {
+    if (item["category"].endsWith(".mdx") || item["category"].endsWith(".js")) {
       return;
     }
     item["id"] = uuidv4();
@@ -88,12 +99,19 @@ getDirectories(articlesDirectory, (err, res) => {
       item["items"] = null;
     }
     item["subcategory"] =
-      filePath.split("/").length > 1 && !filePath.split("/")[1].endsWith(".mdx")
+      filePath.split("/").length > 1 &&
+      (!filePath.split("/")[1].endsWith(".mdx") ||
+        !filePath.split("/")[1].endsWith(".js"))
         ? filePath.split("/")[1]
         : null;
-    item["title"] = data["title"];
-    item["url"] = "/" + filePath.replace("index.mdx", "");
-    item["weight"] = data["weight"];
+    item["title"] = redocTitles[item["subcategory"]]
+      ? redocTitles[item["subcategory"]].title
+      : data["title"];
+    item["url"] =
+      "/" + filePath.replace("index.mdx", "").replace("index.js", "");
+    item["weight"] = redocTitles[item["subcategory"]]
+      ? redocTitles[item["subcategory"]].weight
+      : data["weight"];
 
     if (data["hidden"] != true) {
       items.push(item);
