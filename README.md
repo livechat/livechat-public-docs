@@ -102,6 +102,10 @@ Options:
 - `--group`: (default: DEFAULT), for chat widget use `--group=chat-widget`
 - `--exclude`: e.g. `--exclude=agent-chat-api,customer-chat-api`
 
+## How to contribute
+
+All contribution's welcome! [Read how to do it.](./CONTRIBUTING.md)
+
 ## Contact us
 
 - [Join our Discord for Developers](https://discord.gg/rFbJkYQFwp)
