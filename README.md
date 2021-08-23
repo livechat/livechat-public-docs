@@ -1,14 +1,19 @@
-# LiveChat Docs
+# LiveChat Platform Docs
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/64c9d8bf-8fe6-4481-91d9-4258c3b9ae91/deploy-status)](https://app.netlify.com/sites/livechat-public-docs/deploys)
 
 Hello 👋!
 
-The source (markdown & assets) for all of the APIs documentations. Rendered here: https://developers.livechat.com/docs/
+This is the for all of the [LiveChat Platform documentation](https://developers.livechat.com/docs/).
+Our documents are written in the [MDX format](https://mdxjs.com/), so pay attention to our custom tags when contributing to the docs.
 
-## If you're new to LiveChat
+## Who we are
 
-[LiveChat](https://www.livechat.com/) is an online customer service software with live support, help desk software and web analytics capabilities. It's used by more than 30,000 companies all over the world. You can find more information here: [LiveChat for Developers](https://developers.livechat.com/).
+Behind LiveChat, Inc. there is a team of [passionate people](https://www.livechat.com/team/) building online customer service software with online chat, help desk software, chatbot, and web analytics capabilities.
+
+With a suite of four products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/)) and their powerful APIs, we power customer communication for 33,000 companies in 150 countries.
+
+[LiveChat Platform](https://developers.livechat.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://developers.livechat.com/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
 
 ## Node version
 
@@ -42,9 +47,9 @@ Currently, versioning for the Agent Chat API, Customer Chat API, and Configurati
 
 |                 | Agent Chat API | Customer Chat API | Configuration API |
 | --------------- | -------------- | ----------------- | ----------------- |
-| **stable**      | 3.2            | 3.2               | 3.2               |
-| **dev preview** | 3.3            | 3.3               | 3.3               |
-| **legacy**      | 3.1            | 3.1               | 2.0, 3.1          |
+| **stable**      | 3.3            | 3.3               | 3.3               |
+| **dev preview** | 3.4            | 3.4               | 3.4               |
+| **legacy**      | 3.1, 3.2       | 3.1, 3.2          | 2.0, 3.1, 3.2     |
 
 This versioning is **default** for all articles which aren't grouped.
 
@@ -97,6 +102,11 @@ Options:
 - `--group`: (default: DEFAULT), for chat widget use `--group=chat-widget`
 - `--exclude`: e.g. `--exclude=agent-chat-api,customer-chat-api`
 
-## Support & Feedback
+## How to contribute
 
-Please let us know if you have any thoughts on making this collection complete. We are eager to make the documentations better and better! Drop us a line at developers@livechat.com or submit a pull request.
+All contribution's welcome! [Read how to do it.](./CONTRIBUTING.md)
+
+## Contact us
+
+- [Join our Discord for Developers](https://discord.gg/rFbJkYQFwp)
+- Send us an email at developers@livechat.com
