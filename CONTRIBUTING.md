@@ -11,7 +11,7 @@ Thank you for taking the time to improve the [LiveChat](https://www.livechat.com
 
 ## I have a problem with the LiveChat App
 
-If you've run into problems with our LiveChat Application (setting it up, trobule with configuration, not receiving chats), [contact our 24/7 support](https://direct.lc.chat/1520/125), who specialize in solving such cases.
+If you've run into problems with our LiveChat Application (setting it up, trouble with configuration, not receiving chats), [contact our 24/7 support](https://direct.lc.chat/1520/125), who specialize in solving such cases.
 
 Please, don't create an issue in this repository.
 
