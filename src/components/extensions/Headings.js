@@ -3,6 +3,7 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import Image from "next/image";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
@@ -151,20 +152,11 @@ const BannerImage = ({ to }) => {
   switch (to) {
     case "/messaging/":
       return (
-        <picture>
-          <source
-            srcset="/docs/images/livechat-platform-messaging.webp"
-            type="image/webp"
-          />
-          <source
-            srcset="/docs/images/livechat-platform-messaging.jpg"
-            type="image/jpeg"
-          />
-          <img
-            src="/docs/images/livechat-platform-messaging.jpg"
-            alt="Livechat platform messaging"
-          />
-        </picture>
+        <Image
+          src="/docs/images/livechat-platform-messaging.jpg"
+          width="782"
+          height="682"
+        />
       );
 
     case "/extending-agent-app/":
