@@ -1,7 +1,7 @@
 ---
-weight: 32
+weight: 22
 category: "messaging"
-subcategory: "data-structures"
+subcategory: "agent-chat-api"
 title: "Data structures"
 tagline: "The reference of LiveChat data structures."
 desc: "The reference of LiveChat data structures. Here, you can review the event and user objects, as well as other common structures."
@@ -25,10 +25,9 @@ These are the available **event types**:
 ## File
 
 <Section>
-
 <Text>
 
-The **File** event informs about a file being uploaded.
+The **File** event informs about an uploaded file.
 
 ### Request
 
@@ -36,6 +35,7 @@ The **File** event informs about a file being uploaded.
 | ------------ | -------- | --------- | -----------------------------------------------------------------------------------------------------------: |
 | `custom_id`  | no       | `string`  |                                                                                                              |
 | `type`       | yes      | `string`  |                                                                                                       `file` |
+| `recipients` | yes      | `string`  |                                                                   Possible values: `all` (default), `agents` |
 | `properties` | no       | `object`  |                                                                                    [Properties](#properties) |
 | `url`        | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](#upload-file). |
 
@@ -48,6 +48,7 @@ The **File** event informs about a file being uploaded.
 | `created_at`                       | always          | Date & time format with a resolution of microseconds, `UTC string`. |
 | `type`                             | always          |                                                                     |
 | `author_id`                        | always          |                                                                     |
+| `recipients`                       | always          |                                                                     |
 | `properties`                       | optionally      |                                                                     |
 | `name`                             | always          |                                                                     |
 | `url`                              | always          |                                                                     |
@@ -56,42 +57,15 @@ The **File** event informs about a file being uploaded.
 | `size`, `width`, `height`          | only for images |                                                                     |
 
 </Text>
-
 <Code>
-
-<CodeResponse title={'Sample File in response'}>
-
-```json
-{
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-  "custom_id": "31-0C-1C-07-DB-16",
-  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
-  "type": "file",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
-  "properties": {
-    // "Properties" object
-  },
-  "name": "image25.png", // generated server-side
-  "url": "https://example.com/image25.png",
-  "thumbnail_url": "https://example.com/thumbnail.png", // generated server-side
-  "thumbnail2x_url": "https://example.com/thumbnail2x.png", // generated server-side
-  "content_type": "image/png", // generated server-side
-  "size": 123444, // generated server-side
-  "width": 640, // generated server-side
-  "height": 480 // generated server-side
-}
-```
-
-</CodeResponse>
+<CodeResponse version="v3.1" type="agent" title={'Sample File in response'} json="file" />
 
 </Code>
-
 </Section>
 
 ## Filled form
 
 <Section>
-
 <Text>
 
 The **Filled form** event contains data from a form (prechat or postchat survey).
@@ -102,6 +76,7 @@ The **Filled form** event contains data from a form (prechat or postchat survey)
 | ------------ | -------- | --------- | -------------------------------------------------------------------------------------- |
 | `custom_id`  | no       | `string`  |                                                                                        |
 | `type`       | yes      | `string`  | `filled_form`                                                                          |
+| `recipients` | yes      | `string`  | Possible values: `all` (default), `agents`                                             |
 | `properties` | no       | `object`  | [Properties](#properties)                                                              |
 | `form_id`    | yes      | `string`  |                                                                                        |
 | `fields`     | yes      | `array`   | The fields a form contains. See [filled form fields](#filled-form-fields) for details. |
@@ -115,6 +90,7 @@ The **Filled form** event contains data from a form (prechat or postchat survey)
 | `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`. |
 | `type`       | always     |                                                                     |
 | `author_id`  | always     |                                                                     |
+| `recipients` | always     |                                                                     |
 | `properties` | optionally |                                                                     |
 | `form_id`    | always     |                                                                     |
 | `fields`     | always     | An array of [filled form fields](#filled-form-fields)               |
@@ -122,74 +98,16 @@ The **Filled form** event contains data from a form (prechat or postchat survey)
 </Text>
 
 <Code>
-
-<CodeResponse title={'Sample Filled form in response'}>
-
-```json
-{
-	"id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-	"custom_id": "31-0C-1C-07-DB-16",
-	"created_at": "2017-10-12T15:19:21.010200Z",  // generated server-side
-	"type": "filled_form",
-	"author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
-	"properties": {
-		// "Properties" object
-	},
-	"form_id": "1473433500211",
-	"fields": [{
-		"type": "name",
-		"id": "154417206262603539",
-		"label": "Your name",
-		"answer": "John Doe"
-	}, {
-		"type": "email",
-		"id": "154417206262601584",
-		"label": "Your email",
-		"answer": "customer1@example.com"
-	}, {
-		"type": "radio",
-		"id": "154417206262602571",
-		"label": "Chat purpose",
-		"answer": {
-				"id": "0",
-				"label": "Support"
-		}
-	}, {
-		"type": "checkbox",
-		"id": "154417206262604640",
-		"label": "Company industry",
-		"answers": [{
-			"id": "0"
-			"label": "automotive"
-		}, {
-			"id": "1"
-			"label": "it"
-		}]
-	}, {
-		"type": "group_chooser",
-		"id": "154417206262605324",
-		"label": "Choose department",
-		"answer": {
-			"group_id": 1,
-			"label": "Marketing"
-		}
-	}]
-}
-```
-
-</CodeResponse>
-
+<CodeResponse version="v3.1" type="agent" title={'Sample Filled form in response'} json="filledForm" />
 </Code>
-
 </Section>
 
 ## Message
 
 <Section>
-
 <Text>
 
-Message event contains text message to other chat users.
+The **Message** event contains text message to other chat users.
 
 ### Request
 
@@ -198,6 +116,7 @@ Message event contains text message to other chat users.
 | `custom_id`          | no       | `string`  |                                                                                                                              |
 | `text`               | yes      | `string`  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
 | `type`               | yes      | `string`  | `message`                                                                                                                    |
+| `recipients`         | yes      | `string`  | Possible values: `all` (default), `agents`                                                                                   |
 | `properties`         | no       | `object`  | [Properties](#properties)                                                                                                    |
 | `postback`           | no       | `object`  | Indicates that the message event was generated in response to a rich message event.                                          |
 | `postback.id`        | yes      | `string`  | ID of the postback from the rich message event.                                                                              |
@@ -215,6 +134,7 @@ Message event contains text message to other chat users.
 | `created_at`         | always     | Date & time format with a resolution of microseconds, `UTC string`. |
 | `type`               | always     | `message`                                                           |
 | `author_id`          | always     |                                                                     |
+| `recipients`         | always     |                                                                     |
 | `text`               | always     |                                                                     |
 | `postback`           | optionally | Appears in a message only when triggered by a rich message.         |
 | `postback.id`        | always     |                                                                     |
@@ -225,42 +145,14 @@ Message event contains text message to other chat users.
 | `properties`         | optionally | [Properties](#properties)                                           |
 
 </Text>
-
 <Code>
-
-<CodeResponse title={'Sample Message in response'}>
-
-```json
-{
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-  "custom_id": "31-0C-1C-07-DB-16",
-  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
-  "type": "message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c", // generated server-side
-  "text": "hello there",
-  "postback": {
-    "id": "action_call",
-    "thread_id": "K600PKZON8",
-    "event_id": "75a90b82-e6a4-4ded-b3eb-cb531741ee0d",
-    "type": "phone",
-    "value": "790034890"
-  },
-  "properties": {
-    // "Properties" object
-  }
-}
-```
-
-</CodeResponse>
-
+<CodeResponse version="v3.1" type="agent" title={'Sample Message in response'} json="message" />
 </Code>
-
 </Section>
 
 ## Rich message
 
 <Section>
-
 <Text>
 
 Rich message (RM) event contains a rich message data structure. [Read more](/extending-ui/extending-chat-widget/rich-messages/) about rich messages.
@@ -271,6 +163,7 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 | --------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `custom_id`                       | no       | `string`  | You can give your RM a custom ID.                                                                                                                                                                                                                |
 | `type`                            | yes      | `string`  | Event type: `rich_message`                                                                                                                                                                                                                       |
+| `recipients`                      | yes      | `string`  | Those who can display the rich message: `all` (default) or `agents`                                                                                                                                                                              |
 | `properties`                      | no       | `object`  | The [properties](#properties) data structure                                                                                                                                                                                                     |
 | `template_id`                     | yes      | `string`  | Defines how every Rich Message will be presented. Values: `cards`, `sticker`, or `quick_replies`.                                                                                                                                                |
 | `elements`                        | no       | `array`   | Can contain up to 10 `element` objects.                                                                                                                                                                                                          |
@@ -294,6 +187,7 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 | `type`                            | always     |                                                                                            |
 | `author_id`                       | always     | Generated server-side                                                                      |
 | `created_at`                      | always     | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side. |
+| `recipients`                      | always     |                                                                                            |
 | `properties`                      | optionally |                                                                                            |
 | `template_id`                     | always     |                                                                                            |
 | `elements`                        | optionally |                                                                                            |
@@ -309,79 +203,27 @@ Rich message (RM) event contains a rich message data structure. [Read more](/ext
 | `elements.buttons.user_ids`       | always     |                                                                                            |
 
 </Text>
-
 <Code>
-
-<CodeResponse title={'Sample Rich message event'}>
-
-```json
-{
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743",
-  "custom_id": "31-0C-1C-07-DB-16",
-  "type": "rich_message",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "created_at": "2017-10-12T15:19:21.010200Z",
-  "properties": {
-    // "Properties" object
-  },
-  "template_id": "cards",
-  "elements": [
-    {
-      "title": "Lorem ipsum dolor.",
-      "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "image": {
-        "name": "image25.png",
-        "url": "https://example.com/image25.png",
-        "content_type": "image/png",
-        "size": 123444,
-        "width": 640,
-        "height": 480
-      },
-      "buttons": [
-        {
-          "text": "yes",
-          "postback_id": "action_yes",
-          "user_ids": ["b7eff798-f8df-4364-8059-649c35c9ed0c"]
-        },
-        {
-          "text": "no",
-          "postback_id": "action_no",
-          "user_ids": []
-        },
-        {
-          "type": "phone",
-          "text": "value",
-          "value": "790034890",
-          "webview_height": "tall",
-          "postback_id": "action_call",
-          "user_ids": []
-        }
-      ]
-    }
-  ]
-}
-```
-
-</CodeResponse>
+<CodeResponse version="v3.1" type="agent" title={'Sample Rich message in response'} json="richMessage" />
 </Code>
 </Section>
 
 ## Custom
 
 <Section>
-
 <Text>
 
 Custom event is an event with customizable payload.
 
 ### Request
 
-| Parameter    | Required | Data type | Notes                                        |  |
-| ------------ | -------- | --------- | -------------------------------------------- |
-| `custom_id`  | no       | `string`  | You can give the event a custom ID.          |
-| `type`       | yes      | `string`  | Event type: `custom`                         |
-| `content`    | no       | `object`  | The content you define                       |
-| `properties` | no       | `object`  | The [properties](#properties) data structure |
+| Parameter    | Required | Data type | Notes                                                               |  |
+| ------------ | -------- | --------- | ------------------------------------------------------------------- |
+| `custom_id`  | no       | `string`  | You can give the event a custom ID.                                 |
+| `type`       | yes      | `string`  | Event type: `custom`                                                |
+| `content`    | no       | `object`  | The content you define                                              |
+| `recipients` | yes      | `string`  | Those who can receive the custom event: `all` (default) or `agents` |
+| `properties` | no       | `object`  | The [properties](#properties) data structure                        |
 
 ### Response
 
@@ -393,53 +235,32 @@ Custom event is an event with customizable payload.
 | `author_id`  | always     | Generated server-side                                                                     |
 | `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`; generated server-side |
 | `content`    | optionally |                                                                                           |
+| `recipients` | always     |                                                                                           |
 | `properties` | optionally |                                                                                           |
 
 </Text>
-
 <Code>
-
-<CodeResponse title={'Sample Custom event'}>
-
-```json
-{
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", 
-  "custom_id": "31-0C-1C-07-DB-16",
-  "type": "custom",
-  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
-  "created_at": "2017-10-12T15:19:21.010200Z",
-  "content": {
-    "custom": {
-      "nested": "json"
-    }
-  },
-  "properties": {
-    // "Properties" object
-  }
-}
-```
-
-</CodeResponse>
+<CodeResponse version="v3.1" type="agent" title={'Sample Custom in response'} json="custom" />
 </Code>
 </Section>
 
 ## System message
 
 <Section>
-
 <Text>
 
-System message event is a native system event sent in specific situations.
+System message event is native system event sent in specific situations.
 
 ### Request
 
-| Parameter             | Required | Data type |                                                         Notes |
-| --------------------- | -------- | --------- | ------------------------------------------------------------: |
-| `custom_id`           | no       | `string`  |                  You can give the system message a custom ID. |
-| `type`                | yes      | `string`  |                                              `system_message` |
-| `text`                | no       | `string`  |                                  Text displayed to recipients |
-| `system_message_type` | yes      | `string`  | [System message type](/messaging/references/system-messages/) |
-| `text_vars`           | no       | `object`  |                                    Variables used in the text |
+| Parameter             | Required | Data type | Notes                                                                                                                            |
+| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `custom_id`           | no       | `string`  | You can give the system message a custom ID.                                                                                     |
+| `type`                | yes      | `string`  | `system_message`                                                                                                                 |
+| `text`                | no       | `string`  | Text displayed to recipients                                                                                                     |
+| `system_message_type` | yes      | `string`  | [System message type](/messaging/references/system-messages/)                                                                    |
+| `recipients`          | no       | `string`  | It can be specified when sending system messages via the [**Send Event**](#send-event) method. Possible values: `all`, `agents`. |
+| `text_vars`           | no       | `object`  | Variables used in the text                                                                                                       |
 
 ### Response
 
@@ -451,26 +272,12 @@ System message event is a native system event sent in specific situations.
 | `created_at`          | always     | Date & time format with a resolution of microseconds, `UTC string`; generated server-side |
 | `text`                | optionally |                                                                                           |
 | `system_message_type` | always     |                                                                                           |
+| `recipients`          | optionally |                                                                                           |
 
 </Text>
+
 <Code>
-<CodeResponse title={'Sample System message event'}>
-
-```json
-{
-  "id": "0affb00a-82d6-4e07-ae61-56ba5c36f743", // generated server-side
-  "custom_id": "31-0C-1C-07-DB-16",
-  "created_at": "2017-10-12T15:19:21.010200Z", // generated server-side
-  "type": "system_message",
-  "text": "hello there",
-  "system_message_type": "routing.assigned",
-  "text_vars": {
-    "agent": "John Doe"
-  }
-}
-```
-
-</CodeResponse>
+<CodeResponse version="v3.1" type="agent" title={'Sample System message in response'} json="systemMessage" />
 </Code>
 </Section>
 
@@ -478,8 +285,52 @@ System message event is a native system event sent in specific situations.
 
 **Users** are another important data structure. Within this data structure type, we can distinguish:
 
-- [Customer](#customer)
 - [Agent](#agent)
+  - [My profile](#my-profile)
+- [Customer](#customer)
+
+## Agent
+
+<CodeResponse title={'Sample Agent data structure'}>
+
+```json
+{
+  "id": "agent1@example.com",
+  "type": "agent",
+  "name": "Support Team",
+  "email": "agent1@example.com",
+  "present": true,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z",
+  "avatar": "cdn.livechatinc.com/avatars/1.png",
+  "routing_status": "accepting_chats"
+}
+```
+
+</CodeResponse>
+
+| Field            | Req./Opt. |                                               Note |
+| ---------------- | :-------: | -------------------------------------------------: |
+| `routing_status` | optional  | Returned only if the Agent is currently logged in. |
+
+### My profile
+
+<CodeResponse title={'Sample My profile data structure'}>
+
+```json
+{
+  "id": "agent1@example.com",
+  "type": "agent",
+  "name": "Support Team",
+  "email": "agent1@example.com",
+  "present": true,
+  "events_seen_up_to": "2017-10-12T15:19:21.010200Z",
+  "avatar": "cdn.livechatinc.com/avatars/1.png",
+  "routing_status": "accepting_chats",
+  "permission": "administrator"
+}
+```
+
+</CodeResponse>
 
 ## Customer
 
@@ -491,40 +342,64 @@ System message event is a native system event sent in specific situations.
   "type": "customer",
   "name": "John Smith",
   "email": "customer1@example.com",
-  "avatar": "https://example.com/avatars/1.jpg",
+  "avatar": "example.com/avatars/1.png",
+  "last_visit": {
+    "started_at": "2017-10-12T15:19:21.010200Z",
+    "referrer": "http://www.google.com/",
+    "ip": "<customer_ip>",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+    "geolocation": {
+      "country": "Poland",
+      "country_code": "PL",
+      "region": "Dolnoslaskie",
+      "city": "Wroclaw",
+      "timezone": "Europe/Warsaw"
+    },
+    "last_pages": [
+      {
+        "opened_at": "2017-10-12T15:19:21.010200Z",
+        "url": "https://www.livechat.com/",
+        "title": "LiveChat - Homepage"
+      },
+      {
+        "opened_at": "2017-10-12T15:19:21.010200Z",
+        "url": "https://www.livechat.com/tour",
+        "title": "LiveChat - Tour"
+      }
+    ]
+  },
   "fields": {
     "custom field name": "custom field value"
   },
-  "present": true,
+  "statistics": {
+    "chats_count": 3,
+    "threads_count": 9,
+    "visits_count": 5
+  },
+  "__priv_lc2_customer_id": "test_771305.dafea66e5c", //old customer_id
+  "agent_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+  "customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+  "created_at": "2017-10-11T15:19:21.010200Z",
+  "present": true, // optional, applies only to customer located in chat object
   "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
 }
 ```
 
 </CodeResponse>
 
-| Field    | Req./Opt. |      |
-| -------- | :-------: | ---: |
-| `avatar` | optional  |      |
-| `email`  | optional  |      |
-| `name`   | optional  |      |
-| `fields` | optional  |      |
-
-## Agent
-
-<CodeResponse title={'Sample Agent data structure'}>
-
-```json
-{
-  "id": "agent1@example.com",
-  "type": "agent",
-  "name": "Support Team",
-  "avatar": "cdn.livechatinc.com/avatars/1.png",
-  "present": true,
-  "events_seen_up_to": "2017-10-12T15:19:21.010200Z"
-}
-```
-
-</CodeResponse>
+| Field                            | Req./Opt. |                                     Notes |
+| -------------------------------- | :-------: | ----------------------------------------: |
+| `agent_last_event_created_at`    | optional  |                                           |
+| `avatar`                         | optional  |                                           |
+| `customer_last_event_created_at` | optional  |                                           |
+| `created_at`                     | optional  |                                           |
+| `email`                          | optional  |                                           |
+| `fields`                         | optional  | Is not present when the chat is archived. |
+| `name`                           | optional  |                                           |
+| `events_seen_up_to`              | optional  |                  RFC 3339 datetime string |
+| `last_visit`                     | optional  |                                           |
+| `present`                        | optional  |                                           |
+| `statistics`                     | optional  |                                           |
 
 # Other common structures
 
@@ -591,7 +466,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 
 </CodeResponse>
 
-| Field        | Req./Opt. | Note |
+| Field        | Req./Opt. |      |
 | ------------ | :-------: | ---: |
 | `properties` | optional  |      |
 | `access`     | optional  |      |
@@ -614,6 +489,8 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
       "thread_id": "K600PKZON8",
       "thread_order": 3,
       "event": {
+        // "restricted_access": true
+        // or
         // "Event > Message" object
       }
     },
@@ -621,6 +498,8 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
       "thread_id": "K600PKZON6",
       "thread_order": 1,
       "event": {
+        // "restricted_access": true
+        // or
         // "Event > System message" object
       }
     }
@@ -750,6 +629,7 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
   "timestamp": 1473433500,
   "active": true,
   "user_ids": ["agent1@example.com"],
+  "restricted_access": true,
   "events": [
     // array of "Event" objects
   ],
@@ -765,9 +645,10 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 </CodeResponse>
 
-| Field        | Req./Opt. |                                                                                  Note |
-| ------------ | :-------: | ------------------------------------------------------------------------------------: |
-| `access`     | optional  |                                                                                     - |
-| `active`     | required  | Possible values: `true` (thread is still active) or `false`(thread no longer active). |
-| `events`     | optional  |                                                                                     - |
-| `properties` | optional  |                                                                                     - |
+| Field               | Req./Opt. |                                                                                 Note |
+| ------------------- | :-------: | -----------------------------------------------------------------------------------: |
+| `access`            | optional  |                                                                                    - |
+| `active`            | required  | Possible values: `true` (thread is still active) or `false`(thread no longer active) |
+| `events`            | optional  |                                     Doesn't exists if `restricted_access` is `true`. |
+| `properties`        | optional  |                                                                                    - |
+| `restricted_access` | optional  |                                                                                    - |
