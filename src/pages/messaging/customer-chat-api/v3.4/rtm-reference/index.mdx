@@ -86,455 +86,9 @@ The `filters`, `limit`, and `sort_order` parameters can't be provided along with
 
 💡 The maximum duration of the `page_id` parameter before it expires is one month.
 
-# Events
+# Data structures
 
-One of the data structures are **events**. They are sent to a chat via the `send_event` method.
-Apart from events, there are also [Properties](#properties), [Users](#users), and [Other common data structures](#other-common-structures).
-
-These are the available **event types**:
-
-- [File](#file)
-- [Form](#form)
-- [Filled form](#filled-form)
-- [Message](#message)
-- [Rich message](#rich-message)
-- [Custom](#custom)
-- [System message](#system-message)
-
-## File
-
-<Section>
-
-<Text>
-
-The **File** event informs about an uploaded file.
-
-### Request
-
-| Parameter          | Required | Data type |                                                                                                                                     Notes |
-| ------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------: |
-| `custom_id`        | no       | `string`  |                                                                                                                                           |
-| `type`             | yes      | `string`  |                                                                                                                                    `file` |
-| `properties`       | no       | `object`  |                                                                                                                 [Properties](#properties) |
-| `url`              | yes      | `string`  | Has to point to the LiveChat CDN. It's recommended to use the URL returned by [`upload_file`](/messaging/customer-chat-api/#upload-file). |
-| `alternative_text` | no       | `string`  |                                                                                                                 Only applicable to images |
-
-### Response
-
-| Field                              | Returned        |                                                               Notes |
-| ---------------------------------- | :-------------- | ------------------------------------------------------------------: |
-| `id`                               | always          |                                                                     |
-| `custom_id`                        | optionally      |                                                                     |
-| `created_at`                       | always          | Date & time format with a resolution of microseconds, `UTC string`. |
-| `type`                             | always          |                                                                     |
-| `author_id`                        | always          |                                                                     |
-| `properties`                       | optionally      |                                                                     |
-| `name`                             | always          |                                                                     |
-| `url`                              | always          |                                                                     |
-| `thumbnail_url`, `thumbnail2x_url` | only for images |                                                                     |
-| `content_type`                     | always          |                                                                     |
-| `size`, `width`, `height`          | only for images |                                                                     |
-| `alternative_text`                 | only for images |                                                                     |
-
-</Text>
-
-<Code>
-
-<CodeResponse version="v3.4" type="customer" title={'Sample File in response'} json="file"/>
-
-</Code>
-
-</Section>
-
-## Form
-
-<Section>
-<Text>
-
-The **Form** event contains an empty form to be sent in the chat. It doesn't matter how the form is configured or what fields it has – it can be any event of type `form`.
-
-### Request
-
-| Field        | Required | Data type | Notes                                                                    |
-| ------------ | -------- | --------- | ------------------------------------------------------------------------ |
-| `custom_id`  | no       | `string`  |                                                                          |
-| `type`       | yes      | `string`  | `form`                                                                   |
-| `properties` | no       | `object`  | [Properties](#properties)                                                |
-| `form_id`    | yes      | `string`  |                                                                          |
-| `fields`     | yes      | `array`   | The fields a form contains. See [form fields](#form-fields) for details. |
-
-### Response
-
-| Field        | Returned   | Notes                                                                                                                                                                                                                                                                                           |
-| ------------ | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`         | always     |                                                                                                                                                                                                                                                                                                 |
-| `custom_id`  | optionally |                                                                                                                                                                                                                                                                                                 |
-| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`.                                                                                                                                                                                                                             |
-| `type`       | always     |                                                                                                                                                                                                                                                                                                 |
-| `author_id`  | optionally | If form is generated by `system`, then this field is omitted.                                                                                                                                                                                                                                   |
-| `properties` | optionally |                                                                                                                                                                                                                                                                                                 |
-| `form_id`    | always     |                                                                                                                                                                                                                                                                                                 |
-| `form_type`  | optionally | The most popular form types include: `prechat`, `postchat`, `ask_for_email`, but those aren’t the only possible options. If you don’t see this field in a chat, it means that chat had been started before we introduced this field (see [Changelog](/messaging/customer-chat-api/changelog/)). |
-| `fields`     | always     | An array of [form fields](#form-fields)                                                                                                                                                                                                                                                         |
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.4" type="customer" title={'Sample Form in response'} json="form"/>
-</Code>
-</Section>
-
-## Filled form
-
-<Section>
-
-<Text>
-
-The **Filled form** event contains data from a form (prechat or postchat survey).
-
-### Request
-
-| Field        | Required | Data type | Notes                                                                                  |
-| ------------ | -------- | --------- | -------------------------------------------------------------------------------------- |
-| `custom_id`  | no       | `string`  |                                                                                        |
-| `type`       | yes      | `string`  | `filled_form`                                                                          |
-| `recipients` | yes      | `string`  | Possible values: `all` (default), `agents`                                             |
-| `properties` | no       | `object`  | [Properties](#properties)                                                              |
-| `form_id`    | yes      | `string`  |                                                                                        |
-| `fields`     | yes      | `array`   | The fields a form contains. See [filled form fields](#filled-form-fields) for details. |
-
-### Response
-
-| Field        | Returned   | Notes                                                                                                                                                                                                                                                                                           |
-| ------------ | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`         | always     |                                                                                                                                                                                                                                                                                                 |
-| `custom_id`  | optionally |                                                                                                                                                                                                                                                                                                 |
-| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`.                                                                                                                                                                                                                             |
-| `type`       | always     |                                                                                                                                                                                                                                                                                                 |
-| `author_id`  | always     |                                                                                                                                                                                                                                                                                                 |
-| `properties` | optionally |                                                                                                                                                                                                                                                                                                 |
-| `form_id`    | always     |                                                                                                                                                                                                                                                                                                 |
-| `form_type`  | optionally | The most popular form types include: `prechat`, `postchat`, `ask_for_email`, but those aren’t the only possible options. If you don’t see this field in a chat, it means that chat had been started before we introduced this field (see [Changelog](/messaging/customer-chat-api/changelog/)). |
-| `fields`     | always     | The fields a form contains. See [filled form fields](#filled-form-fields) for details.                                                                                                                                                                                                          |
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.4" type="customer" title={'Sample Filled form in response'} json="filledForm"/>
-</Code>
-
-</Section>
-
-## Message
-
-<Section>
-
-<Text>
-
-The **Message** event contains text message to other chat users.
-
-### Request
-
-| Parameter            | Required | Data type | Notes                                                                                                                        |
-| -------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `custom_id`          | no       | `string`  |                                                                                                                              |
-| `text`               | yes      | `string`  | Max. raw text size is 16 KB (one UTF-8 char like emoji 😁 can use up to 4 B); to send more, split text into several messages. |
-| `type`               | yes      | `string`  | `message`                                                                                                                    |
-| `properties`         | no       | `object`  | [Properties](#properties)                                                                                                    |
-| `postback`           | no       | `object`  | Indicates that the message event was generated in response to a rich message event.                                          |
-| `postback.id`        | yes      | `string`  | ID of the postback from the rich message event.                                                                              |
-| `postback.thread_id` | yes      | `string`  | ID of the thread with the rich message event.                                                                                |
-| `postback.event_id`  | yes      | `string`  | ID of the rich message event.                                                                                                |
-| `postback.type`      | no       | `string`  | Should be used together with `postback.value` (when  one of them is present, the other is required).                         |
-| `postback.value`     | no       | `string`  | Should be used together with `postback.type` (when  one of them is present, the other is required).                          |
-
-### Response
-
-| Field                | Returned   | Notes                                                               |
-| -------------------- | ---------- | ------------------------------------------------------------------- |
-| `id`                 | always     |                                                                     |
-| `custom_id`          | optionally |                                                                     |
-| `created_at`         | always     | Date & time format with a resolution of microseconds, `UTC string`. |
-| `type`               | always     | `message`                                                           |
-| `author_id`          | always     |                                                                     |
-| `text`               | always     |                                                                     |
-| `postback`           | optionally | Appears in a message only when triggered by a rich message.         |
-| `postback.id`        | always     |                                                                     |
-| `postback.thread_id` | always     |                                                                     |
-| `postback.event_id`  | always     |                                                                     |
-| `postback.type`      | optionally | Appears only if `postback.value` is present.                        |
-| `postback.value`     | optionally | Appears only if `postback.type` is present.                         |
-| `properties`         | optionally | [Properties](#properties)                                           |
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.4" type="customer" title={'Sample Rich message in response'} json="message"/>
-</Code>
-
-</Section>
-
-## Rich message
-
-<Section>
-
-<Text>
-
-Rich message event contains rich message data structure. [Read more](/extending-ui/extending-chat-widget/rich-messages/) in a document dedicated to Rich messages.
-
-### Request
-
-| Parameter                         | Required | Data type | Notes                                                                                                                                                                                                                                            |
-| --------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `custom_id`                       | no       | `string`  | You can give your RM a custom ID.                                                                                                                                                                                                                |
-| `type`                            | yes      | `string`  | Event type: `rich_message`                                                                                                                                                                                                                       |
-| `properties`                      | no       | `object`  | The [properties](#properties) data structure                                                                                                                                                                                                     |
-| `template_id`                     | yes      | `string`  | Defines how every Rich Message will be presented. Values: `cards`, `sticker`, or `quick_replies`.                                                                                                                                                |
-| `elements`                        | no       | `array`   | Can contain up to 10 `element` objects.                                                                                                                                                                                                          |
-| `elements.title`                  | yes      | `string`  | Displays formatted text on RMs.                                                                                                                                                                                                                  |
-| `elements.subtitle`               | yes      | `string`  | Displays formatted text on RMs.                                                                                                                                                                                                                  |
-| `elements.image`                  | yes      | `image`   | Displays images on RMs. Required param: `url`; Optional params: `name`, `content_type`, `size`, `width`, `height`, `alternative_text`.                                                                                                           |
-| `elements.buttons`                | no       | `array`   | Displays buttons. Can contain up to 13 `button` objects.                                                                                                                                                                                         |
-| `elements.buttons.text`           | yes      | `string`  | Text displayed on a button.                                                                                                                                                                                                                      |
-| `elements.buttons.type`           | yes      | `string`  | Defines the behavior after a user clicks the button. Should be used together with `elements.buttons.value`. Possible values: `webview`, `message`, `url`, `phone`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started) |
-| `elements.buttons.value`          | yes      | `string`  | Should be used together with `elements.buttons.type`. You can use this field to give the rich message of a `webview` type (a Moment) a custom title. [More...](/extending-chat-widget/chat-widget-moments/#how-to-start)                         |
-| `elements.buttons.webview_height` | yes      | `string`  | Required only for the `webview` button`type`. Possible values: `compact`, `full`, `tall`.                                                                                                                                                        |
-| `elements.buttons.postback_id`    | yes      | `string`  | A description of the sent action. Describes the action sent via `send_rich_message_postback`. [More...](/extending-ui/extending-chat-widget/rich-messages/#getting-started)                                                                      |
-| `elements.buttons.user_ids`       | yes      | `array`   | Describes users that sent the postback with `"toggled": true`.                                                                                                                                                                                   |
-| `elements.buttons.target`         | no       | `string`  | Should be used for the `url` button `type`. Specifies if the URL should open in the current or a new tab. Possible values: `new`, `current`.                                                                                                     |
-
-### Response
-
-| Field                             | Returned   | Notes                                                                                      |
-| --------------------------------- | ---------- | ------------------------------------------------------------------------------------------ |
-| `id`                              | always     | Generated server-side                                                                      |
-| `custom_id`                       | optionally |                                                                                            |
-| `type`                            | always     |                                                                                            |
-| `author_id`                       | always     | Generated server-side                                                                      |
-| `created_at`                      | always     | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side. |
-| `properties`                      | optionally |                                                                                            |
-| `template_id`                     | always     |                                                                                            |
-| `elements`                        | optionally |                                                                                            |
-| `elements.title`                  | always     |                                                                                            |
-| `elements.subtitle`               | always     |                                                                                            |
-| `elements.image`                  | always     |                                                                                            |
-| `elements.buttons`                | optionally |                                                                                            |
-| `elements.buttons.text`           | always     |                                                                                            |
-| `elements.buttons.type`           | always     |                                                                                            |
-| `elements.buttons.value`          | always     |                                                                                            |
-| `elements.buttons.webview_height` | always     | Unless button `type` is different than `webview`.                                          |
-| `elements.buttons.postback_id`    | always     |                                                                                            |
-| `elements.buttons.user_ids`       | always     |                                                                                            |
-| `elements.buttons.target`         | optionally |                                                                                            |
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.4" type="customer" title={'Sample Rich message in response'} json="richMessage"/>
-</Code>
-</Section>
-
-## Custom
-
-<Section>
-
-<Text>
-
-Custom event is an event with customizable payload.
-
-### Request
-
-| Parameter    | Required | Data type | Notes                                        |  |
-| ------------ | -------- | --------- | -------------------------------------------- |
-| `custom_id`  | no       | `string`  | You can give the event a custom ID.          |
-| `type`       | yes      | `string`  | Event type: `custom`                         |
-| `content`    | no       | `object`  | The content you define                       |
-| `properties` | no       | `object`  | The [properties](#properties) data structure |
-
-### Response
-
-| Field        | Returned   | Notes                                                                                     |
-| ------------ | ---------- | ----------------------------------------------------------------------------------------- |
-| `id`         | always     | Generated server-side                                                                     |
-| `custom_id`  | optionally |                                                                                           |
-| `type`       | always     |                                                                                           |
-| `author_id`  | always     | Generated server-side                                                                     |
-| `created_at` | always     | Date & time format with a resolution of microseconds, `UTC string`; generated server-side |
-| `content`    | optionally |                                                                                           |
-| `properties` | optionally |                                                                                           |
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.4" type="customer" title={'Sample Custom event in response'} json="custom"/>
-</Code>
-</Section>
-
-## System message
-
-<Section>
-
-<Text>
-
-System message event is a native system event sent in specific situations.
-
-### Request
-
-| Parameter             | Required | Data type |                                                         Notes |
-| --------------------- | -------- | --------- | ------------------------------------------------------------: |
-| `custom_id`           | no       | `string`  |                  You can give the system message a custom ID. |
-| `type`                | yes      | `string`  |                                              `system_message` |
-| `text`                | no       | `string`  |                                  Text displayed to recipients |
-| `system_message_type` | yes      | `string`  | [System message type](/messaging/references/system-messages/) |
-| `text_vars`           | no       | `object`  |                                    Variables used in the text |
-
-### Response
-
-| Field                 | Returned   | Notes                                                                                     |
-| --------------------- | ---------- | ----------------------------------------------------------------------------------------- |
-| `id`                  | always     | Generated server-side                                                                     |
-| `custom_id`           | optionally |                                                                                           |
-| `type`                | always     |                                                                                           |
-| `created_at`          | always     | Date & time format with a resolution of microseconds, `UTC string`; generated server-side |
-| `text`                | optionally |                                                                                           |
-| `system_message_type` | always     |                                                                                           |
-
-</Text>
-
-<Code>
-<CodeResponse version="v3.4" type="customer" title={'Sample System message in response'} json="systemMessage"/>
-</Code>
-</Section>
-
-# Users
-
-**Users** are another important data structure. Within this data structure type, we can distinguish:
-
-- [Customer](#customer)
-- [Agent](#agent)
-
-## Customer
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Customer data structure'} json="customer"/>
-
-| Field               | Req./Opt. |                                                                                                                                                           |
-| ------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `avatar`            | optional  |                                                                                                                                                           |
-| `email`             | optional  |                                                                                                                                                           |
-| `email_verified`    | optional  | Specifies if the customer confirmed their email address. See [Request Email Verification](/messaging/customer-chat-api/v3.4/#request-email-verification). |
-| `name`              | optional  |                                                                                                                                                           |
-| `session_fields`    | optional  | An array of custom object-enclosed `key:value` pairs. Available for the session duration.                                                                 |
-| `events_seen_up_to` | optional  | RFC 3339 datetime string; the timestamp of the most recent event seen by the Customer—all the previous events are considered seen.                        |
-
-## Agent
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Agent data structure'} json="agent"/>
-
-# Other common structures
-
-Apart from [Events](#events) and [Users](#users), there are also other common data structures you might work with. Those are:
-
-- [Access](#access)
-- [Chats](#chats)
-- [Chat summaries](#chat-summaries)
-- [Forms](#forms)
-- [Form fields](#form-fields)
-- [Filled form fields](#filled-form-fields)
-- [Properties](#properties)
-- [Threads](#threads)
-
-## Access
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Access data structure'} json="access"/>
-
-| Field       | Req./Opt. |                                        Note |
-| ----------- | :-------: | ------------------------------------------: |
-| `group_ids` | required  | `group 0` means that all agents can see it. |
-
-## Chats
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Chat data structure'} json="chat"/>
-
-| Field        | Req./Opt. |      |
-| ------------ | :-------: | ---: |
-| `properties` | optional  |      |
-| `access`     | optional  |      |
-
-## Chat summaries
-
-**Chat summary** is similar to the **Chat** data structure. The difference is that **Chat** contains a `thread` object, while **Chat summary** includes `last_event_per_type`.
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Chat summary data structure'} json="chatSummary"/>
-
-## Forms
-
-A template of a prechat, postchat, or a ticket form.
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Form data structure'} json="form"/>
-
-| Field                     | Required | Data type          | Notes                                                                                                                         |
-| ------------------------- | -------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`                      | no       | `string`           | Form ID                                                                                                                       |
-| `fields`                  | yes      | `array of objects` | The fields a form contains                                                                                                    |
-| `fields.type`             | yes      | `string`           | Possible values: `header`, `checkbox`, `email`, `name`, `question`, `subject`, `textarea`, `group_chooser`, `radio`, `select` |
-| `fields.id`               | no       | `string`           | Field ID, for all field types                                                                                                 |
-| `fields.label`            | yes      | `string`           | Field label, for all field types                                                                                              |
-| `fields.required`         | no       | `bool`             | Determines whether the answer for given field is required, for all field types except `header`                                |
-| `fields.options`          | no       | `array of objects` | For `checkbox`, `group_chooser`, `radio` and `select`                                                                         |
-| `fields.options.id`       | yes      | `string`           | An identifier of each option a Customer can choose                                                                            |
-| `fields.options.label`    | yes      | `string`           | Answer label                                                                                                                  |
-| `fields.options.group_id` | yes      | `number`           | For `group_chooser`                                                                                                           |
-
-## Form fields
-
-A component of the [Form](#form) event.
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Form fields'} json="formFields"/>
-
-| Field    | Required | Data type          | Notes                                                                                                               |
-| -------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `fields` | yes      | `array of objects` | The fields a form contains.                                                                                         |
-| `type`   | yes      | `string`           | Possible values: `checkbox`, `email`, `name`, `question`, `subject`, `textarea`, `group_chooser`, `radio`, `select` |
-| `id`     | yes      | `string`           | Field id, for all field types                                                                                       |
-| `label`  | yes      | `string`           | Field label; for all field types                                                                                    |
-
-## Filled form fields
-
-A component of the [Filled form](#filled-form) event.
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Form fields'} json="filledFormFields"/>
-
-| Field             | Required | Data type          |                                                                                                               Notes |
-| ----------------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------: |
-| `fields`          | yes      | `array of objects` |                                                                                         The fields a form contains. |
-| `type`            | yes      | `string`           | Possible values: `checkbox`, `email`, `name`, `question`, `subject`, `textarea`, `group_chooser`, `radio`, `select` |
-| `id`              | yes      | `string`           |                                                                                       Field id, for all field types |
-| `label`           | yes      | `string`           |                                                                                    Field label; for all field types |
-| `answer`          | yes      | `any`              |                                                                                                 For all field types |
-| `answer.id`       | yes      | `string`           |                                            An identifier of each option a Customer can choose. For all field types. |
-| `answer.label`    | yes      | `string`           |                                                                                   Answer label; for all field types |
-| `answer.group_id` | yes      | `number`           |                                                                                                 For `group_chooser` |
-
-## Properties
-
-Properties are **key-value storages**. They can be set within a chat, a thread, or an event. You can read more about properties in the [Configuration API](/management/configuration-api/#properties) document.
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Properties data structure'} json="properties"/>
-
-## Threads
-
-<CodeResponse version="v3.4" type="customer" title={'Sample Thread data structure'} json="thread"/>
-
-| Field                | Req./Opt. | Note                                                                                                       |
-| -------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
-| `access`             | optional  |                                                                                                            |
-| `active`             | required  | Possible values: `true` (thread is still active) or `false`(thread no longer active).                      |
-| `events`             | optional  |                                                                                                            |
-| `properties`         | optional  |                                                                                                            |
-| `queue`              | optional  | Present only if the chat is in the queue. The wait time for an available agent is approximated in seconds. |
-| `previous_thread_id` | optional  | Present only if there is a preceding thread.                                                               |
-| `next_thread_id`     | optional  | Present only if there is a following thread.                                                               |
-| `created_at`         | required  | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side.                 |
+To find sample payloads of **events**, **users**, and **other common structures** such as chats or threads [visit the Data structures](/messaging/customer-chat-api/v3.4/data-structures) document.
 
 # Methods
 
@@ -610,7 +164,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 
 ### List Chats
 
-It returns [summaries](#chat-summaries) of the chats a Customer participated in.
+It returns [summaries](/messaging/customer-chat-api/v3.4/data-structures/#chat-summaries) of the chats a Customer participated in.
 
 #### Specifics
 
@@ -635,7 +189,7 @@ It returns [summaries](#chat-summaries) of the chats a Customer participated in.
 | `total_chats`      | `number`  | An estimated number. The real number of found chats can slightly differ.                                        |
 | `next_page_id`     | `string`  | In relation to `page_id` specified in the request. Appears in the response only when there's the next page.     |
 | `previous_page_id` | `string`  | In relation to `page_id` specified in the request. Appears in the response only when there's the previous page. |
-| `chats_summary`    | `array`   | Array of [Chat summary](#chat-summaries) data structures.                                                       |
+| `chats_summary`    | `array`   | Array of [Chat summary](/messaging/customer-chat-api/v3.4/data-structures/#chat-summaries) data structures.     |
 
 </Text>
 
@@ -1124,7 +678,7 @@ Deactivates a chat by closing the currently open thread. Sending messages to thi
 
 ### Send Event
 
-Sends an [Event](#events) object. Use this method to send a message by specifying the [Message](#message) event type in the request.
+Sends an [Event](/messaging/customer-chat-api/v3.4/data-structures/#events) object. Use this method to send a message by specifying the [Message](/messaging/customer-chat-api/v3.4/data-structures/#message) event type in the request.
 
 The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
 
@@ -1959,9 +1513,9 @@ Returns the info about the Customer requesting it.
 
 |                  |                                                                                                                 |
 | ---------------- | --------------------------------------------------------------------------------------------------------------- |
-| `name`           | [Customer's](#customer) name. Returned only if set.                                                             |
-| `email`          | [Customer's](#customer) email. Returned only if set.                                                            |
-| `avatar`         | [Customer's](#customer) avatar. Returned only if set.                                                           |
+| `name`           | [Customer's](/messaging/customer-chat-api/v3.4/data-structures/#customer) name. Returned only if set.           |
+| `email`          | [Customer's](/messaging/customer-chat-api/v3.4/data-structures/#customer) email. Returned only if set.          |
+| `avatar`         | [Customer's](/messaging/customer-chat-api/v3.4/data-structures/#customer) avatar. Returned only if set.         |
 | `session_fields` | An array of custom object-enclosed `key:value` pairs. Returned only if set. Available for the session duration. |
 
 </Text>
@@ -2254,7 +1808,7 @@ Returns an empty ticket form of a <a href="https://www.livechat.com/help/chat-su
 | Field     | Notes                                                                                                                  |
 | --------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `enabled` | If `enabled: false`, the `form` object is not returned. Prechat/postchat survey disabled in the LiveChat Agent App UI. |
-| `form`    | The [Form](#forms) data structure.                                                                                     |
+| `form`    | The [Form](/messaging/customer-chat-api/v3.4/data-structures/#form) data structure.                                    |
 
 </Text>
 
@@ -2614,7 +2168,7 @@ Here's what you need to know about **pushes**:
 - Can be **delivered** only in the websocket transport.
 - You don't need to register pushes to receive them.
 - Their equivalents in Web API are [webhooks](/management/configuration-api/v3.4/#webhooks). Pushes and webhooks have similar payloads.
-- There are no retries for pushes. To determine if a customer has seen an event, compare the [event's](#response) `created_at` parameter with the [customer's](#customer) `events_seen_up_to` field.
+- There are no retries for pushes. To determine if a customer has seen an event, compare the [event's](/messaging/customer-chat-api/v3.4/data-structures/#response) `created_at` parameter with the [customer's](/messaging/customer-chat-api/v3.4/data-structures/#customer) `events_seen_up_to` field.
 
 |                 |                                                                                                                                                                                                                                                                                                                                                 |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -2840,7 +2394,7 @@ Informs that a user (Customer or Agent) was removed from a chat.
 
 ### `incoming_event`
 
-Informs about an incoming [event](#events) sent to a chat.
+Informs about an incoming [event](/messaging/customer-chat-api/v3.4/data-structures/#events) sent to a chat.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -2875,7 +2429,7 @@ Informs about an incoming [event](#events) sent to a chat.
 
 ### `event_updated`
 
-Informs that an [event](#events) was updated.
+Informs that an [event](/messaging/customer-chat-api/v3.4/data-structures/#events) was updated.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -2900,7 +2454,7 @@ Informs that an [event](#events) was updated.
 
 ### `incoming_rich_message_postback`
 
-Informs about an incoming [rich message](#rich-message) postback. The push payload contains the info on the postback itself, as well as the chat it was sent in.
+Informs about an incoming [rich message](/messaging/customer-chat-api/v3.4/data-structures/#rich-message) postback. The push payload contains the info on the postback itself, as well as the chat it was sent in.
 
 <CodeResponse title={'Sample push payload'}>
 
@@ -3387,15 +2941,15 @@ Informs about an incoming [greeting](https://www.livechat.com/help/why-should-i-
 
 #### Push payload
 
-| Field                  | Notes                                                                 |
-| ---------------------- | --------------------------------------------------------------------- |
-| `id`                   | ID of the greeting configured within the license.                     |
-| `unique_id`            | ID of the greeting that was generated, sent, and cancelled.           |
-| `event`                | Greeting event ([Message](#message) or [Rich message](#rich-message)) |
-| `displayed_first_time` | `true` if the greeting was generated for the first time.              |
-| `agent`                | Info about the Agent who sent the greeting.                           |
-| `addon`                | Additional greeting property                                          |
-| `subtype`              | Currently, `announcement` is the only greeting subtype                |
+| Field                  | Notes                                                                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | ID of the greeting configured within the license.                                                                                                                         |
+| `unique_id`            | ID of the greeting that was generated, sent, and cancelled.                                                                                                               |
+| `event`                | Greeting event ([Message](/messaging/customer-chat-api/v3.4/data-structures/#message) or [Rich message](/messaging/customer-chat-api/v3.4/data-structures/#rich-message)) |
+| `displayed_first_time` | `true` if the greeting was generated for the first time.                                                                                                                  |
+| `agent`                | Info about the Agent who sent the greeting.                                                                                                                               |
+| `addon`                | Additional greeting property                                                                                                                                              |
+| `subtype`              | Currently, `announcement` is the only greeting subtype                                                                                                                    |
 
 ### `greeting_accepted`
 
