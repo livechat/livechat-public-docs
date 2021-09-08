@@ -68,7 +68,22 @@ const Page = ({ frontMatter, children }) => {
     versions.STABLE_VERSION
   );
 
-  const promotionContext = { isActive: false, content: <div /> };
+  const promotionContext = {
+    isActive: true,
+    content: (
+      <div>
+        Master LiveChat Design System at the{" "}
+        <a
+          href="https://developers.livechat.com/live-coding-livechat-design-system-in-use/"
+          rel="noopener nofollow"
+          target="_blank"
+        >
+          live coding session
+        </a>{" "}
+        on Sept 16, 5 pm CEST.
+      </div>
+    ),
+  };
 
   useEffect(() => {
     const pathname = window.location.pathname;
