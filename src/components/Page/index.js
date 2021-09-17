@@ -69,7 +69,7 @@ const Page = ({ frontMatter, children }) => {
   );
 
   const promotionContext = {
-    isActive: true,
+    isActive: false,
     content: (
       <div>
         Master LiveChat Design System at the{" "}
