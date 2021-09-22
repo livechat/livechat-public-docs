@@ -158,8 +158,9 @@ export const MiddleColumn = styled.div`
   max-width: 100%;
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
-  margin-left: ${({ noMargin }) => (noMargin ? "0" : "50px")};
-  width: 100%;
+  margin-left: ${({ noMargin }) => (noMargin ? "240px" : "290px")};
+  margin-right: 240px;
+  width: calc(100%- 240px);
 `;
 
 export const LeftColumnRedoc = styled.div`
