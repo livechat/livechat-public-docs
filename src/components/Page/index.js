@@ -27,7 +27,8 @@ import {
   NavHeader,
 } from "../core/components";
 import { Search } from "../core/Search";
-import SideNav from "../core/SideNav";
+import SideNav from "../core/newSideNav";
+import RightSideNav from "../core/newSideNav/RightSideBar";
 import { useLocalStorage } from "../../hooks";
 import Rating from "../core/Rating";
 import {
@@ -98,29 +99,6 @@ const Page = ({ frontMatter, children }) => {
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    const hash = window.location.hash;
-    const timeout = setTimeout(() => {
-      if (hash) {
-        try {
-          const selector = document.querySelector(hash);
-
-          if (selector) {
-            selector.scrollIntoView();
-            window.scrollBy(
-              0,
-              -(SCROLL_OFFSET + (promotionContext.isActive ? 40 : 0))
-            );
-          }
-        } catch (error) {}
-      }
-    }, 500);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [promotionContext.isActive]);
-
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
 
@@ -189,6 +167,7 @@ const Page = ({ frontMatter, children }) => {
                   expanded={expanded}
                   setExpanded={setExpanded}
                   versions={versions}
+                  version={currentApiVersion}
                 />
               </LeftColumn>
             )}
@@ -237,6 +216,11 @@ const Page = ({ frontMatter, children }) => {
                 )}
               </Content>
             </MiddleColumn>
+            {!useRedocPage && (
+              <div>
+                <RightSideNav />
+              </div>
+            )}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>

@@ -36,20 +36,21 @@ export const useScrollSpy = (
             window.scrollY || document.documentElement.scrollTop;
 
           const elem = map
-            .filter(
-              ({ offsetTop }) =>
-                offsetTop <
-                currentPosition + SCROLL_OFFSET + 100 + (isActive ? 40 : 0)
-            )
+            .filter(({ offsetTop }) => offsetTop < currentPosition + 85)
             .slice(-1)[0];
 
           // dirty hack
-          if (elem && elem?.nodeName !== "H5" && elem?.nodeName !== "H6") {
+          if (
+            elem &&
+            elem?.nodeName !== "H4" &&
+            elem?.nodeName !== "H5" &&
+            elem?.nodeName !== "H6"
+          ) {
             setActive(`${elem?.id ? "#" + elem?.id : ""}`);
-            setUrlParams(elem?.id || "");
+            //setUrlParams(elem?.id || "");
           }
         },
-        200,
+        50,
         { leading: false }
       );
 

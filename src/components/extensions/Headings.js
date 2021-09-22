@@ -312,35 +312,54 @@ const SectionLink = ({ to, href, children, ...rest }) => {
   return <StyledLink>{children}</StyledLink>;
 };
 
+const Hack = styled.span`
+  display: block;
+  position: relative;
+  margin-top: -85px;
+  height: 85px;
+  visibility: hidden;
+`;
+
 const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
 
   const id = props.id;
 
-  const newProps = { ...props, className, id };
+  const newProps = { ...props, className };
 
   const Content = () => (
-    <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
+    <>
+      <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
+    </>
   );
 
   switch (size) {
     case "h1":
       return (
-        <H2 {...newProps}>
-          <Content />
-        </H2>
+        <>
+          <Hack id={id} />
+          <H2 {...newProps}>
+            <Content />
+          </H2>
+        </>
       );
     case "h2":
       return (
-        <h3 {...newProps}>
-          <Content />
-        </h3>
+        <>
+          <Hack id={id} />
+          <h3 {...newProps}>
+            <Content />
+          </h3>
+        </>
       );
     case "h3":
       return (
-        <h4 {...newProps}>
-          <Content />
-        </h4>
+        <>
+          <Hack id={id} />
+          <h4 {...newProps}>
+            <Content />
+          </h4>
+        </>
       );
     case "h4":
       return (
