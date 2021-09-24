@@ -1,0 +1,898 @@
+---
+weight: 33
+category: "messaging"
+subcategory: "customer-chat-api"
+title: "RTM pushes"
+tagline: "The reference of LiveChat RTM API pushes."
+desc: "The reference of LiveChat pushes."
+apiVersion: "3.3"
+---
+
+This document contains a reference of pushes available in the LiveChat Cusromer Chat API.
+
+<Section>
+<Text>
+
+# Pushes
+
+Here's what you need to know about **pushes**:
+
+- They are generated primarily by RTM API actions, but also by Web API actions.
+- They notify you when specific events occur.
+- Can be **delivered** only in the websocket transport.
+- You don't need to register pushes to receive them.
+- Their equivalents in Web API are [webhooks](/management/configuration-api/v3.3/#webhooks). Pushes and webhooks have similar payloads.
+- There are no retries for pushes. To determine if a customer has seen an event, compare the [event's](/messaging/customer-chat-api/data-structures/#response) `created_at` parameter with the [customer's](/messaging/customer-chat-api/data-structures/#customer) `events_seen_up_to` field.
+
+|                 |                                                                                                                                                                                                                                                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                       |
+| **Chat access** | [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                                                                                                                         |
+| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
+| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                        |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Customers**   | [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_side_storage_updated`](#customer_side_storage_updated)                                                                                                                                                                                     |
+| **Status**      | [`customer_disconnected`](#customer_disconnected)                                                                                                                                                                                                                                                                                               |
+| **Other**       | [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_greeting`](#incoming_greeting) [`greeting_accepted`](#greeting_accepted) [`greeting_canceled`](#greeting_canceled) [`queue_position_updated`](#queue_position_updated)       |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'The general push format'}>
+
+```json
+{
+  "version": "<api_version>",
+  "request_id": "<request_id>", // optional, applies only to the requester
+  "action": "<action>",
+  "type": "push",
+  "payload": {
+  // optional payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Chats
+
+### `incoming_chat`
+
+Informs about a chat coming with a new thread. The push payload contains the whole chat data structure. If the chat was started with some initial events, the thread object contains them.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "requester_id": "b5657aff34dd32e198160d54666df9d8",
+  "chat": {
+    "id": "PJ0MRSHTDG",
+    "users": [
+      // array of "User" objects
+    ],
+    "properties": {
+      // "Properties" object
+    },
+    "access": {
+      // "Access" object
+    },
+    "thread": {
+      // "Thread" object
+    },
+    "transferred_from": {
+      "group_ids": [ 1 ],
+      "agent_ids": [ "bbb67d600796e9f277e360e842418833" ]
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                             |
+| ---------------------- | ----------------------------------------------------------- |
+| **Action**             | `incoming_chat`                                             |
+| **Webhook equivalent** | [`incoming_chat`](/management/webhooks/v3.3/#incoming_chat) |
+
+### `chat_deactivated`
+
+Informs that a chat was deactivated by closing the currently open thread.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                   |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Action**             | `chat_deactivated`                                                |
+| **Webhook equivalent** | [`chat_deactivated`](/management/webhooks/v3.3/#chat_deactivated) |
+
+#### Push payload
+
+| Field     | Notes                                         |
+| --------- | --------------------------------------------- |
+| `user_id` | Missing if a thread was closed by the router. |
+
+## Chat access
+
+### `chat_transferred`
+
+Informs that a chat was transferred to a different group or to an Agent.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "requester_id": "b5657aff34dd32e198160d54666df9d8",
+  "transferred_to": {
+    "group_ids": [ 1 ],
+    "agent_ids": ["b5657aff34dd32e198160d54666df9d8"],
+  },
+  "queue": {
+    "position": 42,
+    "wait_time": 1337,
+    "queued_at": "2019-12-09T12:01:18.909000Z"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                    |
+| ---------------------- | ------------------ |
+| **Action**             | `chat_transferred` |
+| **Webhook equivalent** | -                  |
+
+#### Push payload
+
+| Field            | Notes                                                  |
+| ---------------- | ------------------------------------------------------ |
+| `thread_id`      | Present if the chat is active                          |
+| `transferred_to` | IDs of groups and Agents the chat has been assigned to |
+| `queue`          | Present if the chat is queued after the transfer       |
+
+## Chat users
+
+### `user_added_to_chat`
+
+Informs that a user (Customer or Agent) was added to a chat.
+
+This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](/messaging/agent-chat-api/v3.3/rtm-reference/#send-event) method.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "user": {
+  // "User > Customer" or "User > Agent" object
+  },
+  "reason": "manual",
+  "requester_id": "b5657aff34dd32e198160d54666df9d8"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                       |
+| ---------------------- | --------------------------------------------------------------------- |
+| **Action**             | `user_added_to_chat`                                                  |
+| **Webhook equivalent** | [`user_added_to_chat`](/management/webhooks/v3.3/#user_added_to_chat) |
+
+#### Push payload
+
+| Field          | Notes                                            |
+| -------------- | ------------------------------------------------ |
+| `thread_id`    | Present when a user was added to an active chat. |
+| `reason`       | Why the user was added.                          |
+| `requester_id` | Present if the user was added by an agent.       |
+
+### `user_removed_from_chat`
+
+Informs that a user (Customer or Agent) was removed from a chat.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "user_id": "bbb67d600796e9f277e360e842418833",
+  "reason": "manual",
+  "requester_id": "b5657aff34dd32e198160d54666df9d8"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| **Action**             | `user_removed_from_chat`                                                      |
+| **Webhook equivalent** | [`user_removed_from_chat`](/management/webhooks/v3.3/#user_removed_from_chat) |
+
+#### Push payload
+
+| Field          | Notes                                                |
+| -------------- | ---------------------------------------------------- |
+| `thread_id`    | Present when a user was removed from an active chat. |
+| `reason`       | Why the user was removed.                            |
+| `requester_id` | Present if the user was removed by an agent.         |
+
+## Events
+
+### `incoming_event`
+
+Informs about an incoming [event](/messaging/customer-chat-api/data-structures/#events) sent to a chat.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event": {
+    "id": "Q20163UAHO_2",
+    "created_at": "2019-12-05T07:27:08.820000Z",
+    "recipients": "all",
+    "type": "message",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "string value"
+      }
+    },
+    "text": "Hello",
+    "author_id": "b5657aff-34dd-32e1-98160d54666df9d8"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                               |
+| ---------------------- | ------------------------------------------------------------- |
+| **Action**             | `incoming_event`                                              |
+| **Webhook equivalent** | [`incoming_event`](/management/webhooks/v3.3/#incoming_event) |
+
+### `event_updated`
+
+Informs that an [event](/messaging/customer-chat-api/data-structures/#events) was updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "123-123-123-123",
+  "thread_id": "E2WDHA8A",
+  "event": {
+  // "Event" object
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                             |
+| ---------------------- | ----------------------------------------------------------- |
+| **Action**             | `event_updated`                                             |
+| **Webhook equivalent** | [`event_updated`](/management/webhooks/v3.3/#event_updated) |
+
+### `incoming_rich_message_postback`
+
+Informs about an incoming [rich message](/messaging/customer-chat-api/data-structures/#rich-message) postback. The push payload contains the info on the postback itself, as well as the chat it was sent in.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+  "postback": {
+  "id": "action_yes",
+  "toggled": true
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| **Action**             | `incoming_rich_message_postback`                                                              |
+| **Webhook equivalent** | [`incoming_rich_message_postback`](/management/webhooks/v3.3/#incoming_rich_message_postback) |
+
+## Properties
+
+### `chat_properties_updated`
+
+Informs about those chat properties that were updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "Q1GZ3FNAT9",
+  "properties": {
+  "0805e283233042b37f460ed8fbf22160": {
+    "string_property": "Chat property value updated by Customer"
+    },
+  // ...
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Action**             | `chat_properties_updated`                                                       |
+| **Webhook equivalent** | [`chat_properties_updated`](/management/webhooks/v3.3/#chat_properties_updated) |
+
+#### Push payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `chat_properties_deleted`
+
+Informs about those chat properties that were deleted.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "Q1GZ3FNAT9",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": ["string_property"]
+    },
+  // ...
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Action**             | `chat_properties_deleted`                                                       |
+| **Webhook equivalent** | [`chat_properties_deleted`](/management/webhooks/v3.3/#chat_properties_deleted) |
+
+#### Push payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `thread_properties_updated`
+
+Informs about those thread properties that were updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "properties": {
+  "0805e283233042b37f460ed8fbf22160": {
+    "string_property": "Thread property value updated by Customer"
+    },
+  // ...
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| **Action**             | `thread_properties_updated`                                                         |
+| **Webhook equivalent** | [`thread_properties_updated`](/management/webhooks/v3.3/#thread_properties_updated) |
+
+#### Push payload
+
+| Field        | Notes                                                                                                       |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| `properties` | This is not a full `properties` object. This push shows only the properties the have been recently updated. |
+
+### `thread_properties_deleted`
+
+Informs about those thread properties that were deleted.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": ["string_property"]
+    },
+  // ...
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| **Action**             | `thread_properties_deleted`                                                         |
+| **Webhook equivalent** | [`thread_properties_deleted`](/management/webhooks/v3.3/#thread_properties_deleted) |
+
+#### Push payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `event_properties_updated`
+
+Informs about those event properties that were updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "event_id": "Q1GZ3FNAU9_1",
+  "properties": {
+  "0805e283233042b37f460ed8fbf22160": {
+    "string_property": "Event property value updated by Customer"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `event_properties_updated`                                                        |
+| **Webhook equivalent** | [`event_properties_updated`](/management/webhooks/v3.3/#event_properties_updated) |
+
+#### Push payload
+
+| Field        | Notes                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `properties` | Not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `event_properties_deleted`
+
+Informs about those event properties that were deleted.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "event_id": "Q1GZ3FNAU9_1",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": ["string_property"]
+    },
+  // ...
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `event_properties_deleted`                                                        |
+| **Webhook equivalent** | [`event_properties_deleted`](/management/webhooks/v3.3/#event_properties_deleted) |
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+## Customers
+
+### `customer_updated`
+
+Informs that customer's data changed. The push payload contains the updated fields.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  // "User > Customer" object
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                    |
+| ---------------------- | ------------------ |
+| **Action**             | `customer_updated` |
+| **Webhook equivalent** | -                  |
+
+### `customer_page_updated`
+
+Informs that a Customer moved to another page of the website, for example by clicking a link.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "url": "https://livechatinc.com/pricing",
+  "title": "pricing",
+  "opened_at": "2020-09-10T08:22:21.128420Z"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                         |
+| ---------------------- | ----------------------- |
+| **Action**             | `customer_page_updated` |
+| **Webhook equivalent** | -                       |
+
+### `customer_side_storage_updated`
+
+Informs that a Customer updated the data stored on their side.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer_side_storage": {
+  "customer_visits": "1"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                 |
+| ---------------------- | ------------------------------- |
+| **Action**             | `customer_side_storage_updated` |
+| **Webhook equivalent** | -                               |
+
+#### Push payload
+
+| Field                   | Notes                                                                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `customer_side_storage` | A map in the `key : value` format. Map content should be kept on the client side (e.g. in browsers local storages) and sent via [`login`](#login). |
+
+## Status
+
+### `customer_disconnected`
+
+Informs that a Customer was disconnected. The payload contains the reason of Customer's disconnection.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "reason": "misdirected_connection",
+  "data": {
+  // optional
+  "region": "fra"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                         |
+| ---------------------- | ----------------------- |
+| **Action**             | `customer_disconnected` |
+| **Webhook equivalent** | -                       |
+
+#### Push payload
+
+| Field    | Notes |
+| -------- | ----- |
+| `reason` |       |
+
+#### Possible reasons
+
+| Type                                 | Notes                                                                                                                                |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `access_token_expired`               | Access token lifetime has elapsed.                                                                                                   |
+| `connection_timeout`                 | Has not received [`ping`](#authentication) from the client for some time, or it's been too long since the connection was authorized. |
+| `customer_banned`                    | Customer has been banned.                                                                                                            |
+| `customer_temporarily_blocked`**\*** | Customer tried reconnecting too many times after the `too_many_connections` error had occurred.                                      |
+| `inactivity_timeout`                 | Customer didn't chat or change the page in the past 30 minutes.                                                                      |
+| `internal_error`                     | Internal, unexpected error; reconnecting is advised                                                                                  |
+| `license_not_found`                  | The license with the specified ID doesn't exist.                                                                                     |
+| `license_expired`                    | The license has expired.                                                                                                             |
+| `misdirected_connection` **\*\***    | Customer connected to a server in the wrong region.                                                                                  |
+| `product_version_changed`            | The product version has changed.                                                                                                     |
+| `service_temporarily_unavailable`    | The Customer Chat API should be available again soon; reconnecting is advised                                                        |
+| `too_many_connections`               | Customer has reached the maximum number of connections.                                                                              |
+| `too_many_unauthorized_connections`  | The maximum number of unauthorized connections has been reached.                                                                     |
+| `unsupported_version`                | Connecting to an unsupported version of the Customer Chat API.                                                                       |
+
+**\*)**
+The `customer_temporarily_blocked` reason can also return the correct timeout in an optional data object. With this piece of information, client is able to figure out how much time a customer should wait before attempting to reconnect again.
+
+**\*\*)**
+The `misdirected_connection` reason can also return the correct region in an optional data object. With this piece of information, client is able to figure out where it should be connected.
+
+## Other
+
+### `incoming_typing_indicator`
+
+Informs that one of the chat users is currently typing a message. The message hasn't been sent yet. The push payload contains the typing indicator object.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "typing_indicator": {
+  "author_id": "d17cd570-11a9-45c0-45c0-1b020b7586dc",
+  "recipients": "all",
+  "timestamp": 1574245378,
+  "is_typing": true
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                             |
+| ---------------------- | --------------------------- |
+| **Action**             | `incoming_typing_indicator` |
+| **Webhook equivalent** | -                           |
+
+### `incoming_multicast`
+
+Informs about messages sent via the `multicast` method or by the system.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "content": {
+  "example": {
+    "nested": "json"
+  }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                      |
+| ---------------------- | -------------------- |
+| **Action**             | `incoming_multicast` |
+| **Webhook equivalent** | -                    |
+
+#### Push payload
+
+| Field       | Required | Notes                                                                                            |
+| ----------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `author_id` | No       | Present only if the push was generated by the **Multicast** method and not sent from the server. |
+| `content`   | Yes      |                                                                                                  |
+
+### `events_marked_as_seen`
+
+Informs that a user has seen events up to a specific time.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "chat_id": "PJ0MRSHTDG",
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Action**             | `events_marked_as_seen`                                                     |
+| **Webhook equivalent** | [`events_marked_as_seen`](/management/webhooks/v3.3/#events_marked_as_seen) |
+
+### `incoming_greeting`
+
+Informs about an incoming [greeting](https://www.livechat.com/help/why-should-i-set-up-chat-greetings/).
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "action": "incoming_greeting",
+  "type": "push",
+  "payload": {
+  "id": 7,
+  "unique_id": "Q10O0N5B5D",
+  "displayed_first_time": true,
+  "addon": "email",
+  "subtype": "announcement",
+  "event": {
+    // "Event > Message" object
+    // or
+    // "Event > Rich message" object
+  },
+  "agent": {
+    "name": "Agent Smith",
+    "id": "b5657aff34dd32e198160d54666df9d8",
+    "avatar": "https://example.com/image25.png",
+    "job_title": "Support Agent",
+    "is_bot": false
+  }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                     |
+| ---------------------- | ------------------- |
+| **Action**             | `incoming_greeting` |
+| **Webhook equivalent** | -                   |
+
+#### Push payload
+
+| Field                  | Notes                                                                                                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | ID of the greeting configured within the license.                                                                                                               |
+| `unique_id`            | ID of the greeting that was generated, sent, and cancelled.                                                                                                     |
+| `event`                | Greeting event ([Message](/messaging/customer-chat-api/data-structures/#message) or [Rich message](/messaging/customer-chat-api/data-structures/#rich-message)) |
+| `displayed_first_time` | `true` if the greeting was generated for the first time.                                                                                                        |
+| `agent`                | Info about the Agent who sent the greeting.                                                                                                                     |
+| `addon`                | Additional greeting property                                                                                                                                    |
+| `subtype`              | Currently, `announcement` is the only greeting subtype                                                                                                          |
+
+### `greeting_accepted`
+
+Informs about a greeting accepted by the Customer.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "action": "greeting_accepted",
+  "type": "push",
+  "payload": {
+  "unique_id": "Q40R0832IN"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                     |
+| ---------------------- | ------------------- |
+| **Action**             | `greeting_accepted` |
+| **Webhook equivalent** | -                   |
+
+#### Push payload
+
+| Field       | Notes                                                      |
+| ----------- | ---------------------------------------------------------- |
+| `unique_id` | ID of the greeting that was generated, sent, and accepted. |
+
+### `greeting_canceled`
+
+Informs about a greeting rejected by the Customer. Also, the push is sent when a new greeting automatically cancels the currently displayed one.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "action": "greeting_canceled",
+  "type": "push",
+  "payload": {
+    "unique_id": "Q10O0N5B5D"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                     |
+| ---------------------- | ------------------- |
+| **Action**             | `greeting_canceled` |
+| **Webhook equivalent** | -                   |
+
+#### Push payload
+
+| Field       | Notes                                                      |
+| ----------- | ---------------------------------------------------------- |
+| `unique_id` | ID of the greeting that was generated, sent, and rejected. |
+
+### `queue_position_updated`
+
+Informs about an updated position in the queue and about the wait time.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "action": "queue_position_updated",
+  "type": "push",
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "queue": {
+      "position": 42,
+      "wait_time": 1337
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Specifics
+
+|                        |                          |
+| ---------------------- | ------------------------ |
+| **Action**             | `queue_position_updated` |
+| **Webhook equivalent** | -                        |
