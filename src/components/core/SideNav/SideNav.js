@@ -1,138 +1,76 @@
-import React, { useState, Fragment, useContext } from "react";
+import React from "react";
+import { string } from "prop-types";
+import { useRouter } from "next/router";
 import Link from "next/link";
-import { PopperTooltip } from "@livechat/design-system";
-import {
-  Nav,
-  NavHeader,
-  MenuWrapper,
-  Ul,
-  CollapsableSection,
-  MenuElement,
-} from "../components";
-import { Search } from "../Search";
-import { HomeIcon, ChevronRight } from "../icons";
-import {
-  useCategoryMeta,
-  useAllCategoriesMeta,
-  useScrollSpy,
-  useArticlesInCategory,
-} from "../../../hooks";
-import { VersionContext } from "../../../contexts";
-import { getVersionColor, getCategoryTitle } from "../../../utils";
+import styled from "@emotion/styled";
+import articles from "../../../configs/articles.json";
+import { ArticleIcon } from "../icons";
 
-const printItems = (items, toggleState, activeUrls, depth = 0) => {
+const Wrapper = styled.div`
+  padding-top: 10px;
+  width: 240px;
+  height: 100%;
+  border: 1px solid #e2e2e4;
+  position: fixed;
+`;
+
+const LinkWrapper = styled.div`
+  padding: 8px 16px;
+  margin-right: 10px;
+  font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
+  background-color: ${({ isActive }) => (isActive ? "#F6F6F7" : "")};
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 0px 25px 25px 0px;
+`;
+
+const IconWrapper = styled.div`
+  margin-right: 5px;
+`;
+
+const StyledLink = styled.a`
+  color: #5e6c78;
+  &:hover {
+    color: #5e6c78;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #f6f6f7;
+  }
+`;
+
+const SideNav = ({ category, version }) => {
+  const router = useRouter();
+  const pathname = router.pathname;
   return (
-    <Ul>
-      {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
-        const isActiveItem =
-          (activeUrls &&
-            url === activeUrls[activeUrls.length - 1] &&
-            !isSubcategory) ||
-          "";
-
-        const isActiveSection =
-          activeUrls &&
-          activeUrls.includes(url) &&
-          url.includes(activeUrls[depth]);
-
-        let redirectUrl = url || "#";
-
-        return (
-          <Fragment key={`toc-${depth}-${url}`}>
-            <MenuElement
-              url={redirectUrl}
-              title={title}
-              active={isActiveItem}
-              onClick={toggleState(path)}
-            />
-            {itemsInside && (
-              <CollapsableSection expanded={isActiveSection}>
-                {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
-              </CollapsableSection>
-            )}
-          </Fragment>
-        );
-      })}
-    </Ul>
+    <Wrapper>
+      {articles
+        .filter((article) => article.category === category)
+        .filter((article) => article.apiVersion === version)
+        .sort((a, b) => {
+          return a.weight - b.weight;
+        })
+        .map((article) => {
+          return (
+            <Link href={article.link} key={article.link}>
+              <StyledLink>
+                <LinkWrapper isActive={pathname + "/" === article.link}>
+                  <IconWrapper>
+                    <ArticleIcon />
+                  </IconWrapper>
+                  {article.title}
+                </LinkWrapper>
+              </StyledLink>
+            </Link>
+          );
+        })}
+    </Wrapper>
   );
 };
 
-const SideNav = ({
-  category,
-  subcategory,
-  currentSlug,
-  expanded,
-  setExpanded,
-}) => {
-  const { items: versions, selected: selectedVersion } = useContext(
-    VersionContext
-  );
-
-  const [articles, getArticlePath] = useArticlesInCategory(
-    category,
-    currentSlug,
-    selectedVersion
-  );
-
-  const categories = useAllCategoriesMeta().map((item) => ({
-    ...item,
-    url: `/${item.slug}/`,
-    items: null,
-  }));
-
-  const menuItems = category ? articles : categories;
-
-  const initialPath = subcategory
-    ? [`/${category}/${subcategory}/`, currentSlug]
-    : [currentSlug.replace("/docs", "")];
-
-  const [activePath, setActivePath] = useState(initialPath);
-  const toggleState = (path) => () => setActivePath(path);
-
-  const categoryMeta = useCategoryMeta(category);
-
-  useScrollSpy(
-    ".heading",
-    (url) => url && setActivePath(getArticlePath(url)),
-    () => getCategoryTitle(menuItems)
-  );
-
-  const navColor = getVersionColor(selectedVersion, versions);
-
-  return (
-    <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
-      <NavHeader>
-        <Link href="/" style={{ color: "inherit" }}>
-          <a style={{ color: "#8a9097", marginTop: "1px" }}>
-            <PopperTooltip
-              isVisible={true}
-              placement={"bottom-start"}
-              triggerActionType={"hover"}
-              trigger={
-                <span>
-                  <HomeIcon width={18} style={{ display: "block" }} />
-                </span>
-              }
-              closeOnOutsideClick
-              zIndex={20}
-            >
-              {"Home"}
-            </PopperTooltip>
-          </a>
-        </Link>
-        <ChevronRight width={14} style={{ marginTop: "2px" }} />
-        <span style={{ marginBottom: "-3px" }}>
-          {categoryMeta.title || "Home"}
-        </span>
-      </NavHeader>
-      <NavHeader>
-        <Search />
-      </NavHeader>
-      <MenuWrapper>
-        {printItems(menuItems, toggleState, activePath, undefined)}
-      </MenuWrapper>
-    </Nav>
-  );
+SideNav.propTypes = {
+  category: string,
+  version: string,
 };
 
 export default SideNav;
