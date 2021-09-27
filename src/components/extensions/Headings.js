@@ -315,8 +315,8 @@ const SectionLink = ({ to, href, children, ...rest }) => {
 const Hack = styled.span`
   display: block;
   position: relative;
-  margin-top: -85px;
-  height: 85px;
+  margin-top: -60px;
+  height: 60px;
   visibility: hidden;
 `;
 

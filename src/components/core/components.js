@@ -155,11 +155,10 @@ export const MainWrapper = styled.div`
 export const LeftColumn = styled.div``;
 
 export const MiddleColumn = styled.div`
-  max-width: 100%;
+  max-width: calc(100%-480px);
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
-  margin-left: ${({ noMargin }) => (noMargin ? "240px" : "290px")};
-  margin-right: 240px;
+  margin-left: ${({ noMargin }) => (noMargin ? "0px" : "290px")};
   width: calc(100%- 240px);
 `;
 

@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import articles from "./XD.json";
-
-import { useScrollSpy } from "../../../hooks";
+import articles from "../../../configs/articles.json";
 
 const Header = styled.div`
-  margin-top: 100px;
   font-size: 14px;
   font-weight: 700;
   color: #424d57;
@@ -15,8 +12,13 @@ const Header = styled.div`
 
 const Wrapper = styled.div`
   width: 240px;
-  height: 100%;
-  position: fixed;
+  padding-left: 10px;
+  margin: 100px 0px;
+  overflow: scroll;
+  height: 600px;
+  top: 100px;
+  right: 20px;
+  position: sticky;
 `;
 
 const StyledLink = styled.a`
@@ -31,7 +33,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const RightSideBar = () => {
+const RightSideNav = () => {
   const router = useRouter();
   const pathname = router.pathname;
   const headings = articles.find((article) => article.link === pathname + "/")
@@ -40,13 +42,36 @@ const RightSideBar = () => {
 
   const [activeHeading, setActiveHeading] = useState(pathname + hash);
 
-  useScrollSpy(
-    ".heading",
-    (slug) => {
-      setActiveHeading(pathname + slug);
-    },
-    () => {}
-  );
+  useEffect(() => {
+    const map = Array.from(document.querySelectorAll("h1, h2, h3")).map(
+      ({ id, offsetTop, clientHeight }) => ({
+        id,
+        offsetTop,
+        clientHeight,
+      })
+    );
+
+    const onScroll = () => {
+      const currentPosition =
+        window.scrollY || document.documentElement.scrollTop;
+
+      const elem = map
+        .filter(
+          ({ offsetTop, clientHeight }) =>
+            offsetTop - clientHeight / 3 <= currentPosition + 60
+        )
+        .slice(-1)[0];
+
+      setActiveHeading(pathname + "#" + elem?.id);
+    };
+
+    document.addEventListener("scroll", onScroll);
+    return () => document.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!headings) {
+    return null;
+  }
 
   return (
     <Wrapper>
@@ -68,4 +93,4 @@ const RightSideBar = () => {
   );
 };
 
-export default RightSideBar;
+export default RightSideNav;

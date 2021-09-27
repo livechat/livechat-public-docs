@@ -11,7 +11,6 @@ import {
 } from "../../contexts";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
-import { SCROLL_OFFSET } from "../../constant";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
@@ -27,9 +26,7 @@ import {
   NavHeader,
 } from "../core/components";
 import { Search } from "../core/Search";
-import SideNav from "../core/newSideNav";
-import RightSideNav from "../core/newSideNav/RightSideBar";
-import { useLocalStorage } from "../../hooks";
+import { SideNav, RightSideNav } from "../core/SideNav";
 import Rating from "../core/Rating";
 import {
   Headings,
@@ -61,7 +58,8 @@ const Page = ({ frontMatter, children }) => {
   } = frontMatter;
   const router = useRouter();
 
-  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
+  //TODO: Mobile version
+  //const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -160,15 +158,7 @@ const Page = ({ frontMatter, children }) => {
           <MainWrapper>
             {!useRedocPage && (
               <LeftColumn>
-                <SideNav
-                  currentSlug={slug}
-                  category={category}
-                  subcategory={subcategory}
-                  expanded={expanded}
-                  setExpanded={setExpanded}
-                  versions={versions}
-                  version={currentApiVersion}
-                />
+                <SideNav category={category} version={currentApiVersion} />
               </LeftColumn>
             )}
             <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
