@@ -5,9 +5,10 @@ import Link from "next/link";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
 import { ArticleIcon } from "../icons";
+import { Search } from "../Search";
+import CategorySidebar from "./CategorySidebar";
 
 const Wrapper = styled.div`
-  padding-top: 10px;
   width: 240px;
   height: 100%;
   border: 1px solid #e2e2e4;
@@ -22,7 +23,7 @@ const LinkWrapper = styled.div`
   display: flex;
   align-items: center;
   font-size: 14px;
-  border-radius: 0px 25px 25px 0px;
+  border-radius: 0px 8px 8px 0px;
 `;
 
 const IconWrapper = styled.div`
@@ -39,11 +40,23 @@ const StyledLink = styled.a`
   }
 `;
 
+const SearchWrapper = styled.div`
+  padding: 10px;
+  border-bottom: 1px solid #e2e2e4;
+  margin-bottom: 10px;
+`;
+
 const SideNav = ({ category, version }) => {
   const router = useRouter();
   const pathname = router.pathname;
+
+  if (pathname === "/") return <CategorySidebar />;
+
   return (
     <Wrapper>
+      <SearchWrapper>
+        <Search />
+      </SearchWrapper>
       {articles
         .filter((article) => article.category === category)
         .filter((article) => article.apiVersion === version)

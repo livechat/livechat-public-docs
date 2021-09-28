@@ -338,7 +338,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
       return (
         <>
           <Hack id={id} />
-          <H2 {...newProps}>
+          <H2 {...newProps} name="heading">
             <Content />
           </H2>
         </>
@@ -347,7 +347,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
       return (
         <>
           <Hack id={id} />
-          <h3 {...newProps}>
+          <h3 {...newProps} name="heading">
             <Content />
           </h3>
         </>
@@ -356,7 +356,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
       return (
         <>
           <Hack id={id} />
-          <h4 {...newProps}>
+          <h4 {...newProps} name="heading">
             <Content />
           </h4>
         </>

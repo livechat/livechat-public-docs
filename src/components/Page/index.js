@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import FullStory from "react-fullstory";
 import {
@@ -26,7 +27,11 @@ import {
   NavHeader,
 } from "../core/components";
 import { Search } from "../core/Search";
-import { SideNav, RightSideNav } from "../core/SideNav";
+import { SideNav } from "../core/SideNav";
+const RightSideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.RightSideNav),
+  { ssr: false, loading: () => <p>...</p> }
+);
 import Rating from "../core/Rating";
 import {
   Headings,

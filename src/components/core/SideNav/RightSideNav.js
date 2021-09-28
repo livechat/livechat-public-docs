@@ -27,7 +27,7 @@ const StyledLink = styled.a`
   padding-left: ${({ isSubheading }) => (isSubheading ? "10px" : "0px")};
   font-weight: 500;
   &:hover {
-    color: #5e6c78;
+    color: ${({ isActive }) => (isActive ? "#328DFF" : "#5e6c78")};
     cursor: pointer;
     text-decoration: none;
   }
@@ -43,15 +43,17 @@ const RightSideNav = () => {
   const [activeHeading, setActiveHeading] = useState(pathname + hash);
 
   useEffect(() => {
-    const map = Array.from(document.querySelectorAll("h1, h2, h3")).map(
-      ({ id, offsetTop, clientHeight }) => ({
-        id,
-        offsetTop,
-        clientHeight,
-      })
-    );
-
     const onScroll = () => {
+      const map = Array.from(document.getElementsByClassName("heading"))
+        .map(({ id, offsetTop, clientHeight }) => ({
+          id,
+          offsetTop,
+          clientHeight,
+        }))
+        .filter((item) =>
+          headings?.some((heading) => heading.slug === item.id)
+        );
+
       const currentPosition =
         window.scrollY || document.documentElement.scrollTop;
 

@@ -86,7 +86,8 @@ export const CategoryIcon = ({ category, ...props }) => {
           viewBox="0 0 24 24"
         >
           <path d="M0 0h24v24H0z" fill="none" />
-          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+          <path
+            d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
             fill="currentColor"
           />
         </svg>
@@ -315,7 +316,7 @@ export const StarIcon = (props) => (
   </svg>
 );
 
-export const CopyIcon = props => (
+export const CopyIcon = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -323,10 +324,7 @@ export const CopyIcon = props => (
     viewBox="0 0 24 24"
     width="18px"
   >
-    <path
-      d="M0 0h24v24H0V0z"
-      fill="none"
-    ></path>
+    <path d="M0 0h24v24H0V0z" fill="none"></path>
     <path
       d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z"
       fill="currentColor"
