@@ -7,10 +7,13 @@ import { CategoryIcon } from "../icons";
 
 const Wrapper = styled.div`
   padding-top: 10px;
-  width: 240px;
   height: 100%;
-  border: 1px solid #e2e2e4;
+  width: 100%;
   position: fixed;
+
+  @media (min-width: 420px) {
+    width: 240px;
+  }
 `;
 
 const LinkWrapper = styled.div`

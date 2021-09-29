@@ -19,7 +19,6 @@ import Header from "../core/header";
 import articlesVersions from "../../configs/articlesVersions.json";
 import {
   MainWrapper,
-  LeftColumn,
   MiddleColumn,
   Content,
   RatingWrapper,
@@ -162,9 +161,11 @@ const Page = ({ frontMatter, children }) => {
           <Header />
           <MainWrapper>
             {!useRedocPage && (
-              <LeftColumn>
-                <SideNav category={category} version={currentApiVersion} />
-              </LeftColumn>
+              <SideNav
+                category={category}
+                version={currentApiVersion}
+                title={title}
+              />
             )}
             <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
               {currentApiVersion && (
@@ -211,11 +212,7 @@ const Page = ({ frontMatter, children }) => {
                 )}
               </Content>
             </MiddleColumn>
-            {!useRedocPage && (
-              <div>
-                <RightSideNav />
-              </div>
-            )}
+            {!useRedocPage && <RightSideNav />}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>

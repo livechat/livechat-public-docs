@@ -143,6 +143,11 @@ export const MainWrapper = styled.div`
   padding-right: 15px;
   display: flex;
 
+  @media (min-width: 420px) {
+    flex-direction: row;
+  }
+  flex-direction: column-reverse;
+
   @media (min-width: 768px) {
     padding: 0 20px 0 0;
   }
@@ -158,7 +163,11 @@ export const MiddleColumn = styled.div`
   max-width: calc(100%-480px);
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
-  margin-left: ${({ noMargin }) => (noMargin ? "0px" : "290px")};
+  z-index: 1;
+  margin-left: 20px;
+  @media (min-width: 420px) {
+    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "290px")};
+  }
   width: calc(100%- 240px);
 `;
 
