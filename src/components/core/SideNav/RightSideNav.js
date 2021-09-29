@@ -11,6 +11,11 @@ const Header = styled.div`
 `;
 
 const Wrapper = styled.div`
+  @media (min-width: 420px) {
+    display: block;
+  }
+  display: none;
+
   width: 240px;
   padding-left: 10px;
   margin: 100px 0px;
