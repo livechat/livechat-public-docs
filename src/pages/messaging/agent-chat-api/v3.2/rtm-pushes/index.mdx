@@ -1,0 +1,847 @@
+---
+weight: 23
+category: "messaging"
+subcategory: "agent-chat-api"
+title: "RTM pushes"
+tagline: "The reference of LiveChat RTM API pushes."
+desc: "This document contains a reference of LiveChat RTM API pushes."
+apiVersion: "3.2"
+---
+
+This document contains a reference of **pushes** available in the **LiveChat Agent Chat API**. Similarly to [webhooks](/management/webhooks), pushes notify you when specific events occur. They're usually generated as result of RTM API actions, but it's also possible to receive them in result of Web API actions.
+
+<Section>
+<Text>
+
+## Introduction
+
+Here's what you need to know about **pushes**:
+
+- They are generated primarily by RTM API actions, but also by Web API actions.
+- They notify you when specific events occur.
+- Can be **delivered** only in the websocket transport.
+- You don't need to register pushes to receive them.
+- Their equivalents in Web API are [webhooks](/management/configuration-api/#webhooks). Pushes and webhooks have similar payloads.
+- There are no retries for pushes. To determine if a user has seen an event, compare the [event's](/messaging/agent-chat-api/v3.2/data-structures/#response) `created_at` parameter with the [user's](/messaging/agent-chat-api/v3.2/data-structures/#users) `events_seen_up_to` field.
+
+## Available pushes
+
+|                 |                                                                                                                                                                                                                                                                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**       | [`incoming_chat`](#incoming_chat) [`chat_deactivated`](#chat_deactivated)                                                                                                                                                                                                                                                                       |
+| **Chat access** | [`chat_access_granted`](#chat_access_granted) [`chat_access_revoked`](#chat_access_revoked) [`chat_transferred`](#chat_transferred)                                                                                                                                                                                                             |
+| **Chat users**  | [`user_added_to_chat`](#user_added_to_chat) [`user_removed_from_chat`](#user_removed_from_chat)                                                                                                                                                                                                                                                 |
+| **Events**      | [`incoming_event`](#incoming_event) [`event_updated`](#event_updated)[`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                        |
+| **Properties**  | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted) |
+| **Thread tags** | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                         |
+| **Customers**   | [`customer_visit_started`](#customer_visit_started) [`customer_created`](#customer_created) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_banned`](#customer_banned) [`customer_visit_ended`](#customer_visit_ended)                                                                     |
+| **Status**      | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                         |
+| **Other**       | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated)                                               |
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'general push format'}>
+
+```json
+{
+  "request_id": "<request_id>", // optional, applies only to the requester
+  "action": "<action>",
+  "type": "push",
+  "payload": {
+  // optional payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Chats
+
+### `incoming_chat`
+
+Informs about a chat coming with a new thread. The push payload contains the whole chat data structure. If the chat was started with some initial events, the thread object contains them.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "requester_id": "smith@example.com",
+  "chat": {
+    "id": "PJ0MRSHTDG",
+    "users": [
+      // array of "User" objects
+    ],
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "string value"
+      }
+      // ...
+    },
+    "thread": {
+      // "Thread" object
+    },
+    "transferred_from": {
+      "group_ids": [ 1 ],
+      "agent_ids": [ "agent@example.com" ]
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+### `chat_deactivated`
+
+Informs that a chat was deactivated by closing the currently open thread.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c" // optional
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field     | Notes                                         |
+| --------- | --------------------------------------------- |
+| `user_id` | Missing if a thread was closed by the router. |
+
+## Chat access
+
+### `chat_access_granted`
+
+Informs that new, single access to a chat was granted. The existing access isn't overwritten.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "id": "PJ0MRSHTDG",
+  "access": {
+  "group_ids": [1]
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field | Notes   |
+| ----- | ------- |
+| `id`  | Chat ID |
+
+### `chat_access_revoked`
+
+Informs that access to a certain chat was revoked.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "id": "PJ0MRSHTDG",
+  "access": {
+  "group_ids": [1]
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field | Notes   |
+| ----- | ------- |
+| `id`  | Chat Id |
+
+### `chat_transferred`
+
+Informs that a chat was transferred to a different group or to an Agent.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "requester_id": "cb531744-e6a4-4ded-b3eb-b3eb4ded4ded",
+  "transferred_to": {
+    "group_ids": [ 1 ],
+    "agent_ids": ["smith@example.com"],
+  },
+  "queue": {
+    "position": 42,
+    "wait_time": 1337,
+    "queued_at": "2019-12-09T12:01:18.909000Z"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field                   | Notes                                                |
+| ----------------------- | ---------------------------------------------------- |
+| `thread_id`             | Present if the chat is active                        |
+| `transferred_to` **\*** | IDs of groups and Agents the chat is now assigned to |
+| `queue`                 | Present if the chat is queued after the transfer     |
+
+**\*)**
+One of the following combinations of IDs is possible:
+
+- Both `group_ids` and `agent_ids`. In situations when a chat was transferred to a group and it was immediately assigned to an Agent (even if the chat transfer occurred in the same group).
+- Only `group_ids`. When a chat was transferred to a group and no Agents were available; the queue will be present.
+- Only `agent_ids`. When a chat was transferred directly to an Agent; there'll be no queue.
+
+## Chat users
+
+### `user_added_to_chat`
+
+Informs that a user (Customer or Agent) was added to a chat.
+
+This push can be emitted with `user.present` set to `false` when a user writes to a chat without joining it. You can achieve that via the [Send Event](#send-event) method.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "user": {
+  // "User > Customer" or "User > Agent" object
+  },
+  "reason": "manual",
+  "requester_id": "smith@example.com"
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field          | Notes                                            |
+| -------------- | ------------------------------------------------ |
+| `thread_id`    | Present when a user was added to an active chat. |
+| `reason`       | Why the user was added.                          |
+| `requester_id` | Present if the user was added by an agent.       |
+
+### `user_removed_from_chat`
+
+Informs that a user (Customer or Agent) was removed from a chat.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "user_id": "agent@example.com",
+  "reason": "manual",
+  "requester_id": "smith@example.com"
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field          | Notes                                                |
+| -------------- | ---------------------------------------------------- |
+| `thread_id`    | Present when a user was removed from an active chat. |
+| `reason`       | Why the user was removed.                            |
+| `requester_id` | Present if the user was removed by an agent.         |
+
+## Events
+
+### `incoming_event`
+
+Informs about an incoming [event](#events) sent to a chat.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event": {
+  "id": "Q20163UAHO_2",
+  "created_at": "2019-12-05T07:27:08.820000Z",
+  "recipients": "all",
+  "type": "message",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+    "string_property": "string value"
+    }
+  },
+  "text": "Hello",
+  "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+  }
+}
+```
+
+</CodeResponse>
+
+### `event_updated`
+
+Informs that an [event](#events) was updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "123-123-123-123",
+  "thread_id": "E2WDHA8A",
+  "event": {
+  // "Event" object
+  }
+}
+```
+
+</CodeResponse>
+
+### `incoming_rich_message_postback`
+
+Informs about an incoming [rich message](/messaging/agent-chat-api/v3.2/data-structures/#rich-message) postback. The push payload contains the info on the postback itself, as well as the chat it was sent in.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+  "postback": {
+  "id": "action_yes",
+  "toggled": true
+  }
+}
+```
+
+</CodeResponse>
+
+## Properties
+
+### `chat_properties_updated`
+
+Informs about those chat properties that were updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "properties": {
+  "rating": {
+    "score": 1,
+    "comment": "Well done!"
+  }
+  // ...
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `chat_properties_deleted`
+
+Informs about those chat properties that were deleted.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "properties": {
+    "rating": ["score", "comment"]
+    },
+    // ...
+  }
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `thread_properties_updated`
+
+Informs about those thread properties that were updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "properties": {
+  "rating": {
+    "score": 1,
+    "comment": "Well done!"
+  }
+  // ...
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `thread_properties_deleted`
+
+Informs about those thread properties that were deleted.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "properties": {
+    "rating": ["score", "comment"]
+    },
+    // ...
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `event_properties_updated`
+
+Informs about those event properties that were updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event_id": "2_E2WDHA8A",
+  "properties": {
+  "rating": {
+    "score": 1,
+    "comment": "Well done!"
+  }
+  }
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+### `event_properties_deleted`
+
+Informs about those event properties that were deleted.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event_id": "2_E2WDHA8A",
+  "properties": {
+    "rating": ["score", "comment"]
+    },
+    // ...
+  }
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field        | Notes                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `properties` | This is not a full `properties` object. This push shows only the properties that have been recently updated. |
+
+## Thread tags
+
+### `thread_tagged`
+
+Informs that a chat thread was tagged.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "tag": "bug_report"
+}
+```
+
+</CodeResponse>
+
+### `thread_untagged`
+
+Informs that a chat thread was untagged.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "tag": "bug_report"
+}
+```
+
+</CodeResponse>
+
+## Customers
+
+### `customer_visit_started`
+
+Informs that a Customer entered the tracked website.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "visit_id": 42,
+  "started_at": "2017-10-12T15:19:21.010200Z",
+  "ip": "<customer_ip>",
+  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+  "geolocation": {
+    "latitude": "54.0805",
+    "longitude": "17.4211",
+    "country": "Poland",
+    "country_code": "PL",
+    "region": "Dolnoslaskie",
+    "city": "Wroclaw",
+    "timezone": "Europe/Warsaw"
+  }
+}
+```
+
+</CodeResponse>
+
+### `customer_created`
+
+Informs that a new Customer registered.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer": {
+  // "User > Customer" object
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "created_at": "2019-11-14T14:27:24.410018Z",
+  "name": "Thomas Anderson",
+  "email": "t.anderson@example.com",
+  "avatar": "https://example.com/avatars/1.jpg",
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
+  }
+}
+```
+
+</CodeResponse>
+
+### `customer_updated`
+
+Informs that Customer's data was updated.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer": {
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "name": "Thomas Anderson",
+  "email": "t.anderson@example.com",
+  "avatar": "https://example.com/avatars/1.jpg",
+  "type": "customer",
+  "present": false,
+  "banned": false,
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
+  }
+}
+```
+
+</CodeResponse>
+
+### `customer_page_updated`
+
+Informs that a Customer moved to another page of the website.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "visit_id": 42,
+  "opened_at": "2017-10-12T15:19:21.010200Z",
+  "url": "https://www.livechat.com/",
+  "title": "LiveChat - Homepage"
+}
+```
+
+</CodeResponse>
+
+### `customer_banned`
+
+Informs that a Customer was banned for a specified number of days.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "ban": {
+  "days": 5
+  }
+}
+```
+
+</CodeResponse>
+
+### `customer_visit_ended`
+
+Informs that a Customer left the tracked website.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "visit_id": 42,
+  "ended_at": "2017-10-12T15:19:21.010200Z"
+}
+```
+
+</CodeResponse>
+
+## Status
+
+### `routing_status_set`
+
+Informs that an Agent's or Bot Agent's status was changed.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "agent_id": "smith@example.com",
+  "status": "accepting_chats"
+}
+```
+
+</CodeResponse>
+
+### `agent_disconnected`
+
+Informs that an Agent was disconnected. The payload contains the reason of Customer's disconnection.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "reason": "misdirected_request",
+  "data": {
+  // optional
+  "region": "fra"
+  }
+}
+```
+
+</CodeResponse>
+
+#### Possible reasons
+
+| Type                            | Notes                                                  |
+| ------------------------------- | ------------------------------------------------------ |
+| `access_token_revoked`          | Agent access token has been revoked.                   |
+| `access_token_expired`          | Access token life time has elapsed.                    |
+| `license_expired`               | License has expired.                                   |
+| `agent_deleted`                 | Agent account has been deleted.                        |
+| `agent_logged_out_remotely`     | Agent has been logged out remotely.                    |
+| `agent_disconnected_by_server`  | Agent has been disconnected by the server.             |
+| `unsupported_version`           | Connecting to an unsupported version of the Agent API. |
+| `ping_timeout`                  | Not receiving ping for some time from the Customer.    |
+| `internal_error`                | Internal error                                         |
+| `too_many_connections`          | Agent reached the max. number of connections.          |
+| `misdirected_connection` **\*** | Agent connected to the server in the wrong region.     |
+| `product_version_changed`       | Product version has been changed.                      |
+| `license_not_found`             | License with the specified ID doesn't exist.           |
+
+**\*)**
+Also, `misdirected_connection` returns the correct `region` value in the optional `data` object.
+With this piece of information, the client is able to figure out where it should be connected.
+
+## Other
+
+### `incoming_typing_indicator`
+
+Informs that one of the chat users is currently typing a message. The message hasn't been sent yet. The push payload contains the typing indicator object.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "typing_indicator": {
+  "author_id": "smith@example.com",
+  "recipients": "all",
+  "timestamp": 1574245378,
+  "is_typing": true
+  }
+}
+```
+
+</CodeResponse>
+
+### `incoming_sneak_peek`
+
+Informs about the message a Customer is currently typing. The push payload contains the sneak peek object.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "sneak_peek": {
+  author_id: "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  recipients: "all",
+  text: "Hello",
+  timestamp: 1574245378
+  }
+}
+```
+
+</CodeResponse>
+
+### `events_marked_as_seen`
+
+Informs that a user has seen events up to a specific time.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "user_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "chat_id": "PJ0MRSHTDG",
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
+}
+```
+
+</CodeResponse>
+
+### `incoming_multicast`
+
+Informs about messages sent via the `multicast` method or by the system.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "author_id": "smith@example.com",
+  "content": {
+  "example": {
+    "nested": "json"
+  }
+  },
+  "type": "type1"
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field       | Required | Notes                                                                                            |
+| ----------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `author_id` | No       | Present only if the push was generated by the **Multicast** method and not sent from the server. |
+| `content`   | Yes      |                                                                                                  |
+| `type`      | No       |                                                                                                  |
+
+### `chat_unfollowed`
+
+Informs that a chat has been unfollowed. Useful in multiple connection scenarios, where one app/integration needs to know that another one unfollowed the chat.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+{
+  "chat_id": "PJ0MRSHTDG"
+}
+```
+
+</CodeResponse>
+
+### `queue_positions_updated`
+
+New positions and wait times for queued chats.
+
+<CodeResponse title={'Sample push payload'}>
+
+```json
+[{
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "queue": {
+    "position": 42,
+    "wait_time": 1337
+  }
+}, {
+  "chat_id": "PJ0VRSATDS",
+  "thread_id": "K60QPKSON9",
+  "queue": {
+    "position": 43,
+    "wait_time": 1373
+  }
+}]
+```
+
+</CodeResponse>
