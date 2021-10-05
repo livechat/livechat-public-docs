@@ -10,9 +10,11 @@ import { openChatWindow } from "../../utils/index";
 
 # Introduction
 
-This document is dedicated to a set of **Messaging APIs**, which consists of the **Agent Chat API**, **Customer Chat API**, and the **Configuration API**. It also explains some key concepts, such as the definition of a **chat** and a **thread**, **the flow between services**, or **chat routing**. Understanding them is a prerequisite to the efficient usage of our APIs.
+Messaging lies at the core of LiveChat communication. Chatting between agents and customers is the most fundamental functionality of the LiveChat software.
 
-This document is a great starting point if you plan on using our APIs. You'll learn what use cases can be covered with each API. For hands-on examples, we encourage you to check the documentation specific to each API.
+As a developer, you can access our **Messaging APIs** (Agent Chat & Customer Chat APIs) or **SDKs** to build integrations that operate on the chatting functionality.
+
+This document gives you an overview of the LiveChat messaging protocol, explaining concepts such as **chats, threads, events, routing**, and more, which are essential to understand how messaging works in LiveChat.
 
 # Key concepts
 
@@ -27,7 +29,7 @@ The next day, customer returns to ask about his other purchase. A new thread sta
 
 A **message** or **rich message** are not the only event types, though. There are also special events for specific actions, like: **file**, **filled form**, **system** and **custom** messages.
 
-### Rules and conditions
+## Rules and conditions
 
 Here are some general rules, which summarize the previous section and add new info.
 
@@ -37,13 +39,23 @@ Here are some general rules, which summarize the previous section and add new in
 
 3. There can be time gaps between threads in a chat, but once a chat is started, it's **continuously open**.
 
-4. Messages are sent and delivered even when the recipient (both Customer and Agent) is **offline**.
+4. Messages are sent and delivered even when the recipient (both customer and agent) is **offline**.
 
-5. **Multiple Agents** can participate in a single chat.
+5. **Multiple agents** can participate in a single chat.
 
-6. Every user can have **multiple concurrent chats**. Read how it applies to [Agents](#chatting-as-agent) and [Customers](#chatting-as-customer).
+6. Every user can have **multiple concurrent chats**. Read how it applies to agents ([chatting as agent](#chatting-as-agent)) and customers ([chatting as customer](#chatting-as-customer)).
 
-7. The algorithm that decides how chats are distributed between Agents is called **routing**. It's documented in the [Routing](#chat-routing) section.
+7. The algorithm that decides how chats are distributed between agents is called **routing**. It's documented in the [Routing](#chat-routing) section.
+
+### Chatting as agent
+
+The maximum number of concurrent chats an agent can participate in is 99. It can be configured in the LiveChat App by the license Owner or Admin.
+
+### Chatting as customer
+
+By default, a customer can only have one chat started, unless he chats with agents who use different licences. The licence Owner or Admin can change that default value, modifying the `routing.max_customer_chats_count` property. However, in order to support this functionality, you would need to build a custom Chat Widget. For now, the LiveChat Chat Widget doesn't support it. You can build a Chat Widget from the ground up using the [Customer SDK](../extending-ui/extending-chat-widget/customer-sdk/).
+
+Chats are continuous so customers can always preview their chats' history. Yet, with **multiple concurrent chats** customers can sort their chats out thematically, making sure they know what each chat is about.
 
 ## Chat routing
 
@@ -84,37 +96,33 @@ Developers can build integrations that extend LiveChat's messaging capabilities,
 
 <img alt="livechat-integrations-flow" src="/images/messaging/livechat-integrations-flow.png" width="800px" height="340px"/>
 
-An Agent [sends a message](/messaging/agent-chat-api/rtm-reference/#send-event) via a websocket connection. It triggers the LiveChat's backend to send a webhook to the integration app, informing about the [incoming event](/management/webhooks/#incoming_chat). In response to the webhook, the integration sends an HTTP request to the external backend (in this case it's Facebook). They use transport of their choice to pass the message to the Customer chatting via Facebook Messenger.
+An agent [sends a message](/messaging/agent-chat-api/rtm-reference/#send-event) via a websocket connection. It triggers the LiveChat's backend to send a webhook to the integration app, informing about the [incoming event](/management/webhooks/#incoming_chat). In response to the webhook, the integration sends an HTTP request to the external backend (in this case it's Facebook). They use transport of their choice to pass the message to the customer chatting via Facebook Messenger.
 
-# APIs Overview
+# Messaging APIs
 
-There are two primary Chat APIs:
+There are two primary Messaging APIs:
 
-- **Agent Chat API**, which serves to join a chat as Agent.
-- **Customer Chat API**, which serves to join a chat as Customer.
+- **the Agent Chat API** for chatting as an agent.
+- **the Customer Chat API** for chatting as a customer.
 
-The separation of Chat APIs helps you decide which set of methods you should use. It depends on the role of the chat user. Want to join a chat as Agent? Refer to the Agent Chat API. Want to send messages as Customer? Use the Customer Chat API.
-
-To use both APIs, you need to be _authorized_. This topic is thoroughly explained in the [**Authorizing API calls**](../getting-started/authorization) document.
+To use both APIs, you need to be _authorized_. We explained this topic in the [Authorizing API calls](/authorization/authorizing-api-calls/) document.
 
 ## RTM API vs. Web API
 
-Agent Chat API and Customer Chat API can be used either as **Real-Time Messaging APIs (RTM APIs)** or **Web APIs**.
+Our Messaging APIs support two forms of transport thus exisiting in the form of **Web APIs** and **Real-time APIs (RTM APIs)**.
 
-To learn about differences between these two API types, see the comparison below:
+To learn about the differences between Web and RTM APIs, analyze the following comparison:
 
-| **Characteristics**                   | **RTM API**                                                                                                                                                 | **Web API**                                                                                                                     |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **connection type**                   | stateful e.g. websocket                                                                                                                                     | stateless, via XHR requests                                                                                                     |
-| **finds out about state changes via** | [pushes](./agent-chat-api/rtm-pushes)                                                                                                                       | [webhooks](./agent-chat-api/#webhooks)                                                                                          |
-| **used by**                           | Agent App, Chat Widget                                                                                                                                      | external apps, integrations                                                                                                     |
-| **documentation**                     | [Agent Chat RTM API](./agent-chat-api/rtm-reference/#when-to-use-rtm-api) & [Customer Chat RTM API](./customer-chat-api/rtm-reference/#when-to-use-rtm-api) | [Agent Chat Web API](./agent-chat-api/#when-to-use-web-api) & [Customer Chat Web API](./customer-chat-api/#when-to-use-web-api) |
-
-If you're not sure, which implementation to choose, we suggest reading about particular APIs. You'll find the **When to use RTM/Web API** section in each document - refer to the table above for links.
+| **Characteristics**   | **Web API**                                                                                                             | **RTM API**                                                                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **connection type**   | stateless, via XHR requests                                                                                             | stateful e.g. websocket                                                                                                                             |
+| **state changes via** | [webhooks](/management/webhooks)                                                                                        | [pushes](./agent-chat-api/rtm-pushes)                                                                                                               |
+| **used by**           | external apps, integrations                                                                                             | LiveChat Agent Application, Chat Widget                                                                                                             |
+| **documentation**     | [Agent Chat API](./agent-chat-api/#when-to-use-web-api) & [Customer Chat API](./customer-chat-api/#when-to-use-web-api) | [Agent Chat API](./agent-chat-api/rtm-reference/#when-to-use-rtm-api) & [Customer Chat API](./customer-chat-api/rtm-reference/#when-to-use-rtm-api) |
 
 ## API Versioning
 
-The LiveChat Messaging API adopts the following versioning convention:
+The LiveChat Messaging APIs adopt the following versioning convention:
 
 - **stable**
 
@@ -136,43 +144,28 @@ The LiveChat Messaging API adopts the following versioning convention:
 | **dev preview** | 3.4            | 3.4               |
 | **legacy**      | 3.1, 3.2       | 3.1, 3.2          |
 
-# Agent Chat API
+# Agent side
 
-## Use cases
+Agent-side communication allows you to chat not only as an agent **but also as a bot** (also known as bot agent). You can perform **simple actions**, such as **browsing archives** and **banning customers**, or use the Plaform's full potential and **build your custom agent application** (a [sample one](/messaging/chat-sdk/#simple-agent) was built using Chat SDK).
 
-The **Agent Chat API** allows for:
+You can call the Agent Chat API directly or use our SDKs built on top of it.
 
-- interactions with the chat as Agent (joining a chat, posting messages)
-- interact with the chat by Bot Agents (acting as Agents)
-- building a custom Agent App
-- browsing chat archives
-- banning Customers
-- and much more
+- <SectionLink to={"/messaging/agent-chat-api/"}>Agent Chat API</SectionLink>
+- <SectionLink to={"/messaging/chat-sdk/"}>Chat SDK</SectionLink>
+- <SectionLink to={"/messaging/go-sdk/"}>LiveChat Go SDK</SectionLink>
+- <SectionLink to={"/messaging/js-sdk/"}>LiveChat JavaScript SDK</SectionLink>
+- <SectionLink to={"/messaging/python-sdk/"}>LiveChat Python SDK</SectionLink>
 
-If you plan on using the **Agent Chat API** as **RTM API**, refer to [Agent Chat RTM API](./agent-chat-api/rtm-reference/). For the **Web API** usage, read the [Agent Chat Web API](./agent-chat-api/) document.
+# Customer side
 
-## Chatting as Agent
+With the Customer Chat API and various SDKs you have the flexibility to build a range of integrations: from **simple apps** to a **custom chat widget** or **new communication channels**.
 
-The number of chats an Agent can participate in is not limited. It can be configured in the Agent App by the license Owner or Admin.
-
-# Customer Chat API
-
-## Use cases
-
-The **Customer Chat API** allows for:
-
-- interacting with the chat as Customer (join a chat, post messages)
-- building a custom Chat Widget
-- implementing new conversation channels (Facebook Messenger or Twitter)
-
-If you plan on using the **Customer Chat API** as **RTM API**, refer to [Customer Chat RTM API](./customer-chat-api/rtm-reference/). For the **Web API** usage, read the [Customer Chat Web API](./customer-chat-api/) document.
-
-## Chatting as Customer
-
-By default, a Customer can only have one chat started, unless he chats with Agents who use different licences. The licence Owner or Admin can change that default value, modifying the `routing.max_customer_chats_count` property. However, in order to support this functionality, you would need to build a custom Chat Widget. For now, the LiveChat Chat Widget doesn't support it. You can build a Chat Widget from the ground up using the [Chat Widget Customer SDK](../extending-ui/extending-chat-widget/customer-sdk/).
-
-Chats are continuous so Customers can always preview their chats' history. Yet, with **multiple concurrent chats** Customers can sort their chats out thematically, making sure they know what each chat is about.
+- <SectionLink to={"/messaging/customer-chat-api/"}>Customer Chat API</SectionLink>
+- <SectionLink to={"/extending-chat-widget/customer-sdk/"}>Customer SDK</SectionLink>
+- <SectionLink to={"/messaging/go-sdk/"}>LiveChat Go SDK</SectionLink>
+- <SectionLink to={"/messaging/js-sdk/"}>LiveChat JavaScript SDK</SectionLink>
+- <SectionLink to={"/messaging/python-sdk/"}>LiveChat Python SDK</SectionLink>
 
 # Contact us
 
-If you still can't find the answer you're looking for, don't hesitate to contact us at <a href="mailto:developers@livechat.com">developers@livechat.com</a>! We're also open for you suggestions and feedback on the document itself.
+If you still can't find the answer you're looking for, don't hesitate to contact us at <a href="mailto:developers@livechat.com">developers@livechat.com</a> or to ask on our [Discord for Developers](https://discord.gg/NcfJu3a9kM).
