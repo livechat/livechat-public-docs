@@ -17,18 +17,48 @@ versionGroup: "chat-widget"
 From the technical perspective, _customer identity_ is an ID assigned to each customer by our API. Based on that ID, we can match customer data and chat history with a specific person using our services. _Customer identity_ is not customer metadata such as name or email. If you would like to pass one of those, you are probably looking for [updating session variables](/extending-chat-widget/javascript-api/#update-session-variables).
 
 ## Setup
-Custom Identity Provider is essentially a singleton function. You can define it as a part of the [LiveChatWidget object](https://developers.livechat.com/docs/extending-chat-widget/javascript-api/#getting-started) from the tracking code used to install ChatWidget on your website or from any other place that has access to the `window._lc` object (in case of more advanced applications). However, **it has to be provided before widget initialization**.
+Custom Identity Provider is essentially a singleton function.
 
 ```js
-    // Custom Identity Provider
-    window.__lc.custom_identity_provider = function() {
-      return {
-          getToken: ...,
-          getFreshToken: ...,
-          hasToken: ...,
-          invalidate: ...
-      }
+// Custom Identity Provider
+function () {
+    return {
+        getToken: ...,
+        getFreshToken: ...,
+        hasToken: ...,
+        invalidate: ...
     }
+}
+```
+
+You can define it as a part of the [LiveChatWidget object](https://developers.livechat.com/docs/extending-chat-widget/javascript-api/#getting-started) from the tracking code used to install ChatWidget on your website or from any other place that has access to the `window._lc` object (in case of more advanced applications). However, **it has to be provided before widget initialization**.
+
+```js
+window.__lc.custom_identity_provider = function () {
+    return {
+        getToken: ...,
+        getFreshToken: ...,
+        hasToken: ...,
+        invalidate: ...
+    }
+}
+```
+
+You can also use it with [Customer SDK](https://developers.livechat.com/docs/extending-chat-widget/customer-sdk#using-the-api) if you build your own chat widget implementation. Pass it through optional `identityProvider` parameter of configuration object.
+
+```js
+const customerSDK = CustomerSDK.init({
+    licenseId: LICENSE_ID,
+    clientId: CLIENT_ID,
+    identityProvider: function () {
+        return {
+            getToken: ...,
+            getFreshToken: ...,
+            hasToken: ...,
+            invalidate: ...
+        }
+    }
+})
 ```
 
 # Methods
