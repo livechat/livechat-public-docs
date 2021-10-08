@@ -1,7 +1,6 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import Image from "next/image";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
@@ -312,7 +311,7 @@ const SectionLink = ({ to, href, children, ...rest }) => {
   return <StyledLink>{children}</StyledLink>;
 };
 
-const Hack = styled.span`
+const HeadingReference = styled.span`
   display: block;
   position: relative;
   margin-top: -60px;
@@ -337,8 +336,8 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h1":
       return (
         <>
-          <Hack id={id} />
-          <H2 {...newProps} name="heading">
+          <HeadingReference id={id} />
+          <H2 {...newProps}>
             <Content />
           </H2>
         </>
@@ -346,8 +345,8 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h2":
       return (
         <>
-          <Hack id={id} />
-          <h3 {...newProps} name="heading">
+          <HeadingReference id={id} />
+          <h3 {...newProps}>
             <Content />
           </h3>
         </>
@@ -355,29 +354,38 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h3":
       return (
         <>
-          <Hack id={id} />
-          <h4 {...newProps} name="heading">
+          <HeadingReference id={id} />
+          <h4 {...newProps}>
             <Content />
           </h4>
         </>
       );
     case "h4":
       return (
-        <h5 {...newProps}>
-          <Content />
-        </h5>
+        <>
+          <HeadingReference id={id} />
+          <h5 {...newProps}>
+            <Content />
+          </h5>
+        </>
       );
     case "h5":
       return (
-        <h6 {...newProps}>
-          <Content />
-        </h6>
+        <>
+          <HeadingReference id={id} />
+          <h6 {...newProps}>
+            <Content />
+          </h6>
+        </>
       );
     case "h6":
       return (
-        <h6 {...newProps}>
-          <Content />
-        </h6>
+        <>
+          <HeadingReference id={id} />
+          <h6 {...newProps}>
+            <Content />
+          </h6>
+        </>
       );
     default:
       return null;

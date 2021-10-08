@@ -6,7 +6,7 @@ import { HomeIcon } from "../icons";
 const HomeIconWrapper = styled.div`
   display: flex;
   align-items: center;
-  @media (min-width: 420px) {
+  @media (min-width: 768px) {
     display: none;
   }
 `;

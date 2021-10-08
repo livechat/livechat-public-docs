@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
+import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -61,9 +62,6 @@ const Page = ({ frontMatter, children }) => {
     slug: customSlug,
   } = frontMatter;
   const router = useRouter();
-
-  //TODO: Mobile version
-  //const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -167,7 +165,12 @@ const Page = ({ frontMatter, children }) => {
                 title={title}
               />
             )}
-            <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
+
+            <MiddleColumn
+              noMargin={useRedocPage}
+              noPadding={useRedocPage}
+              fullWidth={useRedocPage}
+            >
               {currentApiVersion && (
                 <Version
                   articleVersions={
@@ -177,7 +180,10 @@ const Page = ({ frontMatter, children }) => {
                   group={versionGroup}
                 />
               )}
-              <Content className={useRedocPage ? "redoc" : ""}>
+              <Content
+                className={useRedocPage ? "redoc" : ""}
+                noPadding={useRedocPage}
+              >
                 {title && !useRedocPage && <PageHeader title={title} />}
                 {useRedocPage && (
                   <LeftColumnRedoc>
@@ -212,7 +218,8 @@ const Page = ({ frontMatter, children }) => {
                 )}
               </Content>
             </MiddleColumn>
-            {!useRedocPage && <RightSideNav />}
+
+            {!useRedocPage && <RightSideNav version={currentApiVersion} />}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>

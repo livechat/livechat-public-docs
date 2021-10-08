@@ -115,6 +115,7 @@ export const NavHeader = styled.div`
 `;
 
 export const Content = styled.article`
+  padding: 0px ${({ noPadding }) => (noPadding ? "0" : "40px")};
   display: grid;
   grid-gap: 0 30px;
 
@@ -140,35 +141,19 @@ export const Content = styled.article`
 `;
 
 export const MainWrapper = styled.div`
-  padding-right: 15px;
   display: flex;
-
-  @media (min-width: 420px) {
-    flex-direction: row;
-  }
-  flex-direction: column-reverse;
-
-  @media (min-width: 768px) {
-    padding: 0 20px 0 0;
-  }
-
-  @media (min-width: 1024px) {
-    padding: 0 30px 0 0;
-  }
 `;
 
 export const LeftColumn = styled.div``;
 
 export const MiddleColumn = styled.div`
-  max-width: calc(100%-480px);
+  width: 100%;
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
-  z-index: 1;
-  margin-left: 20px;
-  @media (min-width: 420px) {
-    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "290px")};
+  @media (min-width: 768px) {
+    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "240px")};
   }
-  width: calc(100%- 240px);
+  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-240px)" : "800px")};
 `;
 
 export const LeftColumnRedoc = styled.div`
