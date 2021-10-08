@@ -1,9 +1,11 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
+import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { LiveChatLogo, CategoryIcon } from "./icons";
+import { Search } from "./Search";
 import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
@@ -11,18 +13,18 @@ import { logAmplitudeEvent } from "../../utils/index";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
-  height: ${(props) => (props.promoIsActive ? "100px" : "60px")};
-  display: none;
+  height: ${(props) => (props.isSearchOpen ? "110px" : "60px")};
+  @media (min-width: 768px) {
+    height: ${(props) => (props.promoIsActive ? "100px" : "60px")};
+  }
   align-items: center;
   position: sticky;
   top: 0;
   width: 100%;
   font-family: "Colfax";
   z-index: 99;
-  @media (min-width: 768px) {
-    flex-direction: column;
-    display: flex;
-  }
+  flex-direction: column;
+  display: flex;
 `;
 
 const MenuWrapper = styled.div`
@@ -31,6 +33,10 @@ const MenuWrapper = styled.div`
   width: 100%;
   font-family: "Colfax";
   display: flex;
+  justify-content: space-between;
+  @media (min-width: 768px) {
+    justify-content: normal;
+  }
 `;
 
 const PromoBanner = styled.div`
@@ -62,6 +68,10 @@ const MenuListWrapper = styled.div`
   max-width: 100%;
   width: 100%;
   overflow-x: auto;
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
+  }
 `;
 
 const MenuList = styled.ul`
@@ -107,6 +117,32 @@ const VLine = styled.div`
   height: 28px;
   width: 1px;
   margin: 0 10px;
+`;
+
+const SearchIconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (min-width: 768px) {
+    display: none;
+  }
+  width: 32px;
+  height: 32px;
+  margin: 10px 10px 0px 0px;
+  cursor: pointer;
+  border-radius: 100%;
+  background-color: ${({ openSearch }) => (openSearch ? "#6E6E7C" : "")};
+`;
+
+const SearchField = styled.div`
+  background-color: #4a4a55;
+  height: 50px;
+  width: 100%;
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  padding: 0px 10px;
 `;
 
 const linkStyle = {
@@ -169,9 +205,14 @@ const Header = () => {
   );
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
+  const [openSearch, setOpenSearch] = useState(false);
 
   return (
-    <HeaderWrapper id="header" promoIsActive={isActive}>
+    <HeaderWrapper
+      id="header"
+      promoIsActive={isActive}
+      isSearchOpen={openSearch}
+    >
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
@@ -203,7 +244,18 @@ const Header = () => {
             />
           </MenuList>
         </MenuListWrapper>
+        <SearchIconWrapper
+          openSearch={openSearch}
+          onClick={() => setOpenSearch(!openSearch)}
+        >
+          <Magnify fill="white" />
+        </SearchIconWrapper>
       </MenuWrapper>
+      {openSearch && (
+        <SearchField>
+          <Search />
+        </SearchField>
+      )}
     </HeaderWrapper>
   );
 };

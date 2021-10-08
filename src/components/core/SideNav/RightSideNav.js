@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { string } from "prop-types";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
@@ -11,17 +12,17 @@ const Header = styled.div`
 `;
 
 const Wrapper = styled.div`
-  @media (min-width: 420px) {
+  @media (min-width: 768px) {
     display: block;
   }
   display: none;
 
-  width: 240px;
+  width: 270px;
   padding-left: 10px;
-  margin: 100px 0px;
+  margin: 211px 0px 0px 0px;
   overflow: scroll;
-  height: 600px;
-  top: 100px;
+  height: 700px;
+  top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
 `;
@@ -38,7 +39,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const RightSideNav = () => {
+const RightSideNav = ({ version }) => {
   const router = useRouter();
   const pathname = router.pathname;
   const headings = articles.find((article) => article.link === pathname + "/")
@@ -81,7 +82,7 @@ const RightSideNav = () => {
   }
 
   return (
-    <Wrapper>
+    <Wrapper isVersioned={version}>
       <Header>On the page</Header>
       {headings?.map((heading) => {
         return (
@@ -98,6 +99,10 @@ const RightSideNav = () => {
       })}
     </Wrapper>
   );
+};
+
+RightSideNav.propTypes = {
+  version: string,
 };
 
 export default RightSideNav;

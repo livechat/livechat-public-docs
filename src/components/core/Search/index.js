@@ -6,6 +6,7 @@ import { setupDocsearch } from "../../../utils";
 
 export const SearchWrapper = styled.div`
   position: relative;
+  width: 100%;
 
   &:before {
     content: "";

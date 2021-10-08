@@ -132,12 +132,7 @@ export const Sample = styled.div`
 `;
 
 export const Section = styled.section`
-  display: flex;
-  max-width: 1400px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  max-width: 830px;
 `;
 
 const CodeWrapper = styled.div`
