@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
-import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -28,8 +27,8 @@ import {
 } from "../core/components";
 import { Search } from "../core/Search";
 import { SideNav } from "../core/SideNav";
-const RightSideNav = dynamic(
-  () => import("../core/SideNav").then((mod) => mod.RightSideNav),
+const ContentSideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
   { ssr: false, loading: () => <p>...</p> }
 );
 import Rating from "../core/Rating";
@@ -219,7 +218,7 @@ const Page = ({ frontMatter, children }) => {
               </Content>
             </MiddleColumn>
 
-            {!useRedocPage && <RightSideNav version={currentApiVersion} />}
+            {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>

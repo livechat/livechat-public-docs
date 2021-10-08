@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import categories from "../../../configs/categories";
@@ -10,8 +9,7 @@ const Wrapper = styled.div`
   height: 100%;
   width: 100%;
   position: fixed;
-
-  @media (min-width: 768px) {
+  @media (min-width: 420px) {
     width: 240px;
   }
 `;
@@ -58,7 +56,7 @@ const iconStyle = {
   height: "15px",
 };
 
-const CategorySidebar = () => {
+const CategoryMenu = () => {
   return (
     <Wrapper>
       {categories.map((category) => {
@@ -79,6 +77,4 @@ const CategorySidebar = () => {
   );
 };
 
-CategorySidebar.propTypes = {};
-
-export default CategorySidebar;
+export default CategoryMenu;
