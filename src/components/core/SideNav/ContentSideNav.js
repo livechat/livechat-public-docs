@@ -39,7 +39,7 @@ const StyledLink = styled.a`
   }
 `;
 
-const RightSideNav = ({ version }) => {
+const ContentSideNav = ({ version }) => {
   const router = useRouter();
   const pathname = router.pathname;
   const headings = articles.find((article) => article.link === pathname + "/")
@@ -66,7 +66,8 @@ const RightSideNav = ({ version }) => {
       const elem = map
         .filter(
           ({ offsetTop, clientHeight }) =>
-            offsetTop - clientHeight / 3 <= currentPosition + 60
+            offsetTop - clientHeight / 3 <=
+            currentPosition + 60 + (version ? 20 : 0)
         )
         .slice(-1)[0];
 
@@ -101,8 +102,8 @@ const RightSideNav = ({ version }) => {
   );
 };
 
-RightSideNav.propTypes = {
+ContentSideNav.propTypes = {
   version: string,
 };
 
-export default RightSideNav;
+export default ContentSideNav;

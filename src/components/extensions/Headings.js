@@ -1,11 +1,13 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
+import versionedArticles from "../../configs/versionedArticles.json";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -314,8 +316,8 @@ const SectionLink = ({ to, href, children, ...rest }) => {
 const HeadingReference = styled.span`
   display: block;
   position: relative;
-  margin-top: -60px;
-  height: 60px;
+  margin-top: ${({ isVersioned }) => (isVersioned ? "-80px" : "-60px")};
+  height: ${({ isVersioned }) => (isVersioned ? "80px" : "60px")};
   visibility: hidden;
 `;
 
@@ -323,6 +325,9 @@ const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
 
   const id = props.id;
+  const router = useRouter();
+  const pathname = router.pathname;
+  const isVersionedPage = versionedArticles.includes(pathname + "/");
 
   const newProps = { ...props, className };
 
@@ -336,7 +341,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h1":
       return (
         <>
-          <HeadingReference id={id} />
+          <HeadingReference id={id} isVersioned={isVersionedPage} />
           <H2 {...newProps}>
             <Content />
           </H2>
@@ -345,7 +350,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h2":
       return (
         <>
-          <HeadingReference id={id} />
+          <HeadingReference id={id} isVersioned={isVersionedPage} />
           <h3 {...newProps}>
             <Content />
           </h3>
@@ -354,7 +359,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h3":
       return (
         <>
-          <HeadingReference id={id} />
+          <HeadingReference id={id} isVersioned={isVersionedPage} />
           <h4 {...newProps}>
             <Content />
           </h4>
@@ -363,7 +368,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h4":
       return (
         <>
-          <HeadingReference id={id} />
+          <HeadingReference id={id} isVersioned={isVersionedPage} />
           <h5 {...newProps}>
             <Content />
           </h5>
@@ -372,7 +377,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h5":
       return (
         <>
-          <HeadingReference id={id} />
+          <HeadingReference id={id} isVersioned={isVersionedPage} />
           <h6 {...newProps}>
             <Content />
           </h6>
@@ -381,7 +386,7 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h6":
       return (
         <>
-          <HeadingReference id={id} />
+          <HeadingReference id={id} isVersioned={isVersionedPage} />
           <h6 {...newProps}>
             <Content />
           </h6>

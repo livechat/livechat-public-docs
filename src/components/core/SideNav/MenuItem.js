@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { ArticleIcon } from "../icons";
 
 const LinkWrapper = styled.div`
-  padding: 8px 16px;
+  padding: 8px 16px 8px ${({ isSubItem }) => (isSubItem ? "20px" : "8px")};
   margin-right: 10px;
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   background-color: ${({ isActive }) => (isActive ? "#F6F6F7" : "")};
@@ -34,13 +34,13 @@ const StyledLink = styled.a`
   }
 `;
 
-const MenuItem = ({ link, pathname, iconFill, title }) => {
+const MenuItem = ({ link, pathname, iconFill, title, isSubItem }) => {
   return (
     <Link href={link}>
       <StyledLink>
-        <LinkWrapper isActive={pathname + "/" === link}>
+        <LinkWrapper isActive={pathname + "/" === link} isSubItem={isSubItem}>
           <IconWrapper>
-            <ArticleIcon fill="#ABABB1" />
+            <ArticleIcon fill={iconFill} />
           </IconWrapper>
           {title}
         </LinkWrapper>

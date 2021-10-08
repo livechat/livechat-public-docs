@@ -3,11 +3,13 @@ import { string } from "prop-types";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
+import containers from "../../../configs/containers.json";
 import { ChevronRight } from "../icons";
 import { Search } from "../Search";
-import CategorySidebar from "./CategorySidebar";
+import CategoryMenu from "./CategoryMenu";
 import HomeItem from "./HomeItem";
 import MenuItem from "./MenuItem";
+import NestedMenu from "./NestedMenu";
 
 const Wrapper = styled.div`
   border: 1px solid #e2e2e4;
@@ -69,7 +71,11 @@ const SideNav = ({ category, version = "3.3", title }) => {
   const router = useRouter();
   const pathname = router.pathname;
   const [expand, setExpand] = useState(false);
-  const isHomeDir = pathname !== "/";
+  const isHomeDir = pathname === "/";
+  const isNestedDir =
+    !isHomeDir &&
+    containers.find((container) => container.category === category)?.items
+      ?.length > 0;
 
   return (
     <Wrapper isExpanded={expand}>
@@ -77,12 +83,16 @@ const SideNav = ({ category, version = "3.3", title }) => {
         <ChevronRight style={!expand ? openIconStyle : closeIconStyle} />
         {title}
       </MenuIntro>
-      {isHomeDir && <HomeItem />}
+      {!isHomeDir && <HomeItem />}
       <SearchWrapper>
         <Search />
       </SearchWrapper>
 
       {isHomeDir ? (
+        <CategoryMenu />
+      ) : isNestedDir ? (
+        <NestedMenu category={category} version={version} />
+      ) : (
         articles
           .filter((article) => article.category === category)
           .filter(
@@ -101,8 +111,6 @@ const SideNav = ({ category, version = "3.3", title }) => {
               iconFill="#ABABB1"
             />
           ))
-      ) : (
-        <CategorySidebar />
       )}
     </Wrapper>
   );

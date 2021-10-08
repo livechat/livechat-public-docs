@@ -12,7 +12,7 @@ const HomeIconWrapper = styled.div`
 `;
 
 const LinkWrapper = styled.div`
-  padding: 8px 12px;
+  padding: 8px 4px;
   display: flex;
   align-items: center;
   font-size: 14px;
