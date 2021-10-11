@@ -322,14 +322,10 @@ const HeadingReference = styled.span`
 `;
 
 const makeHeading = (size) => ({ children, ...props }) => {
-  const className = "heading";
-
   const id = props.id;
   const router = useRouter();
   const pathname = router.pathname;
   const isVersionedPage = versionedArticles.includes(pathname + "/");
-
-  const newProps = { ...props, className };
 
   const Content = () => (
     <>
@@ -341,8 +337,12 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h1":
       return (
         <>
-          <HeadingReference id={id} isVersioned={isVersionedPage} />
-          <H2 {...newProps}>
+          <HeadingReference
+            id={id}
+            isVersioned={isVersionedPage}
+            className="reference"
+          />
+          <H2>
             <Content />
           </H2>
         </>
@@ -350,8 +350,12 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h2":
       return (
         <>
-          <HeadingReference id={id} isVersioned={isVersionedPage} />
-          <h3 {...newProps}>
+          <HeadingReference
+            id={id}
+            isVersioned={isVersionedPage}
+            className="reference"
+          />
+          <h3>
             <Content />
           </h3>
         </>
@@ -359,8 +363,12 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h3":
       return (
         <>
-          <HeadingReference id={id} isVersioned={isVersionedPage} />
-          <h4 {...newProps}>
+          <HeadingReference
+            id={id}
+            isVersioned={isVersionedPage}
+            className="reference"
+          />
+          <h4>
             <Content />
           </h4>
         </>
@@ -368,8 +376,12 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h4":
       return (
         <>
-          <HeadingReference id={id} isVersioned={isVersionedPage} />
-          <h5 {...newProps}>
+          <HeadingReference
+            id={id}
+            isVersioned={isVersionedPage}
+            className="reference"
+          />
+          <h5>
             <Content />
           </h5>
         </>
@@ -377,8 +389,12 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h5":
       return (
         <>
-          <HeadingReference id={id} isVersioned={isVersionedPage} />
-          <h6 {...newProps}>
+          <HeadingReference
+            id={id}
+            isVersioned={isVersionedPage}
+            className="reference"
+          />
+          <h6>
             <Content />
           </h6>
         </>
@@ -386,8 +402,12 @@ const makeHeading = (size) => ({ children, ...props }) => {
     case "h6":
       return (
         <>
-          <HeadingReference id={id} isVersioned={isVersionedPage} />
-          <h6 {...newProps}>
+          <HeadingReference
+            id={id}
+            isVersioned={isVersionedPage}
+            className="reference"
+          />
+          <h6>
             <Content />
           </h6>
         </>

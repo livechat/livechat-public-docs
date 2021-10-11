@@ -50,7 +50,7 @@ const ContentSideNav = ({ version }) => {
 
   useEffect(() => {
     const onScroll = () => {
-      const map = Array.from(document.getElementsByClassName("heading"))
+      const map = Array.from(document.getElementsByClassName("reference"))
         .map(({ id, offsetTop, clientHeight }) => ({
           id,
           offsetTop,
