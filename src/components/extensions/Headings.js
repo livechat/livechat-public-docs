@@ -322,95 +322,54 @@ const HeadingReference = styled.span`
 `;
 
 const makeHeading = (size) => ({ children, ...props }) => {
-  const id = props.id;
-  const router = useRouter();
-  const pathname = router.pathname;
-  const isVersionedPage = versionedArticles.includes(pathname + "/");
+  const className = "heading reference";
+
+  const { id, ...rest } = props;
+
+  const newProps = { ...rest, className };
 
   const Content = () => (
-    <>
-      <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
-    </>
+    <HeadingLink id={id} href={`#${id}`}>
+      {getText(children)}
+    </HeadingLink>
   );
 
   switch (size) {
     case "h1":
       return (
-        <>
-          <HeadingReference
-            id={id}
-            isVersioned={isVersionedPage}
-            className="reference"
-          />
-          <H2>
-            <Content />
-          </H2>
-        </>
+        <H2 {...newProps}>
+          <Content />
+        </H2>
       );
     case "h2":
       return (
-        <>
-          <HeadingReference
-            id={id}
-            isVersioned={isVersionedPage}
-            className="reference"
-          />
-          <h3>
-            <Content />
-          </h3>
-        </>
+        <h3 {...newProps}>
+          <Content />
+        </h3>
       );
     case "h3":
       return (
-        <>
-          <HeadingReference
-            id={id}
-            isVersioned={isVersionedPage}
-            className="reference"
-          />
-          <h4>
-            <Content />
-          </h4>
-        </>
+        <h4 {...newProps}>
+          <Content />
+        </h4>
       );
     case "h4":
       return (
-        <>
-          <HeadingReference
-            id={id}
-            isVersioned={isVersionedPage}
-            className="reference"
-          />
-          <h5>
-            <Content />
-          </h5>
-        </>
+        <h5 {...newProps}>
+          <Content />
+        </h5>
       );
     case "h5":
       return (
-        <>
-          <HeadingReference
-            id={id}
-            isVersioned={isVersionedPage}
-            className="reference"
-          />
-          <h6>
-            <Content />
-          </h6>
-        </>
+        <h6 {...newProps}>
+          <Content />
+        </h6>
       );
     case "h6":
       return (
-        <>
-          <HeadingReference
-            id={id}
-            isVersioned={isVersionedPage}
-            className="reference"
-          />
-          <h6>
-            <Content />
-          </h6>
-        </>
+        <h6 {...newProps}>
+          <Content />
+        </h6>
       );
     default:
       return null;
