@@ -44,7 +44,6 @@ const SearchWrapper = styled.div`
   }
 
   padding: 8.5px 10px;
-  border-bottom: 1px solid #e2e2e4;
 `;
 
 const MenuIntro = styled.div`
@@ -108,7 +107,7 @@ const SideNav = ({ category, version = "3.3", title }) => {
               key={article.link}
               title={article.title}
               pathname={pathname}
-              iconFill="#ABABB1"
+              iconFill="#424D57"
             />
           ))
       )}

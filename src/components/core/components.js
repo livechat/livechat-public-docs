@@ -153,7 +153,7 @@ export const MiddleColumn = styled.div`
   @media (min-width: 768px) {
     margin-left: ${({ noMargin }) => (noMargin ? "0px" : "240px")};
   }
-  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-240px)" : "800px")};
+  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-240px)" : "900px")};
 `;
 
 export const LeftColumnRedoc = styled.div`

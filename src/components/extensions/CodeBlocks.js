@@ -137,21 +137,13 @@ export const Section = styled.section`
 
 const CodeWrapper = styled.div`
   width: 100%;
-  flex-basis: 100%;
-
-  flex-shrink: 0;
-  flex-grow: 1;
 
   @media (min-width: 768px) {
-    flex-basis: 410px;
-    max-width: 410px;
-    padding: 80px 0 30px 25px;
+    padding: 80px 25px 30px 25px;
   }
 
   @media (min-width: 1200px) {
-    flex-basis: 460px;
-    max-width: 460px;
-    padding: 80px 0 30px 25px;
+    padding: 80px 25px 30px 25px;
   }
 `;
 

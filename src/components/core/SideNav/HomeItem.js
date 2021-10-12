@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import { HomeIcon } from "../icons";
+import Home from "react-material-icon-svg/dist/Home";
 
 const HomeIconWrapper = styled.div`
   display: flex;
@@ -12,15 +12,16 @@ const HomeIconWrapper = styled.div`
 `;
 
 const LinkWrapper = styled.div`
-  padding: 8px 4px;
+  padding: 4px;
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: 16px;
 `;
 
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: start;
 `;
 
 const StyledLink = styled.a`
@@ -41,7 +42,7 @@ const HomeItem = () => {
         <StyledLink>
           <LinkWrapper>
             <IconWrapper>
-              <HomeIcon width="20px" height="25px" />
+              <Home fill="#ABABB1" height="20px" />
             </IconWrapper>
             Home
           </LinkWrapper>

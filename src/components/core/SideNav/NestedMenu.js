@@ -22,35 +22,24 @@ const NestedMenu = ({ category, version = "3.3" }) => {
     const displaySubNav = isNotBasePath && isActivePath && hasSubItems;
 
     return (
-      <>
-        <MenuItem
-          title={item.title}
-          link={item.slug}
-          key={item.slug}
-          pathname={pathname}
-          iconFill="#ABABB1"
-        />
-        {displaySubNav &&
-          subItems
-            .filter((article) => article.category === category)
-            .filter(
-              (article) =>
-                !("apiVersion" in article) || article.apiVersion === version
-            )
-            .sort((a, b) => {
-              return a.weight - b.weight;
-            })
-            .map((article) => (
-              <MenuItem
-                link={article.link}
-                key={article.link}
-                title={article.title}
-                pathname={pathname}
-                iconFill="#ABABB1"
-                isSubItem={true}
-              />
-            ))}
-      </>
+      <MenuItem
+        title={item.title}
+        link={item.slug}
+        key={item.slug}
+        pathname={pathname}
+        iconFill="#ABABB1"
+        isOpen={displaySubNav}
+        items={subItems
+          .filter((article) => article.category === category)
+          .filter(
+            (article) =>
+              !("apiVersion" in article) || article.apiVersion === version
+          )
+          .sort((a, b) => {
+            return a.weight - b.weight;
+          })}
+        isNotBasePath={isNotBasePath}
+      />
     );
   });
 };
