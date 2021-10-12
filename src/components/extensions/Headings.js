@@ -11,7 +11,6 @@ const HeadingLink = styled.a`
   color: inherit;
   text-decoration: none;
   position: relative;
-  scroll-margin-top: 130px;
   &:hover {
     color: inherit;
     text-decoration: none;
@@ -155,15 +154,6 @@ export const getText = (children) => {
 const H2 = styled.h2`
   border-bottom: 1px solid #e0e4e9;
   padding-bottom: 0.5em;
-
-  &:before {
-    content: " ";
-    display: block;
-    position: relative;
-    margin-top: -80px;
-    height: 80px;
-    visibility: hidden;
-  }
 `;
 
 const TableWrapper = styled.div`
@@ -321,17 +311,6 @@ const SectionLink = ({ to, href, children, ...rest }) => {
   return <StyledLink>{children}</StyledLink>;
 };
 
-const headingCss = () => css`
-  &:before {
-    content: " ";
-    display: block;
-    position: relative;
-    margin-top: -80px;
-    height: 80px;
-    visibility: hidden;
-  }
-`;
-
 const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
 
@@ -353,31 +332,31 @@ const makeHeading = (size) => ({ children, ...props }) => {
       );
     case "h2":
       return (
-        <h3 css={headingCss} {...newProps}>
+        <h3 {...newProps}>
           <Content />
         </h3>
       );
     case "h3":
       return (
-        <h4 css={headingCss} {...newProps}>
+        <h4 {...newProps}>
           <Content />
         </h4>
       );
     case "h4":
       return (
-        <h5 css={headingCss} {...newProps}>
+        <h5 {...newProps}>
           <Content />
         </h5>
       );
     case "h5":
       return (
-        <h6 css={headingCss} {...newProps}>
+        <h6 {...newProps}>
           <Content />
         </h6>
       );
     case "h6":
       return (
-        <h6 css={headingCss} {...newProps}>
+        <h6 {...newProps}>
           <Content />
         </h6>
       );
