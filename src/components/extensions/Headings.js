@@ -1,18 +1,17 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
-import versionedArticles from "../../configs/versionedArticles.json";
 
 const HeadingLink = styled.a`
   color: inherit;
   text-decoration: none;
   position: relative;
+  scroll-margin-top: 130px;
   &:hover {
     color: inherit;
     text-decoration: none;
@@ -156,6 +155,15 @@ export const getText = (children) => {
 const H2 = styled.h2`
   border-bottom: 1px solid #e0e4e9;
   padding-bottom: 0.5em;
+
+  &:before {
+    content: " ";
+    display: block;
+    position: relative;
+    margin-top: -80px;
+    height: 80px;
+    visibility: hidden;
+  }
 `;
 
 const TableWrapper = styled.div`
@@ -313,23 +321,25 @@ const SectionLink = ({ to, href, children, ...rest }) => {
   return <StyledLink>{children}</StyledLink>;
 };
 
-const HeadingReference = styled.span`
-  display: block;
-  position: relative;
-  margin-top: ${({ isVersioned }) => (isVersioned ? "-80px" : "-60px")};
-  height: ${({ isVersioned }) => (isVersioned ? "80px" : "60px")};
-  visibility: hidden;
+const headingCss = () => css`
+  &:before {
+    content: " ";
+    display: block;
+    position: relative;
+    margin-top: -80px;
+    height: 80px;
+    visibility: hidden;
+  }
 `;
 
 const makeHeading = (size) => ({ children, ...props }) => {
-  const className = "heading reference";
+  const className = "heading";
 
   const { id, ...rest } = props;
-
   const newProps = { ...rest, className };
 
   const Content = () => (
-    <HeadingLink id={id} href={`#${id}`}>
+    <HeadingLink id={id} href={`#${id}`} className="reference">
       {getText(children)}
     </HeadingLink>
   );
@@ -343,31 +353,31 @@ const makeHeading = (size) => ({ children, ...props }) => {
       );
     case "h2":
       return (
-        <h3 {...newProps}>
+        <h3 css={headingCss} {...newProps}>
           <Content />
         </h3>
       );
     case "h3":
       return (
-        <h4 {...newProps}>
+        <h4 css={headingCss} {...newProps}>
           <Content />
         </h4>
       );
     case "h4":
       return (
-        <h5 {...newProps}>
+        <h5 css={headingCss} {...newProps}>
           <Content />
         </h5>
       );
     case "h5":
       return (
-        <h6 {...newProps}>
+        <h6 css={headingCss} {...newProps}>
           <Content />
         </h6>
       );
     case "h6":
       return (
-        <h6 {...newProps}>
+        <h6 css={headingCss} {...newProps}>
           <Content />
         </h6>
       );

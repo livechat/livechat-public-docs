@@ -9,6 +9,7 @@ const Header = styled.div`
   font-weight: 700;
   color: #424d57;
   border-bottom: 1px solid #e2e2e4;
+  margin-bottom: 10px;
 `;
 
 const Wrapper = styled.div`
@@ -29,6 +30,7 @@ const Wrapper = styled.div`
 
 const StyledLink = styled.a`
   color: ${({ isActive }) => (isActive ? "#328DFF" : "#5e6c78")};
+  transition: color 200ms;
   font-size: 14px;
   padding-left: ${({ isSubheading }) => (isSubheading ? "10px" : "0px")};
   font-weight: 500;
@@ -67,7 +69,7 @@ const ContentSideNav = ({ version }) => {
         .filter(
           ({ offsetTop, clientHeight }) =>
             offsetTop - clientHeight / 3 <=
-            currentPosition + 60 + (version ? 20 : 0)
+            currentPosition + 100 + (version ? 20 : 0)
         )
         .slice(-1)[0];
 
@@ -84,7 +86,7 @@ const ContentSideNav = ({ version }) => {
 
   return (
     <Wrapper isVersioned={version}>
-      <Header>On the page</Header>
+      <Header>On this page</Header>
       {headings?.map((heading) => {
         return (
           <div key={heading.slug}>

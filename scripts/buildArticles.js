@@ -8,7 +8,6 @@ const articlesDirectory = path.join(process.cwd(), "src/pages/");
 const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
 var articles = [];
-var versionedPaths = [];
 
 getDirectories(articlesDirectory, (err, res) => {
   const paths = res;
@@ -28,10 +27,6 @@ getDirectories(articlesDirectory, (err, res) => {
 
       const regex = /^[\#]+ (.*)/gm;
       const matches = content.match(regex);
-
-      if (typeof apiVersion === "string") {
-        versionedPaths.push(link);
-      }
 
       if (matches) {
         const occurrences = [];
@@ -104,15 +99,8 @@ getDirectories(articlesDirectory, (err, res) => {
       }
     });
   const articlesJSON = JSON.stringify(articles, null, "\t");
-  const pathsJSON = JSON.stringify(versionedPaths, null, "\t");
 
   fs.writeFile("./src/configs/articles.json", articlesJSON, (err) => {
-    if (err) {
-      throw err;
-    }
-  });
-
-  fs.writeFile("./src/configs/versionedArticles.json", pathsJSON, (err) => {
     if (err) {
       throw err;
     }

@@ -1,11 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import categories from "../../../configs/categories";
-import { CategoryIcon } from "../icons";
+import PlayCircleOutline from "react-material-icon-svg/dist/PlayCircleOutline";
+import Lock from "react-material-icon-svg/dist/Lock";
+import Forum from "react-material-icon-svg/dist/Forum";
+import Laptop from "react-material-icon-svg/dist/Laptop";
+import MessageProcessing from "react-material-icon-svg/dist/MessageProcessing";
+import Cog from "react-material-icon-svg/dist/Cog";
+import Poll from "react-material-icon-svg/dist/Poll";
+import CurrencyUsd from "react-material-icon-svg/dist/CurrencyUsd";
 
 const Wrapper = styled.div`
-  padding-top: 10px;
   height: 100%;
   width: 100%;
   position: fixed;
@@ -15,11 +20,12 @@ const Wrapper = styled.div`
 `;
 
 const LinkWrapper = styled.div`
-  padding: 8px 16px;
+  padding: 4px 10px;
   margin-right: 10px;
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 24px;
   border-radius: 0px 8px 8px 0px;
   &:hover {
     background-color: #f6f6f7;
@@ -32,6 +38,7 @@ const IconWrapper = styled.div`
   justify-content: center;
   width: 20px;
   height: 20px;
+  margin-right: 10px;
 `;
 
 const StyledLink = styled.a`
@@ -44,29 +51,58 @@ const StyledLink = styled.a`
   }
 `;
 
-const iconStyle = {
-  marginRight: "5px",
-  marginBottom: "1px",
-  position: "relative",
-  top: "0px",
-  bottom: "0px",
-  right: "0px",
-  left: "0px",
-  width: "15px",
-  height: "15px",
-};
+const categories = [
+  {
+    slug: "getting-started",
+    title: "Getting Started",
+    icon: <PlayCircleOutline fill="#424D57" />,
+  },
+  {
+    slug: "authorization",
+    title: "Authorization",
+    icon: <Lock fill="#424D57" />,
+  },
+  {
+    slug: "messaging",
+    title: "Messaging",
+    icon: <Forum fill="#424D57" />,
+  },
+  {
+    slug: "extending-agent-app",
+    title: "Agent App",
+    icon: <Laptop fill="#424D57" />,
+  },
+  {
+    slug: "extending-chat-widget",
+    title: "Chat Widget",
+    icon: <MessageProcessing fill="#424D57" />,
+  },
+  {
+    slug: "management",
+    title: "Management",
+    icon: <Cog fill="#424D57" />,
+  },
+  {
+    slug: "data-reporting",
+    title: "Reporting",
+    icon: <Poll fill="#424D57" />,
+  },
+  {
+    slug: "monetization",
+    title: "Monetization",
+    icon: <CurrencyUsd fill="#424D57" />,
+  },
+];
 
 const CategoryMenu = () => {
   return (
     <Wrapper>
       {categories.map((category) => {
         return (
-          <Link href={"/" + category.slug} key={category.key}>
+          <Link href={"/" + category.slug} key={category.slug}>
             <StyledLink>
               <LinkWrapper>
-                <IconWrapper>
-                  <CategoryIcon category={category.slug} style={iconStyle} />
-                </IconWrapper>
+                <IconWrapper>{category.icon}</IconWrapper>
                 {category.title}
               </LinkWrapper>
             </StyledLink>
