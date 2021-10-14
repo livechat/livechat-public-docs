@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { string } from "prop-types";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
 
@@ -90,13 +91,14 @@ const ContentSideNav = ({ version }) => {
       {headings?.map((heading) => {
         return (
           <div key={heading.slug}>
-            <StyledLink
-              href={"/docs" + heading.link}
-              isActive={heading.link === activeHeading}
-              isSubheading={heading.isSubheading}
-            >
-              {heading.title}
-            </StyledLink>
+            <Link href={heading.link} passHref>
+              <StyledLink
+                isActive={heading.link === activeHeading}
+                isSubheading={heading.isSubheading}
+              >
+                {heading.title}
+              </StyledLink>
+            </Link>
           </div>
         );
       })}
