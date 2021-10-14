@@ -3,6 +3,7 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import Image from "next/image";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
@@ -98,10 +99,7 @@ const Img = ({ ...props }) => {
   const imageWidth = props.width.replace("px", "");
 
   return (
-    <div css={imgWrapper}>
-      <div css={() => boxStyles(imageHeight, imageWidth)}></div>
-      <img {...props} src={src} decoding="async" css={imgStyles} />
-    </div>
+    <Image src={src} width={imageWidth} height={imageHeight} quality="100" />
   );
 };
 
