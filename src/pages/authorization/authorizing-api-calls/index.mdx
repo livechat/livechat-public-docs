@@ -111,7 +111,7 @@ https://accounts.livechat.com/
 | --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `response_type` | yes      | Value: `token`                                                                                                                                                                                                                                                              |
 | `client_id`     | yes      | **Client Id** from Developer Console (Authorization block)                                                                                                                                                                                                                  |
-| `redirect_uri`  | yes      | One of the URLs defined in the Authorization block during app configuration.The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                                                                               |
+| `redirect_uri`  | yes      | One of the URIs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                                                                               |
 | `state`         | no       | Any value that might be useful to your application. It's strongly recommended to include an anti-forgery token to mitigate the <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery" target="_blank" rel="noopener noreferrer">cross-site request forgery</a>. |
 | `prompt`        | no       | Value: `consent`. **For testing purposes.** It forces the app to ask for access to certain resources. It’s necessary for you to test the app as if you were a user who installs the app from Marketplace.                                                                   |
 
@@ -318,7 +318,7 @@ https://accounts.livechat.com/
 | ----------------------- | -------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `response_type`         | yes      | yes                | Value: `code`                                                                                                                                                                                                          |
 | `client_id`             | yes      | yes                | **Client Id** from Developer Console (Authorization block)                                                                                                                                                             |
-| `redirect_uri`          | yes      | yes                | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                         |
+| `redirect_uri`          | yes      | yes                | One of the URIs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization.                                         |
 | `state`                 | no       | no                 | Any value that might be useful to your application. It's strongly recommended to include an anti-forgery token to mitigate the [cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery). |
 | `code_challenge`        | no       | yes                | A string between 43 and 128 characters long.                                                                                                                                                                           |
 | `code_challenge_method` | -        | no                 | Possible values: `s256` or `plain`; default: `plain`.                                                                                                                                                                  |
@@ -542,7 +542,7 @@ The response is a JSON with the following parameters:
 curl "https://accounts.livechat.com/v2/token" \
   -X POST \
   -d "grant_type=refresh_token&\
-  refresh_token=-dal:test_gfalskcakg2347o8326&\
+  refresh_token=dal:test_gfalskcakg2347o8326&\
   client_id=9cbf3a968289727cb3cdfe83ab1d9836&\
   client_secret=test_d7MEp1YYo3"
 ```
@@ -554,7 +554,7 @@ curl "https://accounts.livechat.com/v2/token" \
 curl "https://accounts.livechat.com/v2/token" \
   -X POST \
   -d "grant_type=refresh_token&\
-  refresh_token=-dal:test_gfalskcakg2347o8326&\
+  refresh_token=dal:test_gfalskcakg2347o8326&\
   client_id=9cbf3a968289727cb3cdfe83ab1d9836&"
 ```
 
@@ -726,7 +726,7 @@ https://accounts.livechat.com/customer/token
 | `client_id`     | yes      | Client ID of your application                                                                                                                                                                                             |
 | `response_type` | yes      | Value: `token`                                                                                                                                                                                                            |
 | `license_id`    | yes      | License ID for which the token is being issued                                                                                                                                                                            |
-| `redirect_uri`  | no       | One of the URLs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization. Default: the value of the `Origin` header. |
+| `redirect_uri`  | no       | One of the URIs defined in the Authorization block during app configuration. The LiveChat OAuth Server will redirect the user back to this URL after successful authorization. Default: the value of the `Origin` header. |
 
 #### Response
 
@@ -793,7 +793,6 @@ To achieve that, make the same exact same request as in [Case: New customer](#ca
 
 Your `entity_id`, or any other customer identity data, won' be overwritten. The web browser will attach cookies to the server allowing it to recognize you as an existing customer. You'll get a new access token, and cookies' lifetime will be extended, too. They will be valid for 2 years from your last request to `https://accounts.livechat.com/customer/token`.
 
-
 ### Case: Separating customer identity between groups
 
 Use this option to generate a new access token for a customer (existing or a new one), but with a separate identity per group. This requires the `chat_between_groups` license property to be set to `false`.
@@ -804,12 +803,11 @@ All other parameters in this request are the same as in [Case: New customer](#ca
 https://accounts.livechat.com/v2/customer/<organization_id>/<group_id>/token
 ```
 
-
 ## Agent token grant
 
-Agent token grant lets you create a customer identity and use it to act on behalf of a customer. To begin, you'll need an **agent access token** with the `customers:own` scope. You can get it via one of the [Agent authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows).
+Agent token grant lets you create customer identity and use it to act on behalf of a customer. To begin, you'll need an **agent access token** with the `customers:own` scope. You can get it via one of the [Agent authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows).
 
-Agent token grant is recommended for backend integrations. It allows you to impersonate customers and simulate that they send messages from external systems, like Facebook Messenger or WhatsApp, in LiveChat. An integration that follows this authorization flow acts as s middleman between an external system and LiveChat, and it has the ability to manage multiple customer identities.
+Agent token grant is recommended for backend integrations. It allows you to impersonate customers and simulate that they send messages from external systems, like Facebook Messenger or WhatsApp, in LiveChat. An integration that follows this authorization flow acts as a middleman between an external system and LiveChat, and it has the ability to manage multiple customer identities.
 
 <Section>
 <Text>
@@ -828,10 +826,11 @@ Remember to authorize your request using the `Authorization` header with an **ag
 
 | Parameter       | Required | Description                                                                                                                                                                                                                                                                                                                             |
 | --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `grant_type`    | yes      | Use `access_token` (agent access token) for this authorization flow.                                                                                                                                                                                                                                                                    |
+| `grant_type`    | yes      | Use `agent_token` for this authorization flow.                                                                                                                                                                                                                                                                    |
 | `client_id`     | yes      | Client ID of your application                                                                                                                                                                                                                                                                                                           |
 | `response_type` | yes      | Value: `token`                                                                                                                                                                                                                                                                                                                          |
-| `entity_id`     | no       | Customer ID. If you don't specify it, a new customer identity will be created ([Case: New customer](#case-existing-customer-1)). Specify it if you want to [acquire a new token for an existing customer identity](/getting-started/authorization/faq/#the-access-token-of-my-customer-has-expired-do-i-need-to-create-a-new-customer). |
+| `redirect_uri`  | yes      | One of the URIs defined in the Authorization block during app configuration in Developer Console. This URI will receive the `access_token`. |
+| `entity_id`     | no       | Customer ID. If you don't specify it, new customer identity will be created ([Case: New customer](#case-existing-customer-1)). Specify it if you want to [acquire a new token for an existing customer identity](/getting-started/authorization/faq/#the-access-token-of-my-customer-has-expired-do-i-need-to-create-a-new-customer). |
 
 #### Response
 
@@ -858,7 +857,8 @@ curl "https://accounts.livechat.com/customer/token" \
   -d '{
     "grant_type": "agent_token",
     "client_id": "9cbf3a968289727cb3cdfe83ab1d9836",
-    "response_type": "token"
+    "response_type": "token",
+    "redirect_uri": "https://my-application.com"
       }'
 ```
 
