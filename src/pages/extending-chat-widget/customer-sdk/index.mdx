@@ -74,7 +74,7 @@ Or use the node-style `require` call:
 
 ### Using a script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/customer-sdk@3.0.0"></script>`
+`<script src="https://unpkg.com/@livechat/customer-sdk@3.1.0"></script>`
 
 If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://codesandbox.io/s/rm3prxw88n).
@@ -89,15 +89,16 @@ You will need to provide your licenseId and clientId when creating a Customer SD
 
 Other optional configuration parameters are also available:
 
-| parameters           | type               | default | description                                                                                                                                                                   |
-| -------------------- | ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| licenseId            | number             |         | Your license number, you receive this value when creating a new livechat account.                                                                                             |
-| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat developer console.                                                                  |
-| autoConnect          | boolean            | true    | Optional; should the library try to reconnect on it's own.                                                                                                                    |
-| groupId              | number             | 0       | Optional; the id of the group you wish to connect to.                                                                                                                         |
-| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                               |
-| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                    |
-| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](#updateCustomer) should be prefered for sending customer data. |
+| parameters           | type               | default | description                                                                                                                                                                                                                                                 |
+| -------------------- | ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| licenseId            | number             |         | Your license number, you receive this value when creating a new livechat account.                                                                                                                                                                           |
+| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat Developer Console.                                                                                                                                                |
+| autoConnect          | boolean            | true    | Optional; should the library try to reconnect on it's own.                                                                                                                                                                                                  |
+| groupId              | number             | 0       | Optional; the id of the group you wish to connect to.                                                                                                                                                                                                       |
+| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                                                                                                             |
+| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                                                                                                  |
+| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](#updateCustomer) should be prefered for sending customer data.                                                                               |
+| identityProvider     | () => CustomerAuth |         | Optional; allows for providing own instance of the CustomerAuth object which contains the customer access token handlers. See [Custom Identity Provider](https://developers.livechat.com/docs/extending-chat-widget/custom-identity-provider) for more information. |
 
 CustomerData:
 
@@ -106,6 +107,15 @@ CustomerData:
 | name          | string | Optional         |
 | email         | string | Optional         |
 | sessionFields | object | Key: value pairs |
+
+CustomerAuth:
+
+| parameters    | type                     | description                                                                            |
+| ------------- | ------------------------ | -------------------------------------------------------------------------------------- |
+| getFreshToken | () => `Promise<Token>`   | Should resolve with freshly requested customer access token.                           |
+| getToken      | () => `Promise<Token>`   | Should resolve with currently stored customer access token.                            |
+| hasToken      | () => `Promise<boolean>` | Should resolve with a boolean value representing if a token has been already acquired. |
+| invalidate    | () => `Promise<void>`    | Should handle token invalidation and/or clearing the locally cached value.             |
 
 The `init` function will return a Customer SDK instance:
 
@@ -692,7 +702,7 @@ Returned value:
 ### Errors
 
 - `GROUP_OFFLINE` - the requested group is offline, and it was not possible to return a predicted Agent for it.
-- `GROUP_UNAVAILABLE` - there are no available slots in the requested group, so it is not possible to return a predicted Agent for it. If you call `startChat` or `activateChat` accordingly, you are most likely to end up in the queue.
+- `GROUP_UNAVAILABLE` - thrown when manual routing is enabled for the group and a predicted Agent is requested for it. If you call `startChat` or `resumeChat` accordingly, you'll end up in the queue.
 
 ## getUrlInfo
 
@@ -1158,7 +1168,7 @@ Parameters:
 ## startChat
 
 Starts a new chat. For one Customer, you can only start one chat.
-In order to activate a previously started chat, use [`resumeChat`](#resumechat).
+In order to activate a previously started chat, use [`resumeChat`](#resumeChat).
 
 ```js
 customerSDK
@@ -2175,6 +2185,13 @@ customerSDK.on('disconnected', ({ reason }) => {
 ```
 
 # Changelog
+
+## [v3.1.0] - 2021-10-7
+
+### Added
+
+- New optional `config` property `identityProvider`, which allows for specifying own custom access token handlers.
+- Handle new event type `'form'` representing the optional custom forms sent from the server.
 
 ## [v3.0.0] - 2021-05-25
 

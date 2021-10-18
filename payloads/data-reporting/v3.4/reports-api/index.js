@@ -7,3 +7,4 @@ export { default as ratings } from "./responses/chats/ratings.json";
 export { default as engagement } from "./responses/chats/engagement.json";
 export { default as greetingsConversion } from "./responses/chats/greetingsConversion.json";
 export { default as availability } from "./responses/agents/availability.json";
+export { default as performance } from "./responses/agents/performance.json";
