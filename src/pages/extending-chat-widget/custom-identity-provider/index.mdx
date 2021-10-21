@@ -144,34 +144,21 @@ window.__lc.custom_identity_provider = () => {
 
     const isExpired = ({ creationDate, expiresIn }) => Date.now() >= creationDate + expiresIn
 
-    let retrievingToken = window.sessionStorage.getItem(cacheKey).then(token => {
-        if (!retrievingToken) {
-            return
-        }
-
-        retrievingToken = null
-
-        if (!token) {
-            return
-        }
-
+    const token = window.sessionStorage.getItem(cacheKey)
+    if (token) {
         cachedToken = JSON.parse(token)
-    })
+    }
 
     const getToken = () => {
         if (tokenPromise) {
-			return tokenPromise
-		}
+	    return tokenPromise
+	}
 
-		if (cachedToken && !isExpired(cachedToken)) {
-			return Promise.resolve(cachedToken)
-		}
+	if (cachedToken && !isExpired(cachedToken)) {
+	    return Promise.resolve(cachedToken)
+	}
 
-		if (retrievingToken) {
-			return retrievingToken.then(getToken)
-		}
-
-		return getFreshToken()
+	return getFreshToken()
     }
 
     const getFreshToken = () => {
@@ -183,32 +170,24 @@ window.__lc.custom_identity_provider = () => {
                 return token
             },
             error => {
-                retrievingToken = null
                 throw error
             }
         )
         return tokenPromise
     }
 
-    const hasToken = () => {
-		if (retrievingToken) {
-			return retrievingToken.then(hasToken)
-		}
+    const hasToken = () => Promise.resolve(!!cachedToken)
 
-		return Promise.resolve(!!cachedToken)
-	}
-
-	const invalidate = () => {
-		cachedToken = null
-		retrievingToken = null
-		return storage.removeItem(cacheKey)
-	}
+    const invalidate = () => {
+	cachedToken = null
+	return storage.removeItem(cacheKey)
+    }
 
     return {
-		getToken,
+	getToken,
         getFreshToken,
-		hasToken,
-		invalidate,
+	hasToken,
+	invalidate,
     }
  }
 ```
