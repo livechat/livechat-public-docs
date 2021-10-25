@@ -39,35 +39,24 @@ Then, if your app has the frontend side, add and configure [the Agent App Widget
 
 ### Step 2: Configure authorization
 
-Why is it necessary? You're building an application that, once installed, will call the Configuration API to enable webhooks for a user's license. To perform this operation, the user needs to authorize your application first. Configuring authorization will look slightly different for [apps with the frontend side](#frontend-apps) and for [backend apps (no UI)](#backend-apps-no-ui).
+Why is it necessary? You're building an application that, once installed, will call the Configuration API to enable webhooks for a user's license. To perform this operation, the user needs to authorize your application first.
 
-#### Frontend apps
+#### Configure the App Authorization building block
 
-**Configure the App Authorization building block**
-
-- Add your app URL to the Redirect URI whitelist.
-- Add the `webhooks.state:rw` scope, which will be later on used by LiveChat to enable webhooks for a license that installs your app. (If you don't add this scope, Developer Console won't allow for creating the Chat Webhooks block.)
-
-💡 You can follow along the [Authorization in practice](/authorization/authorization-in-practice/) tutorial, where we show how to configure the App Authorization building block step by step.
-
-**Implement an authorization flow**
-
-As a developer, you need to handle the authorization process and the access token. The [Sign in with LiveChat](/authorization/sign-in-with-livechat/) mechanism is a popular way to do that. You can also read about other [authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows).
-
-#### Backend apps (no UI)
-
-**Configure the App Authorization building block**
+Go to **Building blocks** and select **App Authorization**. You'll be asked about the client type: JavaScript app or server-side app. Applications that make use of webhooks are usually backend apps, so choose the server-side app.
 
 - Add the `webhooks.state:rw` scope, which will be later on used by LiveChat to enable webhooks for a license that installs your app. (If you don't add this scope, Developer Console won't allow for creating the Chat Webhooks block.)
 - Provide a **Direct installation URL** and add it to the Redirect URI whitelist.
 
-💡 If you don't know what it is and how to use it, watch our [live coding session](https://www.youtube.com/watch?v=ei8YG9mLdfI) where we explained the topic step by step.
+💡 Watch our [live coding session](https://www.youtube.com/watch?v=ei8YG9mLdfI) to learn more about the Direct installation flow or keep on reading.
 
-**Handle direct installation and authorization in your app**
+<div style={{maxWidth:"600px"}}>
+  <img alt="LiveChat" src="/images/getting-started/app-guides/chat-webhooks/chat-webhooks-direct-install-url-livechat.png" width="712px" height="883px"/>
+</div>
 
-You're building a backend app – it has no frontend side, no widget, no interface to communicate with the user. If you're wondering how the user is supposed to authorize your app if there's nowhere to click, the answer is: **direct installation flow**.
+#### Handle direct installation and authorization in your app
 
-Usually, the authorization process starts in the LiveChat Agent Application when a user runs the app for the first time. With the direct installation flow enabled, authorization begins on the Marketplace. When a user installs your app, a pop-up with the LiveChat authorization flow appears, and the application asks for access to certain resources. Upon successful authorization, the user is redirected to the **Direct installation URL**, where they can, for example, do the initial app configuration. (It all depends on what you implemented.)
+Usually, the authorization process starts in the LiveChat Agent Application when a user runs the app for the first time. With the **direct installation flow** enabled, authorization begins on the Marketplace. When a user installs your app, a pop-up with the LiveChat authorization flow appears, and the application asks for access to certain resources. Upon successful authorization, the user is redirected to the **Direct installation URL**, where they can, for example, do the initial app configuration. (It all depends on what you implemented.)
 
 As a developer, you need to handle the authorization flow in your app. For a backend app, we recommend [Authorization code grant](/authorization/authorizing-api-calls/#authorization-code-grant), where your app exchanges `code` for `token`.
 
@@ -81,6 +70,10 @@ The configuration of the Chat Webhooks building block is a three-step process an
 - [Secret key](#secret-key)
 - [Webhook triggers](#webhook-triggers)
 
+<div style={{maxWidth:"600px"}}>
+  <img alt="LiveChat" src="/images/getting-started/app-guides/chat-webhooks/webhook-configuration-livechat-2x.png" width="1128px" height="1450px"/>
+</div>
+
 #### Webhook URL
 
 All the webhooks will be sent to the URL you provide in the **Webhook URL** field. That's likely the address of your backend service, but you can use [https://webhook.site](https://webhook.site) for testing.
@@ -91,28 +84,28 @@ We'll include your **secret key** in the payload of each webhook. This way, your
 
 #### Webhook triggers
 
-Then, choose **webhook triggers**, the actions that will cause sending a webhook to the Webhook URL every time a specific event occurs. For the majority of events, you can also select a filter. In the example end result below, webhooks will be sent when there's a new chat or when someone sends new event to the chat. No filters are selected.
+Then, choose **webhook triggers**, the actions that will cause sending a webhook to the Webhook URL every time a specific event occurs. For the majority of events, you can also select a filter.
 
 - [The list of available webhooks](/management/webhooks/#available-webhooks)
 - [The list of webhook filters](/management/configuration-api/#triggering-actions)
 
-<div style={{maxWidth:"500px"}}>
-  <img alt="LiveChat" src="/images/getting-started/app-guides/chat-webhooks/chat-webhook-triggers-livechat-no-shadow.png" width="1184px" height="1090px"/>
-</div>
-
 ### End result
 
-To finish off, install the app privately (**Private installation** tab in Developer Console) and perform an action that's your webhook trigger (for example, start a chat if you selected the `incoming_chat` webhook). That should trigger sending the webhook to the Webhook URL you provided.
+Thanks to such a setup, webhook will be automatially enabled for users who install your app from the Marketplace once it published.
 
-<div style={{maxWidth:"500px"}}>
-  <img alt="LiveChat" src="/images/getting-started/app-guides/chat-webhooks/webhook-configuration-livechat-2x.png" width="1128px" height="1450px"/>
+### Testing chat webhooks
+
+To test your webhooks, go to the **Private installation** tab and click **Install app**. If you used **Direct installation URL**, you'll see a popup window displaying the contents from your app (This is the stage of receiving `code` that you need to exchange it for `token`. In production-ready apps, your app should automatically close the window when authorizing a user. Then, perform the action that's your webhook trigger, for example, start a chat if you selected the `incoming_chat` webhook.
+
+<div style={{maxWidth:"700px"}}>
+  <img alt="LiveChat" src="/images/getting-started/app-guides/chat-webhooks/testing-webhooks-livechat.png" width="1301px" height="677px"/>
 </div>
 
 ## Webhook migration
 
 It's no longer possible to register chat webhooks v3.2 or below (the old chat webhooks) in Developer Console. If you had configured them in the past, they are still fully functional, but we encourage you to migrate them to the current stable version of the Configuration API. You can do that by calling the API directly or by running the migration process in Developer Console.
 
-<div style={{maxWidth:"500px"}}>
+<div style={{maxWidth:"700px"}}>
   <img alt="LiveChat" src="/images/getting-started/app-guides/chat-webhooks/webhook-migration-tool-livechat-1.png" width="1408px" height="708px"/>
 </div>
 
