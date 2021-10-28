@@ -15,12 +15,15 @@ const Wrapper = styled.div`
   width: 100%;
   position: fixed;
   @media (min-width: 420px) {
-    width: 240px;
+    width: 260px;
   }
 `;
 
 const LinkWrapper = styled.div`
-  padding: 4px 10px;
+  padding: 6px 16px;
+@media (min-width: 768px) {
+  padding: 6px 20px;
+  }
   margin-right: 10px;
   display: flex;
   align-items: center;

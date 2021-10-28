@@ -31,7 +31,7 @@ const Wrapper = styled.div`
     box-shadow: none;
     position: fixed;
     height: 100%;
-    width: 240px;
+    width: 260px;
     transition: all 0s;
   }
 `;
@@ -43,7 +43,7 @@ const SearchWrapper = styled.div`
     margin-bottom: 5px;
   }
 
-  padding: 8.5px 10px;
+  padding: 8.5px 20px;
 `;
 
 const MenuIntro = styled.div`
@@ -53,7 +53,7 @@ const MenuIntro = styled.div`
   @media (min-width: 768px) {
     display: none;
   }
-  padding: 10px;
+  padding: 10px 14px;
   cursor: pointer;
 `;
 

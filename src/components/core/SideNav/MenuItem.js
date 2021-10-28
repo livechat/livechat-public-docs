@@ -9,26 +9,28 @@ const LinkWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 16px 4px ${({ isSubItem }) => (isSubItem ? "20px" : "10px")};
+  padding: 6px 16px 6px ${({ isSubItem }) => (isSubItem ? "30px" : "20px")};
   margin-right: 10px;
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
-  background-color: ${({ isActive }) => (isActive ? "#F6F6F7" : "")};
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
+  &:hover{
+  background-color:#F6F6F7;
+  }
 `;
 
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 5px;
+  margin-right: 8px;
 `;
 
 const StyledLink = styled.a`
   display: flex;
   align-items: center;
-  color: ${({ isActive }) => (isActive ? "#5e6c78" : "#ABABB1")};
+  color: ${({ isActive }) => (isActive ? "#328DFF" : "#62626D")};
   &:hover {
-    color: #5e6c78;
+    color: #328DFF;
     cursor: pointer;
     text-decoration: none;
   }
@@ -67,7 +69,7 @@ const MenuItem = ({
         {items.length > 1 && isNotBasePath && (
           <ChevronWrapper isOpen={open} onClick={() => setOpen(!open)}>
             <ChevronRight
-              fill={pathname + "/" === link ? "#5E6C78" : "#ABABB1"}
+              fill="#62626D"
             />
           </ChevronWrapper>
         )}

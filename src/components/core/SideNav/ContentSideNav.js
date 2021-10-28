@@ -22,8 +22,8 @@ const Wrapper = styled.div`
   width: 270px;
   padding-left: 10px;
   margin: 211px 0px 0px 0px;
-  overflow: scroll;
-  height: 700px;
+  overflow-y: scroll;
+  height: calc(100vh - 70px);
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
@@ -36,7 +36,7 @@ const StyledLink = styled.a`
   padding-left: ${({ isSubheading }) => (isSubheading ? "10px" : "0px")};
   font-weight: 500;
   &:hover {
-    color: ${({ isActive }) => (isActive ? "#328DFF" : "#5e6c78")};
+    color: #328DFF;
     cursor: pointer;
     text-decoration: none;
   }

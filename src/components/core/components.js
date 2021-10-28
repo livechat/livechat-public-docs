@@ -115,7 +115,7 @@ export const NavHeader = styled.div`
 `;
 
 export const Content = styled.article`
-  padding: 0px ${({ noPadding }) => (noPadding ? "0" : "40px")};
+  padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};
   display: grid;
   grid-gap: 0 30px;
 
@@ -151,9 +151,9 @@ export const MiddleColumn = styled.div`
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
   @media (min-width: 768px) {
-    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "240px")};
+    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
   }
-  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-240px)" : "900px")};
+  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-260px)" : "900px")};
 `;
 
 export const LeftColumnRedoc = styled.div`

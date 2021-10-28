@@ -32,8 +32,8 @@ const Container = styled.div`
   }
 
   @media (min-width: 768px) {
-    left: 240px;
-    width: calc(100% - 240px);
+    left: 260px;
+    width: calc(100% - 260px);
     top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
   }
 `;
