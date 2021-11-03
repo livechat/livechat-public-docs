@@ -56,7 +56,7 @@ getDirectories(articlesDirectory, (err, res) => {
             }
 
             headings.push({
-              title: match.replace("# ", ""),
+              title: match.replace("# ", "").replace(/\*/g, ""),
               link: link.substring(0, link.length - 1) + "#" + slug,
               slug,
               isSubheading: false,
@@ -85,7 +85,7 @@ getDirectories(articlesDirectory, (err, res) => {
             }
 
             headings.push({
-              title: match.replace("## ", ""),
+              title: match.replace("## ", "").replace(/\*/g, ""),
               link: link.substring(0, link.length - 1) + "#" + slug,
               slug,
               isSubheading: true,

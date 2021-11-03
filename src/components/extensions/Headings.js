@@ -24,6 +24,9 @@ const HeadingLink = styled.a`
       opacity: 0.3;
     }
   }
+  &:focus-visible {
+    outline-width: 0px;
+  }
 `;
 
 const CodeLink = styled.a`
