@@ -87,7 +87,7 @@ const MenuElementWrapper = styled.li`
   margin: 0 5px;
   white-space: nowrap;
   a {
-    padding: 14px;
+    padding: 17px 14px;
     height: 60px;
     display: flex;
     align-items: center;
