@@ -23,10 +23,8 @@ const Wrapper = styled.div`
   z-index: 10;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
   background-color: white;
-  overflow: scroll;
 
   @media (min-width: 768px) {
-    overflow: visible;
     padding-top: 60px;
     box-shadow: none;
     position: fixed;
@@ -37,6 +35,7 @@ const Wrapper = styled.div`
 `;
 
 const SearchWrapper = styled.div`
+  overflow: visible;
   display: none;
   @media (min-width: 768px) {
     display: block;
@@ -55,6 +54,10 @@ const MenuIntro = styled.div`
   }
   padding: 10px 14px;
   cursor: pointer;
+`;
+
+const MenuWrapper = styled.div`
+  overflow: scroll;
 `;
 
 const openIconStyle = {
@@ -87,30 +90,32 @@ const SideNav = ({ category, version = "3.3", title }) => {
         <Search />
       </SearchWrapper>
 
-      {isHomeDir ? (
-        <CategoryMenu />
-      ) : isNestedDir ? (
-        <NestedMenu category={category} version={version} />
-      ) : (
-        articles
-          .filter((article) => article.category === category)
-          .filter(
-            (article) =>
-              !("apiVersion" in article) || article.apiVersion === version
-          )
-          .sort((a, b) => {
-            return a.weight - b.weight;
-          })
-          .map((article) => (
-            <MenuItem
-              link={article.link}
-              key={article.link}
-              title={article.title}
-              pathname={pathname}
-              iconFill="#424D57"
-            />
-          ))
-      )}
+      <MenuWrapper>
+        {isHomeDir ? (
+          <CategoryMenu />
+        ) : isNestedDir ? (
+          <NestedMenu category={category} version={version} />
+        ) : (
+          articles
+            .filter((article) => article.category === category)
+            .filter(
+              (article) =>
+                !("apiVersion" in article) || article.apiVersion === version
+            )
+            .sort((a, b) => {
+              return a.weight - b.weight;
+            })
+            .map((article) => (
+              <MenuItem
+                link={article.link}
+                key={article.link}
+                title={article.title}
+                pathname={pathname}
+                iconFill="#424D57"
+              />
+            ))
+        )}
+      </MenuWrapper>
     </Wrapper>
   );
 };

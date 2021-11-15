@@ -118,6 +118,7 @@ export const Content = styled.article`
   padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};
   display: grid;
   grid-gap: 0 30px;
+  overflow: scroll;
 
   grid-template-columns: minmax(0, 800px) minmax(0, 1fr);
 
