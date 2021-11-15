@@ -133,7 +133,9 @@ export const Content = styled.article`
 
   @media (max-width: 768px) {
     grid-template-columns: minmax(0, 1fr) 0;
+    overflow: scroll;
   }
+  overflow: visible;
 
   &.redoc {
     display: block;
