@@ -23,7 +23,6 @@ const Wrapper = styled.div`
   z-index: 10;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
   background-color: white;
-
   @media (min-width: 768px) {
     padding-top: 60px;
     box-shadow: none;
@@ -58,6 +57,10 @@ const MenuIntro = styled.div`
 
 const MenuWrapper = styled.div`
   overflow: scroll;
+  height: calc(100% - 90px);
+  @media (min-width: 768px) {
+    height: calc(100% - 60px);
+  }
 `;
 
 const openIconStyle = {
