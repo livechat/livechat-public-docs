@@ -20,6 +20,12 @@ const VERSIONS_GROUPS = {
     DEPRECATED_VERSIONS: ["3.1"],
     ALL_VERSIONS: ["3.4", "3.3", "3.2", "2.0"],
   },
+  "customer-accounts-api": {
+    STABLE_VERSION: "3.3",
+    LEGACY_VERSIONS: ["2.0"],
+    DEV_PREVIEW_VERSION: "",
+    ALL_VERSIONS: ["3.3", "2.0"],
+  },
 };
 
 const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];

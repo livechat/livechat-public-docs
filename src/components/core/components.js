@@ -162,12 +162,18 @@ export const MiddleColumn = styled.div`
   width: ${({ fullWidth }) => (fullWidth ? "calc(100%-260px)" : "900px")};
 `;
 
-export const LeftColumnRedoc = styled.div`
+export const LeftColumnRedocWrapper = styled.div`
   position: sticky;
+  top: 60px;
+  z-index: 1000;
+`;
+
+export const LeftColumnRedoc = styled.div`
+  position: absolute;
   width: 250px;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
-  top: 60px;
+  top: 0px;
   z-index: 1000;
   display: block;
 

@@ -23,6 +23,7 @@ import {
   Content,
   RatingWrapper,
   LeftColumnRedoc,
+  LeftColumnRedocWrapper,
   NavHeader,
 } from "../core/components";
 import { Search } from "../core/Search";
@@ -148,6 +149,9 @@ const Page = ({ frontMatter, children }) => {
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
+  console.log(currentApiVersion);
+  console.log("articlesVersions", articlesVersions);
+
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>
@@ -172,6 +176,7 @@ const Page = ({ frontMatter, children }) => {
             >
               {currentApiVersion && (
                 <Version
+                  leftPadding={useRedocPage}
                   articleVersions={
                     articlesVersions[category][subcategory][title]
                   }
@@ -180,32 +185,38 @@ const Page = ({ frontMatter, children }) => {
                 />
               )}
               <Content
-                className={useRedocPage ? "redoc" : ""}
+                className={
+                  useRedocPage
+                    ? `redoc ${currentApiVersion ? "redoc-with-version" : ""}`
+                    : ""
+                }
                 noPadding={useRedocPage}
               >
                 {title && !useRedocPage && <PageHeader title={title} />}
                 {useRedocPage && (
-                  <LeftColumnRedoc>
-                    <NavHeader>
-                      <Link href={"/"} style={{ color: "inherit" }}>
-                        <span>
-                          <HomeIcon width={18} style={{ display: "block" }} />
+                  <LeftColumnRedocWrapper>
+                    <LeftColumnRedoc>
+                      <NavHeader>
+                        <Link href={"/"} style={{ color: "inherit" }}>
+                          <span>
+                            <HomeIcon width={18} style={{ display: "block" }} />
+                          </span>
+                        </Link>
+                        <ChevronRight width={14} />
+                        <span
+                          style={{
+                            marginBottom: "-3px",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {category}
                         </span>
-                      </Link>
-                      <ChevronRight width={14} />
-                      <span
-                        style={{
-                          marginBottom: "-3px",
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        {category}
-                      </span>
-                    </NavHeader>
-                    <NavHeader>
-                      <Search />
-                    </NavHeader>
-                  </LeftColumnRedoc>
+                      </NavHeader>
+                      <NavHeader>
+                        <Search />
+                      </NavHeader>
+                    </LeftColumnRedoc>
+                  </LeftColumnRedocWrapper>
                 )}
 
                 <MDXProvider components={components}>{children}</MDXProvider>

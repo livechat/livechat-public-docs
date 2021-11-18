@@ -36,6 +36,8 @@ const Container = styled.div`
     width: calc(100% - 260px);
     top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
   }
+
+  ${(props) => (props.leftPadding ? "padding-left: 290px;" : "")}
 `;
 
 const Content = styled.div`
@@ -132,7 +134,7 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
   </PopperTooltip>
 );
 
-const Version = ({ articleVersions, redirectToVersion }) => {
+const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
@@ -186,7 +188,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
   const { isActive } = useContext(PromotionContext);
 
   return (
-    <Container promoIsActive={isActive}>
+    <Container promoIsActive={isActive} leftPadding={leftPadding}>
       <Content
         bgColor={
           isStable ? "rgb(241, 246, 248)" : `rgba(${versionColor}, 0.07)`
