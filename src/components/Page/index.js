@@ -149,9 +149,6 @@ const Page = ({ frontMatter, children }) => {
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
-  console.log(currentApiVersion);
-  console.log("articlesVersions", articlesVersions);
-
   return (
     <RatingProvider value={ratingContext}>
       <VersionProvider value={versionContext}>

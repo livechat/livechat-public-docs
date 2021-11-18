@@ -37,7 +37,7 @@ const Container = styled.div`
     top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
   }
 
-  ${(props) => (props.leftPadding ? "padding-left: 290px;" : "")}
+  ${"" /* ${(props) => (props.leftPadding ? "padding-left: 290px;" : "")} */}
 `;
 
 const Content = styled.div`
