@@ -20,7 +20,6 @@ export const getVersionsByGroup = (group) =>
 const Container = styled.div`
   width: 100%;
   background-color: rgb(255, 255, 255);
-  border-bottom: 1px solid rgb(255, 255, 255);
   position: fixed;
   top: 60px;
   right: 0;
@@ -36,8 +35,6 @@ const Container = styled.div`
     width: calc(100% - 260px);
     top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
   }
-
-  ${"" /* ${(props) => (props.leftPadding ? "padding-left: 290px;" : "")} */}
 `;
 
 const Content = styled.div`
