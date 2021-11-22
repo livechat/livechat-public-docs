@@ -20,5 +20,5 @@ export { default as listWebhookNames } from "./responses/webhooks/listWebhookNam
 
 export { default as getWebhooksState } from "./responses/webhooks/getWebhooksState.json"
 
-export { default as getOrganizationID } from "./responses/lookup/getOrganizationID.json"
-export { default as getLicenseID } from "./responses/lookup/getLicenseID.json"
+export { default as getOrganizationID } from "./responses/other/getOrganizationID.json"
+export { default as getLicenseID } from "./responses/other/getLicenseID.json"
