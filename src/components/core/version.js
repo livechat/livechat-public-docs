@@ -145,16 +145,28 @@ const Version = ({ articleVersions, redirectToVersion }) => {
   const closeDropdown = () => setShowDropdown(false);
 
   const formatVersion = (version) => {
+    const getVersion = () => {
+      if (version === versions.STABLE_VERSION) {
+        return "(stable)";
+      }
+
+      if (versions.LEGACY_VERSIONS.includes(version)) {
+        return "(legacy)";
+      }
+
+      if (version === versions.DEV_PREVIEW_VERSION) {
+        return "(dev preview)";
+      }
+
+      if (versions.DEPRECATED_VERSION.includes(version)) {
+        return "(deprecated)";
+      }
+    };
+
     return (
       <>
         <span>{version}</span>
-        <span style={{ marginLeft: "3px" }}>
-          {version === versions.STABLE_VERSION
-            ? `(stable)`
-            : versions.LEGACY_VERSIONS.includes(version)
-            ? `(legacy)`
-            : `(dev preview)`}
-        </span>
+        <span style={{ marginLeft: "3px" }}>{getVersion()}</span>
       </>
     );
   };

@@ -25,7 +25,15 @@ export const getVersionColor = (version, groupVersions) => {
   const isStable = version === groupVersions.STABLE_VERSION;
   const isLegacy = groupVersions.LEGACY_VERSIONS.includes(version);
 
-  return isStable ? "67, 132, 245" : isLegacy ? "209, 52, 91" : "239, 168, 67";
+  if (isStable) {
+    return "67, 132, 245";
+  }
+
+  if (isLegacy) {
+    return "209, 52, 91";
+  }
+
+  return "239, 168, 67";
 };
 
 export const openChatWindow = (e) => {

@@ -1,20 +1,23 @@
 const VERSIONS_GROUPS = {
   DEFAULT: {
     STABLE_VERSION: "3.3",
-    LEGACY_VERSIONS: ["2.0", "3.1", "3.2"],
+    LEGACY_VERSIONS: ["2.0", "3.2"],
     DEV_PREVIEW_VERSION: "3.4",
+    DEPRECATED_VERSION: ["3.1"],
     ALL_VERSIONS: ["3.4", "3.3", "3.2", "3.1", "2.0"],
   },
   "chat-widget": {
     STABLE_VERSION: "3.0",
     LEGACY_VERSIONS: ["1.0", "2.0"],
     DEV_PREVIEW_VERSION: "",
+    DEPRECATED_VERSION: [],
     ALL_VERSIONS: ["1.0", "2.0", "3.0"],
   },
   "data-reporting": {
     STABLE_VERSION: "3.3",
     LEGACY_VERSIONS: ["2.0", "3.2"],
     DEV_PREVIEW_VERSION: "3.4",
+    DEPRECATED_VERSION: [],
     ALL_VERSIONS: ["3.4", "3.3", "3.2", "2.0"],
   },
 };
@@ -549,20 +552,17 @@ const ERRORS = [
   {
     id: "not_allowed",
     message: "Not allowed",
-    description:
-      "The action is not allowed.",
+    description: "The action is not allowed.",
   },
   {
     id: "chat_anonymized",
     message: "Chat anonymized",
-    description:
-      "The request couldn't be performed on an anonymized chat.",
+    description: "The request couldn't be performed on an anonymized chat.",
   },
   {
     id: "already_exist",
     message: "Already exist",
-    description:
-      "It's impossible to create the resource as it already exists.",
+    description: "It's impossible to create the resource as it already exists.",
   },
   {
     id: "not_found",
@@ -572,7 +572,8 @@ const ERRORS = [
   {
     id: "transfer_ownership",
     message: "Transfer ownership",
-    description: "Ownership cannot be transfered to this account (bot, suspended agent).",
+    description:
+      "Ownership cannot be transfered to this account (bot, suspended agent).",
   },
   {
     id: "missing_access",
