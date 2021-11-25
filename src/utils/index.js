@@ -30,10 +30,10 @@ export const getVersionColor = (version, groupVersions) => {
   }
 
   if (isLegacy) {
-    return "209, 52, 91";
+    return "239, 168, 67";
   }
 
-  return "239, 168, 67";
+  return "209, 52, 91";
 };
 
 export const openChatWindow = (e) => {
