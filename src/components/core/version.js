@@ -158,7 +158,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         return "(dev preview)";
       }
 
-      if (versions.DEPRECATED_VERSION.includes(version)) {
+      if (versions.DEPRECATED_VERSIONS.includes(version)) {
         return "(deprecated)";
       }
     };
