@@ -10,14 +10,14 @@ const VERSIONS_GROUPS = {
     STABLE_VERSION: "3.0",
     LEGACY_VERSIONS: ["1.0", "2.0"],
     DEV_PREVIEW_VERSION: "",
-    DEPRECATED_VERSIONS: [],
+    DEPRECATED_VERSIONS: ["3.1"],
     ALL_VERSIONS: ["1.0", "2.0", "3.0"],
   },
   "data-reporting": {
     STABLE_VERSION: "3.3",
     LEGACY_VERSIONS: ["2.0", "3.2"],
     DEV_PREVIEW_VERSION: "3.4",
-    DEPRECATED_VERSIONS: [],
+    DEPRECATED_VERSIONS: ["3.1"],
     ALL_VERSIONS: ["3.4", "3.3", "3.2", "2.0"],
   },
 };
