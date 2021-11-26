@@ -2,12 +2,13 @@ const shell = require("shelljs");
 const argv = require("yargs").argv;
 const { VERSIONS_GROUPS } = require("../src/constant");
 
-const CONF_API_BASE_URL = "./content/management/configuration-api";
-const AGENT_CHAT_API_BASE_URL = "./content/messaging/agent-chat-api";
-const CUSTOMER_CHAT_API_BASE_URL = "./content/messaging/customer-chat-api";
-const CUSTOMER_SDK_BASE_URL = "./content/extending-chat-widget/customer-sdk";
-const JS_API_BASE_URL = "./content/extending-chat-widget/javascript-api";
-const REPORTS_API_BASE_URL = "./content/data-reporting/reports-api";
+const CONF_API_BASE_URL = "./src/pages/management/configuration-api";
+const WEBHOOKS_BASE_URL = "./src/pages/management/webhooks";
+const AGENT_CHAT_API_BASE_URL = "./src/pages/messaging/agent-chat-api";
+const CUSTOMER_CHAT_API_BASE_URL = "./src/pages/messaging/customer-chat-api";
+const CUSTOMER_SDK_BASE_URL = "./src/pages/extending-chat-widget/customer-sdk";
+const JS_API_BASE_URL = "./src/pages/extending-chat-widget/javascript-api";
+const REPORTS_API_BASE_URL = "./src/pages/data-reporting/reports-api";
 
 const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
   const stableVersion = VERSIONS_GROUPS[group].STABLE_VERSION;
@@ -19,7 +20,7 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
       // configuration-api
       if (!exclude.includes("configuration-api")) {
-        process.stdout.write(`Creating configuration-api for ${newVersion}...`);
+        process.stdout.write(`Creating ${newVersion} of Configuration API...`);
 
         destination = `${CONF_API_BASE_URL}/${newVersion}`;
         shell.mkdir(`${destination}`);
@@ -38,14 +39,37 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
         process.stdout.write("Done\n");
       }
 
+      // management > webhooks
+      if (!exclude.includes("webhooks")) {
+        process.stdout.write(`Creating ${newVersion} of Webhooks...`);
+
+        destination = `${WEBHOOKS_BASE_URL}/${newVersion}`;
+        shell.mkdir(`${destination}`);
+
+        // Check if base version is a stable (without folder version)
+        if (baseVersion === `v${stableVersion}`) {
+          source = `${WEBHOOKS_BASE_URL}/index.mdx`;
+        } else {
+          source = `${WEBHOOKS_BASE_URL}/${baseVersion}/.`;
+        }
+
+        shell.cp("-Rn", `${source}`, `${destination}`);
+
+        shell.exec(`git add ${destination}`);
+
+        process.stdout.write("Done\n");
+      }
+
       // agent-chat-api
       if (!exclude.includes("agent-chat-api")) {
-        process.stdout.write(`Creating agent-chat-api for ${newVersion}...`);
+        process.stdout.write(`Creating ${newVersion} of Agent Chat API...`);
 
         destination = `${AGENT_CHAT_API_BASE_URL}/${newVersion}`;
 
         shell.mkdir(`${destination}`);
         shell.mkdir(`${destination}/rtm-reference`);
+        shell.mkdir(`${destination}/data-structures`);
+        shell.mkdir(`${destination}/rtm-pushes`);
 
         // Check if base version is a stable (without folder version)
         if (baseVersion === `v${stableVersion}`) {
@@ -55,6 +79,14 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
           source = `${AGENT_CHAT_API_BASE_URL}/rtm-reference/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}/rtm-reference`);
+          shell.exec(`git add ${destination}`);
+
+          source = `${AGENT_CHAT_API_BASE_URL}/data-structures/index.mdx`;
+          shell.cp("-Rn", `${source}`, `${destination}/data-structures`);
+          shell.exec(`git add ${destination}`);
+
+          source = `${AGENT_CHAT_API_BASE_URL}/rtm-pushes/index.mdx`;
+          shell.cp("-Rn", `${source}`, `${destination}/rtm-pushes`);
           shell.exec(`git add ${destination}`);
         } else {
           source = `${AGENT_CHAT_API_BASE_URL}/${baseVersion}/.`;
@@ -67,12 +99,14 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
       // customer-chat-api
       if (!exclude.includes("customer-chat-api")) {
-        process.stdout.write(`Creating customer-chat-api for ${newVersion}...`);
+        process.stdout.write(`Creating ${newVersion} Customer Chat API...`);
         destination = `${CUSTOMER_CHAT_API_BASE_URL}/${newVersion}`;
         source = `${CUSTOMER_CHAT_API_BASE_URL}/${baseVersion}/.`;
 
         shell.mkdir(`${destination}`);
         shell.mkdir(`${destination}/rtm-reference`);
+        shell.mkdir(`${destination}/data-structures`);
+        shell.mkdir(`${destination}/rtm-pushes`);
 
         // Check if base version is a stable (without folder version)
         if (baseVersion === `v${stableVersion}`) {
@@ -82,6 +116,14 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
           source = `${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference/index.mdx`;
           shell.cp("-Rn", `${source}`, `${destination}/rtm-reference`);
+          shell.exec(`git add ${destination}`);
+
+          source = `${CUSTOMER_CHAT_API_BASE_URL}/data-structures/index.mdx`;
+          shell.cp("-Rn", `${source}`, `${destination}/data-structures`);
+          shell.exec(`git add ${destination}`);
+
+          source = `${CUSTOMER_CHAT_API_BASE_URL}/rtm-pushes/index.mdx`;
+          shell.cp("-Rn", `${source}`, `${destination}/rtm-pushes`);
           shell.exec(`git add ${destination}`);
         } else {
           source = `${CUSTOMER_CHAT_API_BASE_URL}/${baseVersion}/.`;
@@ -93,14 +135,14 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
       }
       break;
     }
-    
+
     case "chat-widget": {
       let source;
       let destination;
 
       // customer-sdk
       if (!exclude.includes("customer-sdk")) {
-        process.stdout.write(`Creating customer-sdk for ${newVersion}...`);
+        process.stdout.write(`Creating ${newVersion} of Customer SDK...`);
 
         destination = `${CUSTOMER_SDK_BASE_URL}/${newVersion}`;
         shell.mkdir(`${destination}`);
@@ -120,7 +162,7 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
 
       // javascript-api
       if (!exclude.includes("javascript-api")) {
-        process.stdout.write(`Creating javascript-api for ${newVersion}...`);
+        process.stdout.write(`Creating ${newVersion} of JavaScript API...`);
 
         destination = `${JS_API_BASE_URL}/${newVersion}`;
 
@@ -141,29 +183,30 @@ const createNewVersion = (newVersion, baseVersion, group, exclude = []) => {
       break;
     }
 
+    // reports-api
     case "data-reporting": {
       let source;
       let destination;
 
       // reports-api
-        process.stdout.write(`Creating reports-api for ${newVersion}...`);
+      process.stdout.write(`Creating ${newVersion} of Reports API...`);
 
-        destination = `${REPORTS_API_BASE_URL}/${newVersion}`;
+      destination = `${REPORTS_API_BASE_URL}/${newVersion}`;
 
-        shell.mkdir(`${destination}`);
+      shell.mkdir(`${destination}`);
 
-        // Check if base version is a stable (without folder version)
-        if (baseVersion === `v${stableVersion}`) {
-          source = `${REPORTS_API_BASE_URL}/index.mdx`;
-        } else {
-          source = `${REPORTS_API_BASE_URL}/${baseVersion}/.`;
-        }
+      // Check if base version is a stable (without folder version)
+      if (baseVersion === `v${stableVersion}`) {
+        source = `${REPORTS_API_BASE_URL}/index.mdx`;
+      } else {
+        source = `${REPORTS_API_BASE_URL}/${baseVersion}/.`;
+      }
 
-        shell.cp("-Rn", `${source}`, `${destination}`);
-        shell.exec(`git add ${destination}`);
+      shell.cp("-Rn", `${source}`, `${destination}`);
+      shell.exec(`git add ${destination}`);
 
-        process.stdout.write("Done\n");
-      
+      process.stdout.write("Done\n");
+
       break;
     }
   }
@@ -179,7 +222,7 @@ const makeStable = (version, group, exclude = []) => {
     case "DEFAULT":
       // configuration-api
       if (!exclude.includes("configuration-api")) {
-        process.stdout.write("Moving configuration-api...");
+        process.stdout.write("Moving Configuration API...");
 
         shell.mkdir(`${CONF_API_BASE_URL}/${stableVersion}`);
         shell.exec(
@@ -193,24 +236,60 @@ const makeStable = (version, group, exclude = []) => {
         process.stdout.write("Done\n");
       }
 
+      // management > webhooks
+      if (!exclude.includes("webhooks")) {
+        process.stdout.write("Moving Webhooks...");
+
+        shell.mkdir(`${WEBHOOKS_BASE_URL}/${stableVersion}`);
+        shell.exec(
+          `git mv ${WEBHOOKS_BASE_URL}/index.mdx ${WEBHOOKS_BASE_URL}/${stableVersion}`
+        );
+        shell.exec(
+          `git mv ${WEBHOOKS_BASE_URL}/${version}/index.mdx ${WEBHOOKS_BASE_URL}/`
+        );
+        shell.rm("-R", `${WEBHOOKS_BASE_URL}/${version}`);
+
+        process.stdout.write("Done\n");
+      }
+
       // agent-chat-api
       if (!exclude.includes("agent-chat-api")) {
-        process.stdout.write("Moving agent-chat-api...");
+        process.stdout.write("Moving Agent Chat API...");
         shell.mkdir(`${AGENT_CHAT_API_BASE_URL}/${stableVersion}`);
         shell.mkdir(
           `${AGENT_CHAT_API_BASE_URL}/${stableVersion}/rtm-reference`
         );
+        shell.mkdir(
+          `${AGENT_CHAT_API_BASE_URL}/${stableVersion}/data-structures`
+        );
+        shell.mkdir(`${AGENT_CHAT_API_BASE_URL}/${stableVersion}/rtm-pushes`);
+        // web reference
         shell.exec(
           `git mv ${AGENT_CHAT_API_BASE_URL}/index.mdx ${AGENT_CHAT_API_BASE_URL}/${stableVersion}`
         );
         shell.exec(
           `git mv ${AGENT_CHAT_API_BASE_URL}/${version}/index.mdx ${AGENT_CHAT_API_BASE_URL}/`
         );
+        // rtm reference
         shell.exec(
           `git mv ${AGENT_CHAT_API_BASE_URL}/rtm-reference/index.mdx ${AGENT_CHAT_API_BASE_URL}/${stableVersion}/rtm-reference`
         );
         shell.exec(
           `git mv ${AGENT_CHAT_API_BASE_URL}/${version}/rtm-reference/index.mdx ${AGENT_CHAT_API_BASE_URL}/rtm-reference`
+        );
+        // data structures
+        shell.exec(
+          `git mv ${AGENT_CHAT_API_BASE_URL}/data-structures/index.mdx ${AGENT_CHAT_API_BASE_URL}/${stableVersion}/data-structures`
+        );
+        shell.exec(
+          `git mv ${AGENT_CHAT_API_BASE_URL}/${version}/data-structures/index.mdx ${AGENT_CHAT_API_BASE_URL}/data-structures`
+        );
+        // rtm pushes
+        shell.exec(
+          `git mv ${AGENT_CHAT_API_BASE_URL}/rtm-pushes/index.mdx ${AGENT_CHAT_API_BASE_URL}/${stableVersion}/rtm-pushes`
+        );
+        shell.exec(
+          `git mv ${AGENT_CHAT_API_BASE_URL}/${version}/rtm-pushes/index.mdx ${AGENT_CHAT_API_BASE_URL}/rtm-pushes`
         );
         shell.rm("-R", `${AGENT_CHAT_API_BASE_URL}/${version}`);
         process.stdout.write("Done\n");
@@ -218,22 +297,44 @@ const makeStable = (version, group, exclude = []) => {
 
       // customer-chat-api
       if (!exclude.includes("customer-chat-api")) {
-        process.stdout.write("Moving customer-chat-api...");
+        process.stdout.write("Moving Customer Chat API...");
         shell.mkdir(`${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}`);
         shell.mkdir(
           `${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}/rtm-reference`
         );
+        shell.mkdir(
+          `${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}/data-structures`
+        );
+        shell.mkdir(
+          `${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}/rtm-pushes`
+        );
+        // web reference
         shell.exec(
           `git mv ${CUSTOMER_CHAT_API_BASE_URL}/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}`
         );
         shell.exec(
           `git mv ${CUSTOMER_CHAT_API_BASE_URL}/${version}/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/`
         );
+        // rtm reference
         shell.exec(
           `git mv ${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}/rtm-reference`
         );
         shell.exec(
           `git mv ${CUSTOMER_CHAT_API_BASE_URL}/${version}/rtm-reference/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/rtm-reference`
+        );
+        // data structures
+        shell.exec(
+          `git mv ${CUSTOMER_CHAT_API_BASE_URL}/data-structures/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}/data-structures`
+        );
+        shell.exec(
+          `git mv ${CUSTOMER_CHAT_API_BASE_URL}/${version}/data-structures/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/data-structures`
+        );
+        // rtm pushes
+        shell.exec(
+          `git mv ${CUSTOMER_CHAT_API_BASE_URL}/rtm-pushes/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/${stableVersion}/rtm-pushes`
+        );
+        shell.exec(
+          `git mv ${CUSTOMER_CHAT_API_BASE_URL}/${version}/rtm-pushes/index.mdx ${CUSTOMER_CHAT_API_BASE_URL}/rtm-pushes`
         );
         shell.rm("-R", `${CUSTOMER_CHAT_API_BASE_URL}/${version}`);
         process.stdout.write("Done\n");
@@ -243,7 +344,7 @@ const makeStable = (version, group, exclude = []) => {
     case "chat-widget":
       // customer-sdk
       if (!exclude.includes("customer-sdk")) {
-        process.stdout.write("Moving customer-sdk...");
+        process.stdout.write("Moving Customer SDK...");
 
         shell.mkdir(`${CUSTOMER_SDK_BASE_URL}/${stableVersion}`);
         shell.exec(
@@ -259,7 +360,7 @@ const makeStable = (version, group, exclude = []) => {
 
       // javascript-api
       if (!exclude.includes("javascript-api")) {
-        process.stdout.write("Moving javascript-api...");
+        process.stdout.write("Moving JavaScript API...");
 
         shell.mkdir(`${JS_API_BASE_URL}/${stableVersion}`);
         shell.exec(
@@ -274,17 +375,18 @@ const makeStable = (version, group, exclude = []) => {
       }
       break;
 
+    // reports-api
     case "data-reporting":
-        process.stdout.write("Moving reports-api...");
-        shell.mkdir(`${REPORTS_API_BASE_URL}/${stableVersion}`);
-        shell.exec(
-          `git mv ${REPORTS_API_BASE_URL}/index.mdx ${REPORTS_API_BASE_URL}/${stableVersion}`
-        );
-        shell.exec(
-          `git mv ${REPORTS_API_BASE_URL}/${version}/index.mdx ${REPORTS_API_BASE_URL}/`
-        );
-        shell.rm("-R", `${REPORTS_API_BASE_URL}/${version}`);
-        process.stdout.write("Done\n");       
+      process.stdout.write("Moving Reports API...");
+      shell.mkdir(`${REPORTS_API_BASE_URL}/${stableVersion}`);
+      shell.exec(
+        `git mv ${REPORTS_API_BASE_URL}/index.mdx ${REPORTS_API_BASE_URL}/${stableVersion}`
+      );
+      shell.exec(
+        `git mv ${REPORTS_API_BASE_URL}/${version}/index.mdx ${REPORTS_API_BASE_URL}/`
+      );
+      shell.rm("-R", `${REPORTS_API_BASE_URL}/${version}`);
+      process.stdout.write("Done\n");
       break;
   }
 
