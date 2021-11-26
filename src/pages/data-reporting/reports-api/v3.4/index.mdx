@@ -52,10 +52,10 @@ You can authorize your calls to the Reports API using one of the following metho
 
 ## Available methods
 
-|            |                                                                                                                                                                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Chats**  | [`duration`](#duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) [`engagement`](#engagement) [`greetings_conversion`](#greetings-conversion) |
-| **Agents** | [`availability`](#availability) [`performance`](#performance)                                                                                                                                 |
+|            |                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**  | [`duration`](#duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) [`engagement`](#engagement) [`greetings_conversion`](#greetings-conversion) [`surveys`](#surveys) |
+| **Agents** | [`availability`](#availability) [`performance`](#performance)                                                                                                                                                       |
 
 ## Available parameters and filters
 
@@ -87,7 +87,7 @@ You can authorize your calls to the Reports API using one of the following metho
 | ----------------------------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `distribution`                                        | No       | `string`  | Allowed values: `hour`, `day`. Defaults to `day`.                                                                                                                                                                                           |
 | `timezone`                                            | No       | `string`  | IANA [Time Zone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix). Defaults to the requester's timezone. When the requester's timezone isn't present, then `filters.from` is parsed to get the timezone. |
-| `filters`                                             | No       | `object`  | If none provided, your report will span the last seven days.                                                                                                                                                                                |
+| `filters`                                             | No       | `object`  | If none provided, your report will span the last seven days.                                                                                                                                                                           |
 | `filters.from`                                        | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
 | `filters.to`                                          | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
 | `filters.agents.<string_filter_type>`<sup>**2**</sup> | No       | `any`     | Described below.                                                                                                                                                                                                                            |
@@ -130,7 +130,14 @@ You can pass only one of the following values at a time: `exists`, `values` or `
 **4)** `<survey>` contains the following fields:
 
 - `type` (`string`) - allowed values: `pre_chat`, `post_chat`
-- `answer_id` (`string`)
+- `values` (`string[]`) - an array of answer_ids
+- `exclude_values` (`string[]`) - an array of answer_ids
+- `from` (`string`) - date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`
+- `to` (`string`) - date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`
+- `exists` (`bool`) - if set to `true`, will return only surveys with `survey_id`
+- `groups` (`<integer_filter_type>`<sup>**3**</sup>)
+
+<CodeResponse version="v3.4" type="reports" title={'Sample survey filter'} json="surveyFilter" />
 
 **5)** `<event_type_filter_type>` can take the following values:
 
@@ -548,6 +555,61 @@ https://api.livechatinc.com/v3.4/reports/chats/greetings_conversion \
 </CodeSample>
 
 <CodeResponse type="reports" version="v3.4" json="greetingsConversion"/>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Surveys
+
+Presents how many suveys where filled in and what was count of specific answers.
+
+#### Specifics
+
+|                     |                                                                |
+| ------------------- | -------------------------------------------------------------- |
+| **Method URL**      | `https://api.livechatinc.com/v3.4/reports/chats/surveys`  |
+| **HTTP method**     | POST, GET                                                      |
+| **Required scopes** | `reports_read`                                                 |
+
+#### Request
+
+See [available parameters and filters](#available-parameters-and-filters). 💡 Notice that the distribution parameter will have no effect on the response of this method.
+
+#### Response
+
+| Field                                                   | Notes                                                                                                  |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `records`                                               | Contains `survey` objects per Group ID.                                                                |
+| `records.{group_id}.{surveyid}`                         | Survey ID                                                                                              |
+| `records.{group_id}.{surveyid}.count`                   | Number of times this survey was filled                                                                 |
+| `records.{group_id}.{surveyid}.{answer_id}`             | Answer ID                                                                            |
+| `records.{group_id}.{surveyid}.{answer_id}.{index}`     | Number of times this index was selected for this Answer ID                                             |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.4/reports/chats/surveys\
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.4" json="surveys"/>
 
 </Code>
 </Section>
