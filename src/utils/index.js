@@ -24,12 +24,13 @@ export const versionToString = (number) =>
 export const getVersionColor = (version, groupVersions) => {
   const isStable = version === groupVersions.STABLE_VERSION;
   const isLegacy = groupVersions.LEGACY_VERSIONS.includes(version);
+  const isDevPreview = version === groupVersions.DEV_PREVIEW_VERSION;
 
   if (isStable) {
     return "67, 132, 245";
   }
 
-  if (isLegacy) {
+  if (isLegacy || isDevPreview) {
     return "239, 168, 67";
   }
 
