@@ -14,11 +14,7 @@ const Header = styled.div`
 `;
 
 const Wrapper = styled.div`
-  @media (min-width: 768px) {
-    display: block;
-  }
   display: none;
-
   width: 270px;
   padding-left: 10px;
   margin: 211px 0px 0px 0px;
@@ -27,6 +23,10 @@ const Wrapper = styled.div`
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
 `;
 
 const StyledLink = styled.a`
@@ -36,7 +36,7 @@ const StyledLink = styled.a`
   padding-left: ${({ isSubheading }) => (isSubheading ? "10px" : "0px")};
   font-weight: 500;
   &:hover {
-    color: #328DFF;
+    color: #328dff;
     cursor: pointer;
     text-decoration: none;
   }
@@ -81,14 +81,14 @@ const ContentSideNav = ({ version }) => {
     return () => document.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!headings) {
+  if (!headings || (Array.isArray(headings) && !headings.length)) {
     return null;
   }
 
   return (
     <Wrapper isVersioned={version}>
       <Header>On this page</Header>
-      {headings?.map((heading) => {
+      {headings.map((heading) => {
         return (
           <div key={heading.slug}>
             <Link href={heading.link} passHref>

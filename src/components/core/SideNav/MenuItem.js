@@ -14,8 +14,9 @@ const LinkWrapper = styled.div`
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
-  &:hover{
-  background-color:#F6F6F7;
+
+  &:hover {
+    background-color: #f6f6f7;
   }
 `;
 
@@ -30,7 +31,7 @@ const StyledLink = styled.a`
   align-items: center;
   color: ${({ isActive }) => (isActive ? "#328DFF" : "#62626D")};
   &:hover {
-    color: #328DFF;
+    color: #328dff;
     cursor: pointer;
     text-decoration: none;
   }
@@ -68,9 +69,7 @@ const MenuItem = ({
         </Link>
         {items.length > 1 && isNotBasePath && (
           <ChevronWrapper isOpen={open} onClick={() => setOpen(!open)}>
-            <ChevronRight
-              fill="#62626D"
-            />
+            <ChevronRight fill="#62626D" />
           </ChevronWrapper>
         )}
       </LinkWrapper>

@@ -21,9 +21,6 @@ const Wrapper = styled.div`
 
 const LinkWrapper = styled.div`
   padding: 6px 16px;
-@media (min-width: 768px) {
-  padding: 6px 20px;
-  }
   margin-right: 10px;
   display: flex;
   align-items: center;
@@ -32,6 +29,10 @@ const LinkWrapper = styled.div`
   border-radius: 0px 8px 8px 0px;
   &:hover {
     background-color: #f6f6f7;
+  }
+
+  @media (min-width: 768px) {
+    padding: 6px 20px;
   }
 `;
 

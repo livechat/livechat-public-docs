@@ -149,7 +149,6 @@ export const MainWrapper = styled.div`
 export const LeftColumn = styled.div``;
 
 export const MiddleColumn = styled.div`
-  width: 100%;
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
   @media (min-width: 768px) {

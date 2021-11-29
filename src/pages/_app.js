@@ -10,6 +10,7 @@ import "../components/core/prism.css";
 import "../components/core/algolia.css";
 import "../components/core/redoc.css";
 import { setupAmplitude } from "../utils";
+import { SCROLL_OFFSET } from "../constant";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -19,7 +20,7 @@ function MyApp({ Component, pageProps }) {
     require("smooth-scroll")('a[href*="#"]:not([href="#open-chat"])', {
       speed: 160,
       speedAsDuration: true,
-      offset: 130,
+      offset: SCROLL_OFFSET,
     });
 
     setupAmplitude();

@@ -4,8 +4,12 @@ import { string } from "prop-types";
 import containers from "../../../configs/containers.json";
 import articles from "../../../configs/articles.json";
 import MenuItem from "./MenuItem";
+import { VERSIONS_GROUPS } from "../../../constant";
 
-const NestedMenu = ({ category, version = "3.3" }) => {
+const NestedMenu = ({
+  category,
+  version = VERSIONS_GROUPS.DEFAULT.STABLE_VERSION,
+}) => {
   const router = useRouter();
   const pathname = router.pathname;
   const items = containers.filter(
