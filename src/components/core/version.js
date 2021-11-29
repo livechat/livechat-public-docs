@@ -107,15 +107,22 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
     zIndex={99999}
   >
     <div style={{ maxWidth: "320px" }}>
-      {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
-        <p>This is the legacy version of the API.</p>
-      )}
       {selectedVersion === versions.DEV_PREVIEW_VERSION && (
         <p>
           This is the <strong>developer preview</strong> version of our API.
           Keep in mind it might be <strong>subject to change</strong>.
         </p>
       )}
+      {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
+        <p>This is the legacy version of the API.</p>
+      )}
+      {versions.DEPRECATED_VERSIONS.includes(selectedVersion) && (
+        <p>
+          This version deprecated.
+          <br /> We recommend you migrate to the current stable version.
+        </p>
+      )}
+
       <p style={{ marginBottom: "10px" }}>
         If you have any questions, please let us know at{" "}
         <a
@@ -145,16 +152,28 @@ const Version = ({ articleVersions, redirectToVersion }) => {
   const closeDropdown = () => setShowDropdown(false);
 
   const formatVersion = (version) => {
+    const getVersion = () => {
+      if (version === versions.STABLE_VERSION) {
+        return "(stable)";
+      }
+
+      if (versions.LEGACY_VERSIONS.includes(version)) {
+        return "(legacy)";
+      }
+
+      if (version === versions.DEV_PREVIEW_VERSION) {
+        return "(dev preview)";
+      }
+
+      if (versions.DEPRECATED_VERSIONS.includes(version)) {
+        return "(deprecated)";
+      }
+    };
+
     return (
       <>
         <span>{version}</span>
-        <span style={{ marginLeft: "3px" }}>
-          {version === versions.STABLE_VERSION
-            ? `(stable)`
-            : versions.LEGACY_VERSIONS.includes(version)
-            ? `(legacy)`
-            : `(dev preview)`}
-        </span>
+        <span style={{ marginLeft: "3px" }}>{getVersion()}</span>
       </>
     );
   };
@@ -182,13 +201,16 @@ const Version = ({ articleVersions, redirectToVersion }) => {
         }
       >
         <DesktopNote>
-          {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
-            <span>You are browsing the legacy version of the API.</span>
-          )}
           {selectedVersion === versions.DEV_PREVIEW_VERSION && (
             <span>
               You are browsing the developer preview version of the API.
             </span>
+          )}
+          {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
+            <span>You are browsing the legacy version of the API.</span>
+          )}
+          {versions.DEPRECATED_VERSIONS.includes(selectedVersion) && (
+            <span>You are browsing the deprecated version of the API.</span>
           )}
         </DesktopNote>
 
