@@ -115,9 +115,14 @@ export const NavHeader = styled.div`
 `;
 
 export const Content = styled.article`
-  padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};
+  padding: 0px ${({ noPadding }) => (noPadding ? "0" : "30px")};
   display: grid;
-  grid-gap: 0 30px;
+  grid-gap: 0;
+
+  @media (min-width: 768px) {
+    padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};
+    grid-gap: 0 30px;
+  }
 
   grid-template-columns: minmax(0, 800px) minmax(0, 1fr);
 

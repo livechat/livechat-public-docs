@@ -102,7 +102,13 @@ const Img = ({ ...props }) => {
   const imageWidth = props.width.replace("px", "");
 
   return (
-    <Image src={src} width={imageWidth} height={imageHeight} quality="100" />
+    <Image
+      src={src}
+      width={imageWidth}
+      height={imageHeight}
+      quality="100"
+      priority
+    />
   );
 };
 
