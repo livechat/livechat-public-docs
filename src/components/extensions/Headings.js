@@ -100,9 +100,16 @@ const Img = ({ ...props }) => {
   // Currently there is an issue with basePath.
   const imageHeight = props.height.replace("px", "");
   const imageWidth = props.width.replace("px", "");
-
+  console.log("imageHeight", imageHeight);
+  console.log("imageWidth", imageWidth);
   return (
-    <Image src={src} width={imageWidth} height={imageHeight} quality="100" />
+    <Image
+      src={src}
+      width={imageWidth}
+      height={imageHeight}
+      quality="100"
+      priority
+    />
   );
 };
 
