@@ -96,8 +96,6 @@ const Img = ({ ...props }) => {
 
   const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
 
-  // TODO: This is a workaround for next/image.
-  // Currently there is an issue with basePath.
   const imageHeight = props.height.replace("px", "");
   const imageWidth = props.width.replace("px", "");
 

@@ -2,12 +2,11 @@ const withPlugins = require("next-compose-plugins");
 const withMdxEnhanced = require("next-mdx-enhanced");
 const withYaml = require("next-plugin-yaml");
 
+console.log("process.env.CONTEXT", process.env.CONTEXT);
+
 const nextConfig = {
   target: "serverless",
-  basePath: process.env.NEXT_BASE_PATH,
-  images: {
-    domains: ["run.pstmn.io", "cdnx.livechatinc.com"],
-  },
+  basePath: process.env.CONTEXT === "deploy-preview" ? "" : "/docs",
 };
 
 module.exports = withPlugins(
