@@ -24,6 +24,8 @@ const VERSIONS_GROUPS = {
 
 const RATES = ["It's unsuable", "Rather poor", "It's OK", "Great", "Excellent"];
 
+const SCROLL_OFFSET = 130;
+
 const SCOPES = [
   {
     id: "agents--my:rw",
@@ -583,6 +585,7 @@ const ERRORS = [
 const constants = {
   VERSIONS_GROUPS,
   RATES,
+  SCROLL_OFFSET,
   SCOPES,
   ERRORS,
 };
