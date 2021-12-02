@@ -4,7 +4,10 @@ const withYaml = require("next-plugin-yaml");
 
 const nextConfig = {
   target: "serverless",
-  basePath: "/docs",
+  basePath: process.env.NEXT_BASE_PATH,
+  images: {
+    domains: ["run.pstmn.io", "cdnx.livechatinc.com"],
+  },
 };
 
 module.exports = withPlugins(

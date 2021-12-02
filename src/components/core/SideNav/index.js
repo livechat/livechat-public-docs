@@ -1,2 +1,3 @@
 import SideNav from "./SideNav";
-export default SideNav;
+import ContentSideNav from "./ContentSideNav";
+export { SideNav, ContentSideNav };

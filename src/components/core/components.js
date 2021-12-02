@@ -115,8 +115,15 @@ export const NavHeader = styled.div`
 `;
 
 export const Content = styled.article`
+  padding: 0px ${({ noPadding }) => (noPadding ? "0" : "30px")};
   display: grid;
-  grid-gap: 0 30px;
+  grid-gap: 0;
+  scroll-behavior: smooth;
+
+  @media (min-width: 768px) {
+    padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};
+    grid-gap: 0 30px;
+  }
 
   grid-template-columns: minmax(0, 800px) minmax(0, 1fr);
 
@@ -132,7 +139,9 @@ export const Content = styled.article`
 
   @media (max-width: 768px) {
     grid-template-columns: minmax(0, 1fr) 0;
+    overflow: scroll;
   }
+  overflow: visible;
 
   &.redoc {
     display: block;
@@ -140,26 +149,18 @@ export const Content = styled.article`
 `;
 
 export const MainWrapper = styled.div`
-  padding-right: 15px;
   display: flex;
-
-  @media (min-width: 768px) {
-    padding: 0 20px 0 0;
-  }
-
-  @media (min-width: 1024px) {
-    padding: 0 30px 0 0;
-  }
 `;
 
 export const LeftColumn = styled.div``;
 
 export const MiddleColumn = styled.div`
-  max-width: 100%;
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
-  margin-left: ${({ noMargin }) => (noMargin ? "0" : "50px")};
-  width: 100%;
+  @media (min-width: 768px) {
+    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
+  }
+  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-260px)" : "900px")};
 `;
 
 export const LeftColumnRedoc = styled.div`
