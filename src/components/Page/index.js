@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import FullStory from "react-fullstory";
 import {
@@ -12,6 +11,7 @@ import {
 } from "../../contexts";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
+import { SCROLL_OFFSET } from "../../constant";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
@@ -19,6 +19,7 @@ import Header from "../core/header";
 import articlesVersions from "../../configs/articlesVersions.json";
 import {
   MainWrapper,
+  LeftColumn,
   MiddleColumn,
   Content,
   RatingWrapper,
@@ -26,11 +27,8 @@ import {
   NavHeader,
 } from "../core/components";
 import { Search } from "../core/Search";
-import { SideNav } from "../core/SideNav";
-const ContentSideNav = dynamic(
-  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
-  { ssr: false, loading: () => <p>...</p> }
-);
+import SideNav from "../core/SideNav";
+import { useLocalStorage } from "../../hooks";
 import Rating from "../core/Rating";
 import {
   Headings,
@@ -61,6 +59,8 @@ const Page = ({ frontMatter, children }) => {
     slug: customSlug,
   } = frontMatter;
   const router = useRouter();
+
+  const [expanded, setExpanded] = useLocalStorage("navMenuExpanded", true);
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -97,6 +97,29 @@ const Page = ({ frontMatter, children }) => {
     });
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const timeout = setTimeout(() => {
+      if (hash) {
+        try {
+          const selector = document.querySelector(hash);
+
+          if (selector) {
+            selector.scrollIntoView();
+            window.scrollBy(
+              0,
+              -(SCROLL_OFFSET + (promotionContext.isActive ? 40 : 0))
+            );
+          }
+        } catch (error) {}
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [promotionContext.isActive]);
 
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
@@ -158,18 +181,18 @@ const Page = ({ frontMatter, children }) => {
           <Header />
           <MainWrapper>
             {!useRedocPage && (
-              <SideNav
-                category={category}
-                version={currentApiVersion}
-                title={title}
-              />
+              <LeftColumn>
+                <SideNav
+                  currentSlug={slug}
+                  category={category}
+                  subcategory={subcategory}
+                  expanded={expanded}
+                  setExpanded={setExpanded}
+                  versions={versions}
+                />
+              </LeftColumn>
             )}
-
-            <MiddleColumn
-              noMargin={useRedocPage}
-              noPadding={useRedocPage}
-              fullWidth={useRedocPage}
-            >
+            <MiddleColumn noMargin={useRedocPage} noPadding={useRedocPage}>
               {currentApiVersion && (
                 <Version
                   articleVersions={
@@ -179,10 +202,7 @@ const Page = ({ frontMatter, children }) => {
                   group={versionGroup}
                 />
               )}
-              <Content
-                className={useRedocPage ? "redoc" : ""}
-                noPadding={useRedocPage}
-              >
+              <Content className={useRedocPage ? "redoc" : ""}>
                 {title && !useRedocPage && <PageHeader title={title} />}
                 {useRedocPage && (
                   <LeftColumnRedoc>
@@ -217,8 +237,6 @@ const Page = ({ frontMatter, children }) => {
                 )}
               </Content>
             </MiddleColumn>
-
-            {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>

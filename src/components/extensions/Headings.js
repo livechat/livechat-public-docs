@@ -1,9 +1,9 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import Image from "next/image";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import Image from "next/image";
 
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
@@ -23,9 +23,6 @@ const HeadingLink = styled.a`
       top: 1px;
       opacity: 0.3;
     }
-  }
-  &:focus-visible {
-    outline-width: 0px;
   }
 `;
 
@@ -102,13 +99,10 @@ const Img = ({ ...props }) => {
   const imageWidth = props.width.replace("px", "");
 
   return (
-    <Image
-      src={src}
-      width={imageWidth}
-      height={imageHeight}
-      quality="100"
-      priority
-    />
+    <div css={imgWrapper}>
+      <div css={() => boxStyles(imageHeight, imageWidth)}></div>
+      <img {...props} src={src} decoding="async" css={imgStyles} />
+    </div>
   );
 };
 
@@ -321,13 +315,12 @@ const SectionLink = ({ to, href, children, ...rest }) => {
 const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
 
-  const { id, ...rest } = props;
-  const newProps = { ...rest, className };
+  const id = props.id;
+
+  const newProps = { ...props, className, id };
 
   const Content = () => (
-    <HeadingLink id={id} href={`#${id}`} className="reference">
-      {getText(children)}
-    </HeadingLink>
+    <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
   );
 
   switch (size) {

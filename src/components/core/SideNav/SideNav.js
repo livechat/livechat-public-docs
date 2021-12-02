@@ -1,136 +1,138 @@
-import React, { useState } from "react";
-import { string } from "prop-types";
-import { useRouter } from "next/router";
-import styled from "@emotion/styled";
-import articles from "../../../configs/articles.json";
-import containers from "../../../configs/containers.json";
-import { ChevronRight } from "../icons";
+import React, { useState, Fragment, useContext } from "react";
+import Link from "next/link";
+import { PopperTooltip } from "@livechat/design-system";
+import {
+  Nav,
+  NavHeader,
+  MenuWrapper,
+  Ul,
+  CollapsableSection,
+  MenuElement,
+} from "../components";
 import { Search } from "../Search";
-import CategoryMenu from "./CategoryMenu";
-import HomeItem from "./HomeItem";
-import MenuItem from "./MenuItem";
-import NestedMenu from "./NestedMenu";
-import { VERSIONS_GROUPS } from "../../../constant";
+import { HomeIcon, ChevronRight } from "../icons";
+import {
+  useCategoryMeta,
+  useAllCategoriesMeta,
+  useScrollSpy,
+  useArticlesInCategory,
+} from "../../../hooks";
+import { VersionContext } from "../../../contexts";
+import { getVersionColor, getCategoryTitle } from "../../../utils";
 
-const Wrapper = styled.div`
-  border: 1px solid #e2e2e4;
-  height: ${({ isExpanded }) => (isExpanded ? "500px" : "50px")};
-  position: fixed;
-  transition: height 300ms;
+const printItems = (items, toggleState, activeUrls, depth = 0) => {
+  return (
+    <Ul>
+      {items.map(({ title, path, url, items: itemsInside, isSubcategory }) => {
+        const isActiveItem =
+          (activeUrls &&
+            url === activeUrls[activeUrls.length - 1] &&
+            !isSubcategory) ||
+          "";
 
-  bottom: 0%;
-  width: 100%;
-  opacity: 1;
-  z-index: 10;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
-  background-color: white;
-  @media (min-width: 768px) {
-    padding-top: 60px;
-    box-shadow: none;
-    position: fixed;
-    height: 100%;
-    width: 260px;
-    transition: all 0s;
-  }
-`;
+        const isActiveSection =
+          activeUrls &&
+          activeUrls.includes(url) &&
+          url.includes(activeUrls[depth]);
 
-const SearchWrapper = styled.div`
-  overflow: visible;
-  display: none;
-  @media (min-width: 768px) {
-    display: block;
-    margin-bottom: 5px;
-  }
+        let redirectUrl = url || "#";
 
-  padding: 8.5px 20px;
-`;
-
-const MenuIntro = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: white;
-  @media (min-width: 768px) {
-    display: none;
-  }
-  padding: 10px 14px;
-  cursor: pointer;
-`;
-
-const MenuWrapper = styled.div`
-  overflow: scroll;
-  height: calc(100% - 90px);
-  @media (min-width: 768px) {
-    height: calc(100% - 60px);
-  }
-`;
-
-const openIconStyle = {
-  transform: "rotate(270deg)",
-  transition: "transform 300ms",
-};
-const closeIconStyle = {
-  transform: "rotate(90deg)",
-  transition: "transform 300ms",
+        return (
+          <Fragment key={`toc-${depth}-${url}`}>
+            <MenuElement
+              url={redirectUrl}
+              title={title}
+              active={isActiveItem}
+              onClick={toggleState(path)}
+            />
+            {itemsInside && (
+              <CollapsableSection expanded={isActiveSection}>
+                {printItems(itemsInside, toggleState, activeUrls, depth + 1)}
+              </CollapsableSection>
+            )}
+          </Fragment>
+        );
+      })}
+    </Ul>
+  );
 };
 
 const SideNav = ({
   category,
-  version = VERSIONS_GROUPS.DEFAULT.STABLE_VERSION,
-  title,
+  subcategory,
+  currentSlug,
+  expanded,
+  setExpanded,
 }) => {
-  const router = useRouter();
-  const pathname = router.pathname;
-  const [expand, setExpand] = useState(false);
-  const isHomeDir = pathname === "/";
-  const isNestedDir =
-    !isHomeDir &&
-    containers.find((container) => container.category === category)?.items
-      ?.length > 0;
+  const { items: versions, selected: selectedVersion } = useContext(
+    VersionContext
+  );
+
+  const [articles, getArticlePath] = useArticlesInCategory(
+    category,
+    currentSlug,
+    selectedVersion
+  );
+
+  const categories = useAllCategoriesMeta().map((item) => ({
+    ...item,
+    url: `/${item.slug}/`,
+    items: null,
+  }));
+
+  const menuItems = category ? articles : categories;
+
+  const initialPath = subcategory
+    ? [`/${category}/${subcategory}/`, currentSlug]
+    : [currentSlug.replace("/docs", "")];
+
+  const [activePath, setActivePath] = useState(initialPath);
+  const toggleState = (path) => () => setActivePath(path);
+
+  const categoryMeta = useCategoryMeta(category);
+
+  useScrollSpy(
+    ".heading",
+    (url) => url && setActivePath(getArticlePath(url)),
+    () => getCategoryTitle(menuItems)
+  );
+
+  const navColor = getVersionColor(selectedVersion, versions);
 
   return (
-    <Wrapper isExpanded={expand}>
-      <MenuIntro onClick={() => setExpand(!expand)}>
-        <ChevronRight style={!expand ? openIconStyle : closeIconStyle} />
-        {title}
-      </MenuIntro>
-      {!isHomeDir && <HomeItem />}
-      <SearchWrapper>
+    <Nav color={navColor} expanded={expanded} setExpanded={setExpanded}>
+      <NavHeader>
+        <Link href="/" style={{ color: "inherit" }}>
+          <a style={{ color: "#8a9097", marginTop: "1px" }}>
+            <PopperTooltip
+              isVisible={true}
+              placement={"bottom-start"}
+              triggerActionType={"hover"}
+              trigger={
+                <span>
+                  <HomeIcon width={18} style={{ display: "block" }} />
+                </span>
+              }
+              closeOnOutsideClick
+              zIndex={20}
+            >
+              {"Home"}
+            </PopperTooltip>
+          </a>
+        </Link>
+        <ChevronRight width={14} style={{ marginTop: "2px" }} />
+        <span style={{ marginBottom: "-3px" }}>
+          {categoryMeta.title || "Home"}
+        </span>
+      </NavHeader>
+      <NavHeader>
         <Search />
-      </SearchWrapper>
-
+      </NavHeader>
       <MenuWrapper>
-        {isHomeDir ? (
-          <CategoryMenu />
-        ) : isNestedDir ? (
-          <NestedMenu category={category} version={version} />
-        ) : (
-          articles
-            .filter((article) => article.category === category)
-            .filter(
-              (article) =>
-                !("apiVersion" in article) || article.apiVersion === version
-            )
-            .sort((a, b) => {
-              return a.weight - b.weight;
-            })
-            .map((article) => (
-              <MenuItem
-                link={article.link}
-                key={article.link}
-                title={article.title}
-                pathname={pathname}
-                iconFill="#424D57"
-              />
-            ))
-        )}
+        {printItems(menuItems, toggleState, activePath, undefined)}
       </MenuWrapper>
-    </Wrapper>
+    </Nav>
   );
-};
-
-SideNav.propTypes = {
-  category: string,
-  version: string,
 };
 
 export default SideNav;

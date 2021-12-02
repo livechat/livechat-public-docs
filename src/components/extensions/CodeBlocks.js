@@ -132,18 +132,31 @@ export const Sample = styled.div`
 `;
 
 export const Section = styled.section`
-  max-width: 830px;
+  display: flex;
+  max-width: 1400px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const CodeWrapper = styled.div`
   width: 100%;
+  flex-basis: 100%;
+
+  flex-shrink: 0;
+  flex-grow: 1;
 
   @media (min-width: 768px) {
-    padding: 80px 25px 30px 0px;
+    flex-basis: 410px;
+    max-width: 410px;
+    padding: 80px 0 30px 25px;
   }
 
   @media (min-width: 1200px) {
-    padding: 80px 25px 30px 0px;
+    flex-basis: 460px;
+    max-width: 460px;
+    padding: 80px 0 30px 25px;
   }
 `;
 

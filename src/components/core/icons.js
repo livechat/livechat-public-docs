@@ -1,13 +1,4 @@
 import React from "react";
-import styled from "@emotion/styled";
-import PlayCircleOutline from "react-material-icon-svg/dist/PlayCircleOutline";
-import Lock from "react-material-icon-svg/dist/Lock";
-import Forum from "react-material-icon-svg/dist/Forum";
-import Laptop from "react-material-icon-svg/dist/Laptop";
-import MessageProcessing from "react-material-icon-svg/dist/MessageProcessing";
-import Cog from "react-material-icon-svg/dist/Cog";
-import Poll from "react-material-icon-svg/dist/Poll";
-import CurrencyUsd from "react-material-icon-svg/dist/CurrencyUsd";
 
 export const HashtagIcon = (props) => (
   <svg
@@ -37,8 +28,8 @@ export const ChevronRight = (props) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
+    width="14"
+    height="14"
     viewBox="0 0 24 24"
   >
     <path
@@ -67,65 +58,148 @@ export const ArticleIcon = (props) => (
   </svg>
 );
 
-const IconWrapper = styled.div`
-  margin-right: 5px;
-  display: flex;
-  align-items: center;
-`;
-
 export const CategoryIcon = ({ category, ...props }) => {
   switch (category) {
     case "getting-started":
       return (
-        <IconWrapper>
-          <PlayCircleOutline fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+        >
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+            fill="currentColor"
+          />
+        </svg>
       );
     case "authorization":
       return (
-        <IconWrapper>
-          <Lock fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+        >
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
+            fill="currentColor"
+          />
+        </svg>
       );
     case "messaging":
       return (
-        <IconWrapper>
-          <Forum fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          width="16"
+          height="16"
+          viewBox="0 0 16 12"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xlink="http://www.w3.org/1999/xlink"
+        >
+          <path
+            d="M12.825,2.7 L11.475,2.7 L11.475,8.775 L2.7,8.775 L2.7,10.125 C2.7,10.49625 3.00375,10.8 3.375,10.8 L10.8,10.8 L13.5,13.5 L13.5,3.375 C13.5,3.00375 13.19625,2.7 12.825,2.7 Z"
+            fill="currentColor"
+            fillRule="nonzero"
+          ></path>
+          <path
+            d="M10.125,6.75 L10.125,0.675 C10.125,0.30375 9.82125,0 9.45,0 L0.675,0 C0.30375,0 0,0.30375 0,0.675 L0,10.125 L2.7,7.425 L9.45,7.425 C9.82125,7.425 10.125,7.12125 10.125,6.75 Z"
+            fill="currentColor"
+            fillRule="nonzero"
+          ></path>
+        </svg>
       );
 
     case "extending-agent-app":
       return (
-        <IconWrapper>
-          <Laptop fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          style={{ position: "relative", right: "5px", bottom: "1px" }}
+        >
+          <path
+            d="M21.1575 16C21.1575 17.0083 20.3417 17.8333 19.3333 17.8333H23V19.6667H1V17.8333H4.66667C3.65833 17.8333 2.83333 17.0083 2.83333 16V6.83333C2.83333 5.825 3.65833 5 4.66667 5H19.3333C20.3417 5 21.1667 5.825 21.1667 6.83333L21.1575 16ZM19.3333 6.83333H4.66667V16H19.3333V6.83333Z"
+            fill="currentColor"
+          />
+        </svg>
       );
 
     case "extending-chat-widget":
       return (
-        <IconWrapper>
-          <MessageProcessing fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          xlink="http://www.w3.org/1999/xlink"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          style={{ position: "relative", top: "3px", right: "3px" }}
+        >
+          <path
+            d="M14.1529259,0.144938867 C16.1572838,0.273773415 17.7737015,1.819788 17.9030149,3.8167235 C18.0323284,5.813659 18.0323284,9.09893998 17.9030149,11.0314582 C17.7090448,13.2216455 15.8340003,14.7676601 13.7649857,14.7676601 L12.148568,14.7676601 C11.8899412,14.7676601 11.5666576,14.8964947 11.3726875,15.0253292 L7.42862835,17.8596893 C7.04068811,18.1817756 6.45877774,17.9241065 6.45877774,17.3443511 L6.45877774,14.7676601 L4.26044969,14.7676601 C2.19560646,14.7676601 0.372973574,13.3197796 0.14033444,11.2413706 L0.122420423,11.0314582 C-0.0715496989,8.97010543 -0.00689299155,5.74924172 0.122420423,3.75230622 C0.316390545,1.75537072 1.93280823,0.273773415 3.87250945,0.144938867 C6.9760314,-0.0483129556 10.9847473,-0.0483129556 14.1529259,0.144938867 Z M5,7 C4.44771525,7 4,7.44771525 4,8 C4,8.55228475 4.44771525,9 5,9 C5.55228475,9 6,8.55228475 6,8 C6,7.44771525 5.55228475,7 5,7 Z M9,7 C8.44771525,7 8,7.44771525 8,8 C8,8.55228475 8.44771525,9 9,9 C9.55228475,9 10,8.55228475 10,8 C10,7.44771525 9.55228475,7 9,7 Z M13,7 C12.4477153,7 12,7.44771525 12,8 C12,8.55228475 12.4477153,9 13,9 C13.5522847,9 14,8.55228475 14,8 C14,7.44771525 13.5522847,7 13,7 Z"
+            fill="currentColor"
+          />
+        </svg>
       );
     case "management":
       return (
-        <IconWrapper>
-          <Cog fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          width="15"
+          height="15"
+          viewBox="0 0 15 14"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xlink="http://www.w3.org/1999/xlink"
+        >
+          <path
+            d="M7,5 C5.9,5 5,5.9 5,7 C5,8.1 5.9,9 7,9 C8.1,9 9,8.1 9,7 C9,5.9 8.1,5 7,5 Z M12.25,7 C12.25,7.23 12.23,7.46 12.2,7.68 L13.68,8.84 C13.81,8.95 13.85,9.14 13.76,9.29 L12.36,11.71 C12.27,11.86 12.09,11.92 11.93,11.86 L10.19,11.16 C9.83,11.44 9.43,11.67 9.01,11.85 L8.75,13.7 C8.72,13.87 8.57,14 8.4,14 L5.6,14 C5.43,14 5.28,13.87 5.25,13.71 L4.99,11.86 C4.56,11.68 4.17,11.45 3.81,11.17 L2.07,11.87 C1.91,11.93 1.73,11.87 1.64,11.72 L0.24,9.3 C0.15,9.15 0.19,8.96 0.32,8.85 L1.8,7.69 C1.77,7.46 1.75,7.23 1.75,7 C1.75,6.77 1.77,6.54 1.8,6.32 L0.32,5.16 C0.19,5.05 0.15,4.86 0.24,4.71 L1.64,2.29 C1.73,2.14 1.91,2.08 2.07,2.14 L3.81,2.84 C4.17,2.56 4.57,2.33 4.99,2.15 L5.25,0.3 C5.28,0.13 5.43,5.32907052e-15 5.6,5.32907052e-15 L8.4,5.32907052e-15 C8.57,5.32907052e-15 8.72,0.13 8.75,0.29 L9.01,2.14 C9.44,2.32 9.83,2.55 10.19,2.83 L11.93,2.13 C12.09,2.07 12.27,2.13 12.36,2.28 L13.76,4.7 C13.85,4.85 13.81,5.04 13.68,5.15 L12.2,6.31 C12.23,6.54 12.25,6.77 12.25,7 Z"
+            fill="currentColor"
+            fillRule="nonzero"
+          ></path>
+        </svg>
       );
 
     case "data-reporting":
       return (
-        <IconWrapper>
-          <Poll fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 18 24"
+        >
+          <path
+            d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"
+            fill="currentColor"
+          />
+          <path fill="none" d="M0 0h24v24H0z" />
+        </svg>
       );
 
     case "monetization":
       return (
-        <IconWrapper>
-          <CurrencyUsd fill="#ffffff" width="18px" height="18px" />
-        </IconWrapper>
+        <svg
+          {...props}
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"
+            fill="currentColor"
+          />
+          <path fill="none" d="M0 0h24v24H0z" />
+        </svg>
       );
 
     default:
@@ -241,7 +315,7 @@ export const StarIcon = (props) => (
   </svg>
 );
 
-export const CopyIcon = (props) => (
+export const CopyIcon = props => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +323,10 @@ export const CopyIcon = (props) => (
     viewBox="0 0 24 24"
     width="18px"
   >
-    <path d="M0 0h24v24H0V0z" fill="none"></path>
+    <path
+      d="M0 0h24v24H0V0z"
+      fill="none"
+    ></path>
     <path
       d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z"
       fill="currentColor"
