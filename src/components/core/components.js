@@ -118,7 +118,6 @@ export const Content = styled.article`
   padding: 0px ${({ noPadding }) => (noPadding ? "0" : "30px")};
   display: grid;
   grid-gap: 0;
-  scroll-behavior: smooth;
 
   @media (min-width: 768px) {
     padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};

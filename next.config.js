@@ -2,8 +2,6 @@ const withPlugins = require("next-compose-plugins");
 const withMdxEnhanced = require("next-mdx-enhanced");
 const withYaml = require("next-plugin-yaml");
 
-console.log("process.env.CONTEXT", process.env.CONTEXT);
-
 const nextConfig = {
   target: "serverless",
   basePath: process.env.CONTEXT === "deploy-preview" ? "" : "/docs",
