@@ -1,4 +1,5 @@
 let amplitude;
+import { VERSIONS_GROUPS } from "../constant";
 
 if (typeof window !== "undefined") {
   amplitude = require("amplitude-js");
@@ -112,4 +113,14 @@ export const setupDocsearch = () => {
       }
     },
   });
+};
+
+export const getStableVersion = (category) => {
+  switch (category) {
+    case "extending-chat-widget":
+      return VERSIONS_GROUPS["chat-widget"].STABLE_VERSION;
+    default:
+      return VERSIONS_GROUPS.DEFAULT.STABLE_VERSION;
+      break;
+  }
 };

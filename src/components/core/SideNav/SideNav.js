@@ -10,7 +10,7 @@ import CategoryMenu from "./CategoryMenu";
 import HomeItem from "./HomeItem";
 import MenuItem from "./MenuItem";
 import NestedMenu from "./NestedMenu";
-import { VERSIONS_GROUPS } from "../../../constant";
+import { getStableVersion } from "../../../utils";
 
 const Wrapper = styled.div`
   border: 1px solid #e2e2e4;
@@ -73,11 +73,7 @@ const closeIconStyle = {
   transition: "transform 300ms",
 };
 
-const SideNav = ({
-  category,
-  version = VERSIONS_GROUPS.DEFAULT.STABLE_VERSION,
-  title,
-}) => {
+const SideNav = ({ category, version = getStableVersion(category), title }) => {
   const router = useRouter();
   const pathname = router.pathname;
   const [expand, setExpand] = useState(false);
