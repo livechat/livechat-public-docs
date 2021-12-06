@@ -38,7 +38,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding: 9px 10px 7px 50px;
+  padding: 9px 10px 8px 50px;
   background-color: ${({ bgColor }) => `${bgColor}`};
   border-bottom: ${({ borderColor }) => `solid 1px ${borderColor}`};
   display: flex;
