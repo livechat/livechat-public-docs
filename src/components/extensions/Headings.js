@@ -1,7 +1,6 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import Image from "next/image";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
@@ -23,6 +22,9 @@ const HeadingLink = styled.a`
       top: 1px;
       opacity: 0.3;
     }
+  }
+  &:focus-visible {
+    outline-width: 0px;
   }
 `;
 
@@ -93,8 +95,6 @@ const Img = ({ ...props }) => {
 
   const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
 
-  // TODO: This is a workaround for next/image.
-  // Currently there is an issue with basePath.
   const imageHeight = props.height.replace("px", "");
   const imageWidth = props.width.replace("px", "");
 
@@ -315,12 +315,13 @@ const SectionLink = ({ to, href, children, ...rest }) => {
 const makeHeading = (size) => ({ children, ...props }) => {
   const className = "heading";
 
-  const id = props.id;
-
-  const newProps = { ...props, className, id };
+  const { id, ...rest } = props;
+  const newProps = { ...rest, className };
 
   const Content = () => (
-    <HeadingLink href={`#${id}`}>{getText(children)}</HeadingLink>
+    <HeadingLink id={id} href={`#${id}`} className="reference">
+      {getText(children)}
+    </HeadingLink>
   );
 
   switch (size) {

@@ -18,12 +18,12 @@ export const getVersionsByGroup = (group) =>
     : VERSIONS_GROUPS.DEFAULT;
 
 const Container = styled.div`
+  width: 100%;
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid rgb(255, 255, 255);
-  position: sticky;
-  top: 0px;
+  position: fixed;
+  top: 60px;
   right: 0;
-  left: 0;
   z-index: 40;
   transition: left 0.3s ease-out;
 
@@ -31,15 +31,10 @@ const Container = styled.div`
     margin-right: 10px;
   }
 
-  margin-left: -50px;
-  margin-right: -20px;
-
   @media (min-width: 768px) {
+    left: 260px;
+    width: calc(100% - 260px);
     top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
-  }
-
-  @media (min-width: 1024px) {
-    margin-right: -30px;
   }
 `;
 
