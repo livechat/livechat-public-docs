@@ -10,3 +10,5 @@ export { default as availability } from "./responses/agents/availability.json";
 export { default as performance } from "./responses/agents/performance.json";
 export { default as surveyFilter } from "./surveyFilter.json";
 export { default as surveys } from "./responses/chats/surveys.json";
+export { default as responseTime } from "./responses/chats/responseTime.json";
+export { default as firstResponseTime } from "./responses/chats/firstResponseTime.json";
