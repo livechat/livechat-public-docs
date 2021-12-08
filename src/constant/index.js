@@ -21,10 +21,11 @@ const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["3.4", "3.3", "3.2", "2.0"],
   },
   "customer-accounts-api": {
-    STABLE_VERSION: "3.3",
-    LEGACY_VERSIONS: ["2.0"],
+    STABLE_VERSION: "2.0",
+    LEGACY_VERSIONS: ["1.0"],
     DEV_PREVIEW_VERSION: "",
-    ALL_VERSIONS: ["3.3", "2.0"],
+    DEPRECATED_VERSIONS: [],
+    ALL_VERSIONS: ["1.0", "2.0"],
   },
 };
 

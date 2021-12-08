@@ -116,11 +116,17 @@ export const setupDocsearch = () => {
 };
 
 export const getStableVersion = (category) => {
+  console.log(category);
+  // FIXME: this is temp solution to have single version group in a category
+  // We need a solution so if we have e.g. category `authorization` and multiple sets of versions
+  // for customer and global api.
   switch (category) {
     case "extending-chat-widget":
       return VERSIONS_GROUPS["chat-widget"].STABLE_VERSION;
     case "data-reporting":
       return VERSIONS_GROUPS["data-reporting"].STABLE_VERSION;
+    case "authorization":
+      return VERSIONS_GROUPS["customer-accounts-api"].STABLE_VERSION;
     default:
       return VERSIONS_GROUPS.DEFAULT.STABLE_VERSION;
   }
