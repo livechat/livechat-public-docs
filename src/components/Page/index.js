@@ -25,6 +25,7 @@ import {
   LeftColumnRedoc,
   LeftColumnRedocWrapper,
   NavHeader,
+  CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
 import { SideNav } from "../core/SideNav";
@@ -200,14 +201,7 @@ const Page = ({ frontMatter, children }) => {
                           </span>
                         </Link>
                         <ChevronRight width={14} />
-                        <span
-                          style={{
-                            marginBottom: "-3px",
-                            textTransform: "capitalize",
-                          }}
-                        >
-                          {category}
-                        </span>
+                        <CategoryRedoc>{category}</CategoryRedoc>
                       </NavHeader>
                       <NavHeader>
                         <Search />

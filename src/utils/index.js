@@ -116,7 +116,6 @@ export const setupDocsearch = () => {
 };
 
 export const getStableVersion = (category) => {
-  console.log(category);
   // FIXME: this is temp solution to have single version group in a category
   // We need a solution so if we have e.g. category `authorization` and multiple sets of versions
   // for customer and global api.

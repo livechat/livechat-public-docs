@@ -182,6 +182,11 @@ export const LeftColumnRedoc = styled.div`
   }
 `;
 
+export const CategoryRedoc = styled.div`
+  margin-bottom: -3px;
+  text-transform: capitalize;
+`;
+
 export const MenuWrapper = styled.div`
   overflow-y: scroll;
   padding: 20px;
