@@ -159,21 +159,32 @@ export const MiddleColumn = styled.div`
   @media (min-width: 768px) {
     margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
   }
-  width: ${({ fullWidth }) => (fullWidth ? "calc(100%-260px)" : "900px")};
+  width: ${({ fullWidth }) => (fullWidth ? "100%" : "900px")};
+`;
+
+export const LeftColumnRedocWrapper = styled.div`
+  position: sticky;
+  top: 60px;
+  z-index: 1000;
 `;
 
 export const LeftColumnRedoc = styled.div`
-  position: sticky;
-  width: 250px;
+  position: absolute;
+  width: 260px;
   background-color: #f6f6f7;
   border-right: 1px solid #dedede;
-  top: 60px;
+  top: 0px;
   z-index: 1000;
   display: block;
 
   @media (max-width: 50rem) {
     display: none;
   }
+`;
+
+export const CategoryRedoc = styled.div`
+  margin-bottom: -3px;
+  text-transform: capitalize;
 `;
 
 export const MenuWrapper = styled.div`

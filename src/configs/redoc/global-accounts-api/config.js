@@ -17,7 +17,7 @@ module.exports = {
       },
     },
     sidebar: {
-      width: "250px",
+      width: "260px",
       backgroundColor: "#f6f6f7",
       textColor: "#424d57",
       activeTextColor: "#4384f5",

@@ -20,7 +20,6 @@ export const getVersionsByGroup = (group) =>
 const Container = styled.div`
   width: 100%;
   background-color: rgb(255, 255, 255);
-  border-bottom: 1px solid rgb(255, 255, 255);
   position: fixed;
   top: 60px;
   right: 0;
@@ -39,7 +38,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  padding: 9px 10px 7px 50px;
+  padding: 9px 10px 8px 50px;
   background-color: ${({ bgColor }) => `${bgColor}`};
   border-bottom: ${({ borderColor }) => `solid 1px ${borderColor}`};
   display: flex;
@@ -132,7 +131,7 @@ const Warning = ({ selectedVersion, versionColor, versions }) => (
   </PopperTooltip>
 );
 
-const Version = ({ articleVersions, redirectToVersion }) => {
+const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { items: versions, selected: selectedVersion } = useContext(
     VersionContext
@@ -186,7 +185,7 @@ const Version = ({ articleVersions, redirectToVersion }) => {
   const { isActive } = useContext(PromotionContext);
 
   return (
-    <Container promoIsActive={isActive}>
+    <Container promoIsActive={isActive} leftPadding={leftPadding}>
       <Content
         bgColor={
           isStable ? "rgb(241, 246, 248)" : `rgba(${versionColor}, 0.07)`

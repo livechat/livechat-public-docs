@@ -23,7 +23,9 @@ import {
   Content,
   RatingWrapper,
   LeftColumnRedoc,
+  LeftColumnRedocWrapper,
   NavHeader,
+  CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
 import { SideNav } from "../core/SideNav";
@@ -172,6 +174,7 @@ const Page = ({ frontMatter, children }) => {
             >
               {currentApiVersion && (
                 <Version
+                  leftPadding={useRedocPage}
                   articleVersions={
                     articlesVersions[category][subcategory][title]
                   }
@@ -180,32 +183,31 @@ const Page = ({ frontMatter, children }) => {
                 />
               )}
               <Content
-                className={useRedocPage ? "redoc" : ""}
+                className={
+                  useRedocPage
+                    ? `redoc ${currentApiVersion ? "redoc-with-version" : ""}`
+                    : ""
+                }
                 noPadding={useRedocPage}
               >
                 {title && !useRedocPage && <PageHeader title={title} />}
                 {useRedocPage && (
-                  <LeftColumnRedoc>
-                    <NavHeader>
-                      <Link href={"/"} style={{ color: "inherit" }}>
-                        <span>
-                          <HomeIcon width={18} style={{ display: "block" }} />
-                        </span>
-                      </Link>
-                      <ChevronRight width={14} />
-                      <span
-                        style={{
-                          marginBottom: "-3px",
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        {category}
-                      </span>
-                    </NavHeader>
-                    <NavHeader>
-                      <Search />
-                    </NavHeader>
-                  </LeftColumnRedoc>
+                  <LeftColumnRedocWrapper>
+                    <LeftColumnRedoc>
+                      <NavHeader>
+                        <Link href={"/"} style={{ color: "inherit" }}>
+                          <span>
+                            <HomeIcon width={18} style={{ display: "block" }} />
+                          </span>
+                        </Link>
+                        <ChevronRight width={14} />
+                        <CategoryRedoc>{category}</CategoryRedoc>
+                      </NavHeader>
+                      <NavHeader>
+                        <Search />
+                      </NavHeader>
+                    </LeftColumnRedoc>
+                  </LeftColumnRedocWrapper>
                 )}
 
                 <MDXProvider components={components}>{children}</MDXProvider>
