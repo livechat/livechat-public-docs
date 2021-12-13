@@ -135,10 +135,12 @@ export const LeftColumn = styled.div``;
 export const MiddleColumn = styled.div`
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
+  width: 100%;
+
   @media (min-width: 768px) {
     margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
+    width: ${({ fullWidth }) => (fullWidth ? "100%" : "900px")};
   }
-  width: ${({ fullWidth }) => (fullWidth ? "100%" : "900px")};
 `;
 
 export const LeftColumnRedocWrapper = styled.div`
