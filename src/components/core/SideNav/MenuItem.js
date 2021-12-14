@@ -9,7 +9,6 @@ const LinkWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 16px 6px ${({ isSubItem }) => (isSubItem ? "30px" : "20px")};
   margin-right: 10px;
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   font-size: 16px;
@@ -23,7 +22,7 @@ const LinkWrapper = styled.div`
 const LinkArea = styled.div`
   display: flex;
   align-items: center;
-  padding: 6px 16px 6px 30px;
+  padding: 6px 16px 6px ${({ isSubItem }) => (isSubItem ? "30px" : "20px")};
   margin-right: 10px;
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   font-size: 16px;
@@ -57,6 +56,7 @@ const ChevronWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-right: 5px;
   transform: ${({ isOpen }) => (isOpen ? "rotate(90deg)" : "rotate(0deg)")};
   transition: transform 300ms;
   cursor: pointer;
@@ -74,13 +74,15 @@ const MenuItem = ({
   const [open, setOpen] = useState(isOpen);
   return (
     <>
-      <LinkWrapper isActive={pathname + "/" === link} isSubItem={false}>
+      <LinkWrapper isActive={pathname + "/" === link}>
         <Link href={link}>
           <StyledLink isActive={pathname + "/" === link}>
-            <IconWrapper>
-              <ArticleIcon fill={iconFill} />
-            </IconWrapper>
-            {title}
+            <LinkArea isSubItem={false}>
+              <IconWrapper>
+                <ArticleIcon fill={iconFill} />
+              </IconWrapper>
+              {title}
+            </LinkArea>
           </StyledLink>
         </Link>
         {items.length > 1 && isNotBasePath && (
@@ -97,7 +99,6 @@ const MenuItem = ({
                 <LinkArea
                   isActive={pathname + "/" === item.link}
                   isSubItem={true}
-                  key={item.link}
                 >
                   <IconWrapper>
                     <ArticleIcon fill={iconFill} />
