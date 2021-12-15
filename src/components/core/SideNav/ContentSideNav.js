@@ -33,7 +33,7 @@ const StyledLink = styled.a`
   color: ${({ isActive }) => (isActive ? "#328DFF" : "#5e6c78")};
   transition: color 200ms;
   font-size: 14px;
-  padding-left: ${({ isSubheading }) => (isSubheading ? "10px" : "0px")};
+  padding-left: ${({ nestingLevel }) => `${10 * nestingLevel}px`};
   font-weight: 500;
   &:hover {
     color: #328dff;
@@ -47,6 +47,7 @@ const ContentSideNav = ({ version }) => {
   const pathname = router.pathname;
   const headings = articles.find((article) => article.link === pathname + "/")
     ?.headings;
+
   const hash = typeof window !== "undefined" ? window.location.hash : "";
 
   const [activeHeading, setActiveHeading] = useState(pathname + hash);
@@ -94,7 +95,7 @@ const ContentSideNav = ({ version }) => {
             <Link href={heading.link} passHref>
               <StyledLink
                 isActive={heading.link === activeHeading}
-                isSubheading={heading.isSubheading}
+                nestingLevel={heading.nestingLevel}
               >
                 {heading.title}
               </StyledLink>

@@ -28,68 +28,72 @@ getDirectories(articlesDirectory, (err, res) => {
       const regex = /^[\#]+ (.*)/gm;
       const matches = content.match(regex);
 
+      const transformSlug = (match, prefix) => {
+        let slug = match.replace(prefix, "");
+        slug = slug.toLowerCase();
+        slug = slug.trim();
+        slug = slug.replace(/\s/g, "-");
+        slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
+
+        return slug;
+      };
+
+      const checkOccurrences = (slug, occurrences) => {
+        let helperSlug = slug;
+        let helperOccurrences = occurrences;
+
+        if (
+          helperOccurrences.some((o) => {
+            return o["value"] === helperSlug;
+          })
+        ) {
+          helperOccurrences.find(
+            (item) => item.value === helperSlug
+          ).number += 1;
+          helperSlug =
+            helperSlug +
+            "-" +
+            helperOccurrences
+              .find((item) => item.value === helperSlug)
+              .number.toString();
+        } else {
+          helperOccurrences.push({ value: helperSlug, number: 0 });
+        }
+
+        return [helperSlug, helperOccurrences];
+      };
+
+      const pushHeading = (match, slug, prefix, nestingLevel) => {
+        headings.push({
+          title: match.replace(prefix, "").replace(/\*/g, ""),
+          link: link.substring(0, link.length - 1) + "#" + slug,
+          slug,
+          nestingLevel,
+        });
+      };
+
       if (matches) {
-        const occurrences = [];
+        let occurrences = [];
+        const prefixes = ["# ", "## ", "### "];
 
         matches.forEach((match) => {
-          if (match.startsWith("# ")) {
-            let slug = match.replace("# ", "");
-            slug = slug.toLowerCase();
-            slug = slug.trim();
-            slug = slug.replace(/\s/g, "-");
-            slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
+          let currentPrefix;
 
-            if (
-              occurrences.some((o) => {
-                return o["value"] === slug;
-              })
-            ) {
-              occurrences.find((item) => item.value === slug).number += 1;
-              slug =
-                slug +
-                "-" +
-                occurrences
-                  .find((item) => item.value === slug)
-                  .number.toString();
-            } else {
-              occurrences.push({ value: slug, number: 0 });
-            }
-
-            headings.push({
-              title: match.replace("# ", "").replace(/\*/g, ""),
-              link: link.substring(0, link.length - 1) + "#" + slug,
+          if (
+            prefixes.some((prefix) => {
+              currentPrefix = prefix;
+              return match.startsWith(prefix);
+            })
+          ) {
+            let slug = transformSlug(match, currentPrefix);
+            [slug, occurrences] = checkOccurrences(slug, occurrences);
+            console.log("currentPrefix", currentPrefix);
+            pushHeading(
+              match,
               slug,
-              isSubheading: false,
-            });
-          } else if (match.startsWith("## ")) {
-            let slug = match.replace("## ", "");
-            slug = slug.toLowerCase();
-            slug = slug.trim();
-            slug = slug.replace(/\s/g, "-");
-            slug = slug.replace(/[^a-zA-Z0-9-_]+/g, "");
-
-            if (
-              occurrences.some((o) => {
-                return o["value"] === slug;
-              })
-            ) {
-              occurrences.find((item) => item.value === slug).number += 1;
-              slug =
-                slug +
-                "-" +
-                occurrences
-                  .find((item) => item.value === slug)
-                  .number.toString();
-            } else {
-              occurrences.push({ value: slug, number: 0 });
-            }
-
-            headings.push({
-              title: match.replace("## ", "").replace(/\*/g, ""),
-              link: link.substring(0, link.length - 1) + "#" + slug,
-              slug,
-              isSubheading: true,
-            });
+              currentPrefix,
+              (currentPrefix.match(/#/g) || []).length - 1
+            );
           }
         });
       }
