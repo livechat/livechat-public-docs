@@ -116,31 +116,10 @@ export const NavHeader = styled.div`
 
 export const Content = styled.article`
   padding: 0px ${({ noPadding }) => (noPadding ? "0" : "30px")};
-  display: grid;
-  grid-gap: 0;
 
   @media (min-width: 768px) {
     padding: 0px ${({ noPadding }) => (noPadding ? "0" : "60px")};
-    grid-gap: 0 30px;
   }
-
-  grid-template-columns: minmax(0, 800px) minmax(0, 1fr);
-
-  & * {
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-
-  & section {
-    grid-column-start: 1;
-    grid-column-end: 3;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: minmax(0, 1fr) 0;
-    overflow: scroll;
-  }
-  overflow: visible;
 
   &.redoc {
     display: block;
@@ -156,10 +135,12 @@ export const LeftColumn = styled.div``;
 export const MiddleColumn = styled.div`
   padding-bottom: ${({ noPadding }) => (noPadding ? "0" : "30vh")};
   position: relative;
+  width: 100%;
+
   @media (min-width: 768px) {
     margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
+    width: ${({ fullWidth }) => (fullWidth ? "100%" : "900px")};
   }
-  width: ${({ fullWidth }) => (fullWidth ? "100%" : "900px")};
 `;
 
 export const LeftColumnRedocWrapper = styled.div`

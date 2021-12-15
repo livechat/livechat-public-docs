@@ -7,26 +7,6 @@ import payloads from "../../../payloads";
 import CopyToClipboardIcon from "./CopyToClipboardIcon";
 import { PromotionContext } from "../../contexts";
 
-const StickyWrapper = styled.div`
-  position: sticky;
-  top: ${(props) => (props.promotionIsActive ? "176px" : "136px")};
-  max-height: ${(props) =>
-    props.promotionIsActive ? "calc(100vh - 180px)" : "calc(100vh - 110px)"};
-  max-height: calc(100vh - 110px);
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-
-  pre {
-    max-width: 100%;
-    overflow: auto;
-    height: 100%;
-    border-radius: 6px;
-    margin: 0;
-  }
-`;
-
 const CodeResponseWrapper = styled.div`
   border: 1px solid #e8e8e8;
   border-radius: 6px;
@@ -234,11 +214,7 @@ export const CodeResponse = ({
 export const Code = ({ children }) => {
   const { isActive } = useContext(PromotionContext);
 
-  return (
-    <CodeWrapper promotionIsActive={isActive}>
-      <StickyWrapper>{children}</StickyWrapper>
-    </CodeWrapper>
-  );
+  return <CodeWrapper promotionIsActive={isActive}>{children}</CodeWrapper>;
 };
 
 const JSONHighlighter = ({ source, language = "json" }) => {
