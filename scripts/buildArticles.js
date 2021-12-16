@@ -87,7 +87,6 @@ getDirectories(articlesDirectory, (err, res) => {
           ) {
             let slug = transformSlug(match, currentPrefix);
             [slug, occurrences] = checkOccurrences(slug, occurrences);
-            console.log("currentPrefix", currentPrefix);
             pushHeading(
               match,
               slug,
