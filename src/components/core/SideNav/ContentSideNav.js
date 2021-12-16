@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   display: none;
   width: 270px;
   padding-left: 10px;
-  margin: 211px 0px 0px 0px;
+  margin: 195px 0px 50px 0px;
   overflow-y: scroll;
   height: calc(100vh - 70px);
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
@@ -35,6 +35,7 @@ const StyledLink = styled.a`
   font-size: 14px;
   padding-left: ${({ nestingLevel }) => `${10 * nestingLevel}px`};
   font-weight: 500;
+
   &:hover {
     color: #328dff;
     cursor: pointer;
