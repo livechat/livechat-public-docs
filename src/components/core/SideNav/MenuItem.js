@@ -9,11 +9,25 @@ const LinkWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-right: 10px;
+  font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
+  font-size: 16px;
+  border-radius: 0px 8px 8px 0px;
+
+  &:hover {
+    background-color: #f6f6f7;
+  }
+`;
+
+const LinkArea = styled.div`
+  display: flex;
+  align-items: center;
   padding: 6px 16px 6px ${({ isSubItem }) => (isSubItem ? "30px" : "20px")};
   margin-right: 10px;
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
+  width: 100%;
 
   &:hover {
     background-color: #f6f6f7;
@@ -35,12 +49,14 @@ const StyledLink = styled.a`
     cursor: pointer;
     text-decoration: none;
   }
+  width: 100%;
 `;
 
 const ChevronWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-right: 5px;
   transform: ${({ isOpen }) => (isOpen ? "rotate(90deg)" : "rotate(0deg)")};
   transition: transform 300ms;
   cursor: pointer;
@@ -58,13 +74,15 @@ const MenuItem = ({
   const [open, setOpen] = useState(isOpen);
   return (
     <>
-      <LinkWrapper isActive={pathname + "/" === link} isSubItem={false}>
+      <LinkWrapper isActive={pathname + "/" === link}>
         <Link href={link}>
           <StyledLink isActive={pathname + "/" === link}>
-            <IconWrapper>
-              <ArticleIcon fill={iconFill} />
-            </IconWrapper>
-            {title}
+            <LinkArea isSubItem={false}>
+              <IconWrapper>
+                <ArticleIcon fill={iconFill} />
+              </IconWrapper>
+              {title}
+            </LinkArea>
           </StyledLink>
         </Link>
         {items.length > 1 && isNotBasePath && (
@@ -76,20 +94,19 @@ const MenuItem = ({
       {open &&
         items.map((item) => {
           return (
-            <LinkWrapper
-              isActive={pathname + "/" === item.link}
-              isSubItem={true}
-              key={item.link}
-            >
-              <Link href={item.link}>
-                <StyledLink isActive={pathname + "/" === item.link}>
+            <Link href={item.link} key={item.link}>
+              <StyledLink isActive={pathname + "/" === item.link}>
+                <LinkArea
+                  isActive={pathname + "/" === item.link}
+                  isSubItem={true}
+                >
                   <IconWrapper>
                     <ArticleIcon fill={iconFill} />
                   </IconWrapper>
                   {item.title}
-                </StyledLink>
-              </Link>
-            </LinkWrapper>
+                </LinkArea>
+              </StyledLink>
+            </Link>
           );
         })}
     </>
