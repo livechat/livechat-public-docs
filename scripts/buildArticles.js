@@ -65,7 +65,10 @@ getDirectories(articlesDirectory, (err, res) => {
 
       const pushHeading = (match, slug, prefix, nestingLevel) => {
         headings.push({
-          title: match.replace(prefix, "").replace(/\*/g, ""),
+          title: match
+            .replace(prefix, "")
+            .replace(/\*/g, "")
+            .replace(/`/g, ""),
           link: link.substring(0, link.length - 1) + "#" + slug,
           slug,
           nestingLevel,
@@ -86,7 +89,9 @@ getDirectories(articlesDirectory, (err, res) => {
             })
           ) {
             let slug = transformSlug(match, currentPrefix);
+
             [slug, occurrences] = checkOccurrences(slug, occurrences);
+
             pushHeading(
               match,
               slug,
