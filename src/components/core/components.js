@@ -139,8 +139,11 @@ export const MiddleColumn = styled.div`
 
   @media (min-width: 768px) {
     margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
-    width: ${({ fullWidth }) => (fullWidth ? "100%" : "calc(100% - 258px)")};
-    max-width: 900px;
+
+    ${({ fullWidth }) =>
+      fullWidth
+        ? "width: 100%;"
+        : "width: calc(100% - 258px); max-width: 900px;"}
   }
 `;
 
