@@ -690,21 +690,22 @@ Informs that an Agent was disconnected. The payload contains the reason of Custo
 
 #### Possible reasons
 
-| Type                           | Notes                                                  |
-| ------------------------------ | ------------------------------------------------------ |
-| `access_token_revoked`         | Agent access token has been revoked.                   |
-| `access_token_expired`         | Access token life time has elapsed.                    |
-| `license_expired`              | License has expired.                                   |
-| `agent_deleted`                | Agent account has been deleted.                        |
-| `agent_logged_out_remotely`    | Agent has been logged out remotely.                    |
-| `agent_disconnected_by_server` | Agent has been disconnected by the server.             |
-| `unsupported_version`          | Connecting to an unsupported version of the Agent API. |
-| `ping_timeout`                 | Not receiving ping for some time from the Customer.    |
-| `internal_error`               | Internal error                                         |
-| `too_many_connections`         | Agent reached the max. number of connections.          |
-| `misdirected_request` **\***   | Agent connected to the server in the wrong region.     |
-| `product_version_changed`      | Product version has been changed.                      |
-| `license_not_found`            | License with the specified ID doesn't exist.           |
+Based on received `reason` we suggest different reaction.
+
+| Type                                | Notes                                                  | Suggested behavior |
+| ----------------------------------- | ------------------------------------------------------ | ------------------ |
+| `agent_disconnected_by_server`      | Agent has been disconnected by the server.             | Don't reconnect.   |
+| `access_token_revoked`              | Agent access token has been revoked.                   | Don't reconnect.   |
+| `access_token_expired`              | Access token life time has elapsed.                    | Reconnect. Please regenerate your access token. |
+| `connection_timeout`                | Not receiving ping for some time.                      | Reconnect.         |
+| `internal_error`                    | Internal error                                         | Reconnect.         |
+| `license_expired`                   | License has expired.                                   | Don't reconnect.   |
+| `license_not_found`                 | License with the specified ID doesn't exist.           | Don't reconnect.   |
+| `misdirected_connection` **\***     | Agent connected to the server in the wrong region.     | Don't reconnect.   |
+| `unsupported_version`               | Connecting to an unsupported version of the Agent API. | Don't reconnect.   |
+| `product_version_changed`           | Product version has been changed.                      | Don't reconnect.   |
+| `too_many_connections`              | Agent reached the max. number of connections.          | Reconnect.   |
+| `too_many_unauthorized_connections` | Agent reached the max. number of unauthorized connections. |  Reconnect.    |
 
 **\*)**
 Also, `misdirected_request` returns the correct `region` value in the optional `data` object.
