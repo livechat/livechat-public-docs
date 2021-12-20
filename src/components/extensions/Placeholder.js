@@ -3,7 +3,7 @@ import React from "react";
 const placeholders = {
   NUMBER_OF_CUSTOMERS: {
     type: "text",
-    text: "32,000",
+    text: "34,000",
   },
   DEVELOPER_CONSOLE_URL: {
     type: "link",
