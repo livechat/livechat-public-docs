@@ -11,6 +11,9 @@ const Header = styled.div`
   color: #424d57;
   border-bottom: 1px solid #e2e2e4;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Wrapper = styled.div`
@@ -24,7 +27,7 @@ const Wrapper = styled.div`
   right: 20px;
   position: sticky;
 
-  @media (min-width: 768px) {
+  @media (min-width: 1270px) {
     display: block;
   }
 `;
@@ -41,6 +44,12 @@ const StyledLink = styled.a`
     cursor: pointer;
     text-decoration: none;
   }
+`;
+
+const LinkContainer = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ContentSideNav = ({ version }) => {
@@ -92,7 +101,7 @@ const ContentSideNav = ({ version }) => {
       <Header>On this page</Header>
       {headings.map((heading) => {
         return (
-          <div key={heading.slug}>
+          <LinkContainer key={heading.slug}>
             <Link href={heading.link} passHref>
               <StyledLink
                 isActive={heading.link === activeHeading}
@@ -101,7 +110,7 @@ const ContentSideNav = ({ version }) => {
                 {heading.title}
               </StyledLink>
             </Link>
-          </div>
+          </LinkContainer>
         );
       })}
     </Wrapper>
