@@ -11,20 +11,23 @@ const Header = styled.div`
   color: #424d57;
   border-bottom: 1px solid #e2e2e4;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Wrapper = styled.div`
   display: none;
   width: 270px;
   padding-left: 10px;
-  margin: 211px 0px 0px 0px;
+  margin: 195px 0px 50px 0px;
   overflow-y: scroll;
   height: calc(100vh - 70px);
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
 
-  @media (min-width: 768px) {
+  @media (min-width: 1270px) {
     display: block;
   }
 `;
@@ -33,8 +36,9 @@ const StyledLink = styled.a`
   color: ${({ isActive }) => (isActive ? "#328DFF" : "#5e6c78")};
   transition: color 200ms;
   font-size: 14px;
-  padding-left: ${({ isSubheading }) => (isSubheading ? "10px" : "0px")};
+  padding-left: ${({ nestingLevel }) => `${10 * nestingLevel}px`};
   font-weight: 500;
+
   &:hover {
     color: #328dff;
     cursor: pointer;
@@ -42,11 +46,18 @@ const StyledLink = styled.a`
   }
 `;
 
+const LinkContainer = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const ContentSideNav = ({ version }) => {
   const router = useRouter();
   const pathname = router.pathname;
   const headings = articles.find((article) => article.link === pathname + "/")
     ?.headings;
+
   const hash = typeof window !== "undefined" ? window.location.hash : "";
 
   const [activeHeading, setActiveHeading] = useState(pathname + hash);
@@ -90,16 +101,16 @@ const ContentSideNav = ({ version }) => {
       <Header>On this page</Header>
       {headings.map((heading) => {
         return (
-          <div key={heading.slug}>
+          <LinkContainer key={heading.slug}>
             <Link href={heading.link} passHref>
               <StyledLink
                 isActive={heading.link === activeHeading}
-                isSubheading={heading.isSubheading}
+                nestingLevel={heading.nestingLevel}
               >
                 {heading.title}
               </StyledLink>
             </Link>
-          </div>
+          </LinkContainer>
         );
       })}
     </Wrapper>
