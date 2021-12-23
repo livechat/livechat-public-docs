@@ -519,22 +519,22 @@ Informs that a Customer was disconnected. The payload contains the reason of Cus
 
 #### Possible reasons
 
-| Type                                 | Notes                                                                                                                                |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `access_token_expired`               | Access token lifetime has elapsed.                                                                                                   |
-| `connection_timeout`                 | Has not received [`ping`](#authentication) from the client for some time, or it's been too long since the connection was authorized. |
-| `customer_banned`                    | Customer has been banned.                                                                                                            |
-| `customer_temporarily_blocked`**\*** | Customer tried reconnecting too many times after the `too_many_connections` error had occurred.                                      |
-| `inactivity_timeout`                 | Customer didn't chat or change the page in the past 30 minutes.                                                                      |
-| `internal_error`                     | Internal, unexpected error; reconnecting is advised                                                                                  |
-| `license_not_found`                  | The license with the specified ID doesn't exist.                                                                                     |
-| `license_expired`                    | The license has expired.                                                                                                             |
-| `misdirected_connection` **\*\***    | Customer connected to a server in the wrong region.                                                                                  |
-| `product_version_changed`            | The product version has changed.                                                                                                     |
-| `service_temporarily_unavailable`    | The Customer Chat API should be available again soon; reconnecting is advised                                                        |
-| `too_many_connections`               | Customer has reached the maximum number of connections.                                                                              |
-| `too_many_unauthorized_connections`  | The maximum number of unauthorized connections has been reached.                                                                     |
-| `unsupported_version`                | Connecting to an unsupported version of the Customer Chat API.                                                                       |
+Based on the received `reason` we suggest a different reaction.
+
+| Type                                 | Notes                                                                                                                                | Suggested behavior                              |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| `access_token_expired`               | Access token lifetime has elapsed.                                                                                                   | Reconnect and generate a new access token.      |
+| `connection_evicted`                 | The Customer Chat API should be available again soon.                                                                                | Reconnect.                                      |
+| `connection_timeout`                 | Has not received [`ping`](#authentication) from the client for some time, or it's been too long since the connection was authorized. | Reconnect.                                      |
+| `internal_error`                     | Internal error.                                                                                                                      | Reconnect.                                      |
+| `license_not_found`                  | The license with the specified ID doesn't exist.                                                                                     | Don't reconnect.                                |
+| `license_expired`                    | The license has expired.                                                                                                             | Don't reconnect.                                |
+| `misdirected_connection` **\*\***    | Customer connected to a server in the wrong region.                                                                                  | Don't reconnect.                                |
+| `unsupported_version`                | Connecting to an unsupported version of the Customer Chat API.                                                                       | Don't reconnect.                                |
+| `product_version_changed`            | The product version has changed.                                                                                                     | Don't reconnect.                                |
+| `service_temporarily_unavailable`    | The Customer Chat API should be available again soon.                                                                                | Reconnect.                                      |
+| `too_many_connections`               | Customer has reached the maximum number of connections.                                                                              | Don't reconnect.                                |
+| `too_many_unauthorized_connections`  | The maximum number of unauthorized connections has been reached.                                                                     | Reconnect.                                      |
 
 **\*)**
 The `customer_temporarily_blocked` reason can also return the correct timeout in an optional data object. With this piece of information, client is able to figure out how much time a customer should wait before attempting to reconnect again.
