@@ -11,7 +11,7 @@ Our documents are written in the [MDX format](https://mdxjs.com/), so pay attent
 
 Behind LiveChat, Inc. there is a team of [passionate people](https://www.livechat.com/team/) building online customer service software with online chat, help desk software, chatbot, and web analytics capabilities.
 
-With a suite of four products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/)) and their powerful APIs, we power customer communication for 33,000 companies in 150 countries.
+With a suite of four products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/)) and their powerful APIs, we power customer communication for 34,000 companies in 150 countries.
 
 [LiveChat Platform](https://developers.livechat.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://developers.livechat.com/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
 
@@ -45,11 +45,12 @@ In order to test your work before merging to master, **Netlify** provides **Depl
 
 Currently, versioning for the Agent Chat API, Customer Chat API, and Configuration API is as follows:
 
-|                 | Agent Chat API | Customer Chat API | Configuration API |
-| --------------- | -------------- | ----------------- | ----------------- |
-| **stable**      | 3.3            | 3.3               | 3.3               |
-| **dev preview** | 3.4            | 3.4               | 3.4               |
-| **legacy**      | 3.1, 3.2       | 3.1, 3.2          | 2.0, 3.1, 3.2     |
+|                 | Agent Chat API | Customer Chat API | Configuration API  | Reports API   |
+| --------------- | -------------- | ----------------- | ------------------ | ------------- |
+| **stable**      | 3.4            | 3.4               | 3.4                | 3.4           |
+| **dev preview** | 3.5            | 3.5               | 3.5                | 3.5           |
+| **legacy**      | 3.2            | 3.2               | 2.0,  3.2          | 2.0, 3.3, 3.2 |
+| **deprecated**  | 3.1, 3.2, 3.3  | 3.1, 3.2, 3.3     | 2.0, 3.1, 3.2, 3.3 | -             |
 
 This versioning is **default** for all articles which aren't grouped.
 

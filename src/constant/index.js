@@ -1,10 +1,10 @@
 const VERSIONS_GROUPS = {
   DEFAULT: {
-    STABLE_VERSION: "3.3",
-    LEGACY_VERSIONS: ["2.0", "3.2"],
-    DEV_PREVIEW_VERSION: "3.4",
+    STABLE_VERSION: "3.4",
+    LEGACY_VERSIONS: ["2.0", "3.2", "3.3"],
+    DEV_PREVIEW_VERSION: "3.5",
     DEPRECATED_VERSIONS: ["3.1"],
-    ALL_VERSIONS: ["3.4", "3.3", "3.2", "3.1", "2.0"],
+    ALL_VERSIONS: ["3.5", "3.4", "3.3", "3.2", "3.1", "2.0"],
   },
   "chat-widget": {
     STABLE_VERSION: "3.0",
@@ -14,11 +14,11 @@ const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["1.0", "2.0", "3.0"],
   },
   "data-reporting": {
-    STABLE_VERSION: "3.3",
-    LEGACY_VERSIONS: ["2.0", "3.2"],
-    DEV_PREVIEW_VERSION: "3.4",
+    STABLE_VERSION: "3.4",
+    LEGACY_VERSIONS: ["2.0", "3.2", "3.3"],
+    DEV_PREVIEW_VERSION: "3.5",
     DEPRECATED_VERSIONS: ["3.1"],
-    ALL_VERSIONS: ["3.4", "3.3", "3.2", "2.0"],
+    ALL_VERSIONS: ["3.5", "3.4", "3.3", "3.2", "2.0"],
   },
   "customer-accounts-api": {
     STABLE_VERSION: "2.0",
