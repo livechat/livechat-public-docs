@@ -1,0 +1,2209 @@
+---
+weight: 31
+category: "messaging"
+subcategory: "customer-chat-api"
+title: "RTM API Reference"
+tagline: "Interact with the chat as a Customer."
+desc: "Use the Customer Chat Web API to interact as a Customer."
+apiVersion: "3.5"
+---
+
+import { openChatWindow } from "utils/index";
+
+# Introduction
+
+## Versioning
+
+This document describes the **Customer Chat Real-Time Messaging API v3.5**. This is the developer preview version that provides a preview of the upcoming changes to the API. **It's not open to public use.** However, if you want to test some features, contact us at developers@livechat.com or <a href="#open-chat" onClick={openChatWindow}>ask on the chat</a>, and we'll give you access. [Read more about versioning...](/messaging/#api-versioning)
+
+## What is RTM API
+
+Real-Time Messaging API (RTM API) is based on a websocket-like connection. Client can send a **request message** that results in getting a **response message**. It's also possible to get **push messages**.
+
+## When to use RTM API
+
+If you're wondering which API to use - Customer Chat **RTM API** or **Web API**, keep on reading.
+
+**Real-Time Messaging API** allows for building stateful integrations that require **logging in** and **maintaining the connection**. Since connection maintenance is required, the implementation might be more challenging than with Web API.
+
+Customer Chat RTM API enables communication in real time. It supports pushes like `sneak peek`, `typing indicator`, and other. Web API doesn’t have equivalent webhooks, which means you won't be informed about certain events using Web API.
+
+Also, the RTM API will be a better choice if you want to avoid time delays or presume significant traffic.
+
+**Not what you're looking for?** Perhaps, you need to use [**Customer Chat Web API**](..) instead.
+
+## Access
+
+The basics on authorization and server pinging in the Customer Chat RTM API.
+
+### Authorization
+
+**Customer authorization** is handled with access tokens. Find out how to get an **access token** from [Customer authorization flow](/authorization/authorizing-api-calls/#customer-authorization-flow). You need to authorize within 30 seconds from establishing the connection. Otherwise, the connection will be closed. Given that the connection is continuosly maintained, you only need to authorize once.
+
+### Server pinging
+
+After successful authorization, the client needs to **ping the server** every 15 seconds. Otherwise, the connection will be closed after about 30 seconds of inactivity. Until authorization is completed, ping is a no-op.
+
+Use one of these 2 ways of pinging the server:
+
+- **Protocol message with the ping action**
+
+For web applications and backend integrations (e.g. in Python, Go). Send the following request every 15 seconds:
+
+```json
+{
+  "action": "ping",
+  "payload": {}
+}
+```
+
+After pinging the server, the client will receive a response with the `ping` action. Thanks to that, the client can make sure the connection is still alive.
+
+- **The control frame ping in the websocket protocol**
+
+For backend integrations; unavailable in web browsers. Read more about the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2).
+
+## Data centers
+
+LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
+
+For backend applications, you can specify the region in the request header. The mechanism is the same as in [Customer Chat Web API reference](../#data-centers). It doesn't work for frontend applications, though.
+Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL.
+
+**`fra`:** `wss://api-fra.livechatinc.com/v3.5/customer/rtm/ws`
+
+**`dal`:** `wss://api.livechatinc.com/v3.5/customer/rtm/ws`
+
+## Pagination
+
+Pagination is a mechanism that allows splitting the database output into more manageable chunks of data.
+Based on the `limit` and `sort order` parameters, pagination is able to decide how many records will be returned at once and whether it should fetch the oldest or the latest data first.
+
+Any filters that could be applied should be provided in first pagination request. In the response, you'll get the `next_page_id` and `previous_page_id` parameters.
+You should make the subsequent request using one of these parameters as `page_id`, depending on the direction of iteration: forward or backward.
+
+The `filters`, `limit`, and `sort_order` parameters can't be provided along with `page_id`.
+
+💡 The maximum duration of the `page_id` parameter before it expires is one month.
+
+# Data structures
+
+To find sample payloads of **events**, **users**, and **other common structures** such as chats or threads [visit the Data structures](/messaging/customer-chat-api/v3.5/data-structures) document.
+
+# Methods
+
+| The API endpoint                                 |
+| ------------------------------------------------ |
+| `wss://api.livechatinc.com/v3.5/customer/rtm/ws` |
+
+When connecting to the Customer Chat RTM API, clients have to send over the required query string parameters.
+
+| Required parameter | Data type |
+| ------------------ | :-------: |
+| `organization_id`  | `string`  |
+
+<Section>
+
+<Text>
+
+## Available methods
+
+|                |                                                                                                                                                                                                                                                                                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**      | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat)                                                                                                                                                 |
+| **Events**     | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback) [`send_sneak_peek`](#send-sneak-peek)                                                                                                                                                                                                       |
+| **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
+| **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                 |
+| **Status**     | [`login`](#login) [`list_group_statuses`](#list-group-statuses)                                                                                                                                                                                                                                                                     |
+| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting)                                                                                                     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'GENERAL RTM API REQUEST FORMAT'}>
+
+```json
+{
+  "version": "<api_version>", // optional, defaults to the version of the RTM connection; versions lower than the version of the RTM connection are prohibited
+  "request_id": "<request_id>", // optional
+  "action": "<action>",
+  "payload": {
+  // optional
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse title={'GENERAL RTM API RESPONSE FORMAT'}>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "<action>",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // optional
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Chats
+
+<Section>
+
+<Text>
+
+### List Chats
+
+It returns [summaries](/messaging/customer-chat-api/v3.5/data-structures/#chat-summaries) of the chats a Customer participated in.
+
+#### Specifics
+
+|                        |                                |
+| ---------------------- | ------------------------------ |
+| **Action**             | `list_chats`                   |
+| **Web API equivalent** | [`list_chats`](../#list-chats) |
+| **Push message**       | -                              |
+
+#### Request
+
+| Parameter    | Required | Type     | Notes                                                                                                        |
+| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `limit`      | No       | `number` | Default: 10, maximum: 25                                                                                     |
+| `sort_order` | No       | `string` | Possible values: `asc`, `desc` (default). Chat summaries are sorted by the creation date of its last thread. |
+| `page_id`    | No       | `string` |                                                                                                              |
+
+#### Response
+
+| Field              | Data type | Notes                                                                                                           |
+| ------------------ | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `total_chats`      | `number`  | An estimated number. The real number of found chats can slightly differ.                                        |
+| `next_page_id`     | `string`  | In relation to `page_id` specified in the request. Appears in the response only when there's the next page.     |
+| `previous_page_id` | `string`  | In relation to `page_id` specified in the request. Appears in the response only when there's the previous page. |
+| `chats_summary`    | `array`   | Array of [Chat summary](/messaging/customer-chat-api/v3.5/data-structures/#chat-summaries) data structures.     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_chats",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_chats",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==",
+    "chats_summary": [{
+      "id": "PJ0MRSHTDG",
+      "last_thread_id": "K600PKZON8",
+      "last_thread_created_at": "2020-05-08T08:22:21.128420Z",
+      "last_event_per_type": {
+        "message": {
+          "thread_id": "K600PKZON9",
+          "thread_created_at": "2020-05-07T07:11:28.288340Z",
+          "event": {
+            "id": "Q298LUVPRH_1",
+            "created_at": "2019-12-09T12:01:18.909000Z",
+            "type": "message",
+            "text": "hello world",
+            "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+          }
+        }
+      },
+      "users": [{
+        "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "type": "customer",
+        "present": true
+      }, {
+        "id": "b5657aff34dd32e198160d54666df9d8",
+        "name": "Agent Smith",
+        "type": "agent",
+        "present": true,
+        "avatar": "https://example.com/avatar.png",
+        "job_title": "Support Agent"
+      }],
+      "access": {
+        "group_ids": [0]
+      },
+      "properties": {
+        // "Properties" object
+      },
+      "active": true
+    }],
+    "total_chats": 1
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+<Text>
+
+### List Threads
+
+It returns threads that the current Customer has access to in a given chat.
+
+#### Specifics
+
+|                        |                                    |
+| ---------------------- | ---------------------------------- |
+| **Action**             | `list_threads`                     |
+| **Web API equivalent** | [`list_threads`](../#list-threads) |
+| **Push message**       | -                                  |
+
+#### Request
+
+| Parameter          | Required | Data type | Notes                                                                                                                                                                                                                                                       |
+| ------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`          | Yes      | `string`  |                                                                                                                                                                                                                                                             |
+| `sort_order`       | No       | `string`  | Possible values: `asc` - oldest threads first and `desc` - newest threads first (default).                                                                                                                                                                  |
+| `limit`            | No       | `number`  | Default: 3, maximum: 100                                                                                                                                                                                                                                    |
+| `page_id`          | No       | `string`  |                                                                                                                                                                                                                                                             |
+| `min_events_count` | No       | `number`  | Range: 1-100; Specifies the minimum number of events to be returned in the response. It's the **total** number of events, so they can come from more than one thread. You'll get as many latest threads as needed to meet the `min_events_count` condition. |
+
+You cannot use both `limit` and `min_events_count` at the same time.
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+{
+  "action": "list_threads",
+    "payload": {
+      "chat_id": "PWJ8Y4THAV"
+    }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>",
+  "action": "get_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "threads": [{
+      "id": "K600PKZON8",
+      "created_at": "2019-12-17T07:57:41.512000Z",
+      "active": true,
+      "user_ids": [
+        "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "bbb67d600796e9f277e360e842418833"
+      ],
+      "events": [{
+        "id": "Q20N9CKRX2_1",
+        "created_at": "2019-12-17T07:57:41.512000Z",
+        "recipients": "all",
+        "type": "message",
+        "text": "Hello",
+        "author_id": "bbb67d600796e9f277e360e842418833"
+      }],
+      "properties": {
+        // "Property" object
+      },
+      "access": {
+        "group_ids": [0]
+      },
+      "previous_thread_id": "K600PKZOM8", // optional
+      "next_thread_id": "K600PKZOO8" // optional
+    }],
+    "found_threads": 42,
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+    "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Chat
+
+#### Specifics
+
+|                        |                            |
+| ---------------------- | -------------------------- |
+| **Action**             | `get_chat`                 |
+| **Web API equivalent** | [`get_chat`](../#get-chat) |
+| **Push message**       | -                          |
+
+#### Request
+
+| Parameter   | Required | Data type |                                        |
+| ----------- | -------- | --------- | -------------------------------------- |
+| `chat_id`   | Yes      | `string`  |                                        |
+| `thread_id` | No       | `string`  | Default: the latest thread (if exists) |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_chat",
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>",
+  "action": "get_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "id": "PJ0MRSHTDG",
+    "thread": {
+      "id": "K600PKZON8",
+      "created_at": "2020-05-07T07:11:28.288340Z",
+      "active": true,
+      "user_ids": [
+        "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "b5657aff34dd32e198160d54666df9d8"
+      ],
+      "events": [{
+        "id": "Q20N9CKRX2_1",
+        "created_at": "2019-12-17T07:57:41.512000Z",
+        "type": "message",
+        "text": "Hello",
+        "author_id": "b5657aff34dd32e198160d54666df9d8"
+      }],
+      "properties": {
+        "0805e283233042b37f460ed8fbf22160": {
+          "string_property": "string_value"
+        }
+      },
+      "access": {
+        "group_ids": [0]
+      },
+      "previous_thread_id": "K600PKZOM8",
+      "next_thread_id": "K600PKZOO8"
+    },
+    "users": [{
+      "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+      "type": "customer",
+      "present": true
+    }, {
+      "id": "b5657aff34dd32e198160d54666df9d8",
+      "name": "Agent Smith",
+      "type": "agent",
+      "present": true,
+      "avatar": "https://example.com/avatar.jpg",
+      "job_title": "Support Agent"
+    }],
+    "access": {
+      "group_ids": [0]
+    },
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "string_value"
+      }
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Start Chat
+
+Starts a chat.
+
+The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
+
+#### Specifics
+
+|                        |                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| **Action**             | `start_chat`                                                                   |
+| **Web API equivalent** | [`start_chat`](../#start-chat)                                                 |
+| **Push message**       | [`incoming_chat`](/messaging/customer-chat-api/v3.5/rtm-pushes/#incoming_chat) |
+
+#### Request
+
+| Parameter                | Required | Data type | Notes                                                                       |
+| ------------------------ | -------- | --------- | --------------------------------------------------------------------------- |
+| `chat`                   | No       | `object`  |                                                                             |
+| `chat.properties`        | No       | `object`  | Initial chat properties                                                     |
+| `chat.access`            | No       | `object`  | Chat access to set, default: all agents.                                    |
+| `chat.users`             | No       | `array`   | List of existing users. Only one user is allowed (type `customer`).         |
+| `chat.thread`            | No       | `object`  |                                                                             |
+| `chat.thread.events`     | No       | `array`   | Initial chat events array                                                   |
+| `chat.thread.properties` | No       | `object`  | Initial thread properties                                                   |
+| `active`                 | No       | `bool`    | When set to `false`, creates an inactive thread; default: `true`.           |
+| `continuous`             | No       | `bool`    | Starts chat as continuous (online group is not required); default: `false`. |
+
+#### Response
+
+| Field       | Data type  | Notes                                                                                                                                                                   |
+| ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`   | `string`   |                                                                                                                                                                         |
+| `thread_id` | `string`   |                                                                                                                                                                         |
+| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "start_chat",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "start_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "PGDGHT5G"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Resume Chat
+
+Restarts an archived chat.
+
+The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
+
+#### Specifics
+
+|                        |                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| **Action**             | `resume_chat`                                                                  |
+| **Web API equivalent** | [`resume_chat`](../#resume-chat)                                               |
+| **Push message**       | [`incoming_chat`](/messaging/customer-chat-api/v3.5/rtm-pushes/#incoming_chat) |
+
+#### Request
+
+| Parameter                | Required | Type     | Notes                                                                      |
+| ------------------------ | -------- | -------- | -------------------------------------------------------------------------- |
+| `chat`                   | Yes      | `object` |                                                                            |
+| `chat.id`                | Yes      | `string` | The ID of the chat that will be resumed.                                   |
+| `chat.access`            | No       | `object` | Chat access to set, default: all agents.                                   |
+| `chat.properties`        | No       | `object` | Initial chat properties                                                    |
+| `chat.thread`            | No       | `object` |                                                                            |
+| `chat.thread.events`     | No       | `array`  | Initial chat events array                                                  |
+| `chat.thread.properties` | No       | `object` | Initial thread properties                                                  |
+| `active`                 | No       | `bool`   | When set to `false`, creates an inactive thread; default: `true`.          |
+| `continuous`             | No       | `bool`   | Sets a chat to the continuous mode. When unset, leaves the mode unchanged. |
+
+#### Response
+
+| Field       | Data type  | Notes                                                                                                                                                                   |
+| ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `thread_id` | `string`   |                                                                                                                                                                         |
+| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "resume_chat",
+  "payload": {
+  "chat": {
+    "id": "PWJ8Y4THAV"
+  }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "resume_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "thread_id": "Z8AGR5OUW"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Deactivate Chat
+
+Deactivates a chat by closing the currently open thread. Sending messages to this thread will no longer be possible.
+
+#### Specifics
+
+|                        |                                                                                                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `deactivate_chat`                                                                                                                                                         |
+| **Web API equivalent** | [`deactivate_chat`](../#deactivate-chat)                                                                                                                                  |
+| **Push message**       | [`incoming_event`](/messaging/customer-chat-api/v3.5/rtm-pushes/#incoming_event) and [`chat_deactivated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#chat_deactivated) |
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `id`      | Yes      | `string`  |     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "deactivate_chat",
+  "payload": {
+  "id": "PJ0MRSHTDG"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "deactivate_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Events
+
+<Section>
+
+<Text>
+
+### Send Event
+
+Sends an [Event](/messaging/customer-chat-api/v3.5/data-structures/#events) object. Use this method to send a message by specifying the [Message](/messaging/customer-chat-api/v3.5/data-structures/#message) event type in the request.
+
+The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
+
+#### Specifics
+
+|                        |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **Action**             | `send_event`                                                                     |
+| **Web API equivalent** | [`send_event`](../#send-event)                                                   |
+| **Push message**       | [`incoming_event`](/messaging/customer-chat-api/v3.5/rtm-pushes/#incoming_event) |
+
+#### Request
+
+| Parameter               | Required | Data type | Notes                                                                                                                                                             |
+| ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`               | Yes      | `string`  | Id of the chat you want to send the message to.                                                                                                                   |
+| `event`                 | Yes      | `object`  | The Event object                                                                                                                                                  |
+| `attach_to_last_thread` | No       | `bool`    | The flag is ignored for active chats. For inactive chats: `true` – the event will be added to the last thread; `false` – the request will fail. Default: `false`. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "send_event",
+  "payload": {
+  "chat_id": "PW94SJTGW6",
+  "event": {
+    "type": "message",
+    "text": "hello world",
+    "recipients": "all"
+  }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "send_event",
+  "type": "response",
+  "success": true,
+  "payload": {
+   "event_id": "K600PKZON8"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Send Rich Message Postback
+
+#### Specifics
+
+|                        |                                                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `send_rich_message_postback`                                                                                           |
+| **Web API equivalent** | [`send_rich_message_postback`](../#send-rich-message-postback)                                                         |
+| **Push message**       | [`incoming_rich_message_postback`](/messaging/customer-chat-api/v3.5/rtm-pushes/#incoming_rich_message_postback)**\*** |
+
+**\*)** `incoming_rich_message_postback` will be sent only for active threads.
+
+#### Request
+
+| Parameter          | Required | Data type | Notes                               |
+| ------------------ | -------- | --------- | ----------------------------------- |
+| `chat_id`          | Yes      | `string`  |                                     |
+| `event_id`         | Yes      | `string`  |                                     |
+| `postback`         | Yes      | `object`  |                                     |
+| `postback.id`      | Yes      | `string`  | Postback name of the button         |
+| `postback.toggled` | Yes      | `bool`    | Postback toggled, `true` or `false` |
+| `thread_id`        | Yes      | `string`  |                                     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "send_rich_message_postback",
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+  "postback": {
+    "id": "Method URL_yes",
+    "toggled": true
+  }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "send_rich_message_postback",
+  "type": "response",
+  "success": true,
+  "payload": {
+  //no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<!-- > **`send_rich_message_postback`** sample **request** with optional params
+
+```json
+{
+  "request_id": "125", // optional
+  "action": "send_rich_message_postback",
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8",
+    "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+    "postback": {
+      "id": "Method URL_yes",
+      "toggled": true
+    }
+  }
+}
+``` -->
+
+<Section>
+
+<Text>
+
+### Send Sneak Peek
+
+Sends a sneak peek to a chat.
+
+#### Specifics
+
+|                        |                                          |
+| ---------------------- | ---------------------------------------- |
+| **Action**             | `send_sneak_peek`                        |
+| **Web API equivalent** | [`send_sneak_peek`](../#send-sneak-peek) |
+| **Push message**       | -                                        |
+
+#### Request
+
+| Parameter         | Required | Data type | Notes                                   |
+| ----------------- | -------- | --------- | --------------------------------------- |
+| `chat_id`         | Yes      | `string`  | Id of the chat to send a sneak peek to. |
+| `sneak_peek_text` | Yes      | `string`  | Sneak peek text                         |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "send_sneak_peek",
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "sneak_peek_text": "hello world"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "send_sneak_peek",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Properties
+
+<Section>
+
+<Text>
+
+### Update Chat Properties
+
+#### Specifics
+
+|                        |                                                                                                    |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| **Action**             | `update_chat_properties`                                                                           |
+| **Web API equivalent** | [`update_chat_properties`](../#update-chat-properties)                                             |
+| **Push message**       | [`chat_properties_updated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#chat_properties_updated) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                                                                                                                                        |
+| ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | Yes      | `string`  | Id of the chat you to set a property for.                                                                                                                                    |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_chat_properties",
+  "payload": {
+  "id": "Q1GZ3FNAT9",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Chat property value updated by Customer"
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_chat_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Chat Properties
+
+#### Specifics
+
+|                        |                                                                                                    |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| **Action**             | `delete_chat_properties`                                                                           |
+| **Web API equivalent** | [`delete_chat_properties`](../#delete-chat-properties)                                             |
+| **Push message**       | [`chat_properties_deleted`](/messaging/customer-chat-api/v3.5/rtm-pushes/#chat_properties_deleted) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                            |
+| ------------ | -------- | --------- | ------------------------------------------------ |
+| `id`         | Yes      | `string`  | Id of the chat you want to delete properties of. |
+| `properties` | Yes      | `object`  | Chat properties to delete.                       |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "delete_chat_properties",
+  "payload": {
+  "id": "Q1GZ3FNAT9",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": [
+      "string_property"
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "delete_chat_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Thread Properties
+
+#### Specifics
+
+|                        |                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Action**             | `update_thread_properties`                                                                             |
+| **Web API equivalent** | [`update_thread_properties`](../#update-thread-properties)                                             |
+| **Push message**       | [`thread_properties_updated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#thread_properties_updated) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                                                                                                                                        |
+| ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.                                                                                                                               |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for.                                                                                                                             |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_thread_properties",
+  "payload": {
+  "chat_id": "Q1GZ3FNAT9",
+    "thread_id": "Q1GZ3FNAU9",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Thread property value updated by Customer"
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_thread_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Thread Properties
+
+#### Specifics
+
+|                        |                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Action**             | `delete_thread_properties`                                                                             |
+| **Web API equivalent** | [`delete_thread_properties`](../#delete-thread-properties)                                             |
+| **Push message**       | [`thread_properties_deleted`](/messaging/customer-chat-api/v3.5/rtm-pushes/#thread_properties_deleted) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                  |
+| ------------ | -------- | --------- | ------------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
+| `properties` | Yes      | `object`  | Thread properties to delete.                           |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "delete_thread_properties",
+  "payload": {
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": [
+      "string_property"
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "delete_thread_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Event Properties
+
+#### Specifics
+
+|                        |                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Action**             | `update_event_properties`                                                                            |
+| **Web API equivalent** | [`update_event_properties`](../#update-event-properties)                                             |
+| **Push message**       | [`event_properties_updated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#event_properties_updated) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                                                                                                                                        |
+| ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.                                                                                                                               |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for.                                                                                                                             |
+| `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.                                                                                                                              |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_event_properties",
+  "payload": {
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "event_id": "Q1GZ3FNAU9_1",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Event property value updated by Customer"
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_event_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Event Properties
+
+#### Specifics
+
+|                        |                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Action**             | `delete_event_properties`                                                                            |
+| **Web API equivalent** | [`delete_event_properties`](../#delete-event-properties)                                             |
+| **Push message**       | [`event_properties_deleted`](/messaging/customer-chat-api/v3.5/rtm-pushes/#event_properties_deleted) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                  |
+| ------------ | -------- | --------- | ------------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of. |
+| `event_id`   | Yes      | `string`  | Id of the event you want to delete the properties of.  |
+| `properties` | Yes      | `object`  | Event properties to delete.                            |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "delete_event_properties",
+  "payload": {
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "event_id": "Q1GZ3FNAU9_1",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": [
+      "string_property"
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "delete_event_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Customers
+
+<Section>
+
+<Text>
+
+### Update Customer
+
+#### Specifics
+
+|                        |                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| **Action**             | `update_customer`                                                                    |
+| **Web API equivalent** | [`update_customer`](../#update-customer)                                             |
+| **Push message**       | [`customer_updated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#customer_updated) |
+
+#### Request
+
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | URL of the Customer's avatar.                                                      |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
+
+At least one optional parameter needs to be included in the request payload.
+
+When updating customer data while the customer has an active chat, the update will take effect after the chat has ended.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_customer",
+  "payload": {
+  "name": "Thomas Anderson",
+  "email": "t.anderson@example.com",
+  "avatar": "example.com/avatars/1.png",
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Customer Page
+
+#### Specifics
+
+|                        |                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| **Action**             | `update_customer_page`                                                                         |
+| **Web API equivalent** | -                                                                                              |
+| **Push message**       | [`customer_page_updated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#customer_page_updated) |
+
+Agent and referrer are updated by default using the browser’s headers.
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `url`     | Yes      | `string`  |     |
+| `title`   | No       | `string`  |     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_customer_page",
+  "payload": {
+  "url": "https://livechatinc.com/pricing"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_customer_page",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Set Customer Session Fields
+
+#### Specifics
+
+|                        |                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| **Action**             | `set_customer_session_fields`                                                        |
+| **Web API equivalent** | [`set_customer_session_fields`](../#set-customer-session-fields)                     |
+| **Push message**       | [`customer_updated`](/messaging/customer-chat-api/v3.5/rtm-pushes/#customer_updated) |
+
+#### Request
+
+| Parameter        | Required | Data type  | Notes                                                                                            |
+| ---------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| `session_fields` | Yes      | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. Max keys: 100 |
+
+Agent and referrer are updated by default using the browser’s headers.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "set_customer_session_fields",
+  "payload": {
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }],
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "set_customer_session_fields",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Customer
+
+Returns the info about the Customer requesting it.
+
+#### Specifics
+
+|                        |                                    |
+| ---------------------- | ---------------------------------- |
+| **Action**             | `get_customer`                     |
+| **Web API equivalent** | [`get_customer`](../#get-customer) |
+| **Push message**       | -                                  |
+
+#### Response
+
+|                  |                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `name`           | [Customer's](/messaging/customer-chat-api/v3.5/data-structures/#customer) name. Returned only if set.           |
+| `email`          | [Customer's](/messaging/customer-chat-api/v3.5/data-structures/#customer) email. Returned only if set.          |
+| `avatar`         | [Customer's](/messaging/customer-chat-api/v3.5/data-structures/#customer) avatar. Returned only if set.         |
+| `session_fields` | An array of custom object-enclosed `key:value` pairs. Returned only if set. Available for the session duration. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_customer",
+  "payload": {
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }],
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "get_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "type": "customer",
+  "name": "Thomas Anderson", // optional
+  "email": "t.anderson@example.com", // optional
+  "avatar": "https://example.com/avatars/1.jpg", // optional
+  "session_fields": [{ // optional
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Status
+
+<Section>
+
+<Text>
+
+### Login
+
+It returns the initial state of the current Customer.
+
+#### Specifics
+
+|                        |         |
+| ---------------------- | ------- |
+| **Action**             | `login` |
+| **Web API equivalent** | -       |
+| **Push message**       | -       |
+
+#### Request
+
+| Parameter                     | Required | Data type  | Notes                                                                                                                                                |
+| ----------------------------- | -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `token`                       | Yes      | `string`   | OAuth token from the Customer's account                                                                                                              |
+| `customer`                    | No       | `object`   |                                                                                                                                                      |
+| `customer.avatar`             | No       | `string`   | The URL of the Customer's avatar                                                                                                                     |
+| `customer.email`              | No       | `string`   |                                                                                                                                                      |
+| `customer.name`               | No       | `string`   |                                                                                                                                                      |
+| `customer.session_fields`     | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items.                                                                   |
+| `customer_page.title`         | No       | `string`   |                                                                                                                                                      |
+| `customer_page.url`           | No       | `string`   |                                                                                                                                                      |
+| `customer_side_storage`**\*** | No       | `object`   | A map in the `"key": "value"` format                                                                                                                 |
+| `is_mobile`                   | No       | `bool`     | Informs if logging in is performed from a mobile device.                                                                                             |
+| `group_id`                    | No       | `number`   |                                                                                                                                                      |
+| `referrer`                    | No       | `string`   |                                                                                                                                                      |
+| `application`                 | No       | `object`   | Application info                                                                                                                                     |
+| `application.name`            | No       | `string`   | Application name                                                                                                                                     |
+| `application.version`         | No       | `string`   | Application version                                                                                                                                  |
+| `application.channel_type`    | No       | `string`   | Application channel type                                                                                                                             |
+| `pushes`                      | No       | `object`   | Use case: when you want to receive only specific pushes. By default, it's set to `all` for the version of your currently established RTM connection. |
+| `pushes.<version>`            | Yes      | `[]string` | A list of push subscriptions for a specific version;`<version>` is a version number, without `v` prefix. Possible values: push names.                |
+
+**\*)** We use `customer_side_storage` to keep some data on the client side. You should pass a map from the `customer_side_storage_updated` push payload to this field.
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "login",
+  "payload": {
+    "token": "Bearer dal:test_1fgTbfXmgthj4cZSA",
+    "pushes": {
+      "3.5": ["incoming_chat", "incoming_multicast"],
+      "3.6": ["all"]
+    }
+}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "login",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "customer": {
+      "id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f5",
+      "name": "Thomas Anderson",
+      "email": "t.anderson@example.com",
+      "avatar": "https://example.com/avatar.png",
+      "session_fields": [{
+        "custom_key": "custom_value"
+      }, {
+        "another_custom_key": "another_custom_value"
+      }],
+      "statistics": {
+        "chats_count": 2,
+        "threads_count": 9,
+        "visits_count": 15,
+        "page_views_count": 40,
+        "greetings_shown_count": 20,
+        "greetings_accepted_count": 1
+      }
+    },
+    "has_active_thread": true,
+    "chats": [{
+      "chat_id": "PJ0MRSHTDG",
+      "has_unread_events": true
+    }],
+    "greeting": {
+      "accepted": true, // Customer has seen the greeting
+      "id": 342543723,
+      "unique_id": "e35a4fb4106d87e550fe1af480639058",
+      "addon": "email",
+      "subtype": "announcement",
+      "event": {
+        // "Event > Message" object
+        // or
+        // "Event > Rich message" object
+      },
+      "agent": {
+        "id": "b5657aff34dd32e198160d54666df9d8",
+        "name": "Agent Smith",
+        "type": "agent",
+        "avatar": "https://example.com/avatar.png",
+        "job_title": "Support Agent",
+        "is_bot": false
+      },
+      "displayed_first_time": true
+    },
+    "__priv_dynamic_config": {
+      "online_groups_ids": [1, 3],
+      "customer_groups": {
+        "monitoring": {
+          "id": 1,
+          "static_config_url": "/licence/1520/get_static_config.121.1808829.94.95.39446.4011.2385.398.160.552.58.337.44320.js",
+          "language_config_url": "/licence/1520/v2/localization.en.121.004b8e014f50ea0c6ad6227162f7d18f_40d391a9adcdbf190e62fcd21c865bf2.js"
+        }
+      }
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Group Statuses
+
+#### Specifics
+
+|                        |                                                  |
+| ---------------------- | ------------------------------------------------ |
+| **Action**             | `list_group_statuses`                            |
+| **Web API equivalent** | [`list_group_statuses`](../#list-group-statuses) |
+| **Push message**       | -                                                |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                                      |
+| ----------- | -------- | --------- | ---------------------------------------------------------- |
+| `all`       | No       | `bool`    | If set to `true`, you will get statuses of all the groups. |
+| `group_ids` | No       | `array`   | A table of a groups' IDs                                   |
+
+One of the optional parameters needs to be included in the request payload.
+
+#### Response
+
+|                   |                                                                                                          |     |
+| ----------------- | -------------------------------------------------------------------------------------------------------- | --- |
+| `Group Not Found` | If you send `group_id` of a group that doesn't exists, the id won't be included in the resposne payload. |     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_group_statuses",
+  "payload": {
+  "all": true
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_group_statuses",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "groups_status": {
+    //1,2,3 are group ids, online/offline/online_for_queue are statuses of the groups
+
+    1: "online",
+    2: "offline",
+    3: "online_for_queue"
+  }
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+## Other
+
+<Section>
+
+<Text>
+
+### Get Form
+
+Returns an empty ticket form of a <a href="https://www.livechat.com/help/chat-surveys/" target="_blank">prechat or postchat survey</a>.
+
+#### Specifics
+
+|                        |                            |
+| ---------------------- | -------------------------- |
+| **Action**             | `get_form`                 |
+| **Web API equivalent** | [`get_form`](../#get-form) |
+| **Push message**       | -                          |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                                |
+| ---------- | -------- | --------- | ---------------------------------------------------- |
+| `group_id` | Yes      | `number`  | Id of the group from which you want the form.        |
+| `type`     | Yes      | `string`  | Form type. Possible values: `prechat` or `postchat`. |
+
+#### Response
+
+| Field     | Notes                                                                                                                  |
+| --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `enabled` | If `enabled: false`, the `form` object is not returned. Prechat/postchat survey disabled in the LiveChat Agent App UI. |
+| `form`    | The [Form](/messaging/customer-chat-api/v3.5/data-structures/#form) data structure.                                    |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_form",
+  "payload": {
+  "group_id": 0,
+  "type": "prechat"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "form": {
+    // "Form" object
+  },
+  "enabled": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Predicted Agent
+
+Gets the predicted Agent - the one the Customer will chat with when the chat starts.
+
+#### Specifics
+
+|                        |                                                  |
+| ---------------------- | ------------------------------------------------ |
+| **Action**             | `get_predicted_agent`                            |
+| **Web API equivalent** | [`get_predicted_agent`](../#get-predicted-agent) |
+| **Push message**       | -                                                |
+
+#### Response
+
+| Field   | Data type | Notes                               |
+| ------- | --------- | ----------------------------------- |
+| `queue` | `bool`    | If `true`, the chat will be queued. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_predicted_agent",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "get_predicted_agent",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "agent": {
+      "id": "b5657aff34dd32e198160d54666df9d8",
+      "name": "Agent Smith",
+      "avatar": "https://example.avatar/example.com",
+      "is_bot": false,
+      "job_title": "support hero",
+      "type": "agent"
+    },
+    "queue": false
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get URL Info
+
+It returns the info on a given URL.
+
+#### Specifics
+
+|                        |                                    |
+| ---------------------- | ---------------------------------- |
+| **Action**             | `get_url_info`                     |
+| **Web API equivalent** | [`get_url_info`](../#get-url-info) |
+| **Push message**       | -                                  |
+
+#### Request
+
+| Parameter | Required | Data type | Notes             |
+| --------- | -------- | --------- | ----------------- |
+| `url`     | Yes      | `string`  | Valid website URL |
+
+#### Response
+
+| Field                | Data type | Notes                                                  |
+| -------------------- | --------- | ------------------------------------------------------ |
+| `image_url`          | `string`  | URL of the minified image hosted on the LiveChat's CDN |
+| `image_original_url` | `string`  | URL of the original image                              |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_url_info",
+  "payload": {
+  "url": "https://livechatinc.com"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "get_url_info",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "title": "LiveChat | Live Chat Software and Help Desk Software",
+  "description": "LiveChat - premium live chat software and help desk software for business. Over 24 000 companies from 150 countries use LiveChat. Try now, chat for free!",
+  "image_url": "https://example.com/image.png",
+  "image_original_url": "https://example-original-url.com/image.png",
+  "image_width": 200,
+  "image_height": 200,
+  "url": "https://livechatinc.com"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Mark Events As Seen
+
+#### Specifics
+
+|                        |                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| **Action**             | `mark_events_as_seen`                                                                          |
+| **Web API equivalent** | [`mark_events_as_seen`](../#mark-events-as-seen)                                               |
+| **Push message**       | [`events_marked_as_seen`](/messaging/customer-chat-api/v3.5/rtm-pushes/#events_marked_as_seen) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                     |
+| ------------ | -------- | --------- | ------------------------- |
+| `chat_id`    | Yes      | `string`  |                           |
+| `seen_up_to` | Yes      | `string`  | RFC 3339 date-time format |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "mark_events_as_seen",
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
+  }
+}
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Accept Greeting
+
+Marks an incoming greeting as seen.
+
+**How it's implemented in LiveChat:**
+
+The Chat Widget uses this method to inform that a Customer has seen a greeting. Based on that, the Reports section displays the greetings
+that were actually seen by Customers, not all the sent greetings. If a Customer started a chat from a greeting, but the **Accept Method** wasn't executed,
+the greeting is still counted as seen in Reports.
+
+#### Specifics
+
+|                        |                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| **Action**             | `accept_greeting`                                                                      |
+| **Web API equivalent** | [`accept_greeting`](../#accept-greeting)                                               |
+| **Push message**       | [`greeting_accepted`](/messaging/customer-chat-api/v3.5/rtm-pushes/#greeting_accepted) |
+
+#### Request
+
+| Parameter     | Required | Data type | Notes                                                                                                 |
+| ------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------- |
+| `greeting_id` | Yes      | `number`  | ID of the greeting configured within the license to accept.                                           |
+| `unique_id`   | Yes      | `string`  | ID of the greeting to accept. You can get it from the [`incoming_greeting`](#incoming_greeting) push. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "accept_greeting",
+  "payload": {
+    "greeting_id": 7,
+    "unique_id": "Q10X0W041P"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "accept_greeting",
+  "type": "response",
+  "payload": {
+    // no response payload
+  },
+  "success": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Cancel Greeting
+
+Cancels a greeting (an invitation to the chat). For example, Customers could cancel greetings by minimizing the chat widget with a greeting.
+
+#### Specifics
+
+|                        |                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| **Action**             | `cancel_greeting`                                                                      |
+| **Web API equivalent** | [`cancel_greeting`](../#cancel-greeting)                                               |
+| **Push message**       | [`greeting_canceled`](/messaging/customer-chat-api/v3.5/rtm-pushes/#greeting_canceled) |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                                                                                 |
+| ----------- | -------- | --------- | ----------------------------------------------------------------------------------------------------- |
+| `unique_id` | Yes      | `string`  | ID of the greeting to cancel. You can get it from the [`incoming_greeting`](#incoming_greeting) push. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "cancel_greeting",
+  "payload": {
+    "unique_id": "Q10X0W041P"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "cancel_greeting",
+  "type": "response",
+  "payload": {
+  // no response payload
+  },
+  "success": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+# Pushes
+
+Here's what you need to know about **pushes**:
+
+- They are generated primarily by RTM API actions, but also by Web API actions.
+- They notify you when specific events occur.
+- Can be **delivered** only in the websocket transport.
+- You don't need to register pushes to receive them.
+- Their equivalents in Web API are [webhooks](/management/configuration-api/v3.5/#webhooks). Pushes and webhooks have similar payloads.
+- There are no retries for pushes. To determine if a customer has seen an event, compare the [event's](/messaging/customer-chat-api/v3.5/data-structures/#response) `created_at` parameter with the [customer's](/messaging/customer-chat-api/v3.5/data-structures/#customer) `events_seen_up_to` field.
+
+<SectionLink to={"/messaging/customer-chat-api/v3.5/rtm-pushes"}>See available pushes</SectionLink>
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'The general push format'}>
+
+```json
+{
+  "version": "<api_version>",
+  "request_id": "<request_id>", // optional, applies only to the requester
+  "action": "<action>",
+  "type": "push",
+  "payload": {
+  // optional payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Errors
+
+<CodeResponse title={'General error format'}>
+
+```json
+{
+  "error": {
+    "type": "misdirected_request",
+    "message": "Wrong region",
+    "data": {
+      // optional
+      "region": "dal"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+## Possible errors
+
+<Errors errors="authentication,authorization,chat_anonymized,chat_inactive,customer_banned,greeting_not_found,group_not_found,group_offline,group_unavailable,groups_offline,internal,license_expired,limit_reached,not_allowed,not_found,pending_requests_limit_reached,request_timeout,service_unavailable,too_many_requests,unsupported_version,users_limit_reached,validation,wrong_product_version"/>
+
+# Contact us
+
+If you found a bug or a typo, you can let us know directly on GitHub.
+In case of any questions or feedback, don't hesitate to contact us at [developers@livechat.com](mailto:developers@livechat.com). We'll be happy to hear from you!
