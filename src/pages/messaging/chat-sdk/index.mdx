@@ -22,7 +22,7 @@ If Messaging APIs seem too intimidating or you just want to build something real
 
 ## Versioning
 
-This is the version 0.1.0 of Chat SDK.
+This is the version 0.2.0 of Chat SDK.
 
 ## Initial configuration
 
@@ -62,12 +62,12 @@ const chat = new ChatSDK({ region: "europe" })
 
 ### API version
 
-By default, you'll make request to the current stable API version. To change it to different version, for example v3.0, set `apiVersion: 3.0` in the configuration object.
+By default, you'll make request to the current stable API version (v3.4). To change it to different version, for example v3.5, set `apiVersion: 3.5` in the configuration object.
 
 <CodeSample>
 
 ```js
-const chat = new ChatSDK({ apiVersion: "3.0" })
+const chat = new ChatSDK({ apiVersion: "3.5" })
 ```
 
 </CodeSample>
@@ -108,6 +108,8 @@ It handles authorization, intializes the WebSocket connection, attaches event li
 ```js 
 chatSDK.init({
   access_token: access_token
+  // OR
+  personal_access_token: personal_access_token
 })
 ```
 
@@ -117,7 +119,10 @@ chatSDK.init({
 
 | Parameter      | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
 | -------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `access_token` | Yes      | `object`  | See [Authorization](#authorization) to learn how to get an access token. Optionally, you can acquire it directly from [Accounts SDK](/getting-started/authorization/sign-in-with-livechat/#sdk-documentation) and pass it in to the `init()` method. The **Simple Agent** app uses this mechanism. |
+| `access_token` | Yes/No*      | `string`  | See [Authorization](#authorization) to learn how to get an access token. Optionally, you can acquire it directly from [Accounts SDK](/getting-started/authorization/sign-in-with-livechat/#sdk-documentation) and pass it in to the `init()` method. The **Simple Agent** app uses this mechanism. |
+| `personal_access_token` |   Yes/No*    | `string`  | See [Authorization docs](/authorization/authorizing-api-calls#personal-access-tokens) to learn how to get an personal access token. Provided value should be already encoded with `base64` |
+
+**`init` function requires one of the parameters to be provided*
 
 ## destroy
 
@@ -188,21 +193,23 @@ chatSDK.sendMessage(chatId, message)
 ## Creating custom methods
 This SDK supports the RTM transport. For that reason, make sure you use the [Agent Chat API RTM](/messaging/agent-chat-api/rtm-reference/) reference. 
 When creating your custom methods, base on the payloads from the [Agent Chat RTM API methods](/messaging/agent-chat-api/rtm-reference/#methods).
-
-In the example below, we're creating a custom method that returns chat thread summaries.
-As you can see in the [documentation](/messaging/agent-chat-api/rtm-reference/#get-chat-threads-summary), only `chat_id` is required, but you can include other optional parameters in your custom method.
+​
+In the example below, we're creating a custom method that returns chat thread summaries. 
+As you can see in the [documentation](/messaging/agent-chat-api/rtm-reference/#get-chat), only `chat_id` is required, but you can include other optional parameters in your custom method.
 
 <CodeSample>
 
 ```js
-const getChatThreadsSummary = (chatId) => chatSDK.methodFactory({
-    action: "get_chat_threads_summary",
-    payload: { "chat_id": chatId }
-})
+const getChat = (chat_id) =>
+    ChatSDK.methodFactory({
+        action: "get_chat",
+        payload: { chat_id, thread_id }
+    });
 
-getChatThreadsSummary("PJ0MRSHTDG") 
+​
+getChat("PJ0MRSHTDG")
     .then(data => {
-        // get a list of thread summaries
+        // get a chat details with the latest thread (if exists)
     })
     .catch(error => {
         // catch an error
@@ -274,7 +281,7 @@ To show you **Chat SDK** in action, we've prepared a sample app, **Simple Agent*
 
 To run the app, follow a few steps:
 
-1. [Create an app](/getting-started/guides/#creating-livechat-apps) in Developer Console. Choose **Agent App Widget** as the app template.
+1. [Create an app](/getting-started/guides/#creating-livechat-apps) in Developer Console.
 
 2. Add the **Authorization** building block. Configure it by entering _http://localhost:3000/_ in **Redirect URI whitelist** and by adding the following **scopes**:
     - `chats--all:rw`
@@ -282,16 +289,17 @@ To run the app, follow a few steps:
 
 3. Go to the **Private installation** tab and install the app.
 
-4. Clone the <a href="https://github.com/livechat/chat-sdk/" target="_blank" rel="noopener noreferrer">Chat SDK repository</a> from GitHub.
+4. Clone the <a href="https://github.com/livechat/chat-sdk/" target="_blank" rel="noopener noreferrer">Chat SDK repository</a> from GitHub and go to the **example** folder.
 
-5. In <a href="https://developers.livechat.com/console/" target="_blank" rel="noopener noreferrer">Developer Console</a>, go to the **Authorization** building block of your app. Copy **Client Id** and paste it into the `.env` file in the **example** folder.
+5. In <a href="https://developers.livechat.com/console/" target="_blank" rel="noopener noreferrer">Developer Console</a>, go to the **Authorization** building block of your app. 
 
-6. Run **Simple Agent** with the following commands:
+6. Copy **Client Id** and paste it into the `.env` file in the **example** folder.
+
+7. Run **Simple Agent** with the following commands (from the **example** folder perspective):
 
 ```js
-npm run install-example //install dependencies 
-
-npm run start-example //start the app
+npm install // install dependencies 
+npm start //start the app
 ```
 
 To start a chat, log in to you LiveChat account and choose the **Preview live** option available in the **Settings** tab. You'll now be able to receive messages and respond to them from within **Simple Agent**.
@@ -301,9 +309,15 @@ It's worth mentioning that all functions invoked before logging in are queued. O
 
 # Changelog
 
+**-- [v0.2.0] - 2022-01-19 --**
+
+- Add support for PAT
+- Update Simple Agent example
+- Set v3.4 as default api version
+
 **-- [v0.1.0] - 2019-11-27 --**
 
-Initial alpha release.
+- Initial alpha release.
 
 # Questions
 If you found a bug or a typo, you can let us know directly on GitHub.
