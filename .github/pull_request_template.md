@@ -12,4 +12,4 @@ Link your Jira ticket.
 
 # Review and release
 
-Apply changes and resolve conflicts. Once the described functionality lands on prod, let us know on #platform-doc-releases that your PR is ready for release. We will **merge** and **publish** the changes.
+Apply changes and resolve conflicts. Once the described functionality lands on prod, let us know on #platform-docs-releases that your PR is ready for release. We will **merge** and **publish** the changes.
