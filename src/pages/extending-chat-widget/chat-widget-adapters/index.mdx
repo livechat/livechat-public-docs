@@ -1,0 +1,763 @@
+---
+weight: 70
+category: "extending-chat-widget"
+subcategory: "chat-widget-adapters"
+title: "Chat Widget Adapters"
+tagline: "foo"
+desc: "bar"
+versionGroup: "chat-widget"
+---
+
+# Introduction
+
+## About the Chat Widget Adapters
+
+The [Chat Widget Adapters](https://github.com/livechat/chat-widget-adapters) lets you adapt the LiveChat Chat Widget with certain frontend frameworks using dedicated libraries.
+It combines best practicies of building web applications in certain framework together with our [Chat Widget JS API](/extending-chat-widget/javascript-api).
+Adapters are maintained as an Open Source project so you can [see full source code](https://github.com/livechat/chat-widget-adapters), [report an issue](https://github.com/livechat/chat-widget-adapters/issues) or [request a feature](https://github.com/livechat/chat-widget-adapters/issues) by visitng the repository.
+
+## Is it for me?
+
+If you use one of those frameworks to build your website or web application it may come in handy to integrated the LiveChat Chat Widget using this method.
+Instead of integrating our JS API to your project manually, you can leverage the ready to use component and additional utilities for consuming reactive data from the Chat Widget.
+Internally each adapter library uses our JS API but we provide opinioated model implementation for connecting our API together with specific framework. It binds building blocks like componenet lifecycle and framework specific reactivity model implementation to the JS API methods, getters, setters and events.
+
+## Available adapters
+
+Here is a list of supported frameworks together with links to their dedicated libraries:
+
+| Framework           | Library                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| **[React](#react)** | [@livechat/widget-react](https://www.npmjs.com/package/@livechat/widget-react)     |
+| **[Vue](#vue)**     | [@livechat/widget-vue](https://www.npmjs.com/package/@livechat/widget-vue)         |
+| **[Angular](#vue)** | [@livechat/widget-angular](https://www.npmjs.com/package/@livechat/widget-angular) |
+
+# Universal Adapter model
+
+Each adapter library implements the concept of integrating with Chat Widget JS API is a very similar way.
+Various implemnetation detials of each framework makes them different of course but they share common lifecycle model and reactive data interface concept.
+The core implementation shared between each framework's specific adapter is distrubuted as a separate library [`@livechat/widget-core`](https://www.npmjs.com/package/@livechat/widget-core).
+
+## Component Lifecycle
+
+### Mount
+
+During the mounting phase of the component, the Chat Widget is fully initialized. As before the mount time widget instance does not exist as also does not have access to any provided data, the mount time is the first moment when an instance of the widget is created and it receives the first set of data.
+
+1. Use obtained data as parameters for widget initialization
+
+2. Create Chat Widget JS API instance similarly to a snippet code
+
+3. Register provided event handlers for the corresponding events
+
+4. Notify reactive data interface that widget has been initialized to update related data
+
+### Update
+
+This phase allows updating provided data or callbacks by changing their value or reference. In order to do so, the component internally observes for such changes and translate them to appropriate imperative mutations via JS API method calls.
+
+1. If properties were updated then call coresponding setter methods on JS API
+
+2. If properties that require full reload were updated then reinitialize widget with new properties
+
+3. If event handlers were updated then unregister the previous one and register a new one for the corresponding event
+
+### Unmount
+
+This phase results in complete Chat Widget cleanup but allowing for proper Mount phase once again.
+
+1. Unregister all registered callbacks
+
+2. Call destroy method from JS API
+
+3. Notify reactive data interface that widget has been destroyed to clear related data
+
+## Reactive data interface
+
+After looking into existing JS API events and available getters we can distinguish a set of entities that the Chat Widget exposes to interact with it.
+Each entity contains data that may change during Chat Widget lifetime.
+Entites are properly initialized on widget load and cleared after widget is destroyed.
+All posible updates are being notified for the consumer of those data.
+The consumer have a way to subscirbe or unsubscribe for the updates in any given moment during application lifetime.
+The Reactive data interface efectivly impements the Observer pattern in which a subject maintains a list of its observers and notifies them about any state changes, usually by calling one of their methods.
+
+| **Chat** |          |
+| -------- | -------- |
+| chatId   | `string` |
+| threadId | `string` |
+
+| **Greeting** |          |
+| ------------ | -------- |
+| id           | `number` |
+| uniqueId     | `string` |
+
+| **Widget readiness** |           |
+| -------------------- | --------- |
+| isWidgetReady        | `boolean` |
+
+| **Widget state** |                                        |
+| ---------------- | -------------------------------------- |
+| availability     | `'online' / 'offline'`                 |
+| visibility       | `'maximized' / 'minimized' / 'hidden'` |
+
+| **Customer**     |                                                  |
+| ---------------- | ------------------------------------------------ |
+| name             | `string`                                         |
+| email            | `string`                                         |
+| isReturning      | `boolean`                                        |
+| isReturning      | `boolean`                                        |
+| sessionVariables | `Record<string, string>`                         |
+| status           | `'queued' / 'chatting' / 'browsing' / 'invited'` |
+
+# React adapter
+
+## Installation
+
+### Using npm
+
+```bash
+npm install @livechat/widget-react
+```
+
+### Using a script tag
+
+```js
+<script src="http://unpkg.com/@livechat/widget-core@1.0.1"></script>
+<script src="https://unpkg.com/@livechat/widget-react@1.0.1"></script>
+```
+
+## Usage
+
+### Render
+
+```js
+import { LiveChatWidget, EventHandlerPayload } from "@livechat/widget-react";
+
+function App() {
+  function handleNewEvent(event: EventHandlerPayload<"onNewEvent">) {
+    console.log("LiveChatWidget.onNewEvent", event);
+  }
+
+  return (
+    <LiveChatWidget
+      license="12345678"
+      visibility="maximized"
+      onNewEvent={handleNewEvent}
+    />
+  );
+}
+```
+
+### Props
+
+#### Config data
+
+All properties described below are used for initialization on the first render and later updates of the chat widget with new values on change.
+
+| Prop              | Type                                   |
+| ----------------- | -------------------------------------- |
+| license           | string (required)                      |
+| group             | string                                 |
+| visibility        | string                                 |
+| customerName      | string                                 |
+| customerEmail     | string                                 |
+| chatBetweenGroups | boolean                                |
+| sessionVariables  | Record<string, string>                 |
+| visibility        | 'maximized' \| 'minimized' \| 'hidden' |
+
+#### Event handlers
+
+All event handlers listed below are registered if provided for the first time. They unregister on the component cleanup or the property value change. Descriptions of all events are available after clicking on the associated links.
+
+- [onReady](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-ready)
+- [onAvailabilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-availability-changed)
+- [onVisibilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-visibility-changed)
+- [onCustomerStatusChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-customer-status-changed)
+- [onNewEvent](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-new-event)
+- [onFormSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-form-submitted)
+- [onRatingSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rating-submitted)
+- [onGreetingDisplayed](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-displayed)
+- [onGreetingHidden](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-hidden)
+- [onRichMessageButtonClicked](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rich-message-button-clicked)
+
+### Hooks
+
+This package exports a set of [React Hooks](https://reactjs.org/docs/hooks-reference.html) that allows consuming reactive data from the chat widget in any place of the application as long as the `LiveChatWidget` component is rendered in the tree.
+
+#### useWidgetState
+
+Access the current chat widget `availability` or `visibility` state if the chat widget is loaded.
+
+```js
+import { useWidgetState } from "@livechat/widget-react";
+
+function App() {
+  const widgetState = useWidgetState();
+
+  if (widgetState) {
+    return (
+      <div>
+        <span>{widgetState.availability}</span>
+        <span>{widgetState.visibility}</span>
+      </div>
+    );
+  }
+}
+```
+
+#### useWidgetIsReady
+
+Check if the chat widget is ready using the boolean flag `isWidgetReady`.
+
+```js
+import { useWidgetIsReady } from "@livechat/widget-react";
+
+function App() {
+  const isWidgetReady = useWidgetIsReady();
+
+  return <div>Chat Widget is {isWidgetReady ? "loaded" : "loading..."}</div>;
+}
+```
+
+#### useWidgetChatData
+
+Access the `chatId` and `threadId` of the chat if there's one currently available.
+
+```js
+import { useWidgetChatData } from "@livechat/widget-react";
+
+function App() {
+  const chatData = useWidgetChatData();
+
+  if (chatData) {
+    return (
+      <div>
+        <span>{chatData.chatId}</span>
+        <span>{chatData.threadId}</span>
+      </div>
+    );
+  }
+}
+```
+
+#### useWidgetGreeting
+
+Access the current greeting `id` and `uniqueId` if one is currently displayed (received and not hidden).
+
+```js
+import { useWidgetGreeting } from "@livechat/widget-react";
+
+function App() {
+  const greeting = useWidgetGreeting();
+
+  if (greeting) {
+    return (
+      <div>
+        <span>{greeting.id}</span>
+        <span>{greeting.uniqueId}</span>
+      </div>
+    );
+  }
+}
+```
+
+#### useWidgetCustomerData
+
+Access the `id`, `isReturning`, `status`, and `sessionVariables` of the current customer if the chat widget is loaded.
+
+```js
+import { useWidgetCustomerData } from "@livechat/widget-react";
+
+function App() {
+  const customerData = useWidgetCustomerData();
+
+  if (customerData) {
+    return (
+      <div>
+        <span>{customerData.id}</span>
+        <span>{customerData.isReturning}</span>
+        <span>{customerData.status}</span>
+        <ul>
+          {Object.entries(customerData.sessionVariables).map(([key, value]) => (
+            <li key={key}>{value}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+```
+
+# Vue adapter
+
+## Installation
+
+### Using npm
+
+```bash
+npm install @livechat/widget-vue
+```
+
+### Using a script tag
+
+```js
+<script src="http://unpkg.com/@livechat/widget-core@1.0.1"></script>
+<script src="https://unpkg.com/@livechat/widget-vue@1.0.1"></script>
+```
+
+## Usage
+
+### Render
+
+```js
+<script lang="ts" setup>
+  import { LiveChatWidget, EventHandlerPayload } from "@livechat/widget-vue";
+
+  function handleNewEvent(event: EventHandlerPayload<"onNewEvent">) {
+    console.log("LiveChatWidget.onNewEvent", event);
+  }
+</script>
+
+<template>
+  <LiveChatWidget
+    license="12345678"
+    visibility="maximized"
+    v-on:new-event="handleNewEvent"
+  />
+</template>
+```
+
+### Props
+
+#### Config data
+
+All properties described below are used for initialization on the first render and later updates of the chat widget with new values on change.
+
+| Prop              | Type                                   |
+| ----------------- | -------------------------------------- |
+| license           | string (required)                      |
+| group             | string                                 |
+| visibility        | string                                 |
+| customerName      | string                                 |
+| customerEmail     | string                                 |
+| chatBetweenGroups | boolean                                |
+| sessionVariables  | Record<string, string>                 |
+| visibility        | 'maximized' \| 'minimized' \| 'hidden' |
+
+#### Event handlers
+
+All event handlers listed below are registered if provided for the first time. They unregister on the component cleanup or the property value change. Descriptions of all events are available after clicking on the associated links.
+
+- [onReady](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-ready)
+- [onAvailabilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-availability-changed)
+- [onVisibilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-visibility-changed)
+- [onCustomerStatusChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-customer-status-changed)
+- [onNewEvent](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-new-event)
+- [onFormSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-form-submitted)
+- [onRatingSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rating-submitted)
+- [onGreetingDisplayed](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-displayed)
+- [onGreetingHidden](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-hidden)
+- [onRichMessageButtonClicked](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rich-message-button-clicked)
+
+### Composition API
+
+This package exports a set of [Vue Composition API](https://v3.vuejs.org/api/composition-api.html#composition-api) utilities that allow consuming reactive data from the chat widget in any place of the application as long as the `LiveChatWidget` component is rendered in the tree.
+
+#### useWidgetState
+
+Access the current chat widget `availability` or `visibility` state if the chat widget is loaded.
+
+```js
+<script setup>
+  import { useWidgetState } from "@livechat/widget-vue";
+  const widgetState = useWidgetState();
+</script>
+
+<template>
+  <div v-if="widgetState">
+    <span>{{widgetState.availability}}</span>
+    <span>{{widgetState.visibility}}</span>
+  </div>
+</template>
+```
+
+#### useWidgetIsReady
+
+Check if the chat widget is ready using the boolean flag `isWidgetReady`.
+
+```js
+<script setup>
+  import { useWidgetIsReady } from "@livechat/widget-vue";
+  const isWidgetReady = useWidgetIsReady();
+</script>
+
+<template>
+  <div>
+    <span>Chat Widget is</span>
+    <span v-if="isWidgetReady">loaded</span>
+    <span v-else>loading...</span>
+  </div>
+</template>
+```
+
+#### useWidgetChatData
+
+Access the `chatId` and `threadId` of the chat if there's one currently available.
+
+```js
+<script setup>
+  import { useWidgetChatData } from "@livechat/widget-vue";
+  const chatData = useWidgetChatData();
+</script>
+
+<template>
+  <div v-if="chatData">
+    <span>{{chatData.chatId}}</span>
+    <span>{{chatData.threadId}}</span>
+  </div>
+</template>
+```
+
+#### useWidgetGreeting
+
+Access the current greeting `id` and `uniqueId` if one is currently displayed (received and not hidden).
+
+```js
+<script setup>
+  import { useWidgetGreeting } from "@livechat/widget-vue";
+  const greeting = useWidgetGreeting();
+</script>
+
+<template>
+  <div v-if="greeting">
+    <span>{{greeting.id}}</span>
+    <span>{{greeting.uniqueId}}</span>
+  </div>
+</template>
+```
+
+#### useWidgetCustomerData
+
+Access the `id`, `isReturning`, `status`, and `sessionVariables` of the current customer if the chat widget is loaded.
+
+```js
+<script setup>
+  import { useWidgetCustomerData } from "@livechat/widget-vue";
+  const customerData = useWidgetCustomerData();
+</script>
+
+<template>
+  <div v-if="customerData">
+    <span>{{customerData.id}}</span>
+    <span>{{customerData.isReturning}}</span>
+    <span>{{customerData.status}}</span>
+    <ul>
+      <li v-for="variable in customerData.sessionVariables">{{variable}}</li>
+    </ul>
+  </div>
+</template>
+```
+
+# Angular adapter
+
+## Installation
+
+### Using npm
+
+```bash
+npm install @livechat/widget-angular
+```
+
+### Using a script tag
+
+```js
+<script src="http://unpkg.com/@livechat/widget-core@1.0.1"></script>
+<script src="https://unpkg.com/@livechat/widget-angular@1.0.1"></script>
+```
+
+## Usage
+
+### Render
+
+```js
+// app.module.ts
+
+import { NgModule } from "@angular/core";
+import { LiveChatWidgetModule } from "@livechat/widget-angular";
+
+@NgModule({
+  /* ... */
+  imports: [LiveChatWidgetModule],
+})
+export class AppModule {}
+```
+
+```js
+// app.component.ts
+
+import { Component } from "@angular/core";
+import { EventHandlerPayload } from "@livechat/widget-angular";
+
+@Component({
+  /* ... */
+  templateUrl: "./app.component.html",
+})
+export class AppComponent {
+  handleNewEvent(event: EventHandlerPayload<"onNewEvent">) {
+    console.log("LiveChatWidget.onNewEvent", event);
+  }
+}
+```
+
+```js
+<!-- app.component.html -->
+<livechat-widget
+  license="12345678"
+  visibility="maximized"
+  (onNewEvent)="handleNewEvent($event)"
+></livechat-widget>
+```
+
+### Assignable properties
+
+#### Config data
+
+All properties described below are used for initialization on the first render and later updates of the chat widget with new values on change.
+
+| Prop              | Type                                   |
+| ----------------- | -------------------------------------- |
+| license           | string (required)                      |
+| group             | string                                 |
+| visibility        | string                                 |
+| customerName      | string                                 |
+| customerEmail     | string                                 |
+| chatBetweenGroups | boolean                                |
+| sessionVariables  | Record<string, string>                 |
+| visibility        | 'maximized' \| 'minimized' \| 'hidden' |
+
+#### Event handlers
+
+All event handlers listed below are registered if provided for the first time. They unregister on the component cleanup or the property value change. Descriptions of all events are available after clicking on the associated links.
+
+- [onReady](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-ready)
+- [onAvailabilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-availability-changed)
+- [onVisibilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-visibility-changed)
+- [onCustomerStatusChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-customer-status-changed)
+- [onNewEvent](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-new-event)
+- [onFormSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-form-submitted)
+- [onRatingSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rating-submitted)
+- [onGreetingDisplayed](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-displayed)
+- [onGreetingHidden](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-hidden)
+- [onRichMessageButtonClicked](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rich-message-button-clicked)
+
+### Services
+
+The `LiveChatWidgetModule`, exported from this package, registers a set of injectable services. All of them expose a subscribable [BehaviorSubject](https://rxjs.dev/api/index/class/BehaviorSubject) instance. It allows consuming reactive data from the chat widget in any place of the application, as long as the `LiveChatWidget` component is rendered in the tree.
+
+#### WidgetStateService
+
+Access the current chat widget `availability` or `visibility` state if the chat widget is loaded.
+
+```js
+// app.component.ts
+
+import { Component, OnInit } from "@angular/core";
+import {
+  WidgetStateService,
+  WidgetStateSubject,
+} from "@livechat/widget-angular";
+
+@Component({
+  /* ... */
+  templateUrl: "./app.component.html",
+})
+export class AppComponent implements OnInit {
+  widgetState$: WidgetStateSubject;
+
+  constructor(widgetStateService: WidgetStateService) {
+    this.widgetState$ = widgetStateService.subject;
+  }
+
+  ngOnInit() {
+    this.widgetState$.subscribe((widgetState) => {
+      console.log("AppComponent.ngOnInit.widgetState", widgetState);
+    });
+  }
+}
+```
+
+```js
+<!-- app.component.html -->
+
+<div *ngIf="widgetState$ | async as widgetState">
+  <div>{{ widgetState.availability }}</div>
+  <div>{{ widgetState.visibility }}</div>
+</div>
+```
+
+#### WidgetIsReadyService
+
+Check if the chat widget is ready using the boolean flag `isWidgetReady`.
+
+```js
+// app.component.ts
+
+import { Component, OnInit } from "@angular/core";
+import {
+  WidgetIsReadyService,
+  WidgetIsReadySubject,
+} from "@livechat/widget-angular";
+
+@Component({
+  /* ... */
+  templateUrl: "./app.component.html",
+})
+export class AppComponent implements OnInit {
+  widgetIsReady$: WidgetIsReadySubject;
+
+  constructor(widgetIsReadyService: WidgetIsReadyService) {
+    this.widgetIsReady$ = widgetIsReadyService.subject;
+  }
+
+  ngOnInit() {
+    this.widgetIsReady$.subscribe((widgetIsReady) => {
+      console.log("AppComponent.ngOnInit.widgetIsReady", widgetIsReady);
+    });
+  }
+}
+```
+
+```js
+<!-- app.component.html -->
+
+<div>{{ widgetIsReady$ | async }}</div>
+```
+
+#### WidgetChatDataService
+
+Access the `chatId` and `threadId` of the chat if there's one currently available.
+
+```js
+// app.component.ts
+
+import { Component, OnInit } from "@angular/core";
+import {
+  WidgetChatDataService,
+  WidgetChatDataSubject,
+} from "@livechat/widget-angular";
+
+@Component({
+  /* ... */
+  templateUrl: "./app.component.html",
+})
+export class AppComponent implements OnInit {
+  chatData$: WidgetChatDataSubject;
+
+  constructor(chatDataService: WidgetChatDataService) {
+    this.chatData$ = chatDataService.subject;
+  }
+
+  ngOnInit() {
+    this.chatData$.subscribe((chatData) => {
+      console.log("AppComponent.ngOnInit.chatData", chatData);
+    });
+  }
+}
+```
+
+```js
+<!-- app.component.html -->
+
+<div *ngIf="chatData$ | async as chatData">
+  <div>{{ chatData.availability }}</div>
+  <div>{{ chatData.visibility }}</div>
+</div>
+```
+
+#### WidgetGreetingService
+
+Access the current greeting `id` and `uniqueId` if one is currently displayed (received and not hidden).
+
+```js
+// app.component.ts
+
+import { Component, OnInit } from "@angular/core";
+import {
+  WidgetGreetingService,
+  WidgetGreetingSubject,
+} from "@livechat/widget-angular";
+
+@Component({
+  /* ... */
+  templateUrl: "./app.component.html",
+})
+export class AppComponent implements OnInit {
+  greeting$: WidgetGreetingSubject;
+
+  constructor(greetingService: WidgetGreetingService) {
+    this.greeting$ = greetingService.subject;
+  }
+
+  ngOnInit() {
+    this.greeting$.subscribe((greeting) => {
+      console.log("AppComponent.ngOnInit.greeting", greeting);
+    });
+  }
+}
+```
+
+```js
+<!-- app.component.html -->
+
+<div *ngIf="greeting$ | async as greeting">
+  <div>{{ greeting.availability }}</div>
+  <div>{{ greeting.visibility }}</div>
+</div>
+```
+
+#### WidgetCustomerDataService
+
+Access the `id`, `isReturning`, `status`, and `sessionVariables` of the current customer if the chat widget is loaded.
+
+```js
+// app.component.ts
+
+import { Component, OnInit } from "@angular/core";
+import {
+  WidgetCustomerDataService,
+  WidgetCustomerDataSubject,
+} from "@livechat/widget-angular";
+
+@Component({
+  /* ... */
+  templateUrl: "./app.component.html",
+})
+export class AppComponent implements OnInit {
+  customerData$: WidgetCustomerDataSubject;
+
+  constructor(customerDataService: WidgetCustomerDataService) {
+    this.customerData$ = customerDataService.subject;
+  }
+
+  ngOnInit() {
+    this.customerData$.subscribe((customerData) => {
+      console.log("AppComponent.ngOnInit.customerData", customerData);
+    });
+  }
+}
+```
+
+```js
+<!-- app.component.html -->
+
+<div *ngIf="customerData$ | async as customerData">
+  <div>{{ customerData.id }}</div>
+  <div>{{ customerData.isReturning }}</div>
+  <div>{{ customerData.status }}</div>
+  <ul>
+    <li *ngFor="let variable of customerData.sessionVariables | keyvalue">
+      {{ variable.value }}
+    </li>
+  </ul>
+</div>
+```
