@@ -1,0 +1,178 @@
+---
+weight: 30
+category: "extending-chat-widget"
+subcategory: "chat-widget-adapters"
+title: "Vue adapter"
+tagline: ""
+desc: "This library allows to render and interact with the LiveChat Chat Widget inside a Vue 3 application."
+---
+
+This library allows to render and interact with the LiveChat Chat Widget inside a [Vue 3](https://v3.vuejs.org/) application.
+
+## Installation
+
+### Using npm
+
+```bash
+npm install @livechat/widget-vue
+```
+
+### Using a script tag
+
+```js
+<script src="http://unpkg.com/@livechat/widget-core@1.0.1"></script>
+<script src="https://unpkg.com/@livechat/widget-vue@1.0.1"></script>
+```
+
+## Usage
+
+### Render
+
+```js
+<script lang="ts" setup>
+  import { LiveChatWidget, EventHandlerPayload } from "@livechat/widget-vue";
+
+  function handleNewEvent(event: EventHandlerPayload<"onNewEvent">) {
+    console.log("LiveChatWidget.onNewEvent", event);
+  }
+</script>
+
+<template>
+  <LiveChatWidget
+    license="12345678"
+    visibility="maximized"
+    v-on:new-event="handleNewEvent"
+  />
+</template>
+```
+
+### Props
+
+#### Config data
+
+All properties described below are used for initialization on the first render and later updates of the chat widget with new values on change.
+
+| Prop              | Type                                   |
+| ----------------- | -------------------------------------- |
+| license           | string (required)                      |
+| group             | string                                 |
+| visibility        | string                                 |
+| customerName      | string                                 |
+| customerEmail     | string                                 |
+| chatBetweenGroups | boolean                                |
+| sessionVariables  | Record<string, string>                 |
+| visibility        | 'maximized' \| 'minimized' \| 'hidden' |
+
+#### Event handlers
+
+All event handlers listed below are registered if provided for the first time. They unregister on the component cleanup or the property value change. Descriptions of all events are available after clicking on the associated links.
+
+- [onReady](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-ready)
+- [onAvailabilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-availability-changed)
+- [onVisibilityChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-visibility-changed)
+- [onCustomerStatusChanged](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-customer-status-changed)
+- [onNewEvent](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-new-event)
+- [onFormSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-form-submitted)
+- [onRatingSubmitted](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rating-submitted)
+- [onGreetingDisplayed](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-displayed)
+- [onGreetingHidden](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-greeting-hidden)
+- [onRichMessageButtonClicked](https://developers.livechat.com/docs/extending-chat-widget/javascript-api#on-rich-message-button-clicked)
+
+### Composition API
+
+This package exports a set of [Vue Composition API](https://v3.vuejs.org/api/composition-api.html#composition-api) utilities that allow for consuming reactive data from the chat widget in any place of the application as long as the `LiveChatWidget` component is rendered in the tree.
+
+#### useWidgetState
+
+Access the current chat widget `availability` or `visibility` state if the chat widget is loaded.
+
+```js
+<script setup>
+  import { useWidgetState } from "@livechat/widget-vue";
+  const widgetState = useWidgetState();
+</script>
+
+<template>
+  <div v-if="widgetState">
+    <span>{{widgetState.availability}}</span>
+    <span>{{widgetState.visibility}}</span>
+  </div>
+</template>
+```
+
+#### useWidgetIsReady
+
+Check if the chat widget is ready using the boolean flag `isWidgetReady`.
+
+```js
+<script setup>
+  import { useWidgetIsReady } from "@livechat/widget-vue";
+  const isWidgetReady = useWidgetIsReady();
+</script>
+
+<template>
+  <div>
+    <span>Chat Widget is</span>
+    <span v-if="isWidgetReady">loaded</span>
+    <span v-else>loading...</span>
+  </div>
+</template>
+```
+
+#### useWidgetChatData
+
+Access the `chatId` and `threadId` of the chat if there's one currently available.
+
+```js
+<script setup>
+  import { useWidgetChatData } from "@livechat/widget-vue";
+  const chatData = useWidgetChatData();
+</script>
+
+<template>
+  <div v-if="chatData">
+    <span>{{chatData.chatId}}</span>
+    <span>{{chatData.threadId}}</span>
+  </div>
+</template>
+```
+
+#### useWidgetGreeting
+
+Access the current greeting `id` and `uniqueId` if one is currently displayed (received and not hidden).
+
+```js
+<script setup>
+  import { useWidgetGreeting } from "@livechat/widget-vue";
+  const greeting = useWidgetGreeting();
+</script>
+
+<template>
+  <div v-if="greeting">
+    <span>{{greeting.id}}</span>
+    <span>{{greeting.uniqueId}}</span>
+  </div>
+</template>
+```
+
+#### useWidgetCustomerData
+
+Access the `id`, `isReturning`, `status`, and `sessionVariables` of the current customer if the chat widget is loaded.
+
+```js
+<script setup>
+  import { useWidgetCustomerData } from "@livechat/widget-vue";
+  const customerData = useWidgetCustomerData();
+</script>
+
+<template>
+  <div v-if="customerData">
+    <span>{{customerData.id}}</span>
+    <span>{{customerData.isReturning}}</span>
+    <span>{{customerData.status}}</span>
+    <ul>
+      <li v-for="variable in customerData.sessionVariables">{{variable}}</li>
+    </ul>
+  </div>
+</template>
+```

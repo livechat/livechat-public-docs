@@ -1,0 +1,83 @@
+---
+weight: 10
+category: "extending-chat-widget"
+subcategory: "chat-widget-adapters"
+title: "Adapters core"
+tagline: ""
+desc: ""
+---
+
+Each adapter library implements the concept of integrating with Chat Widget JS API in a very similar way.
+Various implementation details of each framework make them different, but they share a common lifecycle model and a reactive data interface concept.
+The core implementation shared between each framework's specific adapter is distributed as a separate library, [`@livechat/widget-core`](https://www.npmjs.com/package/@livechat/widget-core).
+
+## Component lifecycle
+
+### Mount
+
+During the mounting phase of the component, the Chat Widget is fully initialized. Before the mount, the widget instance does not exist and does not have access to any provided data. The mount is the first moment when an instance of the widget is created and receives the first set of data.
+
+1. Use the obtained data as parameters for widget initialization
+
+2. Create a Chat Widget JS API instance as presented in the code snippet.
+
+3. Register the provided event handlers for the corresponding events.
+
+4. To update the related data, notify the reactive data interface that the widget has been initialized.
+
+### Update
+
+This phase allows for updating provided data or callbacks by changing their value or reference. To do so, the component internally observes such changes and translates them to appropriate imperative mutations via JS API method calls.
+
+1. If properties were updated, then call the corresponding setter methods from JS API.
+
+2. If properties that require a full reload were updated, then reinitialize the widget with new properties.
+
+3. If event handlers were updated, then unregister the previous one and register a new one for the corresponding event.
+
+### Unmount
+
+This phase results in a complete Chat Widget cleanup but allows for a proper Mount phase once again.
+
+1. Unregister all registered callbacks.
+
+2. Call the [`destroy`](/docs/extending-chat-widget/javascript-api#destroy) method from JS API.
+
+3. To clear the related data, notify the reactive data interface that the widget has been destroyed.
+
+## Reactive data interface
+
+After looking into the existing JS API events and available getters, we can distinguish a set of entities that the Chat Widget exposes for interaction.
+Each entity contains data that may change during the Chat Widget lifetime.
+Entites are properly initialized on widget load and cleared after widget has been destroyed.
+The data consumer is being notified about all possible updates to that data.
+The consumer has a way to subscribe or unsubscribe for the updates at any given moment during the application lifetime.
+The reactive data interface effectively implements the Observer pattern in which a subject maintains a list of its observers and notifies them about any state changes, usually by calling one of their methods.
+
+| **Chat** |          |
+| -------- | -------- |
+| chatId   | `string` |
+| threadId | `string` |
+
+| **Greeting** |          |
+| ------------ | -------- |
+| id           | `number` |
+| uniqueId     | `string` |
+
+| **Widget readiness** |           |
+| -------------------- | --------- |
+| isWidgetReady        | `boolean` |
+
+| **Widget state** |                                        |
+| ---------------- | -------------------------------------- |
+| availability     | `'online' / 'offline'`                 |
+| visibility       | `'maximized' / 'minimized' / 'hidden'` |
+
+| **Customer**     |                                                  |
+| ---------------- | ------------------------------------------------ |
+| name             | `string`                                         |
+| email            | `string`                                         |
+| isReturning      | `boolean`                                        |
+| isReturning      | `boolean`                                        |
+| sessionVariables | `Record<string, string>`                         |
+| status           | `'queued' / 'chatting' / 'browsing' / 'invited'` |
