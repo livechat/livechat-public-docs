@@ -22,4 +22,4 @@ export { default as getWebhooksState } from "./responses/webhooks/getWebhooksSta
 
 export { default as getOrganizationID } from "./responses/other/getOrganizationID.json"
 export { default as getLicenseID } from "./responses/other/getLicenseID.json"
-export { default as getProductChannelActivity } from "./responses/other/getProductChannelActivity.json"
+export { default as listChannels } from "./responses/other/listChannels.json"
