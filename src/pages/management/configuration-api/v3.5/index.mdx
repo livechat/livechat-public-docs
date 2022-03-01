@@ -1062,22 +1062,22 @@ Creates a new bot. To make the bot available for receiving chats or webhooks, us
 
 #### Request
 
-| Parameter                            | Required | Data type  | Notes                                                                                                                                                                                                        |
-| ------------------------------------ | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`                               | Yes      | `string`   | Display name                                                                                                                                                                                                 |
-| `avatar`                             | No       | `string`   | Avatar URL                                                                                                                                                                                                   |
-| `max_chats_count`                    | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6. Limited to 500.                                                                                                                     |
-| `default_group_priority` __****__    | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                           |
-| `job_title`                          | No       | `string`   | Bot's job title                                                                                                                                                                                              |
-| `groups`                             | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                   |
-| `groups[].id`                        | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                             |
-| `groups[].priority` __*__            | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                            |
-| `work_scheduler`                     | No       | `object`   | Work scheduler options to set for the new Bot.                                                                                                                                                               |
-| `work_scheduler.**.<work_scheduler>` | No       | `object`   | `<work_scheduler>` values __***__.                                                                                                                                                                           |
-| `timezone`                           | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate. Required only if `work_scheduler` is provided.                                                                                               |
-| `owner_client_id` __*****__          | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens). The request will be rejected if you provide `owner_client_id` when authorizing with a Bearer Token. |
+| Parameter                             | Required | Data type  | Notes                                                                                                                                                                                                        |
+| ------------------------------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`                                | Yes      | `string`   | Display name                                                                                                                                                                                                 |
+| `avatar`                              | No       | `string`   | Avatar URL                                                                                                                                                                                                   |
+| `max_chats_count`                     | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6. Limited to 500.                                                                                                                     |
+| `default_group_priority` **\*\*\*\*** | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                           |
+| `job_title`                           | No       | `string`   | Bot's job title                                                                                                                                                                                              |
+| `groups`                              | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                   |
+| `groups[].id`                         | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                             |
+| `groups[].priority` **\***            | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                            |
+| `work_scheduler`                      | No       | `object`   | Work scheduler options to set for the new Bot.                                                                                                                                                               |
+| `work_scheduler.**.<work_scheduler>`  | No       | `object`   | `<work_scheduler>` values **\*\*\***.                                                                                                                                                                        |
+| `timezone`                            | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate. Required only if `work_scheduler` is provided.                                                                                               |
+| `owner_client_id` \***\*\*\*\***      | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens). The request will be rejected if you provide `owner_client_id` when authorizing with a Bearer Token. |
 
-__*__ Possible values for the `groups[].priority` parameter:
+**\*** Possible values for the `groups[].priority` parameter:
 
 | Possible value | Notes                                                                                                                                                                                                                                                                              |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1110,7 +1110,7 @@ __****__ The table below presents the possible values for the `default_group_pri
 | `last`         | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
 | `supervisor`   | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
 
-__*****__ The number of sent webhooks depends on the number of webhooks registered for an `owner_client_id`, not the number of bots belonging to that `owner_client_id`.
+\***\*\*\*\*** The number of sent webhooks depends on the number of webhooks registered for an `owner_client_id`, not the number of bots belonging to that `owner_client_id`.
 
 </Text>
 
@@ -2966,7 +2966,7 @@ curl -X POST \
 
 ### Check Product Limits for Plan
 
-Resource limits in the LiveChat product are different for each plan. This method compares your organization's current resources with a given plan and returns those which exceeded the called plan's limits.
+Resource limits in the LiveChat product are different for each plan. This method compares your organization's current resources with a given plan and returns those which exceeded the called plan's limits. Useful when considering downgrading the plan.
 
 Limited resources in LiveChat:
 
@@ -2994,6 +2994,19 @@ Limited resources in LiveChat:
 | Parameter | Required | Data type | Notes                                                              |
 | --------- | -------- | --------- | ------------------------------------------------------------------ |
 | `plan`    | yes      | `string`  | Possible values: `starter`, `team`, `enterprise`, `enterpriseplus` |
+
+#### Response
+
+| Resource Name          | Notes                                                                                                                                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agents`               | The number of active agents, including bots, that exceeded the limit.                                                                                     |
+| `groups`               | The number of groups that exceeded the limit.                                                                                                             |
+| `banned`               | The number of banned visitors that exceeded the limit.                                                                                                    |
+| `queue`                | The number of chats waiting in the queue (with [Messaging Mode](/messaging#messaging-mode) disabled) that exceeded the limit.                             |
+| `queue_continuous`     | The number of chats waiting in the queue (with [Messaging Mode](/messaging#messaging-mode) enabled) that exceeded the limit.                              |
+| `groups_per_agent`     | The number of groups an agent can be assigned to that exceeded the limit.                                                                                 |
+| `access_rules`         | The number of [Access Rules](/management/configuration-api#auto-access) that exceeded the limit.                                                          |
+| `group_chooser_groups` | The number of groups available in the [pre-chat survey](https://www.livechat.com/help/dividing-live-chat-by-group/#target-field) that exceeded the limit. |
 
 </Text>
 
