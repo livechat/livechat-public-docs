@@ -17,9 +17,9 @@ export { default as listProperties } from "./responses/properties/listProperties
 export { default as registerWebhook } from "./responses/webhooks/registerWebhook.json"
 export { default as listWebhooks } from "./responses/webhooks/listWebhooks.json"
 export { default as listWebhookNames } from "./responses/webhooks/listWebhookNames.json"
-
 export { default as getWebhooksState } from "./responses/webhooks/getWebhooksState.json"
 
 export { default as getOrganizationID } from "./responses/other/getOrganizationID.json"
 export { default as getLicenseID } from "./responses/other/getLicenseID.json"
 export { default as listChannels } from "./responses/other/listChannels.json"
+export { default as checkProductLimitsForPlan } from "./responses/other/checkProductLimitsForPlan.json"
