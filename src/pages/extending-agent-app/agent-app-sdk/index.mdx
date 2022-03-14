@@ -196,6 +196,27 @@ widget.on("customer_details_section_button_click", ({ buttonId }) => {
 
 </CodeSample>
 
+#### `private_mode`
+
+Emitted when agent toggles private mode in Chats section. The handler gets the following payload:
+
+| Property   | Description                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `source`   | Name of the source of event. In this case it is always 'chats'                                                |
+| `threads`  | Object where key is string of thread ID and value is boolean representing private mode state for that thread  |
+
+Listen for private mode changes:
+
+<CodeSample>
+
+```js
+widget.on("private_mode", ({ threads }) => {
+  // update your widget state
+});
+```
+
+</CodeSample>
+
 ### Methods
 
 #### Get the customer profile
@@ -213,6 +234,21 @@ const profile = widget.getCustomerProfile();
 </CodeSample>
 
 The returned profile will be an object identical to the one emitted by the `customer_profile` event. It can also be `null` if no profile was recorded.
+
+### Get threads with private mode
+
+If you want to access the current threads with private mode toggled, you should use the `getPrivateModeThreads` method.
+
+<CodeSample>
+
+```js
+const { threads } = widget.getPrivateModeThreads();
+```
+
+</CodeSample>
+
+The returned object will be identical to the one emitted by the `private_mode` event. It may contain information about multiple threads, for example, when widget was initialized after agent has toggled private mode for some threads. It can also be `null` if no threads were recorded.
+
 
 #### Append text to the message box
 
@@ -278,7 +314,90 @@ createMessageBoxWidget().then(widget => {
 
 </CodeSample>
 
+### Events
+
+#### `customer_profile`
+
+Emitted when an agent opens a conversation within Chats or Archives, or when an agents selects the customer profile in the Customers sections. The handler will get the customer profile object as an argument.
+
+Listen for the customer profile changes:
+
+<CodeSample>
+
+```js
+widget.on("customer_profile", profile => {
+  // read the new profile
+});
+```
+
+</CodeSample>
+
+The customer profile object will have the following shape:
+
+| Property          | Description                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`              | Unique ID of a visitor                                                                                                                               |
+| `name`            | Visitor name (if provided)                                                                                                                           |
+| `email`           | Visitor email (if provided)                                                                                                                          |
+| `chat`            | Object with two properties: `id` (unique chat id) and `groupID` (unique group id); this object may be empty when a visitor is not currently chatting |
+| `source`          | String representing the source of an event; possible values: `chats`, `customers`, `archives`                                                        |
+| `geolocation`     | Object containing detailed information about customer's geolocation                                                                                  |
+| `customVariables` | Object containing [custom variables](https://www.livechat.com/help/custom-variables-configuration/) for given customer/chat (if provided)            |
+
+
+#### `private_mode`
+
+Emitted when agent toggles private mode in Chats section. The handler gets the following payload:
+
+| Property   | Description                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `source`   | Name of the source of event. In this case it is always 'chats'                                                |
+| `threads`  | Object where key is string of thread ID and value is boolean representing private mode state for that thread  |
+
+Listen for private mode changes:
+
+<CodeSample>
+
+```js
+widget.on("private_mode", ({ threads }) => {
+  // update your widget state
+});
+```
+
+</CodeSample>
+
 ### Methods
+
+#### Get the customer profile
+
+If you want to access the current customer profile, you should use the `getCustomerProfile` method.
+
+Get the current customer profile
+
+<CodeSample>
+
+```js
+const profile = widget.getCustomerProfile();
+```
+
+</CodeSample>
+
+The returned profile will be an object identical to the one emitted by the `customer_profile` event. It can also be `null` if no profile was recorded.
+
+### Get threads with private mode
+
+If you want to access the current threads with private mode toggled, you should use the `getPrivateModeThreads` method.
+
+<CodeSample>
+
+```js
+const { threads } = widget.getPrivateModeThreads();
+```
+
+</CodeSample>
+
+The returned object will be identical to the one emitted by the `private_mode` event. It may contain information about multiple threads, for example, when widget was initialized after agent has toggled private mode for some threads. It can also be `null` if no threads were recorded.
+
 
 #### Set a message to be stored by MessageBox
 
