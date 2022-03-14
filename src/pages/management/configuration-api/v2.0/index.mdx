@@ -18,12 +18,6 @@ Please note that this documentation refers to the **API version 2.0**. This is t
 
 ## Basic API usage
 
-Sample method call
-
-```bash
-curl -u LOGIN:API_KEY -H X-API-Version:VERSION URL
-```
-
 All LiveChat API requests start with `https://api.livechatinc.com/`.
 
 <aside class="notice">
@@ -47,7 +41,7 @@ For example: if the user token starts with `fra`, you should add `X-Region: fra`
 
 ## Authentication
 
-There are 3 common authentication methods supported: **OAuth 2.1**, **API key**, and **Personal Access Token (PAT)**.
+There are two common authorization methods supported: **OAuth 2.1** and **Personal Access Token (PAT)**.
 
 ### OAuth 2.1
 
@@ -61,32 +55,26 @@ Example REST API call using OAuth 2.1 `access_token`:
 
 OAuth 2.1 authentication is the recommended way of authenticating to LiveChat API.
 
-It is the most secure way of making API calls. With this flow, you will get access only to some parts of LiveChat account, such as reading agents list. This is more secure than [API key flow](#api-key) which has always access to all LiveChat account data.
+It is the most secure way of making API calls. With this flow, you will get access only to some parts of LiveChat account, such as reading agents list.
 
 To start using OAuth 2.1, please read a dedicated [Authorization](/authorization/authorizing-api-calls/) guide.
-
-### API key
-
-If your login is **john.doe@mycompany.com**, your API key is **c14b85863755158d7aa5cc4ba17f61cb** and you want to invoke the **agents** API method, your request will look like this:
-
-```bash
-  curl "https://api.livechatinc.com/agents" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
-  -H "X-API-Version: 2"
-```
-
-If you want to build a private app that will run on your own server, you can skip the OAuth 2.1 flow and use the API key. Please note this flow of making API calls is less secure because the API key gives access to all LiveChat account data.
-
-With this authorization method, you will need to include your LiveChat login and `API_KEY` for each method call. You'll find the API key in [your LiveChat profile](https://my.livechatinc.com/agents/api-key).
-
-Authentication to the API occurs via [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication). Provide your `login` as the basic auth username and the `API_KEY` as the password. You must authenticate for all requests.
-
-All API requests must be made over HTTPS.
 
 ### Personal Access Token
 
 Personal Access Tokens (PATs) are generated per Agent. They use <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme/" target="_blank">Basic authentication scheme</a>.
 You can create a PAT from <a href="https://developers.livechat.com/console/" target="_blank">Developer Console</a>. For more guidelines on creating PATs, check out [this tutorial](/authorization/authorizing-api-calls/#personal-access-tokens).
+
+Example REST API call using a PAT:
+
+```bash
+curl "https://api.livechatinc.com/groups" \
+-H "Authorization: Basic <email>:<PAT>" \
+-H "X-API-Version: 2"
+```
+
+💡 When sending authorization credentials in a header, the *email:PAT* string has to be **base64-encoded**. Alternatively, enter your credentials in the Authorization tab in Postman, which will automatically encode them for you (see the image below).
+
+  <img src="/images/management/livechat-basic-authorization-postman.png" alt="Enter LiveChat auth credentials in Postman" width="1700px" height="400px"  />
 
 ## Data format
 
@@ -139,7 +127,7 @@ The errors are returned using the standard HTTP error code syntax. In general, t
 ### HTTP status codes summary
 
 - `400` – The request is incorrect, please make sure that the passed arguments are matching the format in the method's documentation.
-- `401` – Unauthorized. You attempt to authenticate with an invalid username or API key.
+- `401` – Unauthorized. You attempt to authenticate with an invalid username or access token.
 - `404` – Not Found. You attempt to request a resource which doesn't exist.
 - `500` – Internal Server Error. Something unexpected happened on our end. Please try again or contact our support.
 
@@ -149,7 +137,7 @@ All cross-domain API requests made by a web browser are denied for security reas
 
 ## LiveChat API libraries
 
-All API calls include an API key that can be easily stolen when making a request using a web browser. It means you should use backend languages for API requests. Here is a list of the ready-to-use libraries:
+You can call the LiveChat API using librariers written in backend languages. To authorize your requests while using those libraries, use a Personal Access Token.
 
 - [PHP library for LiveChat API](https://github.com/livechat/api-client-php), hosted on Github.
 - [node.js library for LiveChat API](https://github.com/livechat/api-client-nodejs), hosted on Github.
@@ -168,11 +156,10 @@ All API calls include an API key that can be easily stolen when making a request
 
 Use this API to **manage** your [Agents](https://www.livechat.com/kb/livechat-roles-owner-administrators-and-agents/) and to **get information** about their activities.
 
-| Methods                | Path                            |
-| ---------------------- | ------------------------------- |
-| `GET`, `POST`          | `/agents`                       |
-| `GET`, `PUT`, `DELETE` | `/agents/<LOGIN>`               |
-| `POST`                 | `/agents/<LOGIN>/reset_api_key` |
+| Methods                | Path              |
+| ---------------------- | ----------------- |
+| `GET`, `POST`          | `/agents`         |
+| `GET`, `PUT`, `DELETE` | `/agents/<LOGIN>` |
 
 <Section>
 <Text>
@@ -206,7 +193,7 @@ Or, `agents_read` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/agents" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \
   -H X-API-Version:2
 ```
 
@@ -261,7 +248,6 @@ Or, `agents_read` if you use the old LiveChat protocol.
 | `groups[]`        | list of groups the agent is a member of                                                                                  |
 | `status`          | possible values: `accepting chats`, `not accepting chats`, `offline`; current status of an agent                         |
 | `last_logout`     | timestamp of the agent's last logout                                                                                     |
-| `api_key`         | the agent's API key (note: agents can access their own API keys only)                                                    |
 
 </Text>
 <Code>
@@ -269,7 +255,7 @@ Or, `agents_read` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -304,8 +290,7 @@ curl "https://api.livechatinc.com/agents/john.doe@mycompany.com" \
     }
   ],
   "status": "accepting chats",
-  "last_logout": 1358427204,
-  "api_key": "6ed8580f2cc160ce98d16389a0ede2c0"
+  "last_logout": 1358427204
 }
 ```
 
@@ -356,7 +341,7 @@ Or, `agents_write` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/agents" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -372,7 +357,7 @@ curl "https://api.livechatinc.com/agents" \
 
 ```bash
 curl "https://api.livechatinc.com/agents" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "login=jenny.doe@mycompany.com&\
 name=Jenny+Doe&\
@@ -413,8 +398,7 @@ groups[]=2&\"
     }
   ],
   "status": "offline",
-  "last_logout": 0,
-  "api_key": "441e519f755db8a51a4e232a31fe6249"
+  "last_logout": 0
 }
 ```
 
@@ -471,7 +455,7 @@ The properties which an agent can edit in their own profile, without being an ad
 
 ```bash
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -X PUT \
@@ -486,7 +470,7 @@ curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
 
 ```bash
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT \
   -d "status=not+accepting+chats&\
@@ -543,8 +527,7 @@ max_chats_count=2"
     }
   ],
   "status": "not accepting chats",
-  "last_logout": 0,
-  "api_key": "441e519f755db8a51a4e232a31fe6249",
+  "last_logout": 0
 }
 ```
 
@@ -577,7 +560,7 @@ Or, `agents_write` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/agents/jenny.doe@mycompany.com" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X DELETE
 ```
@@ -634,29 +617,29 @@ Returns all ended chats.
 
 ### Optional parameters
 
-| Parameter         | Description                                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `date_from`       | `YYYY-MM-DD` Defaults to `the beginning of time`                                                                                           |
-| `date_to`         | `YYYY-MM-DD` Defaults to `today`                                                                                                           |
-| `timezone`        | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix)                            |
-| `page`            | page number, defaults to 1                                                                                                                 |
-| `visitor_id`      | return chats with specified visitor_id                                                                                                     |
-| `query`           | return chats containing the query                                                                                                          |
-| `agent`           | return chats for given agent login                                                                                                         |
-| `group`           | return chats for given group id                                                                                                            |
-| `goal`            | return chats for given goal id                                                                                                             |
-| `has_goal`        | `1/0`. If 1 is passed, returns chats having any goal                                                                                       |
-| `sale`            | return chats for given sales tracker id                                                                                                    |
-| `has_sale`        | `1/0`. If 1 is passed, returns chats having any tracked sale                                                                               |
-| `queued`          | `1/0`. If 1 is passed, returns chats started from queue                                                                                    |
-| `rate`            | filter chats considering its rating status. Available values: `rated`, `not_rated`, `rated_good`, `rated_bad`                              |
-| `include_pending` | `1/0`. Whether to include chats that haven't yet ended. Pending chats can be recognized by `pending: true` attribute                       | They may appear with some delay because of caching reasons |
-| `tag[]`           | filter chats by a specified tag                                                                                                            |
-| `tagged`          | `1/0`. If 1 is passed, chats with any tag are returned. If 0 is passed, only chats without a tag are returned                              |
-| `comment`         | `1/0`. If 1 is passed, chats with rating comments are returned                                                                             |
-| `city`            | filters by city, values should be entered and are returned in the local language                                                           |
-| `region`          | filters by region. This could be a state, voivodeship, canton, county etc. Values should be entered and are returned in the local language |
-| `country`         | filters by country name. All values are in english                                                                                         |
+| Parameter         | Description                                                                                                                                                                       |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `date_from`       | `YYYY-MM-DD` Defaults to `the beginning of time`                                                                                                                                  |
+| `date_to`         | `YYYY-MM-DD` Defaults to `today`                                                                                                                                                  |
+| `timezone`        | timezone in the [TZ format](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix)                                                                   |
+| `page`            | page number, defaults to 1                                                                                                                                                        |
+| `visitor_id`      | return chats with specified visitor_id                                                                                                                                            |
+| `query`           | return chats containing the query                                                                                                                                                 |
+| `agent`           | return chats for given agent login                                                                                                                                                |
+| `group`           | return chats for given group id                                                                                                                                                   |
+| `goal`            | return chats for given goal id                                                                                                                                                    |
+| `has_goal`        | `1/0`. If 1 is passed, returns chats having any goal                                                                                                                              |
+| `sale`            | return chats for given sales tracker id                                                                                                                                           |
+| `has_sale`        | `1/0`. If 1 is passed, returns chats having any tracked sale                                                                                                                      |
+| `queued`          | `1/0`. If 1 is passed, returns chats started from queue                                                                                                                           |
+| `rate`            | filter chats considering its rating status. Available values: `rated`, `not_rated`, `rated_good`, `rated_bad`                                                                     |
+| `include_pending` | `1/0`. Whether to include chats that haven't yet ended. Pending chats can be recognized by `pending: true` attribute.  They may appear with some delay because of caching reasons |
+| `tag[]`           | filter chats by a specified tag                                                                                                                                                   |
+| `tagged`          | `1/0`. If 1 is passed, chats with any tag are returned. If 0 is passed, only chats without a tag are returned                                                                     |
+| `comment`         | `1/0`. If 1 is passed, chats with rating comments are returned                                                                                                                    |
+| `city`            | filters by city, values should be entered and are returned in the local language                                                                                                  |
+| `region`          | filters by region. This could be a state, voivodeship, canton, county etc. Values should be entered and are returned in the local language                                        |
+| `country`         | filters by country name. All values are in English                                                                                                                                |
 
 ### Additional info
 
@@ -687,7 +670,7 @@ In the first call, use the data range that covers the first 25000 chats. When ma
 curl "https://api.livechatinc.com/chats?\
       date_from=2013-01-23&\
       has_goal=1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -895,7 +878,7 @@ Returns a single chat item for the given `CHAT_ID`.
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -1101,7 +1084,7 @@ This method updates the tags assigned to a chat.
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -X PUT \
   -H X-API-Version:2 \
   -H Content-type:application/json \
@@ -1117,7 +1100,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/tags" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -X PUT \
   -H X-API-Version:2 \
   -d "tag[]=sales&\
@@ -1286,7 +1269,7 @@ tag[]=feedback"
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -1299,7 +1282,7 @@ curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
 
 ```shell
 curl "https://api.livechatinc.com/chats/MH022RD0K5/send_transcript" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "to=john.doe@mycompany.com"
 ```
@@ -1359,7 +1342,7 @@ Returns the list of all currently set canned responses.
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses?group=1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -1434,7 +1417,7 @@ curl "https://api.livechatinc.com/canned_responses?group=1" \
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses/3151" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -1496,7 +1479,7 @@ Creates a new canned response.
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -1511,7 +1494,7 @@ curl "https://api.livechatinc.com/canned_responses" \
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "text=Have+a+great+day,+goodbye.&\
 tags[]=bye&\
@@ -1570,7 +1553,7 @@ Updates the specified canned response by setting the values of the parameters pa
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses/3181" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT -d "tags[]=bye"
 ```
@@ -1581,7 +1564,7 @@ curl "https://api.livechatinc.com/canned_responses/3181" \
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -X PUT \
@@ -1637,7 +1620,7 @@ Removes a canned response with the given `CANNED_RESPONSE_ID`.
 
 ```bash
 curl "https://api.livechatinc.com/canned_responses/3181" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X DELETE
 ```
@@ -1700,7 +1683,7 @@ Returns all currently set goals. The `active` parameter indicates whether a goal
 
 ```bash
 curl "https://api.livechatinc.com/goals" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -1773,7 +1756,7 @@ The `type` attribute can take the following values:
 
 ```bash
 curl "https://api.livechatinc.com/goals/1181" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -1838,7 +1821,7 @@ Optionally you can store additional information about the goal. They can be only
 
 ```bash
 curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -1851,7 +1834,7 @@ curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
 
 ```bash
 curl "https://api.livechatinc.com/goals/1181/mark_as_successful" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "visitor_id=S1281361958.2238ee3bd3"
 ```
@@ -1914,7 +1897,7 @@ The `active` parameter indicates whether the goal is active or not.
 
 ```bash
 curl "https://api.livechatinc.com/goals" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -1930,7 +1913,7 @@ curl "https://api.livechatinc.com/goals" \
 
 ```bash
 curl "https://api.livechatinc.com/goals" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-VERSION:2 \
   -d "name=new%20goal&\
   type=url&\
@@ -2004,7 +1987,7 @@ The `active` parameter indicates whether the goal is active or not.
 
 ```bash
 curl "https://api.livechatinc.com/goals/2231" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -2018,7 +2001,7 @@ curl "https://api.livechatinc.com/goals/2231" \
 
 ```bash
 curl "https://api.livechatinc.com/goals/2231" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT -d "name=new%20goal%20paused&\
   active=0"
@@ -2066,7 +2049,7 @@ Removes a goal with the given `GOAL_ID`.
 
 ```bash
 curl "https://api.livechatinc.com/goals/2231" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X DELETE
 ```
@@ -2128,7 +2111,7 @@ Returns the list of all greetings.
 ```bash
 curl "https://api.livechatinc.com/greetings\
   ?group=1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -2209,7 +2192,7 @@ Returns the specified greeting.
 
 ```bash
 curl "https://api.livechatinc.com/greetings/2411" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -2280,7 +2263,7 @@ Use this function to create a new greeting.
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -2304,7 +2287,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "name=my+custom+invitation&\
 rules[0][type]=visit_time_page&\
@@ -2368,7 +2351,7 @@ And here's a list of the greeting rules that you can use:
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -2393,7 +2376,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "name=my+custom+invitation&\
 rules[0][type]=visit_time_page&\
@@ -2466,7 +2449,7 @@ The greeting will be sent when the specified variable is met.
 ```bash
 curl "https://api.livechatinc.com/greetings\
   ?group=1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -2489,7 +2472,7 @@ curl "https://api.livechatinc.com/greetings\
 ```bash
 curl "https://api.livechatinc.com/greetings\
   ?group=1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "name=custom+variable+type+greeting&\
 rules[0][type]=custom_variable&\
@@ -2554,7 +2537,7 @@ The visitors who have visited the specified sequence of pages will receive the g
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -2582,7 +2565,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "name=url+funnel+type+greeting&\
 rules[0][type]=url_funnel&\
@@ -2647,7 +2630,7 @@ You can create a greeting that will have more than one rule.
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -2676,7 +2659,7 @@ curl "https://api.livechatinc.com/greetings" \
 
 ```bash
 curl "https://api.livechatinc.com/greetings" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "name=my+custom+invitation&\
 rules[0][type]=visit_time_site&\
@@ -2761,7 +2744,7 @@ Use this request to change the name or message of a greeting.
 
 ```bash
 curl "https://api.livechatinc.com/greetings/2491" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT -d "name=athletic+shoes&\
 properties[greeting-message_text]=Hello"
@@ -2797,7 +2780,7 @@ Activate or deactivate a greeting using this request.
 
 ```bash
 curl "https://api.livechatinc.com/greetings/2491" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT -d "active=0"
 ```
@@ -2832,7 +2815,7 @@ Change the rules of your greetings with this request.
 
 ```bash
 curl "https://api.livechatinc.com/greetings/2491"\
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT -d "rules[0][type]=custom_variable&\
 rules[0][variable_name]=athletic_shoes&\
@@ -2895,7 +2878,7 @@ Removes a greeting.
 
 ```bash
 curl "https://api.livechatinc.com/greetings/2491" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X DELETE
 ```
@@ -2960,7 +2943,7 @@ Or, `groups_read` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/groups" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -3052,7 +3035,7 @@ The `status` can take the following values:
 
 ```bash
 curl "https://api.livechatinc.com/groups/2" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -3116,7 +3099,7 @@ Or, `groups_write` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/groups" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -3133,7 +3116,7 @@ curl "https://api.livechatinc.com/groups" \
 
 ```bash
 curl "https://api.livechatinc.com/groups" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "name=Human+Resources&\
 agents[0]=jenny.doe@mycompany.com&\
@@ -3195,7 +3178,7 @@ Or, `groups_write` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/groups/3" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 -X PUT \
   -H Content-type:application/json \
   -d '{
@@ -3212,7 +3195,7 @@ curl "https://api.livechatinc.com/groups/3" \
 
 ```bash
 curl "https://api.livechatinc.com/groups/3" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT \
   -d "name=Quality+Assurance&\
@@ -3268,7 +3251,7 @@ Or, `groups_write` if you use the old LiveChat protocol.
 
 ```bash
 curl "https://api.livechatinc.com/groups/4" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X DELETE
 ```
@@ -3325,7 +3308,7 @@ Returns the current LiveChat status. Available return values: `online`, `offline
 
 ```bash
 curl "https://api.livechatinc.com/status/1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -3387,7 +3370,7 @@ Returns tags from all groups.
 ```bash
 curl "https://api.livechatinc.com/tags\
       ?group=1" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -3457,7 +3440,7 @@ Adds a new tag. Note that only the owner and the admins are authorized to use th
 
 ```bash
 curl "https://api.livechatinc.com/tags" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -3472,7 +3455,7 @@ curl "https://api.livechatinc.com/tags" \
 
 ```bash
 curl "https://api.livechatinc.com/tags" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -d "tag=support&\
 author=john.doe@mycompany.com&\
@@ -3536,7 +3519,7 @@ Deletes a tag from the chosen group. The agents will no longer be able to tag ch
 
 ```bash
 curl "https://api.livechatinc.com/tags/support" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 DELETE \
   -H Content-type:application/json \
   -d '{
@@ -3549,7 +3532,7 @@ curl "https://api.livechatinc.com/tags/support" \
 
 ```bash
 curl "https://api.livechatinc.com/tags/support" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 DELETE \
   -d "group=1"
 ```
@@ -3636,7 +3619,7 @@ Please note that the first page's number is `1`, not `0`.
 curl "https://api.livechatinc.com/tickets?\
 date_from=2013-11-15&\
 status=open" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -3751,7 +3734,7 @@ Returns a single ticket item for the given `TICKET_ID`.
 
 ```bash
 curl "https://api.livechatinc.com/tickets/5FUED" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -3883,7 +3866,7 @@ Creates a new ticket.
 
 ```bash
 curl "https://api.livechatinc.com/tickets" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -3902,7 +3885,7 @@ curl "https://api.livechatinc.com/tickets" \
 
 ```bash
 curl "https://api.livechatinc.com/tickets" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2  \
   -X POST -d "subject=I+have+a+problem&\
   message=Hi,I+have+a+problem+with+my+shoes.+Could+you+please+advise?&\
@@ -4026,7 +4009,7 @@ Updates tags associated with the ticket.
 
 ```bash
 curl "https://api.livechatinc.com/tickets/5FUED/tags" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -H Content-type:application/json \
   -d '{
@@ -4039,7 +4022,7 @@ curl "https://api.livechatinc.com/tickets/5FUED/tags" \
 
 ```bash
 curl "https://api.livechatinc.com/tickets/5FUED/tags" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X PUT \
   -d "tag[]=sales&\
@@ -4195,7 +4178,7 @@ Returns a list of webhooks that have been created in a LiveChat account.
 
 ```shell
 curl "https://api.livechatinc.com/webhooks" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
 ```
 
@@ -4276,7 +4259,7 @@ Creates a new webhook.
 
 ```shell
 curl "https://api.livechatinc.com/webhooks" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2
   -d "event_type=chat_started&\
 data_types[]=chat&\
@@ -4330,7 +4313,7 @@ Deletes a webhook with the given `ID`.
 
 ```shell
 curl "https://api.livechatinc.com/webhooks/39612eee5(...)" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 \
   -X DELETE
 ```
@@ -4409,7 +4392,7 @@ The possible `state` filter values are `chatting` and `queued`.
 curl "https://api.livechatinc.com/visitors?
 state=chatting&\
 group[]=0" \
-  -u john.doe@mycompany.com:c14b85863755158d7aa5cc4ba17f61cb \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
   -H X-API-Version:2 -g
 ```
 
