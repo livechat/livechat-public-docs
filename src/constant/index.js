@@ -381,9 +381,9 @@ const SCOPES = [
   },
   {
     id: "accounts.roles.lc--all:rw",
-    description: "Read and modify all accounts roles within the LiveChat product",
+    description: "Read and modify all account roles within the LiveChat product",
     role: "administrator",
-    role_type: "primary",
+    role_type: "secondary",
     product: "LiveChat",
   },
   {
