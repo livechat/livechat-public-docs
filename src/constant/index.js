@@ -380,6 +380,13 @@ const SCOPES = [
     product: "Accounts",
   },
   {
+    id: "accounts.roles.lc--all:rw",
+    description: "Read and modify all accounts roles within the LiveChat product",
+    role: "administrator",
+    role_type: "primary",
+    product: "LiveChat",
+  },
+  {
     id: "sessions--my:ro",
     description: "Read my sessions",
     role: "member",
