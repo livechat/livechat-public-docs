@@ -345,14 +345,14 @@ const SCOPES = [
   },
   {
     id: "properties.group.value--my.rw",
-    description: "Read/write permission for managing groups' properties (only my namespace)",
+    description: "Read/write permission for managing groups properties (only my namespace)",
     role: "administrator",
     role_type: "secondary",
     product: "Livechat"
   },
   {
     id: "properties.group.value--all.rw",
-    description: "Read/write permission for managing groups' properties (in all namespaces but with access only to their public properties)",
+    description: "Read/write permission for managing groups properties (in all namespaces but with access only to their public properties)",
     role: "administrator",
     role_type: "secondary",
     product: "Livechat"
