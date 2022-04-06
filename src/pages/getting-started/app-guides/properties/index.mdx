@@ -3,8 +3,8 @@ weight: 100
 category: "getting-started"
 subcategory: "app-guides"
 title: "Properties"
-tagline: ""
-desc: ""
+tagline: "Configure LiveChat properties in Developer Console with a few clicks."
+desc: "Configure properties via user interface instead of calling the LiveChat Configuration API directly. Use properties to store data without having to set up a database."
 ---
 
 # Introduction
@@ -14,31 +14,105 @@ This document explains how to configure the Properties building block in the Dev
 - <a href="https://developers.livechat.com/updates/livechat-properties/" target="_blank">Properties: what they are and how to configure them with LiveChat API v3.3+</a>
 - [Properties in the Configuration API](/management/configuration-api/#properties/)
 
-# Tutorial
+# Building block configuration
 
-This tutorial explains how to configure the Properties building block in the Developer Console.
+## Prerequisites
 
-There are three major steps in this process:
+Before you can configure the Properties building block, you need to complete the following steps:
 
-1. [Creating an app](#step-1-create-an-app)
-2. [Configuring app authorization](#step-2-configure-app-authorization)
-3. [Configuring properties](#step-3-configure-properties)
+- Have an account in the <Placeholder id="DEVELOPER_CONSOLE_URL" />.
+- Create an app for which you'll create properties. If you don't know how to create an app, [here's the tutorial](/getting-started/livechat-apps/#creating-livechat-apps).
+- Add the  `properties--configuration:rw` scope in the App Authorization building block. This scope allows for creating and editing properties.
 
-The end result of the process will be an application with registered properties.
+## Creating a new property
 
-## Before you start
+The Developer Console makes it possible to creating properties via user interface instead of calling the [Register Property](/management/configuration-api/#register-property) method directly. LiveChat properties are registered per application (Client ID). An application that owns a property (property configuration/definition, not a specific property value) is the owner Client ID.
 
-Log in to <Placeholder id="DEVELOPER_CONSOLE_URL" /> or sign up for free.
+To create a new property, you'll need to configure the following fields:
 
-## Step 1: Create an app
+### Property name
 
-To create a new app, all you need to do is click **Create new app+**, come up with a name, and click **Continue**.
+- This is a required parameter.
 
-To configure the frontend part of your app, follow [these instructions](/extending-agent-app/agent-app-sdk/#getting-started).
+### Property type
 
-## Step 2: Configure app authorization
+- This is a required parameter.
+- It defines what type of data can be stored in a property.
+- You can choose between `int`, `string`, `bool`, and `tokenized_string`.
 
-## Step 3: Configure properties
+### Property location
 
-## End result
+- This is a required parameter.
+- It defines in what data structure(s) a property will be available.
+- You can choose from **chat, thread, event, license, group**, and it's possible to select them all. This will make the property available in all locations.
 
+#### Access
+
+For each chosen location, you need to define the access type for both agents and customers. Unless you publish your property, these access rules will apply only to the owner client ID.
+
+<div style={{maxWidth: "500px", marginBottom: "10px"}}>
+  <img alt="LiveChat Property Location" src="/images/getting-started/app-guides/properties/livechat-properties-location.png" width="1022px" height="1078px"/>
+</div>
+
+This is how the selected options would be represented in the property object:
+
+```json
+{
+  "name": "sample_property",
+  "access": {
+    "chat": {
+      "agent": ["read", "write"],
+      "customer": ["read"]
+      },
+    "thread": {
+      "agent": ["read", "write"],
+      "customer": ["read"]
+    }
+  }
+}
+```
+
+💡 If you already know that you'll publish your property and that you'd like customers of other apps to be able to **write** to your property, you need to include the `write` access for customers at this stage.
+
+### Property domain
+
+- This is an optional parameter.
+- You can choose between the following options:
+  - an explicit set of values, for example, `poor,good,excellent` or `2,4,8,16`
+  - a range of integer values, for example, `1-100`
+
+<div style={{maxWidth: "800px"}}>
+  <img alt="LiveChat Property Domain" src="/images/getting-started/app-guides/properties/livechat-properties-domain.png" width="2019px" height="352px"/>
+</div>
+
+### Property default value
+
+- This is an optional parameter.
+- It can be set up only for license and group properties.
+- It has to match the property domain or range if either is defined.
+
+## Publishing properties
+
+Creating a property in the Developer Console registers it in the Configuration API. By default, all properties are created [private](/management/configuration-api#private-properties), which means they're accessible only to the owner Client ID. Publishing a property makes it available to other applications, opening up more advanced integration possibilities.
+
+<Warning>
+
+💡 Keep in mind that property publication is irreversible. Also, once published, a property cannot be edited or deleted.
+
+</Warning>
+
+During property publishing, you need to determine the access level for other applications (other than the owner Client ID). You can choose `read` and/or `write`. This access type will apply to agents and customers of other applications based on what you've chosen during property creation.
+
+<div style={{maxWidth: "800px", marginBottom: "10px"}}>
+  <img alt="LiveChat Property publishing" src="/images/getting-started/app-guides/properties/livechat-properties-publishing.png" width="1652px" height="1014px"/>
+</div>
+
+For example, when you choose the `read` and `write` access types during property publishing, only agents will be granted both access types. Customers will only have the `read` access as this is what was defined during property configuration. ([See the code snippet](#access)). The access rules for the owner client ID stay unchanged.
+
+## Editing properties
+
+It's impossible to edit an already created properties, even the private ones. What you can do instead is delete and recreate them. Deleting a private property will [unregister it](/management/configuration-api#unregister-property) in the Configuration API under the hood.
+
+# Contact us
+
+We're happy to provide our support in case you need it. If you have any questions or suggestions, feel free to contact us at [developers@livechat.com](mailto:developers@livechat.com) or join our [Discord for Developers](https://discord.gg/NcfJu3a9kM).
