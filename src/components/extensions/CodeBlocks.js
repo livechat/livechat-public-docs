@@ -119,11 +119,7 @@ const CodeWrapper = styled.div`
   width: 100%;
 
   @media (min-width: 768px) {
-    padding: 80px 25px 30px 0px;
-  }
-
-  @media (min-width: 1200px) {
-    padding: 80px 25px 30px 0px;
+    padding: 25px 25px 30px 0px;
   }
 `;
 
