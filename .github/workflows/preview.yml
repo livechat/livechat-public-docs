@@ -6,26 +6,17 @@ on:
       - master
 
 jobs:
-  previewCreator:
+  publish:
     name: "Preview"
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@master
 
-      - uses: nelonoel/branch-name@v1.0.1
-      - uses: jsmrcaga/action-netlify-deploy@master
+      - uses: netlify/actions/cli@master
         with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          args: netlify build --context production
+        env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          deploy_alias: ${{ env.BRANCH_NAME }}
-          node_version: 16
-
-      - name: Status check
-        uses: Sibz/github-status-action@v1.1.1
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: Netlify preview
-          state: success
-          target_url: https://${{ env.BRANCH_NAME }}--my-site.netlify.app
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
