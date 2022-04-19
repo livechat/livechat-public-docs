@@ -7,16 +7,22 @@ on:
 
 jobs:
   publish:
-    name: "Preview"
+    name: Preview
     runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@master
+     - uses: actions/checkout@v2
 
-      - uses: netlify/actions/cli@master
-        with:
-          args: netlify build --context production
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build site
+        run: npm run build
+
+      - name: Create Preview
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify build --context deploy-preview && netlify deploy --dir=.next
+      
