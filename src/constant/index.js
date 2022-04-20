@@ -268,7 +268,7 @@ const SCOPES = [
     product: "LiveChat",
   },
   {
-    id: "properties--configuration:rw",
+    id: "properties.configuration:rw",
     description:
       "Read/write permission for license/group/chat/thread/event properties configuration (for all integrations owned by my license)",
     role: "administrator",
@@ -328,6 +328,34 @@ const SCOPES = [
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
+  },
+  {
+    id: "properties.license.value--my.rw",
+    description: "Read/write permission for managing license properties (only my namespace)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "Livechat"
+  },
+  {
+    id: "properties.license.value--all.rw",
+    description: "Read/write permission for managing license properties (in all namespaces but with access only to their public properties)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "Livechat"
+  },
+  {
+    id: "properties.group.value--my.rw",
+    description: "Read/write permission for managing groups properties (only my namespace)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "Livechat"
+  },
+  {
+    id: "properties.group.value--all.rw",
+    description: "Read/write permission for managing groups properties (in all namespaces but with access only to their public properties)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "Livechat"
   },
   // ACCOUNT SCOPES
   {
