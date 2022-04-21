@@ -1,4 +1,4 @@
-# LiveChat Platform Docs
+# LiveChat Platform Docs.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/64c9d8bf-8fe6-4481-91d9-4258c3b9ae91/deploy-status)](https://app.netlify.com/sites/livechat-public-docs/deploys)
 
@@ -49,7 +49,7 @@ Currently, versioning for the Agent Chat API, Customer Chat API, and Configurati
 | --------------- | -------------- | ----------------- | ------------------ | ------------- |
 | **stable**      | 3.4            | 3.4               | 3.4                | 3.4           |
 | **dev preview** | 3.5            | 3.5               | 3.5                | 3.5           |
-| **legacy**      | 3.2            | 3.2               | 2.0,  3.2          | 2.0, 3.3, 3.2 |
+| **legacy**      | 3.2            | 3.2               | 2.0, 3.2           | 2.0, 3.3, 3.2 |
 | **deprecated**  | 3.1, 3.2, 3.3  | 3.1, 3.2, 3.3     | 2.0, 3.1, 3.2, 3.3 | -             |
 
 This versioning is **default** for all articles which aren't grouped.
