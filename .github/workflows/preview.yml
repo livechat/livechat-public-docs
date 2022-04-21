@@ -7,14 +7,32 @@ on:
 
 env:
   BRANCH_NAME: $(echo ${{github.head_ref || github.ref_name}} | sed -e 's/\//-/g' | tr '[:upper:]' '[:lower:]')
+
 jobs:
   publish:
     name: Preview
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Test branch name
-        run: echo ${{env.BRANCH_NAME}}
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Create Preview
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify build --context deploy-preview  && netlify deploy --dir=.next --alias ${{ env.BRANCH_NAME }}
+
+      - name: Status check
+        uses: Sibz/github-status-action@v1.1.1
+        with:
+          authToken: ${{ secrets.AUTH_TOKEN }}
+          context: Netlify preview
+          state: success
+          target_url: https://${{ env.BRANCH_NAME }}--livechat-public-docs.netlify.app
