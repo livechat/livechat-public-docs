@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { node, object } from "prop-types";
-import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -216,7 +215,7 @@ const Page = ({ frontMatter, children }) => {
                     </LeftColumnRedocWrapper>
                   )}
 
-                  <MDXProvider components={components}>{children}</MDXProvider>
+                  {children}
 
                   {!useRedocPage && (
                     <RatingWrapper>
