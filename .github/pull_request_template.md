@@ -1,6 +1,6 @@
 # Deploy preview
 
-For the time being, deploy previews are generated using the Nelify CLI. More info on Slack (#plaform-docs).
+Scroll down to the checks section for the link to the deploy preview of your branch.
 
 # Links
 
