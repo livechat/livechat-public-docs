@@ -2388,6 +2388,236 @@ curl -X POST \
 
 </Section>
 
+# Tags
+
+<Section>
+
+<Text>
+
+Tags are simple text labels that can be used by agents to assign chats to user-defined categories that can be used to filter chats out in archives and reports.
+
+To create a new tag call [**Create Tag**](/management/configuration-api/v3.5/#create-tag) method with a `name`. Letter case is ignored when checking if the tag already exists. When creating a tag you can also provide `group_ids` to assign the tag to some groups right away. It's also possible to create a tag with empty `group_ids` and update the group assignment later with [**Update Tag**](/management/configuration-api/v3.5/#update-tag). To remove a tag call [**Delete Tag**](/management/configuration-api/v3.5/#delete-tag). Both Update and Delete methods respect the letter case when matching the tag in order to be backward-compatible with deprecated v2 endpoints. You can get existing tags with [**List Tags**](/management/configuration-api/v3.5/#list-tags) method.
+
+Users with `tags--all:rw` scope can create/delete/update tags in all license's groups. Users with `tags--groups:rw` scope are restricted to groups they are assigned to. Similarly `tags--all:ro` and `tags--groups:ro` scopes affect listing tags.
+
+Tag can be used to mark a chat's thread only if the thread and the tag are assigned to at least one common group.
+
+</Text>
+
+</Section>
+
+## Methods
+
+| HTTP method | The Tags API endpoint                                            |
+| ----------- | ---------------------------------------------------------------- |
+| `POST`      | `https://api.livechatinc.com/v3.5/configuration/action/<action>` |
+
+| Required header |       Value        |      |
+| --------------- | :----------------: | ---: |
+| `Content-Type`  | `application/json` |      |
+
+<Section>
+
+<Text>
+
+### Create Tag
+
+Creates a new tag.
+
+#### Specifics
+
+|                 |                                                                    |
+| --------------- | ------------------------------------------------------------------ |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/create_tag` |
+| Required scopes | `tags--all:rw, tags--groups:rw`                                    |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                                     |
+| ----------- | -------- | --------- | --------------------------------------------------------- |
+| `name`      | yes      | `string`  | Matching the name of an existing tag is case-insensitive. |
+| `group_ids` | yes      | `[]int`   | Can be empty.                                             |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/create_tag \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "name": "docs_feedback",
+    "group_ids": [
+      0,
+      42
+    ]
+  }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Tag
+
+Deletes an existing tag.
+
+#### Specifics
+
+|                 |                                                                    |
+| --------------- | ------------------------------------------------------------------ |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/delete_tag` |
+| Required scopes | `tags--all:rw, tags--groups:rw`                                    |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                                                   |
+| --------- | -------- | --------- | ------------------------------------------------------- |
+| `name`    | yes      | `string`  | Matching the name of an existing tag is case-sensitive. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/delete_tag \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "name": "docs_feedback"
+  }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Tags
+
+Lists the exisiting tags.
+
+#### Specifics
+
+|                 |                                                                   |
+| --------------- | ----------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/list_tags` |
+| Required scopes | `tags--all:ro, tags--groups:ro`                                   |
+
+#### Request
+
+| Parameter           | Required | Data type | Notes                                                                  |
+| ------------------- | -------- | --------- | ---------------------------------------------------------------------- |
+| `filters`           | No       | `object`  | Possible request filters.                                              |
+| `filters.group_ids` | Yes      | `int[]`   | IDs of the groups from which you want to list Tags.                    |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/list_tags \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "group_ids": [
+        0,
+        42
+      ]
+    }
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.5" json="listTags"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Tag
+
+Updates an existing tag.
+
+#### Specifics
+
+|                 |                                                                    |
+| --------------- | ------------------------------------------------------------------ |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/update_tag` |
+| Required scopes | `tags--all:rw, tags--groups:rw`                                    |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                                   |
+| ----------- | -------- | --------- | ------------------------------------------------------- |
+| `name`      | yes      | `string`  | Matching the name of an existing tag is case-sensitive. |
+| `group_ids` | yes      | `[]int`   | Can be empty.                                           |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/update_tag \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "name": "docs_feedback",
+    "group_ids": [
+      0,
+      42
+    ]
+  }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
 <Section>
 
 <Text>
