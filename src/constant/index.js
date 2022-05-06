@@ -276,6 +276,34 @@ const SCOPES = [
     product: "LiveChat",
   },
   {
+    id: "tags--all:rw",
+    description: "Read/write permission for tags configuration (all in license)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "tags--all:ro",
+    description: "Read permission for tags configuration (all in license)",
+    role: "",
+    role_type: "",
+    product: "",
+  },
+  {
+    id: "tags--groups:rw",
+    description: "Read/write permission for tags configuration (in my groups)",
+    role: "",
+    role_type: "",
+    product: "",
+  },
+  {
+    id: "tags--groups:ro",
+    description: "Read permission for tags configuration (in my groups)",
+    role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
     id: "webhooks--my:ro",
     description:
       "Read permission for webhooks configuration (only my webhooks)",
