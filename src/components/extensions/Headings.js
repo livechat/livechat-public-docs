@@ -1,5 +1,5 @@
 import React from "react";
-/** @jsx jsx */
+/** @jsxImportSource @emotion/react */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
