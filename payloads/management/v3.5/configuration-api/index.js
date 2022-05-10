@@ -14,6 +14,8 @@ export { default as listGroupProperties } from "./responses/properties/listGroup
 export { default as listLicenseProperties } from "./responses/properties/listLicenseProperties.json"
 export { default as listProperties } from "./responses/properties/listProperties.json"
 
+export { default as listTags } from "./responses/tags/listTags.json"
+
 export { default as registerWebhook } from "./responses/webhooks/registerWebhook.json"
 export { default as listWebhooks } from "./responses/webhooks/listWebhooks.json"
 export { default as listWebhookNames } from "./responses/webhooks/listWebhookNames.json"
