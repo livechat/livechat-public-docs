@@ -285,16 +285,16 @@ const SCOPES = [
   {
     id: "tags--all:ro",
     description: "Read permission for tags configuration (all in license)",
-    role: "",
-    role_type: "",
-    product: "",
+    role: "not assigned to any role",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "tags--groups:rw",
     description: "Read/write permission for tags configuration (in my groups)",
-    role: "",
-    role_type: "",
-    product: "",
+    role: "not assigned to any role",
+    role_type: "secondary",
+    product: "LiveChat",
   },
   {
     id: "tags--groups:ro",
