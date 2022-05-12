@@ -12,3 +12,4 @@ export { default as surveyFilter } from "./surveyFilter.json";
 export { default as surveys } from "./responses/chats/surveys.json";
 export { default as responseTime } from "./responses/chats/responseTime.json";
 export { default as firstResponseTime } from "./responses/chats/firstResponseTime.json";
+export { default as chatUsage } from "./responses/tags/chatUsage.json";

@@ -56,6 +56,7 @@ You can authorize your calls to the Reports API using one of the following metho
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Chats**  | [`duration`](#duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) [`engagement`](#engagement) [`greetings_conversion`](#greetings-conversion) [`surveys`](#surveys) [`response_time`](#response-time) [`first_response_time`](#first-response-time) |
 | **Agents** | [`availability`](#availability) [`performance`](#performance)                                                                                                                                                                                                                                       |
+| **Tags**   | [`chat_usage`](#chat-usage)                                                                                                                                                                                                                                                                         |
 
 ## Available parameters and filters
 
@@ -97,7 +98,6 @@ You can authorize your calls to the Reports API using one of the following metho
 | `filters.to`                                          | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                                                                                                    |
 | `filters.agents.<string_filter_type>`<sup>**2**</sup> | No       | `any`     | Described below.                                                                                                                                                                                                                            |
 | `filters.groups.values`                               | No       | `array`   | Array of group IDs.                                                                                                                                                                                                                         |
-
 
 </Text>
 <Code>
@@ -850,6 +850,70 @@ https://api.livechatinc.com/v3.5/reports/agents/performance \
 </CodeSample>
 
 <CodeResponse type="reports" version="v3.5" json="performance"/>
+
+</Code>
+</Section>
+
+## Tags
+
+<Section>
+<Text>
+
+### Chat Usage
+
+Shows the total number of chats marked with each tag listed in the report.
+
+#### Specifics
+
+|                     |                                                               |
+| ------------------- | ------------------------------------------------------------- |
+| **Method URL**      | `https://api.livechatinc.com/v3.5/reports/tags/chat_usage`    |
+| **HTTP method**     | POST, GET                                                     |
+| **Required scopes** | `reports_read`                                                |
+
+#### Request
+
+| Parameter               | Required | Data type | Notes                                                                                                                                                                                                                                       |
+| ----------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `timezone`              | No       | `string`  | IANA [Time Zone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (e.g. America/Phoenix). Defaults to the requester's timezone. When the requester's timezone isn't present, then `filters.from` is parsed to get the timezone. |
+| `filters`               | No       | `object`  | If none provided, your report will span the last seven days.                                                                                                                                                                                |
+| `filters.from`          | No       | `string`  | Filters out chats that took place within the time range defined as <`from`,`to`>. Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                  |
+| `filters.to`            | No       | `string`  | Filters out chats that took place within the time range defined as <`from`,`to`>. Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`.                                  |
+| `filters.groups.values` | No       | `[]int`   | Array of group IDs.                                                                                                                                                                                                                         |
+
+#### Response
+
+| Field                                | Notes                                                                                                  |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `records`                            | Contains the `<tag>:<chat_count>` pairs.                                                               |
+
+</Text>
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.5/reports/tags/chat_usage \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00",
+      "groups": {
+        "values": [ 0, 42 ]
+      }
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.5" json="chatUsage"/>
 
 </Code>
 </Section>
