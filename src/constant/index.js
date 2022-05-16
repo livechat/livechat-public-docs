@@ -537,7 +537,7 @@ const ERRORS = [
     id: "misdirected_request",
     message: "Wrong region",
     description:
-      "Client's request should be performed to another region. The correct region is returned in the optional data object. It helps to figure out where the client should be connected.",
+      "Client's request should be performed to another region. The correct region is returned in the optional data object – this is where the client should be connected.",
   },
   {
     id: "request_timeout",

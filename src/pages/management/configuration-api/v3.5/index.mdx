@@ -30,6 +30,8 @@ All the LiveChat OAuth 2.1 access tokens have a prefix: `dal:` or `fra:`. This p
 
 Summing up, if the user token starts with `fra`, you should add the `X-Region: fra` header. If the token starts with `dal`, you don’t have to specify the header.
 
+If you get the [`misdirected_request`](#possible-errors) error, use the prefix returned in the error as the value of `X-Region`.
+
 ## Propagation delay
 
 All configurations set by this API will have action in system after max 2 minutes. This delay will be removed in the future.
@@ -266,7 +268,7 @@ Returns all Agents within a license.
 | ------------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
 | `filters`           | No       | `object`   | Possible request filters                                                                                      |
 | `filters.group_ids` | No       | `int[]`    | IDs of the groups from which you want to list Agents. You'll only get the Agents from the specified group(s). |
-| `filters.suspended` | No       | `bool`     | If provided, returns only those Agents who have the same `suspended` field value.                                     |
+| `filters.suspended` | No       | `bool`     | If provided, returns only those Agents who have the same `suspended` field value.                             |
 | `fields`__*__       | No       | `string[]` | Additional Agent fields to include.                                                                           |
 
 __*__ Possible values for the `fields[]` parameter:
@@ -1063,19 +1065,19 @@ Creates a new bot. To make the bot available for receiving chats or webhooks, us
 
 #### Request
 
-| Parameter                             | Required | Data type  | Notes                                                                                                                                                                                                        |
-| ------------------------------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`                                | Yes      | `string`   | Display name                                                                                                                                                                                                 |
-| `avatar`                              | No       | `string`   | Avatar URL                                                                                                                                                                                                   |
-| `max_chats_count`                     | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6. Limited to 500.                                                                                                                     |
-| `default_group_priority` **\*\*\*\*** | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                           |
-| `job_title`                           | No       | `string`   | Bot's job title                                                                                                                                                                                              |
-| `groups`                              | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                   |
-| `groups[].id`                         | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                             |
-| `groups[].priority` **\***            | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                            |
-| `work_scheduler`                      | No       | `object`   | Work scheduler options to set for the new Bot.                                                                                                                                                               |
-| `work_scheduler.**.<work_scheduler>`  | No       | `object`   | `<work_scheduler>` values **\*\*\***.                                                                                                                                                                        |
-| `timezone`                            | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate. Required only if `work_scheduler` is provided.                                                                                               |
+| Parameter                             | Required | Data type  | Notes                                                                                                                                                                                                                                                                                              |
+| ------------------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                | Yes      | `string`   | Display name                                                                                                                                                                                                                                                                                       |
+| `avatar`                              | No       | `string`   | Avatar URL                                                                                                                                                                                                                                                                                         |
+| `max_chats_count`                     | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6. Limited to 500.                                                                                                                                                                                                           |
+| `default_group_priority` **\*\*\*\*** | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                                                                                                                 |
+| `job_title`                           | No       | `string`   | Bot's job title                                                                                                                                                                                                                                                                                    |
+| `groups`                              | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                                                                                                         |
+| `groups[].id`                         | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                                                                                                                   |
+| `groups[].priority` **\***            | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                                                                                                                  |
+| `work_scheduler`                      | No       | `object`   | Work scheduler options to set for the new Bot.                                                                                                                                                                                                                                                     |
+| `work_scheduler.**.<work_scheduler>`  | No       | `object`   | `<work_scheduler>` values **\*\*\***.                                                                                                                                                                                                                                                              |
+| `timezone`                            | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate. Required only if `work_scheduler` is provided.                                                                                                                                                                                     |
 | `owner_client_id` \***\*\*\*\***      | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 **\*** Possible values for the `groups[].priority` parameter:
@@ -2054,10 +2056,10 @@ Updates a property value within a license. This operation **doesn't** overwrite 
 
 #### Specifics
 
-|                      |                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------- |
-| Method URL           | `https://api.livechatinc.com/v3.5/configuration/action/update_license_properties` |
-| Required scopes      | `properties.license.value--my:rw`*, `properties.license.value--all:rw`**          |
+|                 |                                                                                   |
+| --------------- | --------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/update_license_properties` |
+| Required scopes | `properties.license.value--my:rw`*, `properties.license.value--all:rw`**          |
 
 __*)__ If the requester's Client ID matches the namespace, setting license properties requires `properties.license.value--my:rw`.
 
@@ -2119,10 +2121,10 @@ For properties without an explicit value assignment, the method will return the 
 
 #### Specifics
 
-|                      |                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------- |
-| Method URL           | `https://api.livechatinc.com/v3.5/configuration/action/list_license_properties` |
-| Required scopes      | `properties.license.value--all:ro`*                                             |
+|                 |                                                                                 |
+| --------------- | ------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/list_license_properties` |
+| Required scopes | `properties.license.value--all:ro`*                                             |
 
 __*)__ If the requester's Client ID doesn't match the namespace, retrieving license properties requires `properties.license.value--all:ro`. The scope allows to
 access all properties from your namespace and [public properties](#public-properties) from `core` and other namespaces.
@@ -2169,10 +2171,10 @@ Deletes the properties set within a license.
 
 #### Specifics
 
-|                      |                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------- |
-| Method URL           | `https://api.livechatinc.com/v3.5/configuration/action/delete_license_properties` |
-| Required scopes      | `properties.license.value--my:rw`*, `properties.license.value--all:rw`**          |
+|                 |                                                                                   |
+| --------------- | --------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/delete_license_properties` |
+| Required scopes | `properties.license.value--my:rw`*, `properties.license.value--all:rw`**          |
 
 __*)__ If the requester's Client ID matches the namespace, deleting license properties requires `properties.license.value--my:rw`.
 
@@ -2223,10 +2225,10 @@ Updates a property value within a group as the [property location](#property-loc
 
 #### Specifics
 
-|                      |                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------- |
-| Method URL           | `https://api.livechatinc.com/v3.5/configuration/action/update_group_properties` |
-| Required scopes      | `properties.group.value--my:rw`*, `properties.group.value--all:rw`**            |
+|                 |                                                                                 |
+| --------------- | ------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/update_group_properties` |
+| Required scopes | `properties.group.value--my:rw`*, `properties.group.value--all:rw`**            |
 
 __*)__ If the requester's Client ID matches the namespace, setting group properties requires `properties.group.value--my:rw`.
 
@@ -2290,10 +2292,10 @@ For properties without an explicit value assignment, the method will return the 
 
 #### Specifics
 
-|                      |                                                                               |
-| -------------------- | ----------------------------------------------------------------------------- |
-| Method URL           | `https://api.livechatinc.com/v3.5/configuration/action/list_group_properties` |
-| Required scopes      | `properties.group.value--all:ro`*                                             |
+|                 |                                                                               |
+| --------------- | ----------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/list_group_properties` |
+| Required scopes | `properties.group.value--all:ro`*                                             |
 
 __*)__ If the requester's Client ID doesn't match the namespace, retrieving group properties requires `properties.license.value--all:ro`. The scope allows to
 access all properties from your namespace and [public properties](#public-properties) from other namespaces.
@@ -2342,10 +2344,10 @@ Deletes the properties set within a group.
 
 #### Specifics
 
-|                      |                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------- |
-| Method URL           | `https://api.livechatinc.com/v3.5/configuration/action/delete_group_properties` |
-| Required scopes      | `properties.group.value--my:rw`*, `properties.group.value--all:rw`**            |
+|                 |                                                                                 |
+| --------------- | ------------------------------------------------------------------------------- |
+| Method URL      | `https://api.livechatinc.com/v3.5/configuration/action/delete_group_properties` |
+| Required scopes | `properties.group.value--my:rw`*, `properties.group.value--all:rw`**            |
 
 __*)__ If the requester's Client ID matches the namespace, deleting group properties requires `properties.group.value--my:rw`.
 
@@ -2946,8 +2948,8 @@ Webhooks will be automaticall enabled if you [register them via Developer Consol
 
 #### Request
 
-| Parameter         | Required | Data type | Notes                                                                                                                                                                                                        |
-| ----------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
+| ----------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `owner_client_id` | Yes      | `string`  | Required only when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 #### Response
@@ -2991,8 +2993,8 @@ Disables the [enabled webhooks](#enable-license-webhooks).
 
 #### Request
 
-| Parameter         | Required | Data type | Notes                                                                                                                                                                                                        |
-| ----------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
+| ----------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `owner_client_id` | Yes      | `string`  | Required only when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 #### Response
@@ -3036,8 +3038,8 @@ Gets the state of the webhooks registered for a given **Client Id** (application
 
 #### Request
 
-| Parameter         | Required | Data type | Notes                                                                                                                                                                                                        |
-| ----------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
+| ----------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `owner_client_id` | Yes      | `string`  | Required only when authorizing via [PATs](/authorization/authorizing-api-calls/#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 </Text>
@@ -3281,7 +3283,7 @@ curl -X POST \
 
 ## Possible errors
 
-<Errors errors="authentication,authorization,already_exist,group_not_found,internal,license_expired,limit_reached,not_found,too_many_requests,transfer_ownership,unsupported_version,validation"/>
+<Errors errors="authentication,authorization,already_exist,group_not_found,internal,license_expired,limit_reached,misdirected_request,not_found,too_many_requests,transfer_ownership,unsupported_version,validation"/>
 
 # Contact us
 
