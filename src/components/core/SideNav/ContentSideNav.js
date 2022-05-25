@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { string } from "prop-types";
 import { useRouter } from "next/router";
+import { string } from "prop-types";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
+import { route } from "next/dist/server/router";
 
 const Header = styled.div`
   font-size: 14px;
@@ -52,15 +53,13 @@ const LinkContainer = styled.div`
   text-overflow: ellipsis;
 `;
 
-const ContentSideNav = ({ version }) => {
-  const router = useRouter();
-  const pathname = router.pathname;
-  const headings = articles.find((article) => article.link === pathname + "/")
+const ContentSideNav = ({ version, slug }) => {
+  const headings = articles.find((article) => article.link === `/${slug}/`)
     ?.headings;
+  const router = useRouter();
+  const pathname = router.asPath;
 
-  const hash = typeof window !== "undefined" ? window.location.hash : "";
-
-  const [activeHeading, setActiveHeading] = useState(pathname + hash);
+  const [activeHeading, setActiveHeading] = useState(pathname);
 
   useEffect(() => {
     const onScroll = () => {
@@ -90,7 +89,7 @@ const ContentSideNav = ({ version }) => {
 
     document.addEventListener("scroll", onScroll);
     return () => document.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   if (!headings || (Array.isArray(headings) && !headings.length)) {
     return null;
@@ -119,6 +118,7 @@ const ContentSideNav = ({ version }) => {
 
 ContentSideNav.propTypes = {
   version: string,
+  slug: string,
 };
 
 export default ContentSideNav;

@@ -27,7 +27,11 @@ import {
   CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
-import { SideNav } from "../core/SideNav";
+
+const SideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.SideNav),
+  { ssr: false, loading: () => <p>...</p> }
+);
 const ContentSideNav = dynamic(
   () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
   { ssr: false, loading: () => <p>...</p> }
@@ -204,7 +208,9 @@ const Page = ({ frontMatter, children }) => {
               </Content>
             </MiddleColumn>
 
-            {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
+            {!useRedocPage && (
+              <ContentSideNav version={currentApiVersion} slug={customSlug} />
+            )}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>
