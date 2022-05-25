@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Loader, ModalBase } from "@livechat/design-system";
-/** @jsxImportSource @emotion/core */
+/** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 

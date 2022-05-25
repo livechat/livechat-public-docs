@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-/** @jsxImportSource @emotion/core */
+/** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
