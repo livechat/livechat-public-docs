@@ -1,3 +1,5 @@
-module.exports = {
-  basePath: process.env.CONTEXT === "deploy-preview" ? "" : "/docs",
-};
+const withYaml = require("next-plugin-yaml");
+
+module.exports = withYaml({
+  basePath: "",
+});

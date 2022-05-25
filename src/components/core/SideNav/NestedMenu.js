@@ -11,7 +11,7 @@ const NestedMenu = ({
   version = VERSIONS_GROUPS.DEFAULT.STABLE_VERSION,
 }) => {
   const router = useRouter();
-  const pathname = router.pathname;
+  const pathname = router.asPath;
   const items = containers.filter(
     (container) => container.category === category
   )[0].items;
