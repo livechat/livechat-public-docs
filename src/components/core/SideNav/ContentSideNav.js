@@ -4,7 +4,6 @@ import { string } from "prop-types";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
-import { route } from "next/dist/server/router";
 
 const Header = styled.div`
   font-size: 14px;
