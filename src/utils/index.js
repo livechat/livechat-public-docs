@@ -39,9 +39,11 @@ export const getVersionColor = (version, groupVersions) => {
 };
 
 export const openChatWindow = (e) => {
-  e.preventDefault();
-  const LC_API = window.LC_API || {};
-  LC_API.open_chat_window();
+  if (typeof window !== "undefined") {
+    e.preventDefault();
+    const LC_API = window.LC_API;
+    LC_API?.open_chat_window();
+  }
 };
 
 export const setUrlParams = (section) => {

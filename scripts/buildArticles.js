@@ -3,7 +3,7 @@ const path = require("path");
 const matter = require("gray-matter");
 const glob = require("glob");
 
-const articlesDirectory = path.join(process.cwd(), "src/pages/");
+const articlesDirectory = path.join(process.cwd(), "src/content/");
 
 const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
