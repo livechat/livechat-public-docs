@@ -1,5 +1,6 @@
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote";
+import dynamic from "next/dynamic";
 import path from "path";
 import fs from "fs";
 import matter from "gray-matter";
@@ -12,6 +13,11 @@ import {
   Errors,
   Placeholder,
 } from "../components/extensions";
+import RichMessagePreview from "../vendors/rich-message-preview.min.js";
+const OpenChatLink = dynamic(() =>
+  import("../components/extensions").then((mod) => mod.OpenChatLink)
+);
+const Redoc = dynamic(() => import("../components/extensions/Redoc"));
 
 const components = {
   ...CodeBlocks,
@@ -19,6 +25,9 @@ const components = {
   Scopes,
   Errors,
   Placeholder,
+  OpenChatLink,
+  Redoc,
+  RichMessagePreview,
 };
 
 export default function Page({ frontMatter, source }) {
@@ -56,7 +65,7 @@ export const getStaticProps = async ({ params: { slug } }) => {
   return {
     props: {
       source: mdxSource,
-      frontMatter: data,
+      frontMatter: { ...data, slug: postSlug },
     },
   };
 };
