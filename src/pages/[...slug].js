@@ -83,15 +83,17 @@ export const getStaticPaths = async () => {
   const POSTS_PATH = path.join(process.cwd(), "src/content");
   const posts = getFilePaths(POSTS_PATH);
 
-  const paths = posts.map((slug) => ({
-    params: {
-      slug: slug
-        .replace(POSTS_PATH, "")
-        .substring(1)
-        .replace("/index.mdx", "")
-        .split("/"),
-    },
-  }));
+  const paths = posts
+    .filter((_, index) => index !== 0)
+    .map((slug) => ({
+      params: {
+        slug: slug
+          .replace(POSTS_PATH, "")
+          .substring(1)
+          .replace("/index.mdx", "")
+          .split("/"),
+      },
+    }));
 
   return {
     paths,
