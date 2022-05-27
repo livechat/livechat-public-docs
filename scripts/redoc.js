@@ -10,6 +10,7 @@ async function generateRedocHtml(name) {
   console.log(`Generating ${tmpDir}/redoc-${name}.html ...`);
   console.log(`Path directory ${process.cwd()}`);
   console.log(`Process context ${process.env.CONTEXT}`);
+  console.log("TEST");
 
   const response = await redoc.loadAndBundleSpec(
     `.${
