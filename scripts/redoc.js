@@ -8,6 +8,8 @@ const configs = require("../src/configs/redoc/configs");
 async function generateRedocHtml(name) {
   const tmpDir = "./tmp";
   console.log(`Generating ${tmpDir}/redoc-${name}.html ...`);
+  console.log(`Path directory ${process.cwd()}`);
+  console.log(`Process context ${process.env.CONTEXT}`);
 
   const response = await redoc.loadAndBundleSpec(
     `.${
