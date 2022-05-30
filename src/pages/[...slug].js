@@ -14,10 +14,10 @@ import {
   Placeholder,
 } from "../components/extensions";
 import RichMessagePreview from "../vendors/rich-message-preview.min.js";
+import Redoc from "../components/extensions/Redoc";
 const OpenChatLink = dynamic(() =>
   import("../components/extensions").then((mod) => mod.OpenChatLink)
 );
-const Redoc = dynamic(() => import("../components/extensions/Redoc"));
 
 const components = {
   ...CodeBlocks,
