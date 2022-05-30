@@ -17,7 +17,7 @@ import RichMessagePreview from "../vendors/rich-message-preview.min.js";
 const OpenChatLink = dynamic(() =>
   import("../components/extensions").then((mod) => mod.OpenChatLink)
 );
-const Redoc = dynamic(() => import("../components/extensions/Redoc"));
+import Redoc from "../components/extensions/Redoc";
 
 const components = {
   ...CodeBlocks,
