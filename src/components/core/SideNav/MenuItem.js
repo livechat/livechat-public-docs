@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { string, bool } from "prop-types";
 import styled from "@emotion/styled";
@@ -68,10 +68,18 @@ const MenuItem = ({
   iconFill,
   title,
   items = [],
-  isOpen = false,
-  isNotBasePath,
+  category,
 }) => {
-  const [open, setOpen] = useState(isOpen);
+  const isNotBasePath = link !== "/" + category + "/";
+  const isActivePath = (pathname + "/").startsWith(link);
+  const hasSubItems = items.length > 1;
+  const displaySubNav = isNotBasePath && isActivePath && hasSubItems;
+  const [open, setOpen] = useState(displaySubNav);
+
+  useEffect(() => {
+    setOpen(displaySubNav);
+  }, [displaySubNav]);
+
   return (
     <>
       <LinkWrapper isActive={pathname + "/" === link}>

@@ -75,7 +75,7 @@ const closeIconStyle = {
 
 const SideNav = ({ category, version = getStableVersion(category), title }) => {
   const router = useRouter();
-  const pathname = router.pathname;
+  const pathname = router.asPath;
   const [expand, setExpand] = useState(false);
   const isHomeDir = pathname === "/";
   const isNestedDir =
