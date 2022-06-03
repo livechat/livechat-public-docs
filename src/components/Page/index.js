@@ -27,6 +27,7 @@ import {
   CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
+import { VERSIONS_GROUPS } from "../../constant";
 
 const SideNav = dynamic(
   () => import("../core/SideNav").then((mod) => mod.SideNav),
@@ -85,8 +86,13 @@ const Page = ({ frontMatter, children }) => {
         setSelectedVersion(version);
       }
     });
+
+    if (!/(v[0-9].[0-9])/.test(pathname)) {
+      setSelectedVersion(versions.STABLE_VERSION);
+    }
+
     // eslint-disable-next-line
-  }, []);
+  }, [router.asPath]);
 
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
