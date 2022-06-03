@@ -2,20 +2,21 @@ import { useContext, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { LiveChatLogo, CategoryIcon } from "./icons";
 import { Search } from "./Search";
-import categories from "../../configs/categories";
-import { getVersionColor } from "../../utils";
-import { VersionContext, PromotionContext } from "../../contexts";
+import { PromotionContext } from "../../contexts";
+import { HelpDeskIcon } from "../../assets/icons/hd";
+import { LiveChatIcon } from "../../assets/icons/lc";
 import { logAmplitudeEvent } from "../../utils/index";
+import Products from "../core/Dropdowns/Products";
+import Platform from "../core/Dropdowns/Platform";
+import Resources from "../core/Dropdowns/Resources";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
-  height: ${(props) => (props.isSearchOpen ? "110px" : "60px")};
+  height: ${(props) => (props.isSearchOpen ? "110px" : "84px")};
   @media (min-width: 768px) {
-    height: ${(props) => (props.promoIsActive ? "100px" : "60px")};
+    height: ${(props) => (props.promoIsActive ? "100px" : "84px")};
   }
   align-items: center;
   position: sticky;
@@ -29,7 +30,7 @@ const HeaderWrapper = styled.div`
 
 const MenuWrapper = styled.div`
   background: #4a4a55;
-  height: 60px;
+  height: 84px;
   width: 100%;
   font-family: "Colfax";
   display: flex;
@@ -69,33 +70,12 @@ const MenuListWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
   display: none;
+  padding-left: 50px;
   @media (min-width: 768px) {
-    display: block;
-  }
-`;
-
-const MenuList = styled.ul`
-  list-style: none;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-`;
-
-const MenuElementWrapper = styled.li`
-  padding: 0;
-  margin: 0 5px;
-  white-space: nowrap;
-  a {
-    padding: 17px 14px;
-    height: 60px;
     display: flex;
-    align-items: center;
-    color: rgba(255, 255, 255, 1);
-    text-decoration: none;
-    font-size: 15px;
-    &:hover {
-      color: rgba(255, 255, 255, 1);
+
+    > * {
+      margin-left: 60px;
     }
   }
 `;
@@ -104,6 +84,7 @@ const linkCss = css`
   color: white;
   text-decoration: none;
   font-weight: 500;
+  font-size: 16px;
   white-space: nowrap;
 
   &:hover {
@@ -145,65 +126,44 @@ const SearchField = styled.div`
   padding: 0px 10px;
 `;
 
-const linkStyle = {
-  borderTop: "4px solid transparent",
-  borderBottom: "4px solid transparent",
-  transition: "color 60ms ease-out",
-};
+const SearchWrapper = styled.div`
+  width: 200px;
+  display: flex;
+  align-items: center;
+`;
 
-const iconStyle = { marginRight: "5px", marginBottom: "1px" };
+const IconsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-const MenuElement = ({ label, href, slug, color, ...props }) => {
-  const { asPath } = useRouter();
-  const isActive = asPath.includes(`/${slug}`);
+  svg:first-of-type {
+    margin-right: 10px;
+  }
+`;
 
-  return (
-    <MenuElementWrapper {...props}>
-      {href ? (
-        <a
-          href={href}
-          css={linkStyle}
-          onClick={() => logAmplitudeEvent("External link clicked", { href })}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {label}
-        </a>
-      ) : (
-        <Link href={`/${slug}/`} partiallyActive passHref>
-          <a
-            css={css`
-              border-top: 4px solid transparent;
-              border-bottom: 4px solid transparent;
-              transition: color 60ms ease-out;
+const consoleLinkCss = css`
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  color: #ffffff;
+  margin: 25px;
+  width: 200px;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 
-              ${isActive &&
-                `
-              border-bottom: 5px solid rgb(${color});
-              color: white;
-              
-              `}
-            `}
-            onClick={() =>
-              logAmplitudeEvent("Top menu tab clicked", {
-                slug,
-              })
-            }
-          >
-            <CategoryIcon category={slug} style={iconStyle} />
-            {label}
-          </a>
-        </Link>
-      )}
-    </MenuElementWrapper>
-  );
-};
+  &:hover {
+    text-decoration: none;
+    color: white;
+  }
+`;
 
 const Header = () => {
-  const { items: versions, selected: selectedVersion } = useContext(
-    VersionContext
-  );
-  const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
   const [openSearch, setOpenSearch] = useState(false);
 
@@ -216,33 +176,20 @@ const Header = () => {
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
-          <a href="https://developers.livechat.com/">
-            <LiveChatLogo style={{ margin: "0", display: "block" }} />
-          </a>
-          <VLine />
           <Link href="/" passHref>
             <a css={linkCss}>Platform Docs</a>
           </Link>
+          <VLine />
+          <IconsWrapper>
+            <LiveChatIcon />
+            <HelpDeskIcon />
+          </IconsWrapper>
         </LogoWrapper>
 
         <MenuListWrapper>
-          <MenuList>
-            {categories
-              .filter(({ hide }) => !hide)
-              .map(({ title, slug }) => (
-                <MenuElement
-                  key={slug}
-                  color={tabColor}
-                  label={title}
-                  slug={slug}
-                />
-              ))}
-            <MenuElement
-              label={"Console"}
-              href={"/console/"}
-              style={{ alignSelf: "flex-end", marginLeft: "auto" }}
-            />
-          </MenuList>
+          <Products />
+          <Platform />
+          <Resources />
         </MenuListWrapper>
         <SearchIconWrapper
           openSearch={openSearch}
@@ -250,6 +197,19 @@ const Header = () => {
         >
           <Magnify fill="white" />
         </SearchIconWrapper>
+
+        <SearchWrapper>
+          <Search />
+        </SearchWrapper>
+        <a
+          href="https://developers.livechat.com/console/"
+          css={consoleLinkCss}
+          onClick={() => logAmplitudeEvent("External link clicked")}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Go to console
+        </a>
       </MenuWrapper>
       {openSearch && (
         <SearchField>
