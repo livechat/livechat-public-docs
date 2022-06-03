@@ -28,7 +28,12 @@ import {
   CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
-import { SideNav } from "../core/SideNav";
+import { VERSIONS_GROUPS } from "../../constant";
+
+const SideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.SideNav),
+  { ssr: false, loading: () => <p>...</p> }
+);
 const ContentSideNav = dynamic(
   () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
   { ssr: false, loading: () => <p>...</p> }
@@ -98,8 +103,13 @@ const Page = ({ frontMatter, children }) => {
         setSelectedVersion(version);
       }
     });
+
+    if (!/(v[0-9].[0-9])/.test(pathname)) {
+      setSelectedVersion(versions.STABLE_VERSION);
+    }
+
     // eslint-disable-next-line
-  }, []);
+  }, [router.asPath]);
 
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
