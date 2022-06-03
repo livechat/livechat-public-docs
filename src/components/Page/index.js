@@ -126,7 +126,7 @@ const Page = ({ frontMatter, children }) => {
         }
       }
 
-      router.push(currentSlug.replace("/docs", ""));
+      router.push("/" + currentSlug.replace("/docs", ""));
     }
   };
 
