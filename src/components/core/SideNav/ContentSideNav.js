@@ -56,7 +56,7 @@ const ContentSideNav = ({ version, slug }) => {
   const headings = articles.find((article) => article.link === `/${slug}/`)
     ?.headings;
   const router = useRouter();
-  const pathname = router.asPath;
+  const pathname = router.asPath.split("#")[0];
 
   const [activeHeading, setActiveHeading] = useState(pathname);
 
