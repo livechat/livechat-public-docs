@@ -22,7 +22,9 @@ const Wrapper = styled.div`
   padding-left: 10px;
   margin: 195px 0px 50px 0px;
   overflow-y: scroll;
-  height: calc(100vh - ${({ isVersioned }) => (isVersioned ? "130px" : "100px")});
+  height: calc(
+    100vh - ${({ isVersioned }) => (isVersioned ? "130px" : "100px")}
+  );
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
@@ -54,13 +56,9 @@ const LinkContainer = styled.div`
 
 const ContentSideNav = ({ version }) => {
   const router = useRouter();
-  const pathname = router.pathname;
-  const headings = articles.find((article) => article.link === pathname + "/")
-    ?.headings;
+  const pathname = router.asPath.split("#")[0];
 
-  const hash = typeof window !== "undefined" ? window.location.hash : "";
-
-  const [activeHeading, setActiveHeading] = useState(pathname + hash);
+  const [activeHeading, setActiveHeading] = useState(pathname);
 
   useEffect(() => {
     const onScroll = () => {
