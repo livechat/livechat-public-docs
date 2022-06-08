@@ -11,7 +11,7 @@ async function generateRedocHtml(name) {
 
   const response = await redoc.loadAndBundleSpec(
     `.${
-      process.env.CONTEXT ? "/repo" : "/livechat-public-docs"
+      process.env.CONTEXT ? "" : "/livechat-public-docs"
     }/src/configs/redoc/${name}/spec.yml`
   );
 
