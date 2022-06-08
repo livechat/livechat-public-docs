@@ -1,0 +1,176 @@
+---
+weight: 1
+category: "messaging"
+title: "Messaging Overview"
+tagline: "An intro to Messaging APIs"
+desc: "Using our APIs is much easier if you know the basics. Read about about key concepts - chat, thread, routing. Find out use cases for each API."
+---
+
+# Introduction
+
+Messaging lies at the core of LiveChat communication. Chatting between agents and customers is the most fundamental functionality of the LiveChat software.
+
+As a developer, you can access our **Messaging APIs** (Agent Chat & Customer Chat APIs) or **SDKs** to build integrations that operate on the chatting functionality.
+
+This document gives you an overview of the LiveChat messaging protocol, explaining concepts such as **chats, threads, events, routing**, and more, which are essential to understand how messaging works in LiveChat.
+
+# API versioning
+
+The LiveChat Messaging APIs go through several stages in their lifecycle.
+
+|                 |                                                                                                                                                                                                                                                                                  |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **dev preview** | It gives a preview of the features that are currently in development. **It's subject to change and comes with limited access**. Contact us at developers@livechat.com or <OpenChatLink>ask on the chat</OpenChatLink> to get access. Lasts for ~6-7 months. |
+| **stable**      | It has a closed feature set and is publicly available. It receives all bug fixes. Lasts for ~6-7 months.                                                                                                                                                                         |
+| **legacy**      | We're gradually dropping support for this version. It receives only critical and security bug fixes. Lasts for ~1-1.5 years. Responses contain the `Legacy` header that specifies when this stage ends (in the `YYYY-MM-DD` format).                                             |
+| **deprecated**  | It receives only critical and security bug fixes. Lasts for 6 months before it's decommissioned. Responses contain the `Deprecation` header that specifies when this stage ends (in the `YYYY-MM-DD` format).                                                                    |
+
+<img
+  alt="Messaging API lifecycle"
+  src="/images/messaging/livechat-api-versioning.png"
+  width="800px"
+  height="149px"
+/>
+
+## Current versioning
+
+Refer to this chart to learn the details about our current APIs lifecycle. One block on the chart represents a quarter of a year.
+
+<img
+  alt="Current API lifecycle"
+  src="/images/messaging/livechat-api-lifecycle-current.png"
+  width="640px"
+  height="197px"
+/>
+
+# Key concepts
+
+## Chats and threads
+
+By looking at the chat structure, you notice that each **chat** is is divided into **threads**. Every thread contains **events**, for example sent messages. You can think of a **chat** as _**a whole conversation**_, while **threads** are separate _**conversation topics**_.
+<img alt="Chats and Thread" src="/images/messaging/chat_threads.png" title="chats and threads" width="800px" height="970px"/>
+
+Consider the example of an online store. A customer starts a chat to ask about the shoes he bought. If they haven't got any previous chat history, **a new chat is started**. Within this chat, **a new thread is created** (conversation topic). The messages they exchange with the customer service assistant are received by the thread as **events**. After solving the problem, the customer says goodbye and closes the chat, which automatically **closes the thread**. Let's say the customer leaves without saying goodbye. In this case, the thread closes after 30 minutes of inactivity (time periods are configurable). The chat **doesn't end**, though.
+
+The next day, customer returns to ask about their other purchase. A new thread starts in the context of the chat, which has been **continuously open**. Each time the customer returns and starts a new conversation topic, they need to click **_start a chat_**. If we stuck to our naming convention, that would have to be **_start a thread_**, because this is what they actually do behind the scenes.
+
+A **message** or **rich message** are not the only event types, though. There are also special events for specific actions, like: **file**, **filled form**, **system** and **custom** messages.
+
+## Rules and conditions
+
+Here are some general rules, which summarize the previous section and add new info.
+
+1. When a new chat is started, **a new active thread** is created within this chat. When a customer returns and starts a new chat, new threads within a single chat are created on the server side.
+
+2. There's always **only one active thread** in a certain chat. Only the **last thread** can be the **active** one. Events are always added to the active thread.
+
+3. There can be time gaps between threads in a chat, but once a chat is started, it's **continuously open**.
+
+4. If you have the [Messaging Mode](#messaging-mode) enabled for your licence, the messages can be sent and delivered even when the recipient (either customer or agent) is **offline**.
+
+5. Since each chat consists of multiple different threads, **multiple agents** can participate in a single chat.
+
+6. Every user can have **multiple concurrent chats**. Read how it applies to agents ([chatting as agent](#chatting-as-agent)) and customers ([chatting as customer](#chatting-as-customer)).
+
+7. The algorithm that decides how chats are distributed between agents is called **routing**. It's documented in the [Routing](#chat-routing) section.
+
+### Messaging Mode
+
+Once the Messaging Mode is enabled for your license, chats become **continuous**, which means once they're started, they remain open. Thanks to this mechanism, it's possible to receive and send messages to users when either an agent or the customer is offline. This way, messaging becomes asynchronous and allows for more seamless communication. [Read more about the LiveChat Messaging Mode here](https://www.livechat.com/help/messaging-mode/).
+
+### Chatting as agent
+
+The maximum number of concurrent chats an agent can participate in is **99**. It can be configured in the LiveChat Agent App by the license Owner or Admin.
+
+### Chatting as customer
+
+One customer can only have one chat started unless he or she chats with agents who use different licences. If you have the [Messaging Mode](https://www.livechat.com/help/messaging-mode/) enabled for your licence, the chats are continuous, and customers can always preview their chat history. With **multiple concurrent chats**, customers can sort out their chats thematically, making sure they know what each chat is about. If you don't use the Messaging Mode option, your licence's Owner or Admin can disable the chat history in the Agent App settings.
+
+## Chat routing
+
+Routing is the process of **assigning chats to agents**. The primary goal of the routing mechanism is to distribute chats to all available agents who use the same license.
+
+Chats are being assigned to agents **either automatically or manually**. Our default routing mechanisms are described in [Understanding chat routing](https://www.livechat.com/help/understanding-chat-routing/).
+
+### Router system messages
+
+While the chat changes its state, the router sends system messages. Read more about **system messages** in [Agent Chat API](./agent-chat-api/data-structures/#system-message) and [Customer Chat API](./customer-chat-api/data-structures/#system-message).
+
+## Flow between services
+
+Watch a short video that illustrates the basic flow between services in LiveChat.
+
+<video width="100%" height="500" style={{height: "auto", marginBottom: "25px"}} controls>
+  <source type="video/mp4" src="/docs/images/messaging/livechat-messaging-api-flow.mp4" />
+</video>
+
+For more technical details, analyze the diagrams and read the descriptions below.
+
+### Basic flow
+
+<img alt="Basic flow between services in LiveChat" src="/images/messaging/livechat-basic-flow.png" width="800px" height="345px" />
+
+The LiveChat communication protocol uses websockets ([RTM API](#rtm-api-vs-web-api)). They act like tubes that connect two sides and enable transport between them. In the basic model of the LiveChat services, there are two websocket connections:
+
+- Agent App and the LiveChat's backend
+- the LiveChat's backend and Chat Widget
+
+The first connection allows for sending an event, for example, a message, by an agent to the LiveChat's backend. The [`send_event`](/messaging/agent-chat-api/rtm-reference/#send-event) action triggers the LiveChat's backend to generate a push. The [`incoming_event`](/messaging/agent-chat-api/rtm-pushes/#incoming_event) push is sent to the Chat Widget via the other websocket. The push contains the message written by the agent.
+
+Apart from pushes, actions can also trigger the LiveChat's backend to generate webhooks. To receive a webhook, you need to [register it](/management/configuration-api/#register-webhook) first. That's how you let the LiveChat's backend know you want to be notified about certain actions. The LiveChat's backend will send webhooks to the target webhook URL you specify during webhook registration.
+
+### Flow with integrations
+
+Developers can build integrations that extend LiveChat's messaging capabilities, for example, via a new communication channel. Consider the example of the <a href="https://www.livechat.com/marketplace/apps/facebook-messenger/" target="_blank">integration app</a> that connects LiveChat with Facebook Messenger. Keep in mind the flow presented in the diagram below is typical for a new communication channel and it would be different for an app that simply extends the LiveChat UI.
+
+<img alt="livechat-integrations-flow" src="/images/messaging/livechat-integrations-flow.png" width="800px" height="340px"/>
+
+An agent [sends a message](/messaging/agent-chat-api/rtm-reference/#send-event) via a websocket connection. It triggers the LiveChat's backend to send a webhook to the integration app, informing about the [incoming event](/management/webhooks/#incoming_chat). In response to the webhook, the integration sends an HTTP request to the external backend (in this case it's Facebook). They use transport of their choice to pass the message to the customer chatting via Facebook Messenger.
+
+# Messaging APIs
+
+There are two primary Messaging APIs:
+
+- **the Agent Chat API** for chatting as an agent.
+- **the Customer Chat API** for chatting as a customer.
+
+To use both APIs, you need to be _authorized_. We explained this topic in the [Authorizing API calls](/authorization/authorizing-api-calls/) document.
+
+## Web API vs. RTM API
+
+Our Messaging APIs support two forms of transport thus exisiting in the form of **Web APIs** and **Real-time APIs (RTM APIs)**.
+
+To learn about the differences between Web and RTM APIs, analyze the following comparison:
+
+| **Characteristics**   | **Web API**                                                                                                             | **RTM API**                                                                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **connection type**   | stateless, via XHR requests                                                                                             | stateful e.g. websocket                                                                                                                             |
+| **state changes via** | [webhooks](/management/webhooks)                                                                                        | [pushes](./agent-chat-api/rtm-pushes)                                                                                                               |
+| **used by**           | external apps, integrations                                                                                             | LiveChat Agent Application, Chat Widget                                                                                                             |
+| **documentation**     | [Agent Chat API](./agent-chat-api/#when-to-use-web-api) & [Customer Chat API](./customer-chat-api/#when-to-use-web-api) | [Agent Chat API](./agent-chat-api/rtm-reference/#when-to-use-rtm-api) & [Customer Chat API](./customer-chat-api/rtm-reference/#when-to-use-rtm-api) |
+
+# Agent side
+
+Agent-side communication allows you to chat not only as an agent **but also as a bot** (also known as bot agent). You can perform **simple actions**, such as **browsing archives** and **banning customers**, or use the Plaform's full potential and **build your custom agent application** (a [sample one](/messaging/chat-sdk/#simple-agent) was built using Chat SDK).
+
+You can call the Agent Chat API directly or use our SDKs built on top of it.
+
+- <SectionLink to={"/messaging/agent-chat-api/"}>Agent Chat API</SectionLink>
+- <SectionLink to={"/messaging/chat-sdk/"}>Chat SDK</SectionLink>
+- <SectionLink to={"/messaging/go-sdk/"}>LiveChat Go SDK</SectionLink>
+- <SectionLink to={"/messaging/js-sdk/"}>LiveChat JavaScript SDK</SectionLink>
+- <SectionLink to={"/messaging/python-sdk/"}>LiveChat Python SDK</SectionLink>
+
+# Customer side
+
+With the Customer Chat API and various SDKs you have the flexibility to build a range of integrations: from **simple apps** to a **custom chat widget** or **new communication channels**.
+
+- <SectionLink to={"/messaging/customer-chat-api/"}>Customer Chat API</SectionLink>
+- <SectionLink to={"/extending-chat-widget/customer-sdk/"}>Customer SDK</SectionLink>
+- <SectionLink to={"/messaging/go-sdk/"}>LiveChat Go SDK</SectionLink>
+- <SectionLink to={"/messaging/js-sdk/"}>LiveChat JavaScript SDK</SectionLink>
+- <SectionLink to={"/messaging/python-sdk/"}>LiveChat Python SDK</SectionLink>
+
+# Contact us
+
+If you still can't find the answer you're looking for, don't hesitate to contact us at <a href="mailto:developers@livechat.com">developers@livechat.com</a> or to ask on our [Discord for Developers](https://discord.gg/NcfJu3a9kM).

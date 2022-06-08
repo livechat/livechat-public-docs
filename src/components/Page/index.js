@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { node, object } from "prop-types";
-import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -28,29 +27,19 @@ import {
   CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
-import { SideNav } from "../core/SideNav";
+import { VERSIONS_GROUPS } from "../../constant";
+
+const SideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.SideNav),
+  { ssr: false, loading: () => <p>...</p> }
+);
 const ContentSideNav = dynamic(
   () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
   { ssr: false, loading: () => <p>...</p> }
 );
 import Rating from "../core/Rating";
-import {
-  Headings,
-  CodeBlocks,
-  Scopes,
-  Errors,
-  Placeholder,
-} from "../extensions";
 
 import { Header as PageHeader } from "../core/Page";
-
-const components = {
-  ...CodeBlocks,
-  ...Headings,
-  Scopes,
-  Errors,
-  Placeholder,
-};
 
 const Page = ({ frontMatter, children }) => {
   const {
@@ -97,8 +86,13 @@ const Page = ({ frontMatter, children }) => {
         setSelectedVersion(version);
       }
     });
+
+    if (!/(v[0-9].[0-9])/.test(pathname)) {
+      setSelectedVersion(versions.STABLE_VERSION);
+    }
+
     // eslint-disable-next-line
-  }, []);
+  }, [router.asPath]);
 
   const redirectToVersion = (version) => {
     setSelectedVersion(version);
@@ -126,7 +120,7 @@ const Page = ({ frontMatter, children }) => {
         }
       }
 
-      router.push(currentSlug.replace("/docs", ""));
+      router.push("/" + currentSlug.replace("/docs", ""));
     }
   };
 
@@ -210,7 +204,7 @@ const Page = ({ frontMatter, children }) => {
                   </LeftColumnRedocWrapper>
                 )}
 
-                <MDXProvider components={components}>{children}</MDXProvider>
+                {children}
 
                 {!useRedocPage && (
                   <RatingWrapper>
@@ -220,7 +214,9 @@ const Page = ({ frontMatter, children }) => {
               </Content>
             </MiddleColumn>
 
-            {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
+            {!useRedocPage && (
+              <ContentSideNav version={currentApiVersion} slug={customSlug} />
+            )}
           </MainWrapper>
         </PromotionProvider>
       </VersionProvider>

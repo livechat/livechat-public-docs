@@ -1,0 +1,3203 @@
+---
+weight: 21
+category: "messaging"
+subcategory: "agent-chat-api"
+title: "RTM API Reference"
+tagline: "Interact with the chat as an Agent."
+desc: "Build powerful LiveChat integrations with an open messaging protocol. Use the Agent Chat RTM API to send messages, manage access and properties."
+apiVersion: "3.5"
+---
+
+# Introduction
+
+## Versioning
+
+This document describes the **Agent Chat Real-Time Messaging API v3.5**. This is the developer preview version that provides a preview of the upcoming changes to the API. **It's not open to public use.** However, if you want to test some features, contact us at developers@livechat.com or <OpenChatLink>ask on the chat</OpenChatLink>, and we'll give you access. [Read more about versioning...](/messaging/#api-versioning)
+
+## What is RTM API
+
+Real-Time Messaging API (RTM API) is based on a websocket-like connection. Client can send a **request message** that results in getting a **response message**. It's also possible to get **push messages**.
+
+## When to use RTM API
+
+If you're wondering which API to use - Agent Chat **RTM API** or **Web API**, keep on reading.
+
+**Real-Time Messaging API** allows for building stateful integrations that require **logging in** and **maintaining the connection**. Since connection maintenance is required, the implementation might be more challenging than with Web API.
+
+Agent Chat RTM API enables communication in real time. It supports pushes like `sneak peek`, `typing indicator`, and other. Web API doesn’t have equivalent webhooks, which means you won't be informed about certain events using Web API.
+
+Also, the RTM API will be a better choice if you want to avoid time delays or presume significant traffic.
+**Not what you're looking for?** Perhaps, you need to use [**Agent Chat Web API**](..) instead.
+
+## Access
+
+The basics on authorization, server pinging, and scopes in the Agent Chat RTM API.
+
+### Authorization
+
+**Agent authorization** is handled with access tokens. Find out how to get an **access token** from [Agent authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows). You need to authorize within 30 seconds from establishing the connection. Otherwise, the connection will be closed. Given that the connection is continuosly maintained, you only need to authorize once.
+
+### Server pinging
+
+After successful authorization, the client needs to **ping the server** every 15 seconds. Otherwise, the connection will be closed after about 30 seconds of inactivity. Until authorization is completed, ping is a no-op.
+
+Use one of these 2 ways of pinging the server:
+
+- **Protocol message with the ping action**
+
+For web applications and backend integrations (e.g. in Python, Go). Send the following request every 15 seconds:
+
+```json
+{
+  "action": "ping",
+  "payload": {}
+}
+```
+
+After pinging the server, the client will receive a response with the `ping` action. Thanks to that, the client can make sure the connection is still alive.
+
+- **The control frame ping in the websocket protocol**
+
+For backend integrations; unavailable in web browsers. Read more about the [control frame ping](https://tools.ietf.org/html/rfc6455#section-5.5.2).
+
+### Scopes
+
+All authorization scopes are listed in the [Scopes](/getting-started/authorization/scopes/) document. If a method requires particular authorization scopes, you'll find them included in the method description.
+
+## Data centers
+
+LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
+
+For backend applications, you can specify the region in the request header. The mechanism is the same as in [Agent Chat Web API reference](/messaging/agent-chat-api/v3.5/#data-centers). It doesn't work for frontend applications, though.
+Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL.
+
+**`fra`:** `wss://api-fra.livechatinc.com/v3.5/agent/rtm/ws`
+
+**`dal`:** `wss://api.livechatinc.com/v3.5/agent/rtm/ws`
+
+## Rate limits
+
+To prevent sending a massive number of requests, there are rate limits for method calls. After exceeding those limits, the requester will get a `Too many requests` error in the response of a specific request. After some time, the request will be unblocked so it can be sent again.
+
+## Pagination
+
+Pagination is a mechanism that allows splitting the database output into more manageable chunks of data.
+Based on the `limit` and `sort order` parameters, pagination is able to decide how many records will be returned at once and whether it should fetch the oldest or the latest data first.
+
+Any filters that could be applied should be provided in first pagination request. In the response, you'll get the `next_page_id` and `previous_page_id` parameters.
+You should make the subsequent request using one of these parameters as `page_id`, depending on the direction of iteration: forward or backward.
+
+The `filters`, `limit`, and `sort_order` parameters can't be provided along with `page_id`.
+
+💡 The maximum duration of the `page_id` parameter before it expires is one month.
+
+# Data structures
+
+To find sample payloads of **events**, **users**, and **other common structures** such as chats or threads [visit the Data structures](/messaging/agent-chat-api/v3.5/data-structures) document.
+
+# Methods
+
+<Section>
+<Text>
+
+| The API endpoint                              |
+| --------------------------------------------- |
+| `wss://api.livechatinc.com/v3.5/agent/rtm/ws` |
+
+## Available methods
+
+|                 |                                                                                                                                                                                                                                                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                               |
+| **Chat access** | [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                                                                                                                   |
+| **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
+| **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
+| **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
+| **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
+| **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                     |
+| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout) [`list_routing_statuses`](#list-routing-statuses)                                                                                                 |
+| **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                   |
+
+</Text>
+<Code>
+<CodeSample path={'GENERAL RTM API REQUEST FORMAT'}>
+
+```json
+{
+  "version": "<api_version>", // optional, defaults to the version of the RTM connection; versions lower than the version of the RTM connection are prohibited
+  "request_id": "<request_id>", // optional
+  "action": "<action>",
+  "payload": {
+  // optional
+  },
+  "author_id": "<author_id>" // optional, applies only to bots
+}
+```
+
+</CodeSample>
+<CodeResponse title={'GENERAL RTM API RESPONSE FORMAT'}>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "<action>",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // optional
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+## Chats
+
+<Section>
+<Text>
+
+### List Chats
+
+It returns [summaries](/messaging/agent-chat-api/v3.5/data-structures/#chat-summaries) of the chats an Agent has access to.
+
+#### Specifics
+
+|                        |                                                            |
+| ---------------------- | ---------------------------------------------------------- |
+| **Action**             | `list_chats`                                               |
+| **Required scopes \*** | `chats--all:ro` `chats--access:ro`                         |
+| **Web API equivalent** | [`list_chats`](/messaging/agent-chat-api/v3.5/#list-chats) |
+| **Push message**       | -                                                          |
+
+#### Request
+
+| Parameter                                             | Required | Type     | Notes                                                                                                                                                                                                                                                               |
+| ----------------------------------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filters`                                             | No       | `object` | When paginating, `filters` provided in the first request are remembered and automatically used for the subsequent requests. Providing a new `filters` object will result in a `validation` error. To reset the filters, start paginating with a new set of filters. |
+| `filters.include_active`                              | No       | `bool`   | Defines if the returned chat summary includes active chats; default: `true`.                                                                                                                                                                                        |
+| `filters.include_chats_without_threads`               | No       | `bool`   | Defines if the returned chat summary includes chats without any threads; default: `true`.                                                                                                                                                                           |
+| `filters.group_ids`                                   | No       | `array`  | Array of group IDs. Max array size: 200                                                                                                                                                                                                                             |
+| `filters.properties.<namespace>.<name>.<filter_type>` | No       | `any`    |                                                                                                                                                                                                                                                                     |
+| `sort_order`                                          | No       | `string` | Possible values: `asc` - oldest chats firstm `desc` - newest chats first (default)                                                                                                                                                                                  |
+| `limit`                                               | No       | `number` | Default: 10, maximum: 100                                                                                                                                                                                                                                           |
+| `page_id`                                             | No       | `string` |                                                                                                                                                                                                                                                                     |
+
+`filter_type` can take the following values:
+
+- exists (bool)
+- values (type[] - array with specific type for property: `string`, `int`, or `bool`)
+- exclude_values (type[] - array with specific type for property: `string`, `int`, or `bool`)
+
+There's only one value allowed for a single property.
+
+#### Response
+
+| Field              | Data type | Notes                                                                                                        |
+| ------------------ | --------- | ------------------------------------------------------------------------------------------------------------ |
+| `chats_summary`    | `array`   | An array of [Chat summary](/messaging/agent-chat-api/v3.5/data-structures/#chat-summaries) data structures   |
+| `next_page_id`     | `string`  | In relation to `page_id` specified in the request. Appears in the response only when there's a next page.    |
+| `previous_page_id` | `string`  | In relation to `page_id` specified in the request Appears in the response only when there's a previous page. |
+| `found_chats`      | `number`  | An estimated number. The real number of found chats can slightly differ.                                     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_chats",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_chats",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+    "chats_summary": [{
+      "id": "PJ0MRSHTDG",
+      "last_event_per_type": {
+        "message": {
+          "thread_id": "K600PKZON8",
+          "thread_created_at": "2020-05-07T07:11:28.288340Z",
+          "event": {
+            "id": "Q298LUVPRH_1",
+            "created_at": "2019-12-09T12:01:18.909000Z",
+            "visibility": "all",
+            "type": "message",
+            "text": "hello world",
+            "author_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+          }
+        },
+        "system_message": {
+          "thread_id": "K600PKZON8",
+          "thread_created_at": "2020-05-07T07:11:28.288340Z",
+          "event": {
+            // "System message" event
+          }
+        }
+      },
+      "users": [{
+        // "Customer" user object
+      }, {
+        // "Agent" user object
+      }],
+      "last_thread_summary": {
+        "id": "K600PKZON8",
+        "created_at": "2020-05-07T07:11:28.288340Z",
+        "user_ids": [
+          "b7eff798-f8df-4364-8059-649c35c9ed0c",
+          "smith@example.com"
+        ],
+        "properties": {
+          // "Properties" object
+        },
+        "active": true,
+        "access": {
+          "group_ids": [0]
+        }
+      },
+      "properties": {
+        // "Properties" object
+      },
+      "access": {
+        "group_ids": [0]
+      },
+      "is_followed": true
+    }],
+    "found_chats": 4
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### List Threads
+
+It returns threads that the current Agent has access to in a given chat.
+
+#### Specifics
+
+|                        |                                                                |
+| ---------------------- | -------------------------------------------------------------- |
+| **Action**             | `list_threads`                                                 |
+| **Required scopes**    | `chats--all:ro` `chats--access:ro`                             |
+| **Web API equivalent** | [`list_threads`](/messaging/agent-chat-api/v3.5/#list-threads) |
+| **Push message**       | -                                                              |
+
+#### Request
+
+| Parameter          | Required | Data type | Notes                                                                                                                                                                                                                                                       |
+| ------------------ | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`          | Yes      | `string`  |                                                                                                                                                                                                                                                             |
+| `sort_order`       | No       | `string`  | Possible values: `asc` - oldest threads first and `desc` - newest threads first (default).                                                                                                                                                                  |
+| `limit`            | No       | `number`  | Default: 3, maximum: 100                                                                                                                                                                                                                                    |
+| `page_id`          | No       | `string`  |                                                                                                                                                                                                                                                             |
+| `min_events_count` | No       | `number`  | Range: 1-100; Specifies the minimum number of events to be returned in the response. It's the **total** number of events, so they can come from more than one thread. You'll get as many latest threads as needed to meet the `min_events_count` condition. |
+| `filters`          | No       | `object`  |                                                                                                                                                                                                                                                             |
+| `filters.from`     | No       | `string`  | Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`                                                                                                                                                        |
+| `filters.to`       | No       | `string`  | Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`                                                                                                                                                        |
+
+You cannot use either `limit` and `min_events_count` or `filters` and `min_events_count` at the same time.
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+{
+  "action": "list_threads",
+    "payload": {
+      "chat_id": "PWJ8Y4THAV"
+    }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_threads",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "threads": [{
+      "id": "K600PKZON8",
+      "created_at": "2019-12-17T07:57:41.512000Z",
+      "active": true,
+      "user_ids": [
+        "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "smith@example.com"
+      ],
+      "events": [{
+        "id": "Q20N9CKRX2_1",
+        "created_at": "2019-12-17T07:57:41.512000Z",
+        "visibility": "all",
+        "type": "message",
+        "text": "Hello",
+        "author_id": "smith@example.com"
+      }],
+      "properties": {
+        // "Property" object
+      },
+      "access": {
+        "group_ids": [0]
+      },
+      "previous_thread_id": "K600PKZOM8", // optional
+      "next_thread_id": "K600PKZOO8" // optional
+    }],
+    "found_threads": 42,
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+    "previous_page_id": "MTUxNzM5ODEzMTQ5Nw==" // optional
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Get Chat
+
+It returns a thread that the current Agent has access to in a given chat.
+
+#### Specifics
+
+|                        |                                                        |
+| ---------------------- | ------------------------------------------------------ |
+| **Action**             | `get_chat`                                             |
+| **Required scopes**    | `chats--all:ro` `chats--access:ro`                     |
+| **Web API equivalent** | [`get_chat`](/messaging/agent-chat-api/v3.5/#get-chat) |
+| **Push message**       | -                                                      |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                  |
+| ----------- | -------- | --------- | -------------------------------------- |
+| `chat_id`   | Yes      | `string`  |                                        |
+| `thread_id` | No       | `string`  | Default: the latest thread (if exists) |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_chat",
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "K600PKZON8"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>",
+  "action": "get_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "id": "PJ0MRSHTDG",
+    "thread": {
+      "id": "K600PKZON8",
+      "created_at": "2020-05-07T07:11:28.288340Z",
+      "active": true,
+      "user_ids": [
+        "b7eff798-f8df-4364-8059-649c35c9ed0c",
+        "smith@example.com"
+      ],
+      "events": [{
+        "id": "Q20N9CKRX2_1",
+        "created_at": "2019-12-17T07:57:41.512000Z",
+        "visibility": "all",
+        "type": "message",
+        "text": "Hello",
+        "author_id": "smith@example.com"
+      }],
+      "properties": {
+        "0805e283233042b37f460ed8fbf22160": {
+          "string_property": "string_value"
+        }
+      },
+      "access": {
+        "group_ids": [0]
+      },
+      "previous_thread_id": "K600PKZOM8",
+      "next_thread_id": "K600PKZOO8"
+    },
+    "users": [{
+      "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+      "type": "customer",
+      "present": true,
+      "created_at": "2019-12-17T08:53:20.693553+01:00",
+      "statistics": {
+        "chats_count": 1
+      },
+      "agent_last_event_created_at": "2019-12-17T09:04:05.239000+01:00"
+    }, {
+      "id": "smith@example.com",
+      "name": "Agent Smith",
+      "email": "smith@example.com",
+      "type": "agent",
+      "present": true,
+      "avatar": "https://example.com/avatar.jpg",
+      "visibility": "all"
+    }],
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "string_value"
+      }
+    },
+    "access": {
+      "group_ids": [0]
+    },
+    "is_followed": true
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### List Archives
+
+It returns a list of the chats an Agent has access to. Together with a **chat**, the **events** of **one thread** from this chat are returned.
+
+The list classification is based on threads; 1 chat per 1 thread. Thus, the same **chat** object may appear on the list several times, but each time with a different **thread**. The returned **chat** is a complete object, not only a **chat summary**.
+
+#### Specifics
+
+|                        |                                                                  |
+| ---------------------- | ---------------------------------------------------------------- |
+| **Action**             | `list_archives`                                                  |
+| **Required scopes**    | `chats--all:ro` `chats--access:ro`                               |
+| **Web API equivalent** | [`list_archives`](/messaging/agent-chat-api/v3.5/#list-archives) |
+| **Push message**       | -                                                                |
+
+#### Request
+
+| Parameter                                                        | Required | Data type | Notes                                                                                                                 |
+| ---------------------------------------------------------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------------- |
+| `filters`                                                        | No       | `object`  |                                                                                                                       |
+| `filters.query`                                                  | No       | `string`  |                                                                                                                       |
+| `filters.from`                                                   | No       | `string`  | Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`                  |
+| `filters.to`                                                     | No       | `string`  | Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`                  |
+| `filters.group_ids`                                              | No       | `array`   | Array of group IDs. Max array size: 200                                                                               |
+| `filters.properties.<namespace>.<name>.<properties_filter_type>` | No       | `any`     | **\* described below**                                                                                                |
+| `filters.agents.<filter_type>`                                   | No       | `any`     | **\*\* described below** `exists` see to `false` will return unassigned chats; `true` will return the assigned ones.  |
+| `filters.tags.<filter_type>`                                     | No       | `any`     |                                                                                                                       |
+| `filters.sales.<filter_type>`                                    | No       | `any`     |                                                                                                                       |
+| `filters.goals.<filter_type>`                                    | No       | `any`     |                                                                                                                       |
+| `filters.surveys.<survey>`                                       | No       | `array`   | **\*\*\*** **described below**                                                                                        |
+| `filters.event_types.<event_type_filter_type>`                   | No       | `any`     | **\*\*\*\*** **described below**                                                                                      |
+| `filters.greetings.<greetings_filter_type>`                      | No       | `any`     | **\*\*\*\*\*\*** **described below**                                                                                  |
+| `filters.agent_response.<agent_response_filter_type>`            | No       | `any`     | **\*\*\*\*\*\*\*** **described below**                                                                                |
+| `filters.customer_countries.<filter_type>`                       | No       | `any`     | It supports country codes with the `ISO 3166-1 Alpha-2` format.                                                       |
+| `page_id`                                                        | No       | `string`  |                                                                                                                       |
+| `sort_order` **\*\*\*\*\***                                      | No       | `string`  | Default: `desc`                                                                                                       |
+| `limit`                                                          | No       | `number`  | Default: 10, min: 1, max: 100                                                                                         |
+| `highlights`                                                     | No       | `object`  | Use it to highlight the match of `filters.query`. To enable highlights with default parameters, pass an empty object. |
+| `highlights.pre_tag`                                             | No       | `string`  | An HTML tag to use for highlighting the matched text; default: `<em>`. Use it together with `highlights.post_tag`.    |
+| `highlights.post_tag`                                            | No       | `string`  | An HTML tag to use for highlighting the matched text; default: `</em>`. Use it together with `highlights.pre_tag`.    |
+
+**\*)**
+`<properties_filter_type>` can take the following values:
+
+- `exists` (`bool`)
+- `values` (`type[]` - an array with a specific type for property: `string`, `int` or `bool`)
+- `exclude_values` (`type[]` - an array with a specific type for property: `string`, `int` or `bool`)
+
+There's only one value allowed for a single property.
+
+**\*\*)**
+`<filter_type>` can take the following values:
+
+- `exists` (`bool`)
+- `values` (`type[]` - an array with a specific type for property: `string`, `int` or `bool`)
+- `exclude_values` (`type[]` - an array with a specific type for property: `string`, `int` or `bool`)
+- `require_every_value` (`bool`) - if set to `true`, will return only those chats that have all elements passed in `values` or `exclude_values`
+
+You can pass only one of the following values at a time: `exists`, `values` or `exclude_values`.
+
+There's only one value allowed for a single property.
+
+**\*\*\*)**
+`<survey>` contains the following fields:
+
+- `type` (`string`) - allowed values: `pre_chat`, `post_chat`
+- `answer_id` (`string`)
+
+**\*\*\*\*\*)**
+`<event_type_filter_type>` can take the following values:
+
+- `values` (`string[]` - an array of [Event](/messaging/agent-chat-api/v3.5/data-structures/#events) types, duplicates are ignored)
+- `exclude_values` (`string[]` - an array of [Event](/messaging/agent-chat-api/v3.5/data-structures/#events) types, duplicates are ignored)
+- `require_every_value` (`bool`) - if set to `true`, will return only those chats that have all elements passed in `values` or `exclude_values`
+
+You can pass only one of the following values at a time: `values` or `exclude_values`.
+
+**\*\*\*\*\*)**
+`sort_order` can take the following values:
+
+- `asc` - the oldest chats first
+- `desc` - the newest chats first
+
+**\*\*\*\*\*\*)**
+`<greetings_filter_type>` can take the following values:
+
+- `from` (`string`) - Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`
+- `to` (`string`) - Date & time format with a resolution of microseconds, UTC string, `YYYY-MM-DDTHH:MM:SS.ssssssZHH:MM`
+- `exists` (`bool`)
+- `values` (`int[]`) - an array of greeting IDs
+- `exclude_values` (`int[]`) - an array of greeting IDs
+- `groups.values` (`int[]`) - an array of group IDs
+- `groups.exclude_values` (`int[]`) - an array of group IDs
+
+**\*\*\*\*\*\*)**
+`<agent_response_filter_type>` can take the following values:
+
+- `exists` (`bool`)
+- `first` (`bool`) - modifier that makes the other `agent_response` filters operate only on agents' first response
+- `agents.values` (`string[]`) - an array of agent IDs
+- `agents.exclude_values` (`string[]`) - an array of agent IDs
+- `groups.values` (`int[]`) - an array of group IDs
+- `groups.exclude_values` (`int[]`) - an array of group IDs
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_archives",
+  "payload": {
+    "filters": {
+      "event_types": {
+        "values": ["message", "filled_form"]
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>",
+  "action": "list_archives",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "chats": [
+      {
+        "id": "PJ0MRSHTDG",
+        "users": [
+          {
+            "id": "smith@example.com",
+            "name": "Agent Smith",
+            "email": "smith@example.com",
+            "type": "agent",
+            "present": true,
+            "avatar": "https://cdn.livechatinc.com/cloud/?uri=avatar.jpg",
+            "visibility": "all"
+          }
+        ],
+        "thread": {
+          "id": "K600PKZON8",
+          "active": false,
+          "user_ids": [
+            "smith@example.com"
+          ],
+          "events": [
+            {
+              "id": "QBT14H0Y3Y_1",
+              "created_at": "2020-05-28T11:45:32.269000Z",
+              "visibility": "all",
+              "type": "message",
+              "properties": {
+                "0805e283233042b37f460ed8fbf22160": {
+                  "event_property": "property_value"
+                }
+              },
+              "text": "Hello, how can I help you?",
+              "author_id": "smith@example.com"
+            }
+          ],
+          "properties": {
+            "0805e283233042b37f460ed8fbf22160": {
+              "thread_property": "property_value"
+            }
+          },
+          "access": {
+            "group_ids": [
+              0
+            ]
+          },
+          "created_at": "2020-05-28T11:44:58.829000Z",
+          "previous_thread_id": "K600PKZOM8", // optional
+          "next_thread_id": "K600PKZOO8", // optional
+          "previous_accessible_thread_id": "K600PKZOM8", // optional
+          "next_accessible_thread_id": "K600PKZOO8" // optional
+        },
+        "properties": {
+          "0805e283233042b37f460ed8fbf22160": {
+            "chat_property": "property_value"
+          }
+        },
+        "access": {
+          "group_ids": [
+            0
+          ]
+        },
+        "is_followed": false
+      }
+    ],
+    "found_chats": 42,
+    "next_page_id": "MTUxNzM5ODEzMTQ5Ng==",
+    "previous_page_id": "MTUxNzM5ODEzMTQ5Ng=="
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Start Chat
+
+Starts a chat.
+
+Authors (except the requester) of all initial events must be listed in the `users` field. The default `visibility` of both the events and users is set to `all` and cannot be changed.
+The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
+
+#### Specifics
+
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Action**             | `start_chat`                                                                |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                          |
+| **Web API equivalent** | [`start_chat`](/messaging/agent-chat-api/v3.5/#start-chat)                  |
+| **Push message**       | [`incoming_chat`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_chat) |
+
+#### Request
+
+| Parameter                | Required | Data type  | Notes                                                                                                                                                    |
+| ------------------------ | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat`                   | No       | `object`   |                                                                                                                                                          |
+| `chat.properties`        | No       | `object`   |                                                                                                                                                          |
+| `chat.access`            | No       | `object`   |                                                                                                                                                          |
+| `chat.users`             | No       | `[]object` | The list of existing users. Up to 4 additional (other than the requester) agents and 1 customer allowed.                                                 |
+| `chat.users.id`          | Yes      | `string`   | User ID                                                                                                                                                  |
+| `chat.users.type`        | Yes      | `string`   | `agent` or `customer`.                                                                                                                                   |
+| `chat.thread`            | No       | `object`   |                                                                                                                                                          |
+| `chat.thread.events`     | No       | `array`    | The list of initial chat [events](/messaging/agent-chat-api/data-structures/#events) object. Does not support the `form` type event in the LiveChat app. |
+| `chat.thread.properties` | No       | `object`   |                                                                                                                                                          |
+| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread; default: `true`.                                                                                        |
+| `continuous`             | No       | `bool`     | Starts chat as continuous (online group is not required); default: `false`.                                                                              |
+
+#### Response
+
+| Field       | Data type  | Notes                                                                                                                                                                   |
+| ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`   | `string`   |                                                                                                                                                                         |
+| `thread_id` | `string`   |                                                                                                                                                                         |
+| `event_ids` | `[]string` | Returned only when the chat was started with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "start_chat",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "start_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG",
+    "thread_id": "PGDGHT5G"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Resume Chat
+
+Restarts an archived chat.
+
+Authors (except the requester) of all initial events must be listed in the `users` field. The default `visibility` of both the events and users is set to `all` and cannot be changed.
+The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
+
+#### Specifics
+
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Action**             | `resume_chat`                                                               |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                          |
+| **Web API equivalent** | [`resume_chat`](/messaging/agent-chat-api/v3.5/#resume-chat)                |
+| **Push message**       | [`incoming_chat`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_chat) |
+
+#### Request
+
+| Parameter                | Required | Type       | Notes                                                                                                    |
+| ------------------------ | -------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `chat`                   | Yes      | `object`   |                                                                                                          |
+| `chat.id`                | Yes      | `string`   | The ID of the chat that will be resumed.                                                                 |
+| `chat.access`            | No       | `object`   | Chat access to set, default: all agents.                                                                 |
+| `chat.properties`        | No       | `object`   | Initial chat properties                                                                                  |
+| `chat.users`             | No       | `[]object` | The list of existing users. Up to 4 additional (other than the requester) agents and 1 customer allowed. |
+| `chat.users.id`          | Yes      | `string`   | User ID                                                                                                  |
+| `chat.users.type`        | Yes      | `string`   | `agent` or `customer`                                                                                    |
+| `chat.thread`            | No       | `object`   |                                                                                                          |
+| `chat.thread.events`     | No       | `array`    | Initial chat events array                                                                                |
+| `chat.thread.properties` | No       | `object`   | Initial thread properties                                                                                |
+| `active`                 | No       | `bool`     | When set to `false`, creates an inactive thread. Default `true`.                                         |
+| `continuous`             | No       | `bool`     | Sets a chat to the continuous mode. When unset, leaves the mode unchanged.                               |
+
+#### Response
+
+| Field       | Data type  | Notes                                                                                                                                                                   |
+| ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `thread_id` | `string`   |                                                                                                                                                                         |
+| `event_ids` | `[]string` | Returned only when the chat was resumed with initial events. Returns only the IDs of user-generated events; server-side generated events are not included in the array. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "resume_chat",
+  "payload": {
+  "chat": {
+    "id": "PWJ8Y4THAV"
+  }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "<action>",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "thread_id": "Z8AGR5OUW"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Deactivate Chat
+
+Deactivates a chat by closing the currently open thread. Sending messages to this thread will no longer be possible.
+
+The requester must be present on the list of chat users. You can override it by setting the `ignore_requester_presence` parameter.
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `deactivate_chat`                                                                 |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                |
+| **Web API equivalent** | [`deactivate_chat`](/messaging/agent-chat-api/v3.5/#deactivate-chat)              |
+| **Push message**       | [`chat_deactivated`](/messaging/agent-chat-api/v3.5/rtm-pushes/#chat_deactivated) |
+
+#### Request
+
+| Parameter                   | Required | Data type | Notes                                                                                           |
+| --------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------- |
+| `id`                        | Yes      | `string`  |                                                                                                 |
+| `ignore_requester_presence` | No       | `bool`    | If `true`, the requester doesn't need to be present on the list of chat users; default `false`. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "deactivate_chat",
+  "payload": {
+    "id": "PJ0MRSHTDG"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "deactivate_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Follow Chat
+
+Marks a chat as followed. All changes to the chat will be sent to the requester until the chat is reactivated or unfollowed. Chat members don't need to follow their chats. They receive all chat pushes regardless of their follower status.
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `follow_chat`                                                                     |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                |
+| **Web API equivalent** | [`follow_chat`](/messaging/agent-chat-api/v3.5/#follow-chat)                      |
+| **Push message**       | [`incoming_chat`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_chat)**\*** |
+
+**\*)**
+It won't be sent when the requester already follows the chat or is the chat member.
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `id`      | Yes      | `string`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "follow_chat",
+  "payload": {
+    "id": "PW94SJTGW6"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "follow_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Unfollow Chat
+
+Removes the requester from the chat followers. After that, only key changes to the chat (like `transfer_chat` or `close_active_thread`) will be sent to the requester. Chat members cannot unfollow the chat.
+
+#### Specifics
+
+|                        |                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Action**             | `unfollow_chat`                                                                 |
+| **Required scopes**    | -                                                                               |
+| **Web API equivalent** | [`unfollow_chat`](/messaging/agent-chat-api/v3.5/#unfollow-chat)                |
+| **Push message**       | [`chat_unfollowed`](/messaging/agent-chat-api/v3.5/rtm-pushes/#chat_unfollowed) |
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `id`      | Yes      | `string`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "unfollow_chat",
+  "payload": {
+    "id": "PJ0MRSHTDG"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "unfollow_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "chat_id": "PJ0MRSHTDG"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+## Chat access
+
+<Section>
+<Text>
+
+### Transfer Chat
+
+Transfers a chat to an agent or a group. The following restrictions apply:
+
+- The transferred chat must be active.
+- The requester must be present on the list of chat users.
+  - You can override it by setting the `ignore_requester_presence` parameter.
+- When transferring directly to an agent, the agent must have access to the transferred chat.
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `transfer_chat`                                                                   |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                |
+| **Web API equivalent** | [`transfer_chat`](/messaging/agent-chat-api/v3.5/#transfer-chat)                  |
+| **Push message**       | [`chat_transferred`](/messaging/agent-chat-api/v3.5/rtm-pushes/#chat_transferred) |
+
+#### Request
+
+| Parameter                    | Required | Data type | Notes                                                                                                                                                                  |
+| ---------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                         | Yes      | `string`  | Chat ID                                                                                                                                                                |
+| `target`                     | No       | `object`  | If missing, the chat will be transferred within the current group.                                                                                                     |
+| `target.type`                | Yes      | `string`  | `group` or `agent`                                                                                                                                                     |
+| `target.ids`                 | Yes      | `array`   | `group` or `agent` IDs array                                                                                                                                           |
+| `ignore_agents_availability` | No       | `bool`    | If `true`, allows the chat to be enqueued after the transfer. Otherwise, fails when unable to immediately assign any agent from the requested groups; default `false`. |
+| `ignore_requester_presence`  | No       | `bool`    | If `true`, the requester doesn't need to be present on the list of chat users; default `false`.                                                                        |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "transfer_chat",
+  "payload": {
+    "id": "PJ0MRSHTDG",
+    "target": {
+      "type": "group",
+      "ids": [19]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "transfer_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Chat users
+
+### Add User to Chat
+
+Adds a user to the chat. The following restrictions apply:
+
+- The chat must be active.
+- The requester must be present on the list of chat users.
+  - You can override it by setting the `ignore_requester_presence` parameter.
+- You can't have more than one `customer` in the chat.
+- Additional agents must also have access to the chat.
+- `customer` must be added with `visibility:all`.
+
+To learn how to add more than one agent to the chat, reach out to us [on Discord](https://discord.gg/gRzwSaCxg4) or via email, developers@livechat.com.
+
+#### Specifics
+
+|                        |                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| **Action**             | `add_user_to_chat`                                                                    |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                    |
+| **Web API equivalent** | [`add_user_to_chat`](/messaging/agent-chat-api/v3.5/#add-user-to-chat)                |
+| **Push message**       | [`user_added_to_chat`](/messaging/agent-chat-api/v3.5/rtm-pushes/#user_added_to_chat) |
+
+#### Request
+
+| Parameter                   | Required | Type     | Notes                                                                                           |
+| --------------------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `chat_id`                   | Yes      | `string` |                                                                                                 |
+| `user_id`                   | Yes      | `string` |                                                                                                 |
+| `user_type`                 | Yes      | `string` | Possible values: `agent` or `customer`                                                          |
+| `visibility`                | Yes      | `string` | Possible values: `all` or `agents`                                                              |
+| `ignore_requester_presence` | No       | `bool`   | If `true`, the requester doesn't need to be present on the list of chat users; default `false`. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "add_user_to_chat",
+  "payload": {
+    "chat_id": "PW94SJTGW6",
+    "user_id": "smith@example.com",
+    "user_type": "agent",
+    "visibility": "all"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "add_user_to_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Remove User from Chat
+
+Removes a user from chat. The following restrictions apply:
+
+- You can't remove the `customer`.
+- The requester must be present on the list of chat users.
+  - You can override it by setting the `ignore_requester_presence` parameter.
+
+#### Specifics
+
+|                        |                                                                                              |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| **Action**             | `remove_user_from_chat`                                                                      |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                           |
+| **Web API equivalent** | [`remove_user_from_chat`](/messaging/agent-chat-api/v3.5/#remove-user-from-chat)             |
+| **Push message**       | [`user_removed_from_chat`](messaging/agent-chat-api/v3.5/rtm-pushes/#user_removed_from_chat) |
+
+#### Request
+
+| Parameter                   | Required | Type     | Notes                                                                                           |
+| --------------------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `chat_id`                   | Yes      | `string` |                                                                                                 |
+| `user_id`                   | Yes      | `string` |                                                                                                 |
+| `user_type`                 | Yes      | `string` | Possible value: `agent`                                                                         |
+| `ignore_requester_presence` | No       | `bool`   | If `true`, the requester doesn't need to be present on the list of chat users; default `false`. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "remove_user_from_chat",
+  "payload": {
+  "chat_id": "PW94SJTGW6",
+  "user_id": "smith@example.com",
+  "user_type": "agent"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "remove_user_from_chat",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Events
+
+### Send Event
+
+Sends an [Event](/messaging/agent-chat-api/v3.5/data-structures/#events) object. Use this method to send a message by specifying the [Message](/messaging/agent-chat-api/v3.5/data-structures/#message) event type in the request.
+
+The user must be [added to the chat](/messaging/agent-chat-api/rtm-pushes/#user_added_to_chat) before they can send an event.
+Events with `visibility:agents` are sent to agents only, and with `visibility:all` to all users. Users with `visibility:agents` cannot send events with `visibility:all`.
+
+The method updates the requester's `events_seen_up_to` as if they've seen all chat events.
+
+To call the API as a bot, use the `author_id` property set to the bot's id in the payload.
+
+#### Specifics
+
+|                        |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| **Action**             | `send_event`                                                                  |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                            |
+| **Web API equivalent** | [`send_event`](/messaging/agent-chat-api/v3.5/#send-event)                    |
+| **Push message**       | [`incoming_event`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_event) |
+
+#### Request
+
+| Parameters              | Required | Data type | Notes                                                                                                                                                             |
+| ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`               | Yes      | `string`  | Id of the chat you want to send the message to.                                                                                                                   |
+| `event`                 | Yes      | `object`  | [Event](/messaging/agent-chat-api/data-structures/#events) object. Does not support the `form` type event in the LiveChat app.                                    |
+| `attach_to_last_thread` | No       | `bool`    | The flag is ignored for active chats. For inactive chats: `true` – the event will be added to the last thread; `false` – the request will fail. Default: `false`. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "send_event",
+  "payload": {
+  "chat_id": "PW94SJTGW6",
+    "event": {
+      "type": "message",
+      "text": "hello world",
+      "visibility": "all"
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "send_event",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "event_id": "K600PKZON8"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Send Rich Message Postback
+
+#### Specifics
+
+|                        |                                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Action**             | `send_rich_message_postback`                                                                                        |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                                                  |
+| **Web API equivalent** | [`send_rich_message_postback`](/messaging/agent-chat-api/v3.5/#send-rich-message-postback)                          |
+| **Push message**       | [`incoming_rich_message_postback`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_rich_message_postback)**\*** |
+
+**\*)** `incoming_rich_message_postback` will be sent only for active threads.
+
+#### Request
+
+| Parameter          | Required | Data type | Notes                               |
+| ------------------ | -------- | --------- | ----------------------------------- |
+| `chat_id`          | Yes      | `string`  |                                     |
+| `event_id`         | Yes      | `string`  |                                     |
+| `postback`         | Yes      | `object`  |                                     |
+| `postback.id`      | Yes      | `string`  | Postback name of the button         |
+| `postback.toggled` | Yes      | `bool`    | Postback toggled; `true` or `false` |
+| `thread_id`        | Yes      | `string`  |                                     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "send_rich_message_postback",
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "thread_id": "K600PKZON8",
+  "event_id": "a0c22fdd-fb71-40b5-bfc6-a8a0bc3117f7",
+  "postback": {
+    "id": "Method URL_yes",
+    "toggled": true
+  }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "send_rich_message_postback",
+  "type": "response",
+  "success": true,
+  "payload": {
+  //no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Properties
+
+### Update Chat Properties
+
+#### Specifics
+
+|                        |                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| **Action**             | `update_chat_properties`                                                                        |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                              |
+| **Web API equivalent** | [`update_chat_properties`](/messaging/agent-chat-api/v3.5/#update-chat-properties)              |
+| **Push message**       | [`chat_properties_updated`](/messaging/agent-chat-api/v3.5/rtm-pushes/#chat_properties_updated) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                                                                                                                                        |
+| ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | Yes      | `string`  | Id of the chat you to set a property for.                                                                                                                                    |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_chat_properties",
+  "payload": {
+    "id": "Q1VZR7AJCE",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": {
+        "string_property": "Chat property value updated by Agent"
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_chat_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Delete Chat Properties
+
+#### Specifics
+
+|                        |                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| **Action**             | `delete_chat_properties`                                                                        |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                              |
+| **Web API equivalent** | [`delete_chat_properties`](/messaging/agent-chat-api/v3.5/#delete-chat-properties)              |
+| **Push message**       | [`chat_properties_deleted`](/messaging/agent-chat-api/v3.5/rtm-pushes/#chat_properties_deleted) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                           |
+| ------------ | -------- | --------- | ----------------------------------------------- |
+| `id`         | Yes      | `string`  | Id of the chat you want to delete property for. |
+| `properties` | Yes      | `object`  | Chat properties to delete.                      |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "delete_chat_properties",
+  "payload": {
+    "id": "Q1VZR7AJCE",
+    "properties": {
+      "0805e283233042b37f460ed8fbf22160": [
+        "string_property"
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "delete_chat_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Update Thread Properties
+
+#### Specifics
+
+|                        |                                                                                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| **Action**             | `update_thread_properties`                                                                          |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                                  |
+| **Web API equivalent** | [`update_thread_properties`](/messaging/agent-chat-api/v3.5/#update-thread-properties)              |
+| **Push message**       | [`thread_properties_updated`](/messaging/agent-chat-api/v3.5/rtm-pushes/#thread_properties_updated) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                                                                                                                                        |
+| ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.                                                                                                                               |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for.                                                                                                                             |
+| `properties` | Yes      | `object`  | Chat properties to set. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_thread_properties",
+  "payload": {
+  "chat_id": "Q1WZ073OA7",
+  "thread_id": "Q1WZ073OB7",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Chat thread property value updated by Agent"
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_thread_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Delete Thread Properties
+
+#### Specifics
+
+|                        |                                                                                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| **Action**             | `delete_thread_properties`                                                                          |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                                  |
+| **Web API equivalent** | [`delete_thread_properties`](/messaging/agent-chat-api/v3.5/#delete-thread-properties)              |
+| **Push message**       | [`thread_properties_deleted`](/messaging/agent-chat-api/v3.5/rtm-pushes/#thread_properties_deleted) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                             |
+| ------------ | -------- | --------- | ------------------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete property for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete property for. |
+| `properties` | Yes      | `object`  | Chat properties to delete.                        |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "delete_thread_properties",
+  "payload": {
+   "chat_id": "Q1WZ073OA7",
+   "thread_id": "Q1WZ073OB7",
+   "properties": {
+    "0805e283233042b37f460ed8fbf22160": [
+      "string_property"
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "delete_thread_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Update Event Properties
+
+#### Specifics
+
+|                        |                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| **Action**             | `update_event_properties`                                                                         |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                                |
+| **Web API equivalent** | [`update_event_properties`](/messaging/agent-chat-api/v3.5/#update-event-properties)              |
+| **Push message**       | [`event_properties_updated`](/messaging/agent-chat-api/v3.5/rtm-pushes/#event_properties_updated) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                            |
+| ------------ | -------- | --------- | ------------------------------------------------ |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to set properties for.   |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to set properties for. |
+| `event_id`   | Yes      | `string`  | Id of the event you want to set properties for.  |
+| `properties` | Yes      | `object`  | Chat properties to set.                          |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_event_properties",
+  "payload": {
+  "chat_id": "Q1GZ3FNAT9",
+  "thread_id": "Q1GZ3FNAU9",
+  "event_id": "Q1GZ3FNAU9_1",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": {
+      "string_property": "Event property value updated by Agent"
+      }
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_event_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Delete Event Properties
+
+#### Specifics
+
+|                        |                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| **Action**             | `delete_event_properties`                                                                         |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                                                |
+| **Web API equivalent** | [`delete_event_properties`](/messaging/agent-chat-api/v3.5/#delete-event-properties)              |
+| **Push message**       | [`event_properties_deleted`](/messaging/agent-chat-api/v3.5/rtm-pushes/#event_properties_deleted) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                                                                                                                                            |
+| ------------ | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to delete the properties of.                                                                                                                             |
+| `thread_id`  | Yes      | `string`  | Id of the thread you want to delete the properties of.                                                                                                                           |
+| `event_id`   | Yes      | `string`  | Id of the event you want to delete the properties of.                                                                                                                            |
+| `properties` | Yes      | `object`  | Event properties to delete. You should stick to the [general properties format](/management/configuration-api/#properties) and include _namespace_, _property name_ and _value_. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "delete_event_properties",
+  "payload": {
+  "chat_id": "Q16ZSBGX3J",
+  "thread_id": "Q16ZSBGX4J",
+  "event_id": "Q16ZSBGX4J_1",
+  "properties": {
+    "0805e283233042b37f460ed8fbf22160": [
+      "string_property"
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "delete_event_properties",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Thread tags
+
+### Tag Thread
+
+Tags a given **thread**. 
+
+Read how to [list all available tags](/management/configuration-api/v3.5#list-tags) and [create a new tag](/management/configuration-api/v3.5#create-tag).
+
+#### Specifics
+
+|                        |                                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| **Action**             | `tag_thread`                                                                |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                          |
+| **Web API equivalent** | [`tag_thread`](/messaging/agent-chat-api/v3.5/#tag-thread)                  |
+| **Push message**       | [`thread_tagged`](/messaging/agent-chat-api/v3.5/rtm-pushes/#thread_tagged) |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                      |
+| ----------- | -------- | --------- | ------------------------------------------ |
+| `chat_id`   | Yes      | `string`  | Id of the chat you want to add a tag to.   |
+| `thread_id` | Yes      | `string`  | Id of the thread you want to add a tag to. |
+| `tag`       | Yes      | `string`  | Tag name. It's case sensitive.             |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "tag_thread",
+  "payload": {
+  "chat_id": "PW94SJTGW6",
+  "thread_id": "PWS6GIKAKH",
+  "tag": "support"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "tag_thread",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Untag Thread
+
+Untags a given **thread**.
+
+#### Specifics
+
+|                        |                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Action**             | `untag_thread`                                                                  |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                              |
+| **Web API equivalent** | [`untag_thread`](/messaging/agent-chat-api/v3.5/#untag-thread)                  |
+| **Push message**       | [`thread_untagged`](/messaging/agent-chat-api/v3.5/rtm-pushes/#thread_untagged) |
+
+#### Request
+
+| Parameter   | Required | Data type | Notes                                           |
+| ----------- | -------- | --------- | ----------------------------------------------- |
+| `chat_id`   | Yes      | `string`  | Id of the chat you want to remove a tag from.   |
+| `thread_id` | Yes      | `string`  | Id of the thread you want to remove a tag from. |
+| `tag`       | Yes      | `string`  | Tag name. It's case sensitive.                  |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "untag_thread",
+  "payload": {
+  "chat_id": "PW94SJTGW6",
+  "thread_id": "PWS6GIKAKH",
+  "tag": "support"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "untag_thread",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+## Customers
+
+<Section>
+<Text>
+
+### Get Customer
+
+Returns the info about the Customer with a given `id`.
+
+#### Specifics
+
+|                        |                                                                |
+| ---------------------- | -------------------------------------------------------------- |
+| **Action**             | `get_customer`                                                 |
+| **Required scopes**    | `customers:ro`                                                 |
+| **Web API equivalent** | [`get_customer`](/messaging/agent-chat-api/v3.5/#get-customer) |
+| **Push message**       | -                                                              |
+
+#### Request
+
+| Parameter | Required | Data type | Notes |
+| --------- | -------- | --------- | ----- |
+| `id`      | Yes      | string    |       |
+
+#### Response
+
+| Field            | Data type | Notes                                                                                                                             |
+| ---------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `id`             | string    | [Customer's](/messaging/agent-chat-api/v3.5/data-structures/#customer) ID.                                                        |
+| `type`           | string    | `customer`                                                                                                                        |
+| `name`           | string    | Customer's name. Returned only if set.                                                                                            |
+| `email`          | string    | Customer's email. Returned only if set.                                                                                           |
+| `avatar`         | string    | Customer's avatar. Returned only if set.                                                                                          |
+| `created_at`     | string    | Specifies when the customer's identity was created.                                                                               |
+| `session_fields` | []object  | An array of custom object-enclosed `key:value` pairs. Returned only if set. Available for the session duration.                   |
+| `statistics`     | object    | Counters for started threads, opened pages, etc.                                                                                  |
+| `last_visit`     | object    | Geolocation and opened pages from the customer's most recent online visit. Returned only if the customer logged in at least once. |
+| `chat_ids`       | []string  | IDs of a customer's chats. Returned only if the customer had at least one chat.                                                   |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "get_customer",
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+  }
+}
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "get_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "type": "customer",
+    "created_at": "2017-10-11T15:19:21.010200Z",
+    "name": "Thomas Anderson",
+    "email": "t.anderson@example.com",
+    "avatar": "example.com/avatars/1.jpg",
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }],
+    "last_visit": {
+      "started_at": "2017-10-12T15:19:21.010200Z",
+      "ended_at": "2017-10-12T15:20:22.010200Z",
+      "referrer": "http://www.google.com/",
+      "ip": "<customer_ip>",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36",
+      "geolocation": {
+        "latitude": "-14.6973803",
+        "longitude": "-75.1266898",
+        "country": "Poland",
+        "country_code": "PL",
+        "region": "Dolnoslaskie",
+        "city": "Wroclaw",
+        "timezone": "Europe/Warsaw"
+      },
+      "last_pages": [{
+        "opened_at": "2017-10-12T15:19:21.010200Z",
+        "url": "https://www.livechat.com/",
+        "title": "LiveChat - Homepage"
+      }, {
+        "opened_at": "2017-10-12T15:19:21.010200Z",
+        "url": "https://www.livechat.com/tour",
+        "title": "LiveChat - Tour"
+      }]
+    },
+    "statistics": {
+      "chats_count": 3,
+      "threads_count": 9,
+      "visits_count": 5,
+      "page_views_count": 1337,
+      "greetings_shown_count": 69,
+      "greetings_accepted_count": 42
+    },
+    "__priv_lc2_customer_id": "test_771305.dafea66e5c", // old customer_id
+    "agent_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+    "customer_last_event_created_at": "2017-10-12T15:19:21.010200Z",
+    "chat_ids": [
+      "PWJ8Y4THAV"
+    ]
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### List Customers
+
+It returns the list of Customers.
+
+#### Specifics
+
+|                        |                                                                    |
+| ---------------------- | ------------------------------------------------------------------ |
+| **Action**             | `list_customers`                                                   |
+| **Required scopes**    | `customers:ro`                                                     |
+| **Web API equivalent** | [`list_customers`](/messaging/agent-chat-api/v3.5/#list-customers) |
+| **Push message**       | -                                                                  |
+
+#### Request
+
+All parameters are optional.
+
+| Parameter                                                                        | Data type | Notes                        |
+| -------------------------------------------------------------------------------- | --------- | ---------------------------- |
+| `page_id`                                                                        | `string`  |                              |
+| `limit`                                                                          | `number`  | Default: 10, maximum: 100    |
+| `sort_order` **\***                                                              | `string`  | Default: `desc`              |
+| `sort_by` **\*\***                                                               | `string`  | Default: `created_at`        |
+| `filters`                                                                        | `object`  |                              |
+| `filters.country.<string_filter_type>` **\*\*\***                                | `object`  |                              |
+| `filters.email.<string_filter_type>` **\*\*\***                                  | `object`  |                              |
+| `filters.name.<string_filter_type>` **\*\*\***                                   | `object`  |                              |
+| `filters.customer_id.<string_filter_type>` **\*\*\***                            | `object`  |                              |
+| `filters.chats_count.<range_filter_type>` **\*\*\*\***                           | `object`  |                              |
+| `filters.threads_count.<range_filter_type>` **\*\*\*\***                         | `object`  |                              |
+| `filters.visits_count.<range_filter_type>` **\*\*\*\***                          | `object`  |                              |
+| `filters.created_at.<date_range_filter_type>`**\*\*\*\*\***                      | `object`  |                              |
+| `filters.agent_last_event_created_at.<date_range_filter_type>` **\*\*\*\*\***    | `object`  |                              |
+| `filters.customer_last_event_created_at.<date_range_filter_type>` **\*\*\*\*\*** | `object`  |                              |
+| `filters.chat_group_ids.<integer_filter_type>`  **\*\*\***                       | `object`  | Maximum 40 group ids at once |
+| `filters.include_customers_without_chats`                                        | `bool`    |                              |
+
+**\*)**
+
+`sort_order` can take the following values:
+
+- `asc`
+- `desc`
+
+**\*\*)**
+
+`sort_by` can take the following values:
+
+- `created_at`
+- `threads_count`
+- `visits_count`
+- `agent_last_event`
+- `customer_last_event`
+
+When sorting by fields other than `created_at`, the entries with identical values will be additionally sorted by their creation time.
+
+**\*\*\*)**
+
+`<string_filter_type>` can take the following values :
+
+- `values` (`string[]` - an array of strings)
+- `exclude_values` (`string[]` - an array of strings)
+
+`<integer_filter_type>` can take the following values:
+
+- `values` (`int[]` - an array of integers)
+- `exclude_values` (`int[]` - an array of integers)
+
+There's only one value allowed for a single filter.
+
+**\*\*\*\*)**
+
+`<range_filter_type>` can take the following values:
+
+- `lte` (`int` - less than or equal to given value)
+- `lt` (`int` - less than given value)
+- `gte` (`int` - greater than or equal to given value)
+- `gt` (`int` - greater than given value)
+- `eq` (`int` - equal to given value)
+
+**\*\*\*\*\*)**
+
+`<date_range_filter_type>` can take the following values:
+
+- `lte` ( `string` - less than or equal to given value)
+- `lt` (`string` - less than given value)
+- `gte` (`string` - greater than or equal to given value)
+- `gt` (`string` - greater than given value)
+- `eq` (`string` - equal to given value)
+
+Dates are represented in ISO 8601 format with microseconds resolution, e.g. `2017-10-12T15:19:21.010200+01:00` in specific timezone or `2017-10-12T14:19:21.010200Z` in UTC.
+
+#### Response
+
+| Field              | Data type | Notes                                              |
+| ------------------ | --------- | -------------------------------------------------- |
+| `next_page_id`     | `string`  | In relation to `page_id` specified in the request. |
+| `previous_page_id` | `string`  | In relation to `page_id` specified in the request. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_customers",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_customers",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "customers": [
+    // an array of "User > Customer" objects
+  ],
+  "total_customers": 2340,
+  "limited_customers": 120, // optional
+  "next_page_id": "MTUxNzM5ODEzMTQ5Ng==", // optional
+  "previous_page_id": "MTUxNzM5ODEzMTQ5Ng==" // optional
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Create Customer
+
+Creates a new [Customer](/messaging/agent-chat-api/v3.5/data-structures/#customer) user type.
+
+#### Specifics
+
+|                        |                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| **Action**             | `create_customer`                                                                   |
+| **Required scopes**    | `customers:rw`                                                                      |
+| **Web API equivalent** | [`create_customer`](/messaging/agent-chat-api/v3.5/#create-customer)                |
+| **Push message**       | [`incoming_customer`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_customer) |
+
+#### Request
+
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | URL of the Customer's avatar                                                       |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "create_customer",
+  "payload": {
+  "name": "Thomas Anderson",
+  "email": "t.anderson@example.com",
+  "avatar": "https://example.com/avatars/1.png",
+  "session_fields": [{
+    "custom_key": "custom_value"
+  }, {
+    "another_custom_key": "another_custom_value"
+  }]
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "create_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+   "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Update Customer
+
+Updates Customer's properties.
+
+#### Specifics
+
+|                        |                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| **Action**             | `update_customer`                                                                 |
+| **Required scopes**    | `customers:rw`                                                                    |
+| **Web API equivalent** | [`update_customer`](/messaging/agent-chat-api/v3.5/#update-customer)              |
+| **Push message**       | [`customer_updated`](/messaging/agent-chat-api/v3.5/rtm-pushes/#customer_updated) |
+
+#### Request
+
+| Parameter        | Required | Data type  | Notes                                                                              |
+| ---------------- | -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `id`             | Yes      | `string`   | UUID v4 format is required.                                                        |
+| `name`           | No       | `string`   |                                                                                    |
+| `email`          | No       | `string`   |                                                                                    |
+| `avatar`         | No       | `string`   | URL of the Customer's avatar                                                       |
+| `session_fields` | No       | `[]object` | An array of custom object-enclosed `key:value` pairs. Respects the order of items. |
+
+Apart from `id`, which is a required parameter, you also need to include **one of the optional** parameters.
+
+When updating customer data while the customer has an active chat, the update will take effect after the chat has ended.
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "update_customer",
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "name": "Thomas Anderson",
+    "email": "t.anderson@example.com",
+    "avatar": "https://example.com/avatars/1.png",
+    "session_fields": [{
+      "custom_key": "custom_value"
+    }, {
+      "another_custom_key": "another_custom_value"
+    }]
+  }
+}
+```
+
+</CodeSample>
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "update_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Ban Customer
+
+Bans the customer for a specific period of time. It immediately disconnects all active sessions of this customer and does not accept new ones during the ban lifespan.
+
+#### Specifics
+
+|                        |                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Action**             | `ban_customer`                                                                  |
+| **Required scopes**    | `customers.ban:rw`                                                              |
+| **Web API equivalent** | [`ban_customer`](/messaging/agent-chat-api/v3.5/#ban-customer)                  |
+| **Push message**       | [`customer_banned`](/messaging/agent-chat-api/v3.5/rtm-pushes/#customer_banned) |
+
+#### Request
+
+| Parameter  | Required | Data type |     |
+| ---------- | -------- | --------- | --- |
+| `id`       | Yes      | `string`  |     |
+| `ban`      | Yes      | `object`  |     |
+| `ban.days` | Yes      | `number`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "ban_customer",
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+    "ban": {
+      "days": 3
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "ban_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Follow Customer
+
+Marks a customer as followed. As a result, the requester (an agent) will receive the info about all the changes related to that customer via pushes. Once the customer leaves the website or is [unfollowed](#unfollow-customer), the agent will no longer receive that information.
+
+Following a customer causes the agent to receive customer-related pushes as long as the followed customer is available. The followed customer may be transferred to a group the agent doesn't have access to, which makes the customer unavailable to the agent. At that moment, the agent stops receiving pushes related to that customer. When the customer is transferred back and becomes available again, the pushes resume.
+
+Agents don't need to follow the customers they're chatting with in order to receive related pushes. Agents will be receiving pushes related to those customers as long as the chats last.
+
+#### Specifics
+
+|                        |                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------- |
+| **Action**             | `follow_customer`                                                                         |
+| **Required scopes**    | `customers:ro`                                                                            |
+| **Web API equivalent** | [`follow_customer`](/messaging/agent-chat-api/v3.5/#follow-customer)                      |
+| **Push message**       | [`incoming_customer`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_customer)**\*** |
+
+**\*)**
+It won't be sent when the requester already follows the customer or is chatting with that customer.
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `id`      | Yes      | `string`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "follow_customer",
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "follow_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Unfollow Customer
+
+Removes the agent from the list of customer's followers. Calling this method on a customer the agent's chatting with will result in success, however, the agent will still receive pushes about the customer's data updates. The unfollowing will take effect once the chat ends.
+
+#### Specifics
+
+|                        |                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| **Action**             | `unfollow_customer`                                                                     |
+| **Required scopes**    | -                                                                                       |
+| **Web API equivalent** | [`unfollow_customer`](/messaging/agent-chat-api/v3.5/#unfollow-customer)                |
+| **Push message**       | [`customer_unfollowed`](/messaging/agent-chat-api/v3.5/rtm-pushes/#customer_unfollowed) |
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `id`      | Yes      | `string`  |     |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "unfollow_customer",
+  "payload": {
+    "id": "b7eff798-f8df-4364-8059-649c35c9ed0c"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "unfollow_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+## Status
+
+### Login
+
+It returns the initial state of the current Agent.
+
+#### Specifics
+
+|                        |                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| **Action**             | `login`                                                                                |
+| **Required scopes**    | `chats--access:ro` `customers:ro` `multicast:ro` `agents--all:ro` `agents-bot--all:ro` |
+| **Web API equivalent** | -                                                                                      |
+| **Push message**       | -                                                                                      |
+
+#### Request
+
+| Parameter                           | Required | Data type  | Notes                                                                                                                                                                                         |
+| ----------------------------------- | -------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `token`                             | Yes      | `string`   | OAuth token from the Agent's account                                                                                                                                                          |
+| `timezone`                          | No       | `string`   |                                                                                                                                                                                               |
+| `reconnect`                         | No       | `bool`     | Reconnecting sets the status to the last known state instead of the default one.                                                                                                              |
+| `push_notifications`                | No       | `object`   |                                                                                                                                                                                               |
+| `push_notifications.firebase_token` | No       | `string`   | Firebase device token to allow connecting this instance with the existing push notification instance (to be seen as 1 instance).                                                              |
+| `push_notifications.platform`       | Yes      | `string`   | OS platform; possible values:`ios`, `android`. Required only when `push_notifications` is included.                                                                                           |
+| `application`                       | No       | `object`   |                                                                                                                                                                                               |
+| `application.name`                  | No       | `string`   | Application name                                                                                                                                                                              |
+| `application.version`               | No       | `string`   | Application version                                                                                                                                                                           |
+| `away` __*__                        | No       | `bool`     | When `true`, the connection is set to the `away` state. Defaults to `false`.                                                                                                                  |
+| `customer_monitoring_level`         | No       | `string`   | Possible values: `my`, `chatting`, `invited`, `online` __**__. Defaults to `my` if [login](#login) creates the first session; otherwise it preserves the current `customer_monitoring_level`. |
+| `pushes`                            | No       | `object`   | Use case: when you want to receive only specific pushes. By default, it's set to `all` for the version of your currently established RTM connection.                                          |
+| `pushes.<version>`                  | Yes      | `[]string` | A list of push subscriptions for a specific version;`<version>` is a version number, without `v` prefix. Possible values: push names.                                                         |
+
+__*__ You can use the `away` param to **prevent assigning chats** to Agents **after random reconnections** when their status was set to `not_accepting_chats` by the auto-away feature. When an Agent logs in with `away: true`, the connection is immediately recognized
+as `away`. [Read more...](#set-away-status)
+
+__**__ These values mean:
+
+* `my` - only the customers from chats the agent is assigned to
+* `chatting` - all customers that are chatting within the groups the agent is assigned to
+* `invited` - all customers that are invited to chat within the groups the agent is assigned to
+* `online` - all customers visiting the website assigned to the agent’s groups
+
+#### Response
+
+| Field        | Data type | Notes |
+| ------------ | --------- | ----- |
+| `access`     | `object`  |       |
+| `properties` | `object`  |       |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "login",
+  "payload": {
+    "token": "Bearer dal:test_1fgTbfXmgthj4cZSA",
+    "pushes": {
+      "3.5": ["incoming_chat", "incoming_multicast"],
+      "3.6": ["all"]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "login",
+  "type": "response",
+  "success": true,
+  "payload": {
+  "license": {
+    "id": "104130623",
+    "organization_id": "390e44e6-f1e6-0368c-z6ddb-74g14508c2ex",
+    "plan": "enterprise",
+    "expiration_timestamp": 1483433500,
+    "creation_timestamp": 1482433500,
+    "in_trial": true,
+    "website_last_activity": "2018-01-05" // optional
+  },
+  "my_profile": {
+    // "User > My profile" object
+  },
+  "chats_summary": [{
+    "id": "PJ0MRSHTDG",
+    "users": [
+    // array of "User" objects
+    ],
+    "last_event_per_type": {
+    // the last event of each type in chat
+    "message": {
+      "thread_id": "K600PKZON8",
+      "thread_created_at": "2020-05-07T07:11:28.288340Z",
+      "event": {
+      // "restricted_access": "User has no access to following resource"
+      // or
+      // Event > Message object
+      }
+    },
+    "system_message": {
+      "thread_id": "K600PKZON8",
+      "thread_created_at": "2020-05-07T07:11:28.288340Z",
+      "event": {
+      // "restricted_access": "User has no access to following resource"
+      // or
+      // Event > System Message object
+      }
+    }
+    // ...
+    },
+    "last_thread_summary": {
+    "id": "K600PKZON8",
+    "user_ids": ["smith@example.com"],
+    "properties": {
+      "routing": {
+      "idle": false,
+      "unassigned": false
+      }
+      // ...
+    },
+    "created_at": "2020-05-07T07:11:28.288340Z"
+    },
+    "properties": {
+    "routing": {
+      "idle": false,
+      "unassigned": false
+    }
+    // ...
+    },
+    "access": {
+    // "Access" object
+    }
+  }]
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Set Away Status
+
+Sets an Agent's connection to the `away` state. You can use this method to manipulate the Agent's status. The method works per connection - all connections an Agent has (desktop, mobile, etc) must be in the `away` state for the Agent's status to be changed to `not_accepting_chats`.
+
+You may want to make use of the <a href="https://www.livechat.com/help/setting-up-auto-away/" target="_blank">auto-away feature</a> and set the Agents' statuses to `not_accepting_chats` when they're inactive, for example they're not at their desks.
+Remember that checking if Agents are active/inactive should be **implemented on your side**. If you decide they're inactive, set their connections to `away`. The auto-away feature will recognize the `away` connections and change the Agent's status to `not_accepting_chats`.
+
+#### Specifics
+
+|                        |                   |
+| ---------------------- | ----------------- |
+| **Action**             | `set_away_status` |
+| **Required scopes**    | `agents--my:rw`   |
+| **Web API equivalent** | -                 |
+| **Push message**       | -                 |
+
+#### Request
+
+| Parameter | Required | Data type |
+| --------- | -------- | --------- |
+| `away`    | Yes      | `bool`    |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "set_away_status",
+  "payload": {
+  "away": true
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "set_away_status",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Change Push Notifications
+
+Change the firebase push notifications properties.
+
+#### Specifics
+
+|                        |                             |
+| ---------------------- | --------------------------- |
+| **Action**             | `change_push_notifications` |
+| **Required scopes**    | -                           |
+| **Web API equivalent** | -                           |
+| **Push message**       | -                           |
+
+#### Request
+
+| Parameter        | Required | Data type | Notes                                                        |
+| ---------------- | -------- | --------- | ------------------------------------------------------------ |
+| `firebase_token` | Yes      | string    | Firebase device token                                        |
+| `platform`       | Yes      | string    | OS platform; possible values: `ios`, `android`               |
+| `enabled`        | Yes      | bool      | Enable or disable push notifications for the requested token |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "change_push_notifications",
+  "payload": {
+  "firebase_token": "8daDAD9dada8ja1JADA11",
+  "platform": "ios",
+  "enabled": true
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "change_push_notifications",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Set Routing Status
+
+Changes the status of an Agent or a Bot Agent. It sets the status for the session duration. Once the session ends, the status gets back to what's in the Agent's settings.
+Unlike [**Set Away Status**](#set-away-status), which is another mechanism of status manipulation, **Set Routing Status** is independent of the number of connections (desktop, mobile, etc).
+
+#### Specifics
+
+|                        |                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Action**             | `set_routing_status`                                                                                   |
+| **Required scopes**    | for Agents: `agents--my:rw` `agents--all:rw`; for Bot Agents: `agents-bot--my:rw` `agents-bot--all:rw` |
+| **Web API equivalent** | [`set_routing_status`](/messaging/agent-chat-api/v3.5/#set-routing-status)                             |
+| **Push message**       | [`routing_status_set`](/messaging/agent-chat-api/v3.5/rtm-pushes/#routing_status_set)                  |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                                                                                                          |
+| ---------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `status`   | Yes      | `string`  | For Agents: `accepting_chats` or `not_accepting_chats`; for Bot Agents: `accepting_chats`, `not_accepting_chats`, or `offline` |
+| `agent_id` | No       | `string`  | If not specified, the requester's status will be updated.                                                                      |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "set_routing_status",
+  "payload": {
+  "status": "accepting_chats",
+  "agent_id": "smith@example.com"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "set_routing_status",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Logout
+
+Logs the Agent out.
+
+#### Specifics
+
+|                        |          |
+| ---------------------- | -------- |
+| **Action**             | `logout` |
+| **Required scopes**    | -        |
+| **Web API equivalent** | -        |
+| **Push message**       | -        |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "logout",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "logout",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### List Routing Statuses
+
+Returns the current routing status of each agent selected by the provided filters.
+
+#### Specifics
+
+|                        |                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **Action**             | `list_routing_statuses`                                                          |
+| **Required scopes**    | `agents--all:ro`, `agents-bot--all:ro`                                           |
+| **Web API equivalent** | [`list_routing_statuses`](/messaging/agent-chat-api/v3.5/#list-routing-statuses) |
+| **Push message**       | -                                                                                |
+
+#### Request
+
+| Parameter           | Required | Type     | Notes |
+| ------------------- | -------- | -------- | ----- |
+| `filters`           | No       | `object` |       |
+| `filters.group_ids` | No       | `array`  |       |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_routing_statuses",
+  "payload": {
+    "filters": {
+      "group_ids": [
+        0
+      ]
+    }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_routing_statuses",
+  "type": "response",
+  "success": true,
+  "payload": [{
+    "agent_id": "smith@example.com",
+    "status": "accepting_chats"
+  }, {
+    "agent_id": "agent@example.com",
+    "status": "not_accepting_chats"
+  }]
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+## Other
+
+<Section>
+<Text>
+
+### Mark Events as Seen
+
+#### Specifics
+
+|                        |                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| **Action**             | `mark_events_as_seen`                                                                       |
+| **Required scopes**    | `chats--all:ro` `chats--access:ro`                                                          |
+| **Web API equivalent** | [`mark_events_as_seen`](/messaging/agent-chat-api/v3.5/#mark-events-as-seen)                |
+| **Push message**       | [`events_marked_as_seen`](/messaging/agent-chat-api/v3.5/rtm-pushes/#events_marked_as_seen) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                     |
+| ------------ | -------- | --------- | ------------------------- |
+| `chat_id`    | Yes      | `string`  |                           |
+| `seen_up_to` | Yes      | `string`  | RFC 3339 date-time format |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "mark_events_as_seen",
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "seen_up_to": "2017-10-12T15:19:21.010200Z"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>",
+  "action": "mark_events_as_seen",
+  "type": "response",
+  "success": true,
+  "payload": {
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Send Typing Indicator
+
+#### Specifics
+
+|                        |                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| **Action**             | `send_typing_indicator`                                                          |
+| **Required scopes**    | `chats--all:rw` `chats--access:rw`                                               |
+| **Web API equivalent** | [`send_typing_indicator`](/messaging/agent-chat-api/v3.5/#send-typing-indicator) |
+| **Push message**       | -                                                                                |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                                                    |
+| ------------ | -------- | --------- | -------------------------------------------------------- |
+| `chat_id`    | Yes      | `string`  | Id of the chat you want to send the typing indicator to. |
+| `visibility` | No       | `string`  | `all` (default), `agents`                                |
+| `is_typing`  | Yes      | `bool`    |                                                          |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "send_typing_indicator",
+  "payload": {
+  "chat_id": "PJ0MRSHTDG",
+  "is_typing": true
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "send_typing_indicator",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Multicast
+
+This method serves for the **chat-unrelated communication**. Messages sent using `multicast` are not being saved.
+
+For example, it could be used in an app that sends notifications to Agents or Customers, when a certain condition is met (e.g. an important Customer started the chat).
+
+#### Specifics
+
+|                        |                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| **Action**             | `multicast`                                                                           |
+| **Required scopes**    | `multicast:rw`                                                                        |
+| **Web API equivalent** | [`multicast`](/messaging/agent-chat-api/v3.5/#multicast)                              |
+| **Push message**       | [`incoming_multicast`](/messaging/agent-chat-api/v3.5/rtm-pushes/#incoming_multicast) |
+
+#### Request
+
+| Parameter    | Required | Data type | Notes                     |
+| ------------ | -------- | --------- | ------------------------- |
+| `recipients` | Yes      | `object`  | **\***                    |
+| `content`    | Yes      | `any`     | A JSON message to be sent |
+| `type`       | No       | `string`  | Multicast message type    |
+
+**\*)** `recipients` can take the following values:
+
+- `agents`:
+
+  - `all` (`bool` - includes all agents)
+  - `ids` (`[]string` - an array of agents' IDs)
+  - `groups` (`[]string` - an array of groups' IDs)
+
+- `customers`:
+  - `ids` (`[]string` - an array of customer's IDs)
+
+At least one `recipients` type (`agents.all`, `agents.ids`, `agents.groups`, `customers.ids`) is required.
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "multicast",
+  "payload": {
+  "recipients": {
+    "agents": {
+    "all": true,
+    "ids": [
+      "smith@example.com",
+      "agent@example.com"
+    ],
+    "groups": [
+      1,
+      2
+    ]
+    },
+    "customers": {
+    "ids": [
+      "b7eff798-f8df-4364-8059-649c35c9ed0c"
+    ]
+    }
+  },
+  "content": {
+    "example": {
+    "nested": "json"
+    }
+  }
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "multicast",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### List Agents For Transfer
+
+It returns the Agents you can transfer a chat to. Agents are sorted ascendingly by the total number of active chats they have. Note that:
+
+- The method only returns Agents with statuses **online** and **not accepting chats**. Offline Agents aren't returned.
+- Only chats **with Customers** are taken into account in `total_active_chats`.
+
+#### Specifics
+
+|                        |                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| **Action**             | `list_agents_for_transfer`                                                             |
+| **Required scopes**    | -                                                                                      |
+| **Web API equivalent** | [`list_agents_for_transfer`](/messaging/agent-chat-api/v3.5/#list-agents-for-transfer) |
+| **Push message**       | -                                                                                      |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                                   |
+| --------- | -------- | --------- | --------------------------------------- |
+| `chat_id` | Yes      | `string`  | The ID of the chat you want to transfer |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "list_agents_for_transfer",
+  "payload": {
+   "chat_id": "PJ0MRSHTDG"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "list_agents_for_transfer",
+  "type": "response",
+  "success": true,
+  "payload": [{
+  "agent_id": "smith@example.com",
+  "active_chats": 2
+  }, {
+  "agent_id": "agent@example.com",
+  "active_chats": 5
+  }]
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+
+<Text>
+
+# Pushes
+
+Here's what you need to know about **pushes**:
+
+- They are generated primarily by RTM API actions, but also by Web API actions.
+- They notify you when specific events occur.
+- Can be **delivered** only in the websocket transport.
+- You don't need to register pushes to receive them.
+- Their equivalents in Web API are [webhooks](/management/configuration-api/v3.5/#webhooks). Pushes and webhooks have similar payloads.
+- There are no retries for pushes. To determine if a user has seen an event, compare the [event's](/messaging/agent-chat-api/v3.5/data-structures/#response) `created_at` parameter with the [user's](/messaging/agent-chat-api/v3.5/data-structures/#users) `events_seen_up_to` field.
+
+<SectionLink to={"/messaging/agent-chat-api/v3.5/rtm-pushes"}>See available pushes</SectionLink>
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'general push format'}>
+
+```json
+{
+  "version": "<api_version>",
+  "request_id": "<request_id>", // optional, applies only to the requester
+  "action": "<action>",
+  "type": "push",
+  "payload": {
+  // optional payload
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Errors
+
+<CodeResponse title={'Format of error payload'}>
+
+```json
+{
+  "error": {
+    "type": "misdirected_request",
+    "message": "Wrong region",
+    "data": {
+      // optional
+      "region": "dal"
+    }
+  }
+}
+```
+
+</CodeResponse>
+
+## Possible errors
+
+<Errors errors="agent_offline,authentication,authorization,chat_inactive,internal,license_expired,missing_access,not_found,pending_requests_limit_reached,requester_already_offline,requester_awaiting_approval,request_timeout,requester_suspended,seats_limit_exceeded,service_unavailable,too_many_requests,validation,wrong_product_version"/>
+
+# Contact us
+
+If you found a bug or a typo, you can let us know directly on GitHub.
+In case of any questions or feedback, don't hesitate to contact us at [developers@livechat.com](mailto:developers@livechat.com). We'll be happy to hear from you!
