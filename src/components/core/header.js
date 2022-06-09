@@ -10,6 +10,8 @@ import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
+import { Button } from "@livechat/design-system";
+
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
@@ -94,6 +96,7 @@ const MenuElementWrapper = styled.li`
     color: rgba(255, 255, 255, 1);
     text-decoration: none;
     font-size: 15px;
+    transition: all 0.8s;
     &:hover {
       color: rgba(255, 255, 255, 1);
     }
@@ -152,6 +155,18 @@ const linkStyle = {
 };
 
 const iconStyle = { marginRight: "5px", marginBottom: "1px" };
+
+const loginButtonCss = css`
+  background-color: #4a4a55;
+  border: 1px solid #ffffff;
+  width: 120px;
+  margin-right:36px;
+  color:#ffffff;
+  font-weight:500;
+  &:hover{
+    background-color: #747484
+  }
+`;
 
 const MenuElement = ({ label, href, slug, color, ...props }) => {
   const { asPath } = useRouter();
@@ -242,6 +257,9 @@ const Header = () => {
               href={"/console/"}
               style={{ alignSelf: "flex-end", marginLeft: "auto" }}
             />
+            <Button css={loginButtonCss}>
+            Log in
+            </Button>
           </MenuList>
         </MenuListWrapper>
         <SearchIconWrapper
