@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
@@ -31,6 +31,7 @@ const Login = (e) => {
       // authorizeData contains `accessToken` or `code`
       // transaction contains state and optional code_verifier (code + PKCE)
       console.log("User access token: " + authorizeData.access_token)
+      localStorage.setItem('access_token', JSON.stringify(authorizeData.access_token));
       // document.getElementById('login-button').style.display = "none"
     } else {
       console.log("Redirect state doesn't match the previous one")
@@ -248,7 +249,15 @@ const Header = () => {
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
   const [openSearch, setOpenSearch] = useState(false);
-  const [isLogged, setToLogged] = useState(false);
+  const [isLogged, setLogged] = useState(false);
+  useEffect(() => {
+  const item = localStorage.getItem('access_token')
+  if(item){
+    setLogged(true)
+  } else{
+    setLogged(false)
+  }
+}, [])
   return (
     <HeaderWrapper
       id="header"
@@ -284,7 +293,7 @@ const Header = () => {
               href={"/console/"}
               style={{ alignSelf: "flex-end", marginLeft: "auto" }}
             />
-            {isLogged ? (
+            { isLogged ? (
             <Button onClick={()=> Login()} css={loginButtonCss}>
               Logged
               </Button>
