@@ -11,7 +11,34 @@ import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
 import { Button } from "@livechat/design-system";
+import AccountsSDK from '@livechat/accounts-sdk';
 
+
+const instance = new AccountsSDK({
+  client_id: '69f04b8c4da454665afda266abd7a253',
+});
+
+const Login = (e) => {
+  console.log(e)
+  if (e && e.preventDefault) {
+    e.preventDefault();
+  }
+  instance.popup().authorize().then((authorizeData)=>{
+    console.log(authorizeData)
+    const transaction = instance.verify(authorizeData);
+    if (transaction != null) {
+      // authorization success
+      // authorizeData contains `accessToken` or `code`
+      // transaction contains state and optional code_verifier (code + PKCE)
+      console.log("User access token: " + authorizeData.access_token)
+      // document.getElementById('login-button').style.display = "none"
+    } else {
+      console.log("Redirect state doesn't match the previous one")
+    }
+  }).catch((e)=>{
+    console.error("Failed to authorize user", e)
+  })
+};
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
@@ -221,7 +248,7 @@ const Header = () => {
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
   const [openSearch, setOpenSearch] = useState(false);
-
+  const [isLogged, setToLogged] = useState(false);
   return (
     <HeaderWrapper
       id="header"
@@ -257,9 +284,17 @@ const Header = () => {
               href={"/console/"}
               style={{ alignSelf: "flex-end", marginLeft: "auto" }}
             />
-            <Button css={loginButtonCss}>
-            Log in
-            </Button>
+            {isLogged ? (
+            <Button onClick={()=> Login()} css={loginButtonCss}>
+              Logged
+              </Button>
+            )
+            : (
+              <Button onClick={()=> Login()} css={loginButtonCss}>
+              Log in
+              </Button>
+            )
+            }
           </MenuList>
         </MenuListWrapper>
         <SearchIconWrapper
