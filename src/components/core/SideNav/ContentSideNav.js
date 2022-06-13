@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   padding-left: 10px;
   margin: 195px 0px 50px 0px;
   overflow-y: scroll;
-  height: calc(100vh - 70px);
+  height: calc(100vh - ${({ isVersioned }) => (isVersioned ? "130px" : "100px")});
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
