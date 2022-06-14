@@ -117,7 +117,7 @@ To find sample payloads of **events**, **users**, and **other common structures*
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customer`](#get-customer) [`list_customers`](#list-customers) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                     |
-| **Status**      | [`login`](#login) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout) [`list_routing_statuses`](#list-routing-statuses)                                                                                                                                                           |
+| **Status**      | [`login`](#login) [`change_push_notifications`](#change-push-notifications) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout) [`list_routing_statuses`](#list-routing-statuses)                                                                                                 |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                   |
 
 </Text>
@@ -2453,6 +2453,9 @@ It returns the initial state of the current Agent.
 | `token`                             | Yes      | `string`   | OAuth token from the Agent's account                                                                                                                                                          |
 | `timezone`                          | No       | `string`   |                                                                                                                                                                                               |
 | `reconnect`                         | No       | `bool`     | Reconnecting sets the status to the last known state instead of the default one.                                                                                                              |
+| `push_notifications`                | No       | `object`   |                                                                                                                                                                                               |
+| `push_notifications.firebase_token` | No       | `string`   | Firebase device token to allow connecting this instance with the existing push notification instance (to be seen as 1 instance).                                                              |
+| `push_notifications.platform`       | Yes      | `string`   | OS platform; possible values:`ios`, `android`. Required only when `push_notifications` is included.                                                                                           |
 | `application`                       | No       | `object`   |                                                                                                                                                                                               |
 | `application.name`                  | No       | `string`   | Application name                                                                                                                                                                              |
 | `application.version`               | No       | `string`   | Application version                                                                                                                                                                           |
@@ -2622,6 +2625,65 @@ Remember that checking if Agents are active/inactive should be **implemented on 
 {
   "request_id": "<request_id>", // optional
   "action": "set_away_status",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Change Push Notifications
+
+Change the firebase push notifications properties.
+
+#### Specifics
+
+|                        |                             |
+| ---------------------- | --------------------------- |
+| **Action**             | `change_push_notifications` |
+| **Required scopes**    | -                           |
+| **Web API equivalent** | -                           |
+| **Push message**       | -                           |
+
+#### Request
+
+| Parameter        | Required | Data type | Notes                                                        |
+| ---------------- | -------- | --------- | ------------------------------------------------------------ |
+| `firebase_token` | Yes      | string    | Firebase device token                                        |
+| `platform`       | Yes      | string    | OS platform; possible values: `ios`, `android`               |
+| `enabled`        | Yes      | bool      | Enable or disable push notifications for the requested token |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "change_push_notifications",
+  "payload": {
+  "firebase_token": "8daDAD9dada8ja1JADA11",
+  "platform": "ios",
+  "enabled": true
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "change_push_notifications",
   "type": "response",
   "success": true,
   "payload": {
