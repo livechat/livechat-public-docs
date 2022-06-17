@@ -28,7 +28,6 @@ import {
   CategoryRedoc,
 } from "../core/components";
 import { Search } from "../core/Search";
-import { VERSIONS_GROUPS } from "../../constant";
 
 const SideNav = dynamic(
   () => import("../core/SideNav").then((mod) => mod.SideNav),
@@ -136,7 +135,7 @@ const Page = ({ frontMatter, children }) => {
         }
       }
 
-      router.push("/" + currentSlug.replace("/docs", ""));
+      router.push("/" + currentSlug.replace("/docs", "") + "/");
     }
   };
 
