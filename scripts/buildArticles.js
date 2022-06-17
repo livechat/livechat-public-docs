@@ -69,7 +69,7 @@ getDirectories(articlesDirectory, (err, res) => {
             .replace(prefix, "")
             .replace(/\*/g, "")
             .replace(/`/g, ""),
-          link: link.substring(0, link.length - 1) + "#" + slug,
+          link: link.substring(0, link.length - 1) + "/#" + slug,
           slug,
           nestingLevel,
         });

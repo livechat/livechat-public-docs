@@ -70,7 +70,10 @@ const MenuItem = ({
   items = [],
   category,
 }) => {
-  const path = pathname.split("#")[0];
+  let path = pathname.split("#")[0];
+  if (path.substr(path.length - 1) !== "/") {
+    path = path += "/";
+  }
   const isNotBasePath = link !== "/" + category + "/";
   const isActivePath = (path + "/").startsWith(link);
   const hasSubItems = items.length > 1;
@@ -83,9 +86,9 @@ const MenuItem = ({
 
   return (
     <>
-      <LinkWrapper isActive={path + "/" === link}>
+      <LinkWrapper isActive={path === link}>
         <Link href={link}>
-          <StyledLink isActive={path + "/" === link}>
+          <StyledLink isActive={path === link}>
             <LinkArea isSubItem={false}>
               <IconWrapper>
                 <ArticleIcon fill={iconFill} />
@@ -104,8 +107,8 @@ const MenuItem = ({
         items.map((item) => {
           return (
             <Link href={item.link} key={item.link}>
-              <StyledLink isActive={path + "/" === item.link}>
-                <LinkArea isActive={path + "/" === item.link} isSubItem={true}>
+              <StyledLink isActive={path === item.link}>
+                <LinkArea isActive={path === item.link} isSubItem={true}>
                   <IconWrapper>
                     <ArticleIcon fill={iconFill} />
                   </IconWrapper>
