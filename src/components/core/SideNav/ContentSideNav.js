@@ -83,7 +83,11 @@ const ContentSideNav = ({ version }) => {
         )
         .slice(-1)[0];
 
-      setActiveHeading(pathname + "#" + elem?.id);
+      if (pathname.substr(pathname.length - 1) !== "/") {
+        setActiveHeading(pathname + "/#" + elem?.id);
+      } else {
+        setActiveHeading(pathname + "#" + elem?.id);
+      }
     };
 
     document.addEventListener("scroll", onScroll);
