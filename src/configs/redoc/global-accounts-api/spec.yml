@@ -6,7 +6,7 @@ info:
     responsible for authorization and authentication processes.
   version: 2.0.0
 servers:
-  - url: 'https://accounts.livechat.com/v2'
+  - url: https://accounts.livechat.com/v2
     description: Main production server URL
 paths:
   /accounts:
@@ -19,8 +19,8 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts--all:ro'
-            - 'accounts.roles--all:ro'
+            - accounts--all:ro
+            - accounts.roles--all:ro
       tags:
         - Accounts
       responses:
@@ -30,118 +30,153 @@ paths:
             application/json:
               schema:
                 type: array
-                items: &ref_2
-                  description: 'An entity of the account, used across all LiveChat products'
-                  type: object
-                  required:
-                    - email
-                  properties:
-                    account_id:
-                      type: string
-                      format: uuid
-                      readOnly: true
-                      description: Unique account identifier
-                      example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
-                    name:
-                      type: string
-                      description: 'Account name (nick; first, second name; or both)'
-                      example: John
-                      exclusiveMaximum: false
-                      maxLength: 191
-                    email: &ref_15
-                      type: string
-                      format: email
-                      description: Account's email address
-                      example: john@example.com
-                      exclusiveMaximum: false
-                      maxLength: 128
-                    email_verified:
-                      type: boolean
-                      readOnly: true
+                items:
+                  allOf:
+                    - &ref_2
                       description: >-
-                        Specifies if an email was verified. (The account
-                        performed an email action or was validated by a
-                        third-party identity provider.)
-                      example: false
-                    default_product: &ref_0
-                      type: string
-                      description: Available product name
-                      example: Accounts
-                      enum:
-                        - LiveChat
-                        - Accounts
-                    default_organization_id:
-                      type: string
-                      format: uuid
-                      description: ID of default organization the account belongs to.
-                      example: b2185556-634c-4ecf-b4c9-bcf8b65bc853
-                      default: null
-                      nullable: true
-                    avatar_url:
-                      type: string
-                      description: Account's avatar
-                      example: null
-                      default: null
-                      nullable: true
-                      exclusiveMaximum: false
-                      maxLength: 255
-                    roles:
-                      type: array
-                      items: &ref_3
-                        description: Role groups account scopes into one permission entity.
-                        type: object
+                        An entity of the account, used across all LiveChat
+                        products
+                      type: object
+                      required:
+                        - email
+                      properties:
+                        account_id:
+                          type: string
+                          format: uuid
+                          readOnly: true
+                          description: Unique account identifier
+                          example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+                        name:
+                          type: string
+                          description: Account name (nick; first, second name; or both)
+                          example: John
+                          exclusiveMaximum: false
+                          maxLength: 191
+                        email: &ref_15
+                          type: string
+                          format: email
+                          description: Account's email address
+                          example: john@example.com
+                          exclusiveMaximum: false
+                          maxLength: 128
+                        email_verified:
+                          type: boolean
+                          readOnly: true
+                          description: >-
+                            Specifies if an email was verified. (The account
+                            performed an email action or was validated by a
+                            third-party identity provider.)
+                          example: false
+                        default_product: &ref_0
+                          type: string
+                          description: Available product name
+                          example: Accounts
+                          enum:
+                            - LiveChat
+                            - Accounts
+                        default_organization_id:
+                          type: string
+                          format: uuid
+                          description: ID of default organization the account belongs to.
+                          example: b2185556-634c-4ecf-b4c9-bcf8b65bc853
+                          default: null
+                          nullable: true
+                        avatar_url:
+                          type: string
+                          description: Account's avatar
+                          example: null
+                          default: null
+                          nullable: true
+                          exclusiveMaximum: false
+                          maxLength: 255
+                        roles:
+                          type: array
+                          items: &ref_3
+                            description: >-
+                              Role groups account scopes into one permission
+                              entity.
+                            type: object
+                            properties:
+                              role_id:
+                                type: string
+                                description: Unique role definition ID
+                                example: 728b99be-848c-11ea-9b91-005056a007e9
+                              product: *ref_0
+                              role:
+                                type: string
+                                description: >-
+                                  Role name; one of predefined roles or a custom
+                                  name for a custom role.
+                                example: administrator
+                                enum:
+                                  - owner
+                                  - viceowner
+                                  - administrator
+                                  - normal
+                                  - member
+                              type:
+                                type: string
+                                readOnly: true
+                                description: >-
+                                  There are three role types: `primary` – an
+                                  obligatory Accounts role, `secondary` – a
+                                  basic product role, and `custom` – a
+                                  customly-defined role.
+                                example: primary
+                              predefined:
+                                readOnly: true
+                                type: boolean
+                                description: >-
+                                  If `true`, the role is common across all
+                                  organizations. If `false`, the role is defined
+                                  per organization.
+                                example: true
+                          description: >-
+                            Array of account roles; returned only when the
+                            access token contains the `accounts.roles--all:ro`
+                            scope.
+                        updated_at:
+                          readOnly: true
+                          type: string
+                          format: date-time
+                          description: Date of the account's last update
+                          example: 2019-09-03T10:53:04.000Z
+                        created_at:
+                          readOnly: true
+                          type: string
+                          format: date-time
+                          description: Date of the account's creation
+                          example: 2019-09-03T10:53:04.000Z
+                    - type: object
+                      properties:
                         properties:
-                          role_id:
-                            type: string
-                            description: Unique role definition ID
-                            example: 728b99be-848c-11ea-9b91-005056a007e9
-                          product: *ref_0
-                          role:
-                            type: string
-                            description: >-
-                              Role name; one of predefined roles or a custom
-                              name for a custom role.
-                            example: administrator
-                            enum:
-                              - owner
-                              - viceowner
-                              - administrator
-                              - normal
-                              - member
-                          type:
-                            type: string
-                            readOnly: true
-                            description: >-
-                              There are three role types: `primary` – an
-                              obligatory Accounts role, `secondary` – a basic
-                              product role, and `custom` – a customly-defined
-                              role.
-                            example: primary
-                          predefined:
-                            readOnly: true
-                            type: boolean
-                            description: >-
-                              If `true`, the role is common across all
-                              organizations. If `false`, the role is defined per
-                              organization.
-                            example: true
-                      description: >-
-                        Array of account roles; returned only when the access
-                        token contains the `accounts.roles--all:ro` scope.
-                    updated_at:
-                      readOnly: true
-                      type: string
-                      format: date-time
-                      description: Date of the account's last update
-                      example: 2019-09-03T10:53:04.000Z
-                    created_at:
-                      readOnly: true
-                      type: string
-                      format: date-time
-                      description: Date of the account's creation
-                      example: 2019-09-03T10:53:04.000Z
+                          type: object
+                          description: >-
+                            Nullable object that contains an account properties
+                            and statuses.
+                          properties:
+                            active:
+                              type: boolean
+                              description: >-
+                                Shows if an account already logged into the
+                                organization.
+                              example: true
+                            mfa:
+                              type: boolean
+                              description: Shows if an account has MFA turned on.
+                              example: true
+                            productName:
+                              type: object
+                              description: Specific product properties.
+                              properties:
+                                suspended:
+                                  type: boolean
+                                  description: >-
+                                    Shows if an account is suspended in specific
+                                    product.
+                                  example: true
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization.
           content:
             application/json:
               schema: &ref_4
@@ -184,7 +219,7 @@ paths:
                         type: string
                         example: The account is not authorized.
         '403':
-          description: 'Forbidden: Insufficient scope'
+          description: 'Forbidden: Insufficient scope.'
           content:
             application/json:
               schema: &ref_5
@@ -231,9 +266,9 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts--all:rw'
-            - 'accounts--all:rc'
-            - 'accounts.roles--all:rw'
+            - accounts--all:rw
+            - accounts--all:rc
+            - accounts.roles--all:rw
       requestBody:
         required: true
         content:
@@ -311,12 +346,12 @@ paths:
                           to an apparent client error (for example, malformed
                           request syntax, size too large).
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization.
           content:
             application/json:
               schema: *ref_4
         '403':
-          description: 'Forbidden: Insufficient scope'
+          description: 'Forbidden: Insufficient scope.'
           content:
             application/json:
               schema: *ref_5
@@ -373,7 +408,7 @@ paths:
           content:
             application/json:
               schema: *ref_6
-  '/accounts/{account_id}':
+  /accounts/{account_id}:
     get:
       summary: Get an account
       description: >-
@@ -383,8 +418,8 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts--my:ro'
-            - 'accounts.roles--all:ro'
+            - accounts--my:ro
+            - accounts.roles--all:ro
       tags:
         - Accounts
       parameters:
@@ -394,15 +429,45 @@ paths:
             type: string
             format: uuid
           required: true
-          description: Unique account ID or `me`
+          description: Unique account ID or `me`.
       responses:
         '200':
           description: 'OK: Returns the account.'
           content:
             application/json:
-              schema: *ref_2
+              schema:
+                allOf:
+                  - *ref_2
+                  - type: object
+                    properties:
+                      properties:
+                        type: object
+                        description: >-
+                          Nullable object that contains account properties and
+                          statuses.
+                        properties:
+                          active:
+                            type: boolean
+                            description: >-
+                              Shows if an account is already logged into the
+                              organization.
+                            example: true
+                          mfa:
+                            type: boolean
+                            description: Shows if an account has MFA turned on.
+                            example: true
+                          productName:
+                            type: object
+                            description: Specific product properties.
+                            properties:
+                              suspended:
+                                type: boolean
+                                description: >-
+                                  Shows if an account is suspended in a specific
+                                  product.
+                                example: true
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -468,8 +533,8 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts--all:rw'
-            - 'accounts.roles--all:rw'
+            - accounts--all:rw
+            - accounts.roles--all:rw
       parameters:
         - in: path
           name: account_id
@@ -503,12 +568,12 @@ paths:
             application/json:
               schema: *ref_8
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization.
           content:
             application/json:
               schema: *ref_4
         '403':
-          description: 'Forbidden: Insufficient scope'
+          description: 'Forbidden: Insufficient scope.'
           content:
             application/json:
               schema: *ref_5
@@ -558,7 +623,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts--my:rw'
+            - accounts--my:rw
       parameters:
         - in: path
           name: account_id
@@ -566,17 +631,17 @@ paths:
             type: string
             format: uuid
           required: true
-          description: Unique account ID or `me`
+          description: Unique account ID or `me`.
       responses:
         '200':
           description: 'OK: Returns no content.'
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
         '403':
-          description: 'Forbidden: Insufficient scope'
+          description: 'Forbidden: Insufficient scope.'
           content:
             application/json:
               schema: *ref_5
@@ -616,7 +681,7 @@ paths:
           content:
             application/json:
               schema: *ref_6
-  '/accounts/{account_id}/roles':
+  /accounts/{account_id}/roles:
     put:
       summary: Set account roles
       description: >-
@@ -625,7 +690,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts.roles--all:rw'
+            - accounts.roles--all:rw
       tags:
         - Accounts
       parameters:
@@ -635,7 +700,7 @@ paths:
             type: string
             format: uuid
           required: true
-          description: Unique account ID or `me`
+          description: Unique account ID or `me`.
       requestBody:
         required: true
         content:
@@ -669,12 +734,12 @@ paths:
             application/json:
               schema: *ref_8
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization.
           content:
             application/json:
               schema: *ref_4
         '403':
-          description: 'Forbidden: Insufficient scope'
+          description: 'Forbidden: Insufficient scope.'
           content:
             application/json:
               schema: *ref_5
@@ -714,7 +779,7 @@ paths:
           content:
             application/json:
               schema: *ref_6
-  '/accounts/{account_id}/password/reset':
+  /accounts/{account_id}/password/reset:
     post:
       summary: Set a password
       description: >-
@@ -724,7 +789,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts.password--my:rw'
+            - accounts.password--my:rw
       tags:
         - Accounts
       parameters:
@@ -734,7 +799,7 @@ paths:
             type: string
             format: uuid
           required: true
-          description: Unique account ID or `me`
+          description: Unique account ID or `me`.
       requestBody:
         content:
           application/json:
@@ -756,12 +821,12 @@ paths:
             application/json:
               schema: *ref_8
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization.
           content:
             application/json:
               schema: *ref_4
         '403':
-          description: 'Forbidden: Insufficient scope'
+          description: 'Forbidden: Insufficient scope.'
           content:
             application/json:
               schema: *ref_5
@@ -817,6 +882,360 @@ paths:
           content:
             application/json:
               schema: *ref_6
+  /accounts/invitations:
+    get:
+      summary: Get an account invitations
+      description: >-
+        This method gets all invitations issued within an organization. If the
+        `email` parameter is provided, it returns only the invitations sent for
+        the account assigned with the `email` (within the requester's
+        organization).
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - accounts.invitations--all:ro
+      tags:
+        - Accounts
+      parameters:
+        - in: path
+          name: email
+          schema:
+            type: string
+            format: email
+          description: Email address of the invited account.
+      responses:
+        '200':
+          description: 'OK: Returns a list of account invitations.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  description: An entity of the account invitation.
+                  type: object
+                  required:
+                    - email
+                  properties:
+                    invitation_id:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                      description: Unique account invitation identifier.
+                      example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+                    name:
+                      type: string
+                      description: >-
+                        Invited account's name (nick; first, second name; or
+                        both). If the invitation was issued to an existing
+                        account, this parameter will be replaced with the
+                        existing name.
+                      example: John
+                      exclusiveMaximum: false
+                      maxLength: 191
+                    email:
+                      type: string
+                      format: email
+                      description: Invited account's email address.
+                      example: john@example.com
+                      exclusiveMaximum: false
+                      maxLength: 128
+                    product:
+                      type: string
+                      readOnly: true
+                      description: Specifies to which product the account is invited.
+                      example: false
+                    creator_id:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                      description: Unique account identifier which created an invitation.
+                      example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+                    organization_id:
+                      type: string
+                      format: uuid
+                      description: ID of the organization to which the account is invited.
+                      example: b2185556-634c-4ecf-b4c9-bcf8b65bc853
+                      default: null
+                      nullable: true
+                    updated_at:
+                      readOnly: true
+                      type: string
+                      format: date-time
+                      description: Date of the account's invitation's last update.
+                      example: 2019-09-03T10:53:04.000Z
+                    created_at:
+                      readOnly: true
+                      type: string
+                      format: date-time
+                      description: Date of the account's invitation's creation.
+                      example: 2019-09-03T10:53:04.000Z
+        '401':
+          description: Unauthorized, missing, or invalid authorization.
+          content:
+            application/json:
+              schema: *ref_4
+        '422':
+          description: 'Validation error: Invalid email, etc.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: invalid email address
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+    post:
+      summary: Create an account invitation
+      description: >-
+        Create an account invitation for the given `email`, `organization_id`,
+        and `product`. After the successful creation, it sends an email to all
+        users with the invitation approval scopes, informing them about the new
+        account awaiting the approval. `organization_id` and `creator_id` are
+        retrieved from the access token.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - accounts.invitations--my:rw
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email address of the invited account.
+                  example: john@example.com
+                name:
+                  type: string
+                  description: >-
+                    Name of the invited account (nick; first, second name; or
+                    both). If an invitation was issued to an existing account,
+                    this field will be replaced with the name assigned to that
+                    account.
+                  example: John
+                product:
+                  type: string
+                  description: The product to which an account is invited.
+                  example: LiveChat
+      responses:
+        '200':
+          description: 'OK: Returns an existing account''s invitation ID.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invitation_id:
+                    type: string
+                    format: uuid
+                    description: Unique account invitation identifier.
+                    example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+        '201':
+          description: 'Created: Account invitation was created.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invitation_id:
+                    type: string
+                    format: uuid
+                    description: Unique account invitation identifier.
+                    example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+        '400':
+          description: >-
+            Bad Request: Invalid request; the invitation name for the new
+            account is empty.
+          content:
+            application/json:
+              schema: *ref_8
+        '401':
+          description: Unauthorized, missing, or invalid authorization.
+          content:
+            application/json:
+              schema: *ref_4
+        '409':
+          description: 'Conflict: Account already added to the product.'
+          content:
+            application/json:
+              schema: *ref_13
+        '422':
+          description: 'Validation error: Invalid email, etc.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: invalid email address
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+  /accounts/invitations/{invitation_id}:
+    put:
+      summary: Approve an account invitation
+      description: Approve an account invitation.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - >-
+              accounts.invitations--all:rw (allows to approve invitations for
+              all products)
+            - accounts.invitations.lc--all:rw (for LC invitations)
+            - accounts.invitations.hd--all:rw (for HD invitations)
+      tags:
+        - Accounts
+      parameters:
+        - in: path
+          name: invitation_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Unique account invitation ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  description: The approved account's role in a given product.
+                  example: administrator
+      responses:
+        '200':
+          description: 'OK: Returns the account ID.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_id:
+                    type: string
+                    format: uuid
+                    description: Unique account identifier
+                    example: 496a94f2-cbbf-444e-a3cb-305b9f5f8cbb
+        '400':
+          description: >-
+            Bad Request: Invalid request; the invitation name for the new
+            account is empty.
+          content:
+            application/json:
+              schema: *ref_8
+        '401':
+          description: Unauthorized, missing, or invalid authorization.
+          content:
+            application/json:
+              schema: *ref_4
+        '403':
+          description: >-
+            Forbidden: Invalid organization; the scope is invalid, unknown, or
+            malformed.
+          content:
+            application/json:
+              schema: *ref_5
+        '404':
+          description: Requested resource (account invitation) could not be found.
+          content:
+            application/json:
+              schema: *ref_9
+        '409':
+          description: >-
+            Conflict: Account is already added to the product; invalid product
+            subscription.
+          content:
+            application/json:
+              schema: *ref_13
+        '422':
+          description: 'Validation error: Invalid email, etc.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_7
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: invalid email address
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+    delete:
+      summary: Decline an account invitation
+      description: Decline and delete an account invitation.
+      security:
+        - Personal Access Token: null
+        - OAuth2 Bearer Token:
+            - >-
+              accounts.invitations--all:rw (allows to decline invitations for
+              all products)
+            - accounts.invitations.lc--all:rw (for LC invitations)
+            - accounts.invitations.hd--all:rw (for HD invitations)
+      tags:
+        - Accounts
+      parameters:
+        - in: path
+          name: invitation_id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Unique account invitation ID
+      responses:
+        '204':
+          description: 'No Content: Account invitation was deleted.'
+        '401':
+          description: Unauthorized, missing, or invalid authorization.
+          content:
+            application/json:
+              schema: *ref_4
+        '403':
+          description: >-
+            Forbidden: Invalid organization; the scope is invalid, unknown, or
+            malformed.
+          content:
+            application/json:
+              schema: *ref_5
+        '404':
+          description: Requested resource (account invitation) could not be found.
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
   /roles:
     get:
       summary: List roles
@@ -826,7 +1245,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts.roles--all:ro'
+            - accounts.roles--all:ro
       tags:
         - Roles
       responses:
@@ -838,7 +1257,7 @@ paths:
                 type: array
                 items: *ref_3
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -852,7 +1271,7 @@ paths:
           content:
             application/json:
               schema: *ref_6
-  '/roles/{role_id}':
+  /roles/{role_id}:
     get:
       summary: Get a role
       description: >-
@@ -861,7 +1280,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts.roles--all:ro'
+            - accounts.roles--all:ro
       tags:
         - Roles
       parameters:
@@ -887,9 +1306,9 @@ paths:
                         description: >-
                           Scopes assigned to the role, separated by a comma
                           (`,`)
-                        example: 'accounts--all:rw,accounts.roles--all:ro'
+                        example: accounts--all:rw,accounts.roles--all:ro
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -942,7 +1361,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'accounts.roles--all:rw'
+            - accounts.roles--all:rw
       tags:
         - Roles
       parameters:
@@ -956,7 +1375,7 @@ paths:
         '200':
           description: 'OK: Returns no content.'
         '401':
-          description: 'Unauthorized, missing or invalid authorization'
+          description: Unauthorized, missing or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -1009,7 +1428,7 @@ paths:
         from an authorization grant.
       security:
         - OAuth2 Bearer Token:
-            - 'sessions--my:ro'
+            - sessions--my:ro
       tags:
         - Sessions
       responses:
@@ -1085,7 +1504,7 @@ paths:
                             example: 238ac4c3c3628880aca289c6d700d2c5
                           session_id: *ref_14
         '401':
-          description: 'Unauthorized, missing or invalid authorization'
+          description: Unauthorized, missing or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -1108,15 +1527,15 @@ paths:
         revoked.
       security:
         - OAuth2 Bearer Token:
-            - 'accounts--all:ro'
-            - 'accounts.roles--all:ro'
+            - accounts--all:ro
+            - accounts.roles--all:ro
       tags:
         - Sessions
       responses:
         '200':
           description: 'OK: Returns no content.'
         '401':
-          description: 'Unauthorized, missing or invalid authorization'
+          description: Unauthorized, missing or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -1130,7 +1549,7 @@ paths:
           content:
             application/json:
               schema: *ref_6
-  '/sessions/{session_id}':
+  /sessions/{session_id}:
     delete:
       summary: Remove a session
       description: >-
@@ -1140,7 +1559,7 @@ paths:
         will be revoked.
       security:
         - OAuth2 Bearer Token:
-            - 'sessions--my:rw'
+            - sessions--my:rw
       tags:
         - Sessions
       parameters:
@@ -1155,7 +1574,7 @@ paths:
         '200':
           description: 'OK: Returns no content.'
         '401':
-          description: 'Unauthorized, missing or invalid authorization'
+          description: Unauthorized, missing or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -1241,7 +1660,7 @@ paths:
                           exclusiveMaximum: false
                           maxLength: 255
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -1284,7 +1703,7 @@ paths:
                       organization: *ref_16
                       access_token:
                         type: string
-                        example: 'dal:eDqDuTRZoK03C3rzD2dcfA=='
+                        example: dal:eDqDuTRZoK03C3rzD2dcfA==
         '400':
           description: Bad Request
           content:
@@ -1315,7 +1734,7 @@ paths:
           content:
             application/json:
               schema: *ref_6
-  '/organizations/{organization_id}':
+  /organizations/{organization_id}:
     get:
       summary: Get an organization
       description: >-
@@ -1341,7 +1760,7 @@ paths:
             application/json:
               schema: *ref_16
         '401':
-          description: 'Unauthorized, missing, or invalid authorization.'
+          description: Unauthorized, missing, or invalid authorization.
           content:
             application/json:
               schema: *ref_4
@@ -1374,7 +1793,7 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - 'organization--my:rw'
+            - organization--my:rw
       parameters:
         - in: path
           name: organization_id
@@ -1395,7 +1814,7 @@ paths:
             application/json:
               schema: *ref_16
         '401':
-          description: 'Unauthorized, missing, or invalid authorization'
+          description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
@@ -1453,7 +1872,7 @@ paths:
           name: code
           schema:
             type: string
-            example: 'fra-a:vky95357S7KM1E4dXwv1DQ'
+            example: fra-a:vky95357S7KM1E4dXwv1DQ
       tags:
         - Tokens
       responses:
@@ -1468,7 +1887,7 @@ paths:
                   access_token:
                     type: string
                     description: Access token value
-                    example: 'fra-a:vky95357S7KM1E4dXwv1DQ'
+                    example: fra-a:vky95357S7KM1E4dXwv1DQ
                   account_id:
                     type: string
                     format: uuid
@@ -1487,11 +1906,11 @@ paths:
                   refresh_token:
                     type: string
                     description: Refresh token value
-                    example: 'fra-a:0SEkeLZ2Qy2Nm2cg42xIyg'
+                    example: fra-a:0SEkeLZ2Qy2Nm2cg42xIyg
                   scope:
                     type: string
-                    description: 'Scopes assigned to token, separated by a comma (`,`)'
-                    example: 'accounts--all:rc,accounts--all:ro'
+                    description: Scopes assigned to token, separated by a comma (`,`)
+                    example: accounts--all:rc,accounts--all:ro
                   token_type:
                     type: string
                     description: Access token type
@@ -1522,7 +1941,7 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: 'https://accounts.livechat.com'
+          authorizationUrl: https://accounts.livechat.com
         authorizationCode:
-          authorizationUrl: 'https://accounts.livechat.com'
-          tokenUrl: 'https://accounts.livechat.com/token'
+          authorizationUrl: https://accounts.livechat.com
+          tokenUrl: https://accounts.livechat.com/token
