@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { string } from "prop-types";
 import styled from "@emotion/styled";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CopyIcon } from "../core/icons";
@@ -81,6 +82,10 @@ const CopyToClipboardIcon = ({ text }) => {
       </CopyToClipboard>
     </CopyToClipboardWrapper>
   );
+};
+
+CopyToClipboardIcon.propTypes = {
+  text: string,
 };
 
 export default CopyToClipboardIcon;
