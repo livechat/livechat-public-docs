@@ -10,6 +10,7 @@ import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
+import { useAuth } from "../../contexts/auth";
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
@@ -206,6 +207,7 @@ const Header = () => {
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
   const [openSearch, setOpenSearch] = useState(false);
+  const { authorize } = useAuth();
 
   return (
     <HeaderWrapper
@@ -242,6 +244,7 @@ const Header = () => {
               href={"/console/"}
               style={{ alignSelf: "flex-end", marginLeft: "auto" }}
             />
+            <button onClick={authorize}>login</button>
           </MenuList>
         </MenuListWrapper>
         <SearchIconWrapper
