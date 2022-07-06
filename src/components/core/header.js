@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import dynamic from "next/dynamic";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
@@ -10,7 +11,10 @@ import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
-import { useAuth } from "../../contexts/auth";
+const Profile = dynamic(() => import("./Profile/Profile"), {
+  ssr: false,
+  loading: () => <p>...</p>,
+});
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
@@ -207,7 +211,6 @@ const Header = () => {
   const tabColor = getVersionColor(selectedVersion, versions);
   const { isActive, content } = useContext(PromotionContext);
   const [openSearch, setOpenSearch] = useState(false);
-  const { authorize } = useAuth();
 
   return (
     <HeaderWrapper
@@ -239,12 +242,7 @@ const Header = () => {
                   slug={slug}
                 />
               ))}
-            <MenuElement
-              label={"Console"}
-              href={"/console/"}
-              style={{ alignSelf: "flex-end", marginLeft: "auto" }}
-            />
-            <button onClick={authorize}>login</button>
+            <Profile />
           </MenuList>
         </MenuListWrapper>
         <SearchIconWrapper

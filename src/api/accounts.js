@@ -1,12 +1,25 @@
 import axios from "axios";
 
-const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
-});
-
 class AccountsClient {
   constructor(token) {
-    instance.defaults.headers["Authorization"] = `Bearer ${token}`;
+    this.instance = axios.create({
+      baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  async getMe() {
+    try {
+      const response = await this.instance.get(`/v2/accounts/me`);
+
+      return response.data;
+    } catch (error) {
+      if (error.error === "unauthorized") throw new Error(`Unauthorized`);
+      console.error(error);
+    }
   }
 }
 
