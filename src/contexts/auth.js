@@ -34,6 +34,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = () => {
+    setToken(null);
+    setIsAuthorized(false);
+    setUser(initUser);
+  };
+
   const fetchUserInfo = async () => {
     try {
       const data = await api.getAccounts().getMe();
@@ -43,14 +49,11 @@ export const AuthProvider = ({ children }) => {
         email: data?.email || "",
       });
     } catch (error) {
-      authorize();
+      if (error.message === "Unauthorized") {
+        logout();
+      }
+      console.error(error);
     }
-  };
-
-  const logout = () => {
-    setToken(null);
-    setIsAuthorized(false);
-    setUser(initUser);
   };
 
   useEffect(() => {

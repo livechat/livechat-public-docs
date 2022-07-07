@@ -17,7 +17,8 @@ class AccountsClient {
 
       return response.data;
     } catch (error) {
-      if (error.error === "unauthorized") throw new Error(`Unauthorized`);
+      if (error.response.data.error === "unauthorized")
+        throw new Error(`Unauthorized`);
       console.error(error);
     }
   }

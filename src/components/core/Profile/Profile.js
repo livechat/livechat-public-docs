@@ -188,7 +188,7 @@ const Profile = () => {
     },
   ];
 
-  if (!isAuthorized) {
+  if (!name) {
     listItems.shift();
   }
 
