@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { string } from "prop-types";
 
 import Rating from "../Rating";
 
@@ -40,5 +41,9 @@ const PageHeader = ({ title }) => (
     </PageTitle>
   </PageHeaderWrapper>
 );
+
+PageHeader.propTypes = {
+  title: string,
+};
 
 export default PageHeader;
