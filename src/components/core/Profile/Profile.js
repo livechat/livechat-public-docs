@@ -15,19 +15,29 @@ const Wrapper = styled.div`
   align-self: flex-end;
   margin-left: auto;
   height: 60px;
+  width: 40px;
   cursor: pointer;
 `;
 
 const dropdownCss = () => css`
   opacity: 1 !important;
-  right: 5px !important;
-  left: auto !important;
-  top: 70px !important;
+  right: 0 !important;
+  top: 60px !important;
+  width: 100vw;
   z-index: 100;
   display: block !important;
   pointer-events: auto !important;
-  width: 230px;
   transform: none !important;
+  max-width: none;
+  border-top: 1px solid #ffffff;
+
+  @media (min-width: 768px) {
+    right: 5px !important;
+    left: auto !important;
+    top: 70px !important;
+    width: 230px;
+    border-top: none;
+  }
 `;
 
 const linkCss = () => css`
@@ -35,7 +45,7 @@ const linkCss = () => css`
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  color: #1b1b20;
+  color: #ffffff;
   text-decoration: none;
   width: 100%;
   height: 100%;
@@ -45,9 +55,20 @@ const linkCss = () => css`
     text-decoration: none;
     color: #1b1b20;
   }
+
+  @media (min-width: 768px) {
+    color: #1b1b20;
+  }
 `;
 
 const dropdownListCss = () => css`
+  background-color: #4a4a55;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    background-color: #ffffff;
+  }
+
   .lc-dropdown__list-item {
     margin: 0 10px;
     cursor: default;
@@ -61,7 +82,10 @@ const dropdownListCss = () => css`
   }
 
   .lc-dropdown__list-item--focused {
-    background-color: #ffffff;
+    background-color: #4a4a55;
+    @media (min-width: 768px) {
+      background-color: #ffffff;
+    }
   }
 `;
 
@@ -92,7 +116,6 @@ const ProfileItemWrapper = styled.div`
       line-height: 14px;
       display: flex;
       align-items: center;
-      color: #1b1b20;
     }
 
     > div:last-of-type {
@@ -101,18 +124,26 @@ const ProfileItemWrapper = styled.div`
       line-height: 14px;
       display: flex;
       align-items: center;
-      color: #1b1b20;
     }
   }
 
   &:hover {
     background-color: #ffffff;
   }
+
+  color: #ffffff;
+  @media (min-width: 768px) {
+    color: #1b1b20;
+  }
 `;
 
 const LoggingItemWrapper = styled.div`
-  color: #1b1b20;
+  color: #ffffff;
   cursor: pointer;
+
+  @media (min-width: 768px) {
+    color: #1b1b20;
+  }
 `;
 
 const Profile = () => {

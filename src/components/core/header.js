@@ -70,8 +70,8 @@ const LogoWrapper = styled.nav`
 const MenuListWrapper = styled.div`
   margin: 0;
   padding: 0;
-  max-width: 100%;
-  width: 100%;
+  max-width: calc(100% - 60px);
+  width: calc(100% - 60px);
   overflow-x: auto;
   display: none;
   @media (min-width: 768px) {
@@ -132,11 +132,14 @@ const SearchIconWrapper = styled.div`
     display: none;
   }
   width: 32px;
-  height: 32px;
-  margin: 10px 10px 0px 0px;
+  margin-right: 10px;
+  height: 100%;
+`;
+
+const magnifyCss = css`
   cursor: pointer;
   border-radius: 100%;
-  background-color: ${({ openSearch }) => (openSearch ? "#6E6E7C" : "")};
+  background-color: ${({ openSearch }) => openSearch && "#6E6E7C"};
 `;
 
 const SearchField = styled.div`
@@ -242,9 +245,9 @@ const Header = () => {
                   slug={slug}
                 />
               ))}
-            <Profile />
           </MenuList>
         </MenuListWrapper>
+        <Profile />
         <SearchIconWrapper
           openSearch={openSearch}
           onClick={() => setOpenSearch(!openSearch)}

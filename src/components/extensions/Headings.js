@@ -170,7 +170,7 @@ const SectionBannerWrapper = styled.div`
   margin-bottom: 2.5em;
   border-radius: 8px;
   flex-direction: column;
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     flex-direction: row;
   }
 `;
