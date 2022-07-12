@@ -10,8 +10,9 @@ async function generateRedocHtml(name) {
   console.log(`Generating ${tmpDir}/redoc-${name}.html ...`);
 
   const response = await redoc.loadAndBundleSpec(
-    `.${process.env.CONTEXT &&
-      "/livechat-public-docs"}/src/configs/redoc/${name}/spec.yml`
+    `.${
+      process.env.CONTEXT ? "" : "/livechat-public-docs"
+    }/src/configs/redoc/${name}/spec.yml`
   );
 
   const store = await redoc.createStore(response, undefined, configs[name]);
