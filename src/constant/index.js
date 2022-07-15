@@ -31,6 +31,12 @@ const VERSIONS_GROUPS = {
 
 const RATES = ["It's unusable", "Rather poor", "It's OK", "Great", "Excellent"];
 
+const AUTH_TYPE = {
+  iframe: "iframe",
+  popup: "popup",
+  redirect: "redirect",
+};
+
 const SCOPES = [
   {
     id: "agents--my:rw",
@@ -277,7 +283,8 @@ const SCOPES = [
   },
   {
     id: "tags--all:rw",
-    description: "Read/write permission for tags configuration (all in license)",
+    description:
+      "Read/write permission for tags configuration (all in license)",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
@@ -359,31 +366,35 @@ const SCOPES = [
   },
   {
     id: "properties.license.value--my:rw",
-    description: "Read/write permission for managing license properties (only my namespace)",
+    description:
+      "Read/write permission for managing license properties (only my namespace)",
     role: "administrator",
     role_type: "secondary",
-    product: "Livechat"
+    product: "Livechat",
   },
   {
     id: "properties.license.value--all:rw",
-    description: "Read/write permission for managing license properties (in all namespaces but with access only to their public properties)",
+    description:
+      "Read/write permission for managing license properties (in all namespaces but with access only to their public properties)",
     role: "administrator",
     role_type: "secondary",
-    product: "Livechat"
+    product: "Livechat",
   },
   {
     id: "properties.group.value--my:rw",
-    description: "Read/write permission for managing groups properties (only my namespace)",
+    description:
+      "Read/write permission for managing groups properties (only my namespace)",
     role: "administrator",
     role_type: "secondary",
-    product: "Livechat"
+    product: "Livechat",
   },
   {
     id: "properties.group.value--all:rw",
-    description: "Read/write permission for managing groups properties (in all namespaces but with access only to their public properties)",
+    description:
+      "Read/write permission for managing groups properties (in all namespaces but with access only to their public properties)",
     role: "administrator",
     role_type: "secondary",
-    product: "Livechat"
+    product: "Livechat",
   },
   // ACCOUNT SCOPES
   {
@@ -437,7 +448,8 @@ const SCOPES = [
   },
   {
     id: "accounts.roles.lc--all:rw",
-    description: "Read and modify all account roles within the LiveChat product",
+    description:
+      "Read and modify all account roles within the LiveChat product",
     role: "administrator",
     role_type: "secondary",
     product: "LiveChat",
@@ -655,6 +667,7 @@ const constants = {
   RATES,
   SCOPES,
   ERRORS,
+  AUTH_TYPE,
 };
 
 module.exports = constants;

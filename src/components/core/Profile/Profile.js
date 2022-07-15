@@ -160,7 +160,7 @@ const Profile = () => {
       content: (
         <ProfileItemWrapper>
           {!avatar_url || avatar_url === "" ? (
-            <AccountCircleOutline fill="#ffffff" width="30px" height="30px" />
+            <AccountCircleOutline fill="#1b1b20" width="30px" height="30px" />
           ) : (
             <img src={avatar_url} alt="photo" css={profilePhotoCss} />
           )}
@@ -219,7 +219,7 @@ const Profile = () => {
     },
   ];
 
-  if (!name) {
+  if (!name && !email) {
     listItems.shift();
   }
 

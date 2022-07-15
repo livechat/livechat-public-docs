@@ -2,6 +2,9 @@ import React, { createContext, useEffect, useState } from "react";
 import AccountsSDK from "@livechat/accounts-sdk";
 import api from "../api";
 import { useLocalStorage } from "../hooks";
+import { AUTH_TYPE } from "../constant";
+import { getCachedToken } from "../utils/auth";
+import { removeCookie } from "../utils/cookies";
 
 const AuthContext = createContext(null);
 
@@ -11,12 +14,14 @@ const initUser = {
   email: "",
 };
 
+const TOKEN_KEY = "access_token";
+
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useLocalStorage("token", null);
+  const [token, setToken] = useLocalStorage("token", getCachedToken());
   const [isAuthorized, setIsAuthorized] = useState(!!token);
   const [user, setUser] = useState(initUser);
 
-  const authorize = async () => {
+  const authorize = async (type) => {
     try {
       const options = {
         client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
@@ -26,7 +31,18 @@ export const AuthProvider = ({ children }) => {
       };
       const accountsSdk = new AccountsSDK(options);
 
-      const authorizeData = await accountsSdk.popup(options).authorize();
+      let authorizeData;
+
+      switch (type) {
+        case AUTH_TYPE.iframe:
+          authorizeData = await accountsSdk.iframe(options).authorize();
+          break;
+
+        case AUTH_TYPE.popup:
+        default:
+          authorizeData = await accountsSdk.popup(options).authorize();
+          break;
+      }
 
       setToken(authorizeData["access_token"]);
     } catch (error) {
@@ -38,6 +54,8 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setIsAuthorized(false);
     setUser(initUser);
+    removeCookie(TOKEN_KEY);
+    window.sessionStorage.removeItem(TOKEN_KEY);
   };
 
   const fetchUserInfo = async () => {
@@ -55,6 +73,10 @@ export const AuthProvider = ({ children }) => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    authorize(AUTH_TYPE.iframe);
+  }, []);
 
   useEffect(() => {
     api.initialize(token);
