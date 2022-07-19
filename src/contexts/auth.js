@@ -5,6 +5,7 @@ import { useLocalStorage } from "../hooks";
 import { AUTH_TYPE } from "../constant";
 import { getCachedToken } from "../utils/auth";
 import { removeCookie } from "../utils/cookies";
+import { consent } from "react-fullstory";
 
 const AuthContext = createContext(null);
 
@@ -44,13 +45,21 @@ export const AuthProvider = ({ children }) => {
           break;
       }
 
-      setToken(authorizeData["access_token"]);
+      setToken(authorizeData[TOKEN_KEY]);
     } catch (error) {
       throw error;
     }
   };
 
-  const logout = () => {
+  const logout = (deleteSessions = true) => {
+    try {
+      if (deleteSessions) {
+        api.getAccounts().deleteSessions();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
     setToken(null);
     setIsAuthorized(false);
     setUser(initUser);
@@ -68,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       });
     } catch (error) {
       if (error.message === "Unauthorized") {
-        logout();
+        logout(false);
       }
       console.error(error);
     }

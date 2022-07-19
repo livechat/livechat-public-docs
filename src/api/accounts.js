@@ -22,6 +22,14 @@ class AccountsClient {
       console.error(error);
     }
   }
+
+  async deleteSessions() {
+    try {
+      await this.instance.delete(`/v2/sessions`);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 export default AccountsClient;

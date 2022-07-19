@@ -11,12 +11,17 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 10px;
   align-self: flex-end;
   margin-left: auto;
   height: 60px;
   width: 40px;
   cursor: pointer;
+
+  @media (min-width: 768px) {
+    margin-right: 20px;
+    width: 60px;
+  }
 `;
 
 const dropdownCss = () => css`
@@ -72,6 +77,7 @@ const dropdownListCss = () => css`
   .lc-dropdown__list-item {
     margin: 0 10px;
     cursor: default;
+    width: 100%;
   }
 
   .lc-dropdown__list-item__content {
@@ -106,24 +112,39 @@ const ProfileItemWrapper = styled.div`
   justify-content: start;
   align-items: center;
   pointer-events: none;
+  width: 100%;
 
   > div {
+    display: flex;
+    flex-direction: column;
     margin-left: 10px;
 
     > div:first-of-type {
       font-weight: 500;
       font-size: 12px;
       line-height: 14px;
-      display: flex;
-      align-items: center;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      display: inline-block;
+
+      @media (min-width: 768px) {
+        width: 150px;
+      }
     }
 
     > div:last-of-type {
       font-weight: 400;
       font-size: 10px;
       line-height: 14px;
-      display: flex;
-      align-items: center;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      display: inline-block;
+
+      @media (min-width: 768px) {
+        width: 150px;
+      }
     }
   }
 

@@ -73,6 +73,7 @@ const MenuListWrapper = styled.div`
   max-width: calc(100% - 60px);
   width: calc(100% - 60px);
   overflow-x: auto;
+  overflow-y: hidden;
   display: none;
   @media (min-width: 768px) {
     display: block;
