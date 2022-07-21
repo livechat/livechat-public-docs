@@ -37,6 +37,13 @@ const AUTH_TYPE = {
   redirect: "redirect",
 };
 
+export const REGION = {
+  FRA: "fra",
+  DAL: "dal",
+  FRA_A: "fra-a",
+  FRA_B: "fra-b",
+};
+
 const SCOPES = [
   {
     id: "agents--my:rw",
@@ -668,6 +675,7 @@ const constants = {
   SCOPES,
   ERRORS,
   AUTH_TYPE,
+  REGION,
 };
 
 module.exports = constants;
