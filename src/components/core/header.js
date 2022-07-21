@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import dynamic from "next/dynamic";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
@@ -10,6 +11,10 @@ import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 import { logAmplitudeEvent } from "../../utils/index";
+const Profile = dynamic(() => import("./Profile/Profile"), {
+  ssr: false,
+  loading: () => <p>...</p>,
+});
 
 const HeaderWrapper = styled.div`
   background: #4a4a55;
@@ -65,10 +70,12 @@ const LogoWrapper = styled.nav`
 const MenuListWrapper = styled.div`
   margin: 0;
   padding: 0;
-  max-width: 100%;
-  width: 100%;
+  max-width: calc(100% - 60px);
+  width: calc(100% - 60px);
   overflow-x: auto;
+  overflow-y: hidden;
   display: none;
+  margin-right: 10px;
   @media (min-width: 768px) {
     display: block;
   }
@@ -127,11 +134,14 @@ const SearchIconWrapper = styled.div`
     display: none;
   }
   width: 32px;
-  height: 32px;
-  margin: 10px 10px 0px 0px;
+  margin-right: 10px;
+  height: 100%;
+`;
+
+const magnifyCss = css`
   cursor: pointer;
   border-radius: 100%;
-  background-color: ${({ openSearch }) => (openSearch ? "#6E6E7C" : "")};
+  background-color: ${({ openSearch }) => openSearch && "#6E6E7C"};
 `;
 
 const SearchField = styled.div`
@@ -237,13 +247,9 @@ const Header = () => {
                   slug={slug}
                 />
               ))}
-            <MenuElement
-              label={"Console"}
-              href={"/console/"}
-              style={{ alignSelf: "flex-end", marginLeft: "auto" }}
-            />
           </MenuList>
         </MenuListWrapper>
+        <Profile />
         <SearchIconWrapper
           openSearch={openSearch}
           onClick={() => setOpenSearch(!openSearch)}
