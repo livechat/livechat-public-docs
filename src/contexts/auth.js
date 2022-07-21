@@ -5,7 +5,6 @@ import { useLocalStorage } from "../hooks";
 import { AUTH_TYPE } from "../constant";
 import { getCachedToken } from "../utils/auth";
 import { removeCookie } from "../utils/cookies";
-import { consent } from "react-fullstory";
 
 const AuthContext = createContext(null);
 
@@ -69,10 +68,10 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserInfo = async () => {
     try {
-      const data = await api.getAccounts().getMe();
+      const data = await api.getLiveChat().getMe();
       setUser({
         name: data?.name || "",
-        avatar_url: data?.avatar_url || "",
+        avatar_url: data?.avatar || "",
         email: data?.email || "",
       });
     } catch (error) {
