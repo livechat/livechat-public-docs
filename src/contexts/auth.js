@@ -69,9 +69,13 @@ export const AuthProvider = ({ children }) => {
   const fetchUserInfo = async () => {
     try {
       const data = await api.getLiveChat().getMe();
+      const avatar = data?.avatar;
+      const avatar_url =
+        avatar.indexOf("https://") === -1 ? `//${avatar}` : avatar;
+
       setUser({
         name: data?.name || "",
-        avatar_url: data?.avatar || "",
+        avatar_url: avatar_url || "",
         email: data?.email || "",
       });
     } catch (error) {
