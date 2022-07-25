@@ -5,6 +5,7 @@ import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Dropdown, DropdownList } from "@livechat/design-system";
 
+import { logAmplitudeEvent } from "../../../utils";
 import { useAuth } from "../../../contexts/auth";
 
 const Wrapper = styled.div`
@@ -233,6 +234,7 @@ const Profile = () => {
         if (isAuthorized) {
           logout();
         } else {
+          logAmplitudeEvent("loginAttempted");
           authorize();
         }
         handleClose();
