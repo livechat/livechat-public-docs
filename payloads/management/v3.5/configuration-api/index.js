@@ -25,3 +25,4 @@ export { default as getOrganizationID } from "./responses/other/getOrganizationI
 export { default as getLicenseID } from "./responses/other/getLicenseID.json"
 export { default as listChannels } from "./responses/other/listChannels.json"
 export { default as checkProductLimitsForPlan } from "./responses/other/checkProductLimitsForPlan.json"
+export { default as getProductSource } from "./responses/other/getProductSource.json"
