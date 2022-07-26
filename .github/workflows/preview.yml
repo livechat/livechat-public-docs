@@ -13,19 +13,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          cache: "npm"
 
       - name: Install Dependencies
-        run: npm install
-
-      - name: Install Netlify CLI
-        run: npm install netlify-cli -g
+        run: npm ci
 
       - name: Create Preview
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           BRANCH_NAME: $(echo ${{github.head_ref || github.ref_name}} | sed -e 's/\//-/g' | tr '[:upper:]' '[:lower:]')
-        run: netlify build --context deploy-preview  && netlify deploy --dir=.next --alias ${{ env.BRANCH_NAME }}
+        run: npx netlify build --context deploy-preview && npx netlify deploy --dir=.next --alias ${{ env.BRANCH_NAME }}
 
       - name: Status check
         env:
