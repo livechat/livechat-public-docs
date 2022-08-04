@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import dynamic from "next/dynamic";
-/** @jsx jsx */ import { jsx, css } from "@emotion/core";
+/** @jsx jsx */
+import { css, jsx } from "@emotion/core";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -136,12 +137,6 @@ const SearchIconWrapper = styled.div`
   width: 32px;
   margin-right: 10px;
   height: 100%;
-`;
-
-const magnifyCss = css`
-  cursor: pointer;
-  border-radius: 100%;
-  background-color: ${({ openSearch }) => openSearch && "#6E6E7C"};
 `;
 
 const SearchField = styled.div`

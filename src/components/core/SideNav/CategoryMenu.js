@@ -30,7 +30,6 @@ const LinkWrapper = styled.div`
   &:hover {
     background-color: #f6f6f7;
   }
-
   @media (min-width: 768px) {
     padding: 6px 20px;
   }

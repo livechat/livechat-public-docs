@@ -17,7 +17,6 @@ const Wrapper = styled.aside`
   height: ${({ isExpanded }) => (isExpanded ? "500px" : "50px")};
   position: fixed;
   transition: height 300ms;
-
   bottom: 0%;
   width: 100%;
   opacity: 1;
@@ -42,7 +41,6 @@ const SearchWrapper = styled.div`
     display: block;
     margin-bottom: 5px;
   }
-
   padding: 8.5px 20px;
 `;
 

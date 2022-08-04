@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { string } from "prop-types";
 import { useRouter } from "next/router";
+import { string } from "prop-types";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
@@ -28,7 +28,6 @@ const Wrapper = styled.div`
   top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
-
   @media (min-width: 1270px) {
     display: block;
   }
@@ -40,7 +39,6 @@ const StyledLink = styled.a`
   font-size: 14px;
   padding-left: ${({ nestingLevel }) => `${10 * nestingLevel}px`};
   font-weight: 500;
-
   &:hover {
     color: #328dff;
     cursor: pointer;
@@ -54,7 +52,9 @@ const LinkContainer = styled.div`
   text-overflow: ellipsis;
 `;
 
-const ContentSideNav = ({ version }) => {
+const ContentSideNav = ({ version, slug }) => {
+  const headings = articles.find((article) => article.link === `/${slug}/`)
+    ?.headings;
   const router = useRouter();
   const pathname = router.asPath.split("#")[0];
 
@@ -92,7 +92,7 @@ const ContentSideNav = ({ version }) => {
 
     document.addEventListener("scroll", onScroll);
     return () => document.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   if (!headings || (Array.isArray(headings) && !headings.length)) {
     return null;
@@ -121,6 +121,7 @@ const ContentSideNav = ({ version }) => {
 
 ContentSideNav.propTypes = {
   version: string,
+  slug: string,
 };
 
 export default ContentSideNav;
