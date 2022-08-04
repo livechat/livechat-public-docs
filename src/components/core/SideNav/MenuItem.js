@@ -13,7 +13,6 @@ const LinkWrapper = styled.div`
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
-
   &:hover {
     background-color: #f6f6f7;
   }
@@ -28,7 +27,6 @@ const LinkArea = styled.div`
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
   width: 100%;
-
   &:hover {
     background-color: #f6f6f7;
   }
@@ -75,7 +73,7 @@ const MenuItem = ({
     path = path += "/";
   }
   const isNotBasePath = link !== "/" + category + "/";
-  const isActivePath = (path + "/").startsWith(link);
+  const isActivePath = path.startsWith(link);
   const hasSubItems = items.length > 1;
   const displaySubNav = isNotBasePath && isActivePath && hasSubItems;
   const [open, setOpen] = useState(displaySubNav);
@@ -97,9 +95,10 @@ const MenuItem = ({
             </LinkArea>
           </StyledLink>
         </Link>
-        {items.length > 1 && isNotBasePath && (
+
+        {hasSubItems && isNotBasePath && (
           <ChevronWrapper isOpen={open} onClick={() => setOpen(!open)}>
-            <ChevronRight fill="#62626D" />
+            <ChevronRight fill="#62626D" width="24px" height="24px" />
           </ChevronWrapper>
         )}
       </LinkWrapper>
