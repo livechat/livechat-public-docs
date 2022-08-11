@@ -7,14 +7,20 @@ tagline: "Going through authorization in practice."
 desc: "Learn how to authorize your app to send a sample request using our Messaging APIs. A step-by-step tutorial that guides you through the process."
 ---
 
-# Customer authorization flows
+# Introduction
 
 To authorize requests to the [Customer Chat API](/messaging/customer-chat-api/), you'll need a different access token than the one used for the [Agent Chat API](/messaging/agent-chat-api/) and [Configuration API](/management/configuration-api/).
 Throughout the whole API documentation, we'll refer to it as `customer_access_token`.
 
 Customer authorization flows allow you to receive an identity of a customer. You can do it via [Cookie grant](#cookie-grant) if you want to receive an identity of a single customer or via [Agent token grant](#agent-token-grant) in order to manage multiple customer identities.
 
-## Cookie grant
+## Postman collection
+
+You can find all the requests from the Agent and Customer authorization flows in Postman. Remember to replace sample parameters with your own.
+
+[<div style={{maxWidth: '123px'}}><img alt="Run in Postman" src="https://run.pstmn.io/button.svg" width="123px" height="30px"/></div>](https://god.gw.postman.com/run-collection/20754404-ab4b398a-f906-4431-a17c-2f6673f0b8e8?action=collection%2Ffork&collection-url=entityId%3D20754404-ab4b398a-f906-4431-a17c-2f6673f0b8e8%26entityType%3Dcollection%26workspaceId%3D5e6fb31b-587b-4258-b215-4dccaae38a38)
+
+# Cookie grant
 
 Cookie grant is based on the `__lc_cid` and `__lc_cst` cookies, which store your customer identity data. These cookies are protected with the `Secure` and `HttpOnly` flags, which means that one can send the cookies only via HTTPS and only specific servers can access them.
 
@@ -25,7 +31,7 @@ This flow is recommended for frontend apps that support cookies, such as an app 
 <Section>
 <Text>
 
-### Case: New customer
+## Case: New customer
 
 Use this variant to receive a new customer identity. To acquire an access token, make an HTTP POST request to the following URL:
 
@@ -98,7 +104,7 @@ curl "https://accounts.livechat.com/customer/token" \
 </Code>
 </Section>
 
-### Case: Existing customer
+## Case: Existing customer
 
 Use this option to generate a new access token for an already existing customer identity.
 
@@ -106,7 +112,7 @@ To achieve that, make the same exact same request as in [Case: New customer](#ca
 
 Your `entity_id`, or any other customer identity data, won' be overwritten. The web browser will attach cookies to the server allowing it to recognize you as an existing customer. You'll get a new access token, and cookies' lifetime will be extended, too. They will be valid for 2 years from your last request to `https://accounts.livechat.com/customer/token`.
 
-### Case: Separating customer identity between groups
+## Case: Separating customer identity between groups
 
 Use this option to generate a new access token for a customer (existing or a new one), but with a separate identity per group. This requires the `chat_between_groups` license property to be set to `false`.
 
@@ -116,7 +122,7 @@ All other parameters in this request are the same as in [Case: New customer](#ca
 https://accounts.livechat.com/v2/customer/<organization_id>/<group_id>/token
 ```
 
-## Agent token grant
+# Agent token grant
 
 Agent token grant lets you create customer identity and use it to act on behalf of a customer. To begin, you'll need an **agent access token** with the `customers:own` scope. You can get it via all of the [Agent authorization flows](/authorization/authorizing-api-calls/#agent-authorization-flows) except for Personal Access Tokens.
 
@@ -125,7 +131,7 @@ Agent token grant is recommended for backend integrations. It allows you to impe
 <Section>
 <Text>
 
-### Case: New customer
+## Case: New customer
 
 First of all, make a HTTP POST request to create a new customer identity by calling the following URL:
 
@@ -192,7 +198,7 @@ curl "https://accounts.livechat.com/customer/token" \
 <Section>
 <Text>
 
-### Case: Existing customer
+## Case: Existing customer
 
 Use this option to get a new access token for an already existing customer identity.
 
@@ -231,11 +237,11 @@ curl "https://accounts.livechat.com/customer/token" \
 </Code>
 </Section>
 
-## Identity token grant
+# Identity token grant
 
 **Identity token grant** lets you transfer a customer identity from one place to another, for example transfer the identity between devices or web browsers. To begin, you'll need **a valid agent or customer access token**.
 
-### Step 1: Generate an identity transfer token
+## Step 1: Generate an identity transfer token
 
 First, you need to generate an identity transfer token by calling the following URL:
 
@@ -299,7 +305,7 @@ curl "https://accounts.livechat.com/customer/identity_transfer" \
 </Code>
 </Section>
 
-### Step 2: Exchange the identity transfer token
+## Step 2: Exchange the identity transfer token
 
 After you've obtained an **identity transfer token**, you're able to exchange it for a **customer access token** using the **identity_transfer** grant type. To do so, call:
 
@@ -368,10 +374,10 @@ curl "https://accounts.livechat.com/customer/token" \
 </Code>
 </Section>
 
-## Revoking tokens
+# Revoking tokens
 
 Look at the [Customer Accounts API specification](/authorization/customer-accounts-api/#tag/Tokens/paths/~1token/delete) to find more details about revoking customer tokens.
 
-## Validating the access token
+# Validating the access token
 
 The instruction on how to validate customer access token of a customer is available in the [Customer Accounts API specification](/authorization/customer-accounts-api/#tag/Tokens/paths/~1info/get).
