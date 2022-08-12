@@ -4,11 +4,11 @@ import TagManager from "react-gtm-module";
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
-import "../components/core/fonts.css";
-import "../components/core/layout.css";
-import "../components/core/prism.css";
-import "../components/core/algolia.css";
-import "../components/core/redoc.css";
+import "../styles/fonts.css";
+import "../styles/layout.css";
+import "../styles/prism.css";
+import "../styles/algolia.css";
+import "../styles/redoc.css";
 import { setupAmplitude } from "../utils";
 
 function MyApp({ Component, pageProps }) {
