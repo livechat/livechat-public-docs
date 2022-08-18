@@ -212,6 +212,20 @@ const Profile = () => {
       itemId: 3,
       content: (
         <a
+          href="https://discord.gg/NcfJu3a9kM"
+          css={linkCss}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={handleClose}
+        >
+          Join our Discord
+        </a>
+      ),
+    },
+    {
+      itemId: 4,
+      content: (
+        <a
           href="https://my.livechatinc.com/"
           css={linkCss}
           target="_blank"
@@ -224,7 +238,7 @@ const Profile = () => {
       divider: true,
     },
     {
-      itemId: 4,
+      itemId: 5,
       content: (
         <LoggingItemWrapper>
           {isAuthorized ? `Log out` : `Log in`}
