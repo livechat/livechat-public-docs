@@ -198,7 +198,7 @@ const Profile = () => {
       itemId: 2,
       content: (
         <a
-          href="https://developers.livechat.com/console/"
+          href={process.env.NEXT_PUBLIC_CONSOLE_URL}
           css={linkCss}
           target="_blank"
           rel="noopener noreferrer"
@@ -212,7 +212,7 @@ const Profile = () => {
       itemId: 3,
       content: (
         <a
-          href="https://discord.gg/NcfJu3a9kM"
+          href={process.env.NEXT_PUBLIC_DISCORD_DROPDOWN_URL}
           css={linkCss}
           target="_blank"
           rel="noopener noreferrer"
@@ -226,7 +226,7 @@ const Profile = () => {
       itemId: 4,
       content: (
         <a
-          href="https://my.livechatinc.com/"
+          href={process.env.NEXT_PUBLIC_AGENT_APP_URL}
           css={linkCss}
           target="_blank"
           rel="noopener noreferrer"
