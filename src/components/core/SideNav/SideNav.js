@@ -62,7 +62,6 @@ const MenuWrapper = styled.div`
   height: calc(100% - 90px);
   @media (min-width: 768px) {
     height: calc(100% - 60px);
-    top: 110px;
     position: fixed;
 
     display: flex;
