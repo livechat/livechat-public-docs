@@ -35,6 +35,7 @@ const ContentSideNav = dynamic(
   { ssr: false, loading: () => <p>...</p> }
 );
 import Rating from "../core/Rating";
+import Footer from "../core/Footer/Footer";
 import {
   Headings,
   CodeBlocks,
@@ -227,6 +228,7 @@ const Page = ({ frontMatter, children }) => {
 
               {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
             </MainWrapper>
+            <Footer />
           </PromotionProvider>
         </VersionProvider>
       </RatingProvider>

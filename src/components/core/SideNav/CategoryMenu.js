@@ -13,9 +13,9 @@ import CurrencyUsd from "react-material-icon-svg/dist/CurrencyUsd";
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  position: fixed;
   @media (min-width: 420px) {
     width: 260px;
+    top: 110px;
   }
 `;
 

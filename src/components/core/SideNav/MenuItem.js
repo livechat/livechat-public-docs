@@ -87,7 +87,7 @@ const MenuItem = ({
         </Link>
         {items.length > 1 && isNotBasePath && (
           <ChevronWrapper isOpen={open} onClick={() => setOpen(!open)}>
-            <ChevronRight fill="#62626D" />
+            <ChevronRight fill="#62626D" height="24px" weight="24px" />
           </ChevronWrapper>
         )}
       </LinkWrapper>

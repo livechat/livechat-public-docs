@@ -138,8 +138,6 @@ export const MiddleColumn = styled.div`
   width: 100%;
 
   @media (min-width: 768px) {
-    margin-left: ${({ noMargin }) => (noMargin ? "0px" : "260px")};
-
     ${({ fullWidth }) =>
       fullWidth
         ? "width: 100%;"
