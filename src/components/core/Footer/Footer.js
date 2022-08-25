@@ -29,7 +29,7 @@ const footerData = [
     content: "Get in direct contact with us through Discord.",
     buttonIcon: <Discord />,
     buttonCopy: "Discord",
-    buttonLink: process.env.NEXT_PUBLIC_DISCORD_FOOTER_LINK,
+    buttonLink: process.env.NEXT_PUBLIC_DISCORD_FOOTER_URL,
   },
   {
     title: "Follow us",
@@ -43,7 +43,7 @@ const footerData = [
     content: "See something that's wrong or unclear? Submit a pull request.",
     buttonIcon: <Github />,
     buttonCopy: "GitHub",
-    buttonLink: process.env.NEXT_PUBLIC_TWITTER_GITHUB,
+    buttonLink: process.env.NEXT_PUBLIC_GITHUB_LIVECHAT,
   },
   {
     title: "Contact us",
