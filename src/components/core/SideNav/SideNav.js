@@ -12,8 +12,8 @@ import MenuItem from "./MenuItem";
 import NestedMenu from "./NestedMenu";
 import { getStableVersion } from "../../../utils";
 
-const Wrapper = styled.div`
-  border: 1px solid #e2e2e4;
+const Wrapper = styled.aside`
+  border-right: 1px solid #e2e2e4;
   height: ${({ isExpanded }) => (isExpanded ? "500px" : "50px")};
   position: fixed;
   transition: height 300ms;
@@ -25,12 +25,13 @@ const Wrapper = styled.div`
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
   background-color: white;
   @media (min-width: 768px) {
-    padding-top: 60px;
     box-shadow: none;
-    position: fixed;
-    height: 100%;
-    width: 260px;
+    height: 100vh;
+    max-height: 100vh;
+    position: sticky;
+    top: 60px;
     transition: all 0s;
+    width: 260px;
   }
 `;
 
@@ -61,6 +62,15 @@ const MenuWrapper = styled.div`
   height: calc(100% - 90px);
   @media (min-width: 768px) {
     height: calc(100% - 60px);
+    position: fixed;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100vh;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
   }
 `;
 
