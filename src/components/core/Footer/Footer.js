@@ -63,6 +63,7 @@ const Footer = () => {
         ({ title, content, buttonCopy, buttonIcon, buttonLink }) => {
           return (
             <FooterBox
+              key={`${title}`}
               title={title}
               content={content}
               buttonCopy={buttonCopy}
