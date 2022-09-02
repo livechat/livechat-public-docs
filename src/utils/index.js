@@ -88,7 +88,7 @@ export const setupDocsearch = () => {
     apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
     indexName: "livechatinc",
     inputSelector: "#search",
-    debug: true,
+    debug: false,
     algoliaOptions: {
       hitsPerPage: 7,
     },
