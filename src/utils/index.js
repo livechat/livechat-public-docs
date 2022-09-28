@@ -112,6 +112,38 @@ export const setupDocsearch = () => {
         window.location.replace(newLocation);
       }
     },
+    transformData: (hits) => {
+      const updatedHits = hits.map((hit) => {
+        let content = null;
+
+        // Some search results are unclear. Sometimes there's missing information
+        // whether such a document is in the Customer Chat API or Agent Chat API.
+        const unclearSearchMatches = [
+          { regex: /customer-chat-api/g, content: "Customer Chat API" },
+          { regex: /agent-chat-api/g, content: "Agent Chat API" },
+        ];
+
+        unclearSearchMatches.forEach((item) => {
+          const result = hit.url.match(item.regex);
+
+          if (Array.isArray(result) && result.length > 0) {
+            content = item.content;
+          }
+        });
+
+        if (content)
+          return {
+            ...hit,
+            content: content,
+          };
+
+        return {
+          ...hit,
+        };
+      });
+
+      return updatedHits;
+    },
   });
 };
 
