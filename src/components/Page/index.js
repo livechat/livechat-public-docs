@@ -42,6 +42,7 @@ import {
   Scopes,
   Errors,
   Placeholder,
+  ImageContainer
 } from "../extensions";
 
 import { Header as PageHeader } from "../core/Page";
@@ -52,6 +53,7 @@ const components = {
   Scopes,
   Errors,
   Placeholder,
+  ImageContainer
 };
 
 const Page = ({ frontMatter, children }) => {
