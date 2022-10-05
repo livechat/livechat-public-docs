@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { RedocStandalone } from "redoc";
 import specs from "../../configs/redoc/specs";
 import configs from "../../configs/redoc/configs";
@@ -6,7 +6,7 @@ import configs from "../../configs/redoc/configs";
 const Redoc = ({ name }) => {
   const [showPlaceholder, setShowPlaceholder] = useState(true);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setShowPlaceholder(false);
   }, []);
 
