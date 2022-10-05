@@ -42,7 +42,7 @@ const imgStyles = () => css`
   max-height: 100%;
 `;
 
-const ImageContainer = ({ ...props }) => {
+const Image = ({ ...props }) => {
   if (!props?.src || !props?.height || !props?.width) {
     throw new Error("Missing one of the props: src, height or width");
   }
@@ -60,4 +60,4 @@ const ImageContainer = ({ ...props }) => {
   );
 };
 
-export default  ImageContainer;
+export default  Image;

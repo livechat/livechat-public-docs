@@ -3,7 +3,7 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
-
+import Image from "./Image"
 import { Button } from "@livechat/design-system";
 import { LinkIcon } from "../core/icons";
 
@@ -49,59 +49,6 @@ const Pre = ({ children, ...props }) => {
   return (
     <div className="remark-highlight">
       <pre {...props}>{children}</pre>
-    </div>
-  );
-};
-
-const imgWrapper = () => css`
-  display: block;
-  max-width: 100%;
-  overflow: hidden;
-  position: relative;
-  box-sizing: border-box;
-  margin: 0;
-`;
-
-const boxStyles = (imageHeight, imageWidth) => css`
-  box-sizing: border-box;
-  display: block;
-  max-width: 100%;
-  padding-top: calc(${imageHeight} / ${imageWidth} * 100%);
-`;
-
-const imgStyles = () => css`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  box-sizing: border-box;
-  padding: 0;
-  border: none;
-  margin: auto;
-  display: block;
-  width: 0;
-  height: 0;
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
-`;
-
-const Img = ({ ...props }) => {
-  if (!props?.src || !props?.height || !props?.width) {
-    throw new Error("Missing one of the props: src, height or width");
-  }
-
-  const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
-
-  const imageHeight = props.height.replace("px", "");
-  const imageWidth = props.width.replace("px", "");
-
-  return (
-    <div css={imgWrapper}>
-      <div css={() => boxStyles(imageHeight, imageWidth)}></div>
-      <img {...props} src={src} decoding="async" css={imgStyles} />
     </div>
   );
 };
@@ -375,7 +322,7 @@ export default {
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
   a: A,
-  img: Img,
+  img: Image,
   pre: Pre,
   Warning,
   SectionBanner,
