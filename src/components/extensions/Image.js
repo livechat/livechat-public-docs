@@ -42,19 +42,19 @@ const imgStyles = () => css`
   max-height: 100%;
 `;
 
-const Image = ({ ...props }) => {
-  if (!props?.src || !props?.height || !props?.width) {
+const Image = ({ src, height, width, marginBottom, ...rest }) => {
+  if (!src || !height || !width) {
     throw new Error("Missing one of the props: src, height or width");
   }
-  const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
+  const source = src.startsWith("http") ? src : `/docs${src}`;
 
-  const imageHeight = props.height.replace("px", "");
-  const imageWidth = props.width.replace("px", "");
-  const imageMarginBottom = props.marginBottom;
+  const imageHeight = height.replace("px", "");
+  const imageWidth = width.replace("px", "");
+  const imageMarginBottom = marginBottom;
   return (
     <div css={() => imgWrapper(imageMarginBottom)}>
       <div css={() => boxStyles(imageHeight, imageWidth )}>
-      <img {...props} src={src} decoding="async" css={imgStyles} />
+      <img {...rest} src={source} decoding="async" css={imgStyles} />
       </div> 
     </div>
   );
