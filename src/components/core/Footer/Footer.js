@@ -1,5 +1,4 @@
-import React from "react";
-/** @jsx jsx */
+/** @jsxImportSource @emotion/core */
 import { jsx, css } from "@emotion/core";
 import Twitter from "react-material-icon-svg/dist/Twitter";
 import Github from "react-material-icon-svg/dist/Github";
