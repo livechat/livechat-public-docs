@@ -94,7 +94,7 @@ const Img = ({ ...props }) => {
     throw new Error("Missing one of the props: src, height or width");
   }
 
-  const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
+  const src = props.src;
 
   const imageHeight = props.height.replace("px", "");
   const imageWidth = props.width.replace("px", "");
