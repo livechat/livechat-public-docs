@@ -11,7 +11,7 @@ const NestedMenu = ({
   version = VERSIONS_GROUPS.DEFAULT.STABLE_VERSION,
 }) => {
   const router = useRouter();
-  const pathname = router.pathname;
+  const pathname = router.asPath;
   const items = containers.filter(
     (container) => container.category === category
   )[0].items;
@@ -20,10 +20,6 @@ const NestedMenu = ({
     const subItems = articles.filter((article) =>
       article.link.startsWith(item.slug)
     );
-    const isNotBasePath = item.slug !== "/" + category + "/";
-    const isActivePath = pathname.startsWith(item.slug);
-    const hasSubItems = subItems.length > 1;
-    const displaySubNav = isNotBasePath && isActivePath && hasSubItems;
 
     return (
       <MenuItem
@@ -32,7 +28,6 @@ const NestedMenu = ({
         key={item.slug}
         pathname={pathname}
         iconFill="#ABABB1"
-        isOpen={displaySubNav}
         items={subItems
           .filter((article) => article.category === category)
           .filter(
@@ -42,7 +37,7 @@ const NestedMenu = ({
           .sort((a, b) => {
             return a.weight - b.weight;
           })}
-        isNotBasePath={isNotBasePath}
+        category={category}
       />
     );
   });

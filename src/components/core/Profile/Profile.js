@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import AccountCircleOutline from "react-material-icon-svg/dist/AccountCircleOutline";
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+
+/** @jsxImportSource @emotion/core */
+import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Dropdown, DropdownList } from "@livechat/design-system";
 

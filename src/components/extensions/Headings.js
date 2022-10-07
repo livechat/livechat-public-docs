@@ -1,6 +1,7 @@
 import React from "react";
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+
+/** @jsxImportSource @emotion/core */
+import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
@@ -93,7 +94,7 @@ const Img = ({ ...props }) => {
     throw new Error("Missing one of the props: src, height or width");
   }
 
-  const src = props.src.startsWith("http") ? props.src : `/docs${props.src}`;
+  const src = props.src;
 
   const imageHeight = props.height.replace("px", "");
   const imageWidth = props.width.replace("px", "");

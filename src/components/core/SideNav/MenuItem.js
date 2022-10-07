@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { string, bool } from "prop-types";
 import styled from "@emotion/styled";
@@ -13,7 +13,6 @@ const LinkWrapper = styled.div`
   font-weight: ${({ isActive }) => (isActive ? "600" : "500")};
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
-
   &:hover {
     background-color: #f6f6f7;
   }
@@ -28,7 +27,6 @@ const LinkArea = styled.div`
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
   width: 100%;
-
   &:hover {
     background-color: #f6f6f7;
   }
@@ -68,15 +66,27 @@ const MenuItem = ({
   iconFill,
   title,
   items = [],
-  isOpen = false,
-  isNotBasePath,
+  category,
 }) => {
-  const [open, setOpen] = useState(isOpen);
+  let path = pathname.split("#")[0];
+  if (path.substr(path.length - 1) !== "/") {
+    path = path += "/";
+  }
+  const isNotBasePath = link !== "/" + category + "/";
+  const isActivePath = path.startsWith(link);
+  const hasSubItems = items.length > 1;
+  const displaySubNav = isNotBasePath && isActivePath && hasSubItems;
+  const [open, setOpen] = useState(displaySubNav);
+
+  useEffect(() => {
+    setOpen(displaySubNav);
+  }, [displaySubNav]);
+
   return (
     <>
-      <LinkWrapper isActive={pathname + "/" === link}>
+      <LinkWrapper isActive={path === link}>
         <Link href={link}>
-          <StyledLink isActive={pathname + "/" === link}>
+          <StyledLink isActive={path === link}>
             <LinkArea isSubItem={false}>
               <IconWrapper>
                 <ArticleIcon fill={iconFill} />
@@ -85,7 +95,8 @@ const MenuItem = ({
             </LinkArea>
           </StyledLink>
         </Link>
-        {items.length > 1 && isNotBasePath && (
+
+        {hasSubItems && isNotBasePath && (
           <ChevronWrapper isOpen={open} onClick={() => setOpen(!open)}>
             <ChevronRight fill="#62626D" height="24px" weight="24px" />
           </ChevronWrapper>
@@ -95,11 +106,8 @@ const MenuItem = ({
         items.map((item) => {
           return (
             <Link href={item.link} key={item.link}>
-              <StyledLink isActive={pathname + "/" === item.link}>
-                <LinkArea
-                  isActive={pathname + "/" === item.link}
-                  isSubItem={true}
-                >
+              <StyledLink isActive={path === item.link}>
+                <LinkArea isActive={path === item.link} isSubItem={true}>
                   <IconWrapper>
                     <ArticleIcon fill={iconFill} />
                   </IconWrapper>

@@ -26,7 +26,7 @@ const IconWrapper = styled.div`
 
 const StyledLink = styled.a`
   width: 100%;
-  color:#62626D;
+  color: #62626d;
   &:hover {
     cursor: pointer;
     text-decoration: none;
@@ -41,7 +41,7 @@ const HomeItem = () => {
         <StyledLink>
           <LinkWrapper>
             <IconWrapper>
-              <Home  fill="#62626D"height="20px" />
+              <Home fill="#62626D" height="20px" />
             </IconWrapper>
             Home
           </LinkWrapper>

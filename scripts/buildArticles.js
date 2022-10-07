@@ -3,7 +3,7 @@ const path = require("path");
 const matter = require("gray-matter");
 const glob = require("glob");
 
-const articlesDirectory = path.join(process.cwd(), "src/pages/");
+const articlesDirectory = path.join(process.cwd(), "src/content/");
 
 const getDirectories = (src, callback) => glob(src + "/**/*", callback);
 
@@ -69,7 +69,7 @@ getDirectories(articlesDirectory, (err, res) => {
             .replace(prefix, "")
             .replace(/\*/g, "")
             .replace(/`/g, ""),
-          link: link.substring(0, link.length - 1) + "#" + slug,
+          link: link.substring(0, link.length - 1) + "/#" + slug,
           slug,
           nestingLevel,
         });
