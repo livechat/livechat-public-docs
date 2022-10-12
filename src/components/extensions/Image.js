@@ -47,12 +47,10 @@ const Image = ({ src, height, width, marginBottom, ...rest }) => {
     throw new Error("Missing one of the props: src, height or width");
   }
   const source = src.startsWith("http") ? src : `/docs${src}`;
-
   const imageHeight = height.replace("px", "");
   const imageWidth = width.replace("px", "");
-  const imageMarginBottom = marginBottom;
   return (
-    <div css={() => imgWrapper(imageMarginBottom)}>
+    <div css={() => imgWrapper(marginBottom)}>
       <div css={() => boxStyles(imageHeight, imageWidth )}>
       <img {...rest} src={source} decoding="async" css={imgStyles} />
       </div> 
