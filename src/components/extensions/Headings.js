@@ -2,10 +2,11 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
-import Link from "next/link";
 import Image from "./Image"
+import CustomLink from "./CustomLink"
 import { Button } from "@livechat/design-system";
-import { LinkIcon } from "../core/icons";
+
+import Link from "next/link";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -28,22 +29,6 @@ const HeadingLink = styled.a`
   }
 `;
 
-const CodeLink = styled.a`
-  text-decoration: none;
-  svg {
-    vertical-align: middle;
-    margin-left: 2px;
-    margin-right: 4px;
-    color: var(--code-inline-color);
-  }
-  &:hover,
-  &:active {
-    text-decoration: none;
-    code {
-      background-color: #efe8e8;
-    }
-  }
-`;
 
 const Pre = ({ children, ...props }) => {
   return (
@@ -53,44 +38,6 @@ const Pre = ({ children, ...props }) => {
   );
 };
 
-const A = ({ children, ...props }) => {
-  // hack for code-links
-  if (children.props && children.props.mdxType === "inlineCode") {
-    return (
-      <Link href={props.href} passHref>
-        <CodeLink {...props}>
-          {children}
-          <LinkIcon />
-        </CodeLink>
-      </Link>
-    );
-  }
-
-  if (
-    children.props &&
-    (children.props.mdxType === "strong" ||
-      children.props.originalType === "img")
-  ) {
-    return (
-      <Link href={props.href} passHref>
-        <a>{children}</a>
-      </Link>
-    );
-  }
-
-  if (
-    children.props &&
-    (children.props.parentName === "a" || children.props.mdxType === "a")
-  ) {
-    return <Link href={props.href}>{children}</Link>;
-  }
-
-  return (
-    <Link {...props} passHref>
-      <a {...props}>{children}</a>
-    </Link>
-  );
-};
 
 export const getText = (children) => {
   if (typeof children !== "string") {
@@ -321,7 +268,7 @@ export default {
   h4: makeHeading("h4"),
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
-  a: A,
+  a: CustomLink,
   img: Image,
   pre: Pre,
   Warning,

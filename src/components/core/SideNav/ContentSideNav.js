@@ -33,14 +33,14 @@ const Wrapper = styled.div`
 `;
 
 const StyledLink = styled.a`
-  color: ${({ isActive }) => (isActive ? "#328DFF" : "#5e6c78")};
+  color: ${({ isActive }) => (isActive ? "#4284F5" : "#5e6c78")};
   transition: color 200ms;
   font-size: 14px;
   padding-left: ${({ nestingLevel }) => `${10 * nestingLevel}px`};
   font-weight: 500;
 
   &:hover {
-    color: #328dff;
+    color: #4284F5;
     cursor: pointer;
     text-decoration: none;
   }
