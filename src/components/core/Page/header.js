@@ -24,7 +24,7 @@ const StyledRating = styled(Rating)`
   > label {
     margin: 6px 0 5px 0;
   }
-  > div {
+  label + div {
     justify-content: flex-end;
   }
 `;
