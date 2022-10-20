@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import styled from "@emotion/styled";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
@@ -55,6 +56,17 @@ const components = {
   Placeholder,
   Image
 };
+
+const StyledRating = styled(Rating)`
+  margin-top: 50px;
+
+  > label {
+    margin: 0 0 5px 0;
+  }
+  label + div {
+    justify-content: center;
+  }
+`;
 
 const Page = ({ frontMatter, children }) => {
   const {
@@ -221,9 +233,9 @@ const Page = ({ frontMatter, children }) => {
                   <MDXProvider components={components}>{children}</MDXProvider>
 
                   {!useRedocPage && (
-                    <RatingWrapper>
-                      <Rating position={RATING_POSITION.BOTTOM} />
-                    </RatingWrapper>
+
+                      <StyledRating position={RATING_POSITION.BOTTOM} />
+
                   )}
                 </Content>
               </MiddleColumn>

@@ -265,7 +265,7 @@ export const RatingWrapper = styled.div`
     margin-top: 50px;
 
     > label {
-      margin: 0px 0 5px 0;
+      margin: 0 0 5px 0;
     }
     > div {
     justify-content: center;
