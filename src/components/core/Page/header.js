@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-
+import { RATING_POSITION } from "../../../constant";
 import Rating from "../Rating";
 
 const PageTitle = styled.h1`
@@ -18,12 +18,6 @@ const PageHeaderWrapper = styled.div`
   padding: 2em 0 1em;
 `;
 
-const PageSubtitle = styled.div`
-  font-size: 14px;
-  color: gray;
-  margin-bottom: 1.45rem;
-`;
-
 const StyledRating = styled(Rating)`
   margin-top: 8px;
 
@@ -39,7 +33,7 @@ const PageHeader = ({ title }) => (
   <PageHeaderWrapper>
     <PageTitle>
       <span>{title}</span>
-      <StyledRating label="Was this page helpful?" position="top"/>
+      <StyledRating position={RATING_POSITION.TOP}/>
     </PageTitle>
   </PageHeaderWrapper>
 );

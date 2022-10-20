@@ -34,6 +34,7 @@ const ContentSideNav = dynamic(
   () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
   { ssr: false, loading: () => <p>...</p> }
 );
+import { RATING_POSITION } from "../../constant";
 import Rating from "../core/Rating";
 import Footer from "../core/Footer/Footer";
 import {
@@ -44,7 +45,6 @@ import {
   Placeholder,
   Image
 } from "../extensions";
-
 import { Header as PageHeader } from "../core/Page";
 
 const components = {
@@ -222,7 +222,7 @@ const Page = ({ frontMatter, children }) => {
 
                   {!useRedocPage && (
                     <RatingWrapper>
-                      <Rating label="Was this page helpful?" position="bottom"/>
+                      <Rating position={RATING_POSITION.BOTTOM} />
                     </RatingWrapper>
                   )}
                 </Content>

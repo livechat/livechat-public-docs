@@ -3,8 +3,9 @@ import styled from "@emotion/styled";
 import PropTypes from 'prop-types';
 import ThumbIcon from "./ThumbIcon";
 import FeedbackModal from "./modal";
-import { RATES } from "../../../constant";
+import { RATES, RATING_TEXT } from "../../../constant";
 import { RatingContext } from "../../../contexts";
+import { useAuth } from "contexts/auth";
 
 const Wrapper = styled.div`
   height: 25px;
@@ -33,8 +34,9 @@ const Container = styled.div`
     }
 `;
 
-const Rating = ({ label, className, position }) => {
+const Rating = ({ className, position }) => {
   const { selectedRating, saveRating } = useContext(RatingContext);
+  const { user: { email } } = useAuth()
   const [isModalOpen, setModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -43,8 +45,8 @@ const Rating = ({ label, className, position }) => {
   }, []);
 
   const handleRateClick = (index) => {
-    saveRating(index, position);
-    if (RATES[index] === "It's not OK") {
+    saveRating(index, position, email);
+    if (RATES[index] === RATING_TEXT.BAD) {
       setModalOpen(true);
     }
   };
@@ -55,7 +57,7 @@ const Rating = ({ label, className, position }) => {
 
   return (
     <Wrapper className={className}>
-      <Label>{label}</Label>
+      <Label>Was this page helpful?</Label>
       <Container>
       {RATES.map((rate, index) => {
         const isSelected = selectedRating === index;
@@ -80,7 +82,6 @@ const Rating = ({ label, className, position }) => {
 };
 
 Rating.propTypes = {
-  label: PropTypes.string,
   className: PropTypes.string,
   position: PropTypes.string
 }
