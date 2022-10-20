@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-
-import Star from "./star";
+import PropTypes from 'prop-types';
+import ThumbIcon from "./ThumbIcon";
 import FeedbackModal from "./modal";
 import { RATES } from "../../../constant";
 import { RatingContext } from "../../../contexts";
@@ -9,6 +9,8 @@ import { RatingContext } from "../../../contexts";
 const Wrapper = styled.div`
   height: 25px;
   display: flex;
+  gap: 10px;
+  flex-direction: column;
   align-items: center;
 
   @media (max-width: 768px) {
@@ -19,12 +21,20 @@ const Wrapper = styled.div`
 const Label = styled.label`
   font-family: "Source Sans Pro";
   font-size: 14px;
-  color: gray;
+  color: #424D57;
 `;
 
-const Rating = ({ label, className }) => {
-  const { selectedStar, saveRating } = useContext(RatingContext);
-  const [hoverStar, setHoverStar] = useState(-1);
+const Container = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
+    & #rating-1 path {
+      transform: rotate(180deg);
+    }
+`;
+
+const Rating = ({ label, className, position }) => {
+  const { selectedRating, saveRating } = useContext(RatingContext);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -32,9 +42,9 @@ const Rating = ({ label, className }) => {
     setIsMounted(true);
   }, []);
 
-  const handleStarClick = (i) => {
-    saveRating(i);
-    if (i <= 2) {
+  const handleRateClick = (index) => {
+    saveRating(index, position);
+    if (RATES[index] === "It's not OK") {
       setModalOpen(true);
     }
   };
@@ -46,24 +56,19 @@ const Rating = ({ label, className }) => {
   return (
     <Wrapper className={className}>
       <Label>{label}</Label>
-      {RATES.map((rate, i) => {
-        const isHover = hoverStar > i - 1;
-        const isSelected = selectedStar > i - 1;
-        const isRated = selectedStar === i;
+      <Container>
+      {RATES.map((rate, index) => {
+        const isSelected = selectedRating === index;
         return (
-          <Star
+          <ThumbIcon
             key={rate}
-            handleMouseEnter={() => setHoverStar(i)}
-            handleMouseLeave={() => setHoverStar(-1)}
-            handleClick={() => handleStarClick(i)}
-            isHover={isHover}
+            handleClick={() => handleRateClick(index)}
             isSelected={isSelected}
-            isRated={isRated}
-            text={RATES[i]}
-            id={`rating-${i}`}
+            id={`rating-${index}`}
           />
         );
-      })}
+      })} 
+      </Container>
       {isModalOpen && (
         <FeedbackModal
           isOpen={isModalOpen}
@@ -73,5 +78,11 @@ const Rating = ({ label, className }) => {
     </Wrapper>
   );
 };
+
+Rating.propTypes = {
+  label: PropTypes.string,
+  className: PropTypes.string,
+  position: PropTypes.string
+}
 
 export default Rating;

@@ -28,7 +28,10 @@ const StyledRating = styled(Rating)`
   margin-top: 8px;
 
   > label {
-    margin: 6px 10px 5px 0;
+    margin: 6px 0 5px 0;
+  }
+  > div {
+    justify-content: flex-end;
   }
 `;
 
@@ -36,7 +39,7 @@ const PageHeader = ({ title }) => (
   <PageHeaderWrapper>
     <PageTitle>
       <span>{title}</span>
-      <StyledRating label="Rate this page:" />
+      <StyledRating label="Was this page helpful?" position="top"/>
     </PageTitle>
   </PageHeaderWrapper>
 );

@@ -222,7 +222,7 @@ const Page = ({ frontMatter, children }) => {
 
                   {!useRedocPage && (
                     <RatingWrapper>
-                      <Rating label="Was this article helpful?" />
+                      <Rating label="Was this page helpful?" position="bottom"/>
                     </RatingWrapper>
                   )}
                 </Content>

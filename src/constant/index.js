@@ -29,7 +29,7 @@ const VERSIONS_GROUPS = {
   },
 };
 
-const RATES = ["It's unusable", "Rather poor", "It's OK", "Great", "Excellent"];
+const RATES = ["It's OK", "It's not OK"];
 
 const AUTH_TYPE = {
   iframe: "iframe",
