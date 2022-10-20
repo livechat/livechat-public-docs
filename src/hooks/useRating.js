@@ -17,7 +17,6 @@ const useRating = ({ slug }) => {
     const newRating = {
       rating: index,
       slug,
-      position
     };
 
     newRatings.push(newRating);
