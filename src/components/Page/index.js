@@ -23,7 +23,6 @@ import {
   MainWrapper,
   MiddleColumn,
   Content,
-  RatingWrapper,
   LeftColumnRedoc,
   LeftColumnRedocWrapper,
   NavHeader,
@@ -233,9 +232,7 @@ const Page = ({ frontMatter, children }) => {
                   <MDXProvider components={components}>{children}</MDXProvider>
 
                   {!useRedocPage && (
-
-                      <StyledRating position={RATING_POSITION.BOTTOM} />
-
+                    <StyledRating position={RATING_POSITION.BOTTOM} />
                   )}
                 </Content>
               </MiddleColumn>

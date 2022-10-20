@@ -679,7 +679,6 @@ const RATING_POSITION = {
 
 const RATES = [RATING_TEXT.GOOD, RATING_TEXT.BAD];
 
-
 const constants = {
   VERSIONS_GROUPS,
   SCOPES,

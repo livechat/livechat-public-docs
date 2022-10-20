@@ -255,20 +255,3 @@ export const MenuElement = ({ url, title, onClick, active }) => (
     )}
   </Li>
 );
-
-export const RatingWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > div {
-    margin-top: 50px;
-
-    > label {
-      margin: 0 0 5px 0;
-    }
-    > div {
-    justify-content: center;
-  }
-  }
-`;
