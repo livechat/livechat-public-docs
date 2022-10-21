@@ -22,12 +22,13 @@ const Wrapper = styled.div`
 const Label = styled.label`
   font-family: "Source Sans Pro";
   font-size: 14px;
+  letter-spacing: 0;
   color: #424D57;
 `;
 
 const Container = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
     & #rating-1 path {
       transform: rotate(180deg);

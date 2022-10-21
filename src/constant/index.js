@@ -668,8 +668,8 @@ const ERRORS = [
 ];
 
 const RATING_TEXT = {
-  BAD: "It's not OK",
-  GOOD: "It's OK",
+  BAD: "BAD",
+  GOOD: "GOOD",
 };
 
 const RATING_POSITION = {
