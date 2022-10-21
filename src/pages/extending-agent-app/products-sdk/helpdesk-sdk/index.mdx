@@ -9,4 +9,496 @@ desc: "Extend the intrface of the HelpDesk App, and introduce new functionalitie
 
 # Introduction
 
-Agent App Widgets are web applications loaded inside the **HelpDesk App** user interface.
+App Widgets are web applications loaded inside the **HelpDesk App**. They live in iframes and can interact and communicate with the HelpDesk App. Read about their possible locations in the [App locations](/extending-agent-app#app-locations) guide. The HelpDesk SDK is currently the primary way to develop your own widgets and can be used in a [basic](/extending-agent-app/products-sdk/helpdesk-sdk#basic-use) or [advanced](/extending-agent-app/products-sdk/helpdesk-sdk#advanced-use) way.
+
+## Use cases
+
+Widgets are primary elements of the HelpDesk user interface. You can use them to:
+
+- automate your processes and workflows.
+- integrate external online services or applications.
+- customize your views, reports, or payment methods.
+- translate your messages or tickets.
+
+## Before you start
+
+From a technical point of view, widgets are regular web applications. For that reason, you need to have some knowledge of HTML, CSS, and JavaScript to build your own widget.
+
+Bear in mind that widgets are front-end elements of the HelpDesk App. If your intention is to build a server-side app, we encourage you to check out the <a href="https://api.helpdesk.com/docs" target="_blank">HelpDesk API</a>.
+
+# Getting started
+
+Follow the instructions to create a basic HelpDesk Widget. Before you start, make sure you <a href="https://accounts.livechat.com/signup" target="_blank">have an account</a>.
+
+1. Go to the Apps section in <Placeholder id="DEVELOPER_CONSOLE_URL" />.
+2. Click **Create new app +** and give your app a name.
+3. Decide which product you want to build your app for.
+4. If you do not have a HelpDesk account, you will be asked to activate it.
+5. Go to **Building blocks** and add a new **HelpDesk Widgets** block.
+    - Enter the **Widget source URL**, which is the address of your application.
+    - Choose the **widget placement**. It allows you to decide where exactly in the HelpDesk App you want to display your integration. Currently, the possible locations are the Details section, Fullscreen apps, or Settings. [Read more](/extending-agent-app#app-locations) about app locations.  
+6. Additionally, you can configure your app's short decription and add an icon for better visibility in the HelpDesk App. You can do that in the **Display details** tab.
+7. Go to the **Private installation** tab and install the app on your account.
+
+After the successful installation, you'll see the widget in your HelpDesk App.
+
+## Installing the SDK
+
+You can download the SDK directly from NPM as an ES6 or CommonJS module.
+
+Install the SDK from NPM...
+
+<CodeSample>
+
+```
+npm install @helpdesk/helpdesk-sdk
+```
+
+</CodeSample>
+
+...then import the ES6 module...
+
+<CodeSample>
+
+```js
+import * as HelpDesk from "@helpdesk/helpdesk-sdk";
+```
+
+</CodeSample>
+
+...or require the CommonJS.
+
+<CodeSample>
+
+```js
+const HelpDesk = require("@helpdesk/helpdesk-sdk");
+```
+
+</CodeSample>
+
+You can also use the UMD build of the SDK directly in the browser.
+
+You can also use the UMD build:
+
+<CodeSample>
+
+```html
+<script src="https://unpkg.com/@livechat/agent-app-sdk@latest/dist/agentapp.umd.min.js"></script>
+<script>
+  HelpDesk.createDetailsWidget().then(function(widget) {
+    // do something with widget
+  });
+</script>
+```
+
+</CodeSample>
+
+# Basic use
+
+The specific usage of the HelpDesk SDK depends on the type of widget you want to create. The currently available widget types are the following:
+
+- [Details widget](#details-widgets)
+- [Fullscreen widget](#fullscreen-widgets)
+
+All widgets created with the HelpDesk SDK share a common interface, which lets you listen for the events happening in the HelpDesk App.
+
+Supposing that `widget` is a widget instance:
+
+<CodeSample>
+
+```js
+function handleEvent(event) {
+  // perform logic when event happens,
+  // you can also use the data attached to the event
+}
+
+// Subscribe to event
+widget.on("event", handleEvent);
+
+// Unsubscribe from event
+widget.off("event", handleEvent);
+```
+
+</CodeSample>
+
+Each widget type offers a different set of events that you can listen for.
+
+## Details widgets
+
+If you want to use your app in the Details section, you should use the `createDetailsWidget` function. It returns a promise resolving to a details widget instance.
+
+<CodeSample>
+
+```js
+import { createDetailsWidget } from "@helpdesk/helpdesk-sdk";
+
+createDetailsWidget().then(widget => {
+  // build your logic around the widget
+});
+```
+
+</CodeSample>
+
+### Events
+
+#### `ticket_details`
+
+Emitted when an agent opens a conversation within tickets, or when an agents selects the ticket. The handler will get the ticket object as an argument.
+
+Listen for the ticket changes:
+
+<CodeSample>
+
+```js
+widget.on("ticket-details", profile => {
+  // read the new profile
+});
+```
+
+</CodeSample>
+
+The ticket object will have the following shape:
+
+| Property          | Description                                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                   |                                                                                                                                                      |
+
+#### `ticket_details_section_button_click`
+
+Emitted when you click a button located in a section in Ticket Details. The handler gets the following payload:
+
+| Property   | Description                                              |
+| ---------- | -------------------------------------------------------- |
+| `buttonId` | The `id` of the button taken from the section definition |
+
+React to button clicks within Ticket Details widgets
+
+<CodeSample>
+
+```js
+widget.on("ticket_details_section_button_click", ({ buttonId }) => {
+  // perform an action when the button is clicked
+});
+```
+
+</CodeSample>
+
+### Methods
+
+#### Get the ticket details
+
+If you want to access the current ticket, you should use the `getTicketDetails` method.
+
+Get the current ticket details
+
+<CodeSample>
+
+```js
+const profile = widget.getTicketDetails();
+```
+
+</CodeSample>
+
+The returned profile will be an object identical to the one emitted by the `tickets_details` event. It can also be `null` if no profile was recorded.
+
+#### Modify Ticket Details widget's state
+
+If you configured a [Ticket Details widget](#creating-a-ticket-details-widget), you can modify its section state using the `modifySection` method. The method accepts the section state definition as its only parameter, and returns a promise.
+
+You can look up the [component types](#component-types) to see how to create the state definition.
+
+The `title` of a given section has to match the one specified in the Opening state. Otherwise, the section won't change. Also, the HelpDesk App ignores the commands without valid section definitions. Make sure that the definition you're sending is correct.
+
+Modify the Ticket Details widget's state
+
+<CodeSample>
+
+```js
+
+```
+
+</CodeSample>
+
+## Fullscreen widgets
+
+If you want to connect a Fullscreen widget to the HelpDesk App, you should use the `createFullscreenWidget` function. It returns a promise resolving to a Fullscreen widget instance.
+
+<CodeSample>
+
+```js
+import { createFullscreenWidget } from "@livechat/agent-app-sdk";
+
+createFullscreenWidget().then(widget => {
+  // build your logic around the widget
+});
+```
+
+</CodeSample>
+
+### Events
+
+This widget currently does not support any events.
+
+### Methods
+
+#### Set notification badge
+
+If you want to notify Agents there’s something important inside the widget, use the `setNotificationBadge` method.
+
+<CodeSample>
+
+```js
+widget.setNotificationBadge(26);
+```
+
+</CodeSample>
+
+It displays a notification badge on top of your app’s icon:
+
+<p style={{maxWidth: "70px"}}>
+  <img src="/images/extending-agent-app/fullscreen-widget-badge.png" alt="Fullscreen widget badge" width="70px" height="190px" />
+</p>
+
+If you want to remove the badge, invoke the method with the `null` parameter.
+
+<CodeSample>
+
+```js
+widget.setNotificationBadge(null);
+```
+
+</CodeSample>
+
+Make sure Agents can dismiss the notification to avoid cluttered UI.
+
+# Advanced use
+
+## Developing your own widget
+
+If you're building your own widget and you need to interact with the HelpDesk App, be sure to use the [HelpDesk SDK](#top).
+
+## Accessing HelpDesk data
+
+You can leverage the OAuth 2.1 authorization flow to use <a href="https://api.helpdesk.com/docs" target="_blank">HelpDesk API</a>. Head to [Sign in with LiveChat](/getting-started/authorization/sign-in-with-livechat/) docs for more information.
+
+## Layout and Styling
+
+If you're using React, you can use the [LiveChat Design System](/extending-ui/extending-agent-app/design-system/), which is a component library used directly in the LiveChat user interface.
+
+## Hosting the widget
+
+You can host your widget locally or on a dedicated server. The hosted content has to be served over the **HTTPS Protocol**.
+
+During development, you can use a self-signed certificate for `localhost` or upload your widget to an SSL-enabled host. You can also leverage bundlers like [Webpack](https://webpack.js.org/configuration/dev-server/) to use an https-enabled development server.
+
+If you need a quick way to **deploy** your widget, you can use [Netlify Drop](https://developers.livechat.com/blog/widget-hosting-on-netlify/).
+
+## Creating a Ticket Details widget
+
+When developing an app in the **Details section**, you can add some content to the **Opening state** and display it in the **Opening state preview**. This way, you turn it into a Ticket Details widget.
+
+Let's define the terms we use in this document:
+
+- **Section** - an element of Ticket Details. It contains a complete set of information grouped under a single widget.
+- **Component** - a single line in a section. It can have one of the pre-defined formats and be filled with data from the app.
+
+### How to add a widget
+
+To display a widget, we have introduced the **Opening state**, which allows you to add components to your application and see a live preview of what the app will look like in the **Opening state preview**.
+
+The components you may add are:
+
+- [Header](/extending-agent-app/products-sdk/helpdesk-sdk#header)
+- [Item](/extending-agent-app/products-sdk/helpdesk-sdk#item)
+- [Button](/extending-agent-app/products-sdk/helpdesk-sdk#button)
+- [Label with value](/extending-agent-app/products-sdk/helpdesk-sdk#label-with-value)
+- [Link](/extending-agent-app/products-sdk/helpdesk-sdk#link)
+- [Divider](/extending-agent-app/products-sdk/helpdesk-sdk#divider)
+
+<div style={{maxWidth: '800px', marginBottom: '30px'}}>
+  <img src="/images/extending-agent-app/livechat-apps-helpdesk-widgets-opening-preview-state-how-to-add-a-widget.png" alt="HelpDesk Widgets" width="700px" height="944px"/>
+</div>
+
+### How to update a section
+
+You can control your widget and change its components using the HelpDesk SDK. Please refer to the [Modify the Customer Details widget](#modify-ticket-details-widgets-state).
+
+### Component types
+
+Here's the list of all the components you can use to build the Ticket Details app.
+
+#### Header
+
+Header is a container for components.
+
+Example of a header component
+
+<CodeResponse>
+
+```json
+{
+  "title": "card with image",
+  "components": [],
+  "imgUrl": "https://www.gstatic.com/webp/gallery/4.jpg",
+  "openApp": true
+}
+```
+
+</CodeResponse>
+
+| Property     | Required | Type                |
+| ------------ | -------- | ------------------- |
+| `title`      | Yes      | string              |
+| `components` | Yes      | array of components |
+| `imgUrl`     | No       | string              |
+| `openApp`    | No       | boolean             |
+
+#### Item
+
+Item could be used in several cases. Component look depends on the given data.
+
+Example of an item component
+
+<CodeResponse>
+
+```json
+{
+  "type": "item",
+  "data": {
+    "title": "title",
+    "value": "value",
+    "description": "description",
+    "imgUrl": "https://www.gstatic.com/webp/gallery/4.jpg"
+  }
+}
+```
+
+</CodeResponse>
+
+| Property      | Required | Type                              | Note                                 |
+| ------------- | -------- | --------------------------------- | ------------------------------------ |
+| `title`       | Yes      | string                            |                                      |
+| `value`       | No       | string                            |                                      |
+| `description` | No       | string                            |                                      |
+| `imgUrl`      | No       | string                            |                                      |
+| `imgSize`     | No       | Value: "small" or "big" (default) |                                      |
+| `link`        | No       | string                            | URL added when the title is a link   |
+| `id`          | No       | string                            | ID passed to the widget on click     |
+| `clickable`   | No       | boolean                           | Adds a border and makes it clickable |
+| `openApp`     | No       | boolean                           | Opens widget on click                |
+
+#### Button
+
+Simple button component
+
+Example of a button component
+
+<CodeResponse>
+
+```json
+{
+  "type": "button",
+  "data": {
+    "id": "second-button",
+    "label": "second button",
+    "openApp": true,
+    "primary": true
+  }
+}
+```
+
+</CodeResponse>
+
+| Property    | Required | Type    | Description            |
+| ----------- | -------- | ------- | ---------------------- |
+| `id`        | Yes      | string  |                        |
+| `label`     | Yes      | string  |                        |
+| `openApp`   | No       | boolean | Default value: `false` |
+| `primary`   | No       | boolean | Default value: `false` |
+| `secondary` | No       | boolean | Default value: `false` |
+
+##### Click events
+
+You can listen for button clicks using the SDK. Note that `buttonId` will be the same as the `id` from the schema. If you want to capture a specific click, you need to make sure that the `id` is unique across all definitions.
+
+#### Label with value
+
+Example of label with value component
+
+<CodeResponse>
+
+```json
+{
+  "type": "label_value",
+  "data": {
+    "label": "Name",
+    "value": "Stefan",
+    "iconUrl": "https://www.gstatic.com/webp/gallery/4.jpg"
+  }
+}
+```
+
+</CodeResponse>
+
+| Property  | Required | Type   | Description |
+| --------- | -------- | ------ | ----------- |
+| `label`   | No       | string |             |
+| `value`   | No       | string |             |
+| `iconUrl` | No       | string |             |
+| `url`     | No       | string |             |
+
+#### Link
+
+Example of a link component
+
+<CodeResponse>
+
+```json
+{
+  "type": "link",
+  "data": {
+    "value": "click me",
+    "url": "http://google.com",
+    "inline": false
+  }
+}
+```
+
+</CodeResponse>
+
+| Property | Required | Type    | Description     |
+| -------- | -------- | ------- | --------------- |
+| `url`    | Yes      | string  |                 |
+| `value`  | No       | string  |                 |
+| `inline` | No       | boolean | default: `true` |
+
+#### Divider
+
+Divider could be used to separate section content. It has no components inside.
+
+Example of a divider component
+
+<CodeResponse>
+
+```json
+{
+  "type": "divider"
+}
+```
+
+</CodeResponse>
+
+# Troubleshooting
+
+## There are errors in the console
+
+Check out your browser's console to see if there are any of the errors listed below.
+
+| Error                                                                                                                                                                                             | Explanation                                                                                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Refused to display '...' in a frame because an ancestor violates the following Content Security Policy directive: "..."._                                                                        | The host that serves the plugin has specific [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) set up.                                                                                                          |
+| _Refused to display '...' in a frame because it set 'X-Frame-Options' to 'SAMEORIGIN'._                                                                                                           | The host serving the content of the plugin has specific [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) header set up.                                                                            |
+
+# Contact us
+
+If you have any feature requests related to the Agent App Widgets, let us know! We're open for your insights and suggestions. Feel free to drop us an email at [developers@livechat.com](mailto:developers@livechat.com).
