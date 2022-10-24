@@ -33,7 +33,7 @@ const footerData = [
   },
   {
     title: "Follow us",
-    content: "Follow our insightful tweets and interact with out content.",
+    content: "Follow our insightful tweets and interact with our content.",
     buttonIcon: <Twitter />,
     buttonCopy: "Twitter",
     buttonLink: process.env.NEXT_PUBLIC_TWITTER_LIVECHAT,
