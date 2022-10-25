@@ -29,8 +29,6 @@ const VERSIONS_GROUPS = {
   },
 };
 
-const RATES = ["It's unusable", "Rather poor", "It's OK", "Great", "Excellent"];
-
 const AUTH_TYPE = {
   iframe: "iframe",
   popup: "popup",
@@ -669,13 +667,27 @@ const ERRORS = [
   },
 ];
 
+const RATING_TEXT = {
+  BAD: "BAD",
+  GOOD: "GOOD",
+};
+
+const RATING_POSITION = {
+  TOP: "top",
+  BOTTOM: "bottom"
+};
+
+const RATES = [RATING_TEXT.GOOD, RATING_TEXT.BAD];
+
 const constants = {
   VERSIONS_GROUPS,
-  RATES,
   SCOPES,
   ERRORS,
   AUTH_TYPE,
   REGION,
+  RATING_TEXT,
+  RATING_POSITION,
+  RATES
 };
 
 module.exports = constants;

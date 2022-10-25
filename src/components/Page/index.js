@@ -1,39 +1,28 @@
 import React, { useState, useEffect } from "react";
+import styled from "@emotion/styled";
 import { node, object } from "prop-types";
 import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import FullStory from "react-fullstory";
-import {
-  VersionProvider,
-  RatingProvider,
-  PromotionProvider,
-} from "../../contexts";
-import { AuthProvider } from "../../contexts/auth";
-import { canUseWindow } from "../../utils";
-import { useRating } from "../../hooks";
+
+import { Search } from "../core/Search";
+import { SideNav } from "../core/SideNav";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
 import Header from "../core/header";
-import articlesVersions from "../../configs/articlesVersions.json";
+import { Header as PageHeader } from "../core/Page";
 import {
   MainWrapper,
   MiddleColumn,
   Content,
-  RatingWrapper,
   LeftColumnRedoc,
   LeftColumnRedocWrapper,
   NavHeader,
   CategoryRedoc,
 } from "../core/components";
-import { Search } from "../core/Search";
-import { SideNav } from "../core/SideNav";
-const ContentSideNav = dynamic(
-  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
-  { ssr: false, loading: () => <p>...</p> }
-);
 import Rating from "../core/Rating";
 import Footer from "../core/Footer/Footer";
 import {
@@ -45,7 +34,21 @@ import {
   Image
 } from "../extensions";
 
-import { Header as PageHeader } from "../core/Page";
+import { RATING_POSITION } from "../../constant";
+import {
+  VersionProvider,
+  RatingProvider,
+  PromotionProvider,
+} from "../../contexts";
+import { AuthProvider } from "../../contexts/auth";
+import { canUseWindow } from "../../utils";
+import { useRating } from "../../hooks";
+import articlesVersions from "../../configs/articlesVersions.json";
+
+const ContentSideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
+  { ssr: false, loading: () => <p>...</p> }
+);
 
 const components = {
   ...CodeBlocks,
@@ -55,6 +58,17 @@ const components = {
   Placeholder,
   Image
 };
+
+const StyledRating = styled(Rating)`
+  margin-top: 50px;
+
+  > label {
+    margin: 0 0 5px 0;
+  }
+  label + div {
+    justify-content: center;
+  }
+`;
 
 const Page = ({ frontMatter, children }) => {
   const {
@@ -221,9 +235,7 @@ const Page = ({ frontMatter, children }) => {
                   <MDXProvider components={components}>{children}</MDXProvider>
 
                   {!useRedocPage && (
-                    <RatingWrapper>
-                      <Rating label="Was this article helpful?" />
-                    </RatingWrapper>
+                    <StyledRating position={RATING_POSITION.BOTTOM} />
                   )}
                 </Content>
               </MiddleColumn>

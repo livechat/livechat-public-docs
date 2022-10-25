@@ -1,7 +1,5 @@
 import { useState } from "react";
-
 import { useLocalStorage } from "./";
-import { RATES } from "../constant";
 import { logAmplitudeEvent } from "../utils";
 
 const useRating = ({ slug }) => {
@@ -9,31 +7,32 @@ const useRating = ({ slug }) => {
 
   const currentRating = ratings.find(rating => rating.slug === slug);
 
-  const [selectedStar, setSelectedStar] = useState(
+  const [selectedRating, setSelectedRating] = useState(
     currentRating ? currentRating.rating : -1
   );
 
-  const saveRating = index => {
+  const saveRating = (index, position, email) => {
     const newRatings = ratings.filter(rating => rating.slug !== slug);
 
     const newRating = {
       rating: index,
-      slug
+      slug,
     };
 
     newRatings.push(newRating);
     setRatings(newRatings);
-    setSelectedStar(index);
+    setSelectedRating(index);
 
     logAmplitudeEvent("Document rated", {
-      pathname: newRating.slug,
-      rating: newRating.rating,
-      text: RATES[index]
+      email,
+      pathname: slug,
+      position,
+      rating: index
     });
   };
 
   return {
-    selectedStar,
+    selectedRating,
     saveRating
   };
 };
