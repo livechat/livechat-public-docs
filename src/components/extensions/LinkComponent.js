@@ -22,7 +22,7 @@ const CodeLink = styled.a`
   }
 `;
 
-const CustomLink = ({ children, ...props }) => {
+const LinkComponent = ({ children, ...props }) => {
     // hack for code-links
     if (children.props && children.props.mdxType === "inlineCode") {
       return (
@@ -61,4 +61,4 @@ const CustomLink = ({ children, ...props }) => {
     );
   };
 
-  export default CustomLink;
+  export default LinkComponent;

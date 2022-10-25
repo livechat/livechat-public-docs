@@ -3,10 +3,10 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Image from "./Image"
-import CustomLink from "./CustomLink"
 import { Button } from "@livechat/design-system";
 
 import Link from "next/link";
+import LinkComponent from "./LinkComponent";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -153,7 +153,7 @@ const SectionBanner = ({ title, desc, to, image }) => (
     {image && (
       <SectionColumn style={{ padding: 0 }}>
         <Link href={to} style={{ display: "block" }}>
-          <a>
+          <a style={{textDecoration:'none'}}>
             <BannerImage to={to} />
           </a>
         </Link>
@@ -163,7 +163,7 @@ const SectionBanner = ({ title, desc, to, image }) => (
       <h2>{title}</h2>
       <p>{desc}</p>
       <Link href={to}>
-        <a>
+      <a style={{textDecoration:'none'}}>
           <Button>Learn more</Button>
         </a>
       </Link>
@@ -268,7 +268,7 @@ export default {
   h4: makeHeading("h4"),
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
-  a: CustomLink,
+  a: LinkComponent,
   img: Image,
   pre: Pre,
   Warning,
