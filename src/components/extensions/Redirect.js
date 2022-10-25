@@ -11,13 +11,17 @@ const CodeLink = styled.a`
     vertical-align: middle;
     margin-left: 2px;
     margin-right: 4px;
-    color: var(--code-inline-color);
+    color: #4284F5;
+  }
+  code{
+    color: #4284F5;
   }
   &:hover,
   &:active {
     text-decoration: none;
     code {
-      background-color: #efe8e8;
+      color:#4284F5;
+      text-decoration: underline;
     }
   }
 `;
