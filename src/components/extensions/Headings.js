@@ -64,6 +64,10 @@ const SectionBannerWrapper = styled.div`
   margin-bottom: 2.5em;
   border-radius: 8px;
   flex-direction: column;
+  a {
+    text-decoration: none;
+  }
+
   @media (min-width: 1024px) {
     flex-direction: row;
   }
@@ -153,7 +157,7 @@ const SectionBanner = ({ title, desc, to, image }) => (
     {image && (
       <SectionColumn style={{ padding: 0 }}>
         <Link href={to} style={{ display: "block" }}>
-          <a style={{textDecoration:'none'}}>
+          <a>
             <BannerImage to={to} />
           </a>
         </Link>
@@ -163,7 +167,7 @@ const SectionBanner = ({ title, desc, to, image }) => (
       <h2>{title}</h2>
       <p>{desc}</p>
       <Link href={to}>
-      <a style={{textDecoration:'none'}}>
+        <a>
           <Button>Learn more</Button>
         </a>
       </Link>

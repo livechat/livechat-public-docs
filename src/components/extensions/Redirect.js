@@ -1,10 +1,10 @@
 import React from "react";
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core";
-import { LinkIcon } from "../core/icons";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import {string,node,object} from "prop-types";
+import { string, node } from "prop-types";
+
+import { LinkIcon } from "../core/icons";
+
 const CodeLink = styled.a`
   text-decoration: none;
   svg {
@@ -22,7 +22,7 @@ const CodeLink = styled.a`
   }
 `;
 
-const Redirect = ({ children,href, ...rest }) => {
+const Redirect = ({ children, href, ...rest }) => {
     // hack for code-links
     if (children.props && children.props.mdxType === "inlineCode") {
       return (
@@ -59,7 +59,7 @@ const Redirect = ({ children,href, ...rest }) => {
     }
   
     return (
-      <Link {...rest} passHref>
+      <Link href={href} {...rest} passHref>
         <a {...rest}>{children}</a>
       </Link>
     );
