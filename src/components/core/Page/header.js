@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "@emotion/styled";
-import PropTypes from 'prop-types';
-import { RATING_POSITION } from "../../../constant";
+import { string } from 'prop-types';
+
 import Rating from "../Rating";
+
+import { RATING_POSITION } from "../../../constant";
 
 const PageTitle = styled.h1`
   margin: 0;
@@ -40,7 +42,7 @@ const PageHeader = ({ title }) => (
 );
 
 PageHeader.propTypes = {
-  title: PropTypes.string
+  title: string.isRequired
 }
 
 export default PageHeader;

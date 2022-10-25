@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
-import PropTypes from 'prop-types';
+import { string, bool, func } from 'prop-types';
+
 import { ThumbFilledIcon as ThumbFilled } from "assets/icons/ThumbFilled";
 import { ThumbHollowIcon } from "assets/icons/ThumbHollow";
 
@@ -26,9 +27,9 @@ const ThumbIcon = ({ id, isSelected, handleClick }) => {
 };
 
 ThumbIcon.propTypes = {
-  id: PropTypes.string,
-  isSelected: PropTypes.bool,
-  handleClick: PropTypes.func
+  id: string.isRequired,
+  isSelected: bool.isRequired,
+  handleClick: func.isRequired
 }
 
 export default ThumbIcon;

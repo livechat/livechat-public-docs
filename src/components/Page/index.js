@@ -6,19 +6,14 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import FullStory from "react-fullstory";
-import {
-  VersionProvider,
-  RatingProvider,
-  PromotionProvider,
-} from "../../contexts";
-import { AuthProvider } from "../../contexts/auth";
-import { canUseWindow } from "../../utils";
-import { useRating } from "../../hooks";
+
+import { Search } from "../core/Search";
+import { SideNav } from "../core/SideNav";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
 import Header from "../core/header";
-import articlesVersions from "../../configs/articlesVersions.json";
+import { Header as PageHeader } from "../core/Page";
 import {
   MainWrapper,
   MiddleColumn,
@@ -28,13 +23,6 @@ import {
   NavHeader,
   CategoryRedoc,
 } from "../core/components";
-import { Search } from "../core/Search";
-import { SideNav } from "../core/SideNav";
-const ContentSideNav = dynamic(
-  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
-  { ssr: false, loading: () => <p>...</p> }
-);
-import { RATING_POSITION } from "../../constant";
 import Rating from "../core/Rating";
 import Footer from "../core/Footer/Footer";
 import {
@@ -45,7 +33,22 @@ import {
   Placeholder,
   Image
 } from "../extensions";
-import { Header as PageHeader } from "../core/Page";
+
+import { RATING_POSITION } from "../../constant";
+import {
+  VersionProvider,
+  RatingProvider,
+  PromotionProvider,
+} from "../../contexts";
+import { AuthProvider } from "../../contexts/auth";
+import { canUseWindow } from "../../utils";
+import { useRating } from "../../hooks";
+import articlesVersions from "../../configs/articlesVersions.json";
+
+const ContentSideNav = dynamic(
+  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
+  { ssr: false, loading: () => <p>...</p> }
+);
 
 const components = {
   ...CodeBlocks,

@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
+
 import ThumbIcon from "./ThumbIcon";
 import FeedbackModal from "./modal";
+
 import { RATES, RATING_TEXT } from "../../../constant";
 import { RatingContext } from "../../../contexts";
-import { useAuth } from "contexts/auth";
+import { useAuth } from "../../../contexts/auth";
 
 const Wrapper = styled.div`
   height: 25px;
@@ -83,8 +85,8 @@ const Rating = ({ className, position }) => {
 };
 
 Rating.propTypes = {
-  className: PropTypes.string,
-  position: PropTypes.string
+  className: string,
+  position: string.isRequired
 }
 
 export default Rating;
