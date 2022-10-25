@@ -33,7 +33,6 @@ const Redirect = ({ children, href, ...rest }) => {
         <Link href={href} passHref>
           <CodeLink {...rest}>
             {children}
-            <LinkIcon />
           </CodeLink>
         </Link>
       );
