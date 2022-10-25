@@ -6,7 +6,7 @@ import Image from "./Image"
 import { Button } from "@livechat/design-system";
 
 import Link from "next/link";
-import LinkComponent from "./LinkComponent";
+import Redirect from "./Redirect";
 
 const HeadingLink = styled.a`
   color: inherit;
@@ -268,7 +268,7 @@ export default {
   h4: makeHeading("h4"),
   h5: makeHeading("h5"),
   h6: makeHeading("h6"),
-  a: LinkComponent,
+  a: Redirect,
   img: Image,
   pre: Pre,
   Warning,

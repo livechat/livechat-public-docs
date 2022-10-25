@@ -4,7 +4,7 @@ import { jsx, css } from "@emotion/core";
 import { LinkIcon } from "../core/icons";
 import Link from "next/link";
 import styled from "@emotion/styled";
-
+import {string,node,object} from "prop-types";
 const CodeLink = styled.a`
   text-decoration: none;
   svg {
@@ -22,12 +22,12 @@ const CodeLink = styled.a`
   }
 `;
 
-const LinkComponent = ({ children, ...props }) => {
+const Redirect = ({ children,href, ...rest }) => {
     // hack for code-links
     if (children.props && children.props.mdxType === "inlineCode") {
       return (
-        <Link href={props.href} passHref>
-          <CodeLink {...props}>
+        <Link href={href} passHref>
+          <CodeLink {...rest}>
             {children}
             <LinkIcon />
           </CodeLink>
@@ -41,7 +41,7 @@ const LinkComponent = ({ children, ...props }) => {
         children.props.originalType === "img")
     ) {
       return (
-        <Link href={props.href} passHref>
+        <Link href={href} passHref>
           <a>{children}</a>
         </Link>
       );
@@ -51,14 +51,22 @@ const LinkComponent = ({ children, ...props }) => {
       children.props &&
       (children.props.parentName === "a" || children.props.mdxType === "a")
     ) {
-      return <Link href={props.href}>{children}</Link>;
+      return <Link href={href}>
+        <a>
+        {children}
+        </a>
+        </Link>;
     }
   
     return (
-      <Link {...props} passHref>
-        <a {...props}>{children}</a>
+      <Link {...rest} passHref>
+        <a {...rest}>{children}</a>
       </Link>
     );
   };
 
-  export default LinkComponent;
+  Redirect.propTypes={
+    href: string,
+    children:node,
+  }
+  export default Redirect;
