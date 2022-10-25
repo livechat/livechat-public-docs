@@ -39,7 +39,7 @@ const PageHeader = ({ title }) => (
   </PageHeaderWrapper>
 );
 
-PageHeader.PropTypes = {
+PageHeader.propTypes = {
   title: PropTypes.string
 }
 
