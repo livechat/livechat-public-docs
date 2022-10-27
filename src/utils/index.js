@@ -28,7 +28,7 @@ export const getVersionColor = (version, groupVersions) => {
   const isDevPreview = version === groupVersions.DEV_PREVIEW_VERSION;
 
   if (isStable) {
-    return "67, 132, 245";
+    return "66, 132, 245";
   }
 
   if (isLegacy || isDevPreview) {

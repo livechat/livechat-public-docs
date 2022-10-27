@@ -43,9 +43,9 @@ const IconWrapper = styled.div`
 const StyledLink = styled.a`
   display: flex;
   align-items: center;
-  color: ${({ isActive }) => (isActive ? "#328DFF" : "#62626D")};
+  color: ${({ isActive }) => (isActive ? "#4284F5" : "#62626D")};
   &:hover {
-    color: #328dff;
+    color: #4284F5;
     cursor: pointer;
     text-decoration: none;
   }
