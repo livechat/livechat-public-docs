@@ -3,6 +3,7 @@ import useCategoryMeta from "./useCategoryMeta";
 import useAllCategoriesMeta from "./useAllCategoriesMeta";
 import useLocalStorage from "./useLocalStorage";
 import useRating from "./useRating";
+import useUpdateBookmarks from "./useUpdateBookmarks";
 
 export {
   useArticlesInCategory,
@@ -10,4 +11,5 @@ export {
   useAllCategoriesMeta,
   useLocalStorage,
   useRating,
+  useUpdateBookmarks,
 };

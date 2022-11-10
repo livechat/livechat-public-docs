@@ -1,9 +1,11 @@
 import AccountsClient from "./accounts";
 import LiveChatClient from "./livechat";
+import DevProgramClient from "./dps";
 
 let clients = {
   accounts: null,
   livechat: null,
+  dps: null,
   isInitialized: false,
 };
 
@@ -12,6 +14,7 @@ const api = {
     clients = {
       accounts: new AccountsClient(token),
       livechat: new LiveChatClient(token),
+      dps: new DevProgramClient(token),
       isInitialized: true,
     };
   },
@@ -22,6 +25,10 @@ const api = {
 
   getLiveChat() {
     return clients.livechat;
+  },
+
+  getDPS() {
+    return clients.dps;
   },
 };
 

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { string } from 'prop-types';
+import { string } from "prop-types";
 
 import Rating from "../Rating";
-
+import Bookmark from "../Bookmark";
 import { RATING_POSITION } from "../../../constant";
 
 const PageTitle = styled.h1`
@@ -32,17 +32,24 @@ const StyledRating = styled(Rating)`
   }
 `;
 
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
 const PageHeader = ({ title }) => (
   <PageHeaderWrapper>
     <PageTitle>
-      <span>{title}</span>
-      <StyledRating position={RATING_POSITION.TOP}/>
+      <TitleWrapper>
+        <span>{title}</span>
+        <Bookmark />
+      </TitleWrapper>
+      <StyledRating position={RATING_POSITION.TOP} />
     </PageTitle>
   </PageHeaderWrapper>
 );
 
 PageHeader.propTypes = {
-  title: string.isRequired
-}
+  title: string.isRequired,
+};
 
 export default PageHeader;
