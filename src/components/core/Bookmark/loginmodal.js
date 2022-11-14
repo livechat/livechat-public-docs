@@ -2,6 +2,8 @@
 import styled from "@emotion/styled";
 import { Button, ModalBase } from "@livechat/design-system";
 import { LoginIcon } from "assets/icons/LoginIcon";
+import { bool, func } from "prop-types";
+
 import { logAmplitudeEvent } from "../../../utils";
 
 const modalBaseCss = css`
@@ -31,7 +33,12 @@ const ButtonsWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const LoginModal = ({ authorize, isOpen, handleModalClose, setBookmark }) => {
+const LoginModal = ({
+  authorize,
+  isOpen,
+  handleModalClose,
+  setIsBookmarked,
+}) => {
   const onModalClose = () => {
     if (isOpen) {
       handleModalClose();
@@ -41,7 +48,7 @@ const LoginModal = ({ authorize, isOpen, handleModalClose, setBookmark }) => {
     logAmplitudeEvent("loginAttempted");
     authorize();
     handleModalClose();
-    setBookmark(true);
+    setIsBookmarked(true);
   };
 
   return (
@@ -50,25 +57,22 @@ const LoginModal = ({ authorize, isOpen, handleModalClose, setBookmark }) => {
       <h2>Log in to add bookmarks</h2>
       <p>You need to be logged in to bookmark documents.</p>
       <ButtonsWrapper>
-        <Button
-          onClick={() => {
-            handleModalClose();
-          }}
-          kind="secondary"
-        >
+        <Button onClick={handleModalClose()} kind="secondary">
           Cancel
         </Button>
-        <Button
-          onClick={() => {
-            onLoginProceed();
-          }}
-          kind="primary"
-        >
+        <Button onClick={onLoginProceed()} kind="primary">
           Login
         </Button>
       </ButtonsWrapper>
     </ModalBase>
   );
+};
+
+LoginModal.propTypes = {
+  authorize: func.isRequired,
+  isOpen: bool.isRequired,
+  handleModalClose: func.isRequired,
+  setIsBookmarked: func.isRequired,
 };
 
 export default LoginModal;

@@ -1,79 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { useQuery } from "react-query";
-import { useAuth } from "../../../contexts/auth";
-import { useRouter } from "next/router";
-import { useUpdateBookmarks } from "hooks";
-import BookmarkIcon from "./BookmarkIcon";
-import LoginModal from "./loginmodal";
+import styled from "@emotion/styled";
 import api from "api";
+import { BookmarkFilledIcon } from "assets/icons/BookmarkFilled";
+import { BookmarkHollowIcon } from "assets/icons/BookmarkHollow";
+import { useUpdateBookmarks } from "hooks";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+
+import { useAuth } from "../../../contexts/auth";
+import LoginModal from "./LoginModal";
+
+const Container = styled.div`
+  cursor: pointer;
+  display: flex;
+  margin-left: 20px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  :hover {
+    background-color: #f6f6f7;
+  }
+`;
 
 const Bookmark = () => {
-  const [isBookmarked, setBookmark] = useState("");
-  const { authorize, isAuthorized, user } = useAuth();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const router = useRouter();
-  const pagePath = router.pathname;
-
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { authorize, isAuthorized } = useAuth();
+  const { pathname } = useRouter();
   const { updateBookmarks } = useUpdateBookmarks();
-
-  const fetchData = async () => {
-    const bookmarks = await api.getDPS().getAllBookmarks();
-    return bookmarks;
-  };
-
+  const fetchData = async () => api.getDPS().getAllBookmarks();
   const { isLoading, data: allBookmarks } = useQuery(
     ["allBookmarks"],
     fetchData
   );
-
-  const newBookmark = [{ type: "bookmark", url: pagePath }];
+  const newBookmark = [{ type: "bookmark", url: pathname }];
 
   const handleBookmarkClick = () => {
-    if (isAuthorized) {
-      fetchData();
+    if (!isAuthorized) {
+      setIsModalOpen(true);
+    } else {
       if (isBookmarked) {
-        setBookmark(false);
-        const filteredBookmarks = Object.values(allBookmarks).filter(
-          (singleBookmark) => singleBookmark.url !== pagePath
+        setIsBookmarked(false);
+        console.log(allBookmarks);
+        const filteredBookmarks = allBookmarks.filter(
+          (singleBookmark) => singleBookmark.url !== pathname
         );
-
         updateBookmarks(filteredBookmarks);
       } else {
-        setBookmark(true);
+        setIsBookmarked(true);
         const updatedBookmarks = [...allBookmarks, ...newBookmark];
         updateBookmarks(updatedBookmarks);
       }
-    } else {
-      setModalOpen(true);
     }
   };
-
   useEffect(() => {
     if (!isLoading && isAuthorized) {
-      Object.values(allBookmarks).some((element) => {
-        if (element.url === pagePath) {
-          setBookmark(true);
-          return true;
-        }
-        setBookmark(false);
-        return false;
+      allBookmarks.some((bookmark) => {
+        bookmark.url === pathname ? setIsBookmarked(true) : "";
       });
     }
-  });
+  }, [allBookmarks]);
 
   return (
     <>
-      <BookmarkIcon
-        isBookmarked={isBookmarked}
-        handleClick={() => handleBookmarkClick()}
-        isLoading={isLoading}
-      />
+      <Container onClick={handleBookmarkClick}>
+        {isBookmarked ? <BookmarkFilledIcon /> : <BookmarkHollowIcon />}
+      </Container>
       {isModalOpen && (
         <LoginModal
-          setBookmark={setBookmark}
+          setIsBookmarked={setIsBookmarked}
           authorize={authorize}
           isOpen={isModalOpen}
-          handleModalClose={() => setModalOpen(false)}
+          handleModalClose={() => setIsModalOpen(false)}
         />
       )}
     </>

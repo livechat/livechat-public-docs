@@ -1,6 +1,5 @@
-import React from "react";
 import styled from "@emotion/styled";
-import { string, bool, func } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 
 import { ThumbFilledIcon as ThumbFilled } from "assets/icons/ThumbFilled";
 import { ThumbHollowIcon } from "assets/icons/ThumbHollow";

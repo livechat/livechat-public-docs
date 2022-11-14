@@ -8,13 +8,8 @@ const useUpdateBookmarks = () => {
     {
       onMutate: async (newBookmarks) => {
         queryClient.cancelQueries("allBookmarks");
-
         const previousBookmarks = queryClient.getQueryData("allBookmarks");
-
-        queryClient.setQueryData("allBookmarks", (oldBookmarks) => {
-          return { oldBookmarks, bookmarks: newBookmarks };
-        });
-
+        queryClient.setQueryData("allBookmarks", newBookmarks);
         return { previousBookmarks };
       },
     }
