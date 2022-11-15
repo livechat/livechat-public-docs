@@ -57,10 +57,10 @@ const LoginModal = ({
       <h2>Log in to add bookmarks</h2>
       <p>You need to be logged in to bookmark documents.</p>
       <ButtonsWrapper>
-        <Button onClick={handleModalClose()} kind="secondary">
+        <Button onClick={handleModalClose} kind="secondary">
           Cancel
         </Button>
-        <Button onClick={onLoginProceed()} kind="primary">
+        <Button onClick={onLoginProceed} kind="primary">
           Login
         </Button>
       </ButtonsWrapper>
