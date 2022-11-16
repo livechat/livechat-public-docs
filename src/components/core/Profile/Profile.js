@@ -235,10 +235,23 @@ const Profile = () => {
           Go to LiveChat App
         </a>
       ),
-      divider: true,
     },
     {
       itemId: 5,
+      content: (
+        <a
+          href={"/docs/bookmarks"}
+          css={linkCss}
+          rel="noopener noreferrer"
+          onClick={handleClose}
+        >
+          See bookmarks
+        </a>
+      ),
+      divider: true,
+    },
+    {
+      itemId: 6,
       content: (
         <LoggingItemWrapper>
           {isAuthorized ? `Log out` : `Log in`}

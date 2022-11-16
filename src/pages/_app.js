@@ -10,6 +10,8 @@ import "../styles/prism.css";
 import "../styles/algolia.css";
 import "../styles/redoc.css";
 import { setupAmplitude } from "../utils";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -28,7 +30,14 @@ function MyApp({ Component, pageProps }) {
     window.dataLayer.push({ event: "next-route-change" });
   }, [router.pathname]);
 
-  return <Component {...pageProps} />;
+  const queryClient = new QueryClient();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Component {...pageProps} />
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  );
 }
 
 export default MyApp;
