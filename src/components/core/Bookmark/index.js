@@ -36,7 +36,8 @@ const Bookmark = () => {
     ["allBookmarks"],
     fetchData
   );
-  const newBookmark = [{ type: "bookmark", url: pathname }];
+  const linkType = "bookmark";
+  const newBookmark = [{ type: linkType, url: pathname }];
 
   const handleBookmarkClick = () => {
     if (!isAuthorized) {
