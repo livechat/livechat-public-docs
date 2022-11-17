@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import TagManager from "react-gtm-module";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
@@ -28,7 +31,14 @@ function MyApp({ Component, pageProps }) {
     window.dataLayer.push({ event: "next-route-change" });
   }, [router.pathname]);
 
-  return <Component {...pageProps} />;
+  const queryClient = new QueryClient();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Component {...pageProps} />
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  );
 }
 
 export default MyApp;
