@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { Button, ModalBase } from "@livechat/design-system";
 import { LoginIcon } from "assets/icons/LoginIcon";
 import { bool, func } from "prop-types";
+import { useAuth } from "../../../contexts/auth";
 
 import { logAmplitudeEvent } from "../../../utils";
 
@@ -33,12 +34,7 @@ const ButtonsWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const LoginModal = ({
-  authorize,
-  isOpen,
-  handleModalClose,
-  setIsBookmarked,
-}) => {
+const LoginModal = ({ isOpen, handleModalClose, setIsBookmarked }) => {
   const onModalClose = () => {
     if (isOpen) {
       handleModalClose();
@@ -50,6 +46,7 @@ const LoginModal = ({
     handleModalClose();
     setIsBookmarked(true);
   };
+  const { authorize } = useAuth();
 
   return (
     <ModalBase onClose={onModalClose} css={modalBaseCss}>
@@ -69,7 +66,6 @@ const LoginModal = ({
 };
 
 LoginModal.propTypes = {
-  authorize: func.isRequired,
   isOpen: bool.isRequired,
   handleModalClose: func.isRequired,
   setIsBookmarked: func.isRequired,

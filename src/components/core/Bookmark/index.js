@@ -6,8 +6,8 @@ import { useUpdateBookmarks } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-
 import { useAuth } from "../../../contexts/auth";
+
 import LoginModal from "./LoginModal";
 
 const Container = styled.div`
@@ -28,7 +28,7 @@ const Container = styled.div`
 const Bookmark = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { authorize, isAuthorized } = useAuth();
+  const { isAuthorized } = useAuth();
   const { pathname } = useRouter();
   const { updateBookmarks } = useUpdateBookmarks();
   const fetchData = async () => api.getDPS().getAllBookmarks();
@@ -36,7 +36,8 @@ const Bookmark = () => {
     ["allBookmarks"],
     fetchData
   );
-  const newBookmark = [{ type: "bookmark", url: pathname }];
+  const linkType = "bookmark";
+  const newBookmark = [{ type: linkType, url: pathname }];
 
   const handleBookmarkClick = () => {
     if (!isAuthorized) {
@@ -44,7 +45,6 @@ const Bookmark = () => {
     } else {
       if (isBookmarked) {
         setIsBookmarked(false);
-        console.log(allBookmarks);
         const filteredBookmarks = allBookmarks.filter(
           (singleBookmark) => singleBookmark.url !== pathname
         );
@@ -72,7 +72,6 @@ const Bookmark = () => {
       {isModalOpen && (
         <LoginModal
           setIsBookmarked={setIsBookmarked}
-          authorize={authorize}
           isOpen={isModalOpen}
           handleModalClose={() => setIsModalOpen(false)}
         />

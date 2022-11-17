@@ -14,10 +14,11 @@ class DevProgramClient {
   async getAllBookmarks() {
     try {
       const res = await this.instance.get(`/v2/links`);
+
       return res.data;
     } catch (error) {
       console.log(error);
-      throw new Error(`Can't get bookmarks [${error.message}]`);
+      throw new Error(`Can't get bookmarks`);
     }
   }
 
@@ -26,7 +27,6 @@ class DevProgramClient {
       await this.instance.put(`/v2/links`, bookmarks);
     } catch (error) {
       console.log(error);
-      throw new Error(`Bookmarks couldn't be updated. [${error.message}]`);
     }
   }
 }

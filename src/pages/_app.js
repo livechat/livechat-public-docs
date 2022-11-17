@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import TagManager from "react-gtm-module";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+
 import "docsearch.js/dist/cdn/docsearch.min.css";
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
@@ -10,8 +13,6 @@ import "../styles/prism.css";
 import "../styles/algolia.css";
 import "../styles/redoc.css";
 import { setupAmplitude } from "../utils";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();

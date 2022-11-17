@@ -166,7 +166,6 @@ const Page = ({ frontMatter, children }) => {
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
-
   return (
     <AuthProvider>
       <RatingProvider value={ratingContext}>
