@@ -45,7 +45,6 @@ const Bookmark = () => {
     } else {
       if (isBookmarked) {
         setIsBookmarked(false);
-        console.log(allBookmarks);
         const filteredBookmarks = allBookmarks.filter(
           (singleBookmark) => singleBookmark.url !== pathname
         );
