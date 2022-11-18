@@ -23,11 +23,7 @@ import {
 // import { HomeIcon, ChevronRight } from "../components/core/icons";
 import Footer from "../components/core/Footer/Footer";
 
-import {
-  VersionProvider,
-  RatingProvider,
-  PromotionProvider,
-} from "../contexts";
+import { VersionProvider, PromotionProvider } from "../contexts";
 const queryClient = new QueryClient();
 
 const Bookmarks = () => {

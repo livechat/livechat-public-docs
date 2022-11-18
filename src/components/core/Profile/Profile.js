@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AccountCircleOutline from "react-material-icon-svg/dist/AccountCircleOutline";
 /** @jsx jsx */
+import Link from "next/link";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import { Dropdown, DropdownList } from "@livechat/design-system";
@@ -239,14 +240,14 @@ const Profile = () => {
     {
       itemId: 5,
       content: (
-        <a
-          href={"/docs/bookmarks"}
-          css={linkCss}
-          rel="noopener noreferrer"
+        <Link
+          href={"/bookmarks"}
+          partiallyActive
+          passHref
           onClick={handleClose}
         >
-          See bookmarks
-        </a>
+          <a css={linkCss}>See bookmarks</a>
+        </Link>
       ),
       divider: true,
     },
