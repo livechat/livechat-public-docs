@@ -42,7 +42,8 @@ const Bookmark = () => {
   const handleBookmarkClick = () => {
     if (!isAuthorized) {
       setIsModalOpen(true);
-    } else {
+    }
+    if (!isLoading) {
       if (isBookmarked) {
         setIsBookmarked(false);
         const filteredBookmarks = allBookmarks.filter(
