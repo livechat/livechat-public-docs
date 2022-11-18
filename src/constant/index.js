@@ -1,10 +1,10 @@
 const VERSIONS_GROUPS = {
   DEFAULT: {
-    STABLE_VERSION: "3.4",
-    LEGACY_VERSIONS: ["2.0", "3.2", "3.3"],
-    DEV_PREVIEW_VERSION: "3.5",
+    STABLE_VERSION: "3.5",
+    LEGACY_VERSIONS: ["2.0", "3.2", "3.3", "3.4"],
+    DEV_PREVIEW_VERSION: "3.6",
     DEPRECATED_VERSIONS: "",
-    ALL_VERSIONS: ["3.5", "3.4", "3.3", "3.2", "2.0"],
+    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "3.2", "2.0"],
   },
   "chat-widget": {
     STABLE_VERSION: "3.0",
@@ -14,11 +14,11 @@ const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["1.0", "2.0", "3.0"],
   },
   "data-reporting": {
-    STABLE_VERSION: "3.4",
-    LEGACY_VERSIONS: ["2.0", "3.2", "3.3"],
-    DEV_PREVIEW_VERSION: "3.5",
+    STABLE_VERSION: "3.5",
+    LEGACY_VERSIONS: ["2.0", "3.2", "3.3", "3.4"],
+    DEV_PREVIEW_VERSION: "3.6",
     DEPRECATED_VERSIONS: "",
-    ALL_VERSIONS: ["3.5", "3.4", "3.3", "3.2", "2.0"],
+    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "3.2", "2.0"],
   },
   "customer-accounts-api": {
     STABLE_VERSION: "2.0",
@@ -35,7 +35,7 @@ const AUTH_TYPE = {
   redirect: "redirect",
 };
 
-export const REGION = {
+const REGION = {
   FRA: "fra",
   DAL: "dal",
   FRA_A: "fra-a",
