@@ -15,6 +15,10 @@ import * as v3_5_payloads_agent from "./messaging/v3.5/agent-chat-api/index";
 import * as v3_5_payloads_customer from "./messaging/v3.5/customer-chat-api/index";
 import * as v3_5_payloads_configuration from "./management/v3.5/configuration-api/index";
 import * as v3_5_payloads_reports from "./data-reporting/v3.5/reports-api/index";
+import * as v3_6_payloads_agent from "./messaging/v3.6/agent-chat-api/index";
+import * as v3_6_payloads_customer from "./messaging/v3.6/customer-chat-api/index";
+import * as v3_6_payloads_configuration from "./management/v3.6/configuration-api/index";
+import * as v3_6_payloads_reports from "./data-reporting/v3.6/reports-api/index";
 
 const v3_1 = {
   agent: { ...v3_1_payloads_agent },
@@ -48,12 +52,20 @@ const v3_5 = {
   reports: { ...v3_5_payloads_reports },
 };
 
+const v3_6 = {
+  agent: { ...v3_6_payloads_agent },
+  customer: { ...v3_6_payloads_customer },
+  configuration: { ...v3_6_payloads_configuration },
+  reports: { ...v3_6_payloads_reports },
+};
+
 const payloads = {
   "v3.1": v3_1,
   "v3.2": v3_2,
   "v3.3": v3_3,
   "v3.4": v3_4,
   "v3.5": v3_5,
+  "v3.6": v3_6,
 };
 
 export default payloads;
