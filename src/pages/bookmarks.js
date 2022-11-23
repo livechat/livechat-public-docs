@@ -1,29 +1,29 @@
-import React, { useState } from "react";
 import styled from "@emotion/styled";
 import api from "api";
-import { useQuery } from "react-query";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { AuthProvider } from "../contexts/auth";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { BookmarkFilledIcon } from "assets/icons/BookmarkFilled";
 import { BookmarkNoColor } from "assets/icons/BookmarkNoColor";
 import Link from "next/link";
-import Version, { getVersionsByGroup } from "../components/core/version";
-import Header from "../components/core/header";
-import { Header as PageHeader } from "../components/core/Page";
+import React, { useState } from "react";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import {
-  MainWrapper,
-  MiddleColumn,
+  CategoryRedoc,
   Content,
   LeftColumnRedoc,
   LeftColumnRedocWrapper,
+  MainWrapper,
+  MiddleColumn,
   NavHeader,
-  CategoryRedoc,
 } from "../components/core/components";
+import Header from "../components/core/header";
+import { Header as PageHeader } from "../components/core/Page";
+import Version, { getVersionsByGroup } from "../components/core/version";
+import { AuthProvider } from "../contexts/auth";
 // import { HomeIcon, ChevronRight } from "../components/core/icons";
 import Footer from "../components/core/Footer/Footer";
+import articles from "../configs/articles.json";
 
-import { VersionProvider, PromotionProvider } from "../contexts";
+import { PromotionProvider, VersionProvider } from "../contexts";
 const queryClient = new QueryClient();
 
 const Bookmarks = () => {
@@ -107,6 +107,9 @@ const Bookmarks = () => {
     fetchData
   );
 
+  const pageTitle = (url) =>
+    articles.find((article) => article.link === url + "/")?.title;
+
   return (
     <AuthProvider>
       <VersionProvider value={versionContext}>
@@ -132,11 +135,12 @@ const Bookmarks = () => {
                   </li>
                 ) : (
                   allBookmarks.map((bookmark) => {
+                    const title = pageTitle(bookmark.url);
                     return (
                       <li>
                         <div className="wrapper">
-                          <Link href={`${bookmark.url}`}>{bookmark.url}</Link>
-                          <p>Some title</p>
+                          <Link href={`${bookmark.url}`}>{`${title}`}</Link>
+                          <p>{`https://developers.livechat.com/docs${bookmark.url}`}</p>
                         </div>
                         <button>
                           <BookmarkFilledIcon />

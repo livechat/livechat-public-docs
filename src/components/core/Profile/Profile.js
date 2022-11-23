@@ -246,7 +246,9 @@ const Profile = () => {
           passHref
           onClick={handleClose}
         >
-          <a css={linkCss}>See bookmarks</a>
+          <a css={linkCss} style={{ color: isAuthorized ? "" : "#A0A6AB" }}>
+            See bookmarks
+          </a>
         </Link>
       ),
       divider: true,
