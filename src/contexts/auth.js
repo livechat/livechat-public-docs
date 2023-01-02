@@ -46,7 +46,10 @@ export const AuthProvider = ({ children }) => {
 
       setToken(authorizeData[TOKEN_KEY]);
     } catch (error) {
-      throw error;
+      if (type === AUTH_TYPE.popup) {
+        console.error(error);
+      }
+      logout(false);
     }
   };
 
@@ -79,9 +82,7 @@ export const AuthProvider = ({ children }) => {
         email: data?.email || "",
       });
     } catch (error) {
-      if (error.message === "Unauthorized") {
-        logout(false);
-      }
+      logout(false);
       console.error(error);
     }
   };
