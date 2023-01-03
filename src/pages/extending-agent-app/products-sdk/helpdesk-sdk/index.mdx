@@ -51,7 +51,7 @@ Install the SDK from NPM...
 <CodeSample>
 
 ```
-npm install @helpdesk/helpdesk-sdk
+npm install @livechat/helpdesk-sdk
 ```
 
 </CodeSample>
@@ -61,7 +61,7 @@ npm install @helpdesk/helpdesk-sdk
 <CodeSample>
 
 ```js
-import * as HelpDesk from "@helpdesk/helpdesk-sdk";
+import * as HelpDesk from "@livechat/helpdesk-sdk";
 ```
 
 </CodeSample>
@@ -71,7 +71,7 @@ import * as HelpDesk from "@helpdesk/helpdesk-sdk";
 <CodeSample>
 
 ```js
-const HelpDesk = require("@helpdesk/helpdesk-sdk");
+const HelpDesk = require("@livechat/helpdesk-sdk");
 ```
 
 </CodeSample>
@@ -83,7 +83,7 @@ You can also use the UMD build:
 <CodeSample>
 
 ```html
-<script src="https://unpkg.com/@livechat/agent-app-sdk@latest/dist/agentapp.umd.min.js"></script>
+<script src="https://unpkg.com/@livechat/helpdesk-sdk@1.0.3/dist/helpdesk-sdk.umd.min.js"></script>
 <script>
   HelpDesk.createDetailsWidget().then(function(widget) {
     // do something with widget
@@ -130,7 +130,7 @@ If you want to use your app in the Details section, you should use the `createDe
 <CodeSample>
 
 ```js
-import { createDetailsWidget } from "@helpdesk/helpdesk-sdk";
+import { createDetailsWidget } from "@livechat/helpdesk-sdk";
 
 createDetailsWidget().then(widget => {
   // build your logic around the widget
@@ -141,7 +141,7 @@ createDetailsWidget().then(widget => {
 
 ### Events
 
-#### `ticket_details`
+#### `ticket_info`
 
 Emitted when an agent opens a conversation within tickets, or when an agents selects the ticket. The handler will get the ticket object as an argument.
 
@@ -150,8 +150,8 @@ Listen for the ticket changes:
 <CodeSample>
 
 ```js
-widget.on("ticket-details", profile => {
-  // read the new profile
+widget.on("ticket_info", ticketInfo => {
+  // read the ticket object
 });
 ```
 
@@ -159,9 +159,31 @@ widget.on("ticket-details", profile => {
 
 The ticket object will have the following shape:
 
-| Property          | Description                                                                                                                                          |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-|                   |                                                                                                                                                      |
+| Property            | Description                                                                                                                                          |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | Unique object identifier                                                                                                                             |
+| `shortId`           | Short ticket ID                                                                                                                                      |
+| `createdBy`         | Creator identifier                                                                                                                                   |
+| `updatedAt`         | Time of last modification                                                                                                                            |
+| `updatedBy`         | Modification author identifier                                                                                                                       |
+| `lastMessageAt`     | Time of last public message                                                                                                                          |
+| `events`            | Ticket events                                                                                                                                        |
+| `requester`         | Ticket requester                                                                                                                                     |
+| `status`            | Ticket status: `open`, `pending`, `onhold`, `solved`, `closed`                                                                                       |
+| `spam`              | Spam details                                                                                                                                         |
+| `subject`           | Ticket subject                                                                                                                                       |
+| `source`            | Ticket source                                                                                                                                        |
+| `tagIds`            | List of ticket tags                                                                                                                                  |
+| `teamIds`           | Teams that can access the ticket                                                                                                                     |
+| `assignment`        | Team / agent assignment                                                                                                                              |
+| `ratingRequestSent` | Has rating request been sent                                                                                                                         |
+| `rating`            | Ticket rating                                                                                                                                        |
+| `ccs`               | List of people in the loop                                                                                                                           |
+| `priority`          | `-10`: low, `0`: medium, `10`: high, `20`: urgent                                                                                                    |
+| `followers`         | List of ticket followers (agents)                                                                                                                    |
+| `childTickets`      | Merged ticket reference                                                                                                                              |
+| `parentTicket`      | Parent ticket reference                                                                                                                              |
+| `customFields`      | Object with custom fields values, where key is custom fields apiKey                                                                                  |
 
 #### `ticket_details_section_button_click`
 
@@ -185,21 +207,21 @@ widget.on("ticket_details_section_button_click", ({ buttonId }) => {
 
 ### Methods
 
-#### Get the ticket details
+#### Get the ticket info
 
-If you want to access the current ticket, you should use the `getTicketDetails` method.
+If you want to access the current ticket, you should use the `getTicketInfo` method.
 
-Get the current ticket details
+Get the current ticket info
 
 <CodeSample>
 
 ```js
-const profile = widget.getTicketDetails();
+const ticketInfo = widget.getTicketInfo();
 ```
 
 </CodeSample>
 
-The returned profile will be an object identical to the one emitted by the `tickets_details` event. It can also be `null` if no profile was recorded.
+The returned profile will be an object identical to the one emitted by the `tickets_info` event. It can also be `null` if no info was recorded.
 
 #### Modify Ticket Details widget's state
 
@@ -214,7 +236,21 @@ Modify the Ticket Details widget's state
 <CodeSample>
 
 ```js
-
+widget
+  .modifySection({
+    title: "My widget",
+    components: [
+      {
+        type: "title",
+        data: {
+          value: "The title will be modified"
+        }
+      }
+    ]
+  })
+  .then(() => {
+    // the widget should be modified now
+  });
 ```
 
 </CodeSample>
@@ -226,7 +262,7 @@ If you want to connect a Fullscreen widget to the HelpDesk App, you should use t
 <CodeSample>
 
 ```js
-import { createFullscreenWidget } from "@livechat/agent-app-sdk";
+import { createFullscreenWidget } from "@livechat/helpdesk-sdk";
 
 createFullscreenWidget().then(widget => {
   // build your logic around the widget
