@@ -31,7 +31,7 @@ import {
   Scopes,
   Errors,
   Placeholder,
-  Image
+  Image,
 } from "../extensions";
 
 import { RATING_POSITION } from "../../constant";
@@ -56,7 +56,7 @@ const components = {
   Scopes,
   Errors,
   Placeholder,
-  Image
+  Image,
 };
 
 const StyledRating = styled(Rating)`
@@ -89,18 +89,18 @@ const Page = ({ frontMatter, children }) => {
   );
 
   const promotionContext = {
-    isActive: false,
+    isActive: true,
     content: (
       <div>
-        Master LiveChat Design System at the{" "}
+        Available now 👉{" "}
         <a
-          href="https://developers.livechat.com/live-coding-livechat-design-system-in-use/"
+          href="https://developers.livechat.com/building-apps-crash-course/"
           rel="noopener nofollow"
           target="_blank"
         >
-          live coding session
+          Free building apps crash course
         </a>{" "}
-        on Sept 16, 5 pm CEST.
+        with the LiveChat Developer Program.
       </div>
     ),
   };

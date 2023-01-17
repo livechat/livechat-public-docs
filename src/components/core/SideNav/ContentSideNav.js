@@ -22,8 +22,10 @@ const Wrapper = styled.div`
   padding-left: 10px;
   margin: 195px 0px 50px 0px;
   overflow-y: scroll;
-  height: calc(100vh - ${({ isVersioned }) => (isVersioned ? "130px" : "100px")});
-  top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
+  height: calc(
+    100vh - ${({ isVersioned }) => (isVersioned ? "130px" : "100px")}
+  );
+  top: ${({ isVersioned }) => (isVersioned ? "160px" : "130px")};
   right: 20px;
   position: sticky;
 
@@ -40,7 +42,7 @@ const StyledLink = styled.a`
   font-weight: 500;
 
   &:hover {
-    color: #4284F5;
+    color: #4284f5;
     cursor: pointer;
     text-decoration: none;
   }
