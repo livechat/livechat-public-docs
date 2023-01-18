@@ -28,7 +28,7 @@ const Wrapper = styled.div`
 const dropdownCss = () => css`
   opacity: 1 !important;
   right: 0 !important;
-  top: 60px !important;
+  top: 125px !important;
   width: 100vw;
   z-index: 100;
   display: block !important;
@@ -40,7 +40,7 @@ const dropdownCss = () => css`
   @media (min-width: 768px) {
     right: 5px !important;
     left: auto !important;
-    top: 70px !important;
+    top: 100px !important;
     width: 230px;
     border-top: none;
   }

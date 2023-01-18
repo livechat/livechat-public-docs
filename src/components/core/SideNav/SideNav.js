@@ -29,7 +29,7 @@ const Wrapper = styled.aside`
     height: 100vh;
     max-height: 100vh;
     position: sticky;
-    top: 60px;
+    top: 102px;
     transition: all 0s;
     width: 260px;
   }
