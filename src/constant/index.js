@@ -67,7 +67,7 @@ const SCOPES = [
   {
     id: "agents--all:ro",
     description: "Read permission for all agents profiles configuration",
-    role: "administrator",
+    role: "normal",
     role_type: "secondary",
     product: "LiveChat",
   },
