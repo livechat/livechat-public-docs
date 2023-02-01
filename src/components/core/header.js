@@ -10,7 +10,7 @@ import { Search } from "./Search";
 import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
-import { logAmplitudeEvent } from "../../utils/index";
+
 const Profile = dynamic(() => import("./Profile/Profile"), {
   ssr: false,
   loading: () => <p>...</p>,
@@ -173,7 +173,6 @@ const MenuElement = ({ label, href, slug, color, ...props }) => {
         <a
           href={href}
           css={linkStyle}
-          onClick={() => logAmplitudeEvent("External link clicked", { href })}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -194,11 +193,6 @@ const MenuElement = ({ label, href, slug, color, ...props }) => {
               
               `}
             `}
-            onClick={() =>
-              logAmplitudeEvent("Top menu tab clicked", {
-                slug,
-              })
-            }
           >
             <CategoryIcon category={slug} style={iconStyle} />
             {label}

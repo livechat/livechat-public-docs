@@ -10,7 +10,6 @@ import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString, getVersionColor } from "../../utils";
 import { WarningIcon } from "./icons";
 import { VersionContext, PromotionContext } from "../../contexts";
-import { logAmplitudeEvent } from "../../utils/index";
 
 export const getVersionsByGroup = (group) =>
   group && VERSIONS_GROUPS[group]
@@ -243,12 +242,7 @@ const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
               items={sortedArticleVersions.map((version, i) => ({
                 itemId: i,
                 content: formatVersion(version),
-                onItemSelect: () => {
-                  logAmplitudeEvent("Version selected", {
-                    version: selectedVersion,
-                  });
-                  return onDropdownHandle(version);
-                },
+                onItemSelect: () => onDropdownHandle(version),
                 isSelected: version === selectedVersion,
               }))}
             />
