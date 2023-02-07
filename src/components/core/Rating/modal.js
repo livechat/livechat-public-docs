@@ -3,6 +3,8 @@ import { Loader, ModalBase } from "@livechat/design-system";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 
+import { canUseWindow } from "utils";
+
 const modalBaseCss = css`
   width: 610px;
   padding: 22px 10px 15px 15px;
@@ -43,6 +45,8 @@ const FeedbackModal = ({ isOpen, handleModalClose }) => {
     }
   };
 
+  const url = canUseWindow ? window.location.href : "";
+
   return (
     <ModalBase onClose={onModalClose} css={modalBaseCss}>
       {isLoading && (
@@ -53,7 +57,11 @@ const FeedbackModal = ({ isOpen, handleModalClose }) => {
       <iframe
         onLoad={hideLoader}
         title="feedback-form"
-        src="https://docs.google.com/forms/d/e/1FAIpQLSfcJbrIHOgSqvLVQB_EC1ao70AGDiBun06k7PtEsjmbycymwg/viewform?embedded=true"
+        src={
+          "https://docs.google.com/forms/d/e/1FAIpQLSfcJbrIHOgSqvLVQB_EC1ao70AGDiBun06k7PtEsjmbycymwg/viewform?entry.334841988=" +
+          encodeURIComponent(url) +
+          "&embedded=true"
+        }
         width="580"
         height="630"
         frameBorder="0"
