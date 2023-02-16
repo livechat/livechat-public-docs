@@ -1,0 +1,39 @@
+name: Create preview
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  publish:
+    name: Preview
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Create Preview
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          BRANCH_NAME: $(echo ${{github.head_ref || github.ref_name}} | sed -e 's/\//-/g' | tr '[:upper:]' '[:lower:]')
+        run: npx netlify build --context deploy-preview && npx netlify deploy --dir=.next --alias ${{ env.BRANCH_NAME }}
+
+      - name: Status check
+        env:
+          BRANCH_NAME: ${{github.head_ref || github.ref_name}}
+        uses: Sibz/github-status-action@v1.1.1
+        with:
+          authToken: ${{ secrets.AUTH_TOKEN }}
+          context: Netlify preview
+          state: success
+          target_url: https://${{ env.BRANCH_NAME }}--livechat-public-docs.netlify.app
