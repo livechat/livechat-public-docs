@@ -89,7 +89,7 @@ const Page = ({ frontMatter, children }) => {
   );
 
   const promotionContext = {
-    isActive: true,
+    isActive: false,
     content: (
       <div>
         Available now 👉{" "}

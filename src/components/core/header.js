@@ -152,7 +152,7 @@ const SearchField = styled.div`
     display: none;
   }
 
-  padding: 8px 10px;
+  padding: 0px 10px;
 `;
 
 const linkStyle = {
