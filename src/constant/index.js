@@ -1,10 +1,10 @@
 const VERSIONS_GROUPS = {
   DEFAULT: {
     STABLE_VERSION: "3.5",
-    LEGACY_VERSIONS: ["2.0", "3.3", "3.4"],
+    LEGACY_VERSIONS: ["3.3", "3.4"],
     DEV_PREVIEW_VERSION: "3.6",
-    DEPRECATED_VERSIONS: "3.2",
-    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "3.2", "2.0"],
+    DEPRECATED_VERSIONS: ["3.2"],
+    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "3.2"],
   },
   "chat-widget": {
     STABLE_VERSION: "3.0",
