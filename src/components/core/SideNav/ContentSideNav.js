@@ -25,7 +25,7 @@ const Wrapper = styled.div`
   height: calc(
     100vh - ${({ isVersioned }) => (isVersioned ? "130px" : "100px")}
   );
-  top: ${({ isVersioned }) => (isVersioned ? "160px" : "130px")};
+  top: ${({ isVersioned }) => (isVersioned ? "130px" : "100px")};
   right: 20px;
   position: sticky;
 
