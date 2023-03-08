@@ -4,16 +4,16 @@
 
 Hello 👋!
 
-This is the for all of the [LiveChat Platform documentation](https://developers.livechat.com/docs/).
+This is the repository for the [Platform documentation](https://developers.livechat.com/docs/).
 Our documents are written in the [MDX format](https://mdxjs.com/), so pay attention to our custom tags when contributing to the docs.
 
 ## Who we are
 
 Behind LiveChat, Inc. there is a team of [passionate people](https://www.livechat.com/team/) building online customer service software with online chat, help desk software, chatbot, and web analytics capabilities.
 
-With a suite of four products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/)) and their powerful APIs, we power customer communication for 34,000 companies in 150 countries.
+With a suite of four products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/)) and their powerful APIs, we power customer communication for 36,000 companies in 150 countries.
 
-[LiveChat Platform](https://developers.livechat.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://developers.livechat.com/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
+[The Platform](https://developers.livechat.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://developers.livechat.com/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
 
 ## Node version
 
@@ -30,29 +30,28 @@ We require node version 14.x.
 
 We are using **Netlify** to serve the docs in production.
 
-**Important:** `master` branch is automatically deployed to production.
+<!-- **Important:** `master` branch is automatically deployed to production. -->
 
 You can simulate the production build process locally by running.
 
 1. Run `npm run build`
 2. Run `npm start`
 
-## Feature branch / Deploy Preview
+## Feature branch / Deploy preview
 
-In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url.
+Currently, deploy previews need to be generated manually.
+<!-- In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url. -->
 
 ## Versioning
 
-Currently, versioning for the Agent Chat API, Customer Chat API, and Configuration API is as follows:
+This is the current versioning for the Messaging APIs (Agent Chat API, Customer Chat API), the Configuration API, and Reports API:
 
-|                 | Agent Chat API | Customer Chat API | Configuration API  | Reports API   |
-| --------------- | -------------- | ----------------- | ------------------ | ------------- |
-| **stable**      | 3.4            | 3.4               | 3.4                | 3.4           |
-| **dev preview** | 3.5            | 3.5               | 3.5                | 3.5           |
-| **legacy**      | 3.2            | 3.2               | 2.0,  3.2          | 2.0, 3.3, 3.2 |
-| **deprecated**  | 3.1, 3.2, 3.3  | 3.1, 3.2, 3.3     | 2.0, 3.1, 3.2, 3.3 | -             |
-
-This versioning is **default** for all articles which aren't grouped.
+|                 | Messaging APIs | Configuration API | Reports API   |
+| --------------- | -------------- | ----------------- | ------------- |
+| **stable**      | 3.5            | 3.5               | 3.5           |
+| **dev preview** | 3.6            | 3.6               | 3.6           |
+| **legacy**      | 3.4, 3.3       | 3.4, 3.3          | 3.4, 3.3, 2.0 |
+| **deprecated**  | 3.2            | 3.2               | 3.2           |
 
 ### Grouping versions
 
