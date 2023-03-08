@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { string } from 'prop-types';
+import { string } from "prop-types";
 
 import Rating from "../Rating";
+
+import SecondGrader from "components/SecondGrader";
+import { useAuth } from "contexts/auth";
 
 import { RATING_POSITION } from "../../../constant";
 
@@ -32,17 +35,22 @@ const StyledRating = styled(Rating)`
   }
 `;
 
-const PageHeader = ({ title }) => (
-  <PageHeaderWrapper>
-    <PageTitle>
-      <span>{title}</span>
-      <StyledRating position={RATING_POSITION.TOP}/>
-    </PageTitle>
-  </PageHeaderWrapper>
-);
+const PageHeader = ({ title }) => {
+  const { isAuthorized } = useAuth();
+
+  return (
+    <PageHeaderWrapper>
+      <PageTitle>
+        <span>{title}</span>
+        <StyledRating position={RATING_POSITION.TOP} />
+      </PageTitle>
+      {isAuthorized && <SecondGrader />}
+    </PageHeaderWrapper>
+  );
+};
 
 PageHeader.propTypes = {
-  title: string.isRequired
-}
+  title: string.isRequired,
+};
 
 export default PageHeader;
