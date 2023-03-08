@@ -1,3 +1,4 @@
+import { string, func, bool } from "prop-types";
 import { Icon, Loader } from "@livechat/design-system";
 import styled from "@emotion/styled";
 
@@ -77,6 +78,15 @@ const StatusIndicator = ({
       </Button>
     </Wrapper>
   );
+};
+
+StatusIndicator.propTypes = {
+  isLoading: bool.isRequired,
+  error: string.isRequired,
+  success: bool.isRequired,
+  getResponse: func.isRequired,
+  handleClose: func.isRequired,
+  prompt: string.isRequired,
 };
 
 export default StatusIndicator;

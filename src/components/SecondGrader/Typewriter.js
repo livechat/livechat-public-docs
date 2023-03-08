@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { string } from "prop-types";
 
 const Typewriter = ({ text }) => {
   const [displayText, setDisplayText] = useState("");
@@ -17,6 +18,10 @@ const Typewriter = ({ text }) => {
   }, [text]);
 
   return <div>{displayText}</div>;
+};
+
+Typewriter.propTypes = {
+  text: string.isRequired,
 };
 
 export default Typewriter;

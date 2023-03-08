@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { string, bool } from "prop-types";
 
 const BetaLabel = styled.div`
   background: linear-gradient(245deg, #8609ff, #0066ff);
@@ -28,6 +29,11 @@ const BetaMark = ({ label, container }) => {
     );
   }
   return <BetaLabel>{label}</BetaLabel>;
+};
+
+BetaMark.propTypes = {
+  label: string.isRequired,
+  container: bool,
 };
 
 export default BetaMark;

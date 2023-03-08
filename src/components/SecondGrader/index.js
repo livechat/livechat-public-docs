@@ -25,7 +25,7 @@ const Tooltip = styled.div`
   font-size: 14px;
 `;
 
-const Robot = () => {
+const SecondGrader = () => {
   const [isEnable, setIsEnable] = useLocalStorage("ai_assist", true);
 
   const renderIcon = () => {
@@ -60,4 +60,4 @@ const Robot = () => {
   );
 };
 
-export default Robot;
+export default SecondGrader;
