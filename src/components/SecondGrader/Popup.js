@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { func } from "prop-types";
 import axios from "axios";
 import styled from "@emotion/styled";
 
@@ -7,6 +8,7 @@ import { canUseWindow } from "utils";
 import Typewriter from "./Typewriter";
 import StatusIndicator from "./StatusIndicator";
 import BetaMark from "./BetaMark";
+import ActionButton from "./ActionButton";
 
 const Container = styled.div`
   position: absolute;
@@ -14,8 +16,8 @@ const Container = styled.div`
   left: 40px;
   background-color: #ffffff;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
   width: calc(100% - 80px);
   z-index: 999;
 `;
@@ -29,7 +31,12 @@ const Wrapper = styled.div`
   }
 `;
 
-const Popup = () => {
+const BetaWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const Popup = ({ setIsEnabled }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [position, setPosition] = useState(0);
@@ -56,10 +63,10 @@ const Popup = () => {
     }
 
     if (words.length > 100) {
-      setError("Please select up to 100 words");
+      setError("Please select up to 100 words.");
     }
     if (words.length < 10) {
-      setError("Please select at least 10 words");
+      setError("Please select at least 10 words.");
     }
     const range = selection.getRangeAt(0);
     const containerPosition =
@@ -68,6 +75,12 @@ const Popup = () => {
     setPrompt(selectedText);
     setPosition(containerPosition);
     setIsVisible(true);
+  };
+
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      handleClose();
+    }
   };
 
   const handleClose = () => {
@@ -81,7 +94,7 @@ const Popup = () => {
   const getResponse = async (prompt) => {
     try {
       setIsLoading(true);
-      const res = await axios.post("api/openai/secondgrader", {
+      const res = await axios.post("/docs/api/openai/secondgrader", {
         prompt: prompt,
       });
       setSuccess(true);
@@ -102,13 +115,8 @@ const Popup = () => {
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        handleClose();
-      }
-    }
-
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -129,11 +137,21 @@ const Popup = () => {
           getResponse={getResponse}
           handleClose={handleClose}
         />
-        <BetaMark label="beta" container />
+        <BetaWrapper>
+          <ActionButton
+            handleClick={() => setIsEnabled(false)}
+            label="Disable"
+          />
+          <BetaMark label="beta" container />
+        </BetaWrapper>
       </Wrapper>
       <div>{response && <Typewriter text={response} />}</div>
     </Container>
   );
+};
+
+Popup.propTypes = {
+  setIsEnabled: func.isRequired,
 };
 
 export default Popup;

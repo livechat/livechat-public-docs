@@ -14,6 +14,7 @@ const Typewriter = ({ text }) => {
       });
       if (currentIndex === text.length) clearInterval(interval);
     }, 25);
+
     return () => clearInterval(interval);
   }, [text]);
 

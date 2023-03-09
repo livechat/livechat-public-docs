@@ -16,7 +16,7 @@ async function handler(req, res) {
     model: req.body.model || "text-davinci-003",
     prompt: `Rephrase this for a second-grade student: ${req.body.prompt}`,
     max_tokens: 256,
-    temperature: 0,
+    temperature: 0.7,
   });
 
   return res.status(200).json({ result: completion.data.choices[0].text });

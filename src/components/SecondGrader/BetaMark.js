@@ -2,10 +2,11 @@ import styled from "@emotion/styled";
 import { string, bool } from "prop-types";
 
 const BetaLabel = styled.div`
-  background: linear-gradient(245deg, #8609ff, #0066ff);
+  background: linear-gradient(255deg, #8609ff, #0066ff);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-size: ${(props) => (props.container ? 12 : 16)}px;
   font-weight: 600;
   text-transform: uppercase;
 `;
@@ -24,7 +25,7 @@ const BetaMark = ({ label, container }) => {
   if (container) {
     return (
       <BetaContainer>
-        <BetaLabel>{label}</BetaLabel>
+        <BetaLabel container>{label}</BetaLabel>
       </BetaContainer>
     );
   }

@@ -25,24 +25,32 @@ const Tooltip = styled.div`
   font-size: 14px;
 `;
 
-const SecondGrader = () => {
-  const [isEnable, setIsEnable] = useLocalStorage("ai_assist", true);
+const TooltipContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: ${(props) => (props.isEnabled ? 1 : 0.6)};
+`;
 
-  const renderIcon = () => {
+const SecondGrader = () => {
+  const [isEnabled, setIsEnabled] = useLocalStorage("ai_assist", true);
+
+  const renderTooltip = () => {
     return (
-      <div>
+      <TooltipContainer isEnabled={isEnabled}>
         <MagicIcon />
-      </div>
+        <BetaMark label="AI ASSIST" />
+      </TooltipContainer>
     );
   };
 
-  const handleOnChange = () => setIsEnable(!isEnable);
+  const handleOnChange = () => setIsEnabled(!isEnabled);
 
   return (
     <Fragment>
       <Wrapper>
         <PopperTooltip
-          trigger={renderIcon()}
+          trigger={renderTooltip()}
           theme="invert"
           zIndex={999}
           placement="bottom-start"
@@ -52,10 +60,9 @@ const SecondGrader = () => {
             10-100 words.
           </Tooltip>
         </PopperTooltip>
-        <BetaMark label="AI ASSIST" />
-        <CustomSwitch size="compact" onChange={handleOnChange} on={isEnable} />
+        <CustomSwitch size="compact" onChange={handleOnChange} on={isEnabled} />
       </Wrapper>
-      {isEnable && <Popup />}
+      {isEnabled && <Popup setIsEnabled={setIsEnabled} />}
     </Fragment>
   );
 };
