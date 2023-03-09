@@ -619,12 +619,16 @@ paths:
         - Accounts
       summary: Delete an account
       description: >-
-        Deletes an account for a given `account_id`. The ID can be replaced with
-        `me` to delete the account that performs the request.
+        Deletes an account for a given `account_id` or removes the given
+        account from a given product. The ID can be replaced with `me` to
+        delete the account that performs the request.
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - accounts--my:rw
+            - accounts--my:rw or
+            - accounts--all:rw (if account_id is different than requester's ID) or
+            - accounts.roles.lc--all:rw (if product is LiveChat and account_id is different than requester's ID) or
+            - accounts.roles.hd--all:rw (if product is HelpDesk and account_id is different than requester's ID)
       parameters:
         - in: path
           name: account_id
@@ -633,6 +637,37 @@ paths:
             format: uuid
           required: true
           description: Unique account ID or `me`.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - description: Remove an account from a given product.
+                  type: object
+                  required:
+                    - mode
+                    - product
+                  properties:
+                    mode:
+                      type: string
+                      enum: 
+                        - product
+                    product:
+                      type: string
+                      enum:
+                        - LiveChat
+                        - HelpDesk
+                - description: Delete an account.
+                  type: object
+                  required:
+                    - mode
+                  properties:
+                    mode:
+                      type: string
+                      enum: 
+                        - organization
+                        - ""
       responses:
         '200':
           description: 'OK: Returns no content.'
@@ -691,7 +726,9 @@ paths:
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token:
-            - accounts.roles--all:rw
+            - accounts.roles--all:rw or
+            - accounts.roles.lc--all:rw (when request includes LiveChat roles) and/or
+            - accounts.roles.hd--all:rw (when request includes HelpDesk roles)
       tags:
         - Accounts
       parameters:
