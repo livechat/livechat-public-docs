@@ -9,6 +9,7 @@ const BetaLabel = styled.div`
   font-size: ${(props) => (props.container ? 12 : 16)}px;
   font-weight: 600;
   text-transform: uppercase;
+  cursor: default;
 `;
 
 const BetaContainer = styled.div`
