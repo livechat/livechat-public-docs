@@ -56,8 +56,8 @@ const SecondGrader = () => {
           placement="bottom-start"
         >
           <Tooltip>
-            Use AI Assist to rephrase complicated paragraphs. Select between
-            10-100 words.
+            AI Assist explains selected text in simpler words. Select 10-120
+            words.
           </Tooltip>
         </PopperTooltip>
         <CustomSwitch size="compact" onChange={handleOnChange} on={isEnabled} />

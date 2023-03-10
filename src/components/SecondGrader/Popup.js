@@ -10,6 +10,10 @@ import StatusIndicator from "./StatusIndicator";
 import BetaMark from "./BetaMark";
 import ActionButton from "./ActionButton";
 
+const MIN_WORDS_LIMIT = 10;
+const MAX_WORDS_LIMIT = 120;
+const POPUP_OFFSET = 50;
+
 const Container = styled.div`
   position: absolute;
   top: ${(props) => props.position}px;
@@ -19,7 +23,7 @@ const Container = styled.div`
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   width: calc(100% - 80px);
-  z-index: 999;
+  z-index: 9;
 `;
 
 const Wrapper = styled.div`
@@ -62,15 +66,15 @@ const Popup = ({ setIsEnabled }) => {
       return;
     }
 
-    if (words.length > 100) {
-      setError("Please select up to 100 words.");
+    if (words.length > MAX_WORDS_LIMIT) {
+      setError(`Please select up to ${MAX_WORDS_LIMIT} words.`);
     }
-    if (words.length < 10) {
-      setError("Please select at least 10 words.");
+    if (words.length < MIN_WORDS_LIMIT) {
+      setError(`Please select at least ${MIN_WORDS_LIMIT} words.`);
     }
     const range = selection.getRangeAt(0);
     const containerPosition =
-      range.getBoundingClientRect().bottom + window.pageYOffset - 50;
+      range.getBoundingClientRect().bottom + window.pageYOffset - POPUP_OFFSET;
 
     setPrompt(selectedText);
     setPosition(containerPosition);
@@ -94,9 +98,12 @@ const Popup = ({ setIsEnabled }) => {
   const getResponse = async (prompt) => {
     try {
       setIsLoading(true);
-      const res = await axios.post("/docs/api/openai/secondgrader", {
-        prompt: prompt,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_NETLIFY_URL}/docs/api/openai/secondgrader`,
+        {
+          prompt: prompt,
+        }
+      );
       setSuccess(true);
       setResponse(res.data.result);
     } catch (err) {
@@ -107,10 +114,11 @@ const Popup = ({ setIsEnabled }) => {
   };
 
   useEffect(() => {
-    document.addEventListener("mouseup", handleSelect);
+    const article = document.querySelector("article");
+    article.addEventListener("mouseup", handleSelect);
 
     return () => {
-      document.removeEventListener("mouseup", handleSelect);
+      article.removeEventListener("mouseup", handleSelect);
     };
   }, []);
 
