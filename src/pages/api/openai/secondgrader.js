@@ -1,9 +1,15 @@
+import NextCors from "nextjs-cors";
 import { Configuration, OpenAIApi } from "openai";
 
 const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openai = new OpenAIApi(config);
 
 async function handler(req, res) {
+  await NextCors(req, res, {
+    methods: "POST",
+    origin: process.env.NEXT_PUBLIC_DEVELOPERS_URL,
+    optionsSuccessStatus: 200,
+  });
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
