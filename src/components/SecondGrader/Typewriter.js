@@ -13,7 +13,7 @@ const Typewriter = ({ text }) => {
         return `${prevText}${nextChar}`;
       });
       if (currentIndex === text.length) clearInterval(interval);
-    }, 25);
+    }, 10);
 
     return () => clearInterval(interval);
   }, [text]);
