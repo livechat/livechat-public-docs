@@ -98,10 +98,17 @@ const Popup = ({ setIsEnabled }) => {
   const getResponse = async (prompt) => {
     try {
       setIsLoading(true);
+      const token = JSON.parse(localStorage.getItem("token"));
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_NETLIFY_URL}/docs/api/openai/secondgrader`,
         {
-          prompt: prompt,
+          prompt,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setSuccess(true);
@@ -115,10 +122,14 @@ const Popup = ({ setIsEnabled }) => {
 
   useEffect(() => {
     const article = document.querySelector("article");
-    article.addEventListener("mouseup", handleSelect);
+    if (article) {
+      article.addEventListener("mouseup", handleSelect);
+    }
 
     return () => {
-      article.removeEventListener("mouseup", handleSelect);
+      if (article) {
+        article.removeEventListener("mouseup", handleSelect);
+      }
     };
   }, []);
 

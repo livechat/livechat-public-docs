@@ -30,6 +30,10 @@ const TooltipContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   opacity: ${(props) => (props.isEnabled ? 1 : 0.6)};
+  svg {
+    width: 17px;
+    height: 16px;
+  }
 `;
 
 const SecondGrader = () => {
