@@ -8,6 +8,7 @@ import SecondGrader from "components/SecondGrader";
 import { useAuth } from "contexts/auth";
 
 import { RATING_POSITION } from "../../../constant";
+import useMediaQuery from "hooks/useMediaQuery";
 
 const PageTitle = styled.h1`
   margin: 0;
@@ -37,6 +38,8 @@ const StyledRating = styled(Rating)`
 
 const PageHeader = ({ title }) => {
   const { isAuthorized } = useAuth();
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const showSecondGrader = isAuthorized && !isMobile;
 
   return (
     <PageHeaderWrapper>
@@ -44,7 +47,7 @@ const PageHeader = ({ title }) => {
         <span>{title}</span>
         <StyledRating position={RATING_POSITION.TOP} />
       </PageTitle>
-      {isAuthorized && <SecondGrader />}
+      {showSecondGrader && <SecondGrader />}
     </PageHeaderWrapper>
   );
 };
