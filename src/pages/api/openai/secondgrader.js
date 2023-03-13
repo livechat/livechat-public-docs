@@ -32,7 +32,12 @@ async function handler(req, res) {
     temperature: 0.7,
   });
 
-  return res.status(200).json({ result: completion.data.choices[0].text });
+  const result = completion.data.choices[0].text;
+  if (result.length === 0) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+
+  return res.status(200).json({ result });
 }
 
 export default withBearerAuth(handler);
