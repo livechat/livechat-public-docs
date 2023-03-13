@@ -53,7 +53,15 @@ const StatusIndicator = ({
     <Wrapper>
       <Icon source={MagicIcon} />
       <span>Do you want to rephrase the selected text?</span>
-      <ActionButton handleClick={() => getResponse(prompt)} label="Rephrase" />
+      <ActionButton
+        handleClick={() => getResponse(prompt)}
+        label="Rephrase"
+        data-controller="track"
+        data-track-category="Interaction"
+        data-track-action="Link click"
+        data-track-label="Confirm"
+        data-action="track#send"
+      />
     </Wrapper>
   );
 };

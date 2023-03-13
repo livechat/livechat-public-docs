@@ -8,6 +8,8 @@ import Typewriter from "./Typewriter";
 import StatusIndicator from "./StatusIndicator";
 import BetaMark from "./BetaMark";
 
+import Analytics from "utils/analytics";
+
 const MIN_WORDS_LIMIT = 10;
 const MAX_WORDS_LIMIT = 120;
 const POPUP_OFFSET = 50;
@@ -83,10 +85,20 @@ const Popup = () => {
     setResponse("");
     setError("");
     setSuccess(false);
+    Analytics.track({
+      category: "Interaction",
+      action: "Link click",
+      label: "Cancel",
+    });
   };
 
   const getResponse = async (prompt) => {
     try {
+      Analytics.track({
+        category: "Interaction",
+        action: "Link click",
+        label: "Confirm",
+      });
       setIsLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
       const res = await axios.post(

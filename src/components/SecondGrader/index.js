@@ -8,6 +8,8 @@ import Popup from "./Popup";
 import { useLocalStorage } from "hooks";
 import { MagicIcon } from "assets/icons/Magic";
 
+import Analytics from "utils/analytics";
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -38,6 +40,7 @@ const TooltipContainer = styled.div`
 
 const SecondGrader = () => {
   const [isEnabled, setIsEnabled] = useLocalStorage("ai_assist", true);
+  const actionEvent = isEnabled ? "Switch off" : "Switch on";
 
   const renderTooltip = () => {
     return (
@@ -48,7 +51,14 @@ const SecondGrader = () => {
     );
   };
 
-  const handleOnChange = () => setIsEnabled(!isEnabled);
+  const handleOnChange = () => {
+    setIsEnabled(!isEnabled);
+    Analytics.track({
+      category: "Interaction",
+      action: `${actionEvent}`,
+      label: "AI Assist",
+    });
+  };
 
   return (
     <Fragment>
@@ -64,7 +74,16 @@ const SecondGrader = () => {
             words.
           </Tooltip>
         </PopperTooltip>
-        <CustomSwitch size="compact" onChange={handleOnChange} on={isEnabled} />
+        <CustomSwitch
+          size="compact"
+          onChange={handleOnChange}
+          on={isEnabled}
+          data-controller="track"
+          data-track-category="Interaction"
+          data-track-action={actionEvent}
+          data-track-label="AI Assist"
+          data-action="track#send"
+        />
       </Wrapper>
       {isEnabled && <Popup />}
     </Fragment>
