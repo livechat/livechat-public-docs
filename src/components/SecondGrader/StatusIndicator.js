@@ -23,7 +23,6 @@ const StatusIndicator = ({
   error,
   success,
   getResponse,
-  handleClose,
   prompt,
 }) => {
   if (isLoading) {
@@ -39,7 +38,6 @@ const StatusIndicator = ({
       <Wrapper>
         <Icon source={AlertCircleOutline} iconType="error" />
         <span>{error}</span>
-        <ActionButton handleClick={handleClose} label="Cancel" />
       </Wrapper>
     );
   }
@@ -48,7 +46,6 @@ const StatusIndicator = ({
       <Wrapper>
         <Icon source={CheckCircleOutline} iconType="success" />
         <span>Text successfully transformed.</span>
-        <ActionButton handleClick={handleClose} label="Cancel" />
       </Wrapper>
     );
   }
@@ -56,8 +53,7 @@ const StatusIndicator = ({
     <Wrapper>
       <Icon source={MagicIcon} />
       <span>Do you want to rephrase the selected text?</span>
-      <ActionButton handleClick={() => getResponse(prompt)} label="Confirm" />
-      <ActionButton handleClick={handleClose} label="Cancel" />
+      <ActionButton handleClick={() => getResponse(prompt)} label="Rephrase" />
     </Wrapper>
   );
 };
@@ -67,7 +63,6 @@ StatusIndicator.propTypes = {
   error: string.isRequired,
   success: bool.isRequired,
   getResponse: func.isRequired,
-  handleClose: func.isRequired,
   prompt: string.isRequired,
 };
 

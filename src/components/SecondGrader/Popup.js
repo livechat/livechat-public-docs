@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { func } from "prop-types";
 import axios from "axios";
 import styled from "@emotion/styled";
 
@@ -8,7 +7,6 @@ import { canUseWindow } from "utils";
 import Typewriter from "./Typewriter";
 import StatusIndicator from "./StatusIndicator";
 import BetaMark from "./BetaMark";
-import ActionButton from "./ActionButton";
 
 const MIN_WORDS_LIMIT = 10;
 const MAX_WORDS_LIMIT = 120;
@@ -28,19 +26,11 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  svg:hover {
-    cursor: pointer;
-  }
+  gap: 0.5rem;
 `;
 
-const BetaWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const Popup = ({ setIsEnabled }) => {
+const Popup = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [position, setPosition] = useState(0);
@@ -148,29 +138,18 @@ const Popup = ({ setIsEnabled }) => {
   return (
     <Container ref={ref} position={position}>
       <Wrapper>
+        <BetaMark label="beta" container />
         <StatusIndicator
           isLoading={isLoading}
           error={error}
           success={success}
           prompt={prompt}
           getResponse={getResponse}
-          handleClose={handleClose}
         />
-        <BetaWrapper>
-          <ActionButton
-            handleClick={() => setIsEnabled(false)}
-            label="Disable"
-          />
-          <BetaMark label="beta" container />
-        </BetaWrapper>
       </Wrapper>
       <div>{response && <Typewriter text={response} />}</div>
     </Container>
   );
-};
-
-Popup.propTypes = {
-  setIsEnabled: func.isRequired,
 };
 
 export default Popup;

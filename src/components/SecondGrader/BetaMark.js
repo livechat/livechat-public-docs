@@ -13,11 +13,7 @@ const BetaLabel = styled.div`
 `;
 
 const BetaContainer = styled.div`
-  background: linear-gradient(
-    243.66deg,
-    rgba(134, 9, 255, 0.1),
-    rgba(0, 102, 255, 0.1)
-  );
+  background: #f7f7f7;
   border-radius: 4px;
   padding: 2px 8px;
 `;

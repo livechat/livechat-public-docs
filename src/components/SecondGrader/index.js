@@ -66,7 +66,7 @@ const SecondGrader = () => {
         </PopperTooltip>
         <CustomSwitch size="compact" onChange={handleOnChange} on={isEnabled} />
       </Wrapper>
-      {isEnabled && <Popup setIsEnabled={setIsEnabled} />}
+      {isEnabled && <Popup />}
     </Fragment>
   );
 };
