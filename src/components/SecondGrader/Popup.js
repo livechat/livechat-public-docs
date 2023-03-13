@@ -80,6 +80,7 @@ const Popup = () => {
   };
 
   const handleClose = () => {
+    window.getSelection().removeAllRanges();
     setIsVisible(false);
     setPrompt("");
     setResponse("");
