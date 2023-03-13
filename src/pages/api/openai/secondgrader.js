@@ -1,17 +1,10 @@
 import { Configuration, OpenAIApi } from "openai";
-import NextCors from "nextjs-cors";
 import withBearerAuth from "api/withBearerAuth";
 
 const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openai = new OpenAIApi(config);
 
 async function handler(req, res) {
-  await NextCors(req, res, {
-    methods: "POST",
-    origin: process.env.NEXT_PUBLIC_DEVELOPERS_URL,
-    optionsSuccessStatus: 200,
-  });
-
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -26,7 +19,7 @@ async function handler(req, res) {
   }
 
   const completion = await openai.createCompletion({
-    model: req.body.model || "text-davinci-003",
+    model: "text-davinci-003",
     prompt: `Rephrase this for a second-grade student: ${prompt}`,
     max_tokens: 256,
     temperature: 0.7,

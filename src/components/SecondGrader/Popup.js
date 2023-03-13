@@ -87,8 +87,8 @@ const Popup = () => {
     setSuccess(false);
     Analytics.track({
       category: "Interaction",
-      action: "Link click",
-      label: "Cancel",
+      action: "Hide AI Assist",
+      label: "AI Assist",
     });
   };
 
@@ -96,8 +96,8 @@ const Popup = () => {
     try {
       Analytics.track({
         category: "Interaction",
-        action: "Link click",
-        label: "Confirm",
+        action: "Rephrase",
+        label: "AI Assist",
       });
       setIsLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
@@ -159,7 +159,7 @@ const Popup = () => {
           getResponse={getResponse}
         />
       </Wrapper>
-      <div>{response && <Typewriter text={response} />}</div>
+      {response && <Typewriter text={response} />}
     </Container>
   );
 };

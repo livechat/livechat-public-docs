@@ -1,4 +1,12 @@
+import NextCors from "nextjs-cors";
+
 const withBearerAuth = (handler) => async (req, res) => {
+  await NextCors(req, res, {
+    methods: "POST",
+    origin: process.env.NEXT_PUBLIC_DEVELOPERS_URL,
+    optionsSuccessStatus: 200,
+  });
+
   const unauthorized = () => res.status(401).send({ error: "Unauthorized" });
 
   if (!req.headers.authorization) {

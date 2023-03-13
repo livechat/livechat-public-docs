@@ -58,8 +58,8 @@ const StatusIndicator = ({
         label="Rephrase"
         data-controller="track"
         data-track-category="Interaction"
-        data-track-action="Link click"
-        data-track-label="Confirm"
+        data-track-action="Rephrase"
+        data-track-label="AI Assist"
         data-action="track#send"
       />
     </Wrapper>
