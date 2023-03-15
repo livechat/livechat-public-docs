@@ -11,9 +11,9 @@ class AccountsClient {
     });
   }
 
-  async getMe() {
+  async getInfo() {
     try {
-      const response = await this.instance.get(`/v2/accounts/me`);
+      const response = await this.instance.get(`/info`);
 
       return response.data;
     } catch (error) {

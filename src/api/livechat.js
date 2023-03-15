@@ -14,13 +14,14 @@ class LiveChatClient {
     });
   }
 
-  async getMe() {
+  async getMe(id) {
     try {
-      const response = await this.instance.get(`/agents/me`, {
-        headers: {
-          "X-API-Version": 2,
-        },
-      });
+      const response = await this.instance.post(
+        `/v3.5/configuration/action/get_agent`,
+        {
+          id,
+        }
+      );
 
       return response.data;
     } catch (error) {
