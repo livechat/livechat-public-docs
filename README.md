@@ -39,8 +39,7 @@ You can simulate the production build process locally by running.
 
 ## Feature branch / Deploy preview
 
-Currently, deploy previews need to be generated manually.
-<!-- In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, github will provide **Netlify** notifications with the **Deploy Preview** url. -->
+In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, GitHub will provide **Netlify** notifications with the **Deploy Preview** url that can be found in the checks section.
 
 ## How to contribute
 
