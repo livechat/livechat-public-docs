@@ -80,7 +80,7 @@ export const canUseWindow = !!(
 );
 
 export const setupDocsearch = () => {
-  if (!canUseWindow) {
+  if (!canUseWindow || !window.docsearch) {
     return;
   }
 

@@ -2,7 +2,7 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
-import Image from "./Image"
+import Image from "./Image";
 import { Button } from "@livechat/design-system";
 
 import Link from "next/link";
@@ -29,7 +29,6 @@ const HeadingLink = styled.a`
   }
 `;
 
-
 const Pre = ({ children, ...props }) => {
   return (
     <div className="remark-highlight">
@@ -37,7 +36,6 @@ const Pre = ({ children, ...props }) => {
     </div>
   );
 };
-
 
 export const getText = (children) => {
   if (typeof children !== "string") {
@@ -54,23 +52,6 @@ const H2 = styled.h2`
 const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
-`;
-
-const SectionBannerWrapper = styled.div`
-  background-color: #f1f6f8;
-  display: flex;
-  align-items: center;
-  max-width: 100%;
-  margin-bottom: 2.5em;
-  border-radius: 8px;
-  flex-direction: column;
-  a {
-    text-decoration: none;
-  }
-
-  @media (min-width: 1024px) {
-    flex-direction: row;
-  }
 `;
 
 export const SectionColumn = styled.div`
@@ -151,29 +132,6 @@ const BannerImage = ({ to }) => {
       return null;
   }
 };
-
-const SectionBanner = ({ title, desc, to, image }) => (
-  <SectionBannerWrapper>
-    {image && (
-      <SectionColumn style={{ padding: 0 }}>
-        <Link href={to} style={{ display: "block" }}>
-          <a>
-            <BannerImage to={to} />
-          </a>
-        </Link>
-      </SectionColumn>
-    )}
-    <SectionColumn>
-      <h2>{title}</h2>
-      <p>{desc}</p>
-      <Link href={to}>
-        <a>
-          <Button>Learn more</Button>
-        </a>
-      </Link>
-    </SectionColumn>
-  </SectionBannerWrapper>
-);
 
 const StyledLink = styled.a`
   font-weight: 600;
@@ -276,7 +234,6 @@ export default {
   img: Image,
   pre: Pre,
   Warning,
-  SectionBanner,
   SectionLink,
   table: ({ children }) => (
     <TableWrapper>
