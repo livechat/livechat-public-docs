@@ -2,6 +2,7 @@ import React from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { string, node } from "prop-types";
 import Link from "next/link";
+import Image from "next/image";
 
 const wrapperCss = () => css`
   text-decoration: none;
@@ -43,18 +44,12 @@ const titleCss = () => css`
   }
 `;
 
-const iconCss = () => css`
-  width: 30px;
-  height: 30px;
-  margin-bottom: 0px;
-`;
-
 const Card = ({ title, link, image, children }) => {
   return (
     <Link href={link} partiallyActive passHref>
       <a css={wrapperCss}>
         <div css={titleCss}>
-          <img src={image} alt="" css={iconCss} />
+          <Image src={image} alt="" width="30px" height="30px" />
           <p>{title}</p>
         </div>
         {children}

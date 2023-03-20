@@ -17,21 +17,30 @@ const wrapperCss = css`
   max-width: 960px;
   margin: 0 auto;
   margin-bottom: 64px;
+  padding 0 20px;
 
   > p {
     font-size: 24px;
     line-height: 32px;
     color: #9898a0;
   }
+
+  @media (min-width: 1024px) {
+	  padding: 0;
+  }
 `;
 
 const cardsWrapperCss = css`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
 
   > a {
     margin-bottom: 40px;
+  }
+
+  @media (min-width: 480px) {
+    justify-content: space-between;
   }
 `;
 
@@ -39,7 +48,6 @@ const pathsWrapperCss = css`
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  margin-top: 32px;
 `;
 
 export default function Index() {

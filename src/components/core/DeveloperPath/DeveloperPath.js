@@ -1,12 +1,19 @@
 import React from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { string, array } from "prop-types";
+import Image from "next/image";
 
 const wrapperCss = () => css`
   display: flex;
+  margin-top: 32px;
 
   > div {
     margin-left: 10px;
+  }
+
+  > div:first-of-type {
+    width: 48px;
+    height: 48px;
   }
 `;
 
@@ -24,19 +31,6 @@ const subtitleCss = () => css`
   font-size: 16px;
   line-height: 24px;
   color: #9898a0;
-`;
-
-const iconCss = () => css`
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0px;
-`;
-
-const linkIconCss = () => css`
-  width: 24px;
-  height: 24px;
-  margin-bottom: 0px;
-  margin-right: 4px;
 `;
 
 const linksCss = () => css`
@@ -63,17 +57,18 @@ const DeveloperPath = ({ title, subtitle, links, image }) => {
 
   return (
     <div css={wrapperCss}>
-      <img src={image} alt="" css={iconCss} />
+      <Image src={image} alt="" width="48px" height="48px" />
       <div>
         <div css={titleCss}>{title}</div>
         <div css={subtitleCss}>{subtitle}</div>
         <div css={linksCss}>
           {links.map((link) => (
             <a css={linkCss}>
-              <img
+              <Image
                 src={basePath + "/icons/document.png"}
                 alt=""
-                css={linkIconCss}
+                width="24px"
+                height="24px"
               />
               {link.name}
             </a>
