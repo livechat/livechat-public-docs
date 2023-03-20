@@ -59,6 +59,8 @@ const linkCss = () => css`
 `;
 
 const DeveloperPath = ({ title, subtitle, links, image }) => {
+  const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
+
   return (
     <div css={wrapperCss}>
       <img src={image} alt="" css={iconCss} />
@@ -68,7 +70,11 @@ const DeveloperPath = ({ title, subtitle, links, image }) => {
         <div css={linksCss}>
           {links.map((link) => (
             <a css={linkCss}>
-              <img src="/docs/icons/document.png" alt="" css={linkIconCss} />
+              <img
+                src={basePath + "/icons/document.png"}
+                alt=""
+                css={linkIconCss}
+              />
               {link.name}
             </a>
           ))}
