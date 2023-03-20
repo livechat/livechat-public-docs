@@ -5,7 +5,8 @@ import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { LiveChatLogo, CategoryIcon } from "./icons";
+import { CategoryIcon } from "./icons";
+import { TextIcon } from "../../assets/icons/Text";
 import { Search } from "./Search";
 import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
@@ -112,18 +113,12 @@ const linkCss = css`
   text-decoration: none;
   font-weight: 500;
   white-space: nowrap;
+  margin-left: 16px;
 
   &:hover {
     text-decoration: none;
     color: white;
   }
-`;
-
-const VLine = styled.div`
-  background-color: rgba(255, 255, 255, 0.5);
-  height: 28px;
-  width: 1px;
-  margin: 0 10px;
 `;
 
 const SearchIconWrapper = styled.div`
@@ -221,9 +216,8 @@ const Header = () => {
       <MenuWrapper>
         <LogoWrapper>
           <a href="https://developers.livechat.com/">
-            <LiveChatLogo style={{ margin: "0", display: "block" }} />
+            <TextIcon style={{ margin: "0", display: "block" }} />
           </a>
-          <VLine />
           <Link href="/" passHref>
             <a css={linkCss}>Platform Docs</a>
           </Link>

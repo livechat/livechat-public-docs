@@ -49,7 +49,7 @@ export const cards = [
   },
   {
     title: "Developer Console Tools",
-    link: "/console/tools/personal-access-tokens",
+    link: "https://developers.livechat.com/console/tools",
     copy: "Configure your app with a GUI instead of calling the API.",
     image: "/icons/developer-console-tools.png",
   },
@@ -58,6 +58,7 @@ export const cards = [
     link: "/",
     copy: "Build products powered by advanced text operations.",
     image: "/icons/text-api.png",
+    badge: true,
   },
 ];
 

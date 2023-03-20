@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
+import { Input } from "@livechat/design-system";
 
 import {
   VersionProvider,
@@ -12,11 +14,11 @@ import Footer from "../components/core/Footer/Footer";
 import Card from "components/core/Card/Card";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import { cards, devPaths } from "constant/cards";
+import { setupDocsearch } from "utils";
 
 const wrapperCss = css`
   max-width: 960px;
-  margin: 0 auto;
-  margin-bottom: 64px;
+  margin: 80px auto 64px auto;
   padding 0 20px;
 
   > p {
@@ -26,7 +28,11 @@ const wrapperCss = css`
   }
 
   @media (min-width: 1024px) {
-	  padding: 0;
+    padding: 0;
+  }
+
+  h2 {
+    margin-top: 80px;
   }
 `;
 
@@ -50,6 +56,22 @@ const pathsWrapperCss = css`
   flex-wrap: wrap;
 `;
 
+const logoWrapperCss = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  > img {
+    width: 279px;
+    height: 48px;
+  }
+
+  > div {
+    width: 90%;
+  }
+`;
+
 export default function Index() {
   const ratingContext = { selectedRating: 0, saveRating: () => {} };
   const versions = getVersionsByGroup(null);
@@ -60,6 +82,8 @@ export default function Index() {
   const promotionContext = { isActive: false, content: <div /> };
   const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
 
+  useEffect(setupDocsearch, []);
+
   return (
     <AuthProvider>
       <RatingProvider value={ratingContext}>
@@ -67,20 +91,31 @@ export default function Index() {
           <PromotionProvider value={promotionContext}>
             <Header />
             <div css={wrapperCss}>
-              <h1>Text Platform Docs</h1>
+              <div css={logoWrapperCss}>
+                <img src={basePath + "/icons/text-logo-black.png"} alt="" />
+                <div>
+                  <Input
+                    type="text"
+                    id="search"
+                    placeholder="Search the docs..."
+                  />
+                </div>
+              </div>
+
+              <h2>Build with Platform components</h2>
               <p>
                 Text Platform offers you a variety of APIs, SDKs, and developer
                 tools that allow for maximum flexibility in building software:
                 from smart, lightweight widgets to sophisticated solutions.
                 Extend LiveChat and HelpDesk or build independent products.{" "}
               </p>
-              <h2>Build with Platform components</h2>
               <div css={cardsWrapperCss}>
                 {cards.map((card) => (
                   <Card
                     title={card.title}
                     link={card.link}
                     image={basePath + card.image}
+                    badge={card.badge}
                   >
                     {card.copy}
                   </Card>
