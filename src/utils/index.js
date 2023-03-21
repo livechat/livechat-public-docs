@@ -117,10 +117,12 @@ export const setupDocsearch = () => {
         let content = null;
 
         // Some search results are unclear. Sometimes there's missing information
-        // whether such a document is in the Customer Chat API or Agent Chat API.
+        // about which API the result is related to.
         const unclearSearchMatches = [
           { regex: /customer-chat-api/g, content: "Customer Chat API" },
           { regex: /agent-chat-api/g, content: "Agent Chat API" },
+          { regex: /management/g, content: "Configuration API" },
+          { regex: /data-reporting/g, content: "Reports API" },
         ];
 
         unclearSearchMatches.forEach((item) => {
