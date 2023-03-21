@@ -3,7 +3,7 @@ import React from "react";
 import { string, node, bool } from "prop-types";
 import Link from "next/link";
 
-const wrapperCss = () => css`
+const wrapperCss = css`
   text-decoration: none;
   font-size: 15px;
   line-height: 21px;
@@ -25,7 +25,7 @@ const wrapperCss = () => css`
   }
 `;
 
-const titleCss = () => css`
+const titleCss = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,22 +41,19 @@ const titleCss = () => css`
     letter-spacing: 0.005em;
     color: #424d57;
 
-    > p {
+    > span {
       margin-left: 8px;
     }
   }
-
-  > div {
-  }
 `;
 
-const iconCss = () => css`
+const iconCss = css`
   height: 30px;
   weight: 30px;
   margin-bottom: 0px;
 `;
 
-const badgeCss = () => css`
+const badgeCss = css`
   height: 16px;
   weight: 85px;
   margin-bottom: 0px;
@@ -69,7 +66,7 @@ const Card = ({ title, link, image, children, badge }) => {
     <div css={titleCss}>
       <p>
         <img src={image} alt="" css={iconCss} />
-        <p>{title}</p>
+        <span>{title}</span>
       </p>
 
       <div>

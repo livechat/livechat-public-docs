@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { Input } from "@livechat/design-system";
 
@@ -13,6 +13,7 @@ import Header from "../components/core/header";
 import Footer from "../components/core/Footer/Footer";
 import Card from "components/core/Card/Card";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
+import SEO from "components/core/seo";
 import { cards, devPaths } from "constant/cards";
 import { setupDocsearch } from "utils";
 
@@ -73,7 +74,7 @@ const logoWrapperCss = css`
   }
 `;
 
-export default function Index() {
+const Index = () => {
   const ratingContext = { selectedRating: 0, saveRating: () => {} };
   const versions = getVersionsByGroup(null);
   const versionContext = {
@@ -90,7 +91,12 @@ export default function Index() {
       <RatingProvider value={ratingContext}>
         <VersionProvider value={versionContext}>
           <PromotionProvider value={promotionContext}>
+            <SEO
+              desc="Text enables entrepreneurs to build data-intelligent products for customer service apps. Browse the Platform docs to learn about developer tools and APIs."
+              title="Text Platform Docs"
+            />
             <Header />
+
             <div css={wrapperCss}>
               <div css={logoWrapperCss}>
                 <img src={basePath + "/icons/text-logo-black.png"} alt="" />
@@ -102,7 +108,6 @@ export default function Index() {
                   />
                 </div>
               </div>
-
               <h2>Build with Platform components</h2>
               <p>
                 Text Platform offers you a variety of APIs, SDKs, and developer
@@ -110,8 +115,9 @@ export default function Index() {
                 Extend LiveChat and HelpDesk or build independent products.
               </p>
               <div css={cardsWrapperCss}>
-                {cards.map((card) => (
+                {cards.map((card, index) => (
                   <Card
+                    key={index}
                     title={card.title}
                     link={card.link}
                     image={basePath + card.image}
@@ -123,8 +129,9 @@ export default function Index() {
               </div>
               <h2>Choose your path</h2>
               <div css={pathsWrapperCss}>
-                {devPaths.map((path) => (
+                {devPaths.map((path, index) => (
                   <DeveloperPath
+                    key={index}
                     title={path.title}
                     subtitle={path.subtitle}
                     links={path.links}
@@ -139,4 +146,6 @@ export default function Index() {
       </RatingProvider>
     </AuthProvider>
   );
-}
+};
+
+export default Index;

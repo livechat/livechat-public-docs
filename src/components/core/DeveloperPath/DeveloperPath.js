@@ -2,7 +2,7 @@ import React from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { string, array } from "prop-types";
 
-const wrapperCss = () => css`
+const wrapperCss = css`
   display: flex;
   margin-top: 32px;
 
@@ -11,7 +11,7 @@ const wrapperCss = () => css`
   }
 `;
 
-const titleCss = () => css`
+const titleCss = css`
   font-weight: 600;
   font-size: 24px;
   line-height: 34px;
@@ -20,32 +20,32 @@ const titleCss = () => css`
   color: #424d57;
 `;
 
-const subtitleCss = () => css`
+const subtitleCss = css`
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
   color: #9898a0;
 `;
 
-const iconCss = () => css`
+const iconCss = css`
   height: 48px;
   weight: 48px;
   margin-bottom: 0px;
 `;
 
-const iconLinkCss = () => css`
+const iconLinkCss = css`
   height: 24px;
   weight: 24px;
   margin-bottom: 0px;
 `;
 
-const linksCss = () => css`
+const linksCss = css`
   display: flex;
   flex-direction: column;
   margin-top: 10px;
 `;
 
-const linkCss = () => css`
+const linkCss = css`
   display: flex;
   align-items: center;
   color: #0066ff;
@@ -72,8 +72,8 @@ const DeveloperPath = ({ title, subtitle, links, image }) => {
         <div css={titleCss}>{title}</div>
         <div css={subtitleCss}>{subtitle}</div>
         <div css={linksCss}>
-          {links.map((link) => (
-            <a css={linkCss} href={basePath + link.link}>
+          {links.map((link, index) => (
+            <a css={linkCss} href={basePath + link.link} key={index}>
               <img
                 src={basePath + "/icons/document.png"}
                 alt=""
