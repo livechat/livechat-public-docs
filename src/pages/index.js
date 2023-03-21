@@ -22,6 +22,7 @@ const wrapperCss = css`
   padding 0 20px;
 
   > p {
+    margin: 24px 0;
     font-size: 24px;
     line-height: 32px;
     color: #9898a0;
@@ -105,9 +106,8 @@ export default function Index() {
               <h2>Build with Platform components</h2>
               <p>
                 Text Platform offers you a variety of APIs, SDKs, and developer
-                tools that allow for maximum flexibility in building software:
-                from smart, lightweight widgets to sophisticated solutions.
-                Extend LiveChat and HelpDesk or build independent products.{" "}
+                tools that allow for maximum flexibility in building software.
+                Extend LiveChat and HelpDesk or build independent products.
               </p>
               <div css={cardsWrapperCss}>
                 {cards.map((card) => (

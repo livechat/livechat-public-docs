@@ -56,6 +56,10 @@ const linkCss = () => css`
     text-decoration: none;
     cursor: pointer;
   }
+
+  > span {
+    margin-left: 4px;
+  }
 `;
 
 const DeveloperPath = ({ title, subtitle, links, image }) => {
@@ -75,7 +79,7 @@ const DeveloperPath = ({ title, subtitle, links, image }) => {
                 alt=""
                 css={iconLinkCss}
               />
-              {link.name}
+              <span>{link.name}</span>
             </a>
           ))}
         </div>
