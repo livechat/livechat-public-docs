@@ -674,10 +674,19 @@ const RATING_TEXT = {
 
 const RATING_POSITION = {
   TOP: "top",
-  BOTTOM: "bottom"
+  BOTTOM: "bottom",
 };
 
 const RATES = [RATING_TEXT.GOOD, RATING_TEXT.BAD];
+
+const EXCLUDED_SEARCH_RESULTS = [
+  //hidden pages
+  "/messaging/apple-messages-for-business",
+  "/management/configuration-api/v2.0",
+  "/management/limits",
+  //deleted pages
+  "/extending-chat-widget/visitor-sdk",
+];
 
 const constants = {
   VERSIONS_GROUPS,
@@ -687,7 +696,8 @@ const constants = {
   REGION,
   RATING_TEXT,
   RATING_POSITION,
-  RATES
+  RATES,
+  EXCLUDED_SEARCH_RESULTS,
 };
 
 module.exports = constants;
