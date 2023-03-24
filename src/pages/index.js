@@ -35,6 +35,10 @@ const wrapperCss = css`
 
   h2 {
     margin-top: 80px;
+
+    &:last-of-type {
+      margin-top: 20px;
+    }
   }
 `;
 
