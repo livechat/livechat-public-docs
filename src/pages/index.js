@@ -24,7 +24,7 @@ const wrapperCss = css`
 
   > p {
     margin: 24px 0;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 32px;
     color: #9898a0;
   }
@@ -35,6 +35,7 @@ const wrapperCss = css`
 
   h2 {
     margin-top: 80px;
+    font-size: 24px;
 
     &:last-of-type {
       margin-top: 20px;
