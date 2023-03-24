@@ -86,6 +86,7 @@ export const setupDocsearch = () => {
 
   window.docsearch({
     apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
+    appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
     indexName: "livechatinc",
     inputSelector: "#search",
     debug: false,
