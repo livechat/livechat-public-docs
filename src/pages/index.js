@@ -74,7 +74,14 @@ const logoWrapperCss = css`
   }
 
   > div {
-    width: 90%;
+    width: 500px;
+  }
+`;
+
+const searchCss = css`
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
   }
 `;
 
@@ -104,7 +111,7 @@ const Index = () => {
             <div css={wrapperCss}>
               <div css={logoWrapperCss}>
                 <img src={basePath + "/icons/text-logo-black.png"} alt="" />
-                <div>
+                <div css={searchCss}>
                   <Input
                     type="text"
                     id="search"
