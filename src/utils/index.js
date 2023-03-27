@@ -1,5 +1,5 @@
 let amplitude;
-import { VERSIONS_GROUPS } from "../constant";
+import { VERSIONS_GROUPS, EXCLUDED_SEARCH_RESULTS } from "../constant";
 
 if (typeof window !== "undefined") {
   amplitude = require("amplitude-js");
@@ -114,36 +114,41 @@ export const setupDocsearch = () => {
       }
     },
     transformData: (hits) => {
-      const updatedHits = hits.map((hit) => {
-        let content = null;
+      const updatedHits = hits
+        .filter(
+          (hit) =>
+            !EXCLUDED_SEARCH_RESULTS.some((slug) => hit.url.includes(slug))
+        )
+        .map((hit) => {
+          let content = null;
 
-        // Some search results are unclear. Sometimes there's missing information
-        // about which API the result is related to.
-        const unclearSearchMatches = [
-          { regex: /customer-chat-api/g, content: "Customer Chat API" },
-          { regex: /agent-chat-api/g, content: "Agent Chat API" },
-          { regex: /management/g, content: "Configuration API" },
-          { regex: /data-reporting/g, content: "Reports API" },
-        ];
+          // Some search results are unclear. Sometimes there's missing information
+          // about which API the result is related to.
+          const unclearSearchMatches = [
+            { regex: /customer-chat-api/g, content: "Customer Chat API" },
+            { regex: /agent-chat-api/g, content: "Agent Chat API" },
+            { regex: /management/g, content: "Configuration API" },
+            { regex: /data-reporting/g, content: "Reports API" },
+          ];
 
-        unclearSearchMatches.forEach((item) => {
-          const result = hit.url.match(item.regex);
+          unclearSearchMatches.forEach((item) => {
+            const result = hit.url.match(item.regex);
 
-          if (Array.isArray(result) && result.length > 0) {
-            content = item.content;
-          }
-        });
+            if (Array.isArray(result) && result.length > 0) {
+              content = item.content;
+            }
+          });
 
-        if (content)
+          if (content)
+            return {
+              ...hit,
+              content: content,
+            };
+
           return {
             ...hit,
-            content: content,
           };
-
-        return {
-          ...hit,
-        };
-      });
+        });
 
       return updatedHits;
     },
