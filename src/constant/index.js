@@ -680,11 +680,11 @@ const RATING_POSITION = {
 const RATES = [RATING_TEXT.GOOD, RATING_TEXT.BAD];
 
 const EXCLUDED_SEARCH_RESULTS = [
-  //hidden pages
+  // hidden pages
   "/messaging/apple-messages-for-business",
   "/management/configuration-api/v2.0",
   "/management/limits",
-  //deleted pages
+  // deleted pages
   "/extending-chat-widget/visitor-sdk",
 ];
 
