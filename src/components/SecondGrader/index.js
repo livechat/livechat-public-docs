@@ -39,7 +39,7 @@ const TooltipContainer = styled.div`
 `;
 
 const SecondGrader = () => {
-  const [isEnabled, setIsEnabled] = useLocalStorage("ai_assist", true);
+  const [isEnabled, setIsEnabled] = useLocalStorage("ai_assist", false);
   const actionEvent = isEnabled ? "Switch off" : "Switch on";
 
   const renderTooltip = () => {
