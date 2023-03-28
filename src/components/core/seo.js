@@ -11,14 +11,14 @@ const defaultSiteMetadata = {
   author: "@livechat",
 };
 
-function SEO({ desc, keywords, title }) {
+function SEO({ desc, keywords, title, subtitle }) {
   const router = useRouter();
   const metaDescription = desc || defaultSiteMetadata.description;
   const canonicalUrl = `${defaultSiteMetadata.siteUrl}${router.basePath}${router.pathname}/`;
 
   return (
     <Head>
-      <title>{`${title} | ${defaultSiteMetadata.title}`}</title>
+      <title>{`${title} | ${subtitle || defaultSiteMetadata.title}`}</title>
       <link rel="canonical" href={canonicalUrl}></link>
       <meta name="description" content={metaDescription} />
       <meta property="og:title" content={title} />
