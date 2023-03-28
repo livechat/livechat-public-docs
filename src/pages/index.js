@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { Input } from "@livechat/design-system";
 
