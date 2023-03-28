@@ -1,19 +1,19 @@
-import Link from "next/link";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 
 const wrapperCss = css`
   display: flex;
   justify-items: center;
   align-items: center;
-  gap: 0.3em;
+  gap: 0.8em;
 
   .logo {
     margin: 0;
     font-size: 2.5em;
     font-weight: 600;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.01em;
     display: flex;
     align-items: center;
+    gap: 2px;
   }
 
   .adjacent {
@@ -29,6 +29,8 @@ const wrapperCss = css`
   }
 
   .carrier {
+    overflow: hidden;
+    height: 32px;
     font-weight: 700;
     animation-name: blink;
     animation-duration: 0.9s;

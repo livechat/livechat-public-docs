@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { Input } from "@livechat/design-system";
-import Link from "next/link";
 
 import {
   VersionProvider,
@@ -95,7 +94,6 @@ const Index = () => {
     items: versions,
   };
   const promotionContext = { isActive: false, content: <div /> };
-  const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
 
   useEffect(setupDocsearch, []);
 
