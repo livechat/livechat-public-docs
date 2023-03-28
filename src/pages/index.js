@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { Input } from "@livechat/design-system";
+import Link from "next/link";
 
 import {
   VersionProvider,
@@ -12,6 +13,7 @@ import { getVersionsByGroup } from "../components/core/version";
 import Header from "../components/core/header";
 import Footer from "../components/core/Footer/Footer";
 import Card from "components/core/Card/Card";
+import Logo from "components/core/Logo/Logo";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import SEO from "components/core/seo";
 import { cards, devPaths } from "constant/cards";
@@ -20,7 +22,7 @@ import { setupDocsearch } from "utils";
 const wrapperCss = css`
   max-width: 960px;
   margin: 80px auto 64px auto;
-  padding 0 20px;
+  padding: 0 20px;
 
   > p {
     margin: 24px 0;
@@ -63,19 +65,18 @@ const pathsWrapperCss = css`
   flex-wrap: wrap;
 `;
 
-const logoWrapperCss = css`
+const titleWrapperCss = css`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 
-  > img {
-    width: 279px;
-    height: 48px;
-  }
-
   > div {
     width: 500px;
+  }
+
+  > header {
+    margin-bottom: 32px;
   }
 `;
 
@@ -110,8 +111,8 @@ const Index = () => {
             <Header />
 
             <div css={wrapperCss}>
-              <div css={logoWrapperCss}>
-                <img src={basePath + "/icons/text-logo-black.png"} alt="" />
+              <div css={titleWrapperCss}>
+                <Logo adjacent={"Platform Docs"} />
                 <div css={searchCss}>
                   <Input
                     type="text"
@@ -132,7 +133,7 @@ const Index = () => {
                     key={index}
                     title={card.title}
                     link={card.link}
-                    image={basePath + card.image}
+                    image={card.image}
                     badge={card.badge}
                   >
                     {card.copy}
@@ -147,7 +148,7 @@ const Index = () => {
                     title={path.title}
                     subtitle={path.subtitle}
                     links={path.links}
-                    image={basePath + path.image}
+                    image={path.image}
                   />
                 ))}
               </div>

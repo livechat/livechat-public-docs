@@ -1,6 +1,7 @@
 import React from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
-import { string, array } from "prop-types";
+import { string, array, node } from "prop-types";
+import { DocumentIcon } from "assets/icons/cards/Document";
 
 const wrapperCss = css`
   display: flex;
@@ -25,18 +26,6 @@ const subtitleCss = css`
   font-size: 16px;
   line-height: 24px;
   color: #9898a0;
-`;
-
-const iconCss = css`
-  height: 48px;
-  weight: 48px;
-  margin-bottom: 0px;
-`;
-
-const iconLinkCss = css`
-  height: 24px;
-  weight: 24px;
-  margin-bottom: 0px;
 `;
 
 const linksCss = css`
@@ -67,18 +56,14 @@ const DeveloperPath = ({ title, subtitle, links, image }) => {
 
   return (
     <div css={wrapperCss}>
-      <img src={image} alt="" css={iconCss} />
+      {image}
       <div>
         <div css={titleCss}>{title}</div>
         <div css={subtitleCss}>{subtitle}</div>
         <div css={linksCss}>
           {links.map((link, index) => (
             <a css={linkCss} href={basePath + link.link} key={index}>
-              <img
-                src={basePath + "/icons/document.png"}
-                alt=""
-                css={iconLinkCss}
-              />
+              <DocumentIcon />
               <span>{link.name}</span>
             </a>
           ))}
@@ -92,7 +77,7 @@ DeveloperPath.propTypes = {
   title: string.isRequired,
   subtitle: string.isRequired,
   links: array.isRequired,
-  image: string.isRequired,
+  image: node.isRequired,
 };
 
 export default DeveloperPath;

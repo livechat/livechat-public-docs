@@ -2,6 +2,7 @@ import React from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import { string, node, bool } from "prop-types";
 import Link from "next/link";
+import { ComingSoonIcon } from "assets/icons/cards/ComingSoon";
 
 const wrapperCss = css`
   text-decoration: none;
@@ -9,6 +10,7 @@ const wrapperCss = css`
   line-height: 21px;
   color: #424d57;
   display: block;
+  cursor: pointer;
 
   width: 279px;
   height: 114px;
@@ -47,45 +49,29 @@ const titleCss = css`
   }
 `;
 
-const iconCss = css`
-  height: 30px;
-  weight: 30px;
-  margin-bottom: 0px;
-`;
-
-const badgeCss = css`
-  height: 16px;
-  weight: 85px;
-  margin-bottom: 0px;
-`;
-
 const Card = ({ title, link, image, children, badge }) => {
-  const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
-
   const header = (
     <div css={titleCss}>
       <p>
-        <img src={image} alt="" css={iconCss} />
+        {image}
         <span>{title}</span>
       </p>
 
-      <div>
-        {badge && (
-          <img src={basePath + "/icons/badge.png"} alt="" css={badgeCss} />
-        )}
-      </div>
+      <div>{badge && <ComingSoonIcon />}</div>
     </div>
   );
 
   if (link.startsWith("https://")) {
-    <a css={wrapperCss} href={link} target="_blank" rel="noopener noreferrer">
-      {header}
-      {children}
-    </a>;
+    return (
+      <a css={wrapperCss} href={link} target="_blank" rel="noopener noreferrer">
+        {header}
+        {children}
+      </a>
+    );
   }
 
   return (
-    <Link href={link} partiallyActive passHref>
+    <Link href={link}>
       <a css={wrapperCss}>
         {header}
         {children}
@@ -97,7 +83,7 @@ const Card = ({ title, link, image, children, badge }) => {
 Card.propTypes = {
   title: string.isRequired,
   link: string.isRequired,
-  image: string.isRequired,
+  image: node.isRequired,
   children: node.isRequired,
   badge: bool,
 };

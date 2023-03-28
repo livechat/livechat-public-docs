@@ -1,63 +1,76 @@
+import { MessagingIcon } from "assets/icons/cards/Messaging";
+import { ManagementIcon } from "assets/icons/cards/Management";
+import { DataReportingIcon } from "assets/icons/cards/DataReporting";
+import { AgentAppSdkIcon } from "assets/icons/cards/AgentAppSDK";
+import { ChatWidgetIcon } from "assets/icons/cards/ChatWidget";
+import { HelpDeskApiIcon } from "assets/icons/cards/HelpDeskAPI";
+import { AuthorizationIcon } from "assets/icons/cards/Authorization";
+import { MonetizationIcon } from "assets/icons/cards/Monetization";
+import { DevConsoleToolsIcon } from "assets/icons/cards/DevConsoleTools";
+import { TextApiIcon } from "assets/icons/cards/TextAPI";
+import { BeginnerPathIcon } from "assets/icons/cards/BeginnerPath";
+import { AdvancedPathIcon } from "assets/icons/cards/AdvancedPath";
+
 export const cards = [
   {
     title: "Messaging",
     link: "/messaging",
     copy: "Event-based messaging for sync and async communication.",
-    image: "/icons/messaging.png",
+    image: <MessagingIcon />,
   },
   {
     title: "Management",
     link: "/management",
     copy: "Configure resources. Set up webhooks and properties.",
-    image: "/icons/management.png",
+    image: <ManagementIcon />,
   },
   {
     title: "Data & Reporting",
     link: "/data-reporting",
     copy: "Extract data to build custom reports and dashboards.",
-    image: "/icons/data-and-raporting.png",
+    image: <DataReportingIcon />,
   },
   {
     title: "Agent App SDK",
     link: "/extending-agent-app/products-sdk/agent-app-sdk",
     copy: "Integrate LiveChat with external software or a custom app.",
-    image: "/icons/agent-app-sdk.png",
+    image: <AgentAppSdkIcon />,
   },
   {
     title: "Chat Widget",
     link: "/extending-chat-widget",
     copy: "Monitor and interact with visitors via rich messages and apps.",
-    image: "/icons/chat-widget.png",
+    image: <ChatWidgetIcon />,
   },
   {
     title: "HelpDesk API",
     link: "/getting-started/helpdesk-apps/helpdesk-api",
     copy: "Build integration for our ticketing system, HelpDesk.",
-    image: "/icons/help-desk-api.png",
+    image: <HelpDeskApiIcon />,
   },
   {
     title: "Authorization",
     link: "/authorization",
     copy: "Authenticate and authorize users with OAuth flows. Manage scopes.",
-    image: "/icons/authorization.png",
+    image: <AuthorizationIcon />,
   },
   {
     title: "Monetization",
     link: "/monetization",
     copy: "Seamless payment configuration right within the Platform.",
-    image: "/icons/monetization.png",
+    image: <MonetizationIcon />,
   },
   {
     title: "Developer Console Tools",
     link: "https://developers.livechat.com/console/tools",
     copy: "Configure your app with a GUI instead of calling the API.",
-    image: "/icons/developer-console-tools.png",
+    image: <DevConsoleToolsIcon />,
   },
   {
     title: "Text API",
-    link: "/",
+    link: "https://text.com",
     copy: "Build products powered by advanced text operations.",
-    image: "/icons/text-api.png",
+    image: <TextApiIcon />,
     badge: true,
   },
 ];
@@ -66,7 +79,7 @@ export const devPaths = [
   {
     title: "I’m a beginner",
     subtitle: "Not sure where to start? Try the articles below:",
-    image: "/icons/beginner-path.png",
+    image: <BeginnerPathIcon />,
     links: [
       {
         link: "/getting-started",
@@ -93,7 +106,7 @@ export const devPaths = [
   {
     title: "I’m advanced",
     subtitle: "Already fluent in tech talk? Give those a try:",
-    image: "/icons/advanced-path.png",
+    image: <AdvancedPathIcon />,
     links: [
       {
         link: "/messaging",

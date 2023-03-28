@@ -66,6 +66,14 @@ const LogoWrapper = styled.nav`
   font-size: 15px;
   margin: 0 20px;
   align-items: center;
+
+  > a {
+    > svg {
+      margin: 0;
+      display: block;
+      height: 24px;
+    }
+  }
 `;
 
 const MenuListWrapper = styled.div`
@@ -113,7 +121,8 @@ const linkCss = css`
   text-decoration: none;
   font-weight: 500;
   white-space: nowrap;
-  margin-left: 16px;
+  margin-left: 8px;
+  margin-top: 4px;
 
   &:hover {
     text-decoration: none;
@@ -131,12 +140,6 @@ const SearchIconWrapper = styled.div`
   width: 32px;
   margin-right: 10px;
   height: 100%;
-`;
-
-const magnifyCss = css`
-  cursor: pointer;
-  border-radius: 100%;
-  background-color: ${({ openSearch }) => openSearch && "#6E6E7C"};
 `;
 
 const SearchField = styled.div`
@@ -216,7 +219,7 @@ const Header = () => {
       <MenuWrapper>
         <LogoWrapper>
           <a href="https://developers.livechat.com/">
-            <TextIcon style={{ margin: "0", display: "block" }} />
+            <TextIcon />
           </a>
           <Link href="/" passHref>
             <a css={linkCss}>Platform Docs</a>
