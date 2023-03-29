@@ -14,7 +14,6 @@ import Footer from "../components/core/Footer/Footer";
 import Card from "components/core/Card/Card";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import SEO from "components/core/seo";
-import { TextPlatformLogo } from "assets/icons/Text";
 import { cards, devPaths } from "constant/cards";
 import { setupDocsearch } from "utils";
 
@@ -106,6 +105,25 @@ const searchCss = css`
   width: 100%;
 `;
 
+const textLogoCss = css`
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 34px;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.5px;
+
+  color: #424d57;
+
+  .carrier {
+    margin-bottom: 4px;
+  }
+
+  span:last-of-type {
+    margin-left: 16px;
+  }
+`;
+
 const Index = () => {
   const ratingContext = { selectedRating: 0, saveRating: () => {} };
   const versions = getVersionsByGroup(null);
@@ -130,7 +148,11 @@ const Index = () => {
 
             <div css={wrapperCss}>
               <div css={titleWrapperCss}>
-                <TextPlatformLogo />
+                <span css={textLogoCss}>
+                  text
+                  <span className="carrier">&#124;</span>
+                  <span>Platform Docs</span>
+                </span>
                 <div css={searchWrapperCss}>
                   <Input
                     type="text"
