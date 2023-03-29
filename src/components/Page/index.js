@@ -73,9 +73,11 @@ const StyledRating = styled(Rating)`
 const Page = ({ frontMatter, children }) => {
   const {
     title,
+    subtitle,
     category,
     desc,
     subcategory,
+    robots,
     apiVersion: currentApiVersion,
     versionGroup,
     slug: customSlug,
@@ -175,7 +177,12 @@ const Page = ({ frontMatter, children }) => {
           <PromotionProvider value={promotionContext}>
             {ORG_ID && <FullStory org={ORG_ID} />}
 
-            <SEO desc={desc} title={title} />
+            <SEO
+              desc={desc}
+              title={title}
+              subtitle={subtitle}
+              robots={robots}
+            />
             <Header />
             <MainWrapper>
               {!useRedocPage && (
