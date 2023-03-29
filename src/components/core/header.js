@@ -5,8 +5,9 @@ import Magnify from "react-material-icon-svg/dist/Magnify";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { LiveChatLogo, CategoryIcon } from "./icons";
+import { CategoryIcon } from "./icons";
 import { Search } from "./Search";
+import Logo from "../core/Logo/Logo";
 import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
@@ -65,6 +66,14 @@ const LogoWrapper = styled.nav`
   font-size: 15px;
   margin: 0 20px;
   align-items: center;
+
+  > a {
+    > svg {
+      margin: 0;
+      display: block;
+      height: 24px;
+    }
+  }
 `;
 
 const MenuListWrapper = styled.div`
@@ -112,18 +121,13 @@ const linkCss = css`
   text-decoration: none;
   font-weight: 500;
   white-space: nowrap;
+  margin-left: 8px;
+  margin-top: 4px;
 
   &:hover {
     text-decoration: none;
     color: white;
   }
-`;
-
-const VLine = styled.div`
-  background-color: rgba(255, 255, 255, 0.5);
-  height: 28px;
-  width: 1px;
-  margin: 0 10px;
 `;
 
 const SearchIconWrapper = styled.div`
@@ -136,12 +140,6 @@ const SearchIconWrapper = styled.div`
   width: 32px;
   margin-right: 10px;
   height: 100%;
-`;
-
-const magnifyCss = css`
-  cursor: pointer;
-  border-radius: 100%;
-  background-color: ${({ openSearch }) => openSearch && "#6E6E7C"};
 `;
 
 const SearchField = styled.div`
@@ -220,10 +218,9 @@ const Header = () => {
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
-          <a href="https://developers.livechat.com/">
-            <LiveChatLogo style={{ margin: "0", display: "block" }} />
+          <a href="https://text.com/" css={linkCss}>
+            <Logo />
           </a>
-          <VLine />
           <Link href="/" passHref>
             <a css={linkCss}>Platform Docs</a>
           </Link>
