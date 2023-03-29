@@ -93,6 +93,8 @@ SEO.propTypes = {
   meta: PropTypes.array,
   keywords: PropTypes.arrayOf(PropTypes.string),
   title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+  robots: PropTypes.string,
 };
 
 export default SEO;
