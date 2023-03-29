@@ -9,20 +9,17 @@ const wrapperCss = css`
 
   .logo {
     margin: 0;
-    font-size: 2.5em;
-    font-weight: 600;
-    height: 40px;
+    font-size: 2em;
+    font-weight: 500;
     letter-spacing: -0.01em;
     display: flex;
     align-items: center;
-    gap: 2px;
   }
 
   .adjacent {
     margin: 0;
-    margin-top: 4px;
     font-size: 1.8em;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 34px;
 
     display: flex;
@@ -31,10 +28,7 @@ const wrapperCss = css`
   }
 
   .carrier {
-    overflow: hidden;
-    margin-top: 8px;
-    height: 40px;
-    font-weight: 700;
+    font-weight: 500;
     animation-name: blink;
     animation-duration: 0.9s;
     animation-iteration-count: infinite;

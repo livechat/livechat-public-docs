@@ -12,9 +12,9 @@ import { getVersionsByGroup } from "../components/core/version";
 import Header from "../components/core/header";
 import Footer from "../components/core/Footer/Footer";
 import Card from "components/core/Card/Card";
-import Logo from "components/core/Logo/Logo";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import SEO from "components/core/seo";
+import { TextPlatformLogo } from "assets/icons/Text";
 import { cards, devPaths } from "constant/cards";
 import { setupDocsearch } from "utils";
 
@@ -71,6 +71,7 @@ const titleWrapperCss = css`
   flex-direction: column;
 
   > div {
+    margin-top: 24px;
     width: 500px;
   }
 
@@ -129,7 +130,7 @@ const Index = () => {
 
             <div css={wrapperCss}>
               <div css={titleWrapperCss}>
-                <Logo adjacent={"Platform Docs"} />
+                <TextPlatformLogo />
                 <div css={searchWrapperCss}>
                   <Input
                     type="text"

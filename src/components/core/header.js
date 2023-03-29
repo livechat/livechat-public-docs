@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import { CategoryIcon } from "./icons";
-import { TextIcon } from "../../assets/icons/Text";
 import { Search } from "./Search";
+import Logo from "../core/Logo/Logo";
 import categories from "../../configs/categories";
 import { getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
@@ -218,8 +218,8 @@ const Header = () => {
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
-          <a href="https://developers.livechat.com/">
-            <TextIcon />
+          <a href="https://text.com/" css={linkCss}>
+            <Logo />
           </a>
           <Link href="/" passHref>
             <a css={linkCss}>Platform Docs</a>
