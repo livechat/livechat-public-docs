@@ -62,7 +62,7 @@ export const cards = [
   },
   {
     title: "Developer Console Tools",
-    link: "https://developers.livechat.com/console/tools",
+    link: "/getting-started/app-guides",
     copy: "Configure your app with a GUI instead of calling the API.",
     image: <DevConsoleToolsIcon />,
   },
