@@ -29,7 +29,7 @@ function SEO({ desc, keywords, title, subtitle, robots }) {
         property="og:image"
         content="https://developers.livechat.com/docs/images/livechat-docs-og.png"
       />
-      <link rel="icon" href="/images/favicon.ico" />
+      <link rel="icon" href="/docs/images/favicon.ico" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:creator" content={defaultSiteMetadata.author} />
       <meta name="twitter:title" content={title} />
