@@ -203,7 +203,7 @@ const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
             <span>You are browsing the legacy version of the API.</span>
           )}
           {versions.DEPRECATED_VERSIONS.includes(selectedVersion) && (
-            <span>You are browsing the deprecated version of the API. This version will be decommissioned on <strong>March 31, 2023</strong>.</span>
+            <span>You are browsing the deprecated version of the API.</span>
           )}
         </DesktopNote>
 

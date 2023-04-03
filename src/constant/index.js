@@ -3,8 +3,8 @@ const VERSIONS_GROUPS = {
     STABLE_VERSION: "3.5",
     LEGACY_VERSIONS: ["3.3", "3.4"],
     DEV_PREVIEW_VERSION: "3.6",
-    DEPRECATED_VERSIONS: ["3.2"],
-    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "3.2"],
+    DEPRECATED_VERSIONS: [],
+    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3"],
   },
   "chat-widget": {
     STABLE_VERSION: "3.0",
@@ -17,8 +17,8 @@ const VERSIONS_GROUPS = {
     STABLE_VERSION: "3.5",
     LEGACY_VERSIONS: ["2.0", "3.3", "3.4"],
     DEV_PREVIEW_VERSION: "3.6",
-    DEPRECATED_VERSIONS: "3.2",
-    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "3.2", "2.0"],
+    DEPRECATED_VERSIONS: [],
+    ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3", "2.0"],
   },
   "customer-accounts-api": {
     STABLE_VERSION: "2.0",
