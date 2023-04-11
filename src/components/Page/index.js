@@ -12,7 +12,7 @@ import { SideNav } from "../core/SideNav";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
 import SEO from "../core/seo";
-import Header from "../core/header";
+import Header from "../core/Navbar/Header";
 import { Header as PageHeader } from "../core/Page";
 import {
   MainWrapper,

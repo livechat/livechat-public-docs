@@ -17,6 +17,7 @@ const Wrapper = styled.aside`
   height: ${({ isExpanded }) => (isExpanded ? "500px" : "50px")};
   position: fixed;
   transition: height 300ms;
+  display: block;
 
   bottom: 0%;
   width: 100%;
@@ -25,6 +26,7 @@ const Wrapper = styled.aside`
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
   background-color: white;
   @media (min-width: 768px) {
+    display: ${({ hide }) => hide && "none"};
     box-shadow: none;
     height: 100vh;
     max-height: 100vh;
@@ -94,7 +96,7 @@ const SideNav = ({ category, version = getStableVersion(category), title }) => {
       ?.length > 0;
 
   return (
-    <Wrapper isExpanded={expand}>
+    <Wrapper isExpanded={expand} hide={isHomeDir}>
       <MenuIntro onClick={() => setExpand(!expand)}>
         <ChevronRight style={!expand ? openIconStyle : closeIconStyle} />
         {title}
