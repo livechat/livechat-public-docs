@@ -1,45 +1,52 @@
-import React, { useEffect } from "react";
-import styled from "@emotion/styled";
+import { DocSearch } from "@docsearch/react";
+import { EXCLUDED_SEARCH_RESULTS, UNCLEAR_SEARCH_MATCHES } from "constant";
 
-import { Input } from "@livechat/design-system";
-import { setupDocsearch } from "../../../utils";
+const Search = () => {
+  const transformHits = (hits) => {
+    const updatedHits = hits
+      .filter(
+        (hit) => !EXCLUDED_SEARCH_RESULTS.some((slug) => hit.url.includes(slug))
+      )
+      .map((hit) => {
+        let content = null;
+        UNCLEAR_SEARCH_MATCHES.forEach((item) => {
+          const result = hit.url.match(item.regex);
 
-export const SearchWrapper = styled.div`
-  position: relative;
-  width: 100%;
+          if (Array.isArray(result) && result.length > 0) {
+            content = item.content;
+          }
+        });
 
-  &:before {
-    content: "";
-    width: 22px;
-    height: 22px;
-    display: block;
-    position: absolute;
-    color: #424d57;
-    left: 8px;
-    top: 7px;
-    z-index: 15;
-    background-image: url("data:image/svg+xml,%3Csvg height='22' viewBox='0 0 24 24' width='22' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' fill='%23879098'/%3E%3Cpath d='M0 0h24v24H0z' fill='none' /%3E%3C/svg%3E");
-  }
-`;
+        const url = hit.url.replace(
+          "https://developers.livechat.com",
+          window.location.origin
+        );
 
-const StyledInput = styled(Input)`
-  padding-left: 32px;
-  width: 100%;
-  border-color: #bdc7d1;
-  background-color: #4a4a55;
-  color: rgba(255, 255, 255, 0.7);
+        if (content)
+          return {
+            ...hit,
+            content: content,
+            url,
+          };
 
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-  }
-`;
+        return {
+          ...hit,
+          url,
+        };
+      });
 
-export const Search = () => {
-  useEffect(setupDocsearch, []);
+    return updatedHits;
+  };
 
   return (
-    <SearchWrapper>
-      <StyledInput type="text" id="search" placeholder="Search" />
-    </SearchWrapper>
+    <DocSearch
+      apiKey={process.env.NEXT_PUBLIC_ALGOLIA_API_KEY}
+      appId={process.env.NEXT_PUBLIC_ALGOLIA_APP_ID}
+      indexName={"livechatinc"}
+      searchParameters={{ hitsPerPage: 7 }}
+      transformItems={transformHits}
+    />
   );
 };
+
+export default Search;

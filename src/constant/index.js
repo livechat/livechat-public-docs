@@ -679,13 +679,29 @@ const RATING_POSITION = {
 
 const RATES = [RATING_TEXT.GOOD, RATING_TEXT.BAD];
 
+// Hidden pages. They are not displayed in the search results.
 const EXCLUDED_SEARCH_RESULTS = [
-  // hidden pages
   "/messaging/apple-messages-for-business",
   "/management/configuration-api/v2.0",
   "/management/limits",
-  // deleted pages
-  "/extending-chat-widget/visitor-sdk",
+];
+
+// Some search results are unclear. Sometimes there's missing information
+// about which API the result is related to.
+const UNCLEAR_SEARCH_MATCHES = [
+  {
+    regex: /customer-chat-api/g,
+    content: "Customer Chat API",
+  },
+  {
+    regex: /agent-chat-api/g,
+    content: "Agent Chat API",
+  },
+  {
+    regex: /management/g,
+    content: "Configuration API",
+  },
+  { regex: /data-reporting/g, content: "Reports API" },
 ];
 
 const constants = {
@@ -698,6 +714,7 @@ const constants = {
   RATING_POSITION,
   RATES,
   EXCLUDED_SEARCH_RESULTS,
+  UNCLEAR_SEARCH_MATCHES,
 };
 
 module.exports = constants;
