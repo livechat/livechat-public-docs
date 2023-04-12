@@ -1,8 +1,6 @@
 import { DocSearch } from "@docsearch/react";
 import { EXCLUDED_SEARCH_RESULTS, UNCLEAR_SEARCH_MATCHES } from "constant";
 
-const baseUrl = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
-
 const transformHits = (hits) => {
   const updatedHits = hits
     .filter(
@@ -20,7 +18,7 @@ const transformHits = (hits) => {
 
       const url = hit.url.replace(
         "https://developers.livechat.com/docs",
-        baseUrl
+        window.location.href
       );
 
       if (content)
