@@ -1,6 +1,8 @@
 import { DocSearch } from "@docsearch/react";
 import { EXCLUDED_SEARCH_RESULTS, UNCLEAR_SEARCH_MATCHES } from "constant";
 
+const pathExt = process.env.PREVIEW ? "" : "/docs";
+
 const transformHits = (hits) => {
   const updatedHits = hits
     .filter(
@@ -16,10 +18,8 @@ const transformHits = (hits) => {
         }
       });
 
-      const url = hit.url.replace(
-        "https://developers.livechat.com/docs",
-        window.location.href
-      );
+      const path = hit.url.replace("https://developers.livechat.com/docs", "");
+      const url = window.location.origin + pathExt + path;
 
       if (content)
         return {
