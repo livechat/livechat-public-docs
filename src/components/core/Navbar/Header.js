@@ -8,7 +8,7 @@ import Magnify from "react-material-icon-svg/dist/Magnify";
 
 import { PromotionContext } from "contexts";
 import Logo from "components/core/Logo/Logo";
-import { Search } from "components/core/Search";
+import Search from "components/core/Search";
 
 import Platform from "./Platform";
 import APIsSDKs from "./APIsSDKs";
@@ -167,7 +167,7 @@ const Header = () => {
           <Resources />
         </MenuListWrapper>
         {isNotHomeDirectory && (
-          <DesktopSearchField>
+          <DesktopSearchField className="DocSearch-Button-Alt">
             <Search />
           </DesktopSearchField>
         )}
@@ -181,7 +181,7 @@ const Header = () => {
         </SearchIconWrapper>
       </MenuWrapper>
       {openSearch && (
-        <MobileSearchField>
+        <MobileSearchField className="DocSearch-Button-Alt">
           <Search />
         </MobileSearchField>
       )}
