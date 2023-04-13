@@ -5,7 +5,6 @@ import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
 import containers from "../../../configs/containers.json";
 import { ChevronRight } from "../icons";
-import { Search } from "../Search";
 import CategoryMenu from "./CategoryMenu";
 import HomeItem from "./HomeItem";
 import MenuItem from "./MenuItem";
@@ -17,6 +16,7 @@ const Wrapper = styled.aside`
   height: ${({ isExpanded }) => (isExpanded ? "500px" : "50px")};
   position: fixed;
   transition: height 300ms;
+  display: block;
 
   bottom: 0%;
   width: 100%;
@@ -25,6 +25,7 @@ const Wrapper = styled.aside`
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
   background-color: white;
   @media (min-width: 768px) {
+    display: ${({ hide }) => hide && "none"};
     box-shadow: none;
     height: 100vh;
     max-height: 100vh;
@@ -33,17 +34,6 @@ const Wrapper = styled.aside`
     transition: all 0s;
     width: 260px;
   }
-`;
-
-const SearchWrapper = styled.div`
-  overflow: visible;
-  display: none;
-  @media (min-width: 768px) {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  padding: 8.5px 20px;
 `;
 
 const MenuIntro = styled.div`
@@ -71,6 +61,7 @@ const MenuWrapper = styled.div`
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+    margin-top: 8px;
   }
 `;
 
@@ -94,15 +85,12 @@ const SideNav = ({ category, version = getStableVersion(category), title }) => {
       ?.length > 0;
 
   return (
-    <Wrapper isExpanded={expand}>
+    <Wrapper isExpanded={expand} hide={isHomeDir}>
       <MenuIntro onClick={() => setExpand(!expand)}>
         <ChevronRight style={!expand ? openIconStyle : closeIconStyle} />
         {title}
       </MenuIntro>
       {!isHomeDir && <HomeItem />}
-      <SearchWrapper>
-        <Search />
-      </SearchWrapper>
 
       <MenuWrapper>
         {isHomeDir ? (

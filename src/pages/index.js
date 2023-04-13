@@ -9,8 +9,9 @@ import {
 } from "../contexts";
 import { AuthProvider } from "../contexts/auth";
 import { getVersionsByGroup } from "../components/core/version";
-import Header from "../components/core/header";
-import Footer from "../components/core/Footer/Footer";
+import Header from "components/core/Navbar/Header";
+import Footer from "components/core/Footer/Footer";
+import Menu from "components/core/SideNav/SideNav";
 import Card from "components/core/Card/Card";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import SEO from "components/core/seo";
@@ -145,6 +146,7 @@ const Index = () => {
               title="Text Platform Docs"
             />
             <Header />
+            <Menu />
 
             <div css={wrapperCss}>
               <div css={titleWrapperCss}>
