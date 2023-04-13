@@ -25,6 +25,13 @@ export const SearchWrapper = styled.div`
 const StyledInput = styled(Input)`
   padding-left: 32px;
   width: 100%;
+  border-color: #bdc7d1;
+  background-color: #4a4a55;
+  color: rgba(255, 255, 255, 0.7);
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
 `;
 
 export const Search = () => {
@@ -32,7 +39,7 @@ export const Search = () => {
 
   return (
     <SearchWrapper>
-      <StyledInput type="text" id="search" placeholder="Search the docs..." />
+      <StyledInput type="text" id="search" placeholder="Search" />
     </SearchWrapper>
   );
 };

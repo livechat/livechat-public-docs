@@ -22,7 +22,7 @@ const Wrapper = styled.a`
   }
 `;
 
-const ImagePlaceholder = styled.span`
+const ImageWrapper = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,7 +36,7 @@ const ImagePlaceholder = styled.span`
 const Connect = ({ title, image, link }) => {
   return (
     <Wrapper href={link} target="_blank" rel="noopener noreferrer">
-      <ImagePlaceholder>{image}</ImagePlaceholder>
+      <ImageWrapper>{image}</ImageWrapper>
       {title}
     </Wrapper>
   );

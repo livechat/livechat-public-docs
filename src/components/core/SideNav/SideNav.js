@@ -5,7 +5,6 @@ import styled from "@emotion/styled";
 import articles from "../../../configs/articles.json";
 import containers from "../../../configs/containers.json";
 import { ChevronRight } from "../icons";
-import { Search } from "../Search";
 import CategoryMenu from "./CategoryMenu";
 import HomeItem from "./HomeItem";
 import MenuItem from "./MenuItem";
@@ -37,17 +36,6 @@ const Wrapper = styled.aside`
   }
 `;
 
-const SearchWrapper = styled.div`
-  overflow: visible;
-  display: none;
-  @media (min-width: 768px) {
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  padding: 8.5px 20px;
-`;
-
 const MenuIntro = styled.div`
   display: flex;
   align-items: center;
@@ -73,6 +61,7 @@ const MenuWrapper = styled.div`
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+    margin-top: 8px;
   }
 `;
 
@@ -102,9 +91,6 @@ const SideNav = ({ category, version = getStableVersion(category), title }) => {
         {title}
       </MenuIntro>
       {!isHomeDir && <HomeItem />}
-      <SearchWrapper>
-        <Search />
-      </SearchWrapper>
 
       <MenuWrapper>
         {isHomeDir ? (

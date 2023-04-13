@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import Magnify from "react-material-icon-svg/dist/Magnify";
 
 import { PromotionContext } from "contexts";
@@ -91,7 +92,7 @@ const SearchIconWrapper = styled.div`
   height: 100%;
 `;
 
-const SearchField = styled.div`
+const MobileSearchField = styled.div`
   background-color: #4a4a55;
   height: 50px;
   width: 100%;
@@ -100,6 +101,16 @@ const SearchField = styled.div`
   }
 
   padding: 0px 10px;
+`;
+
+const DesktopSearchField = styled.div`
+  display: none;
+  @media (min-width: 768px) {
+    display: flex;
+    align-items: center;
+    width: 192px;
+    margin-right: 16px;
+  }
 `;
 
 const linkCss = css`
@@ -134,6 +145,8 @@ const PromoBanner = styled.div`
 const Header = () => {
   const { isActive, content } = useContext(PromotionContext);
   const [openSearch, setOpenSearch] = useState(false);
+  const { pathname } = useRouter();
+  const isNotHomeDirectory = pathname !== "/";
 
   return (
     <Wrapper promoIsActive={isActive} isSearchOpen={openSearch}>
@@ -153,6 +166,12 @@ const Header = () => {
           <APIsSDKs />
           <Resources />
         </MenuListWrapper>
+        {isNotHomeDirectory && (
+          <DesktopSearchField>
+            <Search />
+          </DesktopSearchField>
+        )}
+
         <Profile />
         <SearchIconWrapper
           openSearch={openSearch}
@@ -162,9 +181,9 @@ const Header = () => {
         </SearchIconWrapper>
       </MenuWrapper>
       {openSearch && (
-        <SearchField>
+        <MobileSearchField>
           <Search />
-        </SearchField>
+        </MobileSearchField>
       )}
     </Wrapper>
   );

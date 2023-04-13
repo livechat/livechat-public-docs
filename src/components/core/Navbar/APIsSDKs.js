@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import ArrowRight from "react-material-icon-svg/dist/ArrowRight";
@@ -68,6 +68,7 @@ const APIsSDKs = () => {
           <TitleWrapper>APIs</TitleWrapper>
           {apis.map((api) => (
             <DropdownItem
+              key={`${api.title}`}
               to={api.link}
               title={api.title}
               description={api.description}
@@ -79,6 +80,7 @@ const APIsSDKs = () => {
           <TitleWrapper>SDKs</TitleWrapper>
           {sdks.map((sdk) => (
             <DropdownItem
+              key={`${sdk.title}`}
               to={sdk.link}
               title={sdk.title}
               description={sdk.description}

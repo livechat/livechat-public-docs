@@ -32,6 +32,7 @@ const Resources = () => {
         <div>
           {resources.map((resource) => (
             <DropdownItem
+              key={`${resource.title}`}
               title={resource.title}
               description={resource.description}
               to={resource.link}
@@ -43,6 +44,7 @@ const Resources = () => {
           <TitleWrapper>CONNECT</TitleWrapper>
           {connects.map((connect) => (
             <Connect
+              key={`${connect.title}`}
               title={connect.title}
               image={connect.image}
               link={connect.link}

@@ -31,6 +31,7 @@ const Platform = () => {
         <div>
           {platform.leftColumn.map((component) => (
             <DropdownItem
+              key={`${component.title}`}
               title={component.title}
               description={component.description}
               to={component.link}
@@ -42,6 +43,7 @@ const Platform = () => {
         <div>
           {platform.rightColumn.map((component) => (
             <DropdownItem
+              key={`${component.title}`}
               title={component.title}
               description={component.description}
               to={component.link}
