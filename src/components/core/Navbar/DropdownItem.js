@@ -8,7 +8,7 @@ import { ComingSoonIcon } from "assets/icons/cards/ComingSoon";
 const LinkWrapper = styled.div`
   padding: 16px 20px;
   margin: 4px 16px;
-  border-radius: 15px;
+  border-radius: 8px;
   width: 252px;
   &:hover {
     background-color: #f6f6f7;

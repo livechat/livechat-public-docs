@@ -166,7 +166,7 @@ export const connects = [
   {
     title: "Discord",
     link: process.env.NEXT_PUBLIC_DISCORD_FOOTER_URL,
-    image: <Discord />,
+    image: <Discord fill="#000000" />,
   },
   {
     title: "Docs on GitHub",

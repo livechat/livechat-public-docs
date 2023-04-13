@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import styled from "@emotion/styled";
+import Link from "next/link";
 import ArrowRight from "react-material-icon-svg/dist/ArrowRight";
 
 import { apis, sdks } from "constant/header";
@@ -13,7 +14,7 @@ const Wrapper = styled.div`
   margin-bottom: 12px;
 `;
 
-const ActionLink = styled.a`
+const ActionLink = styled.span`
   font-family: Colfax, colfax-web, Proxima Nova, Open Sans, Gill Sans MT,
     Gill Sans, Corbel, Arial, sans-serif;
   text-decoration: none;
@@ -85,14 +86,11 @@ const APIsSDKs = () => {
           ))}
         </div>
       </Wrapper>
-      <ActionLink
-        href="https://developers.livechat.com/console/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Create a developer account
-        <ArrowRight />
-      </ActionLink>
+      <Link href="/apis-and-sdks">
+        <ActionLink>
+          Browse all APIs & SDKs <ArrowRight />
+        </ActionLink>
+      </Link>
     </Dropdown>
   );
 };

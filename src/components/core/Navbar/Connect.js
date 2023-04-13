@@ -10,7 +10,7 @@ const Wrapper = styled.a`
   line-height: 19px;
   color: #1b1b20;
   padding: 8px;
-  margin: 4px 0px;
+  margin: 4px 0px 4px 16px;
   border-radius: 8px;
   width: 252px;
 

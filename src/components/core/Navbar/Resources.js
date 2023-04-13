@@ -22,7 +22,7 @@ const TitleWrapper = styled.div`
   letter-spacing: 0px;
   text-align: left;
   color: #808189;
-  padding: 20px 0px 8px 8px;
+  padding: 20px 0px 8px 24px;
 `;
 
 const Resources = () => {
