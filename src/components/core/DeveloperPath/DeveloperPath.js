@@ -9,6 +9,13 @@ const wrapperCss = css`
 
   > div {
     margin-left: 10px;
+    width: 300px;
+  }
+
+  @media (min-width: 1024px) {
+    > div {
+      width: auto;
+    }
   }
 `;
 
@@ -59,7 +66,7 @@ const DeveloperPath = ({ title, subtitle, links, image }) => {
       {image}
       <div>
         <div css={titleCss}>{title}</div>
-        <div css={subtitleCss}>{subtitle}</div>
+        <span css={subtitleCss}>{subtitle}</span>
         <div css={linksCss}>
           {links.map((link, index) => (
             <a css={linkCss} href={basePath + link.link} key={index}>

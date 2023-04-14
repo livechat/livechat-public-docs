@@ -1,14 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import PlayCircleOutline from "react-material-icon-svg/dist/PlayCircleOutline";
-import Lock from "react-material-icon-svg/dist/Lock";
-import Forum from "react-material-icon-svg/dist/Forum";
-import Laptop from "react-material-icon-svg/dist/Laptop";
-import MessageProcessing from "react-material-icon-svg/dist/MessageProcessing";
-import Cog from "react-material-icon-svg/dist/Cog";
-import Poll from "react-material-icon-svg/dist/Poll";
-import CurrencyUsd from "react-material-icon-svg/dist/CurrencyUsd";
+
+import { GettingStartedIcon } from "assets/icons/cards/GettingStarted";
+import { AuthorizationIcon } from "assets/icons/cards/Authorization";
+import { MessagingIcon } from "assets/icons/cards/Messaging";
+import { AgentAppSdkIcon } from "assets/icons/cards/AgentAppSDK";
+import { ChatWidgetIcon } from "assets/icons/cards/ChatWidget";
+import { ManagementIcon } from "assets/icons/cards/Management";
+import { DataReportingIcon } from "assets/icons/cards/DataReporting";
+import { MonetizationIcon } from "assets/icons/cards/Monetization";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -43,6 +44,12 @@ const IconWrapper = styled.div`
   width: 20px;
   height: 20px;
   margin-right: 10px;
+
+  > svg {
+    > rect {
+      fill: #f6f6f7;
+    }
+  }
 `;
 
 const StyledLink = styled.a`
@@ -59,42 +66,42 @@ const categories = [
   {
     slug: "getting-started",
     title: "Getting Started",
-    icon: <PlayCircleOutline fill="#424D57" />,
+    icon: <GettingStartedIcon />,
   },
   {
     slug: "authorization",
     title: "Authorization",
-    icon: <Lock fill="#424D57" />,
+    icon: <AuthorizationIcon fill="#6BC5A8" />,
   },
   {
     slug: "messaging",
     title: "Messaging",
-    icon: <Forum fill="#424D57" />,
+    icon: <MessagingIcon fill="#7A2CF5" />,
   },
   {
     slug: "extending-agent-app",
     title: "Agent App",
-    icon: <Laptop fill="#424D57" />,
+    icon: <AgentAppSdkIcon fill="#FE5000" />,
   },
   {
     slug: "extending-chat-widget",
     title: "Chat Widget",
-    icon: <MessageProcessing fill="#424D57" />,
+    icon: <ChatWidgetIcon fill="#EAB23E" />,
   },
   {
     slug: "management",
     title: "Management",
-    icon: <Cog fill="#424D57" />,
+    icon: <ManagementIcon fill="#2469F6" />,
   },
   {
     slug: "data-reporting",
     title: "Reporting",
-    icon: <Poll fill="#424D57" />,
+    icon: <DataReportingIcon fill="#55B4E0" />,
   },
   {
     slug: "monetization",
     title: "Monetization",
-    icon: <CurrencyUsd fill="#424D57" />,
+    icon: <MonetizationIcon fill="#9061CC" />,
   },
 ];
 

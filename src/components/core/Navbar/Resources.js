@@ -15,6 +15,10 @@ const Wrapper = styled.div`
   > div {
     margin: 8px 0px;
   }
+
+  > div:first-of-type {
+    margin-top: 16px;
+  }
 `;
 
 const TitleWrapper = styled.div`
