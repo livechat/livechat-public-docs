@@ -61,9 +61,9 @@ export const cards = [
     image: <MonetizationIcon />,
   },
   {
-    title: "Developer Console Tools",
+    title: "Developer Console Guides",
     link: "/getting-started/app-guides",
-    copy: "Configure your app with a GUI instead of calling the API.",
+    copy: "Learn how to configure your app with Developer Console tools.",
     image: <DevConsoleToolsIcon />,
   },
   {
