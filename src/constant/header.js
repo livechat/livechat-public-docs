@@ -12,7 +12,7 @@ import { ChatWidgetIcon } from "assets/icons/cards/ChatWidget";
 import { HelpDeskApiIcon } from "assets/icons/cards/HelpDeskAPI";
 import { AuthorizationIcon } from "assets/icons/cards/Authorization";
 import { MonetizationIcon } from "assets/icons/cards/Monetization";
-import { DevConsoleToolsIcon } from "assets/icons/cards/DevConsoleTools";
+import { GettingStartedIcon } from "assets/icons/cards/GettingStarted";
 import { TextApiIcon } from "assets/icons/cards/TextAPI";
 
 export const apis = [
@@ -64,6 +64,12 @@ export const sdks = [
 export const platform = {
   leftColumn: [
     {
+      title: "Getting started",
+      description: "Kick off your journey with Platform",
+      link: "/getting-started",
+      image: <GettingStartedIcon />,
+    },
+    {
       title: "Authorization",
       description: "Accounts SDK; scope references",
       link: "/authorization",
@@ -87,14 +93,14 @@ export const platform = {
       link: "/data-reporting",
       image: <DataReportingIcon fill="#55B4E0" />,
     },
+  ],
+  rightColumn: [
     {
       title: "Monetization",
       description: "Monetization tools",
       link: "/monetization",
       image: <MonetizationIcon fill="#9061CC" />,
     },
-  ],
-  rightColumn: [
     {
       title: "Agent App SDK",
       description: "Extend the LiveChat App",
@@ -112,12 +118,6 @@ export const platform = {
       description: "Integrate with HelpDesk",
       link: "/getting-started/helpdesk-apps/helpdesk-api",
       image: <HelpDeskApiIcon fill="#2FC774" />,
-    },
-    {
-      title: "Developer Tools",
-      description: "How-tos for Developer Console",
-      link: "/getting-started/app-guides",
-      image: <DevConsoleToolsIcon fill="#A27167" />,
     },
     {
       title: "Text API",
