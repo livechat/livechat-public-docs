@@ -18,22 +18,22 @@ import { TextApiIcon } from "assets/icons/cards/TextAPI";
 export const apis = [
   {
     title: "Agent Chat API",
-    description: "A service for all products",
+    description: "Chat as an agent",
     link: "/messaging/agent-chat-api",
   },
   {
     title: "Customer Chat API",
-    description: "Ready-to-use components",
+    description: "Chat as as a customer",
     link: "/messaging/customer-chat-api",
   },
   {
     title: "Chat Widget JS API",
-    description: "The fundamentals of LiveChat authorization",
+    description: "Interact with the Chat Widget",
     link: "/extending-chat-widget/javascript-api",
   },
   {
     title: "Configuration API",
-    description: "Go, Python, JavaScript",
+    description: "Manage resources",
     link: "/management/configuration-api",
   },
 ];
@@ -131,14 +131,14 @@ export const platform = {
 
 export const resources = [
   {
-    title: "How-to guides",
-    description: "Grouped by use case",
-    link: "https://developers.livechat.com/marketplace-guidelines/",
-  },
-  {
     title: "Design System",
     description: "Ready-to-use components",
     link: "https://livechat.github.io/design-system/",
+  },
+  {
+    title: "Figma templates",
+    description: "Visual assets for the Marketplace",
+    link: "https://www.figma.com/community/file/1192489623743762740",
   },
   {
     title: "Video tutorials",
@@ -155,8 +155,8 @@ export const resources = [
 
 export const connects = [
   {
-    title: "Developer Program",
-    link: "https://developers.livechat.com/developer-program/",
+    title: "Developer Console",
+    link: "https://developers.livechat.com/console",
     image: <UnfoldMoreVertical />,
   },
   {
