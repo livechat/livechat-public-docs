@@ -116,7 +116,7 @@ export const platform = {
     {
       title: "Developer Tools",
       description: "How-tos for Developer Console",
-      link: "https://developers.livechat.com/console/",
+      link: "/getting-started/app-guides",
       image: <DevConsoleToolsIcon fill="#A27167" />,
     },
     {
@@ -143,7 +143,8 @@ export const resources = [
   {
     title: "Video tutorials",
     description: "Tutorials, courses, webinars",
-    link: "https://developers.livechat.com/building-apps-crash-course/",
+    link:
+      "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
   },
   {
     title: "Sample apps",
