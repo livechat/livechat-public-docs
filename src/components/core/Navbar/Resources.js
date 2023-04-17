@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
+import ArrowRight from "react-material-icon-svg/dist/ArrowRight";
 
 import { resources, connects } from "constant/header";
 
@@ -10,8 +11,13 @@ import Connect from "./Connect";
 
 const Wrapper = styled.div`
   display: flex;
+  height: 400px;
   > div {
     margin: 8px 0px;
+  }
+
+  > div:first-of-type {
+    margin-top: 16px;
   }
 `;
 
@@ -25,10 +31,45 @@ const TitleWrapper = styled.div`
   padding: 20px 0px 8px 24px;
 `;
 
+const ActionLink = styled.a`
+  font-family: Colfax, colfax-web, Proxima Nova, Open Sans, Gill Sans MT,
+    Gill Sans, Corbel, Arial, sans-serif;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f6f6f7;
+  width: 100%;
+  height: 64px;
+  cursor: pointer;
+
+  > svg {
+    transition: right 0.5s;
+    right: 165px;
+    position: absolute;
+  }
+
+  &:hover {
+    color: #1b1b20;
+    text-decoration: none;
+    background-color: #eeeeef;
+    > svg {
+      right: 155px;
+    }
+  }
+
+  color: #1b1b20;
+  position: absolute;
+  bottom: 0;
+`;
+
 const Resources = () => {
   return (
     <Dropdown label="Resources">
-      <Wrapper height="520px">
+      <Wrapper>
         <div>
           {resources.map((resource) => (
             <DropdownItem
@@ -52,6 +93,13 @@ const Resources = () => {
           ))}
         </div>
       </Wrapper>
+      <ActionLink
+        href="https://developers.livechat.com/console"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Create a developer account <ArrowRight />
+      </ActionLink>
     </Dropdown>
   );
 };

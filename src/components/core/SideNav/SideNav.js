@@ -74,7 +74,11 @@ const closeIconStyle = {
   transition: "transform 300ms",
 };
 
-const SideNav = ({ category, version = getStableVersion(category), title }) => {
+const SideNav = ({
+  category,
+  version = getStableVersion(category),
+  title = "Platform Docs",
+}) => {
   const router = useRouter();
   const pathname = router.pathname;
   const [expand, setExpand] = useState(false);
@@ -125,6 +129,7 @@ const SideNav = ({ category, version = getStableVersion(category), title }) => {
 SideNav.propTypes = {
   category: string,
   version: string,
+  title: string,
 };
 
 export default SideNav;

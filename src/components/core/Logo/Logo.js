@@ -33,21 +33,6 @@ const wrapperCss = css`
     animation-duration: 0.9s;
     animation-iteration-count: infinite;
   }
-
-  @keyframes blink {
-    0% {
-      opacity: 100;
-    }
-    50% {
-      opacity: 100;
-    }
-    51% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
 `;
 
 const Logo = ({ adjacent, style }) => (

@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import Link from "next/link";
-import ArrowRight from "react-material-icon-svg/dist/ArrowRight";
 
 import { apis, sdks } from "constant/header";
 
@@ -12,41 +10,6 @@ import Separator from "./Separator";
 const Wrapper = styled.div`
   display: flex;
   margin-bottom: 12px;
-`;
-
-const ActionLink = styled.span`
-  font-family: Colfax, colfax-web, Proxima Nova, Open Sans, Gill Sans MT,
-    Gill Sans, Corbel, Arial, sans-serif;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f6f6f7;
-  width: 100%;
-  height: 64px;
-  cursor: pointer;
-
-  > svg {
-    transition: right 0.5s;
-    right: 165px;
-    position: absolute;
-  }
-
-  &:hover {
-    color: #1b1b20;
-    text-decoration: none;
-    background-color: #eeeeef;
-    > svg {
-      right: 155px;
-    }
-  }
-
-  color: #1b1b20;
-  position: absolute;
-  bottom: 0;
 `;
 
 const TitleWrapper = styled.div`
@@ -75,7 +38,7 @@ const APIsSDKs = () => {
             />
           ))}
         </div>
-        <Separator height="450px" />
+        <Separator />
         <div>
           <TitleWrapper>SDKs</TitleWrapper>
           {sdks.map((sdk) => (
@@ -88,11 +51,6 @@ const APIsSDKs = () => {
           ))}
         </div>
       </Wrapper>
-      <Link href="/apis-and-sdks">
-        <ActionLink>
-          Browse all APIs & SDKs <ArrowRight />
-        </ActionLink>
-      </Link>
     </Dropdown>
   );
 };

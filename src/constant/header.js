@@ -12,28 +12,28 @@ import { ChatWidgetIcon } from "assets/icons/cards/ChatWidget";
 import { HelpDeskApiIcon } from "assets/icons/cards/HelpDeskAPI";
 import { AuthorizationIcon } from "assets/icons/cards/Authorization";
 import { MonetizationIcon } from "assets/icons/cards/Monetization";
-import { DevConsoleToolsIcon } from "assets/icons/cards/DevConsoleTools";
+import { GettingStartedIcon } from "assets/icons/cards/GettingStarted";
 import { TextApiIcon } from "assets/icons/cards/TextAPI";
 
 export const apis = [
   {
     title: "Agent Chat API",
-    description: "A service for all products",
+    description: "Chat as an agent",
     link: "/messaging/agent-chat-api",
   },
   {
     title: "Customer Chat API",
-    description: "Ready-to-use components",
+    description: "Chat as as a customer",
     link: "/messaging/customer-chat-api",
   },
   {
     title: "Chat Widget JS API",
-    description: "The fundamentals of LiveChat authorization",
+    description: "Interact with the Chat Widget",
     link: "/extending-chat-widget/javascript-api",
   },
   {
     title: "Configuration API",
-    description: "Go, Python, JavaScript",
+    description: "Manage resources",
     link: "/management/configuration-api",
   },
 ];
@@ -64,6 +64,12 @@ export const sdks = [
 export const platform = {
   leftColumn: [
     {
+      title: "Getting started",
+      description: "Kick off your journey with Platform",
+      link: "/getting-started",
+      image: <GettingStartedIcon />,
+    },
+    {
       title: "Authorization",
       description: "Accounts SDK; scope references",
       link: "/authorization",
@@ -87,14 +93,14 @@ export const platform = {
       link: "/data-reporting",
       image: <DataReportingIcon fill="#55B4E0" />,
     },
+  ],
+  rightColumn: [
     {
       title: "Monetization",
       description: "Monetization tools",
       link: "/monetization",
       image: <MonetizationIcon fill="#9061CC" />,
     },
-  ],
-  rightColumn: [
     {
       title: "Agent App SDK",
       description: "Extend the LiveChat App",
@@ -114,12 +120,6 @@ export const platform = {
       image: <HelpDeskApiIcon fill="#2FC774" />,
     },
     {
-      title: "Developer Tools",
-      description: "How-tos for Developer Console",
-      link: "https://developers.livechat.com/console/",
-      image: <DevConsoleToolsIcon fill="#A27167" />,
-    },
-    {
       title: "Text API",
       description: "Various Text operations",
       link: "https://text.com/universe",
@@ -131,19 +131,20 @@ export const platform = {
 
 export const resources = [
   {
-    title: "How-to guides",
-    description: "Grouped by use case",
-    link: "https://developers.livechat.com/marketplace-guidelines/",
-  },
-  {
     title: "Design System",
     description: "Ready-to-use components",
     link: "https://livechat.github.io/design-system/",
   },
   {
+    title: "Figma templates",
+    description: "Visual assets for the Marketplace",
+    link: "https://www.figma.com/community/file/1192489623743762740",
+  },
+  {
     title: "Video tutorials",
     description: "Tutorials, courses, webinars",
-    link: "https://developers.livechat.com/building-apps-crash-course/",
+    link:
+      "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
   },
   {
     title: "Sample apps",
@@ -154,8 +155,8 @@ export const resources = [
 
 export const connects = [
   {
-    title: "Developer Program",
-    link: "https://developers.livechat.com/developer-program/",
+    title: "Developer Console",
+    link: "https://developers.livechat.com/console",
     image: <UnfoldMoreVertical />,
   },
   {

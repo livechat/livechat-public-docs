@@ -30,6 +30,14 @@ const Content = styled.div`
     0px 6px 4px -4px rgba(0, 0, 0, 0.06), 0px 16px 16px -8px rgba(0, 0, 0, 0.12);
   border-radius: 10px;
   width: 592px;
+
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  @media (min-width: 1024px) {
+    left: auto;
+    transform: none;
+  }
 `;
 
 const Dropdown = ({ children, label }) => {
