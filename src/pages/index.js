@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
-import { Input } from "@livechat/design-system";
-
 import {
   VersionProvider,
   RatingProvider,
@@ -14,9 +12,9 @@ import Footer from "components/core/Footer/Footer";
 import Menu from "components/core/SideNav/SideNav";
 import Card from "components/core/Card/Card";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
+import Search from "components/core/Search";
 import SEO from "components/core/seo";
 import { cards, devPaths } from "constant/cards";
-import { setupDocsearch } from "utils";
 
 const wrapperCss = css`
   max-width: 960px;
@@ -80,32 +78,6 @@ const titleWrapperCss = css`
   }
 `;
 
-const searchWrapperCss = css`
-  display: none;
-  @media (min-width: 768px) {
-    display: block;
-    position: relative;
-
-    &:before {
-      content: "";
-      width: 22px;
-      height: 22px;
-      display: block;
-      position: absolute;
-      color: #424d57;
-      left: 8px;
-      top: 7px;
-      z-index: 15;
-      background-image: url("data:image/svg+xml,%3Csvg height='22' viewBox='0 0 24 24' width='22' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' fill='%23879098'/%3E%3Cpath d='M0 0h24v24H0z' fill='none' /%3E%3C/svg%3E");
-    }
-  }
-`;
-
-const searchCss = css`
-  padding-left: 32px;
-  width: 100%;
-`;
-
 const textLogoCss = css`
   font-weight: 600;
   font-size: 32px;
@@ -113,7 +85,7 @@ const textLogoCss = css`
   display: flex;
   align-items: center;
   letter-spacing: -0.5px;
-
+  margin-bottom: 24px;
   color: #424d57;
 
   .carrier {
@@ -134,8 +106,6 @@ const Index = () => {
   };
   const promotionContext = { isActive: false, content: <div /> };
 
-  useEffect(setupDocsearch, []);
-
   return (
     <AuthProvider>
       <RatingProvider value={ratingContext}>
@@ -155,14 +125,7 @@ const Index = () => {
                   <span className="carrier">&#124;</span>
                   <span>Platform Docs</span>
                 </span>
-                <div css={searchWrapperCss}>
-                  <Input
-                    type="text"
-                    id="search"
-                    placeholder="Search the docs..."
-                    css={searchCss}
-                  />
-                </div>
+                <Search />
               </div>
               <h2>Build with Platform components</h2>
               <p>

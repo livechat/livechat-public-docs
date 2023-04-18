@@ -4,11 +4,10 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import Magnify from "react-material-icon-svg/dist/Magnify";
 
 import { PromotionContext } from "contexts";
 import Logo from "components/core/Logo/Logo";
-import { Search } from "components/core/Search";
+import Search from "components/core/Search";
 
 import Platform from "./Platform";
 import APIsSDKs from "./APIsSDKs";
@@ -80,7 +79,7 @@ const MenuListWrapper = styled.div`
   }
 `;
 
-const SearchIconWrapper = styled.div`
+const MobileSearchField = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -90,17 +89,6 @@ const SearchIconWrapper = styled.div`
   width: 32px;
   margin-right: 10px;
   height: 100%;
-`;
-
-const MobileSearchField = styled.div`
-  background-color: #4a4a55;
-  height: 50px;
-  width: 100%;
-  @media (min-width: 768px) {
-    display: none;
-  }
-
-  padding: 0px 10px;
 `;
 
 const DesktopSearchField = styled.div`
@@ -144,12 +132,11 @@ const PromoBanner = styled.div`
 
 const Header = () => {
   const { isActive, content } = useContext(PromotionContext);
-  const [openSearch, setOpenSearch] = useState(false);
   const { pathname } = useRouter();
   const isNotHomeDirectory = pathname !== "/";
 
   return (
-    <Wrapper promoIsActive={isActive} isSearchOpen={openSearch}>
+    <Wrapper promoIsActive={isActive}>
       {isActive && <PromoBanner>{content}</PromoBanner>}
       <MenuWrapper>
         <LogoWrapper>
@@ -167,24 +154,16 @@ const Header = () => {
           <Resources />
         </MenuListWrapper>
         {isNotHomeDirectory && (
-          <DesktopSearchField>
+          <DesktopSearchField className="DocSearch-Button-Desktop">
             <Search />
           </DesktopSearchField>
         )}
 
         <Profile />
-        <SearchIconWrapper
-          openSearch={openSearch}
-          onClick={() => setOpenSearch(!openSearch)}
-        >
-          <Magnify fill="white" />
-        </SearchIconWrapper>
-      </MenuWrapper>
-      {openSearch && (
-        <MobileSearchField>
+        <MobileSearchField className="DocSearch-Button-Mobile">
           <Search />
         </MobileSearchField>
-      )}
+      </MenuWrapper>
     </Wrapper>
   );
 };

@@ -1,5 +1,5 @@
 let amplitude;
-import { VERSIONS_GROUPS, EXCLUDED_SEARCH_RESULTS } from "../constant";
+import { VERSIONS_GROUPS } from "../constant";
 
 if (typeof window !== "undefined") {
   amplitude = require("amplitude-js");
@@ -78,82 +78,6 @@ export const getCategoryTitle = (menuItems) => {
 export const canUseWindow = !!(
   typeof window !== "undefined" && window.document
 );
-
-export const setupDocsearch = () => {
-  if (!canUseWindow || !window.docsearch) {
-    return;
-  }
-
-  window.docsearch({
-    apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY,
-    appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
-    indexName: "livechatinc",
-    inputSelector: "#search",
-    debug: false,
-    algoliaOptions: {
-      hitsPerPage: 7,
-    },
-    handleSelected: function(input, event, suggestion, datasetNumber, context) {
-      if (
-        context.selectionMethod === "click" ||
-        context.selectionMethod === "enterKey"
-      ) {
-        logAmplitudeEvent("Suggestion selected, input entered", {
-          url: suggestion.url,
-          input: input.getVal(),
-        });
-        // removes the hardcoded path from Algolia
-        const path = suggestion.url.replace(
-          "https://developers.livechat.com/docs/",
-          ""
-        );
-
-        const newLocation = `${window.location.origin}/docs/${path}`;
-
-        window.location.replace(newLocation);
-      }
-    },
-    transformData: (hits) => {
-      const updatedHits = hits
-        .filter(
-          (hit) =>
-            !EXCLUDED_SEARCH_RESULTS.some((slug) => hit.url.includes(slug))
-        )
-        .map((hit) => {
-          let content = null;
-
-          // Some search results are unclear. Sometimes there's missing information
-          // about which API the result is related to.
-          const unclearSearchMatches = [
-            { regex: /customer-chat-api/g, content: "Customer Chat API" },
-            { regex: /agent-chat-api/g, content: "Agent Chat API" },
-            { regex: /management/g, content: "Configuration API" },
-            { regex: /data-reporting/g, content: "Reports API" },
-          ];
-
-          unclearSearchMatches.forEach((item) => {
-            const result = hit.url.match(item.regex);
-
-            if (Array.isArray(result) && result.length > 0) {
-              content = item.content;
-            }
-          });
-
-          if (content)
-            return {
-              ...hit,
-              content: content,
-            };
-
-          return {
-            ...hit,
-          };
-        });
-
-      return updatedHits;
-    },
-  });
-};
 
 export const getStableVersion = (category) => {
   // FIXME: this is temp solution to have single version group in a category

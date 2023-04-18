@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import TagManager from "react-gtm-module";
-import "docsearch.js/dist/cdn/docsearch.min.css";
+import "@docsearch/css";
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
 import "../styles/fonts.css";
