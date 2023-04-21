@@ -4,11 +4,7 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 
 const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openai = new OpenAIApi(config);
-const totalReQLimiter = new RateLimiterMemory({
-  points: 5,
-  duration: 1,
-});
-const userReQLimiter = new RateLimiterMemory({
+const limiter = new RateLimiterMemory({
   points: 1,
   duration: 1,
 });
@@ -20,15 +16,10 @@ async function handler(req, res) {
       origin: process.env.NEXT_PUBLIC_DEVELOPERS_URL,
       optionsSuccessStatus: 200,
     });
-    const totalConsumeResult = await totalReQLimiter.consume("all");
-    const userConsumeResult = await userReQLimiter.consume(
-      req.socket.remoteAddress
-    );
 
-    if (
-      totalConsumeResult.remainingPoints < 0 ||
-      userConsumeResult.remainingPoints < 0
-    ) {
+    const consumeResult = await limiter.consume(req.socket.remoteAddress);
+
+    if (consumeResult.remainingPoints < 0) {
       return res
         .status(429)
         .json({ error: "Too many requests. Please try again." });
@@ -63,7 +54,7 @@ async function handler(req, res) {
 
     return res.status(200).json({ result });
   } catch (error) {
-    res.status(429).json({ error: "Internal Server Error. Please try again." });
+    res.status(500).json({ error: "Internal Server Error. Please try again." });
   }
 }
 
