@@ -5,7 +5,7 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openai = new OpenAIApi(config);
 const totalReQLimiter = new RateLimiterMemory({
-  points: 3,
+  points: 5,
   duration: 1,
 });
 const userReQLimiter = new RateLimiterMemory({
