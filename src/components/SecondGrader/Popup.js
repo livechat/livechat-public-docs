@@ -112,10 +112,13 @@ const Popup = () => {
           },
         }
       );
+
       setSuccess(true);
       setResponse(res.data.result);
     } catch (err) {
-      setError(err.response.data.error);
+      setError(
+        err.response.data.error || "Something went wrong. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
