@@ -117,7 +117,6 @@ const Popup = () => {
       setSuccess(true);
       setResponse(res.data.result);
     } catch (err) {
-      console.log(err);
       setError(err.response.data.error);
     } finally {
       setIsLoading(false);
