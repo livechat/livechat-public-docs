@@ -101,7 +101,6 @@ const Popup = () => {
         label: "AI Assist",
       });
       setIsLoading(true);
-      const token = JSON.parse(localStorage.getItem("token"));
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_NETLIFY_URL}/docs/api/openai/secondgrader`,
         {
@@ -110,7 +109,6 @@ const Popup = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
