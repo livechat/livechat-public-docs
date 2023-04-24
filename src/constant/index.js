@@ -432,7 +432,7 @@ const SCOPES = [
   },
   {
     id: "accounts--all:rc",
-    description: "Create and read accounts (mofidication is denied)",
+    description: "Create and read accounts (modification is denied)",
     role: "member",
     role_type: "primary",
     product: "Accounts",
