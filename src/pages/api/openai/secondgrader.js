@@ -12,7 +12,10 @@ const limiter = new RateLimiterMemory({
 async function handler(req, res) {
   await NextCors(req, res, {
     methods: "POST",
-    origin: process.env.NEXT_PUBLIC_DEVELOPERS_URL,
+    origin: [
+      process.env.NEXT_PUBLIC_DEVELOPERS_URL,
+      process.env.NEXT_PUBLIC_PLATFORM_URL,
+    ],
     optionsSuccessStatus: 200,
   });
 
