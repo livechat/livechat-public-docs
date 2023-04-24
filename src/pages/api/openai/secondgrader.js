@@ -1,10 +1,32 @@
+import NextCors from "nextjs-cors";
 import { Configuration, OpenAIApi } from "openai";
-import withBearerAuth from "api/withBearerAuth";
+import { RateLimiterMemory } from "rate-limiter-flexible";
 
 const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
 const openai = new OpenAIApi(config);
+const limiter = new RateLimiterMemory({
+  points: 1,
+  duration: 1,
+});
 
 async function handler(req, res) {
+  await NextCors(req, res, {
+    methods: "POST",
+    origin: [
+      process.env.NEXT_PUBLIC_DEVELOPERS_URL,
+      process.env.NEXT_PUBLIC_PLATFORM_URL,
+    ],
+    optionsSuccessStatus: 200,
+  });
+
+  try {
+    await limiter.consume(req.socket.remoteAddress);
+  } catch {
+    return res
+      .status(429)
+      .json({ error: "Too many requests. Please try again." });
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -27,10 +49,12 @@ async function handler(req, res) {
 
   const result = completion.data.choices[0].text;
   if (result.length === 0) {
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error. Please try again." });
   }
 
   return res.status(200).json({ result });
 }
 
-export default withBearerAuth(handler);
+export default handler;
