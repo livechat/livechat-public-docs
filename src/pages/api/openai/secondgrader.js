@@ -20,7 +20,7 @@ async function handler(req, res) {
   });
 
   try {
-    await limiter.consume(req.socket.remoteAddress);
+    await limiter.consume(req.connection.remoteAddress);
   } catch {
     return res
       .status(429)
