@@ -8,7 +8,7 @@ const placeholders = {
   DEVELOPER_CONSOLE_URL: {
     type: "link",
     label: "Developer Console",
-    url: "https://platform.text.com/console/",
+    url: process.env.NEXT_PUBLIC_CONSOLE_URL,
   },
   LIVECHAT_HOME_URL: {
     type: "link",

@@ -165,13 +165,13 @@ export const resources = [
 export const connects = [
   {
     title: "Developer Console",
-    link: "https://developers.livechat.com/console",
+    link: process.env.NEXT_PUBLIC_CONSOLE_URL,
     primaryIcon: <UnfoldMoreVertical />,
     secondaryIcon: <UnfoldMoreVertical fill="#ffffff" />,
   },
   {
     title: "Platform Updates",
-    link: "https://developers.livechat.com/updates/",
+    link: process.env.NEXT_PUBLIC_PLATFORM_URL + "/updates/",
     primaryIcon: <UpdatesIcon />,
     secondaryIcon: <UpdatesIcon fill="#ffffff" />,
   },

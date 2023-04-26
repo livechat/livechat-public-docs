@@ -94,7 +94,7 @@ const Resources = () => {
         </div>
       </Wrapper>
       <ActionLink
-        href="https://developers.livechat.com/console"
+        href={process.env.NEXT_PUBLIC_CONSOLE_URL}
         target="_blank"
         rel="noopener noreferrer"
       >
