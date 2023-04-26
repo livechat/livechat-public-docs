@@ -9,13 +9,9 @@ import "../styles/layout.css";
 import "../styles/prism.css";
 import "../styles/algolia.css";
 import "../styles/redoc.css";
-import { setupAmplitude } from "../utils";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  if (typeof window !== "undefined") {
-    setupAmplitude();
-  }
 
   useEffect(() => {
     TagManager.initialize({

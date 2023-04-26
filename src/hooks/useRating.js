@@ -23,12 +23,15 @@ const useRating = ({ slug }) => {
     setRatings(newRatings);
     setSelectedRating(index);
 
-    logAmplitudeEvent("Document rated", {
-      email,
-      pathname: slug,
-      position,
-      rating: index,
-    });
+    logAmplitudeEvent(
+      "Document rated",
+      {
+        pathname: slug,
+        position,
+        rating: index,
+      },
+      email
+    );
   };
 
   return {
