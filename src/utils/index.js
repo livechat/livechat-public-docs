@@ -1,22 +1,9 @@
-let amplitude;
+import { init, track } from "@amplitude/analytics-browser";
 import { VERSIONS_GROUPS } from "../constant";
 
-if (typeof window !== "undefined") {
-  amplitude = require("amplitude-js");
-}
-
-export const setupAmplitude = () => {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  amplitude.getInstance().init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY);
-};
-
-export const logAmplitudeEvent = (name, properties) => {
-  if (amplitude) {
-    amplitude.getInstance().logEvent(name, properties);
-  }
+export const logAmplitudeEvent = (name, payload, user) => {
+  init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY, user);
+  track(name, payload);
 };
 
 export const versionToString = (number) =>
