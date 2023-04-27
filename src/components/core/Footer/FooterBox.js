@@ -11,8 +11,12 @@ const wrapperCss = () => css`
 
   @media (min-width: 768px) {
     margin-top: 75px;
-    padding: 0;
+    padding: 0px 24px 40px 24px;
     width: 160px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 0;
   }
 `;
 

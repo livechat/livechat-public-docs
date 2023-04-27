@@ -8,11 +8,6 @@ import FooterBox from "./FooterBox";
 import { Discord } from "../../../assets/icons/Discord";
 
 const wrapperCss = () => css`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: start;
-  flex-wrap: wrap;
-
   background-color: #f6f6f7;
   color: #424d57;
   min-height: 248px;
@@ -20,6 +15,20 @@ const wrapperCss = () => css`
   margin-bottom: 45px;
   @media (min-width: 768px) {
     margin-bottom: 0px;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    > div {
+      max-width: 960px;
+      margin: 0 auto;
+    }
   }
 `;
 
@@ -59,20 +68,22 @@ const footerData = [
 const Footer = () => {
   return (
     <div css={wrapperCss}>
-      {footerData.map(
-        ({ title, content, buttonCopy, buttonIcon, buttonLink }) => {
-          return (
-            <FooterBox
-              key={`${title}`}
-              title={title}
-              content={content}
-              buttonCopy={buttonCopy}
-              buttonIcon={buttonIcon}
-              buttonLink={buttonLink}
-            />
-          );
-        }
-      )}
+      <div>
+        {footerData.map(
+          ({ title, content, buttonCopy, buttonIcon, buttonLink }) => {
+            return (
+              <FooterBox
+                key={`${title}`}
+                title={title}
+                content={content}
+                buttonCopy={buttonCopy}
+                buttonIcon={buttonIcon}
+                buttonLink={buttonLink}
+              />
+            );
+          }
+        )}
+      </div>
     </div>
   );
 };
