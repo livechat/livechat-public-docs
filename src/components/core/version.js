@@ -6,9 +6,14 @@ import {
   Button,
   PopperTooltip,
 } from "@livechat/design-system";
+
+import ChevronDown from "react-material-icon-svg/dist/ChevronDown";
+import { WarningIcon } from "./icons";
+
+import useMediaQuery from "hooks/useMediaQuery";
+
 import { VERSIONS_GROUPS } from "../../constant";
 import { versionToString } from "../../utils";
-import { WarningIcon, ArrowDownIcon } from "./icons";
 import { VersionContext, PromotionContext } from "../../contexts";
 
 export const getVersionsByGroup = (group) =>
@@ -37,6 +42,7 @@ const Content = styled.div`
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  gap: 10px;
 
   @media (max-width: 1270px) {
     background-color: #fff;
@@ -80,55 +86,57 @@ const StyledButton = styled(Button)`
   padding: 7px 8px 7px 16px;
 `;
 
-const Warning = ({ selectedVersion, versions }) => (
-  <PopperTooltip
-    isVisible={true}
-    placement={"bottom"}
-    triggerActionType={"hover"}
-    trigger={
-      <span>
-        <WarningIcon
-          width={18}
-          style={{
-            margin: "0 10px 2px 0",
-            verticalAlign: "middle",
-          }}
-        />
-      </span>
-    }
-    closeOnOutsideClick
-    zIndex={99999}
-  >
-    <div style={{ maxWidth: "320px" }}>
-      {selectedVersion === versions.DEV_PREVIEW_VERSION && (
-        <p>
-          This is the <strong>developer preview</strong> version of our API.
-          Keep in mind it might be <strong>subject to change</strong>.
-        </p>
-      )}
-      {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
-        <p>This is the legacy version of the API.</p>
-      )}
-      {versions.DEPRECATED_VERSIONS.includes(selectedVersion) && (
-        <p>
-          This version deprecated.
-          <br /> We recommend you migrate to the current stable version.
-        </p>
-      )}
+const Warning = ({ selectedVersion, versions }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
-      <p style={{ marginBottom: "10px" }}>
-        If you have any questions, please let us know at{" "}
-        <a
-          href="mailto:developers@livechat.com"
-          style={{ color: "white", textDecoration: "underline" }}
-        >
-          developers@livechat.com
-        </a>
-        .
-      </p>
-    </div>
-  </PopperTooltip>
-);
+  return (
+    <PopperTooltip
+      isVisible={true}
+      placement={isMobile ? "bottom-start" : "bottom"}
+      triggerActionType={isMobile ? "click" : "hover"}
+      trigger={
+        <span>
+          <WarningIcon
+            style={{
+              verticalAlign: "middle",
+            }}
+          />
+        </span>
+      }
+      closeOnOutsideClick
+      zIndex={99999}
+    >
+      <div style={{ maxWidth: "320px" }}>
+        {selectedVersion === versions.DEV_PREVIEW_VERSION && (
+          <p>
+            This is the <strong>developer preview</strong> version of our API.
+            Keep in mind it might be <strong>subject to change</strong>.
+          </p>
+        )}
+        {versions.LEGACY_VERSIONS.includes(selectedVersion) && (
+          <p>This is the legacy version of the API.</p>
+        )}
+        {versions.DEPRECATED_VERSIONS.includes(selectedVersion) && (
+          <p>
+            This version deprecated.
+            <br /> We recommend you migrate to the current stable version.
+          </p>
+        )}
+
+        <p style={{ marginBottom: "10px" }}>
+          If you have any questions, please let us know at{" "}
+          <a
+            href="mailto:developers@livechat.com"
+            style={{ color: "white", textDecoration: "underline" }}
+          >
+            developers@livechat.com
+          </a>
+          .
+        </p>
+      </div>
+    </PopperTooltip>
+  );
+};
 
 const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -195,7 +203,7 @@ const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
               <ButtonBody>
                 <span>API version:</span>
                 {formatVersion(selectedVersion)}
-                <ArrowDownIcon />
+                <ChevronDown fill="#424D57" width="20px" height="20px" />
               </ButtonBody>
             </StyledButton>
           )}

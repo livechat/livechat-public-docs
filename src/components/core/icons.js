@@ -206,38 +206,16 @@ export const LinkIcon = (props) => (
 
 export const WarningIcon = (props) => (
   <svg
-    {...props}
     xmlns="http://www.w3.org/2000/svg"
     width="22"
     height="19"
     fill="none"
+    {...props}
   >
     <path
       fill="#C1002B"
       d="M1.73 19h18.53c.77 0 1.25-.83.87-1.5l-9.27-16a.996.996 0 0 0-1.73 0l-9.27 16c-.38.67.1 1.5.87 1.5ZM12 16h-2v-2h2v2Zm-1-4c-.55 0-1-.45-1-1V9c0-.55.45-1 1-1s1 .45 1 1v2c0 .55-.45 1-1 1Z"
     />
-  </svg>
-);
-
-export const ArrowDownIcon = (props) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    fill="none"
-  >
-    <g clip-path="url(#a)">
-      <path
-        fill="#424D57"
-        d="M13.233 7.742 10 10.975 6.767 7.742a.83.83 0 1 0-1.175 1.175l3.825 3.825a.83.83 0 0 0 1.175 0l3.825-3.825a.83.83 0 0 0 0-1.175.848.848 0 0 0-1.184 0Z"
-      />
-    </g>
-    <defs>
-      <clipPath id="a">
-        <path fill="#fff" d="M0 0h20v20H0z" />
-      </clipPath>
-    </defs>
   </svg>
 );
 
