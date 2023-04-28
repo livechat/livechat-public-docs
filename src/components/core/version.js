@@ -13,7 +13,7 @@ import { WarningIcon } from "./icons";
 import useMediaQuery from "hooks/useMediaQuery";
 
 import { VERSIONS_GROUPS } from "../../constant";
-import { versionToString } from "../../utils";
+import { versionToString, getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 
 export const getVersionsByGroup = (group) =>
@@ -86,7 +86,7 @@ const StyledButton = styled(Button)`
   padding: 7px 8px 7px 16px;
 `;
 
-const Warning = ({ selectedVersion, versions }) => {
+const Warning = ({ selectedVersion, versionColor, versions }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
@@ -98,6 +98,7 @@ const Warning = ({ selectedVersion, versions }) => {
         <span>
           <WarningIcon
             style={{
+              color: `${versionColor}`,
               verticalAlign: "middle",
             }}
           />
@@ -183,7 +184,7 @@ const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
     .sort((a, b) => b - a)
     .map((e) => versionToString(e));
 
-  // Extra case for stable version to match the sidebar colors
+  const versionColor = getVersionColor(selectedVersion, versions);
   const isStable = selectedVersion === versions.STABLE_VERSION;
 
   const { isActive } = useContext(PromotionContext);
@@ -192,7 +193,11 @@ const Version = ({ articleVersions, redirectToVersion, leftPadding }) => {
     <Container promoIsActive={isActive} leftPadding={leftPadding}>
       <Content>
         {!isStable && (
-          <Warning selectedVersion={selectedVersion} versions={versions} />
+          <Warning
+            selectedVersion={selectedVersion}
+            versionColor={versionColor}
+            versions={versions}
+          />
         )}
         <Dropdown
           isVisible={showDropdown}

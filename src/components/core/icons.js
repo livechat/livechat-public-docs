@@ -213,7 +213,7 @@ export const WarningIcon = (props) => (
     {...props}
   >
     <path
-      fill="#C1002B"
+      fill="currentColor"
       d="M1.73 19h18.53c.77 0 1.25-.83.87-1.5l-9.27-16a.996.996 0 0 0-1.73 0l-9.27 16c-.38.67.1 1.5.87 1.5ZM12 16h-2v-2h2v2Zm-1-4c-.55 0-1-.45-1-1V9c0-.55.45-1 1-1s1 .45 1 1v2c0 .55-.45 1-1 1Z"
     />
   </svg>
