@@ -9,22 +9,6 @@ export const logAmplitudeEvent = (name, payload, user) => {
 export const versionToString = (number) =>
   Number.isInteger(number) ? `${number}.0` : `${number}`;
 
-export const getVersionColor = (version, groupVersions) => {
-  const isStable = version === groupVersions.STABLE_VERSION;
-  const isLegacy = groupVersions.LEGACY_VERSIONS.includes(version);
-  const isDevPreview = version === groupVersions.DEV_PREVIEW_VERSION;
-
-  if (isStable) {
-    return "66, 132, 245";
-  }
-
-  if (isLegacy || isDevPreview) {
-    return "239, 168, 67";
-  }
-
-  return "209, 52, 91";
-};
-
 export const openChatWindow = (e) => {
   e.preventDefault();
   const LC_API = window.LC_API || {};
