@@ -102,7 +102,7 @@ export const platform = {
       image: <MonetizationIcon fill="#9061CC" />,
     },
     {
-      title: "Agent App SDK",
+      title: "Agent App",
       description: "Extend the LiveChat App",
       link: "/extending-agent-app",
       image: <AgentAppSdkIcon fill="#FE5000" />,
