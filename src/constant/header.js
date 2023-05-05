@@ -133,7 +133,7 @@ export const resources = [
   {
     title: "Design System",
     description: "Ready-to-use components",
-    link: "https://livechat.github.io/design-system/",
+    link: "https://v1--613a8e945a5665003a05113b.chromatic.com/?path=/story/foundations-color-tokens--page",
   },
   {
     title: "Figma templates",
