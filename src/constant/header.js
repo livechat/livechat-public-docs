@@ -102,7 +102,7 @@ export const platform = {
       image: <MonetizationIcon fill="#9061CC" />,
     },
     {
-      title: "Agent App SDK",
+      title: "Agent App",
       description: "Extend the LiveChat App",
       link: "/extending-agent-app",
       image: <AgentAppSdkIcon fill="#FE5000" />,
@@ -133,7 +133,7 @@ export const resources = [
   {
     title: "Design System",
     description: "Ready-to-use components",
-    link: "https://livechat.github.io/design-system/",
+    link: "https://github.com/livechat/design-system/tree/v1",
   },
   {
     title: "Figma templates",
