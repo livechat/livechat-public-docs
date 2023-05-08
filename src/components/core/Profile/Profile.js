@@ -248,7 +248,7 @@ const Profile = () => {
         if (isAuthorized) {
           logout();
         } else {
-          logAmplitudeEvent("loginAttempted");
+          logAmplitudeEvent("loginAttempted", null, email);
           authorize();
         }
         handleClose();

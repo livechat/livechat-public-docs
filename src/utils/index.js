@@ -1,41 +1,24 @@
-let amplitude;
+import { init, track } from "@amplitude/analytics-browser";
 import { VERSIONS_GROUPS } from "../constant";
 
-if (typeof window !== "undefined") {
-  amplitude = require("amplitude-js");
-}
-
-export const setupAmplitude = () => {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  amplitude.getInstance().init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY);
-};
-
-export const logAmplitudeEvent = (name, properties) => {
-  if (amplitude) {
-    amplitude.getInstance().logEvent(name, properties);
-  }
+export const logAmplitudeEvent = (name, payload, user) => {
+  init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY, user);
+  track(name, payload);
 };
 
 export const versionToString = (number) =>
   Number.isInteger(number) ? `${number}.0` : `${number}`;
 
 export const getVersionColor = (version, groupVersions) => {
-  const isStable = version === groupVersions.STABLE_VERSION;
   const isLegacy = groupVersions.LEGACY_VERSIONS.includes(version);
   const isDevPreview = version === groupVersions.DEV_PREVIEW_VERSION;
 
-  if (isStable) {
-    return "66, 132, 245";
-  }
-
   if (isLegacy || isDevPreview) {
-    return "239, 168, 67";
+    return "#efa843";
   }
 
-  return "209, 52, 91";
+  // deprecated version color
+  return "#C1002B";
 };
 
 export const openChatWindow = (e) => {
