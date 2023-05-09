@@ -12,32 +12,27 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
   align-self: flex-end;
   margin-left: auto;
   height: 60px;
-  width: 40px;
   cursor: pointer;
+  display: none;
 
-  @media (min-width: 768px) {
-    margin-right: 20px;
+  @media (min-width: 1024px) {
+    display: flex;
     width: 60px;
   }
 `;
 
 const dropdownCss = () => css`
   opacity: 1 !important;
-  right: 0 !important;
-  top: 60px !important;
-  width: 100vw;
-  z-index: 100;
-  display: block !important;
   pointer-events: auto !important;
   transform: none !important;
   max-width: none;
-  border-top: 1px solid #ffffff;
+  display: none;
 
   @media (min-width: 768px) {
+    display: block !important;
     right: 5px !important;
     left: auto !important;
     top: 70px !important;

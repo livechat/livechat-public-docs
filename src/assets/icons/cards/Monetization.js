@@ -1,4 +1,4 @@
-export const MonetizationIcon = ({ fill, ...rest }) => (
+export const MonetizationIcon = ({ fill, background, ...rest }) => (
   <svg
     width="30"
     height="31"
@@ -7,7 +7,13 @@ export const MonetizationIcon = ({ fill, ...rest }) => (
     xmlns="http://www.w3.org/2000/svg"
     {...rest}
   >
-    <rect y="0.330078" width="30" height="30" rx="4" fill="#9061CC" />
+    <rect
+      y="0.330078"
+      width="30"
+      height="30"
+      rx="4"
+      fill={background || "#9061CC"}
+    />
     <g clipPath="url(#clip0_1606_12132)">
       <path
         d="M12.5 16.9968C12.5 18.3777 14.7383 19.4968 17.5 19.4968C20.2617 19.4968 22.5 18.3777 22.5 16.9968C22.5 15.616 20.2617 14.4968 17.5 14.4968C14.7383 14.4968 12.5 15.616 12.5 16.9968Z"
