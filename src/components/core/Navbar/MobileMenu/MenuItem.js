@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { string, array, node } from "prop-types";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import ChevronUp from "react-material-icon-svg/dist/ChevronUp";
+import ChevronDown from "react-material-icon-svg/dist/ChevronDown";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   border-bottom: 1px solid #6e6e7c;
 `;
 
-const Chevron = styled(ChevronUp)`
+const Chevron = styled(ChevronDown)`
   ${({ isOpen }) => isOpen && `transform: rotate(180deg)`};
   transition: transform 0.5s;
 `;
