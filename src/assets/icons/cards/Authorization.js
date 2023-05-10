@@ -1,4 +1,4 @@
-export const AuthorizationIcon = ({ fill, ...rest }) => (
+export const AuthorizationIcon = ({ fill, background, ...rest }) => (
   <svg
     width="30"
     height="31"
@@ -7,7 +7,13 @@ export const AuthorizationIcon = ({ fill, ...rest }) => (
     xmlns="http://www.w3.org/2000/svg"
     {...rest}
   >
-    <rect y="0.330078" width="30" height="30" rx="4" fill="#6BC5A8" />
+    <rect
+      y="0.330078"
+      width="30"
+      height="30"
+      rx="4"
+      fill={background || "#6BC5A8"}
+    />
     <g clipPath="url(#clip0_1606_12124)">
       <path
         d="M11.6668 21.1635C13.5078 21.1635 15.0002 19.6711 15.0002 17.8302C15.0002 15.9892 13.5078 14.4968 11.6668 14.4968C9.82588 14.4968 8.3335 15.9892 8.3335 17.8302C8.3335 19.6711 9.82588 21.1635 11.6668 21.1635Z"

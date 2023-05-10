@@ -4,6 +4,9 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import Menu from "react-material-icon-svg/dist/Menu";
+import Magnify from "react-material-icon-svg/dist/Magnify";
+import Close from "react-material-icon-svg/dist/Close";
 
 import { PromotionContext } from "contexts";
 import Logo from "components/core/Logo/Logo";
@@ -12,6 +15,7 @@ import Search from "components/core/Search";
 import Platform from "./Platform";
 import APIsSDKs from "./APIsSDKs";
 import Resources from "./Resources";
+import MobileMenu from "./MobileMenu/MobileMenu";
 
 const Profile = dynamic(() => import("../Profile/Profile"), {
   ssr: false,
@@ -31,7 +35,7 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
 
-  position: sticky;
+  position: fixed;
   top: 0;
   width: 100%;
   z-index: 99;
@@ -58,9 +62,6 @@ const MenuWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  @media (min-width: 768px) {
-    justify-content: normal;
-  }
 `;
 
 const MenuListWrapper = styled.div`
@@ -73,7 +74,7 @@ const MenuListWrapper = styled.div`
   display: none;
   margin-right: 10px;
   margin-left: 40px;
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     display: flex;
     gap: 32px;
   }
@@ -83,17 +84,15 @@ const MobileSearchField = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     display: none;
   }
-  width: 32px;
-  margin-right: 10px;
   height: 100%;
 `;
 
 const DesktopSearchField = styled.div`
   display: none;
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     display: flex;
     align-items: center;
     width: 192px;
@@ -114,6 +113,12 @@ const linkCss = css`
   }
 `;
 
+const iconCss = css`
+  @media (min-width: 1024px) {
+    display: none;
+  }
+`;
+
 const PromoBanner = styled.div`
   width: 100%;
   background-color: #ff5100;
@@ -130,10 +135,59 @@ const PromoBanner = styled.div`
   }
 `;
 
+const ActionsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const MagnifyIcon = styled(Magnify)`
+  display: flex;
+  margin-right: 8px;
+  cursor: pointer;
+  ${({ openSearch }) => openSearch && `background-color: #6E6E7C`};
+  border-radius: 50px;
+  padding: 4px;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+`;
+
+const MenuIcon = styled(Menu)`
+  display: flex;
+  margin-right: 16px;
+  cursor: pointer;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+`;
+
+const CloseWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: pointer;
+  margin-right: 8px;
+`;
+
 const Header = () => {
   const { isActive, content } = useContext(PromotionContext);
   const { pathname } = useRouter();
   const isNotHomeDirectory = pathname !== "/";
+
+  const [openSearch, setOpenSearch] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const handleOpenMenu = () => {
+    setOpenSearch(false);
+    setOpenMenu(true);
+  };
 
   return (
     <Wrapper promoIsActive={isActive}>
@@ -153,17 +207,38 @@ const Header = () => {
           <APIsSDKs />
           <Resources />
         </MenuListWrapper>
-        {isNotHomeDirectory && (
-          <DesktopSearchField className="DocSearch-Button-Desktop">
-            <Search />
-          </DesktopSearchField>
-        )}
 
-        <Profile />
-        <MobileSearchField className="DocSearch-Button-Mobile">
-          <Search />
-        </MobileSearchField>
+        <ActionsWrapper>
+          {isNotHomeDirectory && (
+            <DesktopSearchField className="DocSearch-Button-Desktop">
+              <Search />
+            </DesktopSearchField>
+          )}
+
+          {!openMenu && (
+            <MobileSearchField className="DocSearch-Button-Mobile">
+              <Search />
+            </MobileSearchField>
+          )}
+          <Profile />
+          {!openMenu ? (
+            <MenuIcon
+              fill="#ffffff"
+              width="32px"
+              height="28px"
+              css={iconCss}
+              onClick={handleOpenMenu}
+            />
+          ) : (
+            <CloseWrapper onClick={() => setOpenMenu(false)} css={iconCss}>
+              Close
+              <Close fill="#ffffff" width="32px" height="28px" />
+            </CloseWrapper>
+          )}
+        </ActionsWrapper>
       </MenuWrapper>
+
+      {openMenu && <MobileMenu />}
     </Wrapper>
   );
 };

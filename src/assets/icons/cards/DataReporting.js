@@ -1,4 +1,4 @@
-export const DataReportingIcon = ({ fill, ...rest }) => (
+export const DataReportingIcon = ({ fill, background, ...rest }) => (
   <svg
     width="30"
     height="31"
@@ -7,7 +7,13 @@ export const DataReportingIcon = ({ fill, ...rest }) => (
     xmlns="http://www.w3.org/2000/svg"
     {...rest}
   >
-    <rect y="0.330078" width="30" height="30" rx="4" fill="#55B4E0" />
+    <rect
+      y="0.330078"
+      width="30"
+      height="30"
+      rx="4"
+      fill={background || "#55B4E0"}
+    />
     <g clipPath="url(#clip0_1606_12090)">
       <path
         d="M7.5 7.83008V22.8301H22.5"

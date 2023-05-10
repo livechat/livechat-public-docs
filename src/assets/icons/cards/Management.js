@@ -1,4 +1,4 @@
-export const ManagementIcon = ({ fill, ...rest }) => (
+export const ManagementIcon = ({ fill, background, ...rest }) => (
   <svg
     width="30"
     height="31"
@@ -7,7 +7,13 @@ export const ManagementIcon = ({ fill, ...rest }) => (
     xmlns="http://www.w3.org/2000/svg"
     {...rest}
   >
-    <rect y="0.330078" width="30" height="30" rx="4" fill="#2469F6" />
+    <rect
+      y="0.330078"
+      width="30"
+      height="30"
+      rx="4"
+      fill={background || "#2469F6"}
+    />
     <g clipPath="url(#clip0_1606_12082)">
       <path
         d="M12.5002 8.66333H9.16683C8.70659 8.66333 8.3335 9.03643 8.3335 9.49666V12.83C8.3335 13.2902 8.70659 13.6633 9.16683 13.6633H12.5002C12.9604 13.6633 13.3335 13.2902 13.3335 12.83V9.49666C13.3335 9.03643 12.9604 8.66333 12.5002 8.66333Z"

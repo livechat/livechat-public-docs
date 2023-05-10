@@ -35,7 +35,7 @@ const Platform = () => {
               title={component.title}
               description={component.description}
               to={component.link}
-              image={component.image}
+              image={component.primaryIcon}
             />
           ))}
         </div>
@@ -47,7 +47,7 @@ const Platform = () => {
               title={component.title}
               description={component.description}
               to={component.link}
-              image={component.image}
+              image={component.primaryIcon}
               badge={component.badge}
             />
           ))}

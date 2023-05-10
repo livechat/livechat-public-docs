@@ -115,6 +115,7 @@ export const NavHeader = styled.div`
 `;
 
 export const Content = styled.article`
+  margin-top: 120px;
   padding: 0px ${({ noPadding }) => (noPadding ? "0" : "30px")};
 
   @media (min-width: 768px) {
@@ -122,6 +123,7 @@ export const Content = styled.article`
   }
 
   &.redoc {
+    margin-top: 60px;
     display: block;
   }
 `;

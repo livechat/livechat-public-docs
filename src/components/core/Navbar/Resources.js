@@ -87,7 +87,7 @@ const Resources = () => {
             <Connect
               key={`${connect.title}`}
               title={connect.title}
-              image={connect.image}
+              image={connect.primaryIcon}
               link={connect.link}
             />
           ))}
