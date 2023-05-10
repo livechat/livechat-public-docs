@@ -18,7 +18,7 @@ import { cards, devPaths } from "constant/cards";
 
 const wrapperCss = css`
   max-width: 960px;
-  margin: 80px auto 64px auto;
+  margin: 140px auto 64px auto;
   padding: 0 20px;
 
   > p {
