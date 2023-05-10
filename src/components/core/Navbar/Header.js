@@ -35,7 +35,7 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
 
-  position: sticky;
+  position: fixed;
   top: 0;
   width: 100%;
   z-index: 99;
@@ -87,9 +87,7 @@ const MobileSearchField = styled.div`
   @media (min-width: 1024px) {
     display: none;
   }
-  width: 100%;
-  background-color: #4a4a55;
-  padding: 0px 16px 16px 16px;
+  height: 100%;
 `;
 
 const DesktopSearchField = styled.div`
@@ -216,17 +214,13 @@ const Header = () => {
               <Search />
             </DesktopSearchField>
           )}
-          <Profile />
+
           {!openMenu && (
-            <MagnifyIcon
-              openSearch={openSearch}
-              fill="#ffffff"
-              width="40px"
-              height="36px"
-              css={iconCss}
-              onClick={() => setOpenSearch(!openSearch)}
-            />
+            <MobileSearchField className="DocSearch-Button-Mobile">
+              <Search />
+            </MobileSearchField>
           )}
+          <Profile />
           {!openMenu ? (
             <MenuIcon
               fill="#ffffff"
@@ -243,11 +237,7 @@ const Header = () => {
           )}
         </ActionsWrapper>
       </MenuWrapper>
-      {openSearch && (
-        <MobileSearchField className="DocSearch-Button-Mobile">
-          <Search />
-        </MobileSearchField>
-      )}
+
       {openMenu && <MobileMenu />}
     </Wrapper>
   );
