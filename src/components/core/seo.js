@@ -32,7 +32,7 @@ function SEO({ desc, keywords, title, subtitle, robots }) {
       <meta property="og:type" content="website" />
       <meta
         property="og:image"
-        content="https://platform.text.com/docs/images/livechat-docs-og.png"
+        content="https://platform.text.com/docs/images/text-docs-og.png"
       />
       <link rel="icon" href="/docs/images/favicon.ico" />
       <meta name="twitter:card" content="summary_large_image" />

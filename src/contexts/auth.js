@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
       setToken(authorizeData[TOKEN_KEY]);
     } catch (error) {
-      if (type === AUTH_TYPE.popup) {
+      if (type !== AUTH_TYPE.iframe) {
         console.error(error);
       }
       logout(false);
