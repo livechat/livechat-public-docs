@@ -131,10 +131,9 @@ export const platform = {
     {
       title: "Text API",
       description: "Various Text operations",
-      link: "https://text.com/universe",
+      link: "/text-api",
       primaryIcon: <TextApiIcon fill="#29292E" />,
       secondaryIcon: <TextApiIcon fill="#ffffff" background="#4a4a55" />,
-      badge: true,
     },
   ],
 };
