@@ -8,7 +8,7 @@ const placeholders = {
   DEVELOPER_CONSOLE_URL: {
     type: "link",
     label: "Developer Console",
-    url: "https://developers.livechat.com/console/",
+    url: "https://platform.text.com/console/",
   },
   LIVECHAT_HOME_URL: {
     type: "link",
