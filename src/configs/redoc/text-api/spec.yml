@@ -10,7 +10,13 @@ servers:
 paths:
   /detect_language:
     post:
-      operationId: LanguageDetectionController_detectLanguage
+      security:
+        - basicAuth: [ ]
+        - bearerAuth: [ ]
+      summary: Detect language
+      description: >-
+        Detect the languages used in a message or a document. 
+        Use your Global Accounts token to authenticate (PAT or OAuth2 Bearer token), see https://platform.text.com/docs/authorization/agent-authorization
       parameters: [ ]
       requestBody:
         required: true
@@ -20,17 +26,47 @@ paths:
               $ref: '#/components/schemas/DetectLanguageRequest'
       responses:
         '200':
-          description: ''
-        '201':
-          description: ''
+          description: >-
+            List of detected languages in descending order by prediction probability.
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prediction'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'invalid JSON format'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'invalid access token'
+        '500':
+          description: Internal Server Error
       tags:
         - Language detection
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     DetectLanguageRequest:
       type: object
@@ -41,22 +77,47 @@ components:
             Build products powered by
             advanced text operations.
           description: >-
-            Text to detect language for. If it includes newline characters, use
+            Text to detect language for. If it can include newline characters, use
             `clean_up_whitespaces` parameter to remove them.
         max_predictions:
           type: number
-          example: 2
+          example: 1
           default: 1
-          description: Maximum number of predictions to return.
+          description: >-
+            Maximum number of predictions to return. If provided,
+            must be between 1 and 176.
         threshold:
           type: number
           example: 0.5
           default: 0
-          description: Minimal probability threshold for predictions.
+          description: >-
+            Minimal probability threshold for predictions. If provided,
+            must be between 0 and 1.
         clean_up_whitespaces:
           type: boolean
           example: true
           default: false
-          description: Flag to remove newline characters from text.
+          description: >-
+            Flag to remove newline characters from text. If provided,
+            must be valid boolean value.
       required:
         - text
+    Prediction:
+      type: object
+      properties:
+        language_code:
+          type: string
+          example: en
+          description: ISO code of detected language.
+        language_name:
+          type: string
+          example: English
+          description: Full name of detected language.
+        probability:
+          type: number
+          example: 0.958276
+          description: Probability of language prediction.
+      required:
+        - language_code
+        - language_name
+        - probability
