@@ -68,7 +68,7 @@ export const cards = [
   },
   {
     title: "Text API",
-    link: "/text-api",
+    link: "/text",
     copy: "Build products powered by advanced text operations.",
     image: <TextApiIcon />,
   },
