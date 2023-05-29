@@ -171,7 +171,7 @@ export const connects = [
   },
   {
     title: "Platform Updates",
-    link: process.env.NEXT_PUBLIC_PLATFORM_URL + "/updates/",
+    link: "https://developers.livechat.com/updates/",
     primaryIcon: <UpdatesIcon />,
     secondaryIcon: <UpdatesIcon fill="#ffffff" />,
   },
