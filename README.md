@@ -4,7 +4,7 @@
 
 Hello 👋!
 
-This is the repository for the [Platform documentation](https://developers.livechat.com/docs/).
+This is the repository for the [Platform documentation](https://platform.text.com/docs/).
 Our documents are written in the [MDX format](https://mdxjs.com/), so pay attention to our custom tags when contributing to the docs.
 
 ## Who we are
@@ -13,7 +13,7 @@ Behind LiveChat, Inc. there is a team of [passionate people](https://www.livecha
 
 With a suite of five products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/), and [OpenWidget](https://openwidget.com/)) and their powerful APIs, we power customer communication for 36,000 companies in 150 countries.
 
-[The Platform](https://developers.livechat.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://developers.livechat.com/developer-program/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
+[The Platform](https://platform.text.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://platform.text.com/developer-program/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
 
 ## Node version
 
@@ -47,7 +47,7 @@ All contribution's welcome! [Read how to do it.](./CONTRIBUTING.md)
 
 ## Get in touch
 
-- [Create a free developer account](https://developers.livechatinc.com/console/) in our Developer Program.
+- [Create a free developer account](https://platform.text.com/console/) in our Developer Program.
 - [Join our Discord for Developers](https://discord.gg/rFbJkYQFwp)
 - Send us an email at developers@livechat.com
 - Follow us on [Twitter](https://twitter.com/LiveChatDev)

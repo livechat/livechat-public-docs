@@ -1,5 +1,5 @@
 module.exports = {
-  siteUrl: "https://developers.livechat.com/docs/",
+  siteUrl: "https://platform.text.com/docs/",
   generateRobotsTxt: true,
   sourceDir: ".next",
 };

@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 const defaultSiteMetadata = {
-  siteUrl: "https://developers.livechat.com",
+  siteUrl: "https://platform.text.com",
   title: "LiveChat Platform Docs & API Reference",
   description:
     "The LiveChat Platform offers much more than just a messaging tool. There's a number of possibilities that help you grow a business, which brings customer satisfaction.",
@@ -32,7 +32,7 @@ function SEO({ desc, keywords, title, subtitle, robots }) {
       <meta property="og:type" content="website" />
       <meta
         property="og:image"
-        content="https://developers.livechat.com/docs/images/livechat-docs-og.png"
+        content="https://platform.text.com/docs/images/text-docs-og.png"
       />
       <link rel="icon" href="/docs/images/favicon.ico" />
       <meta name="twitter:card" content="summary_large_image" />
@@ -41,7 +41,7 @@ function SEO({ desc, keywords, title, subtitle, robots }) {
       <meta name="twitter:description" content={metaDescription} />
       <meta
         name="twitter:image"
-        content="https://developers.livechat.com/docs/images/livechat-docs-og.png"
+        content="https://platform.text.com/docs/images/livechat-docs-og.png"
       />
       {keywords.length > 0 && (
         <meta name="keywords" content={metaDescription} />
