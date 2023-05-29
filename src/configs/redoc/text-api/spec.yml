@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: Text API
+  description: |
+    Text API offers advanced text operation tools based on AI. Text API is part of the [Text Universe](https://text.com/universe).
+
+    # Authorization
+
+    To call Text API, you need to provide a valid access token. It can be one of the following:
+      - [a Personal Access Token](https://platform.text.com/docs/authorization/agent-authorization#personal-access-tokens)
+      - an OAuth2 Bearer Token ([Implicit grant](https://platform.text.com/docs/authorization/agent-authorization#implicit-grant) or [Authorization code grant](https://platform.text.com/docs/authorization/agent-authorization#authorization-code-grant))
+
+  version: 1.0.0
+servers:
+  - url: 'https://api.text.com/'
+    description: Main production server URL
+tags:
+  - name: Language detection
+    description: Language detection allows you to detect languages used in text, for example in a message or document.
+paths:
+  /detect_language:
+    post:
+      security:
+        - Personal Access Token: [ ]
+        - OAuth2 Bearer Token: [ ]
+      summary: Detect language
+      description: >-
+        Detects languages used in text. The request size limit is 10MB.
+      parameters: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectLanguageRequest'
+      responses:
+        '200':
+          description: >-
+            OK: Returns the list of detected languages sorted by the prediction probability in the descending order.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prediction'
+        '400':
+          description: >-
+            Bad Request: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'invalid JSON format'
+        '401':
+          description: >-
+            Unauthorized: Invalid access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: 'invalid access token'
+        '413':
+          description: >-
+            Request Entity Too Large: Request size limit is 10MB
+        '500':
+          description: Internal Server Error
+      tags:
+        - Language detection
+components:
+  securitySchemes:
+    Personal Access Token:
+      type: http
+      scheme: basic
+    OAuth2 Bearer Token:
+      type: http
+      scheme: bearer
+  schemas:
+    DetectLanguageRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          example: |-
+            Build products powered by
+            advanced text operations.
+          description: >-
+            The text in which languages will be detected.
+        max_predictions:
+          type: number
+          example: 1
+          default: 1
+          description: >-
+            The maximum number of predictions to return. If provided,
+            must be a valid integer between 1 and 176.
+        threshold:
+          type: number
+          example: 0.5
+          default: 0
+          description: >-
+            The minimum probability threshold for predictions. If provided,
+            must be a valid float between 0 and 1.
+        clean_up_whitespaces:
+          type: boolean
+          example: true
+          default: false
+          description: >-
+            The flag to remove newline characters from `text`. If provided,
+            must be a valid boolean value.
+      required:
+        - text
+    Prediction:
+      type: object
+      properties:
+        language_code:
+          type: string
+          example: en
+          description: The ISO code of the detected language.
+        language_name:
+          type: string
+          example: English
+          description: The name of the detected language.
+        probability:
+          type: number
+          example: 0.958276
+          description: The probability of the language prediction.
+      required:
+        - language_code
+        - language_name
+        - probability

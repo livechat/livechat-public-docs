@@ -165,6 +165,7 @@ const Page = ({ frontMatter, children }) => {
   const useRedocPage = [
     "global-accounts-api",
     "customer-accounts-api",
+    "text-api",
   ].includes(subcategory);
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
