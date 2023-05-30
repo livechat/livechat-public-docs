@@ -18,7 +18,7 @@ const transformHits = (hits) => {
         }
       });
 
-      const path = hit.url.replace("https://platform.text.com/docs", "");
+      const path = hit.url.replace("https://developers.livechat.com/docs", "");
       const url = window.location.origin + pathExt + path;
 
       if (content)
