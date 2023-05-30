@@ -2,9 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import { string } from "prop-types";
 
-import SecondGrader from "components/SecondGrader";
-import useMediaQuery from "hooks/useMediaQuery";
-
 import Rating from "../Rating";
 
 import { RATING_POSITION } from "../../../constant";
@@ -35,19 +32,14 @@ const StyledRating = styled(Rating)`
   }
 `;
 
-const PageHeader = ({ title }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)");
-
-  return (
-    <PageHeaderWrapper>
-      <PageTitle>
-        <span>{title}</span>
-        <StyledRating position={RATING_POSITION.TOP} />
-      </PageTitle>
-      {!isMobile && <SecondGrader />}
-    </PageHeaderWrapper>
-  );
-};
+const PageHeader = ({ title }) => (
+  <PageHeaderWrapper>
+    <PageTitle>
+      <span>{title}</span>
+      <StyledRating position={RATING_POSITION.TOP} />
+    </PageTitle>
+  </PageHeaderWrapper>
+);
 
 PageHeader.propTypes = {
   title: string.isRequired,
