@@ -202,14 +202,15 @@ Creates a new agent with specified parameters within a license.
 
 #### Specifics
 
-|                                  |                                                                                                                                        |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/create_agent`                                                                   |
-| Required scopes                  | `accounts--all:rc` `accounts--all:rw`<sup>**1**</sup> `subscription.lc:rw`<sup>**1**</sup> `accounts.roles.lc--all:rw`<sup>**2**</sup> |
-| [Batch support](#batch-requests) | Yes                                                                                                                                    |
+|                                  |                                                                                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/create_agent`                                                                                    |
+| Required scopes                  | `accounts--all:rc` `accounts--all:rw`<sup>**1**</sup> `subscription.lc:rw`<sup>**1**</sup> <sup>**2**</sup> `accounts.roles.lc--all:rw`<sup>**3**</sup> |
+| [Batch support](#batch-requests) | Yes                                                                                                                                                     |
 
-**1)** – to create agents who don't have to wait for approval after creation<br/>
-**2)** – to create an agent with role higher than `normal` (`administrator`, `viceowner` or `owner`)
+**1)** To create agents who don't have to wait for approval after creation<br/>
+**2)** `subscription.lc:rw` is a private scope; it's not possible to configure it in Developer Console.<br/>
+**3)** To create an agent with role higher than `normal` (`administrator`, `viceowner` or `owner`)
 
 #### Request
 
@@ -226,9 +227,9 @@ Creates a new agent with specified parameters within a license.
 | `awaiting_approval`                   | `bool`     | No       | Determines if the Agent will be awaiting approval after creation. Only a requester with the `subscription.lc:rw` scope can set this value to `false`. |
 | `groups`                              | `object[]` | No       | Groups an Agent belongs to.                                                                                                                           |
 | `groups[].id`                         | `uint`     | Yes      | Group ID; required only when `group` is included.                                                                                                     |
-| `groups[].priority`<sup>**3**</sup>   | `string`   | Yes      | Agent's priority in a group; required only when `group` is included.                                                                                  |
-| `notifications`<sup>**4**</sup>       | `string[]` | No       | Represents which Agent notifications are turned on.                                                                                                   |
-| `email_subscriptions`<sup>**5**</sup> | `string[]` | No       | Represents which subscriptions will be send to the Agent via email.                                                                                   |
+| `groups[].priority`<sup>**4**</sup>   | `string`   | Yes      | Agent's priority in a group; required only when `group` is included.                                                                                  |
+| `notifications`<sup>**5**</sup>       | `string[]` | No       | Represents which Agent notifications are turned on.                                                                                                   |
+| `email_subscriptions`<sup>**6**</sup> | `string[]` | No       | Represents which subscriptions will be send to the Agent via email.                                                                                   |
 | `work_scheduler`                      | `object`   | No       | Work scheduler options to set for the new Agent                                                                                                       |
 | `work_scheduler.timezone`             | `string`   | Yes      | Timezone for the work scheduler. Required only when `schedule` is not empty. Falls back to the agent's timezone if empty.                             |
 | `work_scheduler.schedule`             | `object[]` | Yes      | List of agent's working hours.                                                                                                                        |
@@ -237,7 +238,7 @@ Creates a new agent with specified parameters within a license.
 | `work_scheduler.schedule[].start`     | `string`   | Yes      | When working hours start.                                                                                                                             |
 | `work_scheduler.schedule[].end`       | `string`   | Yes      | When working hours end.                                                                                                                               |
 
-**3)** Possible values for the `groups[].priority` parameter:
+**4)** Possible values for the `groups[].priority` parameter:
 
 | Possible value | Notes                                                                                                                                                                                                                                                                               |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -246,7 +247,7 @@ Creates a new agent with specified parameters within a license.
 | `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                            |
 | `supervisor`   | Agents with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                |
 
-**4)** Possible values for the `notifications` array:
+**5)** Possible values for the `notifications` array:
 
 - `new_visitor`
 - `incoming_chat`
@@ -263,7 +264,7 @@ Creates a new agent with specified parameters within a license.
 - `ticket_notifications`
 - `incoming_message_for_focused_chat`
 
-**5)** Possible values for the `email_subscriptions` array:
+**6)** Possible values for the `email_subscriptions` array:
 
 - `daily_summary`
 - `weekly_summary`
@@ -357,12 +358,12 @@ It returns the info about an Agent specified by `id`.
 
 #### Request
 
-| Parameter     | Type       | Required | Notes                         |
-| ------------- | ---------- | -------- | ----------------------------- |
-| `id`          | `string`   | Yes      | Agent ID                      |
-| `fields`__*__ | `string[]` | No       | Additional fields to include. |
+| Parameter                | Type       | Required | Notes                         |
+| ------------------------ | ---------- | -------- | ----------------------------- |
+| `id`                     | `string`   | Yes      | Agent ID                      |
+| `fields`<sup>**1**</sup> | `string[]` | No       | Additional fields to include. |
 
-__*__ Possible values for the `fields[]` parameter:
+**1)** Possible values for the `fields[]` parameter:
 
 | Possible value        | Notes                                                                                  |
 | --------------------- | -------------------------------------------------------------------------------------- |
@@ -419,14 +420,14 @@ Returns all Agents within a license.
 
 #### Request
 
-| Parameter           | Required | Type       | Notes                                                                                                         |
-| ------------------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
-| `filters`           | No       | `object`   | Possible request filters                                                                                      |
-| `filters.group_ids` | No       | `int[]`    | IDs of the groups from which you want to list Agents. You'll only get the Agents from the specified group(s). |
-| `filters.suspended` | No       | `bool`     | If provided, returns only those Agents who have the same `suspended` field value.                             |
-| `fields`__*__       | No       | `string[]` | Additional Agent fields to include.                                                                           |
+| Parameter                      | Required | Type       | Notes                                                                                                         |
+| ------------------------------ | -------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `filters`                      | No       | `object`   | Possible request filters                                                                                      |
+| `filters.group_ids`            | No       | `int[]`    | IDs of the groups from which you want to list Agents. You'll only get the Agents from the specified group(s). |
+| `filters.suspended`            | No       | `bool`     | If provided, returns only those Agents who have the same `suspended` field value.                             |
+| `fields`<sup>**1**</sup>       | No       | `string[]` | Additional Agent fields to include.                                                                           |
 
-__*__ Possible values for the `fields[]` parameter:
+**1)** Possible values for the `fields[]` parameter:
 
 | Possible value        | Notes                                                                                  |
 | --------------------- | -------------------------------------------------------------------------------------- |
@@ -497,24 +498,24 @@ Updates the properties of an Agent specified by `id`.
 
 #### Request
 
-| Parameter                    | Data type  | Required | Notes                                                                                                                             |
-| ---------------------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                         | `string`   | Yes      | Agent ID                                                                                                                          |
-| `name`                       | `string`   | No       | Agent name                                                                                                                        |
-| `role`                       | `string`   | No       | Agent role, should be one of the following: `viceowner`, `administrator`, `normal`                                                |
-| `avatar`                     | `string`   | No       | Avatar URL                                                                                                                        |
-| `login_status`               | `string`   | No       | Agent's default status right after the login, should be one of the following: `accepting chats`, `not accepting chats` (default). |
-| `job_title`                  | `string`   | No       | Agent's job title                                                                                                                 |
-| `mobile`                     | `string`   | No       | Agent's mobile number                                                                                                             |
-| `max_chats_count`            | `int`      | No       | Agent's maximum number of concurrent. Limited to 100. chats                                                                       |
-| `groups`                     | `object[]` | No       | Groups an Agent belongs to.                                                                                                       |
-| `groups[].id`                | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                  |
-| `groups[].priority` __*__    | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                                                               |
-| `notifications`__**__        | `string[]` | No       | Represents which Agent notifications are turned on.                                                                               |
-| `email_subscriptions`__***__ | `string[]` | No       | Represents which subscriptions will be send to an Agent via email.                                                                |
-| `work_scheduler`             | `object`   | No       | Work scheduler options to set for an Agent. See [**Create Agent**](#create-agent) for details.                                    |
+| Parameter                                 | Data type  | Required | Notes                                                                                                                             |
+| ----------------------------------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                      | `string`   | Yes      | Agent ID                                                                                                                          |
+| `name`                                    | `string`   | No       | Agent name                                                                                                                        |
+| `role`                                    | `string`   | No       | Agent role, should be one of the following: `viceowner`, `administrator`, `normal`                                                |
+| `avatar`                                  | `string`   | No       | Avatar URL                                                                                                                        |
+| `login_status`                            | `string`   | No       | Agent's default status right after the login, should be one of the following: `accepting chats`, `not accepting chats` (default). |
+| `job_title`                               | `string`   | No       | Agent's job title                                                                                                                 |
+| `mobile`                                  | `string`   | No       | Agent's mobile number                                                                                                             |
+| `max_chats_count`                         | `int`      | No       | Agent's maximum number of concurrent. Limited to 100. chats                                                                       |
+| `groups`                                  | `object[]` | No       | Groups an Agent belongs to.                                                                                                       |
+| `groups[].id`                             | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                  |
+| `groups[].priority` <sup>**3**</sup>      | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                                                               |
+| `notifications`<sup>**4**</sup>           | `string[]` | No       | Represents which Agent notifications are turned on.                                                                               |
+| `email_subscriptions`<sup>**5**</sup>     | `string[]` | No       | Represents which subscriptions will be send to an Agent via email.                                                                |
+| `work_scheduler`                          | `object`   | No       | Work scheduler options to set for an Agent. See [**Create Agent**](#create-agent) for details.                                    |
 
-__*__ Possible values for the `groups[].priority` parameter:
+**3)** Possible values for the `groups[].priority` parameter:
 
 | Possible value | Notes                                                                                                                                                                                                                                                                               |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -523,7 +524,7 @@ __*__ Possible values for the `groups[].priority` parameter:
 | `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                            |
 | `supervisor`   | Agents with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                |
 
-__**__ Possible values for the `notifications` array:
+**4)** Possible values for the `notifications` array:
 
 - `new_visitor`
 - `incoming_chat`
@@ -540,7 +541,7 @@ __**__ Possible values for the `notifications` array:
 - `ticket_notifications`
 - `incoming_message_for_focused_chat`
 
-__***__ Possible values for the `email_subscriptions` array:
+**5)** Possible values for the `email_subscriptions` array:
 
 - `daily_summary`
 - `weekly_summary`
@@ -615,13 +616,13 @@ Deletes an Agent specified by `id`.
 
 #### Specifics
 
-|                                  |                                                                                   |
-| -------------------------------- | --------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_agent`              |
-| Required scopes                  | `agents--my:rw` `accounts--my:rw` `agents--all:rw` __*__ `accounts--all:rw` __*__ |
-| [Batch support](#batch-requests) | Yes                                                                               |
+|                                  |                                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_agent`                                    |
+| Required scopes                  | `agents--my:rw` `accounts--my:rw` `agents--all:rw` <sup>**1**</sup> `accounts--all:rw` <sup>**1**</sup> |
+| [Batch support](#batch-requests) | Yes                                                                                                     |
 
-__*__ to delete other agents within the same license
+**1)** to delete other agents within the same license
 
 #### Request
 
@@ -815,13 +816,13 @@ Approves an Agent thus allowing the Agent to use the application.
 
 #### Specifics
 
-|                                  |                                                                       |
-| -------------------------------- | --------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/approve_agent` |
-| Required scopes                  | `agents--all:rw` `accounts--all:rw` `subscription.lc:rw` __*__        |
-| [Batch support](#batch-requests) | Yes                                                                   |
+|                                  |                                                                                  |
+| -------------------------------- | -------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/approve_agent`            |
+| Required scopes                  | `agents--all:rw` `accounts--all:rw` `subscription.lc:rw` <sup>**1**</sup>        |
+| [Batch support](#batch-requests) | Yes                                                                              |
 
-__*__ `subscription.lc:rw` is a private scope; it's not possible to configure it in Developer Console.
+**1)** `subscription.lc:rw` is a private scope; it's not possible to configure it in Developer Console.
 
 #### Request
 
@@ -1399,17 +1400,17 @@ Returns the list of Bots created within a license. The method behavior differs d
 
 #### Request
 
-| Parameter      | Required | Type       | Notes                                                                                                      |
-| -------------- | -------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
-| `all`          | No       | `bool`     | `true` - gets all Bots within a license. &nbsp;`false` (default)__*__ - returns only the requester's Bots. |
-| `fields`__**__ | No       | `string[]` | Additional Bot fields to include                                                                           |
+| Parameter                | Required | Type       | Notes                                                                                                                 |
+| ------------------------ | -------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| `all`                    | No       | `bool`     | `true` - gets all Bots within a license. &nbsp;`false` (default)<sup>**1**</sup> - returns only the requester's Bots. |
+| `fields`<sup>**2**</sup> | No       | `string[]` | Additional Bot fields to include                                                                                      |
 
-__*__ **Calling List Bots with `all:false`**
+**1)** Calling List Bots with `all:false`
 
 - If a Bot was created via an app, all Agents who make the request via this app will get the Bot in the response.
 - If a Bot was created directly by an Agent ([PAT authorization](/authorization/authorizing-api-calls/#personal-access-tokens)), all Agents who authorize with PATs will get the Bot in the response.
 
-__**__ Possible values for the `fields[]` parameter:
+**2)** Possible values for the `fields[]` parameter:
 
 | Possible value    | Notes                                                                               |
 | ----------------- | ----------------------------------------------------------------------------------- |
@@ -1461,12 +1462,12 @@ It returns the info about a bot with a given `id`.
 
 #### Request
 
-| Parameter     | Required   | Type     | Notes                         |
-| ------------- | ---------- | -------- | ----------------------------- |
-| `id`          | Yes        | `string` | Bot ID                        |
-| `fields`__*__ | `string[]` | No       | Additional fields to include. |
+| Parameter                | Required   | Type     | Notes                         |
+| ------------------------ | ---------- | -------- | ----------------------------- |
+| `id`                     | Yes        | `string` | Bot ID                        |
+| `fields`<sup>**1**</sup> | `string[]` | No       | Additional fields to include. |
 
-__*__ Possible values for the `fields[]` parameter:
+**1)** Possible values for the `fields[]` parameter:
 
 | Possible value    | Notes                                                                               |
 | ----------------- | ----------------------------------------------------------------------------------- |
@@ -1532,13 +1533,13 @@ Creates a new group.
 
 #### Request
 
-| Parameter               | Data type | Required | Notes                                                                                                                            |
-| ----------------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                  | `string`  | Yes      | Group name (up to 180 chars)                                                                                                     |
-| `language_code`         | `string`  | No       | The code of the group languange                                                                                                  |
-| `agent_priorities`__*__ | `object`  | Yes      | Agents' priorities in a group as a map in the `"<id>": "<priority>"` format. At least one Agent must have the `normal` priority. |
+| Parameter                          | Data type | Required | Notes                                                                                                                            |
+| ---------------------------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                             | `string`  | Yes      | Group name (up to 180 chars)                                                                                                     |
+| `language_code`                    | `string`  | No       | The code of the group languange                                                                                                  |
+| `agent_priorities`<sup>**1**</sup> | `object`  | Yes      | Agents' priorities in a group as a map in the `"<id>": "<priority>"` format. At least one Agent must have the `normal` priority. |
 
-__*__ The table below presents the possible values for the `agent_priorities` map:
+**1)** The table below presents the possible values for the `agent_priorities` map:
 
 | Possible value | Notes                                                                                                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1594,14 +1595,14 @@ Updates an existing group.
 
 #### Request
 
-| Parameter               | Data type | Required | Notes                                                                        |
-| ----------------------- | --------- | -------- | ---------------------------------------------------------------------------- |
-| `id`                    | `int`     | Yes      | Group ID                                                                     |
-| `name`                  | `string`  | No       | Group name (up to 180 chars)                                                 |
-| `language_code`         | `string`  | No       | The code of the group languange                                              |
-| `agent_priorities`__*__ | `object`  | No       | Agents' priorities in a group as a map in the `"<id>": "<priority>"` format. |
+| Parameter                          | Data type | Required | Notes                                                                        |
+| ---------------------------------- | --------- | -------- | ---------------------------------------------------------------------------- |
+| `id`                               | `int`     | Yes      | Group ID                                                                     |
+| `name`                             | `string`  | No       | Group name (up to 180 chars)                                                 |
+| `language_code`                    | `string`  | No       | The code of the group languange                                              |
+| `agent_priorities`<sup>**1**</sup> | `object`  | No       | Agents' priorities in a group as a map in the `"<id>": "<priority>"` format. |
 
-__*__ The table below presents the possible values for the `agent_priorities` map:
+**1)** The table below presents the possible values for the `agent_priorities` map:
 
 | Possible value | Notes                                                                                                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1708,11 +1709,11 @@ Lists all the exisiting groups.
 
 #### Request
 
-| Parameter     | Data type  | Required | Notes                         |
-| ------------- | ---------- | -------- | ----------------------------- |
-| `fields`__*__ | `string[]` | No       | Additional fields to include. |
+| Parameter                | Data type  | Required | Notes                         |
+| ------------------------ | ---------- | -------- | ----------------------------- |
+| `fields`<sup>**1**</sup> | `string[]` | No       | Additional fields to include. |
 
-__*__ Possible values for the `fields[]` parameter:
+**1)** Possible values for the `fields[]` parameter:
 
 | Possible value     | Notes                                                                          |
 | ------------------ | ------------------------------------------------------------------------------ |
@@ -1759,12 +1760,12 @@ Returns details about a group specified by its `id`.
 
 #### Request
 
-| Parameter     | Data type  | Required | Notes                         |
-| ------------- | ---------- | -------- | ----------------------------- |
-| `id`          | `int`      | Yes      | Group ID                      |
-| `fields`__*__ | `string[]` | No       | Additional fields to include. |
+| Parameter                | Data type  | Required | Notes                         |
+| ------------------------ | ---------- | -------- | ----------------------------- |
+| `id`                     | `int`      | Yes      | Group ID                      |
+| `fields`<sup>**1**</sup> | `string[]` | No       | Additional fields to include. |
 
-__*__ Possible values for the `fields[]` parameter:
+**1)** Possible values for the `fields[]` parameter:
 
 | Possible value     | Notes                                                                          |
 | ------------------ | ------------------------------------------------------------------------------ |
@@ -1960,23 +1961,23 @@ Registers a new private property for a given **Client Id**.
 
 #### Request
 
-| Parameter                  | Required            | Data type  | Notes                                                                                |
-| -------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------ |
-| `name`                     | Yes                 | `string`   | Property name                                                                        |
-| `owner_client_id`          | Yes                 | `string`   | **Client Id** that will own the property; must be owned by your organization.        |
-| `type`                     | Yes                 | `string`   | Possible values: `int`, `string`, `bool`, and `tokenized_string`                     |
-| `access`                   | Yes                 | `object`   |                                                                                      |
-| `access.<location>`        | min. one `location` | `object`   | Possible values: `chat`, `thread`, `event`, `license`, `group`                       |
-| `access.<location>.<user>` | min. one `user`     | `[string]` | Possible `<user>` values: `agent`, `customer`; possible values: `read`, `write`      |
-| `description`              | No                  | `string`   | Property description                                                                 |
-| `domain` __*__             | No                  | `[<type>]` | Array of values that properties can be set to                                        |
-| `range` __*__              | No                  | `object`   | Range of values that properties can be set to                                        |
-| `range.from`               | No                  | `int`      | Only values **equal** or **greater** than this parameter can be set to this property |
-| `range.to`                 | No                  | `int`      | Only values **equal** or **lower** than this parameter can be set to this property   |
-| `default_value` __**__     | No                  | `type`     | Default value of property; validated by **domain** or **range**, if one exists       |
+| Parameter                             | Required            | Data type  | Notes                                                                                |
+| ------------------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------ |
+| `name`                                | Yes                 | `string`   | Property name                                                                        |
+| `owner_client_id`                     | Yes                 | `string`   | **Client Id** that will own the property; must be owned by your organization.        |
+| `type`                                | Yes                 | `string`   | Possible values: `int`, `string`, `bool`, and `tokenized_string`                     |
+| `access`                              | Yes                 | `object`   |                                                                                      |
+| `access.<location>`                   | min. one `location` | `object`   | Possible values: `chat`, `thread`, `event`, `license`, `group`                       |
+| `access.<location>.<user>`            | min. one `user`     | `[string]` | Possible `<user>` values: `agent`, `customer`; possible values: `read`, `write`      |
+| `description`                         | No                  | `string`   | Property description                                                                 |
+| `domain` <sup>**1**</sup>             | No                  | `[<type>]` | Array of values that properties can be set to                                        |
+| `range` <sup>**1**</sup>              | No                  | `object`   | Range of values that properties can be set to                                        |
+| `range.from`                          | No                  | `int`      | Only values **equal** or **greater** than this parameter can be set to this property |
+| `range.to`                            | No                  | `int`      | Only values **equal** or **lower** than this parameter can be set to this property   |
+| `default_value` <sup>**2**</sup>      | No                  | `type`     | Default value of property; validated by **domain** or **range**, if one exists       |
 
-__*)__ Only one `domain` and one `range` can be set for a single property.
-__**)__ Registering a property with `default_value` is possible only if `access.<location>` is set to `license` or to `group`.
+**1)** Only one `domain` and one `range` can be set for a single property.<br/>
+**2)** Registering a property with `default_value` is possible only if `access.<location>` is set to `license` or to `group`.
 
 #### Response
 
@@ -2175,15 +2176,15 @@ Updates a property value within a license. This operation **doesn't** overwrite 
 
 #### Specifics
 
-|                                  |                                                                                   |
-| -------------------------------- | --------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/update_license_properties` |
-| Required scopes                  | `properties.license.value--my:rw`*, `properties.license.value--all:rw`**          |
-| [Batch support](#batch-requests) | No                                                                                |
+|                                  |                                                                                                       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/update_license_properties`                     |
+| Required scopes                  | `properties.license.value--my:rw`<sup>**1**</sup>, `properties.license.value--all:rw`<sup>**2**</sup> |
+| [Batch support](#batch-requests) | No                                                                                                    |
 
-__*)__ If the requester's Client ID matches the namespace, setting license properties requires `properties.license.value--my:rw`.
+**1)** If the requester's Client ID matches the namespace, setting license properties requires `properties.license.value--my:rw`.
 
-__**)__ If the requester's Client ID doesn't match the namespace, setting license properties requires `properties.license.value--all:rw`. The scope allows to
+**2)** If the requester's Client ID doesn't match the namespace, setting license properties requires `properties.license.value--all:rw`. The scope allows to
 set all properties from your namespace and [public properties](#public-properties) from `core` and other namespaces.
 
 #### Request
@@ -2241,15 +2242,15 @@ For properties without an explicit value assignment, the method will return the 
 
 #### Specifics
 
-|                                  |                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/list_license_properties` |
-| Required scopes                  | `properties.license.value--my:ro`*, `properties.license.value--all:ro`**        |
-| [Batch support](#batch-requests) | No                                                                              |
+|                                  |                                                                                                       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/list_license_properties`                       |
+| Required scopes                  | `properties.license.value--my:ro`<sup>**1**</sup>, `properties.license.value--all:ro`<sup>**2**</sup> |
+| [Batch support](#batch-requests) | No                                                                                                    |
 
-__*)__ The `properties.license.value--my:ro` scope allows you to access all properties from your namespace only.
+**1)** The `properties.license.value--my:ro` scope allows you to access all properties from your namespace only.
 
-__**)__ The `properties.license.value--all:ro` scope allows you to access all properties from your namespace and [public properties](#public-properties) from `core` and other namespaces.
+**2)** The `properties.license.value--all:ro` scope allows you to access all properties from your namespace and [public properties](#public-properties) from `core` and other namespaces.
 
 #### Request
 
@@ -2293,15 +2294,15 @@ Deletes the properties set within a license.
 
 #### Specifics
 
-|                                  |                                                                                   |
-| -------------------------------- | --------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_license_properties` |
-| Required scopes                  | `properties.license.value--my:rw`*, `properties.license.value--all:rw`**          |
-| [Batch support](#batch-requests) | No                                                                                |
+|                                  |                                                                                                       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_license_properties`                     |
+| Required scopes                  | `properties.license.value--my:rw`<sup>**1**</sup>, `properties.license.value--all:rw`<sup>**2**</sup> |
+| [Batch support](#batch-requests) | No                                                                                                    |
 
-__*)__ If the requester's Client ID matches the namespace, deleting license properties requires `properties.license.value--my:rw`.
+**1)** If the requester's Client ID matches the namespace, deleting license properties requires `properties.license.value--my:rw`.
 
-__**)__ If the requester's Client ID doesn't match the namespace, deleting license properties requires `properties.license.value--all:rw`. The scope allows to
+**2)** If the requester's Client ID doesn't match the namespace, deleting license properties requires `properties.license.value--all:rw`. The scope allows to
 delete all properties from your namespace and [public properties](#public-properties) from `core` and other namespaces.
 
 #### Request
@@ -2348,15 +2349,15 @@ Updates a property value within a group as the [property location](#property-loc
 
 #### Specifics
 
-|                                  |                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/update_group_properties` |
-| Required scopes                  | `properties.group.value--my:rw`*, `properties.group.value--all:rw`**            |
-| [Batch support](#batch-requests) | No                                                                              |
+|                                  |                                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/update_group_properties`                   |
+| Required scopes                  | `properties.group.value--my:rw`<sup>**1**</sup>, `properties.group.value--all:rw`<sup>**2**</sup> |
+| [Batch support](#batch-requests) | No                                                                                                |
 
-__*)__ If the requester's Client ID matches the namespace, setting group properties requires `properties.group.value--my:rw`.
+**1)** If the requester's Client ID matches the namespace, setting group properties requires `properties.group.value--my:rw`.
 
-__**)__ If the requester's Client ID doesn't match the namespace, setting group properties requires `properties.group.value--all:rw`. The scope allows to
+**2)** If the requester's Client ID doesn't match the namespace, setting group properties requires `properties.group.value--all:rw`. The scope allows to
 set all properties from your namespace and [public properties](#public-properties) from other namespaces.
 
 #### Request
@@ -2465,15 +2466,15 @@ Deletes the properties set within a group.
 
 #### Specifics
 
-|                                  |                                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_group_properties` |
-| Required scopes                  | `properties.group.value--my:rw`*, `properties.group.value--all:rw`**            |
-| [Batch support](#batch-requests) | No                                                                              |
+|                                  |                                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_group_properties`                   |
+| Required scopes                  | `properties.group.value--my:rw`<sup>**1**</sup>, `properties.group.value--all:rw`<sup>**2**</sup> |
+| [Batch support](#batch-requests) | No                                                                                                |
 
-__*)__ If the requester's Client ID matches the namespace, deleting group properties requires `properties.group.value--my:rw`.
+**1)** If the requester's Client ID matches the namespace, deleting group properties requires `properties.group.value--my:rw`.
 
-__**)__ If the requester's Client ID doesn't match the namespace, deleting group properties requires `properties.group.value--all:rw`. The scope allows to
+**2)** If the requester's Client ID doesn't match the namespace, deleting group properties requires `properties.group.value--all:rw`. The scope allows to
 delete all properties from your namespace and [public properties](#public-properties) from other namespaces.
 
 #### Request
@@ -3282,10 +3283,10 @@ Resource limits in the LiveChat product are different for each plan. This method
 |                                  |                                                                                       |
 | -------------------------------- | ------------------------------------------------------------------------------------- |
 | Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/check_product_limits_for_plan` |
-| Required scopes                  | `subscription.lc:rw`__*__                                                             |
+| Required scopes                  | `subscription.lc:rw`<sup>**1**</sup>                                                  |
 | [Batch support](#batch-requests) | No                                                                                    |
 
-__*__ `subscription.lc:rw` is a private scope; it's not possible to configure it in Developer Console.
+**1)** `subscription.lc:rw` is a private scope; it's not possible to configure it in Developer Console.
 
 #### Request
 
