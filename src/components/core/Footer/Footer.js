@@ -1,13 +1,14 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import { useRouter } from "next/router";
 import Twitter from "react-material-icon-svg/dist/Twitter";
 import Github from "react-material-icon-svg/dist/Github";
 
 import FooterBox from "./FooterBox";
 import { Discord } from "../../../assets/icons/Discord";
 
-const wrapperCss = () => css`
+const wrapperCss = (homePath) => css`
   background-color: #f6f6f7;
   color: #424d57;
   min-height: 248px;
@@ -21,13 +22,15 @@ const wrapperCss = () => css`
       justify-content: space-between;
       align-items: start;
       flex-wrap: wrap;
+      flex-basis: 50%;
     }
   }
 
   @media (min-width: 1024px) {
     > div {
-      max-width: 960px;
-      margin: 0 auto;
+      ${homePath && "max-width: 960px"};
+      ${homePath && "margin: 0 auto"};
+      ${!homePath && "margin: 0 260px"};
     }
   }
 `;
@@ -66,8 +69,10 @@ const footerData = [
 ];
 
 const Footer = () => {
+  const { pathname } = useRouter();
+  console.log(`object`, pathname === "/");
   return (
-    <div css={wrapperCss}>
+    <div css={wrapperCss(pathname === "/")}>
       <div>
         {footerData.map(
           ({ title, content, buttonCopy, buttonIcon, buttonLink }) => {
