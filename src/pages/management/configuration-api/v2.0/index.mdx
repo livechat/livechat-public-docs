@@ -2384,6 +2384,7 @@ And here's a list of the greeting rules that you can use:
 | `search_keyword`    | When a visitor has searched for a specific keyword                                                                  |
 | `custom_variable`   | The greeting will be sent when the specified variable is met [documented below](#custom-variable)                   |
 | `url_funnel`        | The visitors who visit the specified sequence of websites will receive the greeting [documented below](#url-funnel) |
+| `ads_traffic`       | The greeting will be sent when customer fist visited page contains ad provider parameters                           |
 
 </Text>
 
@@ -2543,6 +2544,119 @@ rules[0][operator]=contains"
       "condition": "and",
       "variable_name": "my_custom_var",
       "variable_value": "var_value"
+    }
+  ],
+  "properties": {
+    "active": "1",
+    "greeting-message_text": "Hello, would you like to talk about our products?"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Ads traffic
+
+The greeting will be sent when the customer first visit url contains specified ads parameters.
+
+When using the `ads_traffic` greeting rule, you also may provide `variable_name` and `variable_value`.
+For example, providing `variable_name` as `facebook` and `variable_value` as `1234` will send the greeting when
+the customer first visit url contains `fbclid=1234`.
+You also can add the optional `operator` parameter (defaults to `equals`).
+
+Possible `variable_name` values are:
+<ul>
+  <li><code>facebook</code> for <code>fbclid</code>,</li>
+  <li><code>google</code> for <code>dclid</code>, <code>gbraid</code>, <code>gclid</code>, <code>gclsrc</code>, <code>
+  wbraid</code>,</li>
+  <li><code>microsoft</code> for <code>msclkid</code>,</li>
+  <li><code>twitter</code> for <code>twclid</code>,</li>
+  <li><code>yahoo</code> for <code>yclid</code>,</li>
+</ul>
+
+Max allowed `variable_value` length is 255 characters.
+
+When not providing `variable_name` and `variable_value`, the greeting will be sent when the customer first visit url
+contains any of the ads parameters.
+
+When providing only `variable_name`, the greeting will be sent when the customer first visit url contains any of the
+ads parameters with the specified name.
+
+When providing only `variable_value`, the greeting will be sent when the customer first visit url contains any of the
+ads parameters with the specified value.
+</Text>
+
+<Code>
+
+<CodeSample path={'/greetings'}>
+<Sample label={'cURL (JSON)'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings\
+  ?group=1" \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
+  -H X-API-Version:2 \
+  -H Content-type:application/json \
+  -d '{
+        "name":"ads traffic type greeting",
+        "rules":[
+          {
+            "type":"ads_traffic",
+            "variable_name":"facebook",
+            "variable_value":"1234",
+            "operator":"contains"
+          }
+        ],
+        "properties": {
+          "greeting-message_text": "Hello, would you like to talk about our products?"
+        }
+      }'
+```
+
+</Sample>
+
+<Sample label={'cURL'}>
+
+```bash
+curl "https://api.livechatinc.com/greetings\
+  ?group=1" \
+  -H "Authorization: Basic john.doe@mycompany.com:<your_PAT>" \ \
+  -H X-API-Version:2 \
+  -d "name=ads+traffic+type+greeting&\
+rules[0][type]=ads_traffic&\
+rules[0][variable_name]=facebook&\
+rules[0][variable_value]=1234&\
+rules[0][operator]=contains&\
+properties[greeting-message_text]=Hello,+would+you+like+to+talk+about+our+products?"
+```
+
+</Sample>
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 2431,
+  "active": true,
+  "name": "ads traffic type greeting",
+  "rules": [
+    {
+      "id": 8221,
+      "type": "ads_traffic",
+      "operator": "contains",
+      "condition": "and",
+      "variable_name": "facebook",
+      "variable_value": "1234"
     }
   ],
   "properties": {
