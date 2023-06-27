@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import { platform } from "constant/header";
+import { platform } from "constants/header";
 
 import Dropdown from "./Dropdown";
 import Separator from "./Separator";

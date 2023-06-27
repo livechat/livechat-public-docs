@@ -12,7 +12,7 @@ import { WarningIcon } from "./icons";
 
 import useMediaQuery from "hooks/useMediaQuery";
 
-import { VERSIONS_GROUPS } from "../../constant";
+import { VERSIONS_GROUPS } from "../../constants";
 import { versionToString, getVersionColor } from "../../utils";
 import { VersionContext, PromotionContext } from "../../contexts";
 

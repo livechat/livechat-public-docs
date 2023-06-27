@@ -1,5 +1,5 @@
 import { init, track } from "@amplitude/analytics-browser";
-import { VERSIONS_GROUPS } from "../constant";
+import { VERSIONS_GROUPS } from "../constants";
 
 export const logAmplitudeEvent = (name, payload, user) => {
   init(process.env.NEXT_PUBLIC_AMPLITUDE_KEY, user);

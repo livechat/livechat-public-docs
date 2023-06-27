@@ -4,7 +4,7 @@ import { string } from "prop-types";
 import containers from "../../../configs/containers.json";
 import articles from "../../../configs/articles.json";
 import MenuItem from "./MenuItem";
-import { VERSIONS_GROUPS } from "../../../constant";
+import { VERSIONS_GROUPS } from "../../../constants";
 
 const NestedMenu = ({
   category,

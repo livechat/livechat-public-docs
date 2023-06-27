@@ -5,7 +5,7 @@ import { string } from "prop-types";
 import ThumbIcon from "./ThumbIcon";
 import FeedbackModal from "./modal";
 
-import { RATES, RATING_TEXT } from "../../../constant";
+import { RATES, RATING_TEXT } from "../../../constants";
 import { RatingContext } from "../../../contexts";
 import { useAuth } from "../../../contexts/auth";
 import Analytics from "../../../utils/analytics";

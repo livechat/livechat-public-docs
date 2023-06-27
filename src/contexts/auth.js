@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import AccountsSDK from "@livechat/accounts-sdk";
 import api from "../api";
 import { useLocalStorage } from "../hooks";
-import { AUTH_TYPE } from "../constant";
+import { AUTH_TYPE } from "../constants";
 import { getCachedToken } from "../utils/auth";
 import { removeCookie } from "../utils/cookies";
 

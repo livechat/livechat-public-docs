@@ -1,5 +1,5 @@
 import React from "react";
-import { ERRORS } from "../../constant";
+import { ERRORS } from "../../constants";
 import Table from "./Table";
 
 const Errors = ({ errors }) => {
@@ -10,10 +10,15 @@ const Errors = ({ errors }) => {
     return [
       <code className="language-text">{newError.id}</code>,
       newError.message,
-      newError.description
+      newError.description,
     ];
-  })
-  return <Table headings={["Error type", "Default message", "Description"]} bodyItems={formattedErrors} />
+  });
+  return (
+    <Table
+      headings={["Error type", "Default message", "Description"]}
+      bodyItems={formattedErrors}
+    />
+  );
 };
 
 export default Errors;

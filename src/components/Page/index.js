@@ -33,7 +33,7 @@ import {
   Image,
 } from "../extensions";
 
-import { RATING_POSITION } from "../../constant";
+import { RATING_POSITION } from "../../constants";
 import {
   VersionProvider,
   RatingProvider,
