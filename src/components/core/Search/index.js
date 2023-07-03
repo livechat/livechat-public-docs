@@ -1,5 +1,8 @@
 import { DocSearch } from "@docsearch/react";
-import { EXCLUDED_SEARCH_RESULTS, UNCLEAR_SEARCH_MATCHES } from "constant";
+import {
+  EXCLUDED_SEARCH_RESULTS,
+  UNCLEAR_SEARCH_MATCHES,
+} from "constants/index";
 
 const pathExt = process.env.NEXT_PUBLIC_DEPLOY_PREVIEW ? "" : "/docs";
 

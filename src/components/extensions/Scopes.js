@@ -1,5 +1,5 @@
 import React from "react";
-import { SCOPES } from "../../constant";
+import { SCOPES } from "../../constants";
 import Table from "./Table";
 
 const Scopes = ({ scopes }) => {
@@ -8,7 +8,7 @@ const Scopes = ({ scopes }) => {
     const newScope = SCOPES.find((item) => item.id === scope);
 
     if (!newScope) {
-      throw new Error("Add the scope to the SCOPES in src/constant/index.js");
+      throw new Error("Add the scope to the SCOPES in src/constants/index.js");
     }
 
     return [

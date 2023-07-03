@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import ArrowRight from "react-material-icon-svg/dist/ArrowRight";
 
-import { resources, connects } from "constant/header";
+import { resources, connects } from "constants/header";
 
 import Dropdown from "./Dropdown";
 import Separator from "./Separator";

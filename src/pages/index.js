@@ -14,7 +14,7 @@ import Card from "components/core/Card/Card";
 import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import Search from "components/core/Search";
 import SEO from "components/core/seo";
-import { cards, devPaths } from "constant/cards";
+import { cards, devPaths } from "constants/cards";
 
 const wrapperCss = css`
   max-width: 960px;

@@ -4,7 +4,7 @@ import { string } from "prop-types";
 
 import Rating from "../Rating";
 
-import { RATING_POSITION } from "../../../constant";
+import { RATING_POSITION } from "../../../constants";
 
 const PageTitle = styled.h1`
   margin: 0;

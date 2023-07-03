@@ -1,4 +1,4 @@
-import { REGION } from "../constant";
+import { REGION } from "../constants";
 
 const supportedRegions = Object.values(REGION);
 

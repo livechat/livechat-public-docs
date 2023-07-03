@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-import { apis, sdks } from "constant/header";
+import { apis, sdks } from "constants/header";
 
 import Dropdown from "./Dropdown";
 import DropdownItem from "./DropdownItem";

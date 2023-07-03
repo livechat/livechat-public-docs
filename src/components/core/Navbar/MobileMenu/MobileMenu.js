@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Button } from "@livechat/design-system";
 
-import { platform, apis, sdks, resources, connects } from "constant/header";
+import { platform, apis, sdks, resources, connects } from "constants/header";
 import { useAuth } from "contexts/auth";
 
 import MenuItem from "./MenuItem";

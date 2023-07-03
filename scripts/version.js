@@ -1,6 +1,6 @@
 const shell = require("shelljs");
 const argv = require("yargs").argv;
-const { VERSIONS_GROUPS } = require("../src/constant");
+const { VERSIONS_GROUPS } = require("../src/constants");
 
 const CONF_API_BASE_URL = "./src/pages/management/configuration-api";
 const WEBHOOKS_BASE_URL = "./src/pages/management/webhooks";
