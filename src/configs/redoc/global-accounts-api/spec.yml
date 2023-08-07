@@ -1724,30 +1724,31 @@ paths:
                           description: Organization update timestamp
                           example: 2023-08-07T11:56:27Z
                           readOnly: true
-                    - allOf:
-                      - *ref_16
-                      - properties:
-                          company:
-                            description: Basic company information
-                            type: object
-                            oneOf:
-                              - properties:
-                                  phone: &ref_company_phone
-                                    type: string
-                                    description: Company phone number
-                                    example: +48 123 456 789
-                                    exclusiveMaximum: false
-                                    maxLength: 20
-                                  website: &ref_company_website
-                                    type: string
-                                    description: Primary company website
-                                    example: example.com
-                                    exclusiveMaximum: false
-                                    maxLength: 255
-                              - properties:
-                                  phone: *ref_company_phone
-                              - properties:
-                                  website: *ref_company_website
+                    - &ref_organization_with_company
+                      allOf:
+                        - *ref_16
+                        - properties:
+                            company:
+                              description: Basic company information
+                              type: object
+                              oneOf:
+                                - properties:
+                                    phone: &ref_company_phone
+                                      type: string
+                                      description: Company phone number
+                                      example: +48 123 456 789
+                                      exclusiveMaximum: false
+                                      maxLength: 20
+                                    website: &ref_company_website
+                                      type: string
+                                      description: Primary company website
+                                      example: example.com
+                                      exclusiveMaximum: false
+                                      maxLength: 255
+                                - properties:
+                                    phone: *ref_company_phone
+                                - properties:
+                                    website: *ref_company_website
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
@@ -1832,8 +1833,11 @@ paths:
     get:
       summary: Get an organization
       description: >-
-        Returns a single organization for a given organization ID. The ID can be
-        replaced with `me` to get the account that sends the request.
+        Returns a single organization for a given organization ID. The ID can
+        be replaced with `me` to get the account that sends the request.
+        Company field is returned if and only if access token contains
+        `organization--my:rw` scope and token's organization ID matches the
+        parameter.
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token: null
@@ -1852,7 +1856,7 @@ paths:
           description: 'OK: Returns the organization.'
           content:
             application/json:
-              schema: *ref_16
+              schema: *ref_organization_with_company
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
