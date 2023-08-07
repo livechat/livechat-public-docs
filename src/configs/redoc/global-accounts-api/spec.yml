@@ -1660,6 +1660,7 @@ paths:
               schema:
                 type: array
                 items:
+                  &ref_organization
                   oneOf:
                     - &ref_16
                       description: >-
@@ -1706,12 +1707,14 @@ paths:
                                 description: Product activation timestamp
                                 example: 2023-08-07T11:37:07Z
                                 readOnly: true
+                          readOnly: true
                         invitation_mode:
                           type: string
                           enum:
                             - strict
                             - lax
                           description: Organization invitation mode
+                          readOnly: true
                         created_at:
                           type: string
                           format: RFC 3339 timestamp
@@ -1724,8 +1727,7 @@ paths:
                           description: Organization update timestamp
                           example: 2023-08-07T11:56:27Z
                           readOnly: true
-                    - &ref_organization_with_company
-                      allOf:
+                    - allOf:
                         - *ref_16
                         - properties:
                             company:
@@ -1777,12 +1779,7 @@ paths:
               properties:
                 email: *ref_15
                 password: *ref_12
-                organization:
-                  allOf:
-                    - *ref_16
-                    - properties:
-                        company:
-                          type: string
+                organization: *ref_organization
               required:
                 - email
       responses:
@@ -1795,7 +1792,7 @@ paths:
                   - *ref_2
                   - type: object
                     properties:
-                      organization: *ref_16
+                      organization: *ref_organization
                       access_token:
                         type: string
                         example: dal:eDqDuTRZoK03C3rzD2dcfA==
@@ -1856,7 +1853,7 @@ paths:
           description: 'OK: Returns the organization.'
           content:
             application/json:
-              schema: *ref_organization_with_company
+              schema: *ref_organization
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -1910,7 +1907,7 @@ paths:
           description: 'OK: Returns the updated organization.'
           content:
             application/json:
-              schema: *ref_16
+              schema: *ref_organization
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
