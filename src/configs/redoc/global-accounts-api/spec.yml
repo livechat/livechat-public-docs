@@ -1659,43 +1659,98 @@ paths:
             application/json:
               schema:
                 type: array
-                items: &ref_16
-                  description: >-
-                    Organization groups accounts into a single unit. Each
-                    organization must contain at least one account and one
-                    owner. An account can be assigned to many organizations at
-                    once. The default organization is the first assigned to a
-                    given account.
-                  type: object
-                  properties:
-                    organization_id:
-                      type: string
-                      format: uuid
-                      readOnly: true
-                      description: Unique organization identifier
-                      example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-                    name:
-                      type: string
-                      description: Organization name
-                      example: Organization Name
-                      exclusiveMaximum: false
-                      maxLength: 127
-                    company:
-                      description: Basic company information
+                items:
+                  &ref_organization
+                  oneOf:
+                    - &ref_16
+                      description: >-
+                        An organization groups accounts into a single unit.
+                        Each organization must contain at least one account and
+                        one owner. An account can be assigned to many
+                        organizations at once. The default organization is the
+                        first assigned to a given account.
                       type: object
                       properties:
-                        phone:
+                        organization_id:
                           type: string
-                          description: Company phone number
-                          example: +48 123 456 789
-                          exclusiveMaximum: false
-                          maxLength: 20
-                        website:
+                          format: uuid
+                          readOnly: true
+                          description: Unique organization identifier
+                          example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
+                        name:
                           type: string
-                          description: Primary company website
-                          example: example.com
+                          description: Organization name
+                          example: Organization Name
                           exclusiveMaximum: false
-                          maxLength: 255
+                          maxLength: 127
+                        products:
+                          type: array
+                          items:
+                            properties:
+                              name:
+                                type: string
+                                description: Product name
+                                enum:
+                                  - "LiveChat"
+                                  - "HelpDesk"
+                                  - "Accounts"
+                                  - "KnowledgeBase"
+                                  - "ChatBot"
+                                  - "OpenWidget"
+                                  - "Insights"
+                              client_id:
+                                type: string
+                                readOnly: true
+                              created_at:
+                                type: string
+                                format: RFC 3339 timestamp
+                                description: Product activation timestamp
+                                example: 2023-08-07T11:37:07Z
+                                readOnly: true
+                          readOnly: true
+                        invitation_mode:
+                          type: string
+                          enum:
+                            - strict
+                            - lax
+                          description: Organization invitation mode
+                          readOnly: true
+                        created_at:
+                          type: string
+                          format: RFC 3339 timestamp
+                          description: Organization creation timestamp
+                          example: 2023-08-07T11:37:07Z
+                          readOnly: true
+                        updated_at:
+                          type: string
+                          format: RFC 3339 timestamp
+                          description: Organization update timestamp
+                          example: 2023-08-07T11:56:27Z
+                          readOnly: true
+                    - allOf:
+                        - *ref_16
+                        - properties:
+                            company:
+                              description: Basic company information
+                              type: object
+                              oneOf:
+                                - properties:
+                                    phone: &ref_company_phone
+                                      type: string
+                                      description: Company phone number
+                                      example: +48 123 456 789
+                                      exclusiveMaximum: false
+                                      maxLength: 20
+                                    website: &ref_company_website
+                                      type: string
+                                      description: Primary company website
+                                      example: example.com
+                                      exclusiveMaximum: false
+                                      maxLength: 255
+                                - properties:
+                                    phone: *ref_company_phone
+                                - properties:
+                                    website: *ref_company_website
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
@@ -1724,7 +1779,7 @@ paths:
               properties:
                 email: *ref_15
                 password: *ref_12
-                organization: *ref_16
+                organization: *ref_organization
               required:
                 - email
       responses:
@@ -1737,7 +1792,7 @@ paths:
                   - *ref_2
                   - type: object
                     properties:
-                      organization: *ref_16
+                      organization: *ref_organization
                       access_token:
                         type: string
                         example: dal:eDqDuTRZoK03C3rzD2dcfA==
@@ -1775,8 +1830,11 @@ paths:
     get:
       summary: Get an organization
       description: >-
-        Returns a single organization for a given organization ID. The ID can be
-        replaced with `me` to get the account that sends the request.
+        Returns a single organization for a given organization ID. The ID can
+        be replaced with `me` to get the account that sends the request. The
+        `company` field is returned only if the access token contains the
+        `organization--my:rw` scope and the organization ID corresponding with
+        the token matches the value of `organization_id`.
       security:
         - Personal Access Token: null
         - OAuth2 Bearer Token: null
@@ -1795,7 +1853,7 @@ paths:
           description: 'OK: Returns the organization.'
           content:
             application/json:
-              schema: *ref_16
+              schema: *ref_organization
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -1849,7 +1907,7 @@ paths:
           description: 'OK: Returns the updated organization.'
           content:
             application/json:
-              schema: *ref_16
+              schema: *ref_organization
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
