@@ -7,11 +7,11 @@ const VERSIONS_GROUPS = {
     ALL_VERSIONS: ["3.6", "3.5", "3.4", "3.3"],
   },
   "chat-widget": {
-    STABLE_VERSION: "3.0",
-    LEGACY_VERSIONS: ["1.0", "2.0"],
+    STABLE_VERSION: "4.0",
+    LEGACY_VERSIONS: ["1.0", "2.0", "3.0"],
     DEV_PREVIEW_VERSION: "",
     DEPRECATED_VERSIONS: [""],
-    ALL_VERSIONS: ["1.0", "2.0", "3.0"],
+    ALL_VERSIONS: ["1.0", "2.0", "3.0", "4.0"],
   },
   "data-reporting": {
     STABLE_VERSION: "3.5",
