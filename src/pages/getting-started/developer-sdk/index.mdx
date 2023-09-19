@@ -1,0 +1,163 @@
+---
+weight: 110
+category: "getting-started"
+subcategory: "app-guides"
+title: "Developer SDK"
+tagline: "Fork your app to be able to edit an already published app."
+desc: "Discover how to fork your app to be able to edit an already published app."
+---
+
+# Introduction
+
+__Developer SDK__ is a JavaScript tool dedicated for software developers who aim to build apps with our Developer Program. The main purpose of this SDK is to arm your project with tooling that optimizes the usage of the Text Developer Platform ecosystem.
+
+## Use cases
+
+- Easy implementation of authorization in your app (wrapper for Accounts SDK)
+- Reporting errors that occur in your app to Developer Console
+
+## About Developer SDK
+
+To read more about the Developer SDK, [visit its official page on npm](https://www.npmjs.com/package/@livechat/developer-sdk).
+
+# How to start
+
+## Create an app
+
+First, you need to sign up to Text Developer Program and create an application in the Developer Console.
+
+## Install Developer SDK
+
+Start by installing the SDK using npm or yarn:
+
+<CodeSample path={'INSTALLATION'}>
+
+```js
+npm install @livechat/developer-sdk
+```
+
+</CodeSample>
+
+# DeveloperApp class
+
+`DeveloperApp` is class that provides methods for initializing and configuring your developer application.
+
+## Config
+
+In order to use the DeveloperApp class in your project, first, you need to define your DeveloperAppConfig accordingly to shape:
+
+<CodeSample path={'DeveloperAppConfig'}>
+
+```js
+interface DeveloperAppConfig {
+  /* 1 */ appId: string;
+  /* 2 */ auth?: {
+    clientId: string;
+    mode?: "popup" | "iframe" | "redirect";
+  };
+}
+```
+
+</CodeSample>
+
+We suggest that you should store the config in a dedicated file, `livechat.config.json`
+
+<CodeSample>
+
+```js
+// livechat.config.json
+{
+  ...
+}
+```
+
+</CodeSample>
+
+But storing it in a variable is also an option:
+
+<CodeSample>
+
+```js
+const config: DeveloperAppConfig = {
+  // ...
+};
+```
+
+</CodeSample>
+
+### Developer appId
+
+A required property of `DeveloperAppConfig` is `appId` – it can be obtained directly from the Developer Console by extracting it from the URL:
+
+`https://platform.text.com/console/apps/{appId}/monitor`
+
+## Initialization
+
+Use the `DeveloperApp.init()` method to initialize your `DeveloperApp`. It takes `DeveloperAppConfig` as its argument and returns a `DeveloperApp` instance:
+
+<CodeSample path={'INITIALIZATION'}>
+
+```js
+import { DeveloperApp, DeveloperAppConfig } from "@livechat/developer-sdk";
+import lcConfig from "./livechat.config.json";
+
+const app = await DeveloperApp.init(config);
+```
+
+</CodeSample>
+
+# Usage
+
+## Authorization
+
+If your application needs authorization (uses the App Authorization building block), you can use Developer-SDK to process authorization for you. You can find value for property clientId in your Authorization block in Developer Console. Second parameter is mode - use can use three different strategies: popup (default if not given), iframe, redirect.
+
+### authorize()
+
+In order to trigger authorization you can use authorize method on your app instance:
+
+`await app.authorize();`
+
+## Reporting
+
+Developer app instance allows you to use Developer Console Reporting feature.
+
+### sendError()
+
+Usage:
+
+`await app.features.reporting.sendError("4xx");`
+
+Definition:
+
+```
+interface ReportingFeature {
+  sendError(type: "4xx" | "5xx", payload?: string): Promise<void>;
+}
+```
+
+API:
+
+```
+POST https://api.text.com/app_monitoring/${appId}/events
+BODY
+  required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            organization_id:
+              type: string
+              format: uuid
+              description: Organization ID associated with the event
+              example: 3aa138c1-c137-41c6-6b26-cface5857378
+            type:
+              type: string
+              description: "Event type. Supported types: 4xx, 5xx"
+              example: "4xx"
+            payload:
+              type: string
+              description: "Event payload. Max length: 1 kB."
+              example: "{\"code\": 404, \"reason\": \"Not found\"}"
+```
