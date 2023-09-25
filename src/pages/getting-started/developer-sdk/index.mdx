@@ -3,8 +3,8 @@ weight: 110
 category: "getting-started"
 subcategory: "app-guides"
 title: "Developer SDK"
-tagline: "Fork your app to be able to edit an already published app."
-desc: "Discover how to fork your app to be able to edit an already published app."
+tagline: "Developer SDK is a JavaScript tool for app developers."
+desc: "Authorize your application and report errors that occur in your app."
 ---
 
 # Introduction
@@ -40,11 +40,11 @@ npm install @livechat/developer-sdk
 
 # DeveloperApp class
 
-`DeveloperApp` is class that provides methods for initializing and configuring your developer application.
+`DeveloperApp` is a class that provides methods for initializing and configuring your developer application.
 
 ## Config
 
-In order to use the DeveloperApp class in your project, first, you need to define your DeveloperAppConfig accordingly to shape:
+In order to use the `DeveloperApp` class in your project, first, you need to define your `DeveloperAppConfig` according to the shape:
 
 <CodeSample path={'DeveloperAppConfig'}>
 
@@ -59,6 +59,15 @@ interface DeveloperAppConfig {
 ```
 
 </CodeSample>
+
+### Config properties
+
+| Property        | Description                                                                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `appId`         | A required property. You can find it in Developer Console > Apps > Overview or extract it from the URL: `https://platform.text.com/console/apps/{appId}/monitor` |
+| `auth`          | Optional property that allows you to configure authorization for your app.                                                                                       |
+| `auth.clientId` | Required if you specify `auth`. You can find your app clientId in the __App Authorization__ block in the Developer Console.                                      |
+| `auth.mode`     | Optional property that allows you to configure authorization strategy for your app. Values: `popup` (default), `iframe`, `redirect`                              |
 
 We suggest that you should store the config in a dedicated file, `livechat.config.json`
 
@@ -85,12 +94,6 @@ const config: DeveloperAppConfig = {
 
 </CodeSample>
 
-### Developer appId
-
-A required property of `DeveloperAppConfig` is `appId` – it can be obtained directly from the Developer Console by extracting it from the URL:
-
-`https://platform.text.com/console/apps/{appId}/monitor`
-
 ## Initialization
 
 Use the `DeveloperApp.init()` method to initialize your `DeveloperApp`. It takes `DeveloperAppConfig` as its argument and returns a `DeveloperApp` instance:
@@ -110,54 +113,48 @@ const app = await DeveloperApp.init(config);
 
 ## Authorization
 
-If your application needs authorization (uses the App Authorization building block), you can use Developer-SDK to process authorization for you. You can find value for property clientId in your Authorization block in Developer Console. Second parameter is mode - use can use three different strategies: popup (default if not given), iframe, redirect.
+If your application needs authorization (uses the App Authorization building block), you can use Developer SDK to process authorization for you.
 
 ### authorize()
 
 In order to trigger authorization you can use authorize method on your app instance:
 
-`await app.authorize();`
+<CodeSample path={'USAGE: authorize'}>
+
+```js
+await app.authorize();
+```
+
+</CodeSample>
 
 ## Reporting
 
-Developer app instance allows you to use Developer Console Reporting feature.
+The `DeveloperApp` instance allows you to make use of the reporting feature. This way, you can log 4xx and 5xx errors that occur in your app. You'll see a visual representation of logged errors in the Developer Console.
 
 ### sendError()
 
-Usage:
-
-`await app.features.reporting.sendError("4xx");`
-
 Definition:
 
-```
+<CodeSample path={'DEFINITION: sendError'}>
+
+```js
 interface ReportingFeature {
   sendError(type: "4xx" | "5xx", payload?: string): Promise<void>;
 }
 ```
 
-API:
+</CodeSample >
 
+Usage:
+
+<CodeSample path={'USAGE: sendError'}>
+
+```js 
+await app.features.reporting.sendError("4xx");
 ```
-POST https://api.text.com/app_monitoring/${appId}/events
-BODY
-  required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            organization_id:
-              type: string
-              format: uuid
-              description: Organization ID associated with the event
-              example: 3aa138c1-c137-41c6-6b26-cface5857378
-            type:
-              type: string
-              description: "Event type. Supported types: 4xx, 5xx"
-              example: "4xx"
-            payload:
-              type: string
-              description: "Event payload. Max length: 1 kB."
-              example: "{\"code\": 404, \"reason\": \"Not found\"}"
-```
+
+</CodeSample>
+
+# Contact us
+
+We're happy to provide our support in case you need it. If you have any questions or suggestions, feel free to contact us at [developers@livechat.com](mailto:developers@livechat.com) or join our [Discord for Developers](https://discord.gg/NcfJu3a9kM).
