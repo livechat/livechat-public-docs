@@ -15,10 +15,10 @@ paths:
       description: >-
         Accounts are listed by using `organization_id` obtained from the access
         token. The `accounts.roles--all:ro` scope is required for listing
-        accounts along with their roles.
+        accounts along with their roles. Some additional description.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts--all:ro
             - accounts.roles--all:ro
       tags:
@@ -52,7 +52,7 @@ paths:
                           example: John
                           exclusiveMaximum: false
                           maxLength: 191
-                        email: &ref_15
+                        email: &ref_17
                           type: string
                           format: email
                           description: Account's email address
@@ -83,12 +83,17 @@ paths:
                           nullable: true
                         avatar_url:
                           type: string
-                          description: Account's avatar
+                          description: >-
+                            The "Account's avatar" field has been deprecated and
+                            is no longer recommended for use; instead, the
+                            avatar functionality has been relocated to the
+                            account organization settings.
                           example: null
                           default: null
                           nullable: true
                           exclusiveMaximum: false
                           maxLength: 255
+                          deprecated: true
                         roles:
                           type: array
                           items: &ref_3
@@ -151,30 +156,46 @@ paths:
                       properties:
                         properties:
                           type: object
-                          description: >-
-                            Nullable object that contains an account properties
-                            and statuses.
-                          properties:
-                            active:
-                              type: boolean
-                              description: >-
-                                Shows if an account already logged into the
-                                organization.
-                              example: true
-                            mfa:
-                              type: boolean
-                              description: Shows if an account has MFA turned on.
-                              example: true
-                            productName:
+                          allOf:
+                            - &ref_7
                               type: object
-                              description: Specific product properties.
+                              description: >-
+                                A nullable object that holds account properties
+                                and statuses, with the properties being specific
+                                to the organization and dependent on the
+                                `organization_id` value obtained through
+                                authorization.
                               properties:
-                                suspended:
+                                active:
                                   type: boolean
                                   description: >-
-                                    Shows if an account is suspended in specific
-                                    product.
+                                    Shows if an account already logged into the
+                                    organization.
                                   example: true
+                                mfa:
+                                  type: boolean
+                                  description: Shows if an account has MFA turned on.
+                                  example: true
+                                productName:
+                                  type: object
+                                  description: Specific product properties.
+                                  properties:
+                                    suspended:
+                                      type: boolean
+                                      description: >-
+                                        Shows if an account is suspended in a
+                                        specific product.
+                                      example: true
+                                avatar_url:
+                                  description: >-
+                                    Organization-specific avatar url. The same
+                                    value is returned from the account
+                                    organization settings.
+                                  type: string
+                                  format: url
+                                  nullable: true
+                                  example: >-
+                                    https://api.text.com/file/accounts/avatars/b2185556-634c-4ecf-b4c9-bcf8b65bc853/ae5bd37f-64b2-416b-bbb3-4623f53e6fb8/37a190dd-77a5-4fba-a7d3-2e89eab0e8fd.jpg
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -186,12 +207,14 @@ paths:
                     type: object
                     properties:
                       error:
+                        description: Error code
                         type: string
                         example: unauthorized
                         enum:
                           - bad_request
                           - invalid_request
                           - unauthorized_client
+                          - unauthorized
                           - access_denied
                           - unsupported_response_type
                           - invalid_scope
@@ -200,13 +223,20 @@ paths:
                           - unsupported_grant_type
                           - invalid_grant
                           - invalid_client
-                          - forbidden
                           - conflict
                           - resource_not_found
+                          - join_link_expired
+                          - traffic_blocked
+                          - not_implemented
                       error_description:
                         type: string
                         example: The account is not authorized.
+                      sub_error:
+                        description: Error subcode
+                        type: string
+                        nullable: true
                       request_id:
+                        description: Unique request identifier
                         type: string
                         format: uuid
                         example: 5903c51b-89f0-41a9-a25d-4f39af100353
@@ -239,7 +269,7 @@ paths:
                           The resource owner or authorization server denied the
                           request.
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: &ref_6
@@ -264,8 +294,8 @@ paths:
         idempotent. The `accounts.roles--all:rw` scope is required to create an
         account with a role.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts--all:rw
             - accounts--all:rc
             - accounts.roles--all:rw
@@ -279,8 +309,8 @@ paths:
                 - type: object
                   properties:
                     email:
-                      required: true
-                    password: &ref_12
+                      type: string
+                    password: &ref_14
                       type: string
                       writeOnly: true
                       exclusiveMaximum: false
@@ -296,7 +326,7 @@ paths:
                           The list of role definitions, which will be set for
                           the account.
                         type: object
-                        oneOf: &ref_10
+                        oneOf: &ref_12
                           - allOf:
                               - *ref_3
                               - type: object
@@ -331,7 +361,7 @@ paths:
           description: Bad Request
           content:
             application/json:
-              schema: &ref_8
+              schema: &ref_10
                 allOf:
                   - *ref_1
                   - type: object
@@ -361,9 +391,22 @@ paths:
             This constraint is temporary.
           content:
             application/json:
-              schema: &ref_13
+              schema: &ref_15
                 allOf:
-                  - *ref_1
+                  - &ref_8
+                    description: Returned on validation errors
+                    allOf:
+                      - *ref_1
+                      - type: object
+                        properties:
+                          resource_name:
+                            description: Name of resource related to the error
+                            type: string
+                            example: account
+                          resource_id:
+                            description: Identifier of resource related to the error
+                            type: string
+                            example: 5903c51b-89f0-41a9-a25d-4f39af100353
                   - type: object
                     properties:
                       error:
@@ -380,7 +423,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - &ref_7
+                  - &ref_9
                     allOf:
                       - *ref_1
                       - type: object
@@ -395,6 +438,11 @@ paths:
                               includes an invalid parameter value, includes a
                               parameter more than once, or is otherwise
                               malformed.
+                          invalid_fields:
+                            type: object
+                            example: '{"name":"is required"}'
+                            additionalProperties:
+                              type: string
                   - type: object
                     properties:
                       invalid_fields:
@@ -404,7 +452,7 @@ paths:
                             type: string
                             example: value too long
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -414,13 +462,12 @@ paths:
       description: >-
         Get an account for a given `account_id`. The ID can be replaced with
         `me` to get the account that performs the request. To get an account
-        along with its role, the `accounts--my:ro` scope is required 
-        when using `me` and the `accounts--all:ro` scope when using the ID.
+        along with its role, you need the `accounts.roles--all:ro` scope.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts--my:ro
-            - accounts--all:ro
+            - accounts.roles--all:ro
       tags:
         - Accounts
       parameters:
@@ -443,30 +490,8 @@ paths:
                     properties:
                       properties:
                         type: object
-                        description: >-
-                          Nullable object that contains account properties and
-                          statuses.
-                        properties:
-                          active:
-                            type: boolean
-                            description: >-
-                              Shows if an account is already logged into the
-                              organization.
-                            example: true
-                          mfa:
-                            type: boolean
-                            description: Shows if an account has MFA turned on.
-                            example: true
-                          productName:
-                            type: object
-                            description: Specific product properties.
-                            properties:
-                              suspended:
-                                type: boolean
-                                description: >-
-                                  Shows if an account is suspended in a specific
-                                  product.
-                                example: true
+                        allOf:
+                          - *ref_7
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
@@ -483,9 +508,9 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - &ref_9
+                  - &ref_11
                     allOf:
-                      - *ref_1
+                      - *ref_8
                       - type: object
                         properties:
                           error:
@@ -509,7 +534,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -519,7 +544,7 @@ paths:
                             type: string
                             example: invalid uuid
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -532,8 +557,8 @@ paths:
         `me` to update the account that performs the request. To set a role for
         an account, you need the `accounts.roles--all:rw` scope.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts--all:rw
             - accounts.roles--all:rw
       parameters:
@@ -567,7 +592,7 @@ paths:
           description: Bad Request
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_10
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -584,7 +609,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -600,7 +625,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -610,7 +635,7 @@ paths:
                             type: string
                             example: value too long
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -619,16 +644,12 @@ paths:
         - Accounts
       summary: Delete an account
       description: >-
-        Deletes an account for a given `account_id` or removes the given
-        account from a given product. The ID can be replaced with `me` to
-        delete the account that performs the request.
+        Deletes an account for a given `account_id`. The ID can be replaced with
+        `me` to delete the account that performs the request.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
-            - accounts--my:rw or
-            - accounts--all:rw (if account_id is different than requester's ID) or
-            - accounts.roles.lc--all:rw (if product is LiveChat and account_id is different than requester's ID) or
-            - accounts.roles.hd--all:rw (if product is HelpDesk and account_id is different than requester's ID)
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
+            - accounts--my:rw
       parameters:
         - in: path
           name: account_id
@@ -637,37 +658,6 @@ paths:
             format: uuid
           required: true
           description: Unique account ID or `me`.
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              oneOf:
-                - description: Remove an account from a given product.
-                  type: object
-                  required:
-                    - mode
-                    - product
-                  properties:
-                    mode:
-                      type: string
-                      enum: 
-                        - product
-                    product:
-                      type: string
-                      enum:
-                        - LiveChat
-                        - HelpDesk
-                - description: Delete an account.
-                  type: object
-                  required:
-                    - mode
-                  properties:
-                    mode:
-                      type: string
-                      enum: 
-                        - organization
-                        - ""
       responses:
         '200':
           description: 'OK: Returns no content.'
@@ -687,7 +677,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -703,7 +693,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -713,7 +703,7 @@ paths:
                             type: string
                             example: value too long
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -724,11 +714,9 @@ paths:
         Set or delete roles for a given `account_id`. Set overwrites a role
         group in case of conflicts.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
-            - accounts.roles--all:rw or
-            - accounts.roles.lc--all:rw (when request includes LiveChat roles) and/or
-            - accounts.roles.hd--all:rw (when request includes HelpDesk roles)
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
+            - accounts.roles--all:rw
       tags:
         - Accounts
       parameters:
@@ -748,15 +736,15 @@ paths:
               properties:
                 set_roles:
                   type: array
-                  items: &ref_11
+                  items: &ref_13
                     type: object
-                    oneOf: *ref_10
+                    oneOf: *ref_12
                   description: >-
                     The list of role definitions that will be set for the
                     account.
                 delete_roles:
                   type: array
-                  items: *ref_11
+                  items: *ref_13
                   description: >-
                     The list of role definitions that will be deleted from the
                     account.
@@ -770,7 +758,7 @@ paths:
           description: Bad Request
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_10
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -787,7 +775,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -803,7 +791,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -813,7 +801,7 @@ paths:
                             type: string
                             example: value too long
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -825,8 +813,8 @@ paths:
         tokens. It's possible to set a password for other accounts only when
         they belong to a single organization.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts.password--my:rw
       tags:
         - Accounts
@@ -844,7 +832,7 @@ paths:
             schema:
               type: object
               properties:
-                password: *ref_12
+                password: *ref_14
               required:
                 - password
       responses:
@@ -857,7 +845,7 @@ paths:
           description: Bad Request
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_10
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -874,7 +862,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -890,7 +878,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_13
+                  - *ref_15
                   - type: object
                     properties:
                       resource_name:
@@ -906,7 +894,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -916,21 +904,21 @@ paths:
                             type: string
                             example: value too long
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
   /accounts/invitations:
     get:
-      summary: Get account invitations
+      summary: Get an account invitations
       description: >-
         This method gets all invitations issued within an organization. If the
         `email` parameter is provided, it returns only the invitations sent for
         the account assigned with the `email` (within the requester's
         organization).
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts.invitations--all:ro
       tags:
         - Accounts
@@ -1018,7 +1006,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1028,7 +1016,7 @@ paths:
                             type: string
                             example: invalid email address
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1041,8 +1029,8 @@ paths:
         account awaiting the approval. `organization_id` and `creator_id` are
         retrieved from the access token.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts.invitations--my:rw
       tags:
         - Accounts
@@ -1052,6 +1040,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - email
               properties:
                 email:
                   type: string
@@ -1100,7 +1090,7 @@ paths:
             account is empty.
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_10
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -1110,14 +1100,14 @@ paths:
           description: 'Conflict: Account already added to the product.'
           content:
             application/json:
-              schema: *ref_13
+              schema: *ref_15
         '422':
           description: 'Validation error: Invalid email, etc.'
           content:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1127,7 +1117,7 @@ paths:
                             type: string
                             example: invalid email address
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1136,8 +1126,8 @@ paths:
       summary: Approve an account invitation
       description: Approve an account invitation.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - >-
               accounts.invitations--all:rw (allows to approve invitations for
               all products)
@@ -1183,7 +1173,7 @@ paths:
             account is empty.
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_10
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -1200,21 +1190,21 @@ paths:
           description: Requested resource (account invitation) could not be found.
           content:
             application/json:
-              schema: *ref_9
+              schema: *ref_11
         '409':
           description: >-
             Conflict: Account is already added to the product; invalid product
             subscription.
           content:
             application/json:
-              schema: *ref_13
+              schema: *ref_15
         '422':
           description: 'Validation error: Invalid email, etc.'
           content:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1224,7 +1214,7 @@ paths:
                             type: string
                             example: invalid email address
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1232,8 +1222,8 @@ paths:
       summary: Decline an account invitation
       description: Decline and delete an account invitation.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - >-
               accounts.invitations--all:rw (allows to decline invitations for
               all products)
@@ -1268,9 +1258,9 @@ paths:
           description: Requested resource (account invitation) could not be found.
           content:
             application/json:
-              schema: *ref_9
+              schema: *ref_11
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1281,8 +1271,8 @@ paths:
         List the roles available for an organization. The result combines
         predefined and user-defined roles.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts.roles--all:ro
       tags:
         - Roles
@@ -1305,7 +1295,7 @@ paths:
             application/json:
               schema: *ref_5
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1316,8 +1306,8 @@ paths:
         Get a single role for a given `role_id`. The role is returned with the
         scopes assigned to it.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts.roles--all:ro
       tags:
         - Roles
@@ -1361,7 +1351,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -1377,7 +1367,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1387,7 +1377,7 @@ paths:
                             type: string
                             example: invalid uuid
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1397,8 +1387,8 @@ paths:
         Delete a single role for a given `role_id`. Only the `custom` role can
         be deleted. All tokens related to a given role will be revoked.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - accounts.roles--all:rw
       tags:
         - Roles
@@ -1428,7 +1418,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -1444,7 +1434,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1454,7 +1444,7 @@ paths:
                             type: string
                             example: invalid uuid
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1465,7 +1455,7 @@ paths:
         Returns all sessions for a given account ID. The account ID is obtained
         from an authorization grant.
       security:
-        - OAuth2 Bearer Token:
+        - OAuth2BearerToken:
             - sessions--my:ro
       tags:
         - Sessions
@@ -1486,7 +1476,7 @@ paths:
                       description: Unique account identifier
                       example: 28df1a50-84fa-490c-9615-5b77d507c393
                       readOnly: true
-                    session_id: &ref_14
+                    session_id: &ref_16
                       type: string
                       format: uuid
                       description: Unique session identifier
@@ -1540,7 +1530,7 @@ paths:
                             type: string
                             readOnly: true
                             example: 238ac4c3c3628880aca289c6d700d2c5
-                          session_id: *ref_14
+                          session_id: *ref_16
         '401':
           description: Unauthorized, missing or invalid authorization
           content:
@@ -1552,7 +1542,7 @@ paths:
             application/json:
               schema: *ref_5
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1564,8 +1554,9 @@ paths:
         other accounts. All access tokens related to the sessions will be
         revoked.
       security:
-        - OAuth2 Bearer Token:
-            - sessions-my:rw
+        - OAuth2BearerToken:
+            - accounts--all:ro
+            - accounts.roles--all:ro
       tags:
         - Sessions
       responses:
@@ -1582,7 +1573,7 @@ paths:
             application/json:
               schema: *ref_5
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1595,7 +1586,7 @@ paths:
         session for other accounts. All access tokens related to the sessions
         will be revoked.
       security:
-        - OAuth2 Bearer Token:
+        - OAuth2BearerToken:
             - sessions--my:rw
       tags:
         - Sessions
@@ -1626,7 +1617,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -1637,7 +1628,7 @@ paths:
                         format: uuid
                         example: b68698d6-fdac-4fb5-9ac1-017cf13ca221
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1650,8 +1641,8 @@ paths:
         Lists all organizations that an account belongs to, based on
         authorization.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token: null
+        - PersonalAccessToken: null
+        - OAuth2BearerToken: null
       responses:
         '200':
           description: 'OK: Returns organizations.'
@@ -1659,105 +1650,61 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  &ref_organization
-                  oneOf:
-                    - &ref_16
+                items: &ref_18
+                  description: >-
+                    Organization groups accounts into a single unit. Each
+                    organization must contain at least one account and one
+                    owner. An account can be assigned to many organizations at
+                    once. The default organization is the first assigned to a
+                    given account.
+                  type: object
+                  properties:
+                    organization_id:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                      description: Unique organization identifier
+                      example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
+                    name:
+                      type: string
+                      description: Organization name
+                      example: Organization Name
+                      exclusiveMaximum: false
+                      maxLength: 127
+                    invitation_mode:
+                      type: string
                       description: >-
-                        An organization groups accounts into a single unit.
-                        Each organization must contain at least one account and
-                        one owner. An account can be assigned to many
-                        organizations at once. The default organization is the
-                        first assigned to a given account.
+                        Invitation mode setting of organization. If lax all paid
+                        roles can invite to products. Strict cause that only
+                        privileged roles can invite.
+                      example: lax
+                      enum:
+                        - lax
+                        - strict
+                      default: lax
+                    company:
+                      description: Basic company information
                       type: object
                       properties:
-                        organization_id:
+                        phone:
                           type: string
-                          format: uuid
-                          readOnly: true
-                          description: Unique organization identifier
-                          example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
-                        name:
-                          type: string
-                          description: Organization name
-                          example: Organization Name
+                          description: Company phone number
+                          example: +48 123 456 789
                           exclusiveMaximum: false
-                          maxLength: 127
-                        products:
-                          type: array
-                          items:
-                            properties:
-                              name:
-                                type: string
-                                description: Product name
-                                enum:
-                                  - "LiveChat"
-                                  - "HelpDesk"
-                                  - "Accounts"
-                                  - "KnowledgeBase"
-                                  - "ChatBot"
-                                  - "OpenWidget"
-                                  - "Insights"
-                              client_id:
-                                type: string
-                                readOnly: true
-                              created_at:
-                                type: string
-                                format: RFC 3339 timestamp
-                                description: Product activation timestamp
-                                example: 2023-08-07T11:37:07Z
-                                readOnly: true
-                          readOnly: true
-                        invitation_mode:
+                          maxLength: 20
+                        website:
                           type: string
-                          enum:
-                            - strict
-                            - lax
-                          description: Organization invitation mode
-                          readOnly: true
-                        created_at:
-                          type: string
-                          format: RFC 3339 timestamp
-                          description: Organization creation timestamp
-                          example: 2023-08-07T11:37:07Z
-                          readOnly: true
-                        updated_at:
-                          type: string
-                          format: RFC 3339 timestamp
-                          description: Organization update timestamp
-                          example: 2023-08-07T11:56:27Z
-                          readOnly: true
-                    - allOf:
-                        - *ref_16
-                        - properties:
-                            company:
-                              description: Basic company information
-                              type: object
-                              oneOf:
-                                - properties:
-                                    phone: &ref_company_phone
-                                      type: string
-                                      description: Company phone number
-                                      example: +48 123 456 789
-                                      exclusiveMaximum: false
-                                      maxLength: 20
-                                    website: &ref_company_website
-                                      type: string
-                                      description: Primary company website
-                                      example: example.com
-                                      exclusiveMaximum: false
-                                      maxLength: 255
-                                - properties:
-                                    phone: *ref_company_phone
-                                - properties:
-                                    website: *ref_company_website
+                          description: Primary company website
+                          example: example.com
+                          exclusiveMaximum: false
+                          maxLength: 255
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
             application/json:
               schema: *ref_4
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1777,9 +1724,9 @@ paths:
           application/json:
             schema:
               properties:
-                email: *ref_15
-                password: *ref_12
-                organization: *ref_organization
+                email: *ref_17
+                password: *ref_14
+                organization: *ref_18
               required:
                 - email
       responses:
@@ -1792,7 +1739,7 @@ paths:
                   - *ref_2
                   - type: object
                     properties:
-                      organization: *ref_organization
+                      organization: *ref_18
                       access_token:
                         type: string
                         example: dal:eDqDuTRZoK03C3rzD2dcfA==
@@ -1800,19 +1747,19 @@ paths:
           description: Bad Request
           content:
             application/json:
-              schema: *ref_8
+              schema: *ref_10
         '409':
           description: 'Conflict: The account already exists.'
           content:
             application/json:
-              schema: *ref_13
+              schema: *ref_15
         '422':
           description: 'Validation error: Invalid email address, name too long, etc.'
           content:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1822,7 +1769,7 @@ paths:
                             type: string
                             example: invalid email format
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1830,14 +1777,11 @@ paths:
     get:
       summary: Get an organization
       description: >-
-        Returns a single organization for a given organization ID. The ID can
-        be replaced with `me` to get the account that sends the request. The
-        `company` field is returned only if the access token contains the
-        `organization--my:rw` scope and the organization ID corresponding with
-        the token matches the value of `organization_id`.
+        Returns a single organization for a given organization ID. The ID can be
+        replaced with `me` to get the account that sends the request.
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token: null
+        - PersonalAccessToken: null
+        - OAuth2BearerToken: null
       tags:
         - Organizations
       parameters:
@@ -1853,7 +1797,7 @@ paths:
           description: 'OK: Returns the organization.'
           content:
             application/json:
-              schema: *ref_organization
+              schema: *ref_18
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -1865,7 +1809,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -1876,7 +1820,7 @@ paths:
                         format: uuid
                         example: def31e95-5ca4-4817-b176-732e4544daca
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1886,8 +1830,8 @@ paths:
       summary: Update an organization
       description: Updates an organization
       security:
-        - Personal Access Token: null
-        - OAuth2 Bearer Token:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
             - organization--my:rw
       parameters:
         - in: path
@@ -1901,13 +1845,13 @@ paths:
         required: true
         content:
           application/json:
-            schema: *ref_16
+            schema: *ref_18
       responses:
         '200':
           description: 'OK: Returns the updated organization.'
           content:
             application/json:
-              schema: *ref_organization
+              schema: *ref_18
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
@@ -1924,7 +1868,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_9
+                  - *ref_11
                   - type: object
                     properties:
                       resource_name:
@@ -1940,7 +1884,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - *ref_7
+                  - *ref_9
                   - type: object
                     properties:
                       invalid_fields:
@@ -1950,7 +1894,7 @@ paths:
                             type: string
                             example: value too long
         '500':
-          description: Server Error
+          description: Server Error.
           content:
             application/json:
               schema: *ref_6
@@ -1961,7 +1905,7 @@ paths:
         Some access tokens are paired with a refresh token. The access token can
         be provided via authorization or a query string.
       security:
-        - OAuth2 Bearer Token: null
+        - OAuth2BearerToken: null
       parameters:
         - in: query
           name: code
@@ -2014,21 +1958,184 @@ paths:
           description: Invalid request
           content:
             application/json:
-              schema: *ref_7
+              schema: *ref_9
         '500':
-          description: Server Error
+          description: Server Error.
+  /accounts/{account_id}/organization_settings/{organization_id}:
+    get:
+      summary: Get account settings for an organization
+      description: >
+        This HTTP endpoint allows you to retrieve a list of account organization
+        settings. 
+
+
+        These settings are tailored to each organization, providing customized
+        configurations for their accounts.
+
+        For global settings, you can use the `/accounts` endpoint.
+
+
+        The `account_id` parameter is interchangeable with `me`, the
+        `organization_id` parameter is interchangeable with `my`. The values
+        will be sourced from authorization in such cases.
+      security:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
+            - accounts--my:ro
+            - accounts--all:ro
+      tags:
+        - AccountOrganizationSettings
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            default: me
+        - name: organization_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            default: my
+      responses:
+        '200':
+          description: Object with account properties specific for a given organization
+          content:
+            application/json:
+              schema: &ref_19
+                type: object
+                properties:
+                  avatar_url:
+                    type: string
+                    format: url
+                    nullable: true
+                    example: >-
+                      https://api.text.com/file/accounts/avatars/b2185556-634c-4ecf-b4c9-bcf8b65bc853/ae5bd37f-64b2-416b-bbb3-4623f53e6fb8/37a190dd-77a5-4fba-a7d3-2e89eab0e8fd.jpg
+        '401':
+          description: Unauthorized, missing, or invalid authorization.
+          content:
+            application/json:
+              schema: *ref_4
+        '403':
+          description: 'Forbidden: Insufficient scope.'
+          content:
+            application/json:
+              schema: *ref_5
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: *ref_11
+        '422':
+          description: Validation error.
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+    patch:
+      summary: Update account settings for an organization
+      security:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken:
+            - accounts--my:rw
+            - accounts--all:rw
+      description: >
+        This HTTP endpoint allows you to update various organization settings of
+        an account. 
+
+
+        Limitations: 
+          * You cannot provide both an avatar image and an avatar URL simultaneously.
+          * If the provided avatar is not a square, it will be automatically cropped to fit into a square shape.
+          * The avatar's size should be within the range of 50x50 pixels (minimum) to 1024x1024 pixels (maximum). 
+          * The supported formats for avatars are PNG and JPEG, with a maximum file size of 1MB.
+
+        The `account_id` parameter is interchangeable with `me`, the
+        `organization_id` parameter is interchangeable with `my`. The values
+        will be sourced from the authorization in such cases.
+      tags:
+        - AccountOrganizationSettings
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            default: me
+        - name: organization_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            default: my
+      requestBody:
+        content:
+          application/json:
+            schema: *ref_19
+          application/x-www-form-urlencoded:
+            example:
+              avatar_url: >-
+                https://api.text.com/file/accounts/avatars/b2185556-634c-4ecf-b4c9-bcf8b65bc853/ae5bd37f-64b2-416b-bbb3-4623f53e6fb8/37a190dd-77a5-4fba-a7d3-2e89eab0e8fd.jpg
+            schema: *ref_19
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Object with account properties specific for a given organization.
+          content:
+            application/json:
+              schema: *ref_19
+        '401':
+          description: Unauthorized, missing, or invalid authorization.
+          content:
+            application/json:
+              schema: *ref_4
+        '403':
+          description: 'Forbidden: Insufficient scope.'
+          content:
+            application/json:
+              schema: *ref_5
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: *ref_11
+        '422':
+          description: Validation error.
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
 components:
   schemas: {}
   securitySchemes:
-    Personal Access Token:
+    PersonalAccessToken:
       description: >-
-        Use your `account_id` as the username and the Personal Access Token
-        (PAT) as the password. <a
+        Use your `account_id` as the username and the PersonalAccessToken (PAT)
+        as the password. <a
         href="https://platform.text.com/docs/authorization/authorizing-api-calls/#personal-access-tokens">Learn
         how to get a PAT.</a>
       type: http
       scheme: basic
-    OAuth2 Bearer Token:
+    OAuth2BearerToken:
       description: >-
         This API uses OAuth2 with the implicit grant flow. <a
         href="https://platform.text.com/docs/authorization/authorizing-api-calls/#implicit-grant">Learn
@@ -2037,6 +2144,8 @@ components:
       flows:
         implicit:
           authorizationUrl: https://accounts.livechat.com
+          scopes: {}
         authorizationCode:
           authorizationUrl: https://accounts.livechat.com
           tokenUrl: https://accounts.livechat.com/token
+          scopes: {}
