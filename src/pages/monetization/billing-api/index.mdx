@@ -1,18 +1,22 @@
 ---
 weight: 20
 category: "monetization"
-title: "LiveChat Billing API"
+title: "Text Billing API"
 tagline: "Set up payments and subscriptions for your apps."
-desc: "Generate income with the use of the LiveChat Billing API."
+desc: "Generate income with the use of the Text Billing API."
 ---
 
 # Introduction
 
-The LiveChat Billing API allows you to charge for your apps in the LiveChat Marketplace. Therefore, you can offer paid applications to over <Placeholder id="NUMBER_OF_CUSTOMERS" /> LiveChat customers.
+The Text Billing API allows you to charge for your apps in [Text marketplaces](https://platform.text.com/docs/getting-started/#what-text-is-about). Therefore, you can offer paid applications to over <Placeholder id="NUMBER_OF_CUSTOMERS" /> Text customers.
 
 The Billing API is a collective name for a subset of smaller APIs used for specific purposes (see the [APIs section](#2-apis) below for details).
 
 ## Overview
+
+### Product support
+
+The Billing API supports apps created for two of our products: LiveChat and HelpDesk. Support for more products is coming.
 
 ### Payment types
 
@@ -22,17 +26,17 @@ The Billing API supports the following payment types:
 - **Recurring charges** – subscription payments
 - **In-app purchases** – also known as [In-app Upgrades](/getting-started/app-guides/in-app-upgrades/) in Developer Console
   - **Direct charges** – one-time payments
-  - **Recurring charges** (coming soon) – subscription payments
+  - **Recurring charges** – subscription payments
 
 ### Additional options
 
 It also handles a set of features to facilitate the payment and accounting processes:
 
 - credit card processing
-- invoices - coming soon
+- invoices
 
 <aside class="note">
-  The customers can use their existing credit card from their LiveChat account;
+  The customers can use their existing credit card from their Text account;
   there’s no need to re-renter the card details.
 </aside>
 
@@ -52,15 +56,18 @@ A sample LiveChat [Agent App Widget](/extending-ui/extending-agent-app/agent-app
 
 It's available on GitHub: [https://github.com/livechat/billing-demo-agent-app-extension](https://github.com/livechat/billing-demo-agent-app-extension)
 
-<img alt="LiveChat Billing API demo" src="/images/monetization/billing-api/billing-demo-in-app-payment.png" width="800px" height="1140px"/>
+<img alt="Text Billing API demo" src="/images/monetization/billing-api/billing-demo-in-app-payment.png" width="800px" height="1140px"/>
 
 # User guide
 
 ## 1. Authorization
 
-The Billing API is based on the [LiveChat OAuth](https://platform.text.com/docs/authorization/) authorization flow. All endpoints require access tokens, and some endpoints are limited by scope or client ID.
+The Billing API is based on the [Text OAuth](https://platform.text.com/docs/authorization/) authorization flow. All endpoints require access tokens, and some endpoints are limited by scope or client ID.
 
 ## 2. APIs
+
+The current version of the Billing API is `v2`. This version makes it possible to handle various products, with the support of two of them already available: LiveChat and HelpDesk.
+The product information is put explicitly in API endpoints - as the `<product>` element of each path.
 
 ### 2.1. Direct Charges
 
@@ -117,9 +124,9 @@ There are three possible direct charge flows:
 
 ## Usage
 
-- Create a charge for a user (`POST /v2/direct_charge/livechat`) and redirect them to the `confirmation_url`.
+- Create a charge for a user (`POST /v2/direct_charge/<product>`) and redirect them to the `confirmation_url`.
 - After the user confirms or declines the charge, they will be redirected to `return_url` with charge `id` passed as a URL param.
-- Based on `id`, you can check charge status (`GET /v2/direct_charge/livechat/:ID`). If it is `accepted`, you must activate the charge (`PUT /v2/direct_charge/livechat/:ID/activate`).
+- Based on `id`, you can check charge status (`GET /v2/direct_charge/<product>/:ID`). If it is `accepted`, you must activate the charge (`PUT /v2/direct_charge/<product>/:ID/activate`).
 - After a while, our payment gateway will try to charge the user and it will automatically change the charge status to `success` or `failed`.
 
 <Section>
@@ -133,7 +140,7 @@ Here's the structure of a single direct charge object.
 Parameters description:
 
 - `price` - an integer defined in cents. Example: to charge $99, set the `price` to 9900
-- `commission_percent` - a percentage fee deducted by LiveChat from the application price
+- `commission_percent` - a percentage fee deducted by Text from the application price
 - `per_account` - the app is sold in the **pay per account** model; the **app price** is multiplied by the number of accounts within the organization
 (`price` x `quantity`)
 
@@ -175,22 +182,23 @@ Parameters description:
 
 ## Scopes
 
-Direct Charges API requires `billing_manage` scope for all endpoints.
+Direct Charges API requires `billing_manage` (for LiveChat) or `billing--all:rw` (for HelpDesk) scope for all endpoints.
 
-If you want to use this API, you must create an app in Developers Console and check **"offer in-app payments"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `billing_manage` scope.
+If you want to use this API, you must create an app in Developers Console and check **"offer in-app payments"** scope in the app settings. After successful authorization (by using Sign in with Text), you will get an access token with the correct scope.
 
 ## Endpoints
 
 Base URL: `https://billing.livechatinc.com`
 
-- `POST /v2/direct_charge/livechat` - create a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional fields: `per_account`, `test`
-- `GET /v2/direct_charge/livechat/:ID` - get an existing charge.
-- `GET /v2/direct_charge/livechat` - create a paginated charges list (20 items per page) ordered by the creation date. Optional fields: `page`, `status` (for filtering by status. Returns: `{"result:[OBJECT_1, ... , OBJECT_N]"}`).
-- `PUT /v2/direct_charge/livechat/:ID/activate` - activate a charge (the payment gateway starts processing it).
+- `POST /v2/direct_charge/<product>` - create a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional fields: `per_account`, `test`
+- `GET /v2/direct_charge/<product>/:ID` - get an existing charge.
+- `GET /v2/direct_charge/<product>` - create a paginated charges list (20 items per page) ordered by the creation date. Optional fields: `page`, `status`, `recurrent_charge_id`
+- `PUT /v2/direct_charge/<product>/:ID/activate` - activate a charge (the payment gateway starts processing it).
 
 # Ledger
 
 The Ledger API handles the financial activity and balance.
+Only supports LiveChat product for now.
 
 ## Entry object types
 
@@ -232,7 +240,7 @@ This is the structure of a single Ledger entry object:
 
 Ledger API requires `ledger_read` scope for all endpoints.
 
-If you want to use this API, you must create an app in Developers Console and check **"read developer’s financial activity and balance"** scope in the app settings. After successful authorization (by using Sign in with LiveChat), you will get an access token with `ledger_read` scope.
+If you want to use this API, you must create an app in Developers Console and check **"read developer’s financial activity and balance"** scope in the app settings. After successful authorization (by using Sign in with Text), you will get an access token with `ledger_read` scope.
 
 ## Endpoints
 
@@ -277,10 +285,11 @@ Here's the structure of a recurrent charge object.
 Parameters description:
 
 - `price` - an integer defined in cents. Example: to charge \$99, set the `price` to 9900
-- `seller_client_id` - client id which created a given charge (in most cases it's the Marketplace id or order client id)
+- `seller_client_id` - client id which created a given charge (in most cases it's the Marketplace client id or order client id)
 - `order_client_id` - client id of the application that is paid for
-- `order_entity_id` - client id author (the creator of an application)
-- `commission_percent` - a percentage fee deducted by LiveChat from the application price
+- `order_entity_id` - email address of the application author (associated with `order_client_id`)
+- `external_id` - additional identifier used to tell apps sharing the same `order_client_id` (e.g. main app and its in-app upgrades) apart. We use a Marketplace application ID here
+- `commission_percent` - a percentage fee deducted by Text from the application price
 - `current_charge_at` - the date when the current settlement period started
 - `next_charge_at` - the date when the current settlement period ends
 - `per_account` - the app is sold in the **pay per account** model; the **app price** is multiplied by the number of accounts within the organization
@@ -301,6 +310,7 @@ Parameters description:
   "seller_client_id": "1e2cb91de0b15e99a7f4502b900e907e",
   "order_client_id": "e569d92213f62ec04cee2ee0f3b4f070",
   "order_organization_id": "b0a0ba1e-a94c-4aa8-ab2c-397815762931",
+  "external_id": "zzh2F1cnc",
   "name": "sub1",
   "price": 1900,
   "trial_days": 0,
@@ -328,16 +338,17 @@ Parameters description:
 
 ## Scope
 
-- `billing_manage` - for creating charges for your own client
-- `billing_admin` - for creating charges for other clients and for adjusting `commission_percent`
+- `billing_manage` - for creating charges for your own app based on LiveChat
+- `billing--all:rw` - for creating charges for your own app based on HelpDesk
+- `billing_admin` - for creating charges for other clients
 
 ## Endpoints
 
 All endpoints return a recurrent charge object.
 
-- `POST /v2/recurrent_charge/livechat` - create a new charge. Required fields: `name`, `price`, `return_url`. Optional fields: `test`, `trial_days`, `months`, `per_account`
-- `GET /v2/recurrent_charge/livechat/:ID` - get the existing charge
-- `PUT /v2/recurrent_charge/livechat/:ID/accept` - accept recurrent charge. The buyer must confirm the payment before the charge is collected
-- `PUT /v2/recurrent_charge/livechat/:ID/decline` - decline recurrent charge. The buyer can decline charge
-- `PUT /v2/recurrent_charge/livechat/:ID/activate` - activate recurrent charge
-- `PUT /v2/recurrent_charge/livechat/:ID/cancel` - cancel recurrent charge.
+- `POST /v2/recurrent_charge/<product>` - create a new charge. Required fields: `name`, `price`, `return_url`. Optional fields: `external_id`, `test`, `trial_days`, `months`, `per_account`
+- `GET /v2/recurrent_charge/<product>/:ID` - get the existing charge
+- `PUT /v2/recurrent_charge/<product>/:ID/accept` - accept recurrent charge. The buyer must confirm the payment before the charge is collected
+- `PUT /v2/recurrent_charge/<product>/:ID/decline` - decline recurrent charge. The buyer can decline a `pending` charge
+- `PUT /v2/recurrent_charge/<product>/:ID/activate` - activate recurrent charge
+- `PUT /v2/recurrent_charge/<product>/:ID/cancel` - cancel recurrent charge.
