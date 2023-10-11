@@ -1,0 +1,160 @@
+---
+weight: 110
+category: "getting-started"
+subcategory: "app-guides"
+title: "Developer SDK"
+tagline: "Developer SDK is a JavaScript tool for app developers."
+desc: "Authorize your application and report errors that occur in your app."
+---
+
+# Introduction
+
+__Developer SDK__ is a JavaScript tool dedicated for software developers who aim to build apps with our Developer Program. The main purpose of this SDK is to arm your project with tooling that optimizes the usage of the Text Developer Platform ecosystem.
+
+## Use cases
+
+- Easy implementation of authorization in your app (wrapper for Accounts SDK)
+- Reporting errors that occur in your app to Developer Console
+
+## About Developer SDK
+
+To read more about the Developer SDK, [visit its official page on npm](https://www.npmjs.com/package/@livechat/developer-sdk).
+
+# How to start
+
+## Create an app
+
+First, you need to sign up to Text Developer Program and create an application in the Developer Console.
+
+## Install Developer SDK
+
+Start by installing the SDK using npm or yarn:
+
+<CodeSample path={'INSTALLATION'}>
+
+```js
+npm install @livechat/developer-sdk
+```
+
+</CodeSample>
+
+# DeveloperApp class
+
+`DeveloperApp` is a class that provides methods for initializing and configuring your developer application.
+
+## Config
+
+In order to use the `DeveloperApp` class in your project, first, you need to define your `DeveloperAppConfig` according to the shape:
+
+<CodeSample path={'DeveloperAppConfig'}>
+
+```js
+interface DeveloperAppConfig {
+  /* 1 */ appId: string;
+  /* 2 */ auth?: {
+    clientId: string;
+    mode?: "popup" | "iframe" | "redirect";
+  };
+}
+```
+
+</CodeSample>
+
+### Config properties
+
+| Property        | Description                                                                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `appId`         | A required property. You can find it in Developer Console > Apps > Overview or extract it from the URL: `https://platform.text.com/console/apps/{appId}/monitor` |
+| `auth`          | Optional property that allows you to configure authorization for your app.                                                                                       |
+| `auth.clientId` | Required if you specify `auth`. You can find your app clientId in the __App Authorization__ block in the Developer Console.                                      |
+| `auth.mode`     | Optional property that allows you to configure authorization strategy for your app. Values: `popup` (default), `iframe`, `redirect`                              |
+
+We suggest that you should store the config in a dedicated file, `livechat.config.json`
+
+<CodeSample>
+
+```js
+// livechat.config.json
+{
+  ...
+}
+```
+
+</CodeSample>
+
+But storing it in a variable is also an option:
+
+<CodeSample>
+
+```js
+const config: DeveloperAppConfig = {
+  // ...
+};
+```
+
+</CodeSample>
+
+## Initialization
+
+Use the `DeveloperApp.init()` method to initialize your `DeveloperApp`. It takes `DeveloperAppConfig` as its argument and returns a `DeveloperApp` instance:
+
+<CodeSample path={'INITIALIZATION'}>
+
+```js
+import { DeveloperApp, DeveloperAppConfig } from "@livechat/developer-sdk";
+import lcConfig from "./livechat.config.json";
+
+const app = await DeveloperApp.init(config);
+```
+
+</CodeSample>
+
+# Usage
+
+## Authorization
+
+If your application needs authorization (uses the App Authorization building block), you can use Developer SDK to process authorization for you.
+
+### authorize()
+
+In order to trigger authorization you can use authorize method on your app instance:
+
+<CodeSample path={'USAGE: authorize'}>
+
+```js
+await app.authorize();
+```
+
+</CodeSample>
+
+## Reporting
+
+The `DeveloperApp` instance allows you to make use of the reporting feature. This way, you can log 4xx and 5xx errors that occur in your app. You'll see a visual representation of logged errors in the Developer Console.
+
+### sendError()
+
+Definition:
+
+<CodeSample path={'DEFINITION: sendError'}>
+
+```js
+interface ReportingFeature {
+  sendError(type: "4xx" | "5xx", payload?: string): Promise<void>;
+}
+```
+
+</CodeSample >
+
+Usage:
+
+<CodeSample path={'USAGE: sendError'}>
+
+```js 
+await app.features.reporting.sendError("4xx");
+```
+
+</CodeSample>
+
+# Contact us
+
+We're happy to provide our support in case you need it. If you have any questions or suggestions, feel free to contact us at [developers@livechat.com](mailto:developers@livechat.com) or join our [Discord for Developers](https://discord.gg/NcfJu3a9kM).
