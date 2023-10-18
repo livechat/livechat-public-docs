@@ -142,7 +142,7 @@ export const resources = [
   {
     title: "Design System",
     description: "Ready-to-use components",
-    link: "https://github.com/livechat/design-system/tree/v1",
+    link: "https://design.livechat.com/",
   },
   {
     title: "Figma templates",
