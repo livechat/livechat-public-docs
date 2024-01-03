@@ -9,11 +9,11 @@ Our documents are written in the [MDX format](https://mdxjs.com/), so pay attent
 
 ## Who we are
 
-Behind LiveChat, Inc. there is a team of [passionate people](https://www.livechat.com/team/) building online customer service software with online chat, help desk software, chatbot, and web analytics capabilities.
+Behind Text, Inc. there is a team of [passionate people](https://www.text.com/team/) building online customer service software with online chat, help desk software, chatbot, and web analytics capabilities.
 
-With a suite of five products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/), and [OpenWidget](https://openwidget.com/)) and their powerful APIs, we power customer communication for 36,000 companies in 150 countries.
+With a suite of five products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/), and [OpenWidget](https://openwidget.com/)) and their powerful APIs, we power customer communication for 37,000 companies in 150 countries.
 
-[The Platform](https://platform.text.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://platform.text.com/developer-program/) and [Marketplace](https://www.livechat.com/marketplace/) create an open ecosystem for developers, partners, and customers.
+[The Platform](https://platform.text.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://platform.text.com/developer-program/) and [Marketplace](https://www.text.com/marketplace/) create an open ecosystem for developers, partners, and customers.
 
 ## Node version
 
