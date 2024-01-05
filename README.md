@@ -49,5 +49,5 @@ All contribution's welcome! [Read how to do it.](./CONTRIBUTING.md)
 
 - [Create a free developer account](https://platform.text.com/console/) in our Developer Program.
 - [Join our Discord for Developers](https://discord.gg/rFbJkYQFwp)
-- Send us an email at developers@livechat.com
+- Send us an email at developers@text.com
 - Follow us on [Twitter](https://twitter.com/LiveChatDev)

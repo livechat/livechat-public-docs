@@ -50,7 +50,7 @@ const footerData = [
     content: (
       <>
         Want to share feedback? Reach us at:{" "}
-        <a href="mailto:developers@livechat.com">developers@livechat.com</a>
+        <a href="mailto:developers@text.com">developers@text.com</a>
       </>
     ),
   },
