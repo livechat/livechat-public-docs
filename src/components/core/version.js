@@ -127,10 +127,10 @@ const Warning = ({ selectedVersion, versionColor, versions }) => {
         <p style={{ marginBottom: "10px" }}>
           If you have any questions, please let us know at{" "}
           <a
-            href="mailto:developers@livechat.com"
+            href="mailto:developers@text.com"
             style={{ color: "white", textDecoration: "underline" }}
           >
-            developers@livechat.com
+            developers@text.com
           </a>
           .
         </p>

@@ -17,7 +17,7 @@ Please, don't create an issue in this repository.
 
 ## I'm building an app for the Marketplace and I got stuck
 
-We've been there 😅. If you're stuck in the development process, constantly getting an error from our APIs, contact us at developers@livechat.com or [hop on Discord](https://discord.gg/rFbJkYQFwp).
+We've been there 😅. If you're stuck in the development process, constantly getting an error from our APIs, contact us at developers@text.com or [hop on Discord](https://discord.gg/rFbJkYQFwp).
 
 ## I found a bug/typo in your documentation
 
@@ -34,4 +34,4 @@ When commiting, use the past tense ("Added description").
 
 We welcome all improvement suggestions: new document ideas, new functionality for the documentation website, etc.
 
-The best way to give your feedback is to either send us an email at developers@livechat.com or let us know on [Discord](https://discord.gg/rFbJkYQFwp).
+The best way to give your feedback is to either send us an email at developers@text.com or let us know on [Discord](https://discord.gg/rFbJkYQFwp).
