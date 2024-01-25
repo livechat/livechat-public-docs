@@ -2665,6 +2665,7 @@ curl --request POST \
 - [Get Solution Licenses](#get-solution-licenses)
 - [Get Solution Licenses by Status](#get-solution-licenses-by-status)
 - [Get Solution Licenses Report](#get-solution-licenses-report)
+- [Get Solution Licenses CSV Report](#get-solution-licenses-csv-report)
 - [Get License Details](#get-license-details)
 - [Update License Details](#update-license-details)
 - [Get License Operators](#get-license-operators)
@@ -3684,6 +3685,62 @@ curl --request GET \
         }
     ]
 }
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get Solution Licenses CSV Report
+
+`GET /v2/partners/solutions/licenses/search/csv` - get CSV report for licenses.
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query Parameters
+
+- `filters` - apply filters to narrow down the results (see below)
+
+**Note:**
+- `filters` is an array of objects, where each object has the following fields:
+  - `field` - field name (one of: `license_product`, `license_status`, `license_details`, `license_created_at`, `payment_origin`, `credit_card`)
+  - `operator` - operator (one of: `equals`, `contains`, `exists`, `greater_or_equal`, `lesser_or_equal`)
+  - `value` - field value
+- for example: `filters=[{"field": "license_product", "operator": "equals", "value": "LiveChat"}, {"field": "credit_card", "operator": "exists", "value": "no"}]`
+
+#### Response
+
+- `200 - OK` - success, returns the data in CSV format, see the example below
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners/solutions/licenses/search/csv?filters=[{"field":"credit_card","value":"no","operator":"exists"},{"field":"payment_origin","value":"partner","operator":"equals"},{"field":"license_details","value":"Client Name","operator":"contains"},{"field":"license_created_at","value":"2023-11-01 00:00:00","operator":"greater_or_equal"}] \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+License ID,Managed by,Status,Client name,Client email,Client identifier,Created,Product,Credit card,Card problem,Commission level,Discount level,Total earnings,Total savings
+ExampleLicenseID,partner,trial,Client Name,client@test.com,client-identifier,2024-01-22 08:53:53,HelpDesk,no,,0.00,20.00,0.00,0.00
 ```
 
 </CodeResponse>
