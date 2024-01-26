@@ -52,7 +52,7 @@ In order to use the `DeveloperApp` class in your project, first, you need to def
 interface DeveloperAppConfig {
   /* 1 */ appId: string;
   /* 2 */ auth?: {
-    clientId: string;
+    clientId?: string;
     mode?: "popup" | "iframe" | "redirect";
   };
 }
@@ -123,6 +123,37 @@ In order to trigger authorization you can use authorize method on your app insta
 
 ```js
 await app.authorize();
+```
+
+</CodeSample>
+
+Keep in mind that the `authorize` method's behavior varies, depending on the authorization strategy:
+
+- For the `popup` and `iframe` flows: it resolves as soon as the login process is finished, and returns authorization data (also `app.authorization` is being filled).
+- For `redirect`: it returns undefined, but it redirects to the login process, and when it's back, the `authorize` method has to be called again to finalize authorization.
+
+### React example
+
+In React applications, you can build a custom hook to ensure proper app initialization and authorization.
+
+<CodeSample path={'USAGE: custom hook in React'}>
+
+```js
+function useDeveloperApp() {
+  const [developerApp, setDeveloperApp] = useState<DeveloperApp | null>(null)
+
+  useEffect(() => {
+    const app = DeveloperApp.init(config)
+
+    if (config.auth?.clientId) {
+      app.authorize().then(() => setDeveloperApp(app))
+    } else {
+      setDeveloperApp(app)
+    }
+  }, [])
+
+  return developerApp
+}
 ```
 
 </CodeSample>
