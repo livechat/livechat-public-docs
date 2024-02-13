@@ -1,0 +1,266 @@
+openapi: 3.0.0
+info:
+  title: Chat API
+  version: 1.0.0
+  description: >-
+    Description not provided
+servers:
+  - url: https://api.text.com/chat
+    description: Chat API URL
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    BasicAuth:
+      type: http
+      scheme: basic
+  responses:
+    Unauthorized:
+      description: Unauthorized, missing or invalid credentials
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: authentication
+                  message:
+                    type: string
+                    example: Invalid access token.
+    Validation:
+      description: Invalid or missing request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: validation
+                  message:
+                    type: string
+                    example: Invalid message format.
+  schemas:
+    Shortcode:
+      description: shortcode of the reaction
+      type: string
+      enum:
+        - thumbsup
+        - thumbsdown
+        - heart
+        - white_check_mark
+        - hourglass
+        - cry
+    ChannelID:
+      type: string
+      description: |
+        ID of the channel. It can be a public channel (`general`),<br>
+        or a private channel (`requester_id:receiver_id`)<br>
+      example: general
+paths:
+  /action/send_message:
+    post:
+      summary: Send message
+      description: Send a new message to provided channel
+      tags:
+        - messages
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel
+                - text
+              properties:
+                channel:
+                  $ref: '#/components/schemas/ChannelID'
+                text:
+                  type: string
+                  description: Message text
+                  example: Hello, World!
+      responses:
+        "200":
+          description: Message sent successfully, contains ID of the sent message
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message_id
+                properties:
+                  message_id:
+                    type: string
+                    format: uuid
+                    description: ID of the sent message
+                    example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/get_messages:
+    post:
+      summary: Get messages
+      description: Get messages from provided channel
+      tags:
+        - messages
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel
+              properties:
+                channel:
+                  $ref: '#/components/schemas/ChannelID'
+      responses:
+        "200":
+          description: Contains list of messages in requested channel
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - messages
+                properties:
+                  channel:
+                    $ref: '#/components/schemas/ChannelID'
+                  messages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message_id:
+                          type: string
+                          format: uuid
+                          description: ID of the message
+                          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                        author_id:
+                          type: string
+                          format: uuid
+                          description: ID of the message author
+                          example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Message creation date
+                          example: 2024-01-24T12:36:05.987197Z
+                        text:
+                          type: string
+                          description: Message text
+                          example: Hello, World!
+                        reactions:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              shortcode:
+                                $ref: '#/components/schemas/Shortcode'
+                              author_ids:
+                                type: array
+                                items:
+                                  type: string
+                                  description: ID of the reaction author
+                                  example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/add_reaction:
+    post:
+      summary: Add message reaction
+      tags:
+        - reactions
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message_id
+                - channel
+                - shortcode
+              properties:
+                message_id:
+                  type: string
+                  description: ID of the message to react to
+                  format: uuid
+                  example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                channel:
+                  $ref: '#/components/schemas/ChannelID'
+                shortcode:
+                  $ref: '#/components/schemas/Shortcode'
+      responses:
+        "200":
+          description: Reaction added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/remove_reaction:
+    post:
+      summary: Remove message reaction
+      description: Remove reaction from a message of ID provided in request body
+      tags:
+        - reactions
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message_id
+                - channel
+                - shortcode
+              properties:
+                message_id:
+                  type: string
+                  description: ID of the message to remove reaction from
+                  format: uuid
+                  example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                channel:
+                  type: string
+                  description: ID of the channel where message is located
+                  example: general
+                shortcode:
+                  $ref: '#/components/schemas/Shortcode'
+      responses:
+        "200":
+          description: Reaction removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
