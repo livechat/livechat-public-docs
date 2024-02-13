@@ -53,7 +53,7 @@ You can find all the requests from the Configuration API v3.5 in Postman. In our
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Agents**      | [`create_agent`](#create-agent) [`get_agent`](#get-agent) [`list_agents`](#list-agents) [`update_agent`](#update-agent) [`delete_agent`](#delete-agent) [`suspend_agent`](#suspend-agent) [`unsuspend_agent`](#unsuspend-agent) [`request_agent_unsuspension`](#request-agent-unsuspension) [`approve_agent`](#approve-agent)                                                                                                                                                                                               |
 | **Auto access** | [`add_auto_access`](#add-auto-access) [`list_auto_access`](#list-auto-access) [`delete_auto_access`](#delete-auto-access) [`update_auto_access`](#update-auto-access)                                                                                                                                                                                                                                                                                                                                                       |
-| **Bots**        | [`create_bot`](#create-bot) [`get_bot`](#get-bot) [`list_bots`](#list-bots) [`update_bot`](#update-bot) [`delete_bot`](#delete-bot)                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Bots**        | [`create_bot_template`](#create-bot-template) [`create_bot`](#create-bot) [`delete_bot_template`](#delete-bot-template) [`delete_bot`](#delete-bot) [`update_bot_template`](#update-bot-template) [`update_bot`](#update-bot) [`list_bot_templates`](#list-bot-templates) [`get_bot`](#get-bot) [`list_bots`](#list-bots) [`issue_bot_token`](#issue-bot-token) [`reset_bot_template_secret`](#reset-bot-template-secret) [`reset_bot_secret`](#reset-bot-secret)                                                           |
 | **Groups**      | [`create_group`](#create-group) [`get_group`](#get-group) [`list_groups`](#list-groups) [`update_group`](#update-group) [`delete_group`](#delete-group)                                                                                                                                                                                                                                                                                                                                                                     |
 | **Properties**  | [`register_properties`](#register-properties) [`unregister_properties`](#unregister-properties) [`publish_properties`](#publish-properties) [`list_properties`](#list-properties) [`update_license_properties`](#update-license-properties) [`delete_license_properties`](#delete-license-properties) [`list_license_properties`](#list-license-properties) [`update_group_properties`](#update-group-properties) [`delete_group_properties`](#delete-group-properties) [`list_groups_properties`](#list-groups-properties) |
 | **Tags**        | [`create_tag`](#create-tag) [`delete_tag`](#delete-tag) [`list_tags`](#list-tags) [`update_tag`](#update-tag)                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -507,7 +507,7 @@ Updates the properties of an Agent specified by `id`.
 | `login_status`                            | `string`   | No       | Agent's default status right after the login, should be one of the following: `accepting chats`, `not accepting chats` (default). |
 | `job_title`                               | `string`   | No       | Agent's job title                                                                                                                 |
 | `mobile`                                  | `string`   | No       | Agent's mobile number                                                                                                             |
-| `max_chats_count`                         | `int`      | No       | Agent's maximum number of concurrent. Limited to 100. chats                                                                       |
+| `max_chats_count`                         | `int`      | No       | Agent's maximum number of concurrent. Limited to 20. chats                                                                       |
 | `groups`                                  | `object[]` | No       | Groups an Agent belongs to.                                                                                                       |
 | `groups[].id`                             | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                  |
 | `groups[].priority` <sup>**3**</sup>      | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                                                               |
@@ -1185,10 +1185,9 @@ curl -X POST \
 
 # Bots
 
-Bot enables writing integrations using the **Agent Chat API** - both [RTM](/messaging/agent-chat-api/rtm-reference/) and [Web](/messaging/agent-chat-api/) - to communicate in chats as regular Agents.
-A Bot shares the SSO access token with the Agent who created the Bot. Each Bot is a resource owned by an application in Developers Platform, identified by its own `client_id`.
+Bots enable writing integrations using the [**Agent Chat Web API**](/messaging/agent-chat-api/) to communicate in chats similarly to regular agents.
 
-Unlike Agents, Bot don't have passwords or emails - you cannot log in as a Bot.
+A bot has its own auth token, generated with the [Issue Bot Token](#issue-bot-token) method. Each bot is a resource owned by an application (`client_id`) in Developer Console.
 
 ## Methods
 
@@ -1199,6 +1198,71 @@ Unlike Agents, Bot don't have passwords or emails - you cannot log in as a Bot.
 | Required header |       Value        |      |
 | --------------- | :----------------: | ---: |
 | `Content-Type`  | `application/json` |      |
+
+<Section>
+
+<Text>
+
+### Create Bot Template
+
+Creates a new bot template for the Client ID (application) provided in the request. One Client ID can register up to five bot templates.
+
+A bot based on a template will be automatically created on the license when the application is installed. Such a bot will have the same ID as the bot template. If the application is already installed on the license, the bot will be created only if `affect_existing_installations` is set to `true`.
+
+Bots based on templates will work in the same way as those created by the [Create Bot](#create-bot) method.
+
+#### Specifics
+
+|                                  |                                                                             |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/create_bot_template` |
+| Required scopes                  | `bots.templates:rw`                                                         |
+| [Batch support](#batch-requests) | No                                                                          |
+
+#### Request
+
+| Parameter                                | Required | Data type  | Notes                                                                                                                                                                                                                                                                                              |
+| ---------------------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                   | Yes      | `string`   | Display name                                                                                                                                                                                                                                                                                       |
+| `avatar`                                 | No       | `string`   | Avatar URL                                                                                                                                                                                                                                                                                         |
+| `max_chats_count`                        | No       | `int`      | Max. number of incoming chats that can be routed to the bot; default: 6. Limited to 500.                                                                                                                                                                                                           |
+| `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                                                                                                                 |
+| `job_title`                              | No       | `string`   | Bot's job title                                                                                                                                                                                                                                                                                    |
+| `owner_client_id`                        | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+| `affect_existing_installations`          | No       | `bool`     | If set to `true`, a bot based on this template will be created on all licenses that have given application installed. Otherwise only new installations will trigger bot creation.                                                                                                                  |
+
+**1)** Possible priority values:
+
+| Value        | Notes                                                                                                                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **Bot** priority option in the LiveChat App.                                                      |
+| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
+| `supervisor` | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/create_bot_template \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "name": "Bot Name"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.5" json="createBotTemplate"/>
+
+</Code>
+
+</Section>
 
 <Section>
 
@@ -1271,6 +1335,56 @@ curl -X POST \
 
 <Text>
 
+### Delete Bot Template
+
+Deletes a bot template specified by `id`. The bots associated with the template will be deleted only if `affect_existing_installations` is set to `true`.
+
+#### Specifics
+
+|                                  |                                                                             |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/delete_bot_template` |
+| Required scopes                  | `bots.templates:rw`                                                         |
+| [Batch support](#batch-requests) | No                                                                          |
+
+#### Request
+
+| Parameter                       | Required | Type     | Notes  |
+| ------------------------------- | -------- | -------- | ------ |
+| `id`                            | Yes      | `string` | Bot Template ID                                                                                                                                                                                                                                                                                    |
+| `owner_client_id`               | Yes      | `string` | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+| `affect_existing_installations` | No       | `bool`   | If set to `true`, a bot based on this template will be deleted from all licenses that have given application installed.                                                                                                                                                                            |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/delete_bot_template \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "id": "505591fc9fc2d6e92798bed7d9d8f079"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
 ### Delete Bot
 
 Deletes a bot specified by `id`.
@@ -1306,6 +1420,71 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
       "id": "505591fc9fc2d6e92798bed7d9d8f079"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Bot Template
+
+Updates an existing bot template.
+
+#### Specifics
+
+|                                  |                                                                             |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/update_bot_template` |
+| Required scopes                  | `bots.templates:rw`                                                         |
+| [Batch support](#batch-requests) | No                                                                          |
+
+#### Request
+
+| Parameter                                | Required | Data type  | Notes                                                                                                                                                                                                                                                                                              |
+| ---------------------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                     | Yes      | `string`   | Bot Template ID                                                                                                                                                                                                                                                                                    |
+| `name`                                   | No       | `string`   | Display name                                                                                                                                                                                                                                                                                       |
+| `avatar`                                 | No       | `string`   | Avatar URL                                                                                                                                                                                                                                                                                         |
+| `max_chats_count`                        | No       | `int`      | Maximum incoming chats that can be routed to the Bot. Limited to 500.                                                                                                                                                                                                                              |
+| `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                                                                                                                 |
+| `job_title`                              | No       | `string`   | Bot's job title                                                                                                                                                                                                                                                                                    |
+| `owner_client_id`                        | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+| `affect_existing_installations`          | No       | `bool`     | If set to `true`, bots based on this template will be updated on all licenses that have given application installed.                                                                                                                                                                               |
+
+**1)** Possible priority values:
+
+| Value        | Notes                                                                                                                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **Bot** priority option in the LiveChat App.                                                      |
+| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
+| `supervisor` | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/update_bot_template \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+      "id": "ce54714e3d2b53adbfff09dbdbdd56e9",
+      "name": "New Bot Name"
       }'
 ```
 
@@ -1377,6 +1556,50 @@ curl -X POST \
 ```
 
 </CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Bot Templates
+
+Returns the list of bot templates created for a Client ID (application).
+
+#### Specifics
+
+|                                  |                                                                            |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/list_bot_templates` |
+| Required scopes                  | `bots.templates:rw`                                                        |
+| [Batch support](#batch-requests) | No                                                                         |
+
+#### Request
+
+| Parameter         | Required | Type       | Notes                                                                                                                                                                                                                                                                                              |
+| ----------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `owner_client_id` | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/list_bot_templates \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.5" json="listBotTemplates"/>
 
 </Code>
 
@@ -1496,6 +1719,158 @@ curl -X POST \
 </CodeSample>
 
 <CodeResponse type="configuration" version="v3.5" json="getBot"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Issue Bot Token
+
+Issues a new token for the bot. The token is valid for 24 hours. The token cannot be revoked.
+
+The token has the following scopes that allow chatting: `chats--access:rw`, `agents-bot--my:rw`, `customers:rw`.
+
+The required `bot_secret` is returned in [Create Bot Template](#create-bot-template) and [Create Bot](#create-bot) methods.
+If you lost the secret, you can reset it using [Reset Bot Template Secret](#reset-bot-template-secret) or [Reset Bot Secret](#reset-bot-secret) methods.
+
+#### Specifics
+
+|                                  |                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/issue_bot_token` |
+| Required scopes                  | -                                                                       |
+| [Batch support](#batch-requests) | No                                                                      |
+
+#### Request
+
+| Parameter         | Required | Type     | Notes           |
+| ----------------- | -------- | -------- | --------------- |
+| `bot_id`          | Yes      | `string` | Bot ID          |
+| `client_id`       | Yes      | `string` | Client ID       |
+| `bot_secret`      | Yes      | `string` | Bot secret      |
+| `organization_id` | Yes      | `string` | Organization ID |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/issue_bot_token \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "bot_id": "5c9871d5372c824cbf22d860a707a578",
+        "client_id": "238ac5c3c3628210aca289c6d700d2c1",
+        "bot_secret: "641e2ae6d997d2009a3ac92a05f37fc3",
+        "organization_id": "1a8a9ec7-bd5d-4400-9204-3826740981e0"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.5" json="issueBotToken"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Reset Bot Template Secret
+
+Resets secret for given bot template.
+
+#### Specifics
+
+|                                  |                                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/reset_bot_template_secret` |
+| Required scopes                  | `bots.templates:rw`                                                               |
+| [Batch support](#batch-requests) | No                                                                                |
+
+#### Request
+
+| Parameter                       | Required | Type     | Notes                                                                                                                                                                                                                                                                                              |
+| ------------------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                            | Yes      | `string` | Bot template ID                                                                                                                                                                                                                                                                                    |
+| `owner_client_id`               | Yes      | `string` | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+| `affect_existing_installations` | No       | `bool`   | If set to `true`, the new secret is set to for all existing bots based on this template.                                                                                                                                                                                                           |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/reset_bot_template_secret \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "id": "5c9871d5372c824cbf22d860a707a578"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.5" json="resetBotTemplateSecret"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Reset Bot Secret
+
+Resets secret for a given bot.
+
+#### Specifics
+
+|                                  |                                                                          |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/reset_bot_secret` |
+| Required scopes                  | `agents-bot--my:rw`                                                      |
+| [Batch support](#batch-requests) | No                                                                       |
+
+#### Request
+
+| Parameter                       | Required | Type     | Notes                                                                                                                                                                                                                                                                                              |
+| ------------------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                            | Yes      | `string` | Bot ID                                                                                                                                                                                                                                                                                             |
+| `owner_client_id`               | Yes      | `string` | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.5/configuration/action/reset_bot_secret \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "id": "5c9871d5372c824cbf22d860a707a578"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.5" json="resetBotSecret"/>
 
 </Code>
 

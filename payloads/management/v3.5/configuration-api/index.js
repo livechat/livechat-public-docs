@@ -3,8 +3,13 @@ export { default as getAgent } from "./responses/agents/getAgent.json";
 export { default as listAgents } from "./responses/agents/listAgents.json"
 
 export { default as createBot } from "./responses/bots/createBot.json"
+export { default as createBotTemplate } from "./responses/bots/createBotTemplate.json"
 export { default as getBot } from "./responses/bots/getBot.json"
+export { default as issueBotToken } from "./responses/bots/issueBotToken.json"
 export { default as listBots } from "./responses/bots/listBots.json"
+export { default as listBotTemplates } from "./responses/bots/listBotTemplates.json"
+export { default as resetBotSecret } from "./responses/bots/resetBotSecret.json"
+export { default as resetBotTemplateSecret } from "./responses/bots/resetBotTemplateSecret.json"
 
 export { default as createGroup } from "./responses/groups/createGroup.json"
 export { default as getGroup } from "./responses/groups/getGroup.json"

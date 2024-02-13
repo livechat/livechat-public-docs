@@ -23,7 +23,7 @@ function SEO({ desc, keywords, title, subtitle, robots }) {
       <link
         rel="preconnect"
         href={`https://${process.env.NEXT_PUBLIC_ALGOLIA_APP_ID}-dsn.algolia.net`}
-        crossOrigin
+        crossOrigin="true"
       />
       <meta name="description" content={metaDescription} />
       {robots && <meta name="robots" content={robots} />}
