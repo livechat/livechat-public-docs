@@ -167,7 +167,7 @@ const Page = ({ frontMatter, children }) => {
     "customer-accounts-api",
     "text-api",
     "chat-api"
-  ].includes(subcategory);
+  ].includes(subcategory) || ["Chat API"].includes(title);
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
