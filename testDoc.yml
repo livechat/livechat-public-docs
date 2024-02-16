@@ -1,0 +1,914 @@
+asyncapi: 3.0.0
+info:
+  title: Chat API
+  version: 1.0.0
+  description: |
+    Chat API by text is a backend service which allows communicating between users using either websocket or HTTP protocol.
+    The communication is possible through public channels or with direct messages.
+    This service stores messaging history and allows users to get previous messages in the channels they have joined.
+  tags:
+    - name: Login
+      description: All authentication related operations
+    - name: Messages
+      description: All operations related to messaging
+    - name: Reactions
+      description: All operations related to reactions
+servers:
+  production:
+    host: api.text.com
+    description: Chat API URL
+    protocol: wss
+channels:
+  ws:
+    address: ws
+    messages:
+      LoginRequest:
+        $ref: '#/components/messages/LoginRequest'
+      LoginResponse:
+        $ref: '#/components/messages/LoginResponse'
+      SendMessageRequest:
+        $ref: '#/components/messages/SendMessageRequest'
+      SendMessageResponse:
+        $ref: '#/components/messages/SendMessageResponse'
+      IncomingMessage:
+        $ref: '#/components/messages/IncomingMessage'
+      GetMessagesRequest:
+        $ref: '#/components/messages/GetMessagesRequest'
+      GetMessagesResponse:
+        $ref: '#/components/messages/GetMessagesResponse'
+      AddReactionRequest:
+        $ref: '#/components/messages/AddReactionRequest'
+      AddReactionResponse:
+        $ref: '#/components/messages/AddReactionResponse'
+      ReactionAdded:
+        $ref: '#/components/messages/ReactionAdded'
+      RemoveReactionRequest:
+        $ref: '#/components/messages/RemoveReactionRequest'
+      RemoveReactionResponse:
+        $ref: '#/components/messages/RemoveReactionResponse'
+      ReactionRemoved:
+        $ref: '#/components/messages/ReactionRemoved'
+operations:
+  login:
+    action: receive
+    title: Login with access token
+    description: |
+      Authenticates the user with the access token
+      and returns the account and organization IDs
+    messages:
+      - $ref: '#/channels/ws/messages/LoginRequest'
+    reply:
+      messages:
+        - $ref: '#/channels/ws/messages/LoginResponse'
+    channel:
+      $ref: '#/channels/ws'
+  sendMessage:
+    action: receive
+    title: Send a message
+    description: |
+      Sends a message to the channel
+      and returns the ID of the sent message
+    messages:
+      - $ref: '#/channels/ws/messages/SendMessageRequest'
+    reply:
+      messages:
+        - $ref: '#/channels/ws/messages/SendMessageResponse'
+    channel:
+      $ref: '#/channels/ws'
+  getMessages:
+    action: receive
+    title: Get messages from channel
+    description: |
+      Returns the list of messages in the channel
+    messages:
+      - $ref: '#/channels/ws/messages/GetMessagesRequest'
+    reply:
+      messages:
+        - $ref: '#/channels/ws/messages/GetMessagesResponse'
+    channel:
+      $ref: '#/channels/ws'
+  addReaction:
+    action: receive
+    title: Add a reaction to a message
+    description: |
+      Adds a reaction to a message
+    messages:
+      - $ref: '#/channels/ws/messages/AddReactionRequest'
+    reply:
+      messages:
+        - $ref: '#/channels/ws/messages/AddReactionResponse'
+    channel:
+      $ref: '#/channels/ws'
+  removeReaction:
+    action: receive
+    title: Remove a reaction from a message
+    description: |
+      Removes a reaction from a message
+    messages:
+      - $ref: '#/channels/ws/messages/RemoveReactionRequest'
+    reply:
+      messages:
+        - $ref: '#/channels/ws/messages/RemoveReactionResponse'
+    channel:
+      $ref: '#/channels/ws'
+  serverPush:
+    action: send
+    title: Push message from server to client
+    description: |
+      Informs about events happening that affect the user,
+      such as new message in a channel where the user is present
+    messages:
+      - $ref: '#/channels/ws/messages/IncomingMessage'
+      - $ref: '#/channels/ws/messages/ReactionAdded'
+      - $ref: '#/channels/ws/messages/ReactionRemoved'
+    channel:
+      $ref: '#/channels/ws'
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: Provide Basic scheme while authenticating with Global Accounts Personal Access Tokens
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+       Provide a Bearer scheme for Global Accounts OAuth 2.0 agent access token
+       or authenticate as bot with JSON Web Token,
+       obtained with `issue_bot_token` LiveChat Configuration API endpoint
+  messages:
+    LoginRequest:
+      name: LoginRequest
+      title: login request
+      description: |
+        Message containing an access token 
+        sent by the client to authenticate user
+      contentType: application/json
+      tags:
+        - name: Login
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - payload
+        properties:
+          action:
+            type: string
+            const: login
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - token
+            properties:
+              token:
+                type: string
+                description: Access token of `basic` or `bearer` scheme
+      examples:
+        - name: LoginRequestExample
+          summary: A login request example
+          payload:
+            action: login
+            request_id: foo-baz-bar-420
+            payload:
+              token: 'Bearer dal:ZHVwYWth531'
+    LoginResponse:
+      name: LoginResponse
+      title: login response
+      description: Message sent by the server to the client as a response to login request
+      contentType: application/json
+      tags:
+        - name: Login
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - success
+          - payload
+        properties:
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          success:
+            $ref: '#/components/schemas/Success'
+          action:
+            type: string
+            const: login
+          payload:
+            type: object
+            description: Payload of the response
+            oneOf:
+              - $ref: '#/components/schemas/LoginResponsePayload'
+              - $ref: '#/components/schemas/ErrorPayload'
+      examples:
+        - name: LoginResponseExampleOK
+          summary: A login response example with success
+          payload:
+            action: login
+            request_id: foo-baz-bar-420
+            type: response
+            success: true
+            payload:
+              account_id: 8d27fb87-9421-46d7-9a37-286d9ff7bbf4
+              organization_id: 5c4bf6b1-d622-4ee1-b5b2-f7bd9f966ae7
+        - name: LoginResponseExampleError
+          summary: A login response example with error
+          payload:
+            action: login
+            request_id: foo-baz-bar-420
+            type: response
+            success: false
+            payload:
+              error:
+                type: validation
+                message: Invalid access token
+    SendMessageRequest:
+      name: SendMessageRequest
+      title: send_message request
+      description: |
+        Message containing a message to send
+        sent by the client to the server
+      contentType: application/json
+      tags:
+        - name: Messages
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - payload
+        properties:
+          action:
+            type: string
+            const: send_message
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+              - text
+            properties:
+              text:
+                type: string
+                description: Text of the message
+              channel:
+                type: string
+                description: ID of the channel to send the message to
+      examples:
+        - name: SendMessageRequestExample
+          summary: A send_message request example
+          payload:
+            action: send_message
+            request_id: foo-baz-bar-420
+            payload:
+              channel: general
+              text: Hello World!
+    SendMessageResponse:
+      name: SendMessageResponse
+      title: send_message response
+      description: Message sent by the server to the client as a response to send message request
+      contentType: application/json
+      tags:
+        - name: Messages
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - success
+          - payload
+        properties:
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          success:
+            $ref: '#/components/schemas/Success'
+          action:
+            const: send_message
+          payload:
+            type: object
+            description: Payload of the response
+            oneOf:
+              - $ref: '#/components/schemas/SendMessageResponsePayload'
+              - $ref: '#/components/schemas/ErrorPayload'
+      examples:
+        - name: SendMessageResponseExampleOK
+          summary: A send_message response example with success
+          payload:
+            action: send_message
+            request_id: foo-baz-bar-420
+            type: response
+            success: true
+            payload:
+              message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        - name: SendMessageResponseExampleError
+          summary: A send_message response example with error
+          payload:
+            action: send_message
+            request_id: foo-baz-bar-420
+            type: response
+            success: false
+            payload:
+              error:
+                type: validation
+                message: invalid message format
+    IncomingMessage:
+      name: IncomingMessage
+      title: incoming_message push
+      description: |
+        A message sent by the server to clients subscribed to the channel
+        when a new message is received
+      contentType: application/json
+      tags:
+        - name: Messages
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - type
+          - payload
+        properties:
+          action:
+            type: string
+            const: incoming_message
+          type:
+            type: string
+            const: push
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+              - author_id
+              - message_id
+              - created_at
+              - text
+            properties:
+              channel:
+                type: string
+                description: ID of the channel where the message was received
+              author_id:
+                type: string
+                description: ID of the author of the message
+              message_id:
+                type: string
+                format: uuid
+                description: ID of the message
+              created_at:
+                type: string
+                format: date-time
+                description: Timestamp of the message creation
+              text:
+                type: string
+                description: Text of the message
+      examples:
+        - name: IncomingMessageExample
+          summary: An incoming_message push example
+          payload:
+            action: incoming_message
+            type: push
+            payload:
+              channel: general
+              author_id: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+              message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+              created_at: '2024-01-24T12:36:05.987197Z'
+              text: Hello World!
+    GetMessagesRequest:
+      name: GetMessagesRequest
+      title: get_messages request
+      description: |
+        Message containing a request to get messages
+        in the requested channel
+      contentType: application/json
+      tags:
+        - name: Messages
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - payload
+        properties:
+          action:
+            type: string
+            const: get_messages
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+            properties:
+              channel:
+                type: string
+                description: ID of the channel to get messages from
+      examples:
+        - name: GetMessagesRequestExample
+          summary: A get_messages request example
+          payload:
+            action: get_messages
+            request_id: foo-baz-bar-420
+            payload:
+              channel: general
+    GetMessagesResponse:
+      name: GetMessagesResponse
+      title: get_messages response
+      description: Message sent by the server to the client as a response to get messages request
+      contentType: application/json
+      tags:
+        - name: Messages
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - success
+          - payload
+        properties:
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          success:
+            $ref: '#/components/schemas/Success'
+          action:
+            type: string
+            const: get_messages
+          payload:
+            type: object
+            description: Payload of the response
+            oneOf:
+              - $ref: '#/components/schemas/GetMessagesResponsePayload'
+              - $ref: '#/components/schemas/ErrorPayload'
+      examples:
+        - name: GetMessagesResponseExampleOK
+          summary: A get_messages response example with success
+          payload:
+            action: get_messages
+            request_id: foo-baz-bar-420
+            type: response
+            success: true
+            payload:
+              channel: general
+              total: 1
+              messages:
+                - message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                  author_id: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+                  created_at: '2024-01-24T12:36:05.987197Z'
+                  text: Hello World!
+                  reactions:
+                    - shortcode: thumbsup
+                      author_ids:
+                        - 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        - name: GetMessagesResponseExampleError
+          summary: A get_messages response example with error
+          payload:
+            action: get_messages
+            request_id: foo-baz-bar-420
+            type: response
+            success: false
+            payload:
+              error:
+                type: validation
+                message: invalid direct `channel` provided
+    AddReactionRequest:
+      name: AddReactionRequest
+      title: add_reaction request
+      description: |
+        Message containing a request to add a reaction to a message
+      contentType: application/json
+      tags:
+        - name: Messages
+        - name: Reactions
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - payload
+        properties:
+          action:
+            type: string
+            const: add_reaction
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+              - message_id
+              - shortcode
+            properties:
+              channel:
+                type: string
+                description: ID of the channel with the message
+              message_id:
+                type: string
+                format: uuid
+                description: ID of the message to react to
+              shortcode:
+                type: string
+                description: Shortcode of the reaction
+                example: thumbsup
+      examples:
+        - name: AddReactionRequestExample
+          summary: An add_reaction request example
+          payload:
+            action: add_reaction
+            request_id: foo-baz-bar-420
+            payload:
+              channel: general
+              message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+              shortcode: thumbsup
+    AddReactionResponse:
+      name: AddReactionResponse
+      title: add_reaction response
+      description: Message sent by the server to the client as a response to add_reaction request
+      contentType: application/json
+      tags:
+        - name: Messages
+        - name: Reactions
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - success
+          - payload
+        properties:
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          success:
+            $ref: '#/components/schemas/Success'
+          action:
+            type: string
+            const: add_reaction
+          payload:
+            type: object
+            description: Payload of the response
+            oneOf:
+              - $ref: '#/components/schemas/EmptyPayload'
+              - $ref: '#/components/schemas/ErrorPayload'
+      examples:
+        - name: AddReactionResponseExampleOK
+          summary: An add_reaction response example with success
+          payload:
+            request_id: foo-baz-bar-420
+            type: response
+            success: true
+            action: add_reaction
+            payload: {}
+        - name: AddReactionResponseExampleError
+          summary: An add_reaction response example with error
+          payload:
+            request_id: foo-baz-bar-420
+            success: false
+            action: add_reaction
+            payload:
+              error:
+                type: validation
+                message: invalid message format
+    ReactionAdded:
+      name: ReactionAdded
+      title: reaction_added push
+      description: |
+        A message sent by the server to clients subscribed to the channel
+        when a reaction is added to a message
+      contentType: application/json
+      tags:
+        - name: Messages
+        - name: Reactions
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - type
+          - payload
+        properties:
+          action:
+            type: string
+            const: reaction_added
+          type:
+            type: string
+            const: push
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+              - author_id
+              - message_id
+              - shortcode
+            properties:
+              channel:
+                type: string
+                description: ID of the channel where the reaction was added
+              message_id:
+                type: string
+                format: uuid
+                description: ID of the message the reaction was added to
+              shortcode:
+                type: string
+                description: Shortcode of the reaction
+                example: thumbsup
+              author_id:
+                type: string
+                format: uuid
+                description: ID of the user who added the reaction
+      examples:
+        - name: ReactionAddedExample
+          summary: A reaction_added push example
+          payload:
+            action: reaction_added
+            type: push
+            payload:
+              channel: general
+              message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+              shortcode: thumbsup
+              author_id: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+    RemoveReactionRequest:
+      name: RemoveReactionRequest
+      title: remove_reaction request
+      description: |
+        Message containing a request to remove a reaction from a message
+      contentType: application/json
+      tags:
+        - name: Messages
+        - name: Reactions
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - payload
+        properties:
+          action:
+            type: string
+            const: remove_reaction
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+              - message_id
+              - shortcode
+            properties:
+              channel:
+                type: string
+                description: ID of the channel with the message
+              message_id:
+                type: string
+                description: ID of the message to remove reaction from
+              shortcode:
+                type: string
+                description: Shortcode of the reaction
+                example: thumbsup
+      examples:
+        - name: RemoveReactionRequestExample
+          summary: A remove_reaction request example
+          payload:
+            action: remove_reaction
+            request_id: foo-baz-bar-420
+            payload:
+              channel: general
+              message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+              shortcode: thumbsup
+    RemoveReactionResponse:
+      name: RemoveReactionResponse
+      title: remove_reaction response
+      description: Message sent by the server to the client as a response to remove_reaction request
+      contentType: application/json
+      tags:
+        - name: Messages
+        - name: Reactions
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - success
+          - payload
+        properties:
+          request_id:
+            $ref: '#/components/schemas/RequestId'
+          success:
+            $ref: '#/components/schemas/Success'
+          action:
+            type: string
+            const: remove_reaction
+          payload:
+            type: object
+            description: Payload of the response
+            oneOf:
+              - $ref: '#/components/schemas/EmptyPayload'
+              - $ref: '#/components/schemas/ErrorPayload'
+      examples:
+        - name: RemoveReactionResponseExampleOK
+          summary: A remove_reaction response example with success
+          payload:
+            action: remove_reaction
+            request_id: foo-baz-bar-420
+            type: response
+            success: true
+            payload: {}
+        - name: RemoveReactionResponseExampleError
+          summary: A remove_reaction response example with error
+          payload:
+            action: remove_reaction
+            request_id: foo-baz-bar-420
+            success: false
+            payload:
+              error:
+                type: validation
+                message: invalid message format
+    ReactionRemoved:
+      name: ReactionRemoved
+      title: reaction_removed push
+      description: |
+        A message sent by the server to clients subscribed to the channel
+        when a reaction is removed from a message
+      contentType: application/json
+      tags:
+        - name: Messages
+        - name: Reactions
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - action
+          - type
+          - payload
+        properties:
+          action:
+            type: string
+            const: reaction_removed
+          type:
+            type: string
+            const: push
+          payload:
+            type: object
+            additionalProperties: false
+            required:
+              - channel
+              - author_id
+              - message_id
+              - shortcode
+            properties:
+              channel:
+                type: string
+                description: ID of the channel where the message was received
+              message_id:
+                type: string
+                format: uuid
+                description: ID of the message
+              shortcode:
+                type: string
+                description: Shortcode of the reaction
+                example: thumbsup
+              author_id:
+                type: string
+                format: uuid
+                description: ID of the user who removed the reaction
+      examples:
+        - name: ReactionRemovedExample
+          summary: A reaction_removed push example
+          payload:
+            action: reaction_removed
+            type: push
+            payload:
+              channel: general
+              message_id: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+              shortcode: thumbsup
+              author_id: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+  schemas:
+    RequestId:
+      type: string
+      description: |
+        Optional request ID set by the client
+        Server reply must contain the same request ID
+    Success:
+      type: boolean
+      description: |
+        True means that the server processed the request successfully
+        Otherwise, the operation has failed
+    LoginResponsePayload:
+      type: object
+      title: loginResponsePayload
+      additionalProperties: false
+      required:
+        - account_id
+        - organization_id
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          description: Account ID of the authenticated user
+        organization_id:
+          type: string
+          format: uuid
+          description: Organization ID of the authenticated user
+      tags:
+        - name: Login
+    SendMessageResponsePayload:
+      type: object
+      title: sendMessageResponsePayload
+      additionalProperties: false
+      required:
+        - message_id
+      properties:
+        message_id:
+          type: string
+          format: uuid
+          description: ID of the sent message
+      tags:
+        - name:  messages
+    GetMessagesResponsePayload:
+      type: object
+      title: getMessagesResponsePayload
+      additionalProperties: false
+      required:
+        - channel
+        - total
+        - messages
+      properties:
+        channel:
+          type: string
+          description: ID of the channel
+        total:
+          type: integer
+          description: Total number of messages in the channel
+        messages:
+          type: array
+          description: List of messages in the channel
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              message_id:
+                type: string
+                format: uuid
+                description: ID of the message
+              author_id:
+                type: string
+                format: uuid
+                description: ID of the author of the message
+              created_at:
+                type: string
+                format: date-time
+                description: Timestamp of the message creation
+              text:
+                type: string
+                description: Text of the message
+              reactions:
+                type: array
+                description: List of reactions to the message
+                items:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    shortcode:
+                      type: string
+                      description: Shortcode of the reaction
+                      example: thumbsup
+                    author_ids:
+                      type: array
+                      description: List of IDs of users who reacted with the shortcode
+                      items:
+                        type: string
+                        description: ID of the user who reacted with the shortcode
+      tags:
+        - name:  messages
+    EmptyPayload:
+      type: object
+      title: empty request/response payload
+      additionalProperties: false
+    ErrorPayload:
+      type: object
+      title: errorPayload
+      additionalProperties: false
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required:
+            - type
+            - message
+          properties:
+            type:
+              type: string
+              description: Type of the error
+              example: validation
+            message:
+              type: string
+              description: Error message
+              example: invalid message format

@@ -15,6 +15,8 @@ import DeveloperPath from "components/core/DeveloperPath/DeveloperPath";
 import Search from "components/core/Search";
 import SEO from "components/core/seo";
 import { cards, devPaths } from "constants/cards";
+import AsyncApiDocs from "components/extensions/AsyncApi";
+import specMock from "../../testDoc.yml";
 
 const wrapperCss = css`
   max-width: 960px;
@@ -118,47 +120,7 @@ const Index = () => {
             <Header />
             <Menu />
 
-            <div css={wrapperCss}>
-              <div css={titleWrapperCss}>
-                <span css={textLogoCss}>
-                  text
-                  <span className="carrier">&#124;</span>
-                  <span>Platform Docs</span>
-                </span>
-                <Search />
-              </div>
-              <h2>Build with Platform components</h2>
-              <p>
-                Text Platform offers you a variety of APIs, SDKs, and developer
-                tools that allow for maximum flexibility in building software.
-                Extend LiveChat and HelpDesk or build independent products.
-              </p>
-              <div css={cardsWrapperCss}>
-                {cards.map((card, index) => (
-                  <Card
-                    key={index}
-                    title={card.title}
-                    link={card.link}
-                    image={card.image}
-                    badge={card.badge}
-                  >
-                    {card.copy}
-                  </Card>
-                ))}
-              </div>
-              <h2>Choose your path</h2>
-              <div css={pathsWrapperCss}>
-                {devPaths.map((path, index) => (
-                  <DeveloperPath
-                    key={index}
-                    title={path.title}
-                    subtitle={path.subtitle}
-                    links={path.links}
-                    image={path.image}
-                  />
-                ))}
-              </div>
-            </div>
+            <AsyncApiDocs schema={specMock}/>
             <Footer />
           </PromotionProvider>
         </VersionProvider>
