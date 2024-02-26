@@ -2,11 +2,13 @@ openapi: 3.0.0
 info:
   title: Chat API
   version: 1.0.0
-  description: >-
-    Description not provided
+  description: |
+    Chat API by text is a backend service which allows communicating between users using either a websocket or the HTTP protocol.<br>
+    The communication can happen on public channels or via direct messages.<br>
+    This service stores messaging history and allows users to get previous messages from the channels they have joined.<br>
 servers:
-  - url: https://api.text.com/chat
-    description: Chat API URL
+  - url: https://api.text.com/chat"
+    description: Chat API URL.
 components:
   securitySchemes:
     BearerAuth:
@@ -17,7 +19,7 @@ components:
       scheme: basic
   responses:
     Unauthorized:
-      description: Unauthorized, missing or invalid credentials
+      description: Unauthorized, missing or invalid credentials.
       content:
         application/json:
           schema:
@@ -33,7 +35,7 @@ components:
                     type: string
                     example: Invalid access token.
     Validation:
-      description: Invalid or missing request parameters
+      description: Invalid or missing request parameters.
       content:
         application/json:
           schema:
@@ -50,7 +52,7 @@ components:
                     example: Invalid message format.
   schemas:
     Shortcode:
-      description: shortcode of the reaction
+      description: Shortcode of the reaction.
       type: string
       enum:
         - thumbsup
@@ -65,13 +67,67 @@ components:
         ID of the channel. It can be a public channel (`general`),<br>
         or a private channel (`requester_id:receiver_id`)<br>
       example: general
+    IncomingMessageWebhookPayload:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelID'
+        message_id:
+          type: string
+          format: uuid
+          description: ID of the message.
+          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        author_id:
+          type: string
+          description: ID of the message author.
+          example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        created_at:
+          type: string
+          format: date-time
+          description: Message creation date.
+          example: 2024-01-24T12:36:05.987197Z
+        text:
+          type: string
+          description: Message text.
+          example: Hello, World!
+    ReactionAddedWebhookPayload:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelID'
+        message_id:
+          type: string
+          format: uuid
+          description: ID of the message.
+          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        shortcode: 
+          $ref: '#/components/schemas/Shortcode'
+        author_id:
+          type: string
+          description: ID of the user who added the reaction.
+          example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+    ReactionRemovedWebhookPayload:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelID'
+        message_id:
+          type: string
+          format: uuid
+          description: ID of the message.
+          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        shortcode:
+          $ref: '#/components/schemas/Shortcode'
+        author_id:
+          type: string
+          description: ID of the user who removed their reaction.
 paths:
   /action/send_message:
     post:
       summary: Send message
-      description: Send a new message to provided channel
+      description: Sends a new message to the provided channel.
       tags:
-        - messages
+        - Messages
       security:
         - BearerAuth: []
         - BasicAuth: []
@@ -89,11 +145,11 @@ paths:
                   $ref: '#/components/schemas/ChannelID'
                 text:
                   type: string
-                  description: Message text
+                  description: Message text.
                   example: Hello, World!
       responses:
         "200":
-          description: Message sent successfully, contains ID of the sent message
+          description: Message sent successfully, contains ID of the sent message.
           content:
             application/json:
               schema:
@@ -104,7 +160,7 @@ paths:
                   message_id:
                     type: string
                     format: uuid
-                    description: ID of the sent message
+                    description: ID of the sent message.
                     example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
         "401":
           $ref: '#/components/responses/Unauthorized'
@@ -113,9 +169,9 @@ paths:
   /action/get_messages:
     post:
       summary: Get messages
-      description: Get messages from provided channel
+      description: Gets messages from the provided channel.
       tags:
-        - messages
+        - Messages
       security:
         - BearerAuth: []
         - BasicAuth: []
@@ -130,9 +186,25 @@ paths:
               properties:
                 channel:
                   $ref: '#/components/schemas/ChannelID'
+                page_id:
+                  type: string
+                  description: ID of the page of results to fetch. It cannot be combined with the `limit` or `sort_order` parameters.
+                  example: MjEzNzphc2M6MDp0cnVlOjY5
+                limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: Number of messages to fetch on one page. The default value is 25.
+                  example: 10
+                sort_order:
+                  type: string
+                  enum:
+                    - asc
+                    - desc
+                  description: Sort order of the messages. The default value is `desc`.
       responses:
         "200":
-          description: Contains list of messages in requested channel
+          description: Contains the list of messages from the requested channel.
           content:
             application/json:
               schema:
@@ -142,6 +214,18 @@ paths:
                 properties:
                   channel:
                     $ref: '#/components/schemas/ChannelID'
+                  total:
+                    type: integer
+                    description: Total number of messages in the channel.
+                    example: 1
+                  next_page_id:
+                    type: string
+                    description: ID of the next page of results.
+                    example: MjEzNzphc2M6MDp0cnVlOjY5
+                  previous_page_id:
+                    type: string
+                    description: ID of the previous page of results.
+                    example: MjEzNzphc2M6MDp0cnVlOjY5
                   messages:
                     type: array
                     items:
@@ -150,21 +234,20 @@ paths:
                         message_id:
                           type: string
                           format: uuid
-                          description: ID of the message
+                          description: ID of the message.
                           example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
                         author_id:
                           type: string
-                          format: uuid
-                          description: ID of the message author
+                          description: ID of the message author.
                           example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
                         created_at:
                           type: string
                           format: date-time
-                          description: Message creation date
+                          description: Message creation date.
                           example: 2024-01-24T12:36:05.987197Z
                         text:
                           type: string
-                          description: Message text
+                          description: Message text.
                           example: Hello, World!
                         reactions:
                           type: array
@@ -177,7 +260,7 @@ paths:
                                 type: array
                                 items:
                                   type: string
-                                  description: ID of the reaction author
+                                  description: ID of the reaction author.
                                   example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
         "401":
           $ref: '#/components/responses/Unauthorized'
@@ -186,8 +269,9 @@ paths:
   /action/add_reaction:
     post:
       summary: Add message reaction
+      description: Adds a reaction of the provided shortcode to the message.
       tags:
-        - reactions
+        - Reactions
       security:
         - BearerAuth: []
         - BasicAuth: []
@@ -204,7 +288,7 @@ paths:
               properties:
                 message_id:
                   type: string
-                  description: ID of the message to react to
+                  description: ID of the message to react to.
                   format: uuid
                   example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
                 channel:
@@ -213,7 +297,7 @@ paths:
                   $ref: '#/components/schemas/Shortcode'
       responses:
         "200":
-          description: Reaction added successfully
+          description: Reaction added successfully.
           content:
             application/json:
               schema:
@@ -225,9 +309,9 @@ paths:
   /action/remove_reaction:
     post:
       summary: Remove message reaction
-      description: Remove reaction from a message of ID provided in request body
+      description: Removes a reaction from a message of ID provided in the request body.
       tags:
-        - reactions
+        - Reactions
       security:
         - BearerAuth: []
         - BasicAuth: []
@@ -244,22 +328,234 @@ paths:
               properties:
                 message_id:
                   type: string
-                  description: ID of the message to remove reaction from
+                  description: ID of the message to remove the reaction from.
                   format: uuid
                   example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
                 channel:
                   type: string
-                  description: ID of the channel where message is located
+                  description: ID of the channel where the message is located.
                   example: general
                 shortcode:
                   $ref: '#/components/schemas/Shortcode'
       responses:
         "200":
-          description: Reaction removed successfully
+          description: Reaction removed successfully.
           content:
             application/json:
               schema:
                 type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/register_webhook:
+    post:
+      summary: Register a webhook
+      description: >-
+        Registers a webhook that will be triggered for a certain event.<br>
+        Required token scope: `webhooks.configuration:rw`.<br>
+        You can register up to 3 webhooks per action per client ID.<br>
+      tags:
+        - webhooks
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - secret_key
+                - url
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - incoming_message
+                    - reaction_added
+                    - reaction_removed
+                  description: Action that will trigger the webhook.
+                  example: incoming_message
+                secret_key:
+                  type: string
+                  description: Secret key that will be used to sign the webhook payload.
+                  maxLength: 255
+                  example: g*iXffXhUExfUp22hN8gH4At
+                url:
+                  type: string
+                  format: uri 
+                  description: URL that will be called when a webhook is triggered.
+                  maxLength: 255
+                  example: https://my-service.com/webhook
+                description:
+                  type: string
+                  description: Optional description for the webhook.
+                  example: This webhook is used for updates when someone sends a new message
+                owner_client_id:
+                  type: string
+                  description: >-
+                    ID of the client that owns the webhook<br>
+                    Required only when using Personal Access Token for authentication.<br>
+                  example: 2e4311458e09afb17e13c8a0c6d09732
+      callbacks:
+        webhook:
+          '{$request.body#/url}':
+            post:
+              headers:
+                X-Secret-Key:
+                  schema:
+                    type: string
+                  description: Secret key that was used to sign the webhook payload.
+                  example: g*iXffXhUExfUp22hN8gH4At
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      required:
+                        - webhook_id
+                        - action
+                        - secret_key
+                        - payload
+                      properties:
+                        webhook_id:
+                          type: string
+                          format: uuid
+                          description: ID of the webhook that was triggered.
+                          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                        action:
+                          type: string
+                          enum:
+                            - incoming_message
+                            - reaction_added
+                            - reaction_removed
+                          description: Action that triggered the webhook.
+                          example: incoming_message                          
+                        payload:
+                          type: object
+                          description: Payload of the webhook.
+                          oneOf:
+                            - $ref: '#/components/schemas/IncomingMessageWebhookPayload'
+                            - $ref: '#/components/schemas/ReactionAddedWebhookPayload'
+                            - $ref: '#/components/schemas/ReactionRemovedWebhookPayload'
+              responses:
+                "200":
+                  description: Your server returns this code if it accepts the callback.
+      responses:
+        "200":
+          description: Webhook registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: ID of the registered webhook
+                    example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/unregister_webhook:
+    post:
+      summary: Unregister a webhook
+      description: Unregisters a webhook.
+      tags:
+        - webhooks
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  description: ID of the webhook to unregister
+                  example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                owner_client_id:
+                  type: string
+                  description: >-
+                    ID of the client that owns the webhook. Required only when using Personal Access Token for authentication.
+                  example: 2e4311458e09afb17e13c8a0c6d09732
+      responses:
+        "200":
+          description: Webhook unregistered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/list_webhooks:
+    post:
+      summary: List webhooks
+      description: Lists all webhooks registered for the provided client.
+      tags:
+        - webhooks
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                owner_client_id:
+                  type: string
+                  description: ID of the client that owns the webhooks. Required only when using Personal Access Token for authentication.
+                  example: 2e4311458e09afb17e13c8a0c6d09732
+      responses:
+        "200":
+          description: Contains the list of webhooks registered for the provided client.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      description: ID of the webhook
+                      example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+                    action:
+                      type: string
+                      enum:
+                        - incoming_message
+                        - reaction_added
+                        - reaction_removed
+                      description: Action that will trigger the webhook
+                      example: incoming_message
+                    url:
+                      type: string
+                      format: uri 
+                      description: URL that will be called when webhook is triggered
+                      example: https://my-service.com/webhook
+                    description:
+                      type: string
+                      description: Optional description of the webhook
+                      example: My webhook
+                    owner_client_id:
+                      type: string
+                      description: ID of the client that owns the webhook.
+                      example: 2e4311458e09afb17e13c8a0c6d09732
         "401":
           $ref: '#/components/responses/Unauthorized'
         "422":
