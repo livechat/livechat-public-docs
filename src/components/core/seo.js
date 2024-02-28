@@ -8,7 +8,7 @@ const defaultSiteMetadata = {
   title: "LiveChat Platform Docs & API Reference",
   description:
     "The LiveChat Platform offers much more than just a messaging tool. There's a number of possibilities that help you grow a business, which brings customer satisfaction.",
-  author: "@livechat",
+  author: "@livechat"
 };
 
 function SEO({ desc, keywords, title, subtitle, robots }) {
@@ -54,7 +54,7 @@ function SEO({ desc, keywords, title, subtitle, robots }) {
             window.__lc = window.__lc || {};
      window.__lc.license = 1520;
      ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/staging/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
-        `,
+        `
         }}
       />
       <script
@@ -69,7 +69,7 @@ var qP=[];dataLayerName!=="dataLayer"&&qP.push("data_layer_name="+dataLayerName)
 tags.async=!0,tags.src="//livechat.containers.piwik.pro/"+id+".js"+qPString,scripts.parentNode.insertBefore(tags,scripts);
 !function(a,n,i){a[n]=a[n]||{};for(var c=0;c<i.length;c++)!function(i){a[n][i]=a[n][i]||{},a[n][i].api=a[n][i].api||function(){var a=[].slice.call(arguments,0);"string"==typeof a[0]&&window[dataLayerName].push({event:n+"."+i+":"+a[0],parameters:[].slice.call(arguments,1)})}}(i[c])}(window,"ppms",["tm","cm"]);
 })(window, document, 'dataLayer', '${process.env.NEXT_PUBLIC_PIWIK_ID}');
-        `,
+        `
         }}
       />
 
@@ -88,7 +88,7 @@ tags.async=!0,tags.src="//livechat.containers.piwik.pro/"+id+".js"+qPString,scri
 SEO.defaultProps = {
   lang: "en",
   meta: [],
-  keywords: [],
+  keywords: []
 };
 
 SEO.propTypes = {
@@ -98,7 +98,7 @@ SEO.propTypes = {
   keywords: PropTypes.arrayOf(PropTypes.string),
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
-  robots: PropTypes.string,
+  robots: PropTypes.string
 };
 
 export default SEO;

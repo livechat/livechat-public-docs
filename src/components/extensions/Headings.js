@@ -3,7 +3,6 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Image from "./Image";
-import { Button } from "@livechat/design-system";
 
 import Link from "next/link";
 import Redirect from "./Redirect";
@@ -37,7 +36,7 @@ const Pre = ({ children, ...props }) => {
   );
 };
 
-export const getText = (children) => {
+export const getText = children => {
   if (typeof children !== "string") {
     return children;
   }
@@ -168,7 +167,11 @@ const SectionLink = ({ to, href, children, ...rest }) => {
   return <StyledLink>{children}</StyledLink>;
 };
 
-const makeHeading = (size) => ({ children, ...props }) => {
+const makeHeading = size => ({ children, ...props }) => {
+  if (typeof children[1] === "string" && children[1]?.includes("\n")) {
+    return null;
+  }
+
   const className = "heading";
 
   const { id, ...rest } = props;
@@ -235,9 +238,11 @@ export default {
   pre: Pre,
   Warning,
   SectionLink,
-  table: ({ children }) => (
-    <TableWrapper>
-      <table>{children}</table>
-    </TableWrapper>
-  ),
+  table: ({ children }) => {
+    return (
+      <TableWrapper>
+        <table>{children}</table>
+      </TableWrapper>
+    );
+  }
 };

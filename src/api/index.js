@@ -4,7 +4,7 @@ import LiveChatClient from "./livechat";
 let clients = {
   accounts: null,
   livechat: null,
-  isInitialized: false,
+  isInitialized: false
 };
 
 const api = {
@@ -12,7 +12,7 @@ const api = {
     clients = {
       accounts: new AccountsClient(token),
       livechat: new LiveChatClient(token),
-      isInitialized: true,
+      isInitialized: true
     };
   },
 
@@ -22,7 +22,7 @@ const api = {
 
   getLiveChat() {
     return clients.livechat;
-  },
+  }
 };
 
 export default api;

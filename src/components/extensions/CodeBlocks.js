@@ -156,8 +156,8 @@ export const CodeSample = ({ path, children }) => {
           <code className="code-sample-header">{path}</code>
           <ActionsWrapper>
             {count > 1 && (
-              <SelectLanguage onChange={(e) => setSample(e.target.value)}>
-                {childrenArray.map((children) => (
+              <SelectLanguage onChange={e => setSample(e.target.value)}>
+                {childrenArray.map(children => (
                   <option key={children.props.label}>
                     {children.props.label}
                   </option>
@@ -178,7 +178,7 @@ export const CodeResponse = ({
   children,
   version,
   json,
-  type = "default",
+  type = "default"
 }) => {
   let jsonPayload;
 

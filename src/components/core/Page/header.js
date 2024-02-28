@@ -32,7 +32,7 @@ const StyledRating = styled(Rating)`
   }
 `;
 
-const PageHeader = ({ title }) => (
+const PageHeader = ({ title, ...rest }) => (
   <PageHeaderWrapper>
     <PageTitle>
       <span>{title}</span>
@@ -42,7 +42,7 @@ const PageHeader = ({ title }) => (
 );
 
 PageHeader.propTypes = {
-  title: string.isRequired,
+  title: string.isRequired
 };
 
 export default PageHeader;

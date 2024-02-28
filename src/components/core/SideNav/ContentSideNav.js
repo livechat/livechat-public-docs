@@ -57,7 +57,7 @@ const LinkContainer = styled.div`
 const ContentSideNav = ({ version }) => {
   const router = useRouter();
   const pathname = router.pathname;
-  const headings = articles.find((article) => article.link === pathname + "/")
+  const headings = articles.find(article => article.link === pathname + "/")
     ?.headings;
 
   const hash = typeof window !== "undefined" ? window.location.hash : "";
@@ -70,11 +70,9 @@ const ContentSideNav = ({ version }) => {
         .map(({ id, offsetTop, clientHeight }) => ({
           id,
           offsetTop,
-          clientHeight,
+          clientHeight
         }))
-        .filter((item) =>
-          headings?.some((heading) => heading.slug === item.id)
-        );
+        .filter(item => headings?.some(heading => heading.slug === item.id));
 
       const currentPosition =
         window.scrollY || document.documentElement.scrollTop;
@@ -101,7 +99,7 @@ const ContentSideNav = ({ version }) => {
   return (
     <Wrapper isVersioned={version}>
       <Header>On this page</Header>
-      {headings.map((heading) => {
+      {headings.map(heading => {
         return (
           <LinkContainer key={heading.slug}>
             <Link href={heading.link} passHref>
@@ -120,7 +118,7 @@ const ContentSideNav = ({ version }) => {
 };
 
 ContentSideNav.propTypes = {
-  version: string,
+  version: string
 };
 
 export default ContentSideNav;

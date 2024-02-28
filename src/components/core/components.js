@@ -12,13 +12,13 @@ export const Box = posed.div({
   COLLAPSED: {
     height: 0,
     opacity: 0,
-    transition: { duration: 150 },
+    transition: { duration: 150 }
   },
   EXPANDED: {
     height: "auto",
     opacity: 1,
-    transition: { duration: 150 },
-  },
+    transition: { duration: 150 }
+  }
 });
 
 export const CollapsableSection = ({ expanded, children }) => (
@@ -27,7 +27,7 @@ export const CollapsableSection = ({ expanded, children }) => (
     initialPose={COLLAPSED}
     withParent={false} // don't ever remove this
     style={{
-      overflow: "hidden",
+      overflow: "hidden"
     }}
   >
     {children}
@@ -52,7 +52,7 @@ const NavWrapper = styled.aside`
     expanded ? "10px 10px 25px 0 rgba(0, 0, 0, 0.1)" : "none"};
 
   @media (min-width: 768px) {
-    top: ${(props) => (props.promoIsActive ? "100px" : "60px")};
+    top: ${props => (props.promoIsActive ? "100px" : "60px")};
     height: calc(100vh - 60px);
   }
 
@@ -89,7 +89,7 @@ export const Nav = ({ expanded, setExpanded, children, ...rest }) => {
       <NavSwitch
         href="#toggle-nav"
         expanded={expanded}
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault();
           setExpanded(!expanded);
         }}

@@ -9,8 +9,8 @@ class LiveChatClient {
       baseURL: process.env.NEXT_PUBLIC_LC_API_URL,
       headers: {
         Authorization: `Bearer ${token}`,
-        "X-Region": region,
-      },
+        "X-Region": region
+      }
     });
   }
 
@@ -19,7 +19,7 @@ class LiveChatClient {
       const response = await this.instance.post(
         `/v3.5/configuration/action/get_agent`,
         {
-          id,
+          id
         }
       );
 

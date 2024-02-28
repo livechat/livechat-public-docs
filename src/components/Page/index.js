@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { node, object } from "prop-types";
-import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import FullStory from "react-fullstory";
-
 import { SideNav } from "../core/SideNav";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
@@ -20,7 +18,7 @@ import {
   LeftColumnRedoc,
   LeftColumnRedocWrapper,
   NavHeader,
-  CategoryRedoc,
+  CategoryRedoc
 } from "../core/components";
 import Rating from "../core/Rating";
 import Footer from "../core/Footer/Footer";
@@ -31,21 +29,23 @@ import {
   Errors,
   Placeholder,
   Image,
+  ChatWindow
 } from "../extensions";
 
 import { RATING_POSITION } from "../../constants";
 import {
   VersionProvider,
   RatingProvider,
-  PromotionProvider,
+  PromotionProvider
 } from "../../contexts";
 import { AuthProvider } from "../../contexts/auth";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import articlesVersions from "../../configs/articlesVersions.json";
+import { MDXRemote } from "next-mdx-remote";
 
 const ContentSideNav = dynamic(
-  () => import("../core/SideNav").then((mod) => mod.ContentSideNav),
+  () => import("../core/SideNav").then(mod => mod.ContentSideNav),
   { ssr: false, loading: () => <p>...</p> }
 );
 
@@ -56,6 +56,7 @@ const components = {
   Errors,
   Placeholder,
   Image,
+  ChatWindow
 };
 
 const StyledRating = styled(Rating)`
@@ -69,7 +70,9 @@ const StyledRating = styled(Rating)`
   }
 `;
 
-const Page = ({ frontMatter, children }) => {
+const Page = ({ data, content, children }) => {
+  const router = useRouter();
+
   const {
     title,
     subtitle,
@@ -79,9 +82,8 @@ const Page = ({ frontMatter, children }) => {
     robots,
     apiVersion: currentApiVersion,
     versionGroup,
-    slug: customSlug,
-  } = frontMatter;
-  const router = useRouter();
+    slug: customSlug
+  } = data;
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -103,15 +105,15 @@ const Page = ({ frontMatter, children }) => {
         </a>{" "}
         with the LiveChat Developer Program.
       </div>
-    ),
+    )
   };
 
   useEffect(() => {
     const pathname = window.location.pathname;
 
     versions.ALL_VERSIONS.filter(
-      (version) => version !== versions.STABLE_VERSION
-    ).forEach((version) => {
+      version => version !== versions.STABLE_VERSION
+    ).forEach(version => {
       if (pathname.includes(version)) {
         setSelectedVersion(version);
       }
@@ -119,7 +121,7 @@ const Page = ({ frontMatter, children }) => {
     // eslint-disable-next-line
   }, []);
 
-  const redirectToVersion = (version) => {
+  const redirectToVersion = version => {
     setSelectedVersion(version);
 
     const pathname = window.location.pathname;
@@ -151,7 +153,7 @@ const Page = ({ frontMatter, children }) => {
 
   const versionContext = {
     selected: selectedVersion,
-    items: versions,
+    items: versions
   };
 
   let slug = canUseWindow ? window.location.pathname : "";
@@ -162,12 +164,13 @@ const Page = ({ frontMatter, children }) => {
   slug = slug[slug.length - 1] === "/" ? slug : `${slug}/`;
 
   const ratingContext = useRating({ slug });
-  const useRedocPage = [
-    "global-accounts-api",
-    "customer-accounts-api",
-    "text-api",
-    "chat-api"
-  ].includes(subcategory) || ["Chat API"].includes(title);
+  const useRedocPage =
+    [
+      "global-accounts-api",
+      "customer-accounts-api",
+      "text-api",
+      "chat-api"
+    ].includes(subcategory) || ["Chat API"].includes(title);
 
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
@@ -236,8 +239,11 @@ const Page = ({ frontMatter, children }) => {
                       </LeftColumnRedoc>
                     </LeftColumnRedocWrapper>
                   )}
-
-                  <MDXProvider components={components}>{children}</MDXProvider>
+                  {useRedocPage ? (
+                    children
+                  ) : (
+                    <MDXRemote {...content} components={components} />
+                  )}
 
                   {!useRedocPage && (
                     <StyledRating position={RATING_POSITION.BOTTOM} />
@@ -257,7 +263,7 @@ const Page = ({ frontMatter, children }) => {
 
 Page.propTypes = {
   children: node.isRequired,
-  meta: object,
+  meta: object
 };
 
 export default Page;

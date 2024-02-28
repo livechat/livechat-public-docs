@@ -8,7 +8,7 @@ const AsyncApiComponent = dynamic(() => import('@asyncapi/react-component/browse
 export default function AsyncApiDocs(props) {
   const [schema, setSchema] = useState(null)
   const schema1 = async () => {
-    const res = await fetch('https://raw.githubusercontent.com/livechat/api/b92bd3ad97ddc2e1a7ab27b6eebf6631644c447b/services/chat-api/docs/spec-rtm.yml?token=GHSAT0AAAAAACMISOCEHBGG6A3P73D7J4ACZOPMATQ').then((res) => res.text())
+    const res = await fetch('https://raw.githubusercontent.com/livechat/api/b92bd3ad97ddc2e1a7ab27b6eebf6631644c447b/services/chat-api/docs/spec-rtm.yml?token=GHSAT0AAAAAACMISOCFI356BDWB23EJYSDWZOPOSLQ').then((res) => res.text())
     setSchema((res))
   }
 
