@@ -20,7 +20,14 @@ const nextConfig = {
     webpack5: true,
     mdxRs: false
   },
-  pageExtensions: ["js", "jsx", "md", "mdx"]
+  pageExtensions: ["js", "jsx", "md", "mdx"],
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback.fs = false;
+      config.resolve.fallback.child_process = false;
+    }
+    return config;
+  }
 };
 
 module.exports = withPlugins(

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import storeMetrics from "@livechat/store-metrics";
 import TagManager from "react-gtm-module";
@@ -12,10 +12,10 @@ import "../styles/algolia.css";
 import "../styles/redoc.css";
 import { canUseWindow } from "../utils/canUseWindow";
 import Page from "components/Page";
+import dynamic from "next/dynamic";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, data, content }) {
   const router = useRouter();
-  const [data, setData] = useState(null);
 
   useEffect(() => {
     TagManager.initialize({
@@ -32,39 +32,54 @@ function MyApp({ Component, pageProps }) {
     window.dataLayer.push({ event: "next-route-change" });
   }, [router.pathname]);
 
-  useEffect(() => {
-    const fetchMdx = async () => {
-      const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
-
-      await fetch(basePath + "/api/get-article", {
-        method: "POST",
-        body: JSON.stringify({
-          url: router.pathname
-        })
-      })
-        .then(res => res.json())
-        .then(res => {
-          setData(res);
-        });
-    };
-    if (router.pathname !== "/") {
-      fetchMdx();
-    }
-  }, [router.pathname]);
-
   if (router.pathname === "/") {
     return <Component {...pageProps} />;
   }
 
-  if (!data) {
-    return null;
-  }
-
   return (
-    <Page data={data.data} content={data.content}>
-      <Component test="test" {...pageProps} />
+    <Page data={data} content={content}>
+      <Component {...pageProps} />
     </Page>
   );
 }
+
+MyApp.getInitialProps = async ctx => {
+  const path = await import("path");
+  const fs = await import("fs");
+  const serialize = (await import("next-mdx-remote/serialize")).serialize;
+  const matter = (await import("gray-matter")).default;
+
+  const remarkMdxFrontmatter = dynamic(() => import("remark-mdx-frontmatter"), {
+    ssr: false
+  });
+  const remarkFrontmatter = dynamic(() => import("remark-frontmatter"), {
+    ssr: false
+  });
+  const remarkGfm = dynamic(() => import("remark-gfm"), {
+    ssr: false
+  });
+
+  const articlesDirectory = path.join(process.cwd(), "src/pages/");
+  const fileName = ctx.router.pathname + "/index.mdx";
+  const fileContents = fs.readFileSync(articlesDirectory + fileName, "utf-8");
+
+  const { data, content } = matter(fileContents);
+
+  const mdxSource = await serialize(content, {
+    mdxOptions: {
+      remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter],
+      rehypePlugins: [
+        require("rehype-slug"),
+        require("rehype-autolink-headings"),
+        require("@mapbox/rehype-prism")
+      ]
+    }
+  });
+
+  return {
+    data,
+    content: mdxSource
+  };
+};
 
 export default MyApp;
