@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import {
   VersionProvider,

@@ -36,8 +36,7 @@ module.exports = withPlugins(
             require("rehype-autolink-headings"),
             require("@mapbox/rehype-prism")
           ]
-        },
-        providerImportSource: "@mdx-js/react"
+        }
       })
     ]
   ],

@@ -168,10 +168,6 @@ const SectionLink = ({ to, href, children, ...rest }) => {
 };
 
 const makeHeading = size => ({ children, ...props }) => {
-  if (typeof children[1] === "string" && children[1]?.includes("\n")) {
-    return null;
-  }
-
   const className = "heading";
 
   const { id, ...rest } = props;
