@@ -60,7 +60,7 @@ const linkCss = css`
 
 const DeveloperPath = ({ title, subtitle, links, image }) => {
   const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
-
+  console.log(basePath);
   return (
     <div css={wrapperCss}>
       {image}
@@ -84,7 +84,7 @@ DeveloperPath.propTypes = {
   title: string.isRequired,
   subtitle: string.isRequired,
   links: array.isRequired,
-  image: node.isRequired,
+  image: node.isRequired
 };
 
 export default DeveloperPath;
