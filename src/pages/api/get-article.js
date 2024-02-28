@@ -15,11 +15,12 @@ const remarkGfm = dynamic(() => import("remark-gfm"), {
 });
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
   }
 
-  const fileName = "/" + req.headers.referer.split("docs/")[1] + "/index.mdx";
+  const body = JSON.parse(req.body);
+  const fileName = body.url + "/index.mdx";
   const articlesDirectory = path.join(process.cwd(), "src/pages/");
 
   const fileContents = readFileSync(articlesDirectory + fileName, "utf-8");

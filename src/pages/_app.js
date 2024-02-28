@@ -35,8 +35,13 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const fetchMdx = async () => {
       const basePath = process.env.CONTEXT ? "" : "/docs";
-      console.log(process.env.CONTEXT);
-      await fetch(basePath + "/api/get-article")
+      console.log(process.env);
+      await fetch(basePath + "/api/get-article", {
+        method: "POST",
+        body: JSON.stringify({
+          url: router.pathname
+        })
+      })
         .then(res => res.json())
         .then(res => {
           setData(res);
