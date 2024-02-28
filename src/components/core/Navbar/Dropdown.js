@@ -13,6 +13,8 @@ const Wrapper = styled.div`
   font-weight: 400;
   display: flex;
   align-items: center;
+  text-wrap: nowrap;
+
   &:hover {
     cursor: default;
   }
@@ -48,7 +50,7 @@ const Dropdown = ({ children, label }) => {
       onMouseLeave={() => setDisplayContent(false)}
     >
       {label}
-      <ChevronDown fill="#FFFFFF" />
+      <ChevronDown height={24} width={24} fill="#FFFFFF" />
       {displayContent && <Content>{children}</Content>}
     </Wrapper>
   );
@@ -56,7 +58,7 @@ const Dropdown = ({ children, label }) => {
 
 Dropdown.propTypes = {
   label: string.isRequired,
-  children: node.isRequired,
+  children: node.isRequired
 };
 
 export default Dropdown;

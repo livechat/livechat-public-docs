@@ -71,7 +71,7 @@ const Resources = () => {
     <Dropdown label="Resources">
       <Wrapper>
         <div>
-          {resources.map((resource) => (
+          {resources.map(resource => (
             <DropdownItem
               key={`${resource.title}`}
               title={resource.title}
@@ -83,7 +83,7 @@ const Resources = () => {
         <Separator />
         <div>
           <TitleWrapper>CONNECT</TitleWrapper>
-          {connects.map((connect) => (
+          {connects.map(connect => (
             <Connect
               key={`${connect.title}`}
               title={connect.title}
@@ -98,7 +98,7 @@ const Resources = () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Create a developer account <ArrowRight />
+        Create a developer account <ArrowRight height={24} width={24} />
       </ActionLink>
     </Dropdown>
   );
