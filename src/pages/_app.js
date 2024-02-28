@@ -34,7 +34,8 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const fetchMdx = async () => {
-      const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
+      const basePath = process.env.CONTEXT ? "" : "/docs";
+      console.log(process.env.CONTEXT);
       await fetch(basePath + "/api/get-article")
         .then(res => res.json())
         .then(res => {
