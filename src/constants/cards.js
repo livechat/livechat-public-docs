@@ -15,7 +15,7 @@ export const cards = [
   {
     title: "Messaging",
     link: "/messaging",
-    copy: "Event-based messaging for sync and async communication.",
+    copy: "Event-based messaging for sync and async communication in LiveChat.",
     image: <MessagingIcon />,
   },
   {
@@ -67,7 +67,7 @@ export const cards = [
     image: <DevConsoleToolsIcon />,
   },
   {
-    title: "Text API",
+    title: "Text APIs",
     link: "/text",
     copy: "Build products powered by advanced text operations.",
     image: <TextApiIcon />,
