@@ -24,7 +24,7 @@ const NestedMenu = ({
     const isActivePath = pathname.startsWith(item.slug);
     const hasSubItems = subItems.length > 1;
     const displaySubNav = isNotBasePath && isActivePath && hasSubItems;
-
+  
     return (
       <MenuItem
         title={item.title}

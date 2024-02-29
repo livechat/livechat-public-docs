@@ -2,6 +2,7 @@ const globalAccountsApiSpec = require("./global-accounts-api/spec.yml");
 const customerAccountsApiSpec = require("./customer-accounts-api/spec.yml");
 const customerAccountsApiSpecv2 = require("./customer-accounts-api/specv2.yml");
 const textApiSpec = require("./text-api/spec.yml");
+const chatApiSpec = require("./chat-api/spec.yml");
 
 
 const specs = {
@@ -9,6 +10,7 @@ const specs = {
   "customer-accounts-api": customerAccountsApiSpec,
   "customer-accounts-api-v2": customerAccountsApiSpecv2,
   "text-api": textApiSpec,
+  "chat-api": chatApiSpec
 };
 
 module.exports = specs;
