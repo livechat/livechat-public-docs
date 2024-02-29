@@ -1,11 +1,10 @@
-"use client";
 import dynamic from "next/dynamic";
 import "@asyncapi/react-component/styles/default.min.css";
 import specs from "../../configs/asyncapi/specs";
 import { useLayoutEffect, useState } from "react";
 
 const AsyncApiComponent = dynamic(
-  () => import("@asyncapi/react-component/browser"),
+  () => import("@asyncapi/react-component"),
   { ssr: false }
 );
 
