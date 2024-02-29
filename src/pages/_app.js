@@ -36,7 +36,7 @@ function MyApp({ Component, pageProps }) {
     const fetchMdx = async () => {
       const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
 
-      await fetch(basePath + "/api/load-page", {
+      await fetch(basePath + "/api/page", {
         method: "POST",
         body: JSON.stringify({
           url: router.pathname
