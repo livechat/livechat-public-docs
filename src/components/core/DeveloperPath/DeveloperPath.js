@@ -60,7 +60,7 @@ const linkCss = css`
 
 const DeveloperPath = ({ title, subtitle, links, image }) => {
   const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
-  console.log(basePath);
+
   return (
     <div css={wrapperCss}>
       {image}

@@ -70,8 +70,12 @@ const StyledRating = styled(Rating)`
   }
 `;
 
-const Page = ({ data, content, children }) => {
+const Page = ({ data, children }) => {
   const router = useRouter();
+
+  if (!data) {
+    return children;
+  }
 
   const {
     title,
@@ -83,7 +87,7 @@ const Page = ({ data, content, children }) => {
     apiVersion: currentApiVersion,
     versionGroup,
     slug: customSlug
-  } = data;
+  } = data.data;
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -172,6 +176,7 @@ const Page = ({ data, content, children }) => {
       "chat-api"
     ].includes(subcategory) || ["Chat API"].includes(title);
 
+  const useAsyncApi = ["Chat API AsyncAPI"].includes(title);
   const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
   return (
@@ -220,7 +225,9 @@ const Page = ({ data, content, children }) => {
                   }
                   noPadding={useRedocPage}
                 >
-                  {title && !useRedocPage && <PageHeader title={title} />}
+                  {title && !useRedocPage && !useAsyncApi && (
+                    <PageHeader title={title} />
+                  )}
                   {useRedocPage && (
                     <LeftColumnRedocWrapper>
                       <LeftColumnRedoc>
@@ -239,13 +246,13 @@ const Page = ({ data, content, children }) => {
                       </LeftColumnRedoc>
                     </LeftColumnRedocWrapper>
                   )}
-                  {useRedocPage ? (
+                  {useRedocPage || useAsyncApi ? (
                     children
                   ) : (
-                    <MDXRemote {...content} components={components} />
+                    <MDXRemote {...data?.content} components={components} />
                   )}
 
-                  {!useRedocPage && (
+                  {(!useRedocPage || !useAsyncApi) && (
                     <StyledRating position={RATING_POSITION.BOTTOM} />
                   )}
                 </Content>

@@ -18,6 +18,21 @@ function MyApp({ Component, pageProps }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
+    TagManager.initialize({
+      gtmId:
+        process.env.NODE_ENV === "production" ? "GTM-M58RLCQ" : "GTM-5DVQQC"
+    });
+
+    if (canUseWindow) {
+      storeMetrics();
+    }
+  }, []);
+
+  useEffect(() => {
+    window.dataLayer.push({ event: "next-route-change" });
+  }, [router.pathname]);
+
+  useEffect(() => {
     const fetchMdx = async () => {
       const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
 
@@ -34,34 +49,17 @@ function MyApp({ Component, pageProps }) {
     };
     if (router.pathname !== "/") {
       fetchMdx();
+    } else {
+      setData(null);
     }
   }, [router.pathname]);
 
-  useEffect(() => {
-    TagManager.initialize({
-      gtmId:
-        process.env.NODE_ENV === "production" ? "GTM-M58RLCQ" : "GTM-5DVQQC"
-    });
-
-    if (canUseWindow) {
-      storeMetrics();
-    }
-  }, []);
-
-  useEffect(() => {
-    window.dataLayer.push({ event: "next-route-change" });
-  }, [router.pathname]);
-
-  if (router.pathname === "/") {
-    return <Component {...pageProps} />;
-  }
-
-  if (!data) {
+  if (!data && router.pathname !== "/") {
     return null;
   }
 
   return (
-    <Page data={data.data} content={data.content}>
+    <Page data={data}>
       <Component {...pageProps} />
     </Page>
   );
