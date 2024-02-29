@@ -24,9 +24,12 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback.fs = false;
-      config.resolve.fallback.child_process = false;
     }
+    config.experiments = { topLevelAwait: true };
     return config;
+  },
+  compiler: {
+    removeConsole: false
   }
 };
 
