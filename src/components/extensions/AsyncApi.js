@@ -3,10 +3,9 @@ import "@asyncapi/react-component/styles/default.min.css";
 import specs from "../../configs/asyncapi/specs";
 import { useLayoutEffect, useState } from "react";
 
-const AsyncApiComponent = dynamic(
-  () => import("@asyncapi/react-component"),
-  { ssr: false }
-);
+const AsyncApiComponent = dynamic(() => import("@asyncapi/react-component"), {
+  ssr: false
+});
 
 export default function AsyncApi({ name }) {
   const [showPlaceholder, setShowPlaceholder] = useState(true);
@@ -38,7 +37,6 @@ export default function AsyncApi({ name }) {
           }
         }}
       />
-      {showPlaceholder && <div>%%ASYNC_API_SSR%%</div>}
     </>
   );
 }
