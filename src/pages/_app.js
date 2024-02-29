@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     window.dataLayer.push({ event: "next-route-change" });
   }, [router.pathname]);
-
+  console.log(process.env);
   useEffect(() => {
     const fetchMdx = async () => {
       const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
