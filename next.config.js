@@ -3,16 +3,6 @@ const withYaml = require("next-plugin-yaml");
 const { default: dynamic } = require("next/dynamic");
 const withMDX = require("@next/mdx");
 
-const remarkMdxFrontmatter = dynamic(() => import("remark-mdx-frontmatter"), {
-  ssr: false
-});
-const remarkFrontmatter = dynamic(() => import("remark-frontmatter"), {
-  ssr: false
-});
-const remarkGfm = dynamic(() => import("remark-gfm"), {
-  ssr: false
-});
-
 const nextConfig = {
   basePath: process.env.CONTEXT === "deploy-preview" ? "" : "/docs",
   future: {
@@ -26,9 +16,6 @@ const nextConfig = {
     }
 
     return config;
-  },
-  compiler: {
-    removeConsole: false
   }
 };
 
@@ -39,7 +26,11 @@ module.exports = withPlugins(
       withMDX({
         extension: /\.mdx?$/,
         options: {
-          remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter],
+          remarkPlugins: [
+            require("remark-gfm"),
+            require("remark-frontmatter"),
+            require("remark-mdx-frontmatter")
+          ],
           rehypePlugins: [
             require("rehype-slug"),
             require("rehype-autolink-headings"),

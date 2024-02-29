@@ -42,7 +42,7 @@ import { AuthProvider } from "../../contexts/auth";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import articlesVersions from "../../configs/articlesVersions.json";
-import { MDXRemote } from "next-mdx-remote";
+import { MDXProvider } from "@mdx-js/react";
 
 const ContentSideNav = dynamic(
   () => import("../core/SideNav").then(mod => mod.ContentSideNav),
@@ -73,10 +73,6 @@ const StyledRating = styled(Rating)`
 const Page = ({ data, children }) => {
   const router = useRouter();
 
-  if (!data) {
-    return children;
-  }
-
   const {
     title,
     subtitle,
@@ -87,7 +83,7 @@ const Page = ({ data, children }) => {
     apiVersion: currentApiVersion,
     versionGroup,
     slug: customSlug
-  } = data.data;
+  } = data;
 
   const versions = getVersionsByGroup(versionGroup);
 
@@ -249,7 +245,9 @@ const Page = ({ data, children }) => {
                   {useRedocPage || useAsyncApi ? (
                     children
                   ) : (
-                    <MDXRemote {...data?.content} components={components} />
+                    <MDXProvider components={components}>
+                      {children}
+                    </MDXProvider>
                   )}
 
                   {(!useRedocPage || !useAsyncApi) && (

@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import storeMetrics from "@livechat/store-metrics";
-import TagManager from "react-gtm-module";
 import "@docsearch/css";
 import "@livechat/design-system/dist/design-system.css";
 import "normalize.css";
@@ -10,12 +7,14 @@ import "../styles/layout.css";
 import "../styles/prism.css";
 import "../styles/algolia.css";
 import "../styles/redoc.css";
-import { canUseWindow } from "../utils/canUseWindow";
 import Page from "components/Page";
+import TagManager from "react-gtm-module";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { canUseWindow } from "../utils/canUseWindow";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, data }) {
   const router = useRouter();
-  const [data, setData] = useState(null);
 
   useEffect(() => {
     TagManager.initialize({
@@ -31,32 +30,6 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     window.dataLayer.push({ event: "next-route-change" });
   }, [router.pathname]);
-  console.log(process.env);
-  useEffect(() => {
-    const fetchMdx = async () => {
-      const basePath = process.env.CONTEXT === "deploy-preview" ? "" : "/docs";
-
-      await fetch(basePath + "/api/page", {
-        method: "POST",
-        body: JSON.stringify({
-          url: router.pathname
-        })
-      })
-        .then(res => res.json())
-        .then(res => {
-          setData(res);
-        });
-    };
-    if (router.pathname !== "/") {
-      fetchMdx();
-    } else {
-      setData(null);
-    }
-  }, [router.pathname]);
-
-  if (!data && router.pathname !== "/") {
-    return null;
-  }
 
   return (
     <Page data={data}>
@@ -64,5 +37,19 @@ function MyApp({ Component, pageProps }) {
     </Page>
   );
 }
+
+MyApp.getInitialProps = async appContext => {
+  const App = (await import("next/app")).default;
+  const appProps = await App.getInitialProps(appContext);
+  const fs = require("fs");
+  const path = require("path");
+  const matter = require("gray-matter");
+  const fileName = appContext.router.pathname + "/index.mdx";
+  const articlesDirectory = path.join(process.cwd(), "src/pages/");
+
+  const fileContents = fs.readFileSync(articlesDirectory + fileName, "utf-8");
+  const { data } = matter(fileContents);
+  return { ...appProps, data };
+};
 
 export default MyApp;
