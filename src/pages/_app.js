@@ -44,12 +44,22 @@ MyApp.getInitialProps = async appContext => {
   const fs = require("fs");
   const path = require("path");
   const matter = require("gray-matter");
+
+  if (appContext.router.pathname === "/") {
+    return { ...appProps };
+  }
+
   const fileName = appContext.router.pathname + "/index.mdx";
   const articlesDirectory = path.join(process.cwd(), "src/pages/");
 
-  const fileContents = fs.readFileSync(articlesDirectory + fileName, "utf-8");
-  const { data } = matter(fileContents);
-  return { ...appProps, data };
+  try {
+    const fileContents = fs.readFileSync(articlesDirectory + fileName, "utf-8");
+    const { data } = matter(fileContents);
+    return { ...appProps, data };
+  } catch (e) {
+    console.log(e);
+  }
+  return { ...appProps };
 };
 
 export default MyApp;

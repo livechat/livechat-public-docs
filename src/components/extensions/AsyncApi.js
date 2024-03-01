@@ -2,10 +2,8 @@ import dynamic from "next/dynamic";
 import "@asyncapi/react-component/styles/default.min.css";
 import specs from "../../configs/asyncapi/specs";
 import { useLayoutEffect, useState } from "react";
-
-const AsyncApiComponent = dynamic(() => import("@asyncapi/react-component"), {
-  ssr: false
-});
+import AsyncApiComponent from "@asyncapi/react-component";
+import { convert } from "@asyncapi/converter";
 
 export default function AsyncApi({ name }) {
   const [showPlaceholder, setShowPlaceholder] = useState(true);

@@ -5,7 +5,7 @@ name: Agent Smith
 email: smith@example.com (agent's id in Agent Chat API)
 When there's more than 1 agent, the other one is: agent@example.com
 
-id:  bbb67d600796e9f277e360e842418833 (agent's id in Customer Chat API)
+id: bbb67d600796e9f277e360e842418833 (agent's id in Customer Chat API)
 
 # Customer
 
@@ -29,7 +29,7 @@ client_id: 9cbf3a968289727cb3cdfe83ab1d9836 or 0805e283233042b37f460ed8fbf22160
 
 license_id: 104130623
 
-ip: <ip> or <customer_ip>
+ip: `<ip> or <customer_ip>`
 
 # Data structures
 

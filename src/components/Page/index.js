@@ -73,6 +73,10 @@ const StyledRating = styled(Rating)`
 const Page = ({ data, children }) => {
   const router = useRouter();
 
+  if (!data) {
+    return children;
+  }
+
   const {
     title,
     subtitle,
