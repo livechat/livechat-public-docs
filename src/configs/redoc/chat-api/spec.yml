@@ -1,14 +1,14 @@
 openapi: 3.0.0
 info:
-  title: Chat API
+  title: Team Chat API
   version: 1.0.0
   description: |
-    Chat API by text is a backend service which allows communicating between users using either a websocket or the HTTP protocol.<br>
+    Team Chat API by text is a backend service which allows communicating between users using either a websocket or the HTTP protocol.<br>
     The communication can happen on public channels or via direct messages.<br>
     This service stores messaging history and allows users to get previous messages from the channels they have joined.<br>
 servers:
   - url: https://api.text.com/chat"
-    description: Chat API URL.
+    description: Team Chat API URL.
 components:
   securitySchemes:
     BearerAuth:
@@ -404,12 +404,12 @@ paths:
         webhook:
           '{$request.body#/url}':
             post:
-              headers:
-                X-Secret-Key:
+              parameters:
+                - name: x-secret-key
+                  in: header
+                  description: Secret key that was used to sign the webhook payload.
                   schema:
                     type: string
-                  description: Secret key that was used to sign the webhook payload.
-                  example: g*iXffXhUExfUp22hN8gH4At
               requestBody:
                 content:
                   application/json:
@@ -418,6 +418,7 @@ paths:
                       required:
                         - webhook_id
                         - action
+                        - organization_id
                         - secret_key
                         - payload
                       properties:
@@ -433,7 +434,12 @@ paths:
                             - reaction_added
                             - reaction_removed
                           description: Action that triggered the webhook.
-                          example: incoming_message                          
+                          example: incoming_message    
+                        organization_id:
+                            type: string
+                            format: uuid
+                            description: ID of the organization where the triggering action happened.  
+                            example: 1a102f16-4b54-ac8a-bc5b-421ef00ccad6 
                         payload:
                           type: object
                           description: Payload of the webhook.
