@@ -55,6 +55,7 @@ MyApp.getInitialProps = async appContext => {
   try {
     const fileContents = fs.readFileSync(articlesDirectory + fileName, "utf-8");
     const { data } = matter(fileContents);
+    appContext.Component.data = data;
     return { ...appProps, data };
   } catch (e) {
     console.log(e);
