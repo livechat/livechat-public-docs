@@ -5,6 +5,7 @@ const withYaml = require("next-plugin-yaml");
 const nextConfig = {
   target: "serverless",
   basePath: process.env.CONTEXT === "deploy-preview" ? "" : "/docs",
+  trailingSlash: true,
 };
 
 module.exports = withPlugins(
