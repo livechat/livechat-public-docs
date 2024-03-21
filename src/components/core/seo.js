@@ -14,9 +14,9 @@ const defaultSiteMetadata = {
 function SEO({ desc, keywords, title, subtitle, robots }) {
   const router = useRouter();
   const metaDescription = desc || defaultSiteMetadata.description;
-  let canonicalUrl = `${defaultSiteMetadata.siteUrl}${router.basePath}${router.pathname}/`;
+  let canonicalUrl = `${defaultSiteMetadata.siteUrl}${router.basePath}${router.pathname}`;
 
-  if (canonicalUrl.endsWith("//")) {
+  if (canonicalUrl.endsWith("/")) {
     canonicalUrl = canonicalUrl.slice(0, -1);
   }
 
