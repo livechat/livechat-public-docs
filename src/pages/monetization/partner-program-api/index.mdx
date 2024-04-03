@@ -104,8 +104,10 @@ You can find all the requests from the Partner Program API in Postman. In our co
 - [Get Stats](#get-stats)
 - [Get Coupons](#get-coupons)
 - [Get Earnings](#get-earnings)
+- [Get Commission Report](#get-commission-report)
 - [Get Partners Referred Earnings Report](#get-partners-referred-earnings-report)
 - [Get Billing](#get-billing)
+- [Get Balance](#get-balance)
 - [Get Commission Metric](#get-commission-metric)
 - [Update Billing](#update-billing)
 - [Request Withdrawal](#request-withdrawal)
@@ -432,6 +434,90 @@ curl --request GET \
 
 <Text>
 
+## Get Commission Report
+
+`GET /v2/partners/reports/commission` - get commission reports
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query Parameters
+
+- `date_from` - **required** - get report from a given date
+- `date_to` - **required** - get report up to a given date
+- `filters` - filters
+- `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
+
+**Note:**
+- Date format: `YYYY-MM-DDTHH:mm:ssZ`
+- `filters` is an array of objects, where each object has the following fields:
+  - `field` - field name (one of: `program`, `product`)
+  - `value` - field value
+  - `operator` - operator (`equals`)
+- for example: `filters=[{"field": "prod", "value": "livechat", "operator": "equals"}]`
+
+#### Response
+
+- `200 - OK` - success, see example
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request POST \
+	--url https://api.livechatinc.com/v2/partners/reports/commission?date_from=2022-12-15T00:00:00Z&date_to=2023-02-14T23:59:59Z&aggregation=month&filters=[{"field":"product","value":"livechat","operator":"equals"}] \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "items": [
+    {
+      "date_range": {
+        "from": "2022-12-01 00:00:00",
+        "to": "2022-12-31 23:59:59"
+      },
+      "total": 6326.39
+    },
+    {
+      "date_range": {
+        "from": "2023-01-01 00:00:00",
+        "to": "2023-01-31 23:59:59"
+      },
+      "total": 4949.1
+    },
+    {
+      "date_range": {
+        "from": "2023-02-01 00:00:00",
+        "to": "2023-02-28 23:59:59"
+      },
+    "total": 7824.5
+    }
+  ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+
+<Section>
+
+<Text>
+
 ## Get Partners Referred Earnings Report
 
 `GET /v2/partners/partners-referred/reports/commission` - get commission earned from referring partners
@@ -563,7 +649,7 @@ curl --request GET \
 
 <Text>
 
-## Get Commission Metric
+## Get Commission Metrics
 
 `GET /v2/partners/metrics/commission` - get commission metric
 
@@ -614,6 +700,105 @@ curl --request POST \
 
 </Section>
 
+<Section>
+
+<Text>
+
+## Get Balance
+
+`GET /v2/partners/balance` - get balance information
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+
+- `200 - OK` - success, see the example on the right
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners/balance \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "pending": 21.00,
+  "withdrawn": 37.00,
+  "available": 362.00,
+  "total": "420.00",
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get Commission Metric
+
+`GET /v2/partners/metrics/commission` - get commission metric
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query Parameters
+
+- `date_from` - get commission metric from a given date
+- `date_to` - get commission metric up to a given date
+- `product` - get commission metric for a given product (one of: `livechat`, `chatbot`, `partner_program`, `all`; default: `all`)
+- `program` - get commission metrics for a given program (one of: `solution`, `affiliate`, `all`; default: `all`)
+
+#### Response
+
+- `200 - OK` - success, see the example on the right
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners/balance \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "value": 1232.12
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
 
 <Section>
 
@@ -954,6 +1139,9 @@ curl --request DELETE \
 - [Get Conversions Report](#get-conversions-report)
 - [Get Clicks Report](#get-clicks-report)
 - [Get Licenses By Status](#get-licenses-by-status)
+- [Get Campaigns Earnings Metric](#get-campaigns-earnings-metric)
+- [Get Campaigns Earnings Report](#get-campaigns-earnings-report)
+- [Get Campaigns Summary](#get-campaigns-summary)
 - [Get Best Performing Campaigns Clicks Report](#get-best-performing-campaigns-clicks-report)
 - [Get Best Performing Campaigns Trials Report](#get-best-performing-campaigns-trials-report)
 - [Get Best Performing Campaigns Conversions Report](#get-best-performing-campaigns-conversions-report)
@@ -984,7 +1172,7 @@ curl --request DELETE \
 
 - `name` - **required** - campaign name (min. 5, max. 100 characters)
 - `link` - the URL of the product landing page (default: product homepage)
-- `trial_duration` - only for the `livechat` product - the number of days of a trial period (min. 14 - default, max. 60)
+- `trial_duration` - only for the `livechat` product - the number of days of a trial period (min. 14 - default, max. 30)
 - `coupon_id` - only for the `livechat` product - the ID of the coupon assigned to a Partner (a discount will be applied)
 
 #### Response
@@ -1004,7 +1192,7 @@ curl --request DELETE \
 ```shell
 curl --request POST \
 	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns?product=livechat \
-	--data 'name=New campaign&link=https://www.livechat.com/features/&trial_duration=45&coupon_id=1' \
+	--data 'name=New campaign&link=https://www.livechat.com/features/&trial_duration=30&coupon_id=1' \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -1020,7 +1208,7 @@ curl --request POST \
   "url": "https://www.livechat.com/features/?a=xyz&utm_campaign=pp_new-campaign",
   "short_url": "https://lc.chat/abc",
   "creation_timestamp": "2018-03-06 11:30:40"
-  "trial_duration": 45,
+  "trial_duration": 30,
   "discount": "$25 discount",
 }
 
@@ -1611,6 +1799,7 @@ curl --request POST \
 
 - `date_from` - get earnings metrics from a given date
 - `date_to` - get earnings metrics up to a given date
+- `product` - optional - get earnings metrics for a given product (one of: `livechat`, `chatbot`, `helpdesk`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -1628,7 +1817,7 @@ curl --request POST \
 
 ```shell
 curl --request POST \
-	--url https://api.livechatinc.com/v2/partners/affiliates/metrics/earnings?date_from=2022-01-01T10:10:10Z&date_to=2022-12-01T10:10:10Z \
+	--url https://api.livechatinc.com/v2/partners/affiliates/metrics/earnings?date_from=2022-01-01T10:10:10Z&date_to=2022-12-01T10:10:10Z&product=livechat \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -1828,7 +2017,7 @@ curl --request POST \
 - `date_from` - **required** - get report from a given date
 - `date_to` - **required** - get report up to a given date
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
-- `product` - get report for a given product (one of: `livechat`, `chatbot`, `partner_program`, `all`; default: `all`)
+- `product` - get report for a given product (one of: `livechat`, `chatbot`, `helpdesk`, `all`; default: `all`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -1906,7 +2095,7 @@ curl --request POST \
 - `date_from` - **required** - get report from a given date
 - `date_to` - **required** - get report up to a given date
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
-- `product` - get report for a given product (one of: `livechat`, `chatbot`, `partner_program`, `all`; default: `all`)
+- `product` - get report for a given product (one of: `livechat`, `chatbot`, `helpdesk`, `all`; default: `all`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -1984,7 +2173,7 @@ curl --request POST \
 - `date_from` - **required** - get report from a given date
 - `date_to` - **required** - get report up to a given date
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
-- `product` - get report for a given product (one of: `livechat`, `chatbot`, `partner_program`, `all`; default: `all`)
+- `product` - get report for a given product (one of: `livechat`, `chatbot`, `helpdesk`, `all`; default: `all`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2069,7 +2258,7 @@ curl --request POST \
 - `date_from` - **required** - get report from a given date
 - `date_to` - **required** - get report up to a given date
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
-- `product` - get report for a given product (one of: `livechat`, `chatbot`, `partner_program`, `all`; default: `all`)
+- `product` - get report for a given product (one of: `livechat`, `chatbot`, `helpdesk`, `all`; default: `all`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2192,6 +2381,195 @@ curl --request POST \
 </Code>
 
 </Section>
+
+<Section>
+
+<Text>
+
+## Get Campaigns Earnings Metric
+
+`GET /v2/partners/affiliates/campaigns/<campaign_id>/metrics/earnings` - get affiliate campaign earnings metric
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `<campaign_id>` - **required** - campaign ID
+
+#### Query Parameters
+
+- `date_from` - get earnings metrics from a given date
+- `date_to` - get earnings metrics up to a given date
+- `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
+
+#### Response
+
+- `200 - OK` - success, see example
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request POST \
+	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/metrics/earnings?date_from=2022-01-01&date_to=2022-12-01&billing_cycle=annual \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+    "value": 37.21
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get Campaigns Earnings Report
+
+`GET /v2/partners/affiliates/campaigns/<campaign_id>/reports/earnings` - get affiliate campaign earnings report
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `<campaign_id>` - **required** - campaign ID
+
+#### Query Parameters
+
+- `date_from` - get earnings metrics from a given date
+- `date_to` - get earnings metrics up to a given date
+- `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
+- `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
+
+#### Response
+
+- `200 - OK` - success, see example
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request POST \
+	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/reports/earnings?date_from=2022-01-01&date_to=2022-12-01&billing_cycle=annua&aggregation=month \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+    "items": [
+        {
+            "date_range": {
+                "from": "2022-03-01 00:00:00",
+                "to": "2022-03-31 23:59:59"
+            },
+            "total": 12
+        },
+        {
+            "date_range": {
+                "from": "2022-04-01 00:00:00",
+                "to": "2022-04-30 23:59:59"
+            },
+            "total": 34
+        },
+        {
+            "date_range": {
+                "from": "2022-05-01 00:00:00",
+                "to": "2022-05-31 23:59:59"
+            },
+            "total": 56
+        }
+    ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+## Get Campaigns Summary
+
+`GET /v2/partners/affiliates/campaigns/<campaign_id>/summary` - get affiliate campaigns summary
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `<campaign_id>` - **required** - campaign ID
+
+#### Response
+
+- `200 - OK` - success, see example
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request POST \
+	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/summary \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+    "click": 21,
+    "trial": 37,
+    "paid": 42,
+    "earnings": 3127.00
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+
 <Section>
 
 <Text>
@@ -2749,6 +3127,7 @@ curl --request POST \
 - [Get Lead Details](#get-lead-details)
 - [Get Lead History](#get-lead-history)
 - [Submit Lead](#submit-lead)
+- [Get Solution Summary](#get-solution-summary)
 
 <Section>
 
@@ -4055,6 +4434,55 @@ curl --request POST \
 
 </Section>
 
+<Section>
+
+<Text>
+
+## Get Solution Summary
+
+`POST /v2/partners/solutions/summary` - get summary from Solution Program
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Response
+
+- `200 - OK` - success, see the example below
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request POST \
+	--url https://api.livechatinc.com/v2/partners/solutions/summary \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+    "trials": "12"
+    "paid": "14"
+    "expired": "13"
+    "commission": "12.33"
+    "discount": "34.11"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
 
 # Expert
 
