@@ -19,6 +19,7 @@ Your app can extend several areas of the LiveChat Agent App or HelpDesk App inte
 - the main menu, by adding a new, fullscreen section with your web content (Fullscreen App)
 - the Message Box, by adding an integration displayed right in that area (available only for LiveChat)
 - the App Settings, by adding a page with configuration settings for your app
+- the Campaign Templates, by creating a template for Campaigns (available only for LiveChat, configurable using API)
 
 If you feel we lack some options, please drop us a line at [developers@text.com](mailto:developers@text.com)!
 
@@ -95,3 +96,233 @@ See the documentation and learn how to set up [LiveChat widgets](/extending-agen
 </div>
 
 💡 If <a href="https://platform.text.com/docs/getting-started/app-guides/in-app-upgrades" target="_blank">In-App upgrades</a> were added to your app in the Developer Console, they will be visible in the same place.
+
+## Campaign Templates (available only for LiveChat)
+
+A good idea for applications that use [Moments](/extending-chat-widget#moments) dedicated for Campaigns, is to create a template that will not only fill the Moment's URL automatically but also propose how to use it. Such a template is displayed in the first step of creating a Campaign.
+
+<div style={{marginBottom: "15px"}}>
+  <img alt="LiveChat Campaign Templates" src="/images/extending-agent-app/livechat-campaign-templates.jpg" width="780px" height="490px"/>
+</div>
+
+This location is available only for API calls.
+
+Example request:
+
+```sh
+curl --location --request PUT 'https://dev-platform.livechatinc.com/v2/applications/F63E4FfSg/widgets/GgEXbtaneS' \
+--header 'authorization: Bearer <token>' \
+--header 'Content-Type: application/json' \
+--data '{
+    "initialState":"<templates>",
+    "placement":"targeted-message",
+    "url":"https://livechat.com"
+}'
+```
+
+Where:
+
+- token - your access token from the Developer Console (can be aquired using Chrome's Dev Tools)
+- templates - **stringified** JSON with templates (application can define multiple templates)
+
+### Templates structure
+
+List of templates should be provided in the JSON format and has a following structure:
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "shortDescription": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "thumbnail": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "alternativeText": {
+            "type": "string"
+          }
+        },
+        "required": ["url"]
+      },
+      "image": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "alternativeText": {
+            "type": "string"
+          }
+        },
+        "required": ["url"]
+      },
+      "tags": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "icon": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": ["text"]
+        }
+      },
+      "definition": {
+        "type": "object",
+        "properties": {
+          "messageType": {
+            "type": "string",
+            "enum": ["greeting", "announcement"]
+          },
+          "templateType": {
+            "type": "string",
+            "enum": ["card", "quick_reply"]
+          },
+          "titlePlaceholder": {
+            "type": "string"
+          },
+          "subtitlePlaceholder": {
+            "type": "string"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "alternativeText": {
+                "type": "string"
+              }
+            },
+            "required": ["url"]
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["phone", "cancel", "message", "url", "moment"]
+                },
+                "text": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "momentSize": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["primary", "secondary"]
+                }
+              },
+              "required": ["type", "text", "value"]
+            }
+          }
+        },
+        "required": ["messageType", "templateType", "buttons"]
+      },
+      "note": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "link": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": ["text", "url"]
+          }
+        },
+        "required": ["title", "link"]
+      }
+    },
+    "required": ["name", "shortDescription", "description", "thumbnail", "image", "tags", "definition"]
+  }
+}
+```
+
+Here's an example of the JSON documents that meet the schema requirements:
+
+```json
+[
+   {
+      "name":"Grow your Mailchimp audiences",
+      "shortDescription":"Offer a way for visitors to stay informed and engaged with your brand.",
+      "description":"Stay in touch with website visitors: build strong relationship with them and turn them into loyal customers. Use this message to automate the newsletter subscription process, making it easy for users to connect with your brand and access valuable information and opportunities.\n\nExample usage:\n• you want to build your following,\n• you’re building up a list of beta testers and early adopters.",
+      "thumbnail":{
+         "url":"https://integrations-moments.text.com/mailchimp-stay-up-to-date.png",
+         "alternativeText":"mailbox"
+      },
+      "image":{
+         "url":"https://integrations-moments.text.com/mailchimp-stay-up-to-date.png",
+         "alternativeText":"mailbox"
+      },
+      "tags":[
+         {
+            "text":"Mailchimp",
+            "icon":"https://integrations-moments.text.com/mailchimp-icon.svg"
+         },
+      ],
+      "definition":{
+         "messageType":"announcement",
+         "templateType":"card",
+         "titlePlaceholder":"Stay up-to-date! 🔔",
+         "subtitlePlaceholder":"Unlock exclusive benefits! Join our newsletter for updates and special offers.",
+         "image":{
+            "url":"https://livechat-integrations-cdn.s3.amazonaws.com/email-marketing-app/greetings/mailbox.gif",
+            "alternativeText":"mailbox"
+         },
+         "buttons":[
+            {
+               "type":"moment",
+               "text":"Subscribe",
+               "value":"https://integrations-moments.text.com/signupform/mailchimp",
+               "momentSize":"compact"
+            }
+         ]
+      },
+      "note":{
+         "title":"Before using this template, make sure that it has been properly set up.",
+         "link":{
+            "text":"Go to Mailchimp settings",
+            "url":"https://my.livechatinc.com/settings/applications/mailchimp"
+         }
+      }
+   }
+]
+```
