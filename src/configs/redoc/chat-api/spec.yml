@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-  title: Team Chat API
+  title: Team Chat Web API
   version: 1.0.0
   description: |
     Team Chat API by text is a backend service which allows communicating between users using either a websocket or the HTTP protocol.<br>
     The communication can happen on public channels or via direct messages.<br>
     This service stores messaging history and allows users to get previous messages from the channels they have joined.<br>
 servers:
-  - url: https://api.text.com/chat"
+  - url: https://api.text.com/chat
     description: Team Chat API URL.
 components:
   securitySchemes:
@@ -67,11 +67,20 @@ components:
         ID of the channel. It can be a public channel (`general`),<br>
         or a private channel (`requester_id:receiver_id`)<br>
       example: general
-    IncomingMessageWebhookPayload:
+    Message:
+      oneOf:
+        - $ref: '#/components/schemas/TextMessage'
+        - $ref: '#/components/schemas/FileMessage'
+    TextMessage:
       type: object
+      required:
+        - message_id
+        - author_id
+        - created_at
+        - type
+        - reactions
+        - text
       properties:
-        channel:
-          $ref: '#/components/schemas/ChannelID'
         message_id:
           type: string
           format: uuid
@@ -86,10 +95,112 @@ components:
           format: date-time
           description: Message creation date.
           example: 2024-01-24T12:36:05.987197Z
+        type:
+          type: string
+          description: Message type.
+          enum:
+            - text
+        reactions:
+          type: array
+          items:
+            type: object
+            properties:
+              shortcode:
+                $ref: '#/components/schemas/Shortcode'
+              author_ids:
+                type: array
+                items:
+                  type: string
+                  description: ID of the reaction author.
+                  example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
         text:
           type: string
           description: Message text.
           example: Hello, World!
+    FileMessage:
+      type: object
+      required:
+        - message_id
+        - author_id
+        - created_at
+        - type
+        - reactions
+        - url
+        - name
+        - content_type
+        - size
+      properties:
+        message_id:
+          type: string
+          format: uuid
+          description: ID of the message.
+          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
+        author_id:
+          type: string
+          description: ID of the message author.
+          example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        created_at:
+          type: string
+          format: date-time
+          description: Message creation date.
+          example: 2024-01-24T12:36:05.987197Z
+        type:
+          type: string
+          description: Message type.
+          enum:
+            - text
+        reactions:
+          type: array
+          items:
+            type: object
+            properties:
+              shortcode:
+                $ref: '#/components/schemas/Shortcode'
+              author_ids:
+                type: array
+                items:
+                  type: string
+                  description: ID of the reaction author.
+                  example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        url:
+          type: string
+          format: uri
+          description: URL of the file.
+          example: https://cdn.files-text.com/api/chatapi/files/248d7a51-fc88-4495-81e2-ce4538649432/90441146b7798452df136d46d13ab0ed/test.txt
+        name:
+          type: string
+          description: Name of the file.
+          example: test.txt
+        content_type:
+          type: string
+          description: Content type of the file.
+          example: text/plain
+        size:
+          type: integer
+          description: Size of the file in bytes.
+          example: 2503
+        file_details:
+          type: object
+          properties:
+            image:
+              type: object
+              properties:
+                height:
+                  type: integer
+                  description: Height of the image.
+                  example: 150
+                width:
+                  type: integer
+                  description: Width of the image.
+                  example: 150
+    
+    IncomingMessageWebhookPayload:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/ChannelID'
+        message:
+          $ref: '#/components/schemas/Message'
     ReactionAddedWebhookPayload:
       type: object
       properties:
@@ -139,14 +250,43 @@ paths:
               type: object
               required:
                 - channel
-                - text
+                - message
               properties:
                 channel:
                   $ref: '#/components/schemas/ChannelID'
-                text:
-                  type: string
-                  description: Message text.
-                  example: Hello, World!
+                message:
+                  type: object
+                  oneOf:
+                    - type: object
+                      required:
+                        - type
+                        - text
+                      properties:
+                        type:
+                          type: string
+                          description: Message type (text).
+                          enum:
+                            - text
+                        text:
+                          type: string
+                          description: Message text.
+                          example: Hello, World!
+                    - type: object
+                      required:
+                        - type
+                        - url
+                      properties:
+                        type:
+                          type: string
+                          description: Message type (file).
+                          enum:
+                            - file
+                        url:
+                          type: string
+                          format: uri
+                          description: URL of the temporarily uploaded file.
+                          example: https://cdn.files-text.com/api/chatapi/tmp/248d7a51-fc88-4495-81e2-ce4538649432/90441146b7798452df136d46d13ab0ed/test.txt
+
       responses:
         "200":
           description: Message sent successfully, contains ID of the sent message.
@@ -210,6 +350,10 @@ paths:
               schema:
                 type: object
                 required:
+                  - channel
+                  - total
+                  - next_page_id
+                  - previous_page_id
                   - messages
                 properties:
                   channel:
@@ -229,39 +373,7 @@ paths:
                   messages:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        message_id:
-                          type: string
-                          format: uuid
-                          description: ID of the message.
-                          example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
-                        author_id:
-                          type: string
-                          description: ID of the message author.
-                          example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
-                        created_at:
-                          type: string
-                          format: date-time
-                          description: Message creation date.
-                          example: 2024-01-24T12:36:05.987197Z
-                        text:
-                          type: string
-                          description: Message text.
-                          example: Hello, World!
-                        reactions:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              shortcode:
-                                $ref: '#/components/schemas/Shortcode'
-                              author_ids:
-                                type: array
-                                items:
-                                  type: string
-                                  description: ID of the reaction author.
-                                  example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+                      $ref: '#/components/schemas/Message'
         "401":
           $ref: '#/components/responses/Unauthorized'
         "422":
@@ -348,6 +460,46 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "422":
           $ref: '#/components/responses/Validation'
+  /action/upload_file:
+    post:
+      summary: Upload file
+      description: Uploads a file to a temporary storage. After sending the file as a message in any channel, it is moved to permanent storage. Max allowed size is 10MB.
+      tags:
+        - Files
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: File uploaded successfully, contains URL of the uploaded file.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: URL of the uploaded file.
+                    example: https://cdn.files-text.com/api/chatapi/tmp/248d7a51-fc88-4495-81e2-ce4538649432/90441146b7798452df136d46d13ab0ed/test.txt
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
   /action/register_webhook:
     post:
       summary: Register a webhook
@@ -419,7 +571,6 @@ paths:
                         - webhook_id
                         - action
                         - organization_id
-                        - secret_key
                         - payload
                       properties:
                         webhook_id:
@@ -436,10 +587,10 @@ paths:
                           description: Action that triggered the webhook.
                           example: incoming_message    
                         organization_id:
-                            type: string
-                            format: uuid
-                            description: ID of the organization where the triggering action happened.  
-                            example: 1a102f16-4b54-ac8a-bc5b-421ef00ccad6 
+                          type: string
+                          format: uuid
+                          description: ID of the organization where the triggering action happened.  
+                          example: 1a102f16-4b54-ac8a-bc5b-421ef00ccad6 
                         payload:
                           type: object
                           description: Payload of the webhook.
