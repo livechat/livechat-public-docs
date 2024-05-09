@@ -5,10 +5,10 @@ import { useRouter } from "next/router";
 
 const defaultSiteMetadata = {
   siteUrl: "https://platform.text.com",
-  title: "LiveChat Platform Docs & API Reference",
+  title: "Text Platform Docs & API Reference",
   description:
-    "The LiveChat Platform offers much more than just a messaging tool. There's a number of possibilities that help you grow a business, which brings customer satisfaction.",
-  author: "@livechat",
+    "The Text Platform offers much more than just a messaging tool. There's a number of possibilities that help you grow a business, which brings customer satisfaction.",
+  author: "@textplatform",
 };
 
 function SEO({ desc, keywords, title, subtitle, robots }) {
