@@ -85,6 +85,27 @@ Each application in the Developer Console is represented by an app manifest (`li
 
 Not every field can be modified, for example, you can't change the value of `client_id`.
 
+# Application context
+
+Most CLI commands need to be run within the context of the application you're working on. The exceptions from this rule would be `txdev app create`, `txdev app clone` or the commands from the `auth` [module](#modules).
+
+Working within the application context matters because the CLI automatically detectes if there's an app manifest in the working directory. If so, it uses the app ID from the manifest to execute the command. However, the CLI also allows for a more flexible approach where you can [work outside of the application context](#working-outside-of-the-app-context) by passing the app ID and working directory in the command.
+
+## Working outside of the app context
+
+To work outside of the application context you need to provide two optional parameters when running the commands:
+
+| Parameter | Description                                                                   | Default value     |
+| --------- | ----------------------------------------------------------------------------- | ----------------- |
+| `--id`    | App ID. The CLI will look for this app ID in the location provided in `--dir` | from app manifest |
+| `--dir`   | Tells the CLI where to look for the app manifest                              | `./`              |
+
+For example, you can work on an app that lives in `./apps/my-app` while being in a different directory (e.g. in `./`).
+
+```bash
+$ txdev app verify --id=suLCxdG --dir=./apps/my-app
+```
+
 # Modules
 
 The CLI has two modules that you can use to manage your Text apps:
@@ -95,15 +116,6 @@ The CLI has two modules that you can use to manage your Text apps:
 💡 Run `txdev --help` to lists available modules and options.
 
 # app module
-
-## Common parameters
-
-Most commands use the following parameters:
-
-| Parameter | Description                                                                             | Default value     |
-| --------- | --------------------------------------------------------------------------------------- | ----------------- |
-| `--id`    | App ID. Available in the Developer Console or in `livechat.config.json` (app manifest). | from app manifest |
-| `--dir`   | Location of the app manifest you're currently working on                                | `./`              |
 
 ## txdev app --help
 
@@ -159,10 +171,10 @@ $ txdev app clone --id=suLCxdG-R
 
 </CodeSample>
 
-| Parameter       | Description                                     | Default |
-| --------------- | ----------------------------------------------- | ------- |
-| `--id`, `--dir` | See [Common parameters](#common-parameters)     |         |
-| `--targetDir`   | Target location of the app files to be saved in | --dir   |
+| Parameter       | Description                                                                            | Default |
+| --------------- | -------------------------------------------------------------------------------------- | ------- |
+| `--id`, `--dir` | Specify appIDSee [Working outside of app context](#working-outside-of-the-app-context) |         |
+| `--targetDir`   | Target location of the app files to be saved in                                        | --dir   |
 
 ## txdev app create
 
@@ -194,10 +206,10 @@ $ txdev app create empty --name="Sample app" --product=livechat
 | `empty`    |               | Create an empty app. Add buidling blocks later.                             |
 |            | `--name`      | App name. Required param.                                                   |
 |            | `--product`   | `livechat` or `helpdesk`. Required param.                                   |
-|            | `--dir`       | See [Common parameters](#common-parameters)                                 |
+|            | `--dir`       | See [Working outside of app context](#working-outside-of-the-app-context)   |
 |            | `--targetDir` | Target location of the app files to be saved in. Default value: --dir       |
 | `template` |               | Create an app from a template. Building blocks will be added automatically. |
-|            | `--dir`       | See [Common parameters](#common-parameters)                                 |
+|            | `--dir`       | See [Working outside of app context](#working-outside-of-the-app-context)   |
 |            | `--targetDir` | Target location of the app files to be saved in. Default value: --dir       |
 
 ## txdev app pull
@@ -226,42 +238,42 @@ $ txdev app pull --id=suLCxdG-R
 
 </CodeSample>
 
-| Parameter       | Description                                                              |
-| --------------- | ------------------------------------------------------------------------ |
-| `--id`, `--dir` | See [Common parameters](#common-parameters)                              |
-| `--targetDir`   | Target location of the app manifest to be saved in. Default value: --dir |
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `--targetDir`   | Target location of the app manifest to be saved in. Default value: --dir  |
 
 ## txdev app push
 
 Pushes local changes made to the app manifest (`livechat.config.json`) to the Developer Console. This command is analogous to [`txdev app pull`](#txdev-app-pull).
 
-| Parameter       | Description                                 |
-| --------------- | ------------------------------------------- |
-| `--id`, `--dir` | See [Common parameters](#common-parameters) |
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app verify
 
 Verify your local app manifest (`livechat.config.json`) against the one in the Text Developer Console.
 
-| Parameter       | Description                                 |
-| --------------- | ------------------------------------------- |
-| `--id`, `--dir` | See [Common parameters](#common-parameters) |
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app delete
 
 Deletes an existing app from the Developer Console. Execute with caution.
 
-| Parameter       | Description                                 |
-| --------------- | ------------------------------------------- |
-| `--id`, `--dir` | See [Common parameters](#common-parameters) |
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app open
 
 Opens an application in the Developer Console.
 
-| Parameter       | Description                                 |
-| --------------- | ------------------------------------------- |
-| `--id`, `--dir` | See [Common parameters](#common-parameters) |
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app authorization
 
@@ -299,10 +311,10 @@ $ txdev app authorization add --type=server_side_app --redirectUri=https://myapp
 |          | `--type`         | One of: `javascript_app` or `server_side_app`                                   |
 |          | `--redirectUri`  | Comma-separated string. A list of addresses to be whitelisted by Text Accounts. |
 | `remove` |                  | Removes authorization block                                                     |
-|          | `--id` , `--dir` | See [Common parameters](#common-parameters)                                     |
+|          | `--id` , `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)       |
 |          |                  | App manifest location                                                           |
 | `open`   |                  | Opens the browser with App Authorization in Developer Console.                  |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                                     |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context)       |
 
 ## txdev app widgets
 
@@ -336,11 +348,11 @@ $ txdev app widgets add --product=livechat --placement=plugin --url=https://myap
 |          | `--product`     | One of: `livechat` or `helpdesk`. Needs to be the same as app product.                        |
 |          | `--placement`   | One of: `fullscreen`, `plugin` (Chat Details), `messagebox`, `settings`, `tickets` (HelpDesk) |
 |          | `--url`         | Widget URL. Defined separetely for each widget placement.                                     |
-|          | `--id`, `--dir` | See [Common parameters](#common-parameters)                                                   |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)                     |
 | `remove` |                 | Removes all or selected widgets. The CLI will prompt you to select.                           |
-|          | `--id`, `--dir` | See [Common parameters](#common-parameters)                                                   |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)                     |
 | `open`   |                 | Opens Developer Console in the browser                                                        |
-|          | `--id`, `--dir` | See [Common parameters](#common-parameters)                                                   |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)                     |
 
 ## txdev app monetization
 
@@ -367,25 +379,25 @@ $ txdev app monetization add
 
 </CodeSample>
 
-| Option   | Param           | Description                                 |
-| -------- | --------------- | ------------------------------------------- |
-| `add`    |                 | Adds App Monetization block                 |
-|          | `--id`, `--dir` | See [Common parameters](#common-parameters) |
-| `remove` |                 | Removes the block                           |
-|          | `--id`, `dir`   | See [Common parameters](#common-parameters) |
-| `open`   |                 | Opens Developer Console in the browser      |
-|          | `--id`, `--dir` | See [Common parameters](#common-parameters) |
+| Option   | Param           | Description                                                               |
+| -------- | --------------- | ------------------------------------------------------------------------- |
+| `add`    |                 | Adds App Monetization block                                               |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `remove` |                 | Removes the block                                                         |
+|          | `--id`, `dir`   | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open`   |                 | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app properties
 
 Allows to remove [LiveChat properties](/management/configuration-api/#properties). It's the command-line equivalent of the Properties block in the Developer Console. The CLI allows you to edit app properties on published apps – execute with caution. The command doesn't support the `add` option -- this can be done in the Developer Console or via the Configuration API.
 
-| Option   | Param           | Description                                 |
-| -------- | --------------- | ------------------------------------------- |
-| `remove` |                 | Removes the block                           |
-|          | `--id`, `dir`   | See [Common parameters](#common-parameters) |
-| `open`   |                 | Opens Developer Console in the browser      |
-|          | `--id`, `--dir` | See [Common parameters](#common-parameters) |
+| Option   | Param           | Description                                                               |
+| -------- | --------------- | ------------------------------------------------------------------------- |
+| `remove` |                 | Removes the block                                                         |
+|          | `--id`, `dir`   | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open`   |                 | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 <CodeSample path={'Properties object added to app manifest'}>
 
@@ -410,12 +422,12 @@ Allows to remove [LiveChat properties](/management/configuration-api/#properties
 
 Fetches environment variables stored in the Developer Console.
 
-| Option | Param           | Description                                                 |
-| ------ | --------------- | ----------------------------------------------------------- |
-| `pull` |                 | Fetch environment variables stored in the Developer Console |
-|        | `--id`, `dir`   | See [Common parameters](#common-parameters)                 |
-| `open` |                 | Opens Developer Console in the browser                      |
-|        | `--id`, `--dir` | See [Common parameters](#common-parameters)                 |
+| Option | Param           | Description                                                               |
+| ------ | --------------- | ------------------------------------------------------------------------- |
+| `pull` |                 | Fetch environment variables stored in the Developer Console               |
+|        | `--id`, `dir`   | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open` |                 | Opens Developer Console in the browser                                    |
+|        | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app repository
 
@@ -427,23 +439,23 @@ $ txdev app repository link
 
 </CodeSample>
 
-| Option   | Param            | Description                                                             |
-| -------- | ---------------- | ----------------------------------------------------------------------- |
-| `link`   |                  | Link an app repository                                                  |
-|          | `--provider`     | `github`                                                                |
-|          | `--type`         | `new` or `existing`                                                     |
-|          | `--name`         | Repository name                                                         |
-|          | `--fullName`     | <organization/repository-name>. Specify to link an existing repository. |
-|          | `--branch`       | By default, the files are commited to `main`                            |
-|          | `--template`     | `vite`, `nextjs`, `saas`                                                |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                             |
-| `unlink` |                  | Unlink an app repository                                                |
-|          | `--id`, `dir`    | See [Common parameters](#common-parameters)                             |
-|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the repository.   |
-| `pull`   |                  | Fetch app repository to your local environment.                         |
-|          | `--id`, `dir`    | See [Common parameters](#common-parameters)                             |
-| `open`   |                  | Opens the Developer Console in the browser.                             |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                             |
+| Option   | Param            | Description                                                               |
+| -------- | ---------------- | ------------------------------------------------------------------------- |
+| `link`   |                  | Link an app repository                                                    |
+|          | `--provider`     | `github`                                                                  |
+|          | `--type`         | `new` or `existing`                                                       |
+|          | `--name`         | Repository name                                                           |
+|          | `--fullName`     | <organization/repository-name>. Specify to link an existing repository.   |
+|          | `--branch`       | By default, the files are commited to `main`                              |
+|          | `--template`     | `vite`, `nextjs`, `saas`                                                  |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `unlink` |                  | Unlink an app repository                                                  |
+|          | `--id`, `dir`    | See [Working outside of app context](#working-outside-of-the-app-context) |
+|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the repository.     |
+| `pull`   |                  | Fetch app repository to your local environment.                           |
+|          | `--id`, `dir`    | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open`   |                  | Opens the Developer Console in the browser.                               |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app deployment
 
@@ -457,17 +469,17 @@ $ txdev app deployment link
 
 </CodeSample>
 
-| Option   | Param            | Description                                                              |
-| -------- | ---------------- | ------------------------------------------------------------------------ |
-| `link`   |                  | Configure app deployment                                                 |
-|          | `--provider`     | One of: `netlify`, `vercel`                                              |
-|          | `--type`         |                                                                          |
-|          | `--databaseName` |                                                                          |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                              |
-| `unlink` |                  | Fetch environment variables stored in the Developer Console              |
-|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the deployed site. |
-| `open`   |                  | Opens Developer Console in the browser                                   |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                              |
+| Option   | Param            | Description                                                               |
+| -------- | ---------------- | ------------------------------------------------------------------------- |
+| `link`   |                  | Configure app deployment                                                  |
+|          | `--provider`     | One of: `netlify`, `vercel`                                               |
+|          | `--type`         |                                                                           |
+|          | `--databaseName` |                                                                           |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `unlink` |                  | Fetch environment variables stored in the Developer Console               |
+|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the deployed site.  |
+| `open`   |                  | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 ## txdev app storage
 
@@ -481,17 +493,17 @@ $ txdev app storage link
 
 </CodeSample>
 
-| Option   | Param            | Description                                                           |
-| -------- | ---------------- | --------------------------------------------------------------------- |
-| `link`   |                  | Configure storage for the app                                         |
-|          | `--provider`     | `neon` or `planetscale`                                               |
-|          | `--type`         | `new` or `existing`                                                   |
-|          | `--databaseName` |                                                                       |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                           |
-| `unlink` |                  | Fetch environment variables stored in the Developer Console           |
-|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the repository. |
-| `open`   |                  | Opens Developer Console in the browser                                |
-|          | `--id`, `--dir`  | See [Common parameters](#common-parameters)                           |
+| Option   | Param            | Description                                                               |
+| -------- | ---------------- | ------------------------------------------------------------------------- |
+| `link`   |                  | Configure storage for the app                                             |
+|          | `--provider`     | `neon` or `planetscale`                                                   |
+|          | `--type`         | `new` or `existing`                                                       |
+|          | `--databaseName` |                                                                           |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `unlink` |                  | Fetch environment variables stored in the Developer Console               |
+|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the repository.     |
+| `open`   |                  | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
 
 # auth module
 
