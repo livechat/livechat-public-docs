@@ -156,9 +156,9 @@ export const resources = [
       "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
   },
   {
-    title: "Sample apps",
-    description: "Some examples for reference",
-    link: "https://github.com/livechat/tag-master",
+    title: "Developer CLI",
+    description: "Build apps from the command line",
+    link: "https://www.npmjs.com/package/@livechat/developer-cli",
   },
 ];
 
@@ -170,8 +170,8 @@ export const connects = [
     secondaryIcon: <UnfoldMoreVertical fill="#ffffff" />,
   },
   {
-    title: "Platform Updates",
-    link: "https://developers.livechat.com/updates/",
+    title: "Resource Center",
+    link: "https://platform.text.com/resource-center/updates",
     primaryIcon: <UpdatesIcon />,
     secondaryIcon: <UpdatesIcon fill="#ffffff" />,
   },

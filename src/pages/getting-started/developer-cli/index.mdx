@@ -1,0 +1,630 @@
+---
+weight: 134
+category: "getting-started"
+subcategory: "app-guides"
+title: "Developer CLI"
+tagline: "Build and modify Text applications with Developer CLI"
+desc: "Speed up your development with Developer CLI - a tool for building Text apps using the command line."
+---
+
+# Introduction
+
+Developer CLI is a command-line tool that helps you build and modify Text applications. It provides a set of commands that you can use to create, develop, and deploy your Text apps.
+
+With the CLI, you can:
+
+- Create a new Text app from scratch
+- Bootstrap our repository and app templates, for example, <a href="https://github.com/livechat/developer-app-template-nextjs" target="_blank">Next.js SaaS template</a>
+- Add building blocks to your app without entering the Developer Console
+- Update your app by editing its manifest (`livechat.config.json`)
+
+# Installation
+
+Start by installing the newest version of the Developer CLI using either npm or yarn.
+
+<CodeSample path={'Install Developer CLI using npm'}>
+
+```bash
+npm install -g @livechat/developer-cli
+```
+
+</CodeSample>
+
+or
+
+<CodeSample path={'Install Developer CLI using yarn'}>
+
+```bash
+yarn global add @livechat/developer-cli
+```
+
+</CodeSample>
+
+# Modules
+
+The CLI has two modules that you can use to manage your Text apps:
+
+- `auth` - authorize to the CLI and external providers
+- `app` - create and manage apps
+
+💡 Run `txdev --help` to lists available modules and options.
+
+# App manifest
+
+Each application in the Developer Console is represented by an app manifest (`livechat.config.json`). There are two ways to edit an application via CLI:
+
+1. Run a command from the `txdev app` module. <br/><br/>Running a command will automatically update your app in the Developer Console. After that, pull the changes to the app manifest (`txdev app pull`) as it doesn't update automatically. <br/><br/>We recommend this method to apply **more complex changes**, such as adding an enitre building block.
+
+2. Edit `livechat.config.json` manually. <br/><br/>Then, run `txdev app push` to push the changes to the Developer Console. <br/><br/>We recommend this method to apply **small, quick changes**, such as adding a new scope.
+
+<CodeSample path={'EXAMPLE APP MANIFEST WITH AUTH BLOCK'}>
+
+```json
+{
+  "id": "BgYQO_BIg",
+  "name": "EmptyApp",
+  "product": "livechat",
+  "blocks": {
+    "authorization": {
+      "clientId": "5c4d731184619046c915549fb09c1561",
+      "type": "server_side_app",
+      "redirectUri": "https://myapp.com,https://myapp.com/settings",
+      "scopes": [
+        {
+          "scope": "archives_read",
+          "required": true
+        },
+        {
+          "scope": "chats.conversation--my:rw",
+          "required": true
+        }
+      ]
+    }
+  }
+}
+
+
+```
+
+</CodeSample>
+
+Not every field can be modified, for example, you can't change the value of `client_id`.
+
+# Application context
+
+Most CLI commands need to be run within the context of the application you're working on. The exceptions from this rule would be `txdev app create`, `txdev app clone` or the commands from the `auth` [module](#modules).
+
+Working within the application context matters because the CLI automatically detectes if there's an app manifest in the working directory. If so, it uses the app ID from the manifest to execute the command. However, the CLI also allows for a more flexible approach where you can [work outside of the application context](#working-outside-of-the-app-context) by passing the app ID and working directory in the command.
+
+## Working outside of the app context
+
+To work outside of the application context you need to provide two optional parameters when running the commands:
+
+| Parameter | Description                                                                   | Default value     |
+| --------- | ----------------------------------------------------------------------------- | ----------------- |
+| `--id`    | App ID. The CLI will look for this app ID in the location provided in `--dir` | from app manifest |
+| `--dir`   | Tells the CLI where to look for the app manifest                              | `./`              |
+
+For example, you can work on an app that lives in `./apps/my-app` while being in a different directory (e.g. in `./`).
+
+```bash
+$ txdev app verify --id=suLCxdG --dir=./apps/my-app
+```
+
+# Getting started tutorial
+
+This tutorial shows how to quickly add a new widget to an existing app using the Developer CLI.
+
+**1. Log in to Text Developer Console using the CLI.**
+
+<CodeSample path={'1. Log in to Developer Console'}>
+
+```bash
+txdev auth login --provider=accounts
+```
+
+</CodeSample>
+
+**2. Clone an existing app to your local environment.**
+
+The CLI will prompt you to select an app.
+
+<CodeSample path={'2. Clone an app'}>
+
+```bash
+txdev app clone
+```
+
+</CodeSample>
+
+After cloning, `cd` to the app directory so that you're in the same location as the `livechat.config.json` file. To work from a different location, see [Working outside of the app context](#working-outside-of-the-app-context).
+
+**3. Add a new widget to the app.**
+
+The CLI will prompt you to specify the widget details such as widget placement and URL.
+
+<CodeSample path={'3. Add a widget'}>
+
+```bash
+txdev app widgets add
+```
+
+</CodeSample>
+
+**4. Update the local app manifest.**
+
+After executing a command from the `app ` module, you need to pull the changes to your local app manifest (`txdev app pull`) as it doesn't update automatically.
+
+<CodeSample path={'4. Pull app manifest changes'}>
+
+```bash
+txdev app pull
+```
+
+</CodeSample>
+
+**5. See applied changes in the Developer Console.**
+
+<CodeSample path={'5. Open the app in Developer Console'}>
+
+```bash
+txdev app open
+```
+
+</CodeSample>
+
+# app module
+
+## txdev app --help
+
+Lists available command in the app module.
+
+<CodeSample path={'txdev app --help'}>
+
+```bash
+$ txdev app --help
+
+Commands:
+  txdev app create         create new app
+  txdev app clone          clone app
+  txdev app delete         delete app
+  txdev app open           open app in browser
+  txdev app pull           pull app manifest
+  txdev app push           push app manifest
+  txdev app verify         verify app manifest
+  txdev app authorization  manage app authorization       
+  txdev app monetization   manage app monetization        
+  txdev app repository     manage app repository          
+  txdev app deployment     manage app deployment          
+  txdev app storage        manage app storage             
+  txdev app properties     manage app properties          
+  txdev app widgets        manage app widgets
+  txdev app variables      manage app variables
+```
+
+</CodeSample>
+
+## txdev app clone
+
+Fetches all the files related to an application registered in the Text Developer Console.
+
+As a bare minimum, the command will fetch the app's manifest (`livechat.config.json`), but it can also download other files depending on what's set up for the application (repository, environment variables) in the Developer Console.
+
+When to use the command:
+
+- download all files of a newly created app
+- update the app files after changes made in the Developer Console
+
+<CodeSample path={'Basic usage'}>
+
+```bash
+$ txdev app clone
+
+? select app › 
+❯   Moments card sender
+    Get Chats App
+    My app
+```
+
+</CodeSample>
+
+<CodeSample path={'Specifying app ID'}>
+
+```bash
+$ txdev app clone --id=suLCxdG-R
+```
+
+</CodeSample>
+
+| Parameter     | Description                                                                    | Default |
+| ------------- | ------------------------------------------------------------------------------ | ------- |
+| `--id`        | App ID. Specify which app from the Developer Console you want to clone locally |         |
+| `--dir`       | See [Working outside of app context](#working-outside-of-the-app-context)      |         |
+| `--targetDir` | Target location of the app files to be saved in                                | --dir   |
+
+## txdev app create
+
+Creates a new application. It can be empty or bootstrapped from our <a href="https://github.com/livechat/developer-app-template-nextjs" target="_blank">Next.js SaaS template</a>, which comes with a variety of features already set up.
+
+💡`txdev app create template` is the fastest ways to create a fully working & deployed Text application.
+
+<CodeSample path={'Basic usage - create an app from a template'}>
+
+```bash
+$ txdev app create template
+
+? template › 
+❯   Nextjs SaaS boilerplate
+```
+
+</CodeSample>
+
+<CodeSample path={'Specifying app details upon creation'}>
+
+```bash
+$ txdev app create empty --name="Sample app" --product=livechat
+```
+
+</CodeSample>
+
+| Option     | Param         | Description                                                                 |
+| ---------- | ------------- | --------------------------------------------------------------------------- |
+| `empty`    |               | Create an empty app. Add buidling blocks later.                             |
+|            | `--name`      | App name. Required param.                                                   |
+|            | `--product`   | `livechat` or `helpdesk`. Required param.                                   |
+|            | `--dir`       | See [Working outside of app context](#working-outside-of-the-app-context)   |
+|            | `--targetDir` | Target location of the app files to be saved in. Default value: --dir       |
+| `template` |               | Create an app from a template. Building blocks will be added automatically. |
+|            | `--dir`       | See [Working outside of app context](#working-outside-of-the-app-context)   |
+|            | `--targetDir` | Target location of the app files to be saved in. Default value: --dir       |
+
+## txdev app pull
+
+Fetches the app manifest (`livechat.config.json`) from the Developer Console.
+
+This command will not pull other files related to the app. To download/update all app files, use the [`txdev app clone`](#txdev-app-clone) command.
+
+<CodeSample path={'Basic usage'}>
+
+```bash
+$ txdev app pull
+
+? select app › 
+❯   Moments card sender
+    Get Chats App
+    My app
+```
+
+</CodeSample>
+
+<CodeSample path={'Specifying app ID'}>
+
+```bash
+$ txdev app pull --id=suLCxdG-R
+```
+
+</CodeSample>
+
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `--targetDir`   | Target location of the app manifest to be saved in. Default value: --dir  |
+
+## txdev app push
+
+Pushes local changes made to the app manifest (`livechat.config.json`) to the Developer Console. The command will only push changes from the app manifest.
+
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app verify
+
+Verify your local app manifest (`livechat.config.json`) against the one in the Text Developer Console. It compares only the app manifest, not all app files.
+
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app delete
+
+Deletes an existing app from the Developer Console. Execute with caution.
+
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app open
+
+Opens an application in the Developer Console.
+
+| Parameter       | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app authorization
+
+Configures app authorization. It's the command-line equivalent of adding the App Authorization block in Developer Console. You will be prompted to select scopes by the CLI.
+
+<CodeSample path={'Specifying auth details'}>
+
+```bash
+$ txdev app authorization add --type=server_side_app --redirectUri=https://myapp.com/
+```
+
+</CodeSample>
+
+<CodeSample path={'Authorization object added to app manifest'}>
+
+```json
+"authorization": {
+      "clientId": "5c4d731184619046c915549fb09c1561",
+      "type": "server_side_app",
+      "redirectUri": "https://myapp.com/",
+      "scopes": [
+        {
+          "scope": "archives_read",
+          "required": true
+        }
+      ]
+    }
+```
+
+</CodeSample>
+
+| Option   | Param            | Description                                                                     |
+| -------- | ---------------- | ------------------------------------------------------------------------------- |
+| `add`    |                  | Adds authorization block                                                        |
+|          | `--type`         | One of: `javascript_app` or `server_side_app`                                   |
+|          | `--redirectUri`  | Comma-separated string. A list of addresses to be whitelisted by Text Accounts. |
+| `remove` |                  | Removes authorization block                                                     |
+|          | `--id` , `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)       |
+|          |                  | App manifest location                                                           |
+| `open`   |                  | Opens the browser with App Authorization in Developer Console.                  |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context)       |
+
+## txdev app widgets
+
+Configures LiveChat or HelpDesk widgets. It's the command-line equivalent of the Agent App Widgets or Ticket Widgets block in the Developer Console.
+
+<CodeSample path={'Specifying widget details'}>
+
+```bash
+$ txdev app widgets add --product=livechat --placement=plugin --url=https://myapp.com
+```
+
+</CodeSample>
+
+<CodeSample path={'Widgets object added to app manifest'}>
+
+```json
+    "widgets": {
+      "5elheVKFzJ": {
+        "url": "https://myapp.com",
+        "placement": "plugin",
+        "initialState": "" // returned for all placements, but has effect only for Chat Details
+      }
+    }
+```
+
+</CodeSample>
+
+| Option   | Param           | Description                                                                                   |
+| -------- | --------------- | --------------------------------------------------------------------------------------------- |
+| `add`    |                 | Adds Agent App/Ticket Widgets block                                                           |
+|          | `--product`     | One of: `livechat` or `helpdesk`. Needs to be the same as app product.                        |
+|          | `--placement`   | One of: `fullscreen`, `plugin` (Chat Details), `messagebox`, `settings`, `tickets` (HelpDesk) |
+|          | `--url`         | Widget URL. Defined separetely for each widget placement.                                     |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)                     |
+| `remove` |                 | Removes all or selected widgets. The CLI will prompt you to select.                           |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)                     |
+| `open`   |                 | Opens Developer Console in the browser                                                        |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context)                     |
+
+## txdev app monetization
+
+Configures app monetization. It's the command-line equivalent of the App Monetization block in the Developer Console. The CLI will guide you through the configuration.
+
+<CodeSample path={'Specifying widget details'}>
+
+```bash
+$ txdev app monetization add
+```
+
+</CodeSample>
+
+<CodeSample path={'Widgets object added to app manifest'}>
+
+```json
+    "monetization": {
+      "price": 100,
+      "frequency": "monthly",
+      "trialDays": 7,
+      "charge": "organization"
+    }
+```
+
+</CodeSample>
+
+| Option   | Param           | Description                                                               |
+| -------- | --------------- | ------------------------------------------------------------------------- |
+| `add`    |                 | Adds App Monetization block                                               |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `remove` |                 | Removes the block                                                         |
+|          | `--id`, `dir`   | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open`   |                 | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app properties
+
+Allows to remove [LiveChat properties](/management/configuration-api/#properties). It's the command-line equivalent of the Properties block in the Developer Console. The CLI allows you to edit app properties on published apps – execute with caution. The command doesn't support the `add` option -- this can be done in the Developer Console or via the Configuration API.
+
+| Option   | Param           | Description                                                               |
+| -------- | --------------- | ------------------------------------------------------------------------- |
+| `remove` |                 | Removes the block                                                         |
+|          | `--id`, `dir`   | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open`   |                 | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+<CodeSample path={'Properties object added to app manifest'}>
+
+```json
+    "properties": {
+      "chat_note": {
+        "type": "string",
+        "description": "",
+        "access": {
+          "thread": {
+            "agent": ["write"],
+            "customer": ["read"]
+          }
+        }
+      }
+    }
+```
+
+</CodeSample>
+
+## txdev app variables
+
+Fetches environment variables stored in the Developer Console.
+
+| Option | Param           | Description                                                               |
+| ------ | --------------- | ------------------------------------------------------------------------- |
+| `pull` |                 | Fetch environment variables stored in the Developer Console               |
+|        | `--id`, `dir`   | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open` |                 | Opens Developer Console in the browser                                    |
+|        | `--id`, `--dir` | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app repository
+
+<CodeSample path={'Basic usage'}>
+
+```bash
+$ txdev app repository link
+```
+
+</CodeSample>
+
+| Option   | Param            | Description                                                               |
+| -------- | ---------------- | ------------------------------------------------------------------------- |
+| `link`   |                  | Link an app repository                                                    |
+|          | `--provider`     | `github`                                                                  |
+|          | `--type`         | `new` or `existing`                                                       |
+|          | `--name`         | Repository name                                                           |
+|          | `--fullName`     | <organization/repository-name>. Specify to link an existing repository.   |
+|          | `--branch`       | By default, the files are commited to `main`                              |
+|          | `--template`     | `vite`, `nextjs`, `saas`                                                  |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `unlink` |                  | Unlink an app repository                                                  |
+|          | `--id`, `dir`    | See [Working outside of app context](#working-outside-of-the-app-context) |
+|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the repository.     |
+| `pull`   |                  | Fetch app repository to your local environment.                           |
+|          | `--id`, `dir`    | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `open`   |                  | Opens the Developer Console in the browser.                               |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app deployment
+
+Manages app deployment. It's the command-line equivalent of the Deployment block in the Developer Console. Support is provided for Netlify and Vercel.
+
+<CodeSample path={'Basic usage'}>
+
+```bash
+$ txdev app deployment link
+```
+
+</CodeSample>
+
+| Option   | Param            | Description                                                               |
+| -------- | ---------------- | ------------------------------------------------------------------------- |
+| `link`   |                  | Configure app deployment                                                  |
+|          | `--provider`     | One of: `netlify`, `vercel`                                               |
+|          | `--type`         |                                                                           |
+|          | `--databaseName` |                                                                           |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `unlink` |                  | Fetch environment variables stored in the Developer Console               |
+|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the deployed site.  |
+| `open`   |                  | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+## txdev app storage
+
+Manages app storage. It's the command-line equivalent of the Storage block in the Developer Console.
+
+<CodeSample path={'Basic usage'}>
+
+```bash
+$ txdev app storage link
+```
+
+</CodeSample>
+
+| Option   | Param            | Description                                                               |
+| -------- | ---------------- | ------------------------------------------------------------------------- |
+| `link`   |                  | Configure storage for the app                                             |
+|          | `--provider`     | `neon` or `planetscale`                                                   |
+|          | `--type`         | `new` or `existing`                                                       |
+|          | `--databaseName` |                                                                           |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+| `unlink` |                  | Fetch environment variables stored in the Developer Console               |
+|          | `--shouldDelete` | Bool. Specify `true` if you want to unlink and delete the repository.     |
+| `open`   |                  | Opens Developer Console in the browser                                    |
+|          | `--id`, `--dir`  | See [Working outside of app context](#working-outside-of-the-app-context) |
+
+# auth module
+
+## txdev auth --help
+
+Lists available commands in the auth module.
+
+<CodeSample path={'txdev auth --help'}>
+
+```bash
+$ txdev auth --help
+
+Commands:
+  txdev auth login   login to provider
+  txdev auth logout  logout from provider
+```
+
+</CodeSample>
+
+## txdev auth login
+
+Log in to Text or to an external provider. Select the provider with arrows or specifying it explicitly in as the `--provider` param.
+
+| Parameter    | Options                                                                          |
+| ------------ | -------------------------------------------------------------------------------- |
+| `--provider` | One of: `accounts` (Text), `github`, `netlify`, `neon`, `planetscale`, `vercel`. |
+
+<CodeSample path={'Basic usage'}>
+
+```bash
+$ txdev auth login
+
+❯   Text (unauthorized)
+    GitHub  (unauthorized)
+    Netlify  (unauthorized)
+    Neon  (unauthorized)
+    PlanetScale  (unauthorized)
+    Vercel  (unauthorized)
+```
+
+</CodeSample>
+
+<CodeSample path={'Specifying a provider'}>
+
+```bash
+$ txdev auth login --provider=github
+```
+
+</CodeSample>
+
+## txdev auth logout
+
+Log out from Text or an external provider service. The command is analogous to the [`txdev auth login`](#txdev-auth-login) command.
+
+# Developer CLI on npm
+
+To read more about the Developer SDK, <a href="https://www.npmjs.com/package/@livechat/developer-cli" target="_blank"> visit its official page on npm.</a>
