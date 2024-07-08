@@ -645,8 +645,8 @@ const ERRORS = [
     description: "The request couldn't be performed on an anonymized chat.",
   },
   {
-    id: "already_exist",
-    message: "Already exist",
+    id: "already_exists",
+    message: "Already exists",
     description: "It's impossible to create the resource as it already exists.",
   },
   {
