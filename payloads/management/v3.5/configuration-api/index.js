@@ -15,7 +15,7 @@ export { default as createGroup } from "./responses/groups/createGroup.json"
 export { default as getGroup } from "./responses/groups/getGroup.json"
 export { default as listGroups } from "./responses/groups/listGroups.json"
 
-export { default as listGroupProperties } from "./responses/properties/listGroupProperties.json"
+export { default as listGroupsProperties } from "./responses/properties/listGroupsProperties.json"
 export { default as listLicenseProperties } from "./responses/properties/listLicenseProperties.json"
 export { default as listProperties } from "./responses/properties/listProperties.json"
 

@@ -546,7 +546,7 @@ const ERRORS = [
   },
   {
     id: "limit_reached",
-    message: "Resource limit reached",
+    message: "Limit reached",
     description:
       "Resource cannot be created/modified because the change would exceed the limit",
   },
@@ -563,17 +563,17 @@ const ERRORS = [
   },
   {
     id: "service_unavailable",
-    message: "Not accepting new requests",
+    message: "Service unavailable",
     description: "New requests are temporarily not being accepted.",
   },
   {
     id: "unsupported_version",
-    message: "Unsupported version",
+    message: "Cannot call unsupported API versions.",
     description: "Unsupported protocol version.",
   },
   {
     id: "users_limit_reached",
-    message: "Users limit reached	",
+    message: "Users limit reached",
     description:
       "Displayed on the attempt of logging in. The limit of online Customers for a given license has been reached.",
   },
@@ -589,7 +589,7 @@ const ERRORS = [
   },
   {
     id: "chat_inactive",
-    message: "No active chat thread",
+    message: "Chat is inactive",
     description:
       "An action that requires an active thread performed on a chat with no active threads.",
   },
@@ -607,7 +607,7 @@ const ERRORS = [
   },
   {
     id: "requester_already_offline",
-    message: "Requester offline",
+    message: "Requester is already offline",
     description:
       "The method is only allowed for the logged in Agents (via RTM API).",
   },
@@ -645,8 +645,8 @@ const ERRORS = [
     description: "The request couldn't be performed on an anonymized chat.",
   },
   {
-    id: "already_exist",
-    message: "Already exist",
+    id: "already_exists",
+    message: "Already exists",
     description: "It's impossible to create the resource as it already exists.",
   },
   {
@@ -656,7 +656,13 @@ const ERRORS = [
   },
   {
     id: "transfer_ownership",
-    message: "Transfer ownership",
+    message: "Invalid transfer ownership request",
+    description:
+      "Ownership cannot be transfered to this account (bot, suspended agent).",
+  },
+  {
+    id: "ownership_transfer",
+    message: "Invalid transfer ownership request",
     description:
       "Ownership cannot be transfered to this account (bot, suspended agent).",
   },
