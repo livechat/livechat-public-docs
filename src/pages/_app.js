@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import storeMetrics from "@livechat/store-metrics";
 import TagManager from "react-gtm-module";
 import "@docsearch/css";
 import "@livechat/design-system/dist/design-system.css";
@@ -20,10 +19,6 @@ function MyApp({ Component, pageProps }) {
       gtmId:
         process.env.NODE_ENV === "production" ? "GTM-M58RLCQ" : "GTM-5DVQQC",
     });
-
-    if (canUseWindow) {
-      storeMetrics();
-    }
   }, []);
 
   useEffect(() => {
