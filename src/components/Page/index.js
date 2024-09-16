@@ -5,7 +5,7 @@ import { MDXProvider } from "@mdx-js/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import FullStory from "react-fullstory";
+
 
 import { SideNav } from "../core/SideNav";
 import Version, { getVersionsByGroup } from "../core/version";
@@ -169,15 +169,12 @@ const Page = ({ frontMatter, children }) => {
     "chat-api"
   ].includes(subcategory) || ["Chat API"].includes(title);
 
-  const ORG_ID = process.env.NEXT_PUBLIC_FULLSTORY_ORG;
 
   return (
     <AuthProvider>
       <RatingProvider value={ratingContext}>
         <VersionProvider value={versionContext}>
           <PromotionProvider value={promotionContext}>
-            {ORG_ID && <FullStory org={ORG_ID} />}
-
             <SEO
               desc={desc}
               title={title}
