@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     TagManager.initialize({
       gtmId:
-        process.env.NODE_ENV === "production" ? "GTM-M58RLCQ" : "GTM-5DVQQC",
+        process.env.NODE_ENV === "production" ? "GTM-MTQ5WQNP" : "GTM-5DVQQC",
     });
   }, []);
 
