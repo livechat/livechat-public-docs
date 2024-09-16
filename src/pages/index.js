@@ -105,8 +105,7 @@ const Index = () => {
     items: versions,
   };
   const promotionContext = { isActive: false, content: <div /> };
-  console.log('here')
-  console.log(process.env.NEXT_PUBLIC_AMPLITUDE_KEY)
+
   return (
     <AuthProvider>
       <RatingProvider value={ratingContext}>
