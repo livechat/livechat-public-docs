@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-
 import { SideNav } from "../core/SideNav";
 import Version, { getVersionsByGroup } from "../core/version";
 import { HomeIcon, ChevronRight } from "../core/icons";
