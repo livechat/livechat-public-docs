@@ -15,7 +15,7 @@ paths:
       description: >-
         Accounts are listed by using `organization_id` obtained from the access
         token. The `accounts.roles--all:ro` scope is required for listing
-        accounts along with their roles. Some additional description.
+        accounts along with their roles.
       security:
         - PersonalAccessToken: null
         - OAuth2BearerToken:
@@ -52,7 +52,7 @@ paths:
                           example: John
                           exclusiveMaximum: false
                           maxLength: 191
-                        email: &ref_17
+                        email: &ref_18
                           type: string
                           format: email
                           description: Account's email address
@@ -69,11 +69,14 @@ paths:
                           example: false
                         default_product: &ref_0
                           type: string
-                          description: Available product name
-                          example: Accounts
+                          description: Product name
+                          example: LiveChat
                           enum:
                             - LiveChat
                             - Accounts
+                            - ChatBot
+                            - HelpDesk
+                            - OpenWidget
                         default_organization_id:
                           type: string
                           format: uuid
@@ -1637,9 +1640,9 @@ paths:
       tags:
         - Organizations
       summary: List organizations
-      description: >-
+      description: >
         Lists all organizations that an account belongs to, based on
-        authorization.
+        authorization. This request doesn't need any specific scope.
       security:
         - PersonalAccessToken: null
         - OAuth2BearerToken: null
@@ -1650,7 +1653,7 @@ paths:
             application/json:
               schema:
                 type: array
-                items: &ref_18
+                items: &ref_19
                   description: >-
                     Organization groups accounts into a single unit. Each
                     organization must contain at least one account and one
@@ -1659,9 +1662,10 @@ paths:
                     given account.
                   type: object
                   properties:
-                    organization_id:
+                    organization_id: &ref_26
                       type: string
                       format: uuid
+                      default: my
                       readOnly: true
                       description: Unique organization identifier
                       example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
@@ -1682,22 +1686,32 @@ paths:
                         - lax
                         - strict
                       default: lax
-                    company:
-                      description: Basic company information
-                      type: object
-                      properties:
-                        phone:
-                          type: string
-                          description: Company phone number
-                          example: +48 123 456 789
-                          exclusiveMaximum: false
-                          maxLength: 20
-                        website:
-                          type: string
-                          description: Primary company website
-                          example: example.com
-                          exclusiveMaximum: false
-                          maxLength: 255
+                    domain_whitelist:
+                      type: boolean
+                      description: If true, email address domain whitelisting is enabled.
+                      example: true
+                      default: false
+                    products:
+                      type: array
+                      description: List of installed products in the organization.
+                      readOnly: true
+                      items:
+                        type: object
+                        properties:
+                          product: *ref_0
+                          created_at: &ref_17
+                            readOnly: true
+                            type: string
+                            format: date-time
+                            description: Creation date of the resource.
+                            example: 2019-09-03T10:53:04.000Z
+                    updated_at:
+                      readOnly: true
+                      type: string
+                      format: date-time
+                      description: Date of the most recent modification to the resource.
+                      example: 2019-09-03T10:53:04.000Z
+                    created_at: *ref_17
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
@@ -1724,9 +1738,122 @@ paths:
           application/json:
             schema:
               properties:
-                email: *ref_17
+                email: *ref_18
                 password: *ref_14
-                organization: *ref_18
+                organization: &ref_20
+                  allOf:
+                    - *ref_19
+                    - type: object
+                      properties:
+                        company:
+                          description: Basic company information
+                          type: object
+                          properties:
+                            phone:
+                              type: string
+                              description: Company phone number
+                              example: +48 123 456 789
+                              exclusiveMaximum: false
+                              maxLength: 20
+                            website:
+                              type: string
+                              description: Primary company website
+                              example: example.com
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            name:
+                              type: string
+                              description: Company name
+                              example: Example Company
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            industry:
+                              type: string
+                              description: Company industry
+                              example: Software
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            company_size:
+                              type: string
+                              description: Company size
+                              example: 1-10
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            audience:
+                              type: array
+                              description: Company audience
+                              example:
+                                - B2B
+                                - B2C
+                              items:
+                                type: string
+                                enum:
+                                  - B2B
+                                  - B2C
+                                  - Internal use
+                              uniqueItems: true
+                            street:
+                              type: string
+                              description: Company street address
+                              example: 123 Example Street
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            city:
+                              type: string
+                              description: Company city
+                              example: New York
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            state:
+                              type: string
+                              description: Company state
+                              example: Example State
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            zipcode:
+                              type: string
+                              description: Company zipcode
+                              example: 00-000
+                              exclusiveMaximum: false
+                              maxLength: 20
+                            country:
+                              type: string
+                              description: Company country
+                              example: Poland
+                              exclusiveMaximum: false
+                              maxLength: 255
+                            logo:
+                              type: string
+                              description: Company logo URL
+                              example: https://example.com/logo.png
+                              exclusiveMaximum: false
+                              maxLength: 65535
+                            tagline:
+                              type: string
+                              description: Company tagline
+                              example: Example tagline
+                              exclusiveMaximum: false
+                              maxLength: 65535
+                            twitter:
+                              type: string
+                              description: Company Twitter profile
+                              maxLength: 255
+                              exclusiveMaximum: false
+                            instagram:
+                              type: string
+                              description: Company Instagram profile
+                              maxLength: 255
+                              exclusiveMaximum: false
+                            linkedin:
+                              type: string
+                              description: Company Linkedin profile
+                              maxLength: 255
+                              exclusiveMaximum: false
+                            facebook:
+                              type: string
+                              description: Company Facebook profile
+                              maxLength: 255
+                              exclusiveMaximum: false
               required:
                 - email
       responses:
@@ -1739,7 +1866,7 @@ paths:
                   - *ref_2
                   - type: object
                     properties:
-                      organization: *ref_18
+                      organization: *ref_20
                       access_token:
                         type: string
                         example: dal:eDqDuTRZoK03C3rzD2dcfA==
@@ -1776,9 +1903,10 @@ paths:
   /organizations/{organization_id}:
     get:
       summary: Get an organization
-      description: >-
-        Returns a single organization for a given organization ID. The ID can be
-        replaced with `me` to get the account that sends the request.
+      description: >
+        This function retrieves a single organization based on the provided
+        organization ID. You can use `my` instead of an ID to get the
+        organization linked with the access token used in the request.
       security:
         - PersonalAccessToken: null
         - OAuth2BearerToken: null
@@ -1791,13 +1919,13 @@ paths:
             type: string
             format: uuid
           required: true
-          description: Unique account ID or `me`
+          description: Unique organization ID or `my`
       responses:
         '200':
           description: 'OK: Returns the organization.'
           content:
             application/json:
-              schema: *ref_18
+              schema: *ref_20
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -1828,9 +1956,12 @@ paths:
       tags:
         - Organizations
       summary: Update an organization
-      description: Updates an organization
+      description: >-
+        Updates an organization. You can use `my` instead of an ID to get the
+        organization linked with the access token used in the request.
       security:
-        - PersonalAccessToken: null
+        - PersonalAccessToken:
+            - organization--my:rw
         - OAuth2BearerToken:
             - organization--my:rw
       parameters:
@@ -1840,18 +1971,18 @@ paths:
             type: string
             format: uuid
           required: true
-          description: Unique account ID or `me`
+          description: Unique account ID or `my`
       requestBody:
         required: true
         content:
           application/json:
-            schema: *ref_18
+            schema: *ref_20
       responses:
         '200':
           description: 'OK: Returns the updated organization.'
           content:
             application/json:
-              schema: *ref_18
+              schema: *ref_20
         '401':
           description: Unauthorized, missing, or invalid authorization
           content:
@@ -1900,18 +2031,25 @@ paths:
               schema: *ref_6
   /info:
     get:
-      summary: Get token details
+      summary: Introspect
       description: >-
-        Some access tokens are paired with a refresh token. The access token can
-        be provided via authorization or a query string.
-      security:
-        - OAuth2BearerToken: null
+        Returns detailed information about the provided OAuth access token.
+        Useful for token validation and introspection. The access token can be
+        provided via authorization or a query string.
       parameters:
-        - in: query
+        - &ref_24
+          in: query
           name: code
+          description: Token string
+          required: false
           schema:
             type: string
-            example: fra-a:vky95357S7KM1E4dXwv1DQ
+          example: fra-a:vky95357S7KM1E4dXwv1DQ
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
       tags:
         - Tokens
       responses:
@@ -1919,40 +2057,60 @@ paths:
           description: 'OK: Returns token details.'
           content:
             application/json:
-              schema:
-                description: OAuth 2 `Bearer` token
+              schema: &ref_23
+                description: >-
+                  Represents an OAuth 2 token with details about its scope,
+                  validity, and associated account.
                 type: object
                 properties:
                   access_token:
                     type: string
-                    description: Access token value
+                    description: >-
+                      The actual token string that is used for authorization in
+                      API requests.
                     example: fra-a:vky95357S7KM1E4dXwv1DQ
                   account_id:
                     type: string
                     format: uuid
-                    description: Account ID for which the token was issued
+                    description: >-
+                      The unique identifier of the account for which the token
+                      has been issued.
                     example: 28df1a50-84fa-490c-9615-5b77d507c393
+                  client_id:
+                    type: string
+                    description: >-
+                      The unique identifier of the OAuth client for which the
+                      token has been issued.
+                    example: d4c4377b0e8fa82d5d737facd9475efa
                   expires_in:
                     type: integer
                     format: uint64
-                    description: Access token lifetime (in seconds)
+                    description: Duration (in seconds) after which the token will expire.
                     example: 432000
                   organization_id:
                     type: string
                     format: uuid
-                    description: Organization ID for which the token was issued
+                    description: >-
+                      The unique identifier of the organization for which the
+                      token has been issued.
                     example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
                   refresh_token:
                     type: string
-                    description: Refresh token value
+                    description: >-
+                      An optional token that can be used to obtain a new access
+                      token once the current one expires. Not available for
+                      tokens minted with implicit grant flow.
                     example: fra-a:0SEkeLZ2Qy2Nm2cg42xIyg
+                    nullable: true
                   scope:
                     type: string
-                    description: Scopes assigned to token, separated by a comma (`,`)
+                    description: >-
+                      List of permissions granted to the token, separated by
+                      commas.
                     example: accounts--all:rc,accounts--all:ro
                   token_type:
                     type: string
-                    description: Access token type
+                    description: The type of the access token.
                     example: Bearer
         '422':
           description: Invalid request
@@ -1961,6 +2119,179 @@ paths:
               schema: *ref_9
         '500':
           description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+  /token:
+    post:
+      summary: Token
+      description: >
+        This endpoint is used by confidential and public clients to exchange an
+        authorization code for an access token.
+
+        Depending on the application type, the following parameters are required
+        for `grant_type=code`:
+
+        * Confidental (private) client – `client_secret` is required
+
+        * Public client – matching `code_verifier` is required for
+        `code_challenge` sent during the authentication request.
+
+
+        Refresh tokens issued for public clients are single-use only – a new
+        refresh token is issued upon successful authorization.
+      tags:
+        - Tokens
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - title: Code Exchange
+                  allOf:
+                    - description: >-
+                        The set of parameters required for the exchange of the
+                        code to an access token.
+                      type: object
+                      required:
+                        - client_id
+                        - grant_type
+                        - redirect_uri
+                        - code
+                      properties:
+                        client_id: &ref_21
+                          description: >-
+                            The unique ID of the OAuth client that makes the
+                            authorization request.
+                          type: string
+                          example: be4ac276b81af255624473a222e1155c
+                        grant_type:
+                          description: The selected authorization grant type.
+                          enum:
+                            - code
+                          type: string
+                        redirect_uri:
+                          description: >-
+                            The application's `redirect_uri` for which the grant
+                            was requested.
+                          type: string
+                          example: https://my-app.com/callback
+                        code:
+                          description: The authorization code.
+                          type: string
+                          example: fra-a:apk420S7KM1E4dXwv1DH
+                        client_secret: &ref_22
+                          description: >-
+                            The secret associated with the OAuth client that
+                            makes the request.
+                          type: string
+                          example: dsbuHDHA212jcbubds-)($nb5334@dsad
+                        code_verifier:
+                          description: >-
+                            The authorization code verifier used to verify if
+                            the requester is a legitimate authorization code
+                            recipient.
+                          type: string
+                          example: >-
+                            zo6yP8H9te4I0lk2Uclcry47yPbTT9jRbdnIZPdMUfazH5iD8vkNw
+                - title: Refresh Token Exchange
+                  allOf:
+                    - description: >-
+                        The set of parameters required for the exchange of a
+                        refresh token to an access token.
+                      type: object
+                      required:
+                        - refresh_token
+                        - client_id
+                        - client_secret
+                        - grant_type
+                      properties:
+                        refresh_token:
+                          description: Refresh token
+                          type: string
+                          example: fra-a:apk420S7KM1E4dXwv1DH
+                        client_id: *ref_21
+                        client_secret: *ref_22
+                        grant_type:
+                          description: The selected authorization grant type.
+                          enum:
+                            - refresh_token
+                          type: string
+      responses:
+        '200':
+          description: OK, returns a new token
+          content:
+            application/json:
+              schema: *ref_23
+        '401':
+          description: >-
+            Client isn't authorized to request a token using this method or the
+            provided parameters are invalid.
+          content:
+            application/json:
+              schema: *ref_4
+        '403':
+          description: >-
+            Request not authorized. Resource owner could unauthorize request;
+            wrong or unsupported `grant_type` provided; wrong `scope` provided.
+          content:
+            application/json:
+              schema: *ref_5
+        '422':
+          description: Invalid request, missing required parameters
+          content:
+            application/json:
+              schema: *ref_9
+        '429':
+          description: >-
+            Temporarily unavailable. The server cannot currently handle the
+            request.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_1
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: temporarily_unavailable
+                      error_description:
+                        type: string
+                        example: >-
+                          The server is currently unable to handle the request
+                          due to a temporary overloading or maintenance of the
+                          server.
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
+    delete:
+      summary: Revoke
+      description: >-
+        Access tokens that come in pairs with a refresh token are revoked in
+        pairs.
+      security:
+        - oAuth2 Bearer Token: null
+      parameters:
+        - *ref_24
+      tags:
+        - Tokens
+      responses:
+        '200':
+          description: OK, tokens are revoked, returns no content.
+        '404':
+          description: Not found, the token doesn't exist.
+          content:
+            application/json:
+              schema: *ref_11
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema: *ref_6
   /accounts/{account_id}/organization_settings/{organization_id}:
     get:
       summary: Get account settings for an organization
@@ -2005,7 +2336,7 @@ paths:
           description: Object with account properties specific for a given organization
           content:
             application/json:
-              schema: &ref_19
+              schema: &ref_25
                 type: object
                 properties:
                   avatar_url:
@@ -2080,12 +2411,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: *ref_19
+            schema: *ref_25
           application/x-www-form-urlencoded:
             example:
               avatar_url: >-
                 https://api.text.com/file/accounts/avatars/b2185556-634c-4ecf-b4c9-bcf8b65bc853/ae5bd37f-64b2-416b-bbb3-4623f53e6fb8/37a190dd-77a5-4fba-a7d3-2e89eab0e8fd.jpg
-            schema: *ref_19
+            schema: *ref_25
           multipart/form-data:
             schema:
               type: object
@@ -2098,7 +2429,7 @@ paths:
           description: Object with account properties specific for a given organization.
           content:
             application/json:
-              schema: *ref_19
+              schema: *ref_25
         '401':
           description: Unauthorized, missing, or invalid authorization.
           content:
@@ -2124,6 +2455,593 @@ paths:
           content:
             application/json:
               schema: *ref_6
+  /organizations/{organization_id}/domains:
+    get:
+      tags:
+        - OrganizationDomains
+      summary: List organization domains
+      description: >-
+        Lists all organization domains. The list is used for whitelisting email
+        address domains, that are free to join to given organization.
+      security:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken: null
+      parameters:
+        - in: path
+          name: organization_id
+          schema: *ref_26
+          required: true
+          description: Unique organization ID
+      responses:
+        '200':
+          description: 'OK: Returns a list of organization domains.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items: &ref_29
+                  description: Organization domain.
+                  type: object
+                  properties:
+                    organization_id: *ref_26
+                    domain_id: &ref_30
+                      type: string
+                      format: uuid
+                      readOnly: true
+                      description: Unique domain identifier
+                      example: 59aa5076-13c5-4ce5-b13a-07d33e838acf
+                    domain: &ref_27
+                      type: string
+                      description: Domain name
+                      example: example.com
+                    type:
+                      readOnly: true
+                      type: string
+                      description: >-
+                        Type of the domain assigned to the organization. Only
+                        one type is available - `open`. Open domains are email
+                        domains that are able to join a given organization
+                        without additional confirmation.
+                      example: open
+                    created_at:
+                      readOnly: true
+                      type: string
+                      format: date-time
+                      description: Date of the creation of organization domain
+                      example: 2019-09-03T10:53:04.000Z
+        '401':
+          description: Unauthorized, missing, or invalid authorization
+          content:
+            application/json:
+              schema: *ref_4
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: *ref_11
+        '422':
+          description: 'Validation error: Invalid uuid, etc.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: Disposable domain.
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+    post:
+      tags:
+        - OrganizationDomains
+      summary: Create organization domain
+      description: >-
+        This endpoint adds a new domain to the organization's email address
+        domains whitelist. It's forbidden to add domains used for disposable
+        email addresses or used by free email providers. Maximum number of
+        domains added to an organization is 10.
+      security:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken: null
+      parameters:
+        - in: path
+          name: organization_id
+          schema: *ref_26
+          required: true
+          description: Unique organization ID
+      requestBody:
+        content:
+          application/json:
+            schema: &ref_28
+              description: Create organization domain parameters
+              type: object
+              properties:
+                domain: *ref_27
+              required:
+                - domain
+          application/x-www-form-urlencoded:
+            example:
+              avatar_url: example.com
+            schema: *ref_28
+      responses:
+        '201':
+          description: 'Created: Returns created organization domain.'
+          content:
+            application/json:
+              schema: *ref_29
+        '401':
+          description: Unauthorized, missing, or invalid authorization
+          content:
+            application/json:
+              schema: *ref_4
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: *ref_11
+        '409':
+          description: 'Conflict: The domain already exists.'
+          content:
+            application/json:
+              schema: *ref_15
+        '422':
+          description: 'Validation error: Invalid uuid, etc.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: Disposable domain.
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+  /organizations/{organization_id}/domains/{domain_id}:
+    delete:
+      tags:
+        - OrganizationDomains
+      summary: Delete organization domain
+      description: Delete organization domain by it's id
+      security:
+        - PersonalAccessToken: null
+        - OAuth2BearerToken: null
+      parameters:
+        - in: path
+          name: organization_id
+          schema: *ref_26
+          required: true
+          description: Unique organization ID
+        - in: path
+          name: domain_id
+          schema: *ref_30
+          required: true
+          description: Unique domain id
+      responses:
+        '210':
+          description: 'Gone: The domain has been deleted.'
+        '401':
+          description: Unauthorized, missing, or invalid authorization
+          content:
+            application/json:
+              schema: *ref_4
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema: *ref_11
+        '422':
+          description: 'Validation error: Invalid uuid, etc.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - *ref_9
+                  - type: object
+                    properties:
+                      invalid_fields:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: Disposable domain.
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+  /organizations/my/saml:
+    get:
+      tags:
+        - SAML
+      summary: Get configuration
+      description: Returns SAML configuration for organization
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+      responses:
+        '200':
+          description: 'OK: Returns organization SAML configuration.'
+          content:
+            application/json:
+              schema: &ref_36
+                description: Organization's SAML configuration
+                type: object
+                properties:
+                  entrypoint: &ref_31
+                    type: string
+                    description: >-
+                      Entrypoint URL of identity provider; SSO redirect there
+                      AuthnRequest
+                    example: >-
+                      https://dev-00000.example.com/app/dev-00000_appname_1/abcdefeascdaserdsawe/sso/saml
+                  certificate: &ref_32
+                    type: string
+                    description: SAML certificate configured on IDP side in PEM format
+                    example: >-
+                      -----BEGIN CERTIFICATE-----
+                      MIIC9TCCAl6gAwIBAgIJANL8E4epRNznMA0GCSqGSIb3DQEBBQUAMFsxGDAWBgNV
+                      BAoTD1N1cGVyZmlzaCwgSW5jLjELMAkGA1UEBxMCU0YxCzAJBgNVBAgTAkNBMQsw
+                      CQYDVQQGEwJVUzEYMBYGA1UEAxMPU3VwZXJmaXNoLCBJbmMuMB4XDTE0MDUxMjE2
+                      MjUyNloXDTM0MDUwNzE2MjUyNlowWzEYMBYGA1UEChMPU3VwZXJmaXNoLCBJbmMu
+                      MQswCQYDVQQHEwJTRjELMAkGA1UECBMCQ0ExCzAJBgNVBAYTAlVTMRgwFgYDVQQD
+                      Ew9TdXBlcmZpc2gsIEluYy4wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOjz
+                      Shh2Xxk/sc9Y6X9DBwmVgDXFD/5xMSeBmRImIKXfj2r8QlU57gk4idngNsSsAYJb
+                      1Tnm+Y8HiN/+7vahFM6pdEXY/fAXVyqC4XouEpNarIrXFWPRt5tVgA9YvBxJ7SBi
+                      3bZMpTrrHD2g/3pxptMQeDOuS8Ic/ZJKocPnQaQtAgMBAAGjgcAwgb0wDAYDVR0T
+                      BAUwAwEB/zAdBgNVHQ4EFgQU+5izU38URC7o7tUJml4OVoaoNYgwgY0GA1UdIwSB
+                      hTCBgoAU+5izU38URC7o7tUJml4OVoaoNYihX6RdMFsxGDAWBgNVBAoTD1N1cGVy
+                      ZmlzaCwgSW5jLjELMAkGA1UEBxMCU0YxCzAJBgNVBAgTAkNBMQswCQYDVQQGEwJV
+                      UzEYMBYGA1UEAxMPU3VwZXJmaXNoLCBJbmMuggkA0vwTh6lE3OcwDQYJKoZIhvcN
+                      AQEFBQADgYEApHyg7ApKx3DEcWjzOyLi3JyN0JL+c35yK1VEmxu0Qusfr76645Oj
+                      1IsYwpTws6a9ZTRMzST4GQvFFQra81eLqYbPbMPuhC+FCxkUF5i0DNSWi+kczJXJ
+                      TtCqSwGl9t9JEoFqvtW+znZ9TqyLiOMw7TGEUI+88VAqW0qmXnwPcfo=
+                      -----END CERTIFICATE-----
+                  idp_entity_id: &ref_33
+                    type: string
+                    description: >-
+                      Entity ID of external identity provider; Usually it will
+                      be an URL
+                    example: http://www.example.com/abcdefeascdaserdsawe
+                  sp_entity_id: &ref_34
+                    type: string
+                    description: >-
+                      Entity ID of Text Accounts; it has default value that can
+                      be changed
+                    example: https://text.livechat.com
+                  active: &ref_35
+                    type: boolean
+                    description: Indicates if SAML configuration is enabled
+                    example: true
+                  version:
+                    type: integer
+                    description: >-
+                      Version of SAML configuration; For now there are two
+                      versions 1 and 2
+                    example: 2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema: *ref_10
+        '404':
+          description: 'Not found: SAML configuration not found.'
+          content:
+            application/json:
+              schema: *ref_11
+        '422':
+          description: Invalid request
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+    post:
+      tags:
+        - SAML
+      summary: Create SAML configuration
+      description: >-
+        Creates SAML configuration for organization. To create SAML
+        configurtion, organization needs to have at least one product with
+        enterprise subscription.
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                entrypoint: *ref_31
+                certificate: *ref_32
+                idp_entity_id: *ref_33
+                sp_entity_id: *ref_34
+              required:
+                - entrypoint
+                - certificate
+                - idp_entity_id
+      responses:
+        '201':
+          description: 'Created: SAML configuration was created.'
+        '400':
+          description: >-
+            Bad Request: Accounts are connected with other organizations or
+            Insufficient products subscriptions
+          content:
+            application/json:
+              schema: *ref_10
+        '409':
+          description: 'Conflict: Saml configuration already created.'
+          content:
+            application/json:
+              schema: *ref_15
+        '422':
+          description: Invalid request
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+    patch:
+      tags:
+        - SAML
+      summary: Modify SAML configuration
+      description: >-
+        Modifies SAML configuration for organization.
+
+        When changing active parameter it will enable SAML configuration. This
+        will cause other authentication(login/password etc.) methods to be
+        disabled for that organization. Acivation of SAML configuration will be
+        blocked if there is no product on enterprise plan or organization
+        contains account that is added to other organization.
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                entrypoint: *ref_31
+                certificate: *ref_32
+                idp_entity_id: *ref_33
+                sp_entity_id: *ref_34
+                active: *ref_35
+      responses:
+        '200':
+          description: SAML configuration was modified.
+          content:
+            application/json:
+              schema: *ref_36
+        '400':
+          description: >-
+            Bad Request: Accounts are connected with other organizations or
+            Insufficient products subscriptions; in case of enabling
+            configuration
+          content:
+            application/json:
+              schema: *ref_10
+        '403':
+          description: 'Forbidden: Edition of v1 SAML configuration is forbidden'
+          content:
+            application/json:
+              schema: *ref_5
+        '404':
+          description: 'Not found: SAML configuration not found.'
+          content:
+            application/json:
+              schema: *ref_11
+        '409':
+          description: 'Conflict: Account exists in other organization'
+          content:
+            application/json:
+              schema: *ref_15
+        '422':
+          description: Invalid request
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+    delete:
+      tags:
+        - SAML
+      summary: Delete SAML configuration
+      description: >-
+        Removes SAML configuration for organization. It will enable other
+        authentication methods for organization.
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+      responses:
+        '200':
+          description: SAML configuration was deleted.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema: *ref_10
+        '404':
+          description: 'Not found: SAML configuration not found'
+          content:
+            application/json:
+              schema: *ref_11
+        '422':
+          description: Invalid request
+          content:
+            application/json:
+              schema: *ref_9
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+  /organizations/my/login_methods:
+    get:
+      tags:
+        - OrganizationLoginMethods
+      summary: Get login methods
+      description: Returns login methods for organization
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+      responses:
+        '200':
+          description: 'OK: Returns organization login methods.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    login_method: &ref_37
+                      description: Login method object
+                      type: object
+                      properties:
+                        login_method:
+                          type: string
+                          description: Login method enforced for organization
+                          enum:
+                            - google
+                            - microsoft
+                            - saml
+                          example: saml
+                    organization_id:
+                      type: string
+                      format: uuid
+                      description: Organization ID
+                      example: 00000000-0000-0000-0000-000000000000
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+    post:
+      tags:
+        - OrganizationLoginMethods
+      summary: Enforce login method
+      description: Enforces login method for organization
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: *ref_37
+        description: Login methods object
+      responses:
+        '200':
+          description: 'OK: Returns organization login methods.'
+        '400':
+          description: 'Bad Request: invalid login method or missing required fields.'
+          content:
+            application/json:
+              schema: *ref_10
+        '404':
+          description: |
+            It may happen in the following cases:
+            - Login method not found
+            - (SAML) configuration not found
+          content:
+            application/json:
+              schema: *ref_11
+        '409':
+          description: |
+            It may happen in the following cases:
+            - Login method enabled or 
+            - Feature conflict (Eg. Domain whitelist is enabled)
+            - (SAML) Account is in more than one organization 
+            - (SAML) Insufficient product subscription level
+          content:
+            application/json:
+              schema: *ref_15
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
+  /organizations/my/login_methods/{login_method}:
+    delete:
+      tags:
+        - OrganizationLoginMethods
+      summary: Disable login method
+      description: Disables login method for organization
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer fra-a:vky95357S7KM1E4dXwv1DQ
+        - in: path
+          name: login_method
+          required: true
+          schema:
+            type: string
+            example: google
+      responses:
+        '200':
+          description: 'OK: login methods has been deleted.'
+        '400':
+          description: 'Bad Request: invalid login method'
+          content:
+            application/json:
+              schema: *ref_10
+        '404':
+          description: 'Not found: Login methods not found.'
+          content:
+            application/json:
+              schema: *ref_11
+        '500':
+          description: Server Error.
+          content:
+            application/json:
+              schema: *ref_6
 components:
   schemas: {}
   securitySchemes:
@@ -2131,14 +3049,14 @@ components:
       description: >-
         Use your `account_id` as the username and the PersonalAccessToken (PAT)
         as the password. <a
-        href="https://platform.text.com/docs/authorization/agent-authorization#personal-access-tokens">Learn
+        href="https://developers.livechat.com/docs/authorization/authorizing-api-calls/#personal-access-tokens">Learn
         how to get a PAT.</a>
       type: http
       scheme: basic
     OAuth2BearerToken:
       description: >-
         This API uses OAuth2 with the implicit grant flow. <a
-        href="https://platform.text.com/docs/authorization/authorizing-api-calls/#implicit-grant">Learn
+        href="https://developers.livechat.com/docs/authorization/authorizing-api-calls/#implicit-grant">Learn
         about the implicit grant flow.</a>
       type: oauth2
       flows:
