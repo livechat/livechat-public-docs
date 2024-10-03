@@ -53,11 +53,12 @@ You can authorize your calls to the Reports API using one of the following metho
 
 ## Available methods
 
-|            |                                                                                                                                                                                                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Chats**  | [`duration`](#duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) [`engagement`](#engagement) [`greetings_conversion`](#greetings-conversion) [`forms`](#forms) [`response_time`](#response-time) [`first_response_time`](#first-response-time) |
-| **Agents** | [`availability`](#availability) [`performance`](#performance)                                                                                                                                                                                                                                   |
-| **Tags**   | [`chat_usage`](#chat-usage)                                                                                                                                                                                                                                                                     |
+|                |                                                                                                                                                                                                                                                                                                 |
+| -------------- | -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Chats**      | [`duration`](#duration) [`tags`](#tags) [`total_chats`](#total-chats) [`ratings`](#ratings) [`ranking`](#ranking) [`engagement`](#engagement) [`greetings_conversion`](#greetings-conversion) [`forms`](#forms) [`response_time`](#response-time) [`first_response_time`](#first-response-time) [`groups`](#groups) [`queued_visitors`](#queued_visitors) [`queued_visitors_left`](#queued_visitors_left)  |
+| **Agents**     | [`availability`](#availability) [`performance`](#performance)                                                                                                                                                                                                                                                                                                                                              |
+| **Tags**       | [`chat_usage`](#chat-usage)                                                                                                                                                                                                                                                                                                                                                                                |
+| **Customers**  | [`unique_visitors`](#unique_visitors)                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Available parameters and filters
 
@@ -101,6 +102,15 @@ If filters are provided, they must contain exactly one pair of time-based filter
 | `filters.to`                                          | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM`.                                                                                                                                                                                          |
 | `filters.agents.<string_filter_type>`<sup>**2**</sup> | No       | `any`     | Described below.                                                                                                                                                                                                                                                                                                  |
 | `filters.groups.values`                               | No       | `array`   | Array of group IDs.                                                                                                                                                                                                                                                                                               |
+
+If filters are provided, they must contain exactly one time-based filter (`filters.from/to`).
+
+### For the Customer reports
+
+| Parameter                                             | Required | Data type | Notes                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filters.from`                                        | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM`.                                                                                                                                                                                          |
+| `filters.to`                                          | No       | `string`  | Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM`.                                                                                                                                                                                          |
 
 If filters are provided, they must contain exactly one time-based filter (`filters.from/to`).
 
@@ -517,7 +527,7 @@ https://api.livechatinc.com/v3.6/reports/chats/engagement \
 
 ### Greetings Conversion
 
-Shows the number of greetings sent to the customers and how many of those resulted in a chat or a goal. Greetings are also known as targeted messages. 
+Shows the number of greetings sent to the customers and how many of those resulted in a chat or a goal. Greetings are also known as targeted messages.
 
 The method will return only up to 100 values for each day. If there are more than 100 values, use the LiveChat App to access the full data for a given day.
 
@@ -930,6 +940,67 @@ https://api.livechatinc.com/v3.6/reports/tags/chat_usage \
 </CodeSample>
 
 <CodeResponse type="reports" version="v3.6" json="chatUsage"/>
+
+</Code>
+</Section>
+
+## Stats
+
+<Section>
+<Text>
+
+### Unique visitors
+
+Shows the total number of page views and unique visitors for the specified period.
+
+#### Specifics
+
+|                     |                                                                  |
+| ------------------- | ---------------------------------------------------------------- |
+| **Method URL**      | `https://api.livechatinc.com/v3.6/reports/stats/unique_visitors` |
+| **HTTP method**     | POST, GET                                                        |
+| **Required scopes** | `reports_read`                                                   |
+
+#### Request
+
+| Parameter               | Required | Data type | Notes                                                                                                                                                                                                                                                                                                             |
+| ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filters`               | No       | `object`  | If none provided, your report will span the last seven days.                                                                                                                                                                                                                                                      |
+| `filters.from`          | No       | `string`  | Filters out chats that took place within the time range defined as <`from`,`to`>. Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM`.                                                                                                        |
+| `filters.to`            | No       | `string`  | Filters out chats that took place within the time range defined as <`from`,`to`>. Date & time format compatible with RFC3339 with optional resolution of microseconds, `YYYY-MM-DDTHH:MM:SS.ssssss+HH:MM`.                                                                                                        |
+
+#### Response
+
+| Field                     | Notes                                    |
+| ------------------------- | ---------------------------------------- |
+| `summary`                 | Reports summary                          |
+| `summary.unique_visitors` | Number of unique visitors                |
+| `summary.page_views`      | Number of page views                     |
+
+</Text>
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.6/reports/stats/unique_visitors \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "from": "2021-04-08T00:00:00-00:00",
+      "to": "2021-04-15T23:59:59-00:00",
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeResponse type="reports" version="v3.6" json="uniqueVisitors"/>
 
 </Code>
 </Section>
