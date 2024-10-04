@@ -77,3 +77,7 @@ export const getStableVersion = (category) => {
       return VERSIONS_GROUPS.DEFAULT.STABLE_VERSION;
   }
 };
+
+export const convertToSlug = (str) => {
+  return str.toLowerCase().replace(/ /g, "-");
+};

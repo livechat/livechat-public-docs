@@ -5,6 +5,7 @@ import { string } from "prop-types";
 import Rating from "../Rating";
 
 import { RATING_POSITION } from "../../../constants";
+import { convertToSlug } from "../../../utils";
 
 const PageTitle = styled.h1`
   margin: 0;
@@ -35,7 +36,7 @@ const StyledRating = styled(Rating)`
 const PageHeader = ({ title }) => (
   <PageHeaderWrapper>
     <PageTitle>
-      <span>{title}</span>
+      <span id={convertToSlug(title)}>{title}</span>
       <StyledRating position={RATING_POSITION.TOP} />
     </PageTitle>
   </PageHeaderWrapper>
