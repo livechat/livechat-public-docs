@@ -35,8 +35,8 @@ const StyledRating = styled(Rating)`
 
 const PageHeader = ({ title }) => (
   <PageHeaderWrapper>
-    <PageTitle>
-      <span id={convertToSlug(title)}>{title}</span>
+    <PageTitle id={convertToSlug(title)}>
+      <span>{title}</span>
       <StyledRating position={RATING_POSITION.TOP} />
     </PageTitle>
   </PageHeaderWrapper>
