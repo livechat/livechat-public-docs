@@ -7,11 +7,16 @@ import Rating from "../Rating";
 import { RATING_POSITION } from "../../../constants";
 import { convertToSlug } from "../../../utils";
 
-const PageTitle = styled.h1`
+const PageTitle = styled.h2`
   margin: 0;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  font-weight: 500;
+  text-rendering: optimizeLegibility;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   @media (min-width: 768px) {
     flex-direction: row;
   }
