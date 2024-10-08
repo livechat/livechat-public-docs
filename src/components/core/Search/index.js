@@ -40,6 +40,16 @@ const transformHits = (hits) => {
   return updatedHits;
 };
 
+const transformSearchClient = (searchClient) => ({
+  ...searchClient,
+  search(requests) {
+    if (requests[0] && requests[0] && requests[0].query) {
+      requests[0].query = requests[0].query.replace(/_/g, " ");
+    }
+    return searchClient.search(requests);
+  },
+});
+
 const Search = () => (
   <DocSearch
     apiKey={process.env.NEXT_PUBLIC_ALGOLIA_API_KEY}
@@ -47,6 +57,7 @@ const Search = () => (
     indexName={"livechatinc"}
     searchParameters={{ hitsPerPage: 7 }}
     transformItems={transformHits}
+    transformSearchClient={transformSearchClient}
   />
 );
 
