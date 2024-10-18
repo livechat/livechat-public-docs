@@ -24,7 +24,8 @@ We require node version 14.x.
 1. Fetch the repository
 2. Run `npm install`
 3. Run `npm run dev`
-4. Open http://localhost:3000/docs
+4. Run `netlify env:pull`
+5. Open http://localhost:3000/docs
 
 ## Production
 
