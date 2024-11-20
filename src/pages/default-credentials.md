@@ -23,7 +23,7 @@ code: dal:test_tnlRmy73mg9eaFESA
 
 client_secret: test_d7MEp1YYo3
 
-refresh_token: dal:test_gfalskcakg2347o8326
+refresh_token: test_gfalskcakg2347o8326
 
 client_id: 9cbf3a968289727cb3cdfe83ab1d9836 or 0805e283233042b37f460ed8fbf22160
 
