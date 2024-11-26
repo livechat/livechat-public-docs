@@ -20,6 +20,11 @@ const placeholders = {
     label: "LiveChat Marketplace",
     url: "https://www.livechat.com/marketplace/",
   },
+  DESIGN_SYSTEM_URL: {
+    type: "link",
+    label: "Design System",
+    url: "https://design.livechat.com/",
+  },
 };
 
 const Placeholder = ({ id }) => {
