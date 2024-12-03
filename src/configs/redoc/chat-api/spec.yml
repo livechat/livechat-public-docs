@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Team Chat Web API
+  title: Team Chat API - Web
   version: 1.0.0
   description: |
     Team Chat API by text is a backend service which allows communicating between users using either a websocket or the HTTP protocol.<br>
@@ -17,6 +17,17 @@ components:
     BasicAuth:
       type: http
       scheme: basic
+  parameters:
+    ProductNameHeader:
+      name: X-Product-Name
+      in: header
+      required: true
+      schema:
+        type: string
+        enum:
+          - LiveChat
+          - TeamChat
+        description: Product name from where connection is established.
   responses:
     Unauthorized:
       description: Unauthorized, missing or invalid credentials.
@@ -51,6 +62,11 @@ components:
                     type: string
                     example: Invalid message format.
   schemas:
+    SeenUpTo:
+      type: string
+      format: date-time
+      description: Date of the last message seen by the requester.
+      example: 2024-01-24T12:36:05.987197Z
     Shortcode:
       description: Shortcode of the reaction.
       type: string
@@ -61,12 +77,55 @@ components:
         - white_check_mark
         - hourglass
         - cry
+        - smile
+    ChannelName:
+      type: string
+      description: Name of the public channel.
+      example: general
     ChannelID:
       type: string
-      description: |
-        ID of the channel. It can be a public channel (`general`),<br>
-        or a private channel (`requester_id:receiver_id`)<br>
-      example: general
+      format: uuid
+      description: ID of the channel.
+      example: f5481ae7-e974-4137-9d06-b70c8e1ab795
+    ChannelType:
+      type: string
+      enum:
+        - public
+        - direct
+      description: Type of the channel.
+      example: public
+    Channel:
+      type: object
+      required:
+        - channel_id
+        - type
+        - members
+        - last_message_created_at
+        - seen_up_to
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        name:
+          $ref: '#/components/schemas/ChannelName'
+        type:
+          $ref: '#/components/schemas/ChannelType'
+        members:
+          type: array
+          items:
+            type: string
+            description: ID of the user who is a member of the channel.
+        created_by:
+          type: string
+          description: ID of the user that created the channel. This fields is only for public channels
+          example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        last_message_created_at:
+          type: string
+          format: date-time
+          description: Date of the last message in the channel.
+          example: 2024-01-24T12:36:05.987197Z
+        seen_up_to:
+          $ref: '#/components/schemas/SeenUpTo'
+
     Message:
       oneOf:
         - $ref: '#/components/schemas/TextMessage'
@@ -193,25 +252,25 @@ components:
                   type: integer
                   description: Width of the image.
                   example: 150
-    
+
     IncomingMessageWebhookPayload:
       type: object
       properties:
-        channel:
+        channel_id:
           $ref: '#/components/schemas/ChannelID'
         message:
           $ref: '#/components/schemas/Message'
     ReactionAddedWebhookPayload:
       type: object
       properties:
-        channel:
+        channel_id:
           $ref: '#/components/schemas/ChannelID'
         message_id:
           type: string
           format: uuid
           description: ID of the message.
           example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
-        shortcode: 
+        shortcode:
           $ref: '#/components/schemas/Shortcode'
         author_id:
           type: string
@@ -220,7 +279,7 @@ components:
     ReactionRemovedWebhookPayload:
       type: object
       properties:
-        channel:
+        channel_id:
           $ref: '#/components/schemas/ChannelID'
         message_id:
           type: string
@@ -232,6 +291,71 @@ components:
         author_id:
           type: string
           description: ID of the user who removed their reaction.
+    ChannelCreatedWebhookPayload:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        name:
+          $ref: '#/components/schemas/ChannelName'
+        type:
+          $ref: '#/components/schemas/ChannelType'
+        members:
+          type: array
+          items:
+            type: string
+            description: ID of the user who is a member of the channel.
+        created_by:
+          type: string
+          description: ID of the user who created the channel.
+    ChannelRenamedWebhookPayload:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        name:
+          $ref: '#/components/schemas/ChannelName'
+        renamed_by:
+          type: string
+          description: ID of the user who renamed the channel.
+    ChannelArchivedWebhookPayload:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        archived_by:
+          type: string
+          description: ID of the user who archived the channel.
+    ChannelUnarchivedWebhookPayload:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        unarchived_by:
+          type: string
+          description: ID of the user who unarchived the channel.
+    UserAddedToChannelWebhookPayload:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        added_by:
+          type: string
+          description: ID of the user who added another user to the channel.
+        user_id:
+          type: string
+          description: ID of the user who was added to the channel.
+    UserRemovedFromChannelWebhookPayload:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/ChannelID'
+        removed_by:
+          type: string
+          description: ID of the user who removed another user from the channel.
+        user_id:
+          type: string
+          description: ID of the user who was removed from the channel.
 paths:
   /action/send_message:
     post:
@@ -242,6 +366,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -249,10 +375,10 @@ paths:
             schema:
               type: object
               required:
-                - channel
+                - channel_id
                 - message
               properties:
-                channel:
+                channel_id:
                   $ref: '#/components/schemas/ChannelID'
                 message:
                   type: object
@@ -286,7 +412,6 @@ paths:
                           format: uri
                           description: URL of the temporarily uploaded file.
                           example: https://cdn.files-text.com/api/chatapi/tmp/248d7a51-fc88-4495-81e2-ce4538649432/90441146b7798452df136d46d13ab0ed/test.txt
-
       responses:
         "200":
           description: Message sent successfully, contains ID of the sent message.
@@ -315,6 +440,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -322,9 +449,9 @@ paths:
             schema:
               type: object
               required:
-                - channel
+                - channel_id
               properties:
-                channel:
+                channel_id:
                   $ref: '#/components/schemas/ChannelID'
                 page_id:
                   type: string
@@ -350,13 +477,13 @@ paths:
               schema:
                 type: object
                 required:
-                  - channel
+                  - channel_id
                   - total
                   - next_page_id
                   - previous_page_id
                   - messages
                 properties:
-                  channel:
+                  channel_id:
                     $ref: '#/components/schemas/ChannelID'
                   total:
                     type: integer
@@ -387,6 +514,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -395,7 +524,7 @@ paths:
               type: object
               required:
                 - message_id
-                - channel
+                - channel_id
                 - shortcode
               properties:
                 message_id:
@@ -403,7 +532,7 @@ paths:
                   description: ID of the message to react to.
                   format: uuid
                   example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
-                channel:
+                channel_id:
                   $ref: '#/components/schemas/ChannelID'
                 shortcode:
                   $ref: '#/components/schemas/Shortcode'
@@ -427,6 +556,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -435,7 +566,7 @@ paths:
               type: object
               required:
                 - message_id
-                - channel
+                - channel_id
                 - shortcode
               properties:
                 message_id:
@@ -443,15 +574,379 @@ paths:
                   description: ID of the message to remove the reaction from.
                   format: uuid
                   example: 0a478f14-ac8a-4b54-bc5b-51b5f00ccec5
-                channel:
-                  type: string
-                  description: ID of the channel where the message is located.
-                  example: general
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
                 shortcode:
                   $ref: '#/components/schemas/Shortcode'
       responses:
         "200":
           description: Reaction removed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/create_channel:
+    post:
+      summary: Create a channel
+      description: Creates a channel. It can be used for sending messages.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+              properties:
+                name:
+                  $ref: '#/components/schemas/ChannelName'
+                type:
+                  $ref: '#/components/schemas/ChannelType'
+                members:
+                  type: array
+                  items:
+                    type: string
+                    description: ID of the user to be added to the channel.
+      responses:
+        "200":
+          description: Channel created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ChannelID'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/rename_channel:
+    post:
+      summary: Rename a channel
+      description: Rename a channel. Channels of type `direct` and channel `general` cannot be renamed.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+                - name
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+                name:
+                  $ref: '#/components/schemas/ChannelName'
+      responses:
+        "200":
+          description: Channel renamed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/archive_channel:
+    post:
+      summary: Archive a channel
+      description: Archive a channel. Channels of type `direct` and channel `general` cannot be archived.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+      responses:
+        "200":
+          description: Channel archived successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/unarchive_channel:
+    post:
+      summary: Unarchive a channel
+      description: Unarchive a channel.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+      responses:
+        "200":
+          description: Channel unarchived successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/add_user_to_channel:
+    post:
+      summary: Add a user to a channel
+      description: Add a user to a channel. Doesn't work for channels of type `direct` (because the members list is constant) and channel `general` (because everyone is a member of this channel).
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+                - user_id
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+                user_id:
+                  type: string
+                  description: ID of the user to be added to the channel.
+      responses:
+        "200":
+          description: User added to the channel successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/remove_user_from_channel:
+    post:
+      summary: Remove a user to a channel
+      description: Remove a user to a channel. Doesn't work for channels of type `direct` (because the members list is constant) and channel `general` (because everyone is a member of this channel).
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+                - user_id
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+                user_id:
+                  type: string
+                  description: ID of the user to be removed from the channel.
+      responses:
+        "200":
+          description: User removed from the channel successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/get_channel:
+    post:
+      summary: Get non-archived channel by ID
+      description: Get non-archived channel by ID.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+      responses:
+        "200":
+          description: Channels listed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/list_channels:
+    post:
+      summary: List all non-archived channels
+      description: Lists all non-archived channels.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Channels listed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Channel"
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/list_archived_channels:
+    post:
+      summary: List all archived channels
+      description: Lists all archived channels.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Channels listed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      description: Channel type.
+                      enum:
+                        - public
+                        - direct
+                      example: public
+                    name:
+                      $ref: '#/components/schemas/ChannelName'
+                    id:
+                      $ref: '#/components/schemas/ChannelID'
+                    created_by:
+                      type: string
+                      description: ID of the user that created the channel.
+                      example: 8eca5ad7-f7eb-471e-9682-57f658ff9091
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/Validation'
+  /action/mark_messages_as_seen:
+    post:
+      summary: Mark messages as seen
+      description: Marks messages as seen up to the provided date.
+      tags:
+        - Channels
+      security:
+        - BearerAuth: []
+        - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+                - seen_up_to
+              properties:
+                channel_id:
+                  $ref: '#/components/schemas/ChannelID'
+                seen_up_to:
+                  $ref: '#/components/schemas/SeenUpTo'
+      responses:
+        "200":
+          description: Messages marked as seen successfully.
           content:
             application/json:
               schema:
@@ -469,6 +964,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -512,6 +1009,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -529,7 +1028,11 @@ paths:
                     - incoming_message
                     - reaction_added
                     - reaction_removed
-                  description: Action that will trigger the webhook.
+                    - channel_created
+                    - channel_updated
+                    - user_added_to_channel
+                    - user_removed_from_channel
+                  description: Action that will trigger the webhook. Due to security reasons, webhooks are sent only for public channels.
                   example: incoming_message
                 secret_key:
                   type: string
@@ -538,7 +1041,7 @@ paths:
                   example: g*iXffXhUExfUp22hN8gH4At
                 url:
                   type: string
-                  format: uri 
+                  format: uri
                   description: URL that will be called when a webhook is triggered.
                   maxLength: 255
                   example: https://my-service.com/webhook
@@ -584,13 +1087,19 @@ paths:
                             - incoming_message
                             - reaction_added
                             - reaction_removed
+                            - channel_created
+                            - channel_renamed
+                            - channel_archived
+                            - channel_unarchived
+                            - user_added_to_channel
+                            - user_removed_from_channel
                           description: Action that triggered the webhook.
-                          example: incoming_message    
+                          example: incoming_message
                         organization_id:
                           type: string
                           format: uuid
-                          description: ID of the organization where the triggering action happened.  
-                          example: 1a102f16-4b54-ac8a-bc5b-421ef00ccad6 
+                          description: ID of the organization where the triggering action happened.
+                          example: 1a102f16-4b54-ac8a-bc5b-421ef00ccad6
                         payload:
                           type: object
                           description: Payload of the webhook.
@@ -598,6 +1107,12 @@ paths:
                             - $ref: '#/components/schemas/IncomingMessageWebhookPayload'
                             - $ref: '#/components/schemas/ReactionAddedWebhookPayload'
                             - $ref: '#/components/schemas/ReactionRemovedWebhookPayload'
+                            - $ref: '#/components/schemas/ChannelCreatedWebhookPayload'
+                            - $ref: '#/components/schemas/ChannelRenamedWebhookPayload'
+                            - $ref: '#/components/schemas/ChannelArchivedWebhookPayload'
+                            - $ref: '#/components/schemas/ChannelUnarchivedWebhookPayload'
+                            - $ref: '#/components/schemas/UserAddedToChannelWebhookPayload'
+                            - $ref: '#/components/schemas/UserRemovedFromChannelWebhookPayload'
               responses:
                 "200":
                   description: Your server returns this code if it accepts the callback.
@@ -627,6 +1142,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -666,6 +1183,8 @@ paths:
       security:
         - BearerAuth: []
         - BasicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ProductNameHeader"
       requestBody:
         required: true
         content:
@@ -698,11 +1217,15 @@ paths:
                         - incoming_message
                         - reaction_added
                         - reaction_removed
+                        - channel_created
+                        - channel_updated
+                        - user_added_to_channel
+                        - user_removed_from_channel
                       description: Action that will trigger the webhook
                       example: incoming_message
                     url:
                       type: string
-                      format: uri 
+                      format: uri
                       description: URL that will be called when webhook is triggered
                       example: https://my-service.com/webhook
                     description:
