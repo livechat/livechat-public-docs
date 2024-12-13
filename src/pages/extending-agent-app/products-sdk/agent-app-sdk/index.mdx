@@ -91,9 +91,7 @@ const LiveChat = require("@livechat/agent-app-sdk");
 </CodeSample>
 </Code>
 
-You can also use the UMD build of the SDK directly in the browser.
-
-You can also use the UMD build:
+You can also use the UMD build of the SDK directly in the browser:
 
 <Code>
 <CodeSample path={'USE UMD BUILD'}>
@@ -539,6 +537,107 @@ widget.redirect(target);
 </CodeSample>
 
 # Advanced use
+
+## Payments
+
+All widgets allow you to pass a registered charge and display a summary of it to the customer within the payment modal in the Agent App application, enabling them to complete or decline the transaction without leaving the context of the Agent App.
+
+### Events
+
+#### `transaction_accepted`
+
+Emitted when a payment transaction is approved by the customer and successfully processed by the Billing API.
+
+<CodeSample path={'TRANSACTION_ACCEPTED'}>
+
+```ts
+type TransactionEvent {
+  chargeId: string;
+}
+```
+
+</CodeSample>
+
+#### `transaction_declined`
+
+Emitted when a payment transaction is declined by the customer (e.g., the user closes the payment modal or clicks the cancel button), and the charge is subsequently marked as declined in the Billing API.
+
+<CodeSample path={'TRANSACTION_DECLINED'}>
+
+```ts
+type TransactionEvent {
+  chargeId: string;
+}
+```
+
+</CodeSample>
+
+#### `transaction_failed`
+
+Emitted when a payment transaction fails and cannot be processed by the Billing API.
+
+<CodeSample path={'TRANSACTION_FAILED'}>
+
+```ts
+type TransactionError {
+  error: unknown;
+}
+```
+
+</CodeSample>
+
+#### `update_billing_cycle`
+
+This event is triggered when a customer selects a different billing cycle for a transaction. It only emits if the `showBillingCyclePicker` flag is set to `true` in the `metadata` object at the start of the transaction. The event includes the new billing cycle number and key charge details, allowing you to register the updated charge with the provided information.
+
+<CodeSample path={'UPDATE_BILLING_CYCLE'}>
+
+```ts
+type UpdateBillingCycleEvent {
+  billingCycle: number,
+  chargeId: string,
+  paymentIntent: {
+    name: string,
+    price: number,
+    per_account: boolean,
+    test: boolean,
+    return_url: string | null,
+    months?: number,
+    trial_days?: number,
+    quantity?: number,
+    metadata: {
+      type: string,
+      isExternalTransaction: boolean,
+      showBillingCyclePicker: boolean,
+      icon: string,
+      description?: string,
+    }
+  }
+}
+```
+
+</CodeSample>
+
+### Methods
+
+#### `startTransaction(charge: Charge, metadata: Metadata): Promise<void>`
+
+This method allows you to pass a registered charge and accompanying metadata to the Agent App. The payment modal will then be displayed to the customer, enabling them to complete the transaction. For more information on registering a charge, refer to the [Billing API](/monetization/billing-api).
+
+<CodeSample>
+
+```ts
+const charge = {...} // Billing API charge object
+const metadata = {
+  icon: "https://icon.url";
+  description: "This is a description of the transaction.";
+  showBillingCyclePicker: true; // optional, use if you want to display the billing cycle picker to the customer
+}
+
+widget.startTransaction(charge, metadata);
+```
+
+</CodeSample>
 
 ## Developing your own widget
 
