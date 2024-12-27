@@ -25,8 +25,9 @@ You integrate LiveChat into your project manually or with a dependency manager.
 
 ## Requirements
 
-- iOS 9.0+
-- Xcode 8.0+
+- iOS 15.6+
+- Swift 5
+- Xcode 13.4+
 
 ## Installation
 
@@ -37,8 +38,8 @@ If you use [Carthage](https://github.com/Carthage/Carthage) to manage your depen
 <Code>
 <CodeSample path={'LIVECHAT/CHAT-WINDOW-IOS'}>
 
-```
-github "livechat/chat-window-ios" ~> 2.0.20
+```bash
+github "livechat/chat-window-ios" ~> 2.0.26
 ```
 
 </CodeSample>
@@ -54,7 +55,7 @@ If you use [CocoaPods](http://cocoapods.org) to manage your dependencies, simply
 <CodeSample path={'LIVECHAT TO PODFILE'}>
 
 ```bash
-pod 'LiveChat', '~> 2.0.20'
+pod 'LiveChat', '~> 2.0.26'
 ```
 
 </CodeSample>
@@ -93,10 +94,64 @@ LiveChat.licenseId = "YOUR_LICENSE_ID"
 ### Presenting Chat Widget
 
 <Code>
-<CodeSample path={'PREZENTING CHAT WIDGET'}>
+<CodeSample path={'PRESENTING CHAT WIDGET'}>
 
 ```swift
 LiveChat.presentChat()
+```
+
+</CodeSample>
+</Code>
+
+### Presenting Chat Widget within client app view hierarchy
+
+You can take control of the widget presentation in your app by setting the `customPresentationStyleEnabled` flag to `true`. This will disable the default presentation behavior, allowing you to manage it yourself.
+
+With this flag enabled, you’ll have access to the `chatViewController` property to define your own presentation style.
+
+When `customPresentationStyleEnabled` is set to `false`, then `chatViewController` has a value of `null`.
+
+<Code>
+<CodeSample path={'PREZENTING CHAT WIDGET WITHIN CLIENT APP VIEW'}>
+
+```swift
+class YOUR_CLASS_NAME : UIViewControler, LiveChatDelegate { // Your class needs to implement the LiveChatDelegate protocol
+
+    @IBAction func openChat(_ sender: Any) {  
+        LiveChat.delegate = self
+        LiveChat.customPresentationStyleEnabled = true
+
+        present(LiveChat.chatViewController!, animated: true) {
+            print("Presentation completed")
+        }
+    }
+
+    func chatDismissed() {
+        LiveChat.chatViewController!.dismiss(animated: true) {
+            print("Presentation dismissed")
+        }
+    }
+}
+```
+
+</CodeSample>
+</Code>
+
+### Using UIWindowSceneDelegate
+
+If your app is using UIWindowScene API you need to perform additional configuration steps in your window scene delegate class.
+
+<Code>
+<CodeSample path={'USING UIWINDOWSCENEDELEGATE'}>
+
+```swift
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        LiveChat.windowScene = (scene as? UIWindowScene)
+    }
+}
 ```
 
 </CodeSample>
@@ -147,11 +202,13 @@ LiveChat.groupId = "7"
 
 ### Notifying the user about the agent's response
 
+You can notifiy your user about agent response if chat was minimized by the user. To handle the incoming messages, your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
+
 <Code>
 <CodeSample path={'NOTIFY USER ABOUT RESPONSE OF THE AGENT'}>
 
 ```swift
-class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveChatDelegate protocol
+class YOUR_CLASS_NAME : LiveChatDelegate { // Your class needs to implement the LiveChatDelegate protocol
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         LiveChat.licenseId = "YOUR_LICENSE_ID"
         LiveChat.delegate = self // Set self as delegate
@@ -169,7 +226,56 @@ class YOUR_CLASS_NAME : LiveChatDelegate { // Your class need to implement LiveC
 </CodeSample>
 </Code>
 
-You can notifiy your user about agent response if chat was minimized by the user. To handle the incoming messages, your class must implement `LiveChatDelegate` protocol and set itself as `LiveChat.delegate`.
+#### Sample message structure
+
+<Code>
+<CodeSample path={'SAMPLE MESSAGE STRUCTURE'}>
+
+```swift
+{
+    author = {
+        name = "Support Bot";
+    };
+    id = "QZ0X4O6PAV_3";
+    messageType = newMessage;
+    text = "I'm a HelpDesk Bot, here to assist you with any HelpDesk questions!";
+    timestamp = 1632478822776;
+}
+```
+
+</CodeSample>
+</Code>
+
+### Handling chat window presence events
+
+At the SDK level, you can also handle chat window presence events by implementing the `LiveChatDelegate` protocol and setting your class as `LiveChat.delegate`.
+
+<Code>
+<CodeSample path={'HANDLE CHAT WINDOW PRESENCE EVENTS'}>
+
+```swift
+class YOUR_CLASS_NAME : LiveChatDelegate { // Your class needs to implement the LiveChatDelegate protocol
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        LiveChat.licenseId = "YOUR_LICENSE_ID"
+        LiveChat.delegate = self // Set self as delegate
+
+        return true
+    }
+    
+    func chatPresented() {
+        print("Chat presented")
+        // Handle event here
+    }
+    
+    func chatDismissed() {
+        print("Chat dismissed")
+        // Handle event here
+    }    
+}
+```
+
+</CodeSample>
+</Code>
 
 ### Handling URL
 
@@ -188,9 +294,32 @@ func handle(URL: URL) {
 
 By default, all links in chat messages are opened in Safari browser. To change this behavior you can use the `LiveChatDelegate` to handle URL's yourself.
 
+### Handling chat window errors
+
+The SDK will use this method to report unhandled widget errors.
+
+<Code>
+<CodeSample path={'HANDLING ERRORS'}>
+
+```swift
+func loadingDidFail(with errror: Error) {
+    print("Chat loading failure \(errror)")
+    // Handle error here
+}
+```
+
+</CodeSample>
+</Code>
+
 ### Sending files from device library
 
 If you have file sharing enabled for the visitors, you should provide usage description by including `NSPhotoLibraryUsageDescription` (`Privacy - Photo Library Usage Description`), `NSCameraUsageDescription` (`Privacy - Camera Usage Description`) and `NSMicrophoneUsageDescription` (`Privacy - Microphone Usage Description`) keys in your `Info.plist` file to avoid crash on iOS 10 or higher. You can check `Info.plist` files in example projects.
+
+## Third party integrations
+
+### SnapCall
+
+The LiveChat SDK includes built-in [SnapCall](https://snapcall.io) integration. To enable this feature, you’ll need to request microphone and camera permissions from the user by adding the `NSMicrophoneUsageDescription` and `NSCameraUsageDescription` keys to your `Info.plist` file.
 
 ## Sample Apps
 
