@@ -125,7 +125,7 @@ To find sample payloads of **events**, **users**, and **other common structures*
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customer`](#get-customer) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                                                         |
+| **Customers**   | [`get_customer`](#get-customer) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer) [`subscribe_customers`](#subscribe_customers) [`unsubscribe_customers`](#unsubscribe_customers)                                                                                                |
 | **Status**      | [`login`](#login) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout) [`list_routing_statuses`](#list-routing-statuses) [`update_session`](#update-session)                                                                                                                       |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                   |
 
@@ -2405,6 +2405,124 @@ Removes the agent from the list of customer's followers. Calling this method on 
 {
   "request_id": "<request_id>", // optional
   "action": "unfollow_customer",
+  "type": "response",
+  "success": true,
+  "payload": {
+  // no response payload
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+### Subscribe Customers
+
+Creates a subscription for tracking customers based on the group they belong to. The response will contain customers currently matching the criteria. After a successful subscription, the agent will receive pushes about tracked customers on this RTM connection. 
+
+If the number of tracked customers exceeds the limit, the `subscribed_customers_totals_updated` push will be periodically sent to indicate the total number of customers matching the criteria at the given moment.
+
+#### Specifics
+
+|                        |                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| **Action**             | `subscribe_customers`                                                                   |
+| **Required scopes**    | `customers:ro`                                                                          |
+| **Web API equivalent** | -                                                                                       |
+| **Push message**       | -                                                                                       |
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `group_ids` | No     | `[]int`  |     |
+| `limit`  | No        | int       |    |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "subscribe_customers",
+  "payload": {
+    "group_ids": [0, 42],
+    "limit": 100
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "subscribe_customers",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "subscription_id": "b7eff798f8df43648059649c35c9ed0c",
+    "customers": [
+      // ...
+    ]
+  }
+}
+```
+
+</CodeResponse>
+</Code>
+</Section>
+
+<Section>
+<Text>
+
+
+### Unsubscribe Customers
+
+Removes a customer subscription.
+
+#### Specifics
+
+|                        |                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| **Action**             | `unsubscribe_customers`                                                                 |
+| **Required scopes**    | `customers:ro`                                                                          |
+| **Web API equivalent** | -                                                                                       |
+| **Push message**       | -                                                                                       |
+
+#### Request
+
+| Parameter | Required | Data type |     |
+| --------- | -------- | --------- | --- |
+| `subscription_id`  | Yes        | string       |    |
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "unsubscribe_customers",
+  "payload": {
+    "subscription_id": "b7eff798f8df43648059649c35c9ed0c"
+  }
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>", // optional
+  "action": "subscribe_customers",
   "type": "response",
   "success": true,
   "payload": {
