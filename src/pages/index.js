@@ -87,14 +87,6 @@ const textLogoCss = css`
   letter-spacing: -0.5px;
   margin-bottom: 24px;
   color: #424d57;
-
-  .carrier {
-    margin-bottom: 4px;
-  }
-
-  span:last-of-type {
-    margin-left: 16px;
-  }
 `;
 
 const Index = () => {
@@ -120,11 +112,7 @@ const Index = () => {
 
             <div css={wrapperCss}>
               <div css={titleWrapperCss}>
-                <span css={textLogoCss}>
-                  text
-                  <span className="carrier">&#124;</span>
-                  <span>Platform Docs</span>
-                </span>
+                <span css={textLogoCss}>Text Platform Docs</span>
                 <Search />
               </div>
               <h2>Build with Platform components</h2>

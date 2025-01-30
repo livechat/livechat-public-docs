@@ -24,7 +24,7 @@ To get the project into your build, do the following:
 
 ## 1. Add the JitPack repository
 
-[See the repository at JitPack](https://jitpack.io/#livechat/chat-window-android)
+[See the repository at JitPack >](https://jitpack.io/#livechat/chat-window-android)
 
 Add it to your root build.gradle at the end of `repositories`:
 
@@ -52,7 +52,7 @@ To add the dependency, use the following code:
 
 ```js
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.3.4'
+    implementation 'com.github.livechat:chat-window-android:v2.4.5'
 }
 ```
 
@@ -93,10 +93,10 @@ The configuration is very simple - just use **ChatWindowConfiguration.java** con
 ```js
 configuration = new ChatWindowConfiguration(
   "your_licence_number",
-  "group_id",
-  "Visitor name",
-  "visitor@email.com",
-  customParamsMap
+    "group_id",         // optional
+    "Visitor name",     // optional
+    "visitor@email.com",// optional
+    customParamsMap     // optional
 );
 ```
 
@@ -259,35 +259,17 @@ public boolean handleUri(Uri uri) {
 
 ## Error handling
 
-You might want to customize the user experience when encountering errors, such as problems with internet connection. By returning `true` in the `onError` callback method, you're taking responsibility for handling errors coming from the chat widget.
+Errors are reported through the `onError` callback. Return `true` if you don't want the ChatWindow to display an error view with a reload button. The ChatWindow handles connection issues and can reconnect automatically.
 
-Please keep in mind that the chat widget, once it's loaded, can handle connection issues by sporadically trying to reconnect. This case can be detected by implementing the following condition in the `onError` callback method:
+We aim to report only critical errors. If you notice an important error being ignored or a non-critical error being reported, please inform us.
 
-<Code>
-<CodeSample path={'ERROR HANDLING'}>
-
-```java
-@Override
-public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
-    if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2 && chatWindow.isChatLoaded()) {
-        //Chat window can handle reconnection. You might want to delegate this to chat window
-        return false;
-    } else {
-        reloadChatBtn.setVisibility(View.VISIBLE);
-    }
-    Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
-    return true;
-}
-```
-
-</CodeSample>
-</Code>
+Refer to `ChatWindowEventsListener.onError` and `ChatWindowErrorType` for more details.
 
 ## Clear chat session
 
-After your user signs out of the app, you might want to clear the chat session. You can do that by invoking a static method on `ChatWindowUtils.clearSession(Context)` from anywhere in the app. In case your `ChatWindowView` is attached during the logout flow, you will also need to reload it by calling `chatWindow.reload(false)` after the `clearSession` code. See <a href="https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java" target="_blank" rel="noopener noreferrer">FullScreenWindowActivityExample.java</a>.
+After your user signs out of the app, you might want to clear the chat session. You can do that by invoking a static method on `ChatWindowUtils.clearSession()` from anywhere in the app.
 
-If your `ChatWindow` isn't recreated when `ChatWindowConfiguration` changes (i.e. VisitorName), you might want to fully reload the chat window by invoking `chatWindow.reload(true)`.
+In case your `ChatWindowView` is attached during the logout flow, you will also need to reload it by calling `chatWindow.reload()` after the `clearSession` code. See <a href="https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java" target="_blank" rel="noopener noreferrer">FullScreenWindowActivityExample.java</a>.
 
 # Sample application
 
@@ -327,7 +309,7 @@ There are two ways to open the chat widget – by using an Activity or a Fragmen
 
 ## Activity
 
-In order to open a chat widget in a new Activity, you need to declare **ChatWindowActivity** in your manifest. Add the following line to **AndroidManifest.xml**, between `<application></application>` tags:
+In order to open a chat widget in a new Activity, you need to declare `ChatWindowActivity` in your manifest. Add the following line to `AndroidManifest.xml`, between `<application></application>` tags:
 
 <Code>
 <CodeSample path={'OPEN CHAT WIDGET IN NEW ACTIVITY'}>
@@ -345,16 +327,18 @@ In order to open a chat widget in a new Activity, you need to declare **ChatWind
 
 <div class="clear"></div>
 
-Finally, add the following code to your application, in the place where you want to open the chat widget (e.g. button listener). You need to provide a **Context** (your Activity or Application object), your LiveChat licence number (taken from the [tracking code](https://my.livechatinc.com/settings/code)) and, optionally, the ID of a group:
+Finally, add the following code to your application, in the place where you want to open the chat widget (e.g. button listener). You need to provide a **Context** (your Activity or Application object) and your LiveChat license number:
 
 <Code>
 <CodeSample path={'OPEN CHAT WIDGET IN NEW ACTIVITY'}>
 
 ```java
 Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_GROUP_ID, "your_group_id");
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_LICENCE_NUMBER, "your_license_number");
-context.startActivity(intent);
+Bundle config = new ChatWindowConfiguration.Builder()
+.setLicenceNumber("<your_license_number>")
+    .build()
+intent.putExtra(ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG, windowConfig);
+startActivity(intent);
 ```
 
 </CodeSample>
@@ -362,30 +346,28 @@ context.startActivity(intent);
 
 <div class="clear"></div>
 
-It’s also possibile to automatically log in to the chat widget by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and add the following lines to the previous code:
-
-<Code>
-<CodeSample path={'LOG IN TO THE CHAT WIDGET AUTOMATICALLY'}>
-
-```java
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_NAME, "your_name");
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_EMAIL, "your_email");
-```
-
-</CodeSample>
-</Code>
+It’s also possibile to automatically log in to chat window by providing visitor’s name and email and disabling [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey).
 
 ## Fragment
 
-In order to open chat widget in a new Fragment, you need to add the following code to your application, in the place where you want to open the chat widget (e.g. button listener). You also need to provide your LiveChat licence number and a group ID:
+In order to open chat widget in a new Fragment, you need to add the following code to your application, in the place where you want to open the chat widget (e.g. button listener). You also need to provide your LiveChat licence number:
 
 <Code>
 <CodeSample path={'OPEN CHAT WIDGET IN NEW FRAGMENT'}>
 
 ```java
-getFragmentManager()
+getSupportFragmentManager()
    .beginTransaction()
-   .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment")
+   .replace(
+        R.id.frame_layout, 
+        ChatWindowFragment.newInstance(
+            "your_license_number", 
+            "your_group_id", // optional
+            "visitor_name", // optional
+            "visitor_email",// optional     
+        ), 
+        "chat_fragment"
+    )
    .addToBackStack("chat_fragment")
    .commit();
 ```
@@ -395,47 +377,13 @@ getFragmentManager()
 
 <div class="clear"></div>
 
-`ChatWindowFragment.newInstance()` method returns the chat widget Fragment.
-
-<div class="clear"></div>
-
-It’s also possible to automatically log in to the chat widget by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and use a different `newInstance()` method:
-
-<Code>
-<CodeSample path={'LOG IN TO THE CHAT WIDGET AUTOMATICALLY'}>
-
-```java
-getFragmentManager()
-   .beginTransaction()
-   .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment")
-   .addToBackStack("chat_fragment")
-   .commit();
-```
-
-</CodeSample>
-</Code>
+It’s also possible to automatically log in to chat window by providing visitor’s name and email to the Fragment and disabling [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey).
 
 # Alternative usage
 
 **Note: This option has limited capabilities.**
 
-If you need your users to be notified when user gets new message in hidden Chat, you might want to use provided Activity or Fragment.
-
-If you don't want the chat window to reload its content every time device orientation changes, add this line to your Activity in the manifest:
-
-<Code>
-<CodeSample path={'ALTERNATIVE USAGE'}>
-
-```java
-android: configChanges = "orientation|screenSize";
-```
-
-</CodeSample>
-</Code>
-
-<div class="clear"></div>
-
-The chat widget will handle the orientation change by itself.
+If you don't need to be notified when user gets new message in a hidden ChatWindow, you might want to use `ChatWindowActivity` or `ChatWindowFragment`.
 
 # Localization
 
@@ -452,7 +400,7 @@ You can change or localize error messages by defining your own string resources 
 - ChatWindowView is now interface that can be casted to View
 - `setUpWindow(configuration);` is replaced by `setConfiguration(configuration);`
 - `setUpListener(listener)` is replaced by `setEventsListener(listener)`
-- `ChatWindowView.clearSession(Context)` is moved to `ChatWindowUtils.clearSession(Context)`
+- `ChatWindowView.clearSession()` is moved to `ChatWindowUtils.clearSession(Context)`
 - `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())`
 
 # Migrating to versions >=2.3.x
