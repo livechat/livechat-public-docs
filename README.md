@@ -42,6 +42,10 @@ You can simulate the production build process locally by running.
 
 In order to test your work before merging to master, **Netlify** provides **Deploy Preview**. When raising a PR, GitHub will provide **Netlify** notifications with the **Deploy Preview** url that can be found in the checks section.
 
+## Versioning
+
+Every change automatically updates the documentation version. Versions are built based on commit messages, so adherence to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) is required.
+
 ## How to contribute
 
 All contribution's welcome! [Read how to do it.](./CONTRIBUTING.md)
