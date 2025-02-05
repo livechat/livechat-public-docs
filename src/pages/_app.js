@@ -9,7 +9,6 @@ import "../styles/layout.css";
 import "../styles/prism.css";
 import "../styles/algolia.css";
 import "../styles/redoc.css";
-import { canUseWindow } from "../utils/canUseWindow";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
