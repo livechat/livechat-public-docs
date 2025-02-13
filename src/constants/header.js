@@ -1,8 +1,8 @@
 import React from "react";
-import Twitter from "react-material-icon-svg/dist/Twitter";
 import Github from "react-material-icon-svg/dist/Github";
 import UnfoldMoreVertical from "react-material-icon-svg/dist/UnfoldMoreVertical";
 import { Discord } from "assets/icons/Discord";
+import { XIcon } from "assets/icons/X";
 import { UpdatesIcon } from "assets/icons/Updates";
 import { MessagingIcon } from "assets/icons/cards/Messaging";
 import { ManagementIcon } from "assets/icons/cards/Management";
@@ -188,9 +188,9 @@ export const connects = [
     secondaryIcon: <Github fill="#ffffff" />,
   },
   {
-    title: "Platform Twitter",
-    link: process.env.NEXT_PUBLIC_TWITTER_LIVECHAT,
-    primaryIcon: <Twitter />,
-    secondaryIcon: <Twitter fill="#ffffff" />,
+    title: "Platform X",
+    link: process.env.NEXT_PUBLIC_X_LIVECHAT,
+    primaryIcon: <XIcon />,
+    secondaryIcon: <XIcon fill="#ffffff" />,
   },
 ];
