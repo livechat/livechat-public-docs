@@ -38,7 +38,6 @@ import {
   RatingProvider,
   PromotionProvider,
 } from "../../contexts";
-import { AuthProvider } from "../../contexts/auth";
 import { canUseWindow } from "../../utils";
 import { useRating } from "../../hooks";
 import articlesVersions from "../../configs/articlesVersions.json";
@@ -161,92 +160,83 @@ const Page = ({ frontMatter, children }) => {
   slug = slug[slug.length - 1] === "/" ? slug : `${slug}/`;
 
   const ratingContext = useRating({ slug });
-  const useRedocPage = [
-    "global-accounts-api",
-    "customer-accounts-api",
-    "text-api",
-    "chat-api"
-  ].includes(subcategory) || ["Chat API"].includes(title);
+  const useRedocPage =
+    [
+      "global-accounts-api",
+      "customer-accounts-api",
+      "text-api",
+      "chat-api",
+    ].includes(subcategory) || ["Chat API"].includes(title);
 
   return (
-    <AuthProvider>
-      <RatingProvider value={ratingContext}>
-        <VersionProvider value={versionContext}>
-          <PromotionProvider value={promotionContext}>
-            <SEO
-              desc={desc}
-              title={title}
-              subtitle={subtitle}
-              robots={robots}
-            />
-            <Header />
-            <MainWrapper>
-              {!useRedocPage && (
-                <SideNav
-                  category={category}
-                  version={currentApiVersion}
-                  title={title}
+    <RatingProvider value={ratingContext}>
+      <VersionProvider value={versionContext}>
+        <PromotionProvider value={promotionContext}>
+          <SEO desc={desc} title={title} subtitle={subtitle} robots={robots} />
+          <Header />
+          <MainWrapper>
+            {!useRedocPage && (
+              <SideNav
+                category={category}
+                version={currentApiVersion}
+                title={title}
+              />
+            )}
+
+            <MiddleColumn
+              noMargin={useRedocPage}
+              noPadding={useRedocPage}
+              fullWidth={useRedocPage}
+            >
+              {currentApiVersion && (
+                <Version
+                  leftPadding={useRedocPage}
+                  articleVersions={
+                    articlesVersions[category][subcategory][title]
+                  }
+                  redirectToVersion={redirectToVersion}
+                  group={versionGroup}
                 />
               )}
-
-              <MiddleColumn
-                noMargin={useRedocPage}
+              <Content
+                className={
+                  useRedocPage
+                    ? `redoc ${currentApiVersion ? "redoc-with-version" : ""}`
+                    : ""
+                }
                 noPadding={useRedocPage}
-                fullWidth={useRedocPage}
               >
-                {currentApiVersion && (
-                  <Version
-                    leftPadding={useRedocPage}
-                    articleVersions={
-                      articlesVersions[category][subcategory][title]
-                    }
-                    redirectToVersion={redirectToVersion}
-                    group={versionGroup}
-                  />
+                {title && !useRedocPage && <PageHeader title={title} />}
+                {useRedocPage && (
+                  <LeftColumnRedocWrapper>
+                    <LeftColumnRedoc>
+                      <NavHeader>
+                        <Link href={"/"} style={{ color: "inherit" }}>
+                          <span>
+                            <HomeIcon width={18} style={{ display: "block" }} />
+                          </span>
+                        </Link>
+                        <ChevronRight width={14} />
+                        <CategoryRedoc>{category}</CategoryRedoc>
+                      </NavHeader>
+                    </LeftColumnRedoc>
+                  </LeftColumnRedocWrapper>
                 )}
-                <Content
-                  className={
-                    useRedocPage
-                      ? `redoc ${currentApiVersion ? "redoc-with-version" : ""}`
-                      : ""
-                  }
-                  noPadding={useRedocPage}
-                >
-                  {title && !useRedocPage && <PageHeader title={title} />}
-                  {useRedocPage && (
-                    <LeftColumnRedocWrapper>
-                      <LeftColumnRedoc>
-                        <NavHeader>
-                          <Link href={"/"} style={{ color: "inherit" }}>
-                            <span>
-                              <HomeIcon
-                                width={18}
-                                style={{ display: "block" }}
-                              />
-                            </span>
-                          </Link>
-                          <ChevronRight width={14} />
-                          <CategoryRedoc>{category}</CategoryRedoc>
-                        </NavHeader>
-                      </LeftColumnRedoc>
-                    </LeftColumnRedocWrapper>
-                  )}
 
-                  <MDXProvider components={components}>{children}</MDXProvider>
+                <MDXProvider components={components}>{children}</MDXProvider>
 
-                  {!useRedocPage && (
-                    <StyledRating position={RATING_POSITION.BOTTOM} />
-                  )}
-                </Content>
-              </MiddleColumn>
+                {!useRedocPage && (
+                  <StyledRating position={RATING_POSITION.BOTTOM} />
+                )}
+              </Content>
+            </MiddleColumn>
 
-              {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
-            </MainWrapper>
-            <Footer />
-          </PromotionProvider>
-        </VersionProvider>
-      </RatingProvider>
-    </AuthProvider>
+            {!useRedocPage && <ContentSideNav version={currentApiVersion} />}
+          </MainWrapper>
+          <Footer />
+        </PromotionProvider>
+      </VersionProvider>
+    </RatingProvider>
   );
 };
 

@@ -17,11 +17,6 @@ import APIsSDKs from "./APIsSDKs";
 import Resources from "./Resources";
 import MobileMenu from "./MobileMenu/MobileMenu";
 
-const Profile = dynamic(() => import("../Profile/Profile"), {
-  ssr: false,
-  loading: () => <p>...</p>,
-});
-
 const Wrapper = styled.div`
   font-family: Colfax, colfax-web, Proxima Nova, Open Sans, Gill Sans MT,
     Gill Sans, Corbel, Arial, sans-serif;
@@ -220,7 +215,6 @@ const Header = () => {
               <Search />
             </MobileSearchField>
           )}
-          <Profile />
           {!openMenu ? (
             <MenuIcon
               fill="#ffffff"
