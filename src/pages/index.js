@@ -5,7 +5,6 @@ import {
   RatingProvider,
   PromotionProvider,
 } from "../contexts";
-import { AuthProvider } from "../contexts/auth";
 import { getVersionsByGroup } from "../components/core/version";
 import Header from "components/core/Navbar/Header";
 import Footer from "components/core/Footer/Footer";
@@ -99,59 +98,57 @@ const Index = () => {
   const promotionContext = { isActive: false, content: <div /> };
 
   return (
-    <AuthProvider>
-      <RatingProvider value={ratingContext}>
-        <VersionProvider value={versionContext}>
-          <PromotionProvider value={promotionContext}>
-            <SEO
-              desc="Text enables entrepreneurs to build data-intelligent products for customer service apps. Browse the Platform docs to learn about developer tools and APIs."
-              title="Text Platform Docs"
-            />
-            <Header />
-            <Menu />
+    <RatingProvider value={ratingContext}>
+      <VersionProvider value={versionContext}>
+        <PromotionProvider value={promotionContext}>
+          <SEO
+            desc="Text enables entrepreneurs to build data-intelligent products for customer service apps. Browse the Platform docs to learn about developer tools and APIs."
+            title="Text Platform Docs"
+          />
+          <Header />
+          <Menu />
 
-            <div css={wrapperCss}>
-              <div css={titleWrapperCss}>
-                <span css={textLogoCss}>Text Platform Docs</span>
-                <Search />
-              </div>
-              <h2>Build with Platform components</h2>
-              <p>
-                Text Platform offers you a variety of APIs, SDKs, and developer
-                tools that allow for maximum flexibility in building software.
-                Extend LiveChat and HelpDesk or build independent products.
-              </p>
-              <div css={cardsWrapperCss}>
-                {cards.map((card, index) => (
-                  <Card
-                    key={index}
-                    title={card.title}
-                    link={card.link}
-                    image={card.image}
-                    badge={card.badge}
-                  >
-                    {card.copy}
-                  </Card>
-                ))}
-              </div>
-              <h2>Choose your path</h2>
-              <div css={pathsWrapperCss}>
-                {devPaths.map((path, index) => (
-                  <DeveloperPath
-                    key={index}
-                    title={path.title}
-                    subtitle={path.subtitle}
-                    links={path.links}
-                    image={path.image}
-                  />
-                ))}
-              </div>
+          <div css={wrapperCss}>
+            <div css={titleWrapperCss}>
+              <span css={textLogoCss}>Text Platform Docs</span>
+              <Search />
             </div>
-            <Footer />
-          </PromotionProvider>
-        </VersionProvider>
-      </RatingProvider>
-    </AuthProvider>
+            <h2>Build with Platform components</h2>
+            <p>
+              Text Platform offers you a variety of APIs, SDKs, and developer
+              tools that allow for maximum flexibility in building software.
+              Extend LiveChat and HelpDesk or build independent products.
+            </p>
+            <div css={cardsWrapperCss}>
+              {cards.map((card, index) => (
+                <Card
+                  key={index}
+                  title={card.title}
+                  link={card.link}
+                  image={card.image}
+                  badge={card.badge}
+                >
+                  {card.copy}
+                </Card>
+              ))}
+            </div>
+            <h2>Choose your path</h2>
+            <div css={pathsWrapperCss}>
+              {devPaths.map((path, index) => (
+                <DeveloperPath
+                  key={index}
+                  title={path.title}
+                  subtitle={path.subtitle}
+                  links={path.links}
+                  image={path.image}
+                />
+              ))}
+            </div>
+          </div>
+          <Footer />
+        </PromotionProvider>
+      </VersionProvider>
+    </RatingProvider>
   );
 };
 

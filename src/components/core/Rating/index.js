@@ -7,7 +7,6 @@ import FeedbackModal from "./modal";
 
 import { RATES, RATING_TEXT } from "../../../constants";
 import { RatingContext } from "../../../contexts";
-import { useAuth } from "../../../contexts/auth";
 import Analytics from "../../../utils/analytics";
 
 const Wrapper = styled.div`
@@ -40,9 +39,6 @@ const Container = styled.div`
 
 const Rating = ({ className, position }) => {
   const { selectedRating, saveRating } = useContext(RatingContext);
-  const {
-    user: { email },
-  } = useAuth();
   const [isModalOpen, setModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -51,7 +47,7 @@ const Rating = ({ className, position }) => {
   }, []);
 
   const handleRateClick = (index) => {
-    saveRating(index, position, email);
+    saveRating(index, position);
 
     Analytics.track({
       category: "Voting Under Article",

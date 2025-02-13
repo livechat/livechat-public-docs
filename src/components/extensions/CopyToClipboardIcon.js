@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CopyIcon } from "../core/icons";
 import { logAmplitudeEvent } from "../../utils/index";
-import { useAuth } from "../../contexts/auth";
 
 const CopyToClipboardWrapper = styled.div`
   position: relative;
@@ -55,18 +54,12 @@ const Text = styled.div`
 
 const CopyToClipboardIcon = ({ text }) => {
   const [isCopied, setIsCopied] = useState(false);
-  const { user } = useAuth();
-  const { email } = user;
 
   const handleCopy = () => {
     setIsCopied(true);
-    logAmplitudeEvent(
-      "Copied to clipboard",
-      {
-        pathname: window.location.pathname,
-      },
-      email
-    );
+    logAmplitudeEvent("Copied to clipboard", {
+      pathname: window.location.pathname,
+    });
 
     setTimeout(() => {
       setIsCopied(false);
