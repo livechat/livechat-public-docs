@@ -1,11 +1,11 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import Twitter from "react-material-icon-svg/dist/Twitter";
 import Github from "react-material-icon-svg/dist/Github";
 
 import FooterBox from "./FooterBox";
 import { Discord } from "../../../assets/icons/Discord";
+import { XIcon } from "../../../assets/icons/X";
 
 const wrapperCss = () => css`
   display: flex;
@@ -34,9 +34,9 @@ const footerData = [
   {
     title: "Follow us",
     content: "Follow our insightful tweets and interact with our content.",
-    buttonIcon: <Twitter />,
-    buttonCopy: "Twitter",
-    buttonLink: process.env.NEXT_PUBLIC_TWITTER_LIVECHAT,
+    buttonIcon: <XIcon />,
+    buttonCopy: "X (Twitter)",
+    buttonLink: process.env.NEXT_PUBLIC_X_LIVECHAT,
   },
   {
     title: "Contribute",
