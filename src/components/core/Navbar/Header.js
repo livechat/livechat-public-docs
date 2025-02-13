@@ -16,7 +16,6 @@ import Platform from "./Platform";
 import APIsSDKs from "./APIsSDKs";
 import Resources from "./Resources";
 import MobileMenu from "./MobileMenu/MobileMenu";
-import ActionMenu from "../ActionMenu/ActionMenu";
 
 const Wrapper = styled.div`
   font-family: Colfax, colfax-web, Proxima Nova, Open Sans, Gill Sans MT,
@@ -216,7 +215,6 @@ const Header = () => {
               <Search />
             </MobileSearchField>
           )}
-          <ActionMenu />
           {!openMenu ? (
             <MenuIcon
               fill="#ffffff"
