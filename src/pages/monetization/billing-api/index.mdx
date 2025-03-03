@@ -62,7 +62,7 @@ The Billing API is based on the [Text OAuth](https://platform.text.com/docs/auth
 
 ## 2. APIs
 
-The current version of the Billing API is `v2`. This version makes it possible to handle various products, with the support of two of them already available: LiveChat and HelpDesk.
+The current version of the Billing API is `v3`. This version makes it possible to handle various products, with the support of two of them already available: LiveChat and HelpDesk.
 The product information is put explicitly in API endpoints - as the `<product>` element of each path.
 
 ### 2.1. Direct Charges
@@ -124,9 +124,9 @@ There are three possible direct charge flows:
 
 ## Usage
 
-- Create a charge for a user (`POST /v2/direct_charge/<product>`) and redirect them to the `confirmation_url`.
+- Create a charge for a user (`POST /v3/direct_charge/<product>`) and redirect them to the `confirmation_url`.
 - After the user confirms or declines the charge, they will be redirected to `return_url` with charge `id` passed as a URL param.
-- Based on `id`, you can check charge status (`GET /v2/direct_charge/<product>/:ID`). If it is `accepted`, you must activate the charge (`PUT /v2/direct_charge/<product>/:ID/activate`).
+- Based on `id`, you can check charge status (`GET /v3/direct_charge/<product>/:ID`). If it is `accepted`, you must activate the charge (`PUT /v3/direct_charge/<product>/:ID/activate`).
 - After a while, our payment gateway will try to charge the user and it will automatically change the charge status to `success` or `failed`.
 
 <Section>
@@ -167,7 +167,7 @@ Parameters description:
   "test": false,
   "per_account":true,
   "status": "pending",
-  "confirmation_url": "https://billing.livechatinc.com/?id=5deab95d-c0c9-4397-9593-436f533e83e5",
+  "confirmation_url": "https://billing.text.com/?id=5deab95d-c0c9-4397-9593-436f533e83e5",
   "commission_percent": 20,
   "created_at": "2017-10-20T13:31:27Z",
   "updated_at": "2017-10-23T13:27:45Z"
@@ -188,12 +188,12 @@ If you want to use this API, you must create an app in Developer Console and che
 
 ## Endpoints
 
-Base URL: `https://billing.livechatinc.com`
+Base URL: `https://billing.text.com`
 
-- `POST /v2/direct_charge/<product>` - create a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional fields: `per_account`, `test`
-- `GET /v2/direct_charge/<product>/:ID` - get an existing charge.
-- `GET /v2/direct_charge/<product>` - create a paginated charges list (20 items per page) ordered by the creation date. Optional fields: `page`, `status`, `recurrent_charge_id`
-- `PUT /v2/direct_charge/<product>/:ID/activate` - activate a charge (the payment gateway starts processing it).
+- `POST /v3/direct_charge/<product>` - create a new charge. Required fields: `name`, `price`, `quantity`, `return_url`. Optional fields: `per_account`, `test`
+- `GET /v3/direct_charge/<product>/:ID` - get an existing charge.
+- `GET /v3/direct_charge/<product>` - create a paginated charges list (20 items per page) ordered by the creation date. Optional fields: `page`, `status`, `recurrent_charge_id`
+- `PUT /v3/direct_charge/<product>/:ID/activate` - activate a charge (the payment gateway starts processing it).
 
 # Ledger
 
@@ -244,7 +244,7 @@ If you want to use this API, you must create an app in Developer Console and che
 
 ## Endpoints
 
-Base URL: `https://billing.livechatinc.com`
+Base URL: `https://billing.text.com`
 
 - `GET /v2/ledger/livechat` - returns the current ledger. It lists up to 20 entries, use `?page=X` for pagination. Required format: `{result: [LEDGER ENTRY 1, LEDGER ENTRY 2, ...]}`,
 - `GET /v2/ledger/livechat/balance` - returns the current ledger balance in cents. Format: `{"balance": 10}`
@@ -255,14 +255,15 @@ The Recurrent Charges API handles periodic payments. Once the payment is set up,
 
 ## Statuses
 
-There are six possible recurrent charge statuses:
+There are seven possible recurrent charge statuses:
 
 | Status      | Description                                                      |
 | ----------- | ---------------------------------------------------------------- |
 | `pending`   | the charge has been created and is awaiting merchant interaction |
 | `accepted`  | the charge has been accepted by the merchant                     |
 | `declined`  | the charge has been declined by the merchant                     |
-| `active`    | the charge is being processed by a payment gateway               |
+| `active`    | the charge is active and all issued invoices have been paid      |
+| `past_due`  | the charge is active but has unpaid invoices                     |
 | `frozen`    | the charge could not be collected                                |
 | `cancelled` | the charge has been cancelled                                    |
 
@@ -273,6 +274,9 @@ There are three possible recurrent charge flows:
 - `pending` -> `accepted` -> `processed` -> `active` -> `cancelled`
 - `pending` -> `accepted` -> `processed` -> `active` -> `frozen`
 - `pending` -> `declined`
+
+Additionally, whenever payment is due and an invoice is issued, the charge enters the `past_due` status. As soon as the invoice is paid the status changes back to `active`.
+In the happy case this only takes a few seconds. In other cases the `past_due` status may be used to e.g. display a pending invoice notification to the app user, or limit the app functionality.
 
 <Section>
 
@@ -346,12 +350,12 @@ Parameters description:
 
 All endpoints return a recurrent charge object.
 
-- `POST /v2/recurrent_charge/<product>` - create a new charge. Required fields: `name`, `price`, `return_url`. Optional fields: `external_id`, `test`, `trial_days`, `months`, `per_account`
-- `GET /v2/recurrent_charge/<product>/:ID` - get the existing charge
-- `PUT /v2/recurrent_charge/<product>/:ID/accept` - accept recurrent charge. The buyer must confirm the payment before the charge is collected
-- `PUT /v2/recurrent_charge/<product>/:ID/decline` - decline recurrent charge. The buyer can decline a `pending` charge
-- `PUT /v2/recurrent_charge/<product>/:ID/activate` - activate recurrent charge
-- `PUT /v2/recurrent_charge/<product>/:ID/cancel` - cancel recurrent charge
+- `POST /v3/recurrent_charge/<product>` - create a new charge. Required fields: `name`, `price`, `return_url`. Optional fields: `external_id`, `test`, `trial_days`, `months`, `per_account`
+- `GET /v3/recurrent_charge/<product>/:ID` - get the existing charge
+- `PUT /v3/recurrent_charge/<product>/:ID/accept` - accept recurrent charge. The buyer must confirm the payment before the charge is collected
+- `PUT /v3/recurrent_charge/<product>/:ID/decline` - decline recurrent charge. The buyer can decline a `pending` charge
+- `PUT /v3/recurrent_charge/<product>/:ID/activate` - activate recurrent charge
+- `PUT /v3/recurrent_charge/<product>/:ID/cancel` - cancel recurrent charge
 
 # Checkout link charges
 
