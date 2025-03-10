@@ -54,7 +54,6 @@ const transformHits = (hits) => {
       };
     });
 
-  console.log("xddd", updatedHits);
   return updatedHits;
 };
 
