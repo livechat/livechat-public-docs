@@ -24,11 +24,28 @@ const transformHits = (hits) => {
       const path = hit.url.replace("https://platform.text.com/docs", "");
       const url = window.location.origin + pathExt + path;
 
+      const updatedSnippetResult = hit._snippetResult
+        ? {
+            ...hit._snippetResult,
+            hierarchy: Object.fromEntries(
+              Object.entries(
+                hit._snippetResult.hierarchy || {}
+              ).map(([key, value]) => [
+                key,
+                value.matchLevel === "none"
+                  ? { ...value, value: content }
+                  : value,
+              ])
+            ),
+          }
+        : hit._snippetResult;
+
       if (content)
         return {
           ...hit,
           content: content,
           url,
+          _snippetResult: updatedSnippetResult,
         };
 
       return {

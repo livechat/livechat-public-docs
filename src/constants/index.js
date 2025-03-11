@@ -708,6 +708,7 @@ const UNCLEAR_SEARCH_MATCHES = [
     content: "Configuration API",
   },
   { regex: /data-reporting/g, content: "Reports API" },
+  { regex: /customer-sdk/g, content: "Customer SDK" },
 ];
 
 const constants = {
