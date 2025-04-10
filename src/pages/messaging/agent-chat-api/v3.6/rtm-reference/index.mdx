@@ -67,17 +67,6 @@ For backend integrations; unavailable in web browsers. Read more about the [cont
 
 All authorization scopes are listed in the [Scopes](/authorization/scopes/) document. If a method requires particular authorization scopes, you'll find them included in the method description.
 
-## Data centers
-
-LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
-
-For backend applications, you can specify the region in the request header. The mechanism is the same as in [Agent Chat Web API reference](/messaging/agent-chat-api/v3.6/#data-centers). It doesn't work for frontend applications, though.
-Instead, frontend apps connect to a region different than the default one by specifying the region suffix in the URL.
-
-**`fra`:** `wss://api-fra.livechatinc.com/v3.6/agent/rtm/ws`
-
-**`dal`:** `wss://api.livechatinc.com/v3.6/agent/rtm/ws`
-
 ## Rate limits
 
 To prevent sending a massive number of requests, there are rate limits for method calls. After exceeding those limits, the requester will get a `Too many requests` error in the response of a specific request. After some time, the request will be unblocked so it can be sent again.
@@ -115,6 +104,12 @@ To find sample payloads of **events**, **users**, and **other common structures*
 | --------------------------------------------- |
 | `wss://api.livechatinc.com/v3.6/agent/rtm/ws` |
 
+When connecting to the Agent Chat RTM API, clients have to send over the required query string parameters.
+
+| Required parameter | Data type |
+| ------------------ | :-------: |
+| `organization_id`  | `string`  |
+
 ## Available methods
 
 |                 |                                                                                                                                                                                                                                                                                                                                     |
@@ -125,7 +120,7 @@ To find sample payloads of **events**, **users**, and **other common structures*
 | **Events**      | [`send_event`](#send-event) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                                                             |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
-| **Customers**   | [`get_customer`](#get-customer) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer) [`subscribe_customers`](#subscribe_customers) [`unsubscribe_customers`](#unsubscribe_customers)                                                                                                |
+| **Customers**   | [`get_customer`](#get-customer) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer) [`subscribe_customers`](#subscribe_customers) [`unsubscribe_customers`](#unsubscribe_customers)         |
 | **Status**      | [`login`](#login) [`set_routing_status`](#set-routing-status) [`set_away_status`](#set-away-status) [`logout`](#logout) [`list_routing_statuses`](#list-routing-statuses) [`update_session`](#update-session)                                                                                                                       |
 | **Other**       | [`mark_events_as_seen`](#mark-events-as-seen) [`send_typing_indicator`](#send-typing-indicator) [`multicast`](#multicast) [`list_agents_for_transfer`](#list-agents-for-transfer)                                                                                                                                                   |
 
@@ -1350,10 +1345,10 @@ The method updates the requester's `events_seen_up_to` as if they've seen all ch
 
 #### Request
 
-| Parameters              | Required | Data type | Notes                                                                                                                                                             |
-| ----------------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chat_id`               | Yes      | `string`  | Id of the chat you want to send the message to.                                                                                                                   |
-| `event`                 | Yes      | `object`  | [Event](/messaging/agent-chat-api/data-structures/#events) object. Does not support the `form` type event in the LiveChat app.                                    |
+| Parameters | Required | Data type | Notes                                                                                                                          |
+| ---------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `chat_id`  | Yes      | `string`  | Id of the chat you want to send the message to.                                                                                |
+| `event`    | Yes      | `object`  | [Event](/messaging/agent-chat-api/data-structures/#events) object. Does not support the `form` type event in the LiveChat app. |
 
 </Text>
 <Code>
@@ -2426,19 +2421,19 @@ If the number of tracked customers exceeds the limit, the `subscribed_customers_
 
 #### Specifics
 
-|                        |                                                                                         |
-| ---------------------- | --------------------------------------------------------------------------------------- |
-| **Action**             | `subscribe_customers`                                                                   |
-| **Required scopes**    | `customers:ro`                                                                          |
-| **Web API equivalent** | -                                                                                       |
-| **Push message**       | -                                                                                       |
+|                        |                       |
+| ---------------------- | --------------------- |
+| **Action**             | `subscribe_customers` |
+| **Required scopes**    | `customers:ro`        |
+| **Web API equivalent** | -                     |
+| **Push message**       | -                     |
 
 #### Request
 
-| Parameter | Required | Data type |     |
-| --------- | -------- | --------- | --- |
-| `group_ids` | No     | `[]int`  |     |
-| `limit`  | No        | int       |    |
+| Parameter   | Required | Data type |     |
+| ----------- | -------- | --------- | --- |
+| `group_ids` | No       | `[]int`   |     |
+| `limit`     | No       | int       |     |
 
 </Text>
 <Code>
@@ -2487,18 +2482,18 @@ Removes a customer subscription.
 
 #### Specifics
 
-|                        |                                                                                         |
-| ---------------------- | --------------------------------------------------------------------------------------- |
-| **Action**             | `unsubscribe_customers`                                                                 |
-| **Required scopes**    | `customers:ro`                                                                          |
-| **Web API equivalent** | -                                                                                       |
-| **Push message**       | -                                                                                       |
+|                        |                         |
+| ---------------------- | ----------------------- |
+| **Action**             | `unsubscribe_customers` |
+| **Required scopes**    | `customers:ro`          |
+| **Web API equivalent** | -                       |
+| **Push message**       | -                       |
 
 #### Request
 
-| Parameter | Required | Data type |     |
-| --------- | -------- | --------- | --- |
-| `subscription_id`  | Yes        | string       |    |
+| Parameter         | Required | Data type |     |
+| ----------------- | -------- | --------- | --- |
+| `subscription_id` | Yes      | string    |     |
 
 </Text>
 <Code>
@@ -2949,9 +2944,9 @@ Replaces the token used in the login request with a new one. This allows the web
 
 #### Request
 
-| Parameter           | Required | Type     | Notes                                |
-| ------------------- | -------- | -------- | ------------------------------------ |
-| `token`             | Yes      | `string` | OAuth token from the Agent's account |
+| Parameter | Required | Type     | Notes                                |
+| --------- | -------- | -------- | ------------------------------------ |
+| `token`   | Yes      | `string` | OAuth token from the Agent's account |
 
 </Text>
 <Code>
