@@ -23,16 +23,6 @@ This document describes the **Configuration API v3.5**. This is the latest stabl
 
 Authentication for Configuration API is handled by access tokens. Find out how to get an access token from [Agent authorization flows](/authorization/agent-authorization/). If a method requires particular authorization scopes, you’ll find them included in the method description. Each request should contain the `Authorization: Bearer <your_access_token>` header.
 
-## Data centers
-
-LiveChat system operates in two data centers: `dal` (USA) and `fra` (Europe). The default data center is `dal`.
-
-All the LiveChat OAuth 2.1 access tokens have a prefix: `dal:` or `fra:`. This prefix indicates the data center they belong to. If you need to specify the data center while making an API call, simply add the `X-Region: <token_prefix>` optional header.
-
-Summing up, if the user token starts with `fra`, you should add the `X-Region: fra` header. If the token starts with `dal`, you don’t have to specify the header.
-
-If you get the [`misdirected_request`](#possible-errors) error, use the prefix returned in the error as the value of `X-Region`.
-
 ## Propagation delay
 
 All configurations set by this API will have action in system after max 2 minutes. This delay will be removed in the future.
@@ -420,12 +410,12 @@ Returns all Agents within a license.
 
 #### Request
 
-| Parameter                      | Required | Type       | Notes                                                                                                         |
-| ------------------------------ | -------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
-| `filters`                      | No       | `object`   | Possible request filters                                                                                      |
-| `filters.group_ids`            | No       | `int[]`    | IDs of the groups from which you want to list Agents. You'll only get the Agents from the specified group(s). |
-| `filters.suspended`            | No       | `bool`     | If provided, returns only those Agents who have the same `suspended` field value.                             |
-| `fields`<sup>**1**</sup>       | No       | `string[]` | Additional Agent fields to include.                                                                           |
+| Parameter                | Required | Type       | Notes                                                                                                         |
+| ------------------------ | -------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `filters`                | No       | `object`   | Possible request filters                                                                                      |
+| `filters.group_ids`      | No       | `int[]`    | IDs of the groups from which you want to list Agents. You'll only get the Agents from the specified group(s). |
+| `filters.suspended`      | No       | `bool`     | If provided, returns only those Agents who have the same `suspended` field value.                             |
+| `fields`<sup>**1**</sup> | No       | `string[]` | Additional Agent fields to include.                                                                           |
 
 **1)** Possible values for the `fields[]` parameter:
 
@@ -498,22 +488,22 @@ Updates the properties of an Agent specified by `id`.
 
 #### Request
 
-| Parameter                                 | Data type  | Required | Notes                                                                                                                             |
-| ----------------------------------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                                      | `string`   | Yes      | Agent ID                                                                                                                          |
-| `name`                                    | `string`   | No       | Agent name                                                                                                                        |
-| `role`                                    | `string`   | No       | Agent role, should be one of the following: `viceowner`, `administrator`, `normal`                                                |
-| `avatar`                                  | `string`   | No       | Avatar URL                                                                                                                        |
-| `login_status`                            | `string`   | No       | Agent's default status right after the login, should be one of the following: `accepting chats`, `not accepting chats` (default). |
-| `job_title`                               | `string`   | No       | Agent's job title                                                                                                                 |
-| `mobile`                                  | `string`   | No       | Agent's mobile number                                                                                                             |
-| `max_chats_count`                         | `int`      | No       | Agent's maximum number of concurrent. Limited to 20. chats                                                                       |
-| `groups`                                  | `object[]` | No       | Groups an Agent belongs to.                                                                                                       |
-| `groups[].id`                             | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                  |
-| `groups[].priority` <sup>**3**</sup>      | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                                                               |
-| `notifications`<sup>**4**</sup>           | `string[]` | No       | Represents which Agent notifications are turned on.                                                                               |
-| `email_subscriptions`<sup>**5**</sup>     | `string[]` | No       | Represents which subscriptions will be send to an Agent via email.                                                                |
-| `work_scheduler`                          | `object`   | No       | Work scheduler options to set for an Agent. See [**Create Agent**](#create-agent) for details.                                    |
+| Parameter                             | Data type  | Required | Notes                                                                                                                             |
+| ------------------------------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                  | `string`   | Yes      | Agent ID                                                                                                                          |
+| `name`                                | `string`   | No       | Agent name                                                                                                                        |
+| `role`                                | `string`   | No       | Agent role, should be one of the following: `viceowner`, `administrator`, `normal`                                                |
+| `avatar`                              | `string`   | No       | Avatar URL                                                                                                                        |
+| `login_status`                        | `string`   | No       | Agent's default status right after the login, should be one of the following: `accepting chats`, `not accepting chats` (default). |
+| `job_title`                           | `string`   | No       | Agent's job title                                                                                                                 |
+| `mobile`                              | `string`   | No       | Agent's mobile number                                                                                                             |
+| `max_chats_count`                     | `int`      | No       | Agent's maximum number of concurrent. Limited to 20. chats                                                                        |
+| `groups`                              | `object[]` | No       | Groups an Agent belongs to.                                                                                                       |
+| `groups[].id`                         | `uint`     | Yes      | Group ID; required only when `group`'s included.                                                                                  |
+| `groups[].priority` <sup>**3**</sup>  | `string`   | Yes      | Agent's priority in a group; required only when `group`'s included.                                                               |
+| `notifications`<sup>**4**</sup>       | `string[]` | No       | Represents which Agent notifications are turned on.                                                                               |
+| `email_subscriptions`<sup>**5**</sup> | `string[]` | No       | Represents which subscriptions will be send to an Agent via email.                                                                |
+| `work_scheduler`                      | `object`   | No       | Work scheduler options to set for an Agent. See [**Create Agent**](#create-agent) for details.                                    |
 
 **3)** Possible values for the `groups[].priority` parameter:
 
@@ -816,11 +806,11 @@ Approves an Agent thus allowing the Agent to use the application.
 
 #### Specifics
 
-|                                  |                                                                                  |
-| -------------------------------- | -------------------------------------------------------------------------------- |
-| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/approve_agent`            |
-| Required scopes                  | `agents--all:rw` `accounts--all:rw` `subscription.lc:rw` <sup>**1**</sup>        |
-| [Batch support](#batch-requests) | Yes                                                                              |
+|                                  |                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.5/configuration/action/approve_agent`     |
+| Required scopes                  | `agents--all:rw` `accounts--all:rw` `subscription.lc:rw` <sup>**1**</sup> |
+| [Batch support](#batch-requests) | Yes                                                                       |
 
 **1)** `subscription.lc:rw` is a private scope; it's not possible to configure it in Developer Console.
 
@@ -1224,15 +1214,15 @@ Bots based on templates will work in the same way as those created by the [Creat
 
 #### Request
 
-| Parameter                                | Required | Data type  | Notes                                                                                                                                                                             |
-| ---------------------------------------- | -------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                                   | Yes      | `string`   | Display name                                                                                                                                                                      |
-| `avatar`                                 | No       | `string`   | Avatar URL                                                                                                                                                                        |
-| `max_chats_count`                        | No       | `int`      | Max. number of incoming chats that can be routed to the bot; default: 6. Limited to 500.                                                                                          |
-| `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                |
-| `job_title`                              | No       | `string`   | Bot's job title                                                                                                                                                                   |
-| `owner_client_id`                        | Yes      | `string`   | **Client Id** that will own the bot template; must be owned by your organization.                                                                                                 |
-| `affect_existing_installations`          | No       | `bool`     | If set to `true`, a bot based on this template will be created on all licenses that have given application installed. Otherwise only new installations will trigger bot creation. |
+| Parameter                                | Required | Data type | Notes                                                                                                                                                                             |
+| ---------------------------------------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                   | Yes      | `string`  | Display name                                                                                                                                                                      |
+| `avatar`                                 | No       | `string`  | Avatar URL                                                                                                                                                                        |
+| `max_chats_count`                        | No       | `int`     | Max. number of incoming chats that can be routed to the bot; default: 6. Limited to 500.                                                                                          |
+| `default_group_priority`<sup>**1**</sup> | No       | `string`  | The default routing priority for a group without defined priority.                                                                                                                |
+| `job_title`                              | No       | `string`  | Bot's job title                                                                                                                                                                   |
+| `owner_client_id`                        | Yes      | `string`  | **Client Id** that will own the bot template; must be owned by your organization.                                                                                                 |
+| `affect_existing_installations`          | No       | `bool`    | If set to `true`, a bot based on this template will be created on all licenses that have given application installed. Otherwise only new installations will trigger bot creation. |
 
 **1)** Possible priority values:
 
@@ -1285,18 +1275,18 @@ Creates a new bot. To make the bot available for receiving chats or webhooks, us
 
 #### Request
 
-| Parameter                                | Required | Data type  | Notes                                                                                                                                                                                                                                                                                              |
-| ---------------------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                                   | Yes      | `string`   | Display name                                                                                                                                                                                                                                                                                       |
-| `avatar`                                 | No       | `string`   | Avatar URL                                                                                                                                                                                                                                                                                         |
-| `max_chats_count`                        | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6. Limited to 500.                                                                                                                                                                                                           |
-| `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                                                                                                                 |
-| `job_title`                              | No       | `string`   | Bot's job title                                                                                                                                                                                                                                                                                    |
-| `groups`                                 | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                                                                                                         |
-| `groups[].id`                            | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                                                                                                                   |
-| `groups[].priority`<sup>**1**</sup>      | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                                                                                                                  |
-| `work_scheduler`                         | No       | `object`   | Work scheduler options to set for the new Bot. See [**Create Agent**](#create-agent) for details.                                                                                                                                                                                                  |
-| `work_scheduler.timezone`                | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate.                                                                                                                                                                                                                                    |
+| Parameter                                | Required | Data type  | Notes                                                                                                                                                                                                                                                                                           |
+| ---------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                                   | Yes      | `string`   | Display name                                                                                                                                                                                                                                                                                    |
+| `avatar`                                 | No       | `string`   | Avatar URL                                                                                                                                                                                                                                                                                      |
+| `max_chats_count`                        | No       | `int`      | Max. number of incoming chats that can be routed to the Bot; default: 6. Limited to 500.                                                                                                                                                                                                        |
+| `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                                                                                                              |
+| `job_title`                              | No       | `string`   | Bot's job title                                                                                                                                                                                                                                                                                 |
+| `groups`                                 | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                                                                                                      |
+| `groups[].id`                            | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                                                                                                                |
+| `groups[].priority`<sup>**1**</sup>      | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                                                                                                               |
+| `work_scheduler`                         | No       | `object`   | Work scheduler options to set for the new Bot. See [**Create Agent**](#create-agent) for details.                                                                                                                                                                                               |
+| `work_scheduler.timezone`                | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate.                                                                                                                                                                                                                                 |
 | `owner_client_id`<sup>**2**</sup>        | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 **1)** Possible priority values:
@@ -1450,16 +1440,16 @@ Updates an existing bot template.
 
 #### Request
 
-| Parameter                                | Required | Data type  | Notes                                                                                                                                                                                                                                                                                              |
-| ---------------------------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                                     | Yes      | `string`   | Bot Template ID                                                                                                                                                                                                                                                                                    |
-| `name`                                   | No       | `string`   | Display name                                                                                                                                                                                                                                                                                       |
-| `avatar`                                 | No       | `string`   | Avatar URL                                                                                                                                                                                                                                                                                         |
-| `max_chats_count`                        | No       | `int`      | Maximum incoming chats that can be routed to the Bot. Limited to 500.                                                                                                                                                                                                                              |
-| `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                                                                                                                                                                                                                 |
-| `job_title`                              | No       | `string`   | Bot's job title                                                                                                                                                                                                                                                                                    |
-| `owner_client_id`                        | Yes      | `string`   | **Client Id** that owns the bot template; must be owned by your organization.                                        |
-| `affect_existing_installations`          | No       | `bool`     | If set to `true`, bots based on this template will be updated on all licenses that have given application installed.                                                                                                                                                                               |
+| Parameter                                | Required | Data type | Notes                                                                                                                |
+| ---------------------------------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
+| `id`                                     | Yes      | `string`  | Bot Template ID                                                                                                      |
+| `name`                                   | No       | `string`  | Display name                                                                                                         |
+| `avatar`                                 | No       | `string`  | Avatar URL                                                                                                           |
+| `max_chats_count`                        | No       | `int`     | Maximum incoming chats that can be routed to the Bot. Limited to 500.                                                |
+| `default_group_priority`<sup>**1**</sup> | No       | `string`  | The default routing priority for a group without defined priority.                                                   |
+| `job_title`                              | No       | `string`  | Bot's job title                                                                                                      |
+| `owner_client_id`                        | Yes      | `string`  | **Client Id** that owns the bot template; must be owned by your organization.                                        |
+| `affect_existing_installations`          | No       | `bool`    | If set to `true`, bots based on this template will be updated on all licenses that have given application installed. |
 
 **1)** Possible priority values:
 
@@ -1582,9 +1572,9 @@ Returns the list of bot templates created for a Client ID (application).
 
 #### Request
 
-| Parameter         | Required | Type       | Notes                                                                                  |
-| ----------------- | -------- | ---------- | -------------------------------------------------------------------------------------- |
-| `owner_client_id` | Yes      | `string`   | **Client Id** that owns the bot templates to list; must be owned by your organization. |
+| Parameter         | Required | Type     | Notes                                                                                  |
+| ----------------- | -------- | -------- | -------------------------------------------------------------------------------------- |
+| `owner_client_id` | Yes      | `string` | **Client Id** that owns the bot templates to list; must be owned by your organization. |
 
 </Text>
 
@@ -1850,10 +1840,10 @@ Resets secret for a given bot.
 
 #### Request
 
-| Parameter                       | Required | Type     | Notes                                                                                                                                                                                                                                                                                              |
-| ------------------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                            | Yes      | `string` | Bot ID                                                                                                                                                                                                                                                                                             |
-| `owner_client_id`               | Yes      | `string` | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
+| Parameter         | Required | Type     | Notes                                                                                                                                                                                                                                                                                           |
+| ----------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`              | Yes      | `string` | Bot ID                                                                                                                                                                                                                                                                                          |
+| `owner_client_id` | Yes      | `string` | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 </Text>
 
@@ -2339,20 +2329,20 @@ Registers a new private property for a given **Client Id**.
 
 #### Request
 
-| Parameter                             | Required            | Data type  | Notes                                                                                |
-| ------------------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------ |
-| `name`                                | Yes                 | `string`   | Property name                                                                        |
-| `owner_client_id`                     | Yes                 | `string`   | **Client Id** that will own the property; must be owned by your organization.        |
-| `type`                                | Yes                 | `string`   | Possible values: `int`, `string`, `bool`, and `tokenized_string`                     |
-| `access`                              | Yes                 | `object`   |                                                                                      |
-| `access.<location>`                   | min. one `location` | `object`   | Possible values: `chat`, `thread`, `event`, `license`, `group`                       |
-| `access.<location>.<user>`            | min. one `user`     | `[string]` | Possible `<user>` values: `agent`, `customer`; possible values: `read`, `write`      |
-| `description`                         | No                  | `string`   | Property description                                                                 |
-| `domain` <sup>**1**</sup>             | No                  | `[<type>]` | Array of values that properties can be set to                                        |
-| `range` <sup>**1**</sup>              | No                  | `object`   | Range of values that properties can be set to                                        |
-| `range.from`                          | No                  | `int`      | Only values **equal** or **greater** than this parameter can be set to this property |
-| `range.to`                            | No                  | `int`      | Only values **equal** or **lower** than this parameter can be set to this property   |
-| `default_value` <sup>**2**</sup>      | No                  | `type`     | Default value of property; validated by **domain** or **range**, if one exists       |
+| Parameter                        | Required            | Data type  | Notes                                                                                |
+| -------------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------ |
+| `name`                           | Yes                 | `string`   | Property name                                                                        |
+| `owner_client_id`                | Yes                 | `string`   | **Client Id** that will own the property; must be owned by your organization.        |
+| `type`                           | Yes                 | `string`   | Possible values: `int`, `string`, `bool`, and `tokenized_string`                     |
+| `access`                         | Yes                 | `object`   |                                                                                      |
+| `access.<location>`              | min. one `location` | `object`   | Possible values: `chat`, `thread`, `event`, `license`, `group`                       |
+| `access.<location>.<user>`       | min. one `user`     | `[string]` | Possible `<user>` values: `agent`, `customer`; possible values: `read`, `write`      |
+| `description`                    | No                  | `string`   | Property description                                                                 |
+| `domain` <sup>**1**</sup>        | No                  | `[<type>]` | Array of values that properties can be set to                                        |
+| `range` <sup>**1**</sup>         | No                  | `object`   | Range of values that properties can be set to                                        |
+| `range.from`                     | No                  | `int`      | Only values **equal** or **greater** than this parameter can be set to this property |
+| `range.to`                       | No                  | `int`      | Only values **equal** or **lower** than this parameter can be set to this property   |
+| `default_value` <sup>**2**</sup> | No                  | `type`     | Default value of property; validated by **domain** or **range**, if one exists       |
 
 **1)** Only one `domain` and one `range` can be set for a single property.<br/>
 **2)** Registering a property with `default_value` is possible only if `access.<location>` is set to `license` or to `group`.
@@ -3471,8 +3461,8 @@ Otherwise, the webhooks will be automatically enabled when the associated applic
 
 #### Request
 
-| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
-| ----------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                           |
+| ----------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `owner_client_id` | Yes      | `string`  | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 #### Response
@@ -3518,8 +3508,8 @@ To enable the webhooks again (and to rely on automatic webhooks enablement), use
 
 #### Request
 
-| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
-| ----------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                           |
+| ----------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `owner_client_id` | Yes      | `string`  | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 #### Response
@@ -3564,8 +3554,8 @@ Gets the state of the webhooks registered for a given **Client Id** (application
 
 #### Request
 
-| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                              |
-| ----------------- | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter         | Required | Data type | Notes                                                                                                                                                                                                                                                                                           |
+| ----------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `owner_client_id` | Yes      | `string`  | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
 
 </Text>
