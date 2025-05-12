@@ -10,6 +10,7 @@ import { DevConsoleToolsIcon } from "assets/icons/cards/DevConsoleTools";
 import { TextApiIcon } from "assets/icons/cards/TextAPI";
 import { BeginnerPathIcon } from "assets/icons/cards/BeginnerPath";
 import { AdvancedPathIcon } from "assets/icons/cards/AdvancedPath";
+import { PartnerApiIcon } from "assets/icons/cards/PartnerAPI";
 
 export const cards = [
   {
