@@ -4,6 +4,7 @@ export { default as filledForm } from "./events/filledForm.json"
 export { default as message } from "./events/message.json"
 export { default as richMessage } from "./events/richMessage.json"
 export { default as systemMessage } from "./events/systemMessage.json"
+export { default as system } from "./events/system.json";
 
 export { default as agent } from "./users/agent.json"
 export { default as customer } from "./users/customer.json"
