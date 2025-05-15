@@ -133,7 +133,7 @@ curl --request GET \
 
 ## Update Profile
 
-`PUT https://api.livechatinc.com/v2/partners` - update the profile info
+`PUT https://api.livechatinc.com/v2/partners/profile` - update the profile info
 
 #### Headers
 
@@ -398,7 +398,7 @@ curl --request GET \
 
 - `date_from` - **required** - get report from a given date
 - `date_to` - **required** - get report up to a given date
-- `filters` - filters
+- `filters` - filters (URL-encoded)
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
 
 **Note:**
@@ -422,8 +422,8 @@ curl --request GET \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
-	--url https://api.livechatinc.com/v2/partners/reports/commission?date_from=2022-12-15T00:00:00Z&date_to=2023-02-14T23:59:59Z&aggregation=month&filters=[{"field":"product","value":"livechat","operator":"equals"}] \
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners/reports/commission?date_from=2022-12-15T00:00:00Z&date_to=2023-02-14T23:59:59Z&aggregation=month&filters=%5B%7B%22field%22%3A%22product%22%2C%22value%22%3A%22livechat%22%2C%22operator%22%3A%22equals%22%7D%5D \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -1019,6 +1019,77 @@ curl --request DELETE \
 
 </Section>
 
+<Section>
+
+<Text>
+
+## Get Licenses By Status
+
+`GET https://api.livechatinc.com/v2/partners/solutions/licenses/<status>` - get solution licenses of a certain status
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `<status>` - **required** - license status (`trial` , `paid` or `expired`)
+
+#### Query Parameters
+
+- `date_from` - **required** - get licenses from a given date
+- `date_to` - **required** - get licenses up to a given date
+- `limit` - get certain amount of licenses in response (min. 1 , max. 15 - default)
+- `next cursor` - cursor for fetching next batch of licenses
+
+**Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
+
+#### Response
+
+- `200 - OK` - success, see example
+- `400 - Bad Request` - missing or incorrect parameters
+- `401 - Unauthorized` - a missing or incorrect authorization header
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners/affiliates/licenses/paid?date_from=2025-02-15T00:00:00Z&date_to=2025-06-14T23:59:59Z&limit=1 \
+	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+    "results": [
+        {
+            "campaign": "",
+            "status": "paid",
+            "product": "livechat",
+            "commission": 10,
+            "earnings": 357.5,
+            "creation_timestamp": "2022-10-06 13:40:46",
+            "conversion_timestamp": "2022-10-20 13:41:55",
+            "expiration_timestamp": "2023-10-20 11:40:45"
+        }
+    ],
+    "next_cursor": "MjAyMi0wOC0zMCAxMzowNjozNg=="
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
 
 # Affiliate Partner
 
@@ -1072,8 +1143,8 @@ curl --request DELETE \
 #### Body
 
 - `name` - **required** - campaign name (min. 5, max. 100 characters)
-- `link` - the URL of the product landing page (default: product homepage)
-- `trial_duration` - the number of days of a trial period (min. 14 - default, max. 30)
+- `link` - **required** the URL of the product landing page (default: product homepage)
+- `trial_duration` - **required** - the number of days of a trial period (min. 14 - default, max. 30)
 - `coupon_id` - the ID of the coupon assigned to a Partner (a discount will be applied)
 
 #### Response
@@ -1136,7 +1207,7 @@ curl --request POST \
 
 #### Query Parameters
 
-- `page` - pagination page number
+- `page` - **required** - pagination page number
 - `state` - **required** - state (`active` or `archived`)
 - `product` - product (one of: `livechat`, `chatbot`, `helpdesk`, `all`; default: `all`)
 - `filters` - filters (see below)
@@ -1163,7 +1234,7 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
+curl --request GET \
 	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/search?page=1&product=all&state=active&filters=[]&&sort_order=desc&sort_by=creation_timestamp \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
@@ -1645,8 +1716,8 @@ curl --request GET \
 
 #### Query Parameters
 
-- `date_from` - get trials metrics from a given date
-- `date_to` - get trials metrics up to a given date
+- `date_from` - **required** - get trials metrics from a given date
+- `date_to` - **required** - get trials metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -1698,8 +1769,8 @@ curl --request POST \
 
 #### Query Parameters
 
-- `date_from` - get earnings metrics from a given date
-- `date_to` - get earnings metrics up to a given date
+- `date_from` - **required** - get earnings metrics from a given date
+- `date_to` - **required** - get earnings metrics up to a given date
 - `product` - optional - get earnings metrics for a given product (one of: `livechat`, `chatbot`, `helpdesk`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
@@ -1752,8 +1823,8 @@ curl --request POST \
 
 #### Query Parameters
 
-- `date_from` - get conversions metrics from a given date
-- `date_to` - get conversions metrics up to a given date
+- `date_from` - **required** - get conversions metrics from a given date
+- `date_to` - **required** - get conversions metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -1805,8 +1876,8 @@ curl --request POST \
 
 #### Query Parameters
 
-- `date_from` - get clicks metrics from a given date
-- `date_to` - get clicks metrics up to a given date
+- `date_from` - **required** - get clicks metrics from a given date
+- `date_to` - **required** - get clicks metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2216,77 +2287,6 @@ curl --request POST \
 
 <Text>
 
-## Get Licenses By Status
-
-`GET https://api.livechatinc.com/v2/partners/partners/affiliates/licenses/<status>` - get affiliate licenses of a certain status
-
-#### Headers
-
-- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
-
-#### Path Parameters
-
-- `<status>` - **required** - license status (`trial` , `paid` or `expired`)
-
-#### Query Parameters
-
-- `date_from` - **required** - get licenses from a given date
-- `date_to` - **required** - get licenses up to a given date
-- `limit` - get certain amount of licenses in response (min. 1 , max. 15 - default)
-- `next cursor` - cursor for fetching next batch of licenses
-
-**Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
-
-#### Response
-
-- `200 - OK` - success, see example
-- `400 - Bad Request` - missing or incorrect parameters
-- `401 - Unauthorized` - a missing or incorrect authorization header
-
-</Text>
-
-<Code>
-
-<CodeSample path={'EXAMPLE REQUEST'}>
-
-```shell
-curl --request POST \
-	--url https://api.livechatinc.com/v2/partners/affiliates/licenses/paid?date_from=2022-01-01&date_to=2022-12-01&limit=1 \
-	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
-```
-
-</CodeSample>
-
-<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
-
-```json
-{
-    "results": [
-        {
-            "campaign": "",
-            "status": "paid",
-            "product": "livechat",
-            "commission": 10,
-            "earnings": 357.5,
-            "creation_timestamp": "2022-10-06 13:40:46",
-            "conversion_timestamp": "2022-10-20 13:41:55",
-            "expiration_timestamp": "2023-10-20 11:40:45"
-        }
-    ],
-    "next_cursor": "MjAyMi0wOC0zMCAxMzowNjozNg=="
-}
-```
-
-</CodeResponse>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
 ## Get Campaigns Earnings Metric
 
 `GET https://api.livechatinc.com/v2/partners/affiliates/campaigns/<campaign_id>/metrics/earnings` - get affiliate campaign earnings metric
@@ -2301,9 +2301,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `date_from` - get earnings metrics from a given date
-- `date_to` - get earnings metrics up to a given date
-- `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
+- `date_from` - **required** - get earnings metrics from a given date
+- `date_to` - **required** - get earnings metrics up to a given date
+- `billing_cycle` - billing cycle, `monthly` or `annual`
 
 #### Response
 
@@ -2318,7 +2318,7 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
+curl --request GET \
 	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/metrics/earnings?date_from=2022-01-01&date_to=2022-12-01&billing_cycle=annual \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
@@ -2357,8 +2357,8 @@ curl --request POST \
 
 #### Query Parameters
 
-- `date_from` - get earnings metrics from a given date
-- `date_to` - get earnings metrics up to a given date
+- `date_from` - **required** - get earnings metrics from a given date
+- `date_to` - **required** - get earnings metrics up to a given date
 - `billing_cycle` - **required** - billing cycle, `monthly` or `annual`
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
 
@@ -2375,8 +2375,8 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
-	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/reports/earnings?date_from=2022-01-01&date_to=2022-12-01&billing_cycle=annua&aggregation=month \
+curl --request GET \
+	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/reports/earnings?date_from=2022-01-01&date_to=2022-12-01&billing_cycle=annual&aggregation=month \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -2447,7 +2447,7 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
+curl --request GET \
 	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/123/summary \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
@@ -2485,9 +2485,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get clicks report from a given date
-- `date_to` - get clicks report up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get clicks report from a given date
+- `date_to` - **required** - get clicks report up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2504,7 +2504,7 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
+curl --request GET \
 	--url https://api.livechatinc.com/v2/partners/affiliates/campaigns/best-performing/reports/clicks?limit=2&date_from=2022-01-01T10:10:10Z&date_to=2022-12-01T10:10:10Z \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
@@ -2552,9 +2552,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get trials report from a given date
-- `date_to` - get trials report up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get trials report from a given date
+- `date_to` - **required** - get trials report up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2619,9 +2619,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get conversions report from a given date
-- `date_to` - get conversions report up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get conversions report from a given date
+- `date_to` - **required** - get conversions report up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2678,7 +2678,7 @@ curl --request POST \
 
 ## Get Best Performing Campaigns Earnings Report
 
-`GET https://api.livechatinc.com/v2/partners/affiliates/campaigns/best-performing/reports/conversions` - get earnings report for a given number of Best Performing campaigns
+`GET https://api.livechatinc.com/v2/partners/affiliates/campaigns/best-performing/reports/earnings` - get earnings report for a given number of Best Performing campaigns
 
 #### Headers
 
@@ -2753,9 +2753,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get clicks metrics from a given date
-- `date_to` - get clicks metrics up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get clicks metrics from a given date
+- `date_to` - **required** - get clicks metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2807,9 +2807,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get trials metrics from a given date
-- `date_to` - get trials metrics up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get trials metrics from a given date
+- `date_to` - **required** - get trials metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2861,9 +2861,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get conversions metrics from a given date
-- `date_to` - get conversions metrics up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get conversions metrics from a given date
+- `date_to` - **required** - get conversions metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2915,9 +2915,9 @@ curl --request POST \
 
 #### Query Parameters
 
-- `limit` - number of campaigns to return
-- `date_from` - get earnings metrics from a given date
-- `date_to` - get earnings metrics up to a given date
+- `limit` - **required** - number of campaigns to return
+- `date_from` - **required** - get earnings metrics from a given date
+- `date_to` - **required** - get earnings metrics up to a given date
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -2958,8 +2958,6 @@ curl --request POST \
 <Section>
 
 <Text>
-
-
 
 ## Get Summary
 
@@ -3051,7 +3049,7 @@ curl --request POST \
 - `client_email` - **required** - client's email address
 - `payment_origin` - **required** - who would manage subscription: `client` or `partner` (you)
 - `purchase_order` - a custom parameter
-- [_only for `livechat` product_] `data_center` - database location: `dal` (USA) or `fra` (EU)
+- `data_center` - database location: `dal` (USA) or `fra` (EU)
 
 #### Response
 
@@ -3345,7 +3343,7 @@ curl --request GET \
 
 #### Body
 
-- `client_name` - client's full name (min. 5 characters)
+- `client_name` - **required** — client's full name (min. 5 characters)
 - `purchase_order` - a custom parameter
 
 #### Response
@@ -3416,21 +3414,22 @@ Struct of **user** object:
 
 ```shell
 curl --request POST \
-	--url https://api.livechatinc.com/v2/partners/solutions/licenses/livechat/123/operators \
-	--header 'Authorization: Bearer <YOUR_API_TOKEN>' \
-	--data '{
-		"operators": [
-			{
-				"email": "joe@example.com",
-				"role": "agent"
-			},
-			{
-				"email": "jane@example.com",
-				"role": "administrator"
-			}
-		]
-	}'
-```
+  --url 'https://api.labs.livechatinc.com/v2/partners/solutions/licenses/livechat/123/operators' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer <YOUR_API_TOKEN>' \
+  --data '{
+    "operators": [
+      {
+        "email": "joe@example.com",
+        "role": "agent"
+      },
+      {
+        "email": "jane@example.com",
+        "role": "administrator"
+      }
+    ]
+  }'
+  ```
 
 </CodeSample>
 
@@ -3731,8 +3730,7 @@ curl --request GET \
 
 #### Body
 
-- `new_owner` - **required** - the new owner's email (one of [operators](#get-license-operators))
-- `password` - **required** - your password in Partner Program
+- `new_owner` - **required** - the new owner's email (one of existing operators)
 
 #### Response
 
@@ -3751,7 +3749,7 @@ curl --request GET \
 ```shell
 curl --request POST \
 	--url https://api.livechatinc.com/v2/partners/solutions/licenses/transfer \
-	--data 'new_owner=joe@doe.com&password=mysecretpassword' \
+	--data 'new_owner=joe@doe.com' \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -3853,10 +3851,10 @@ curl --request POST \
 
 #### Query Parameters
 
-- `date_from` - get trials metrics from a given date
-- `date_to` - get trials metrics up to a given date
+- `date_from` - **required** - get trials metrics from a given date
+- `date_to` - **required** - get trials metrics up to a given date
 
-**Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
+**Note:** Date format: `YYYY-MM-DD`
 
 #### Response
 
@@ -3871,7 +3869,7 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
+curl --request GET \
 	--url https://api.livechatinc.com/v2/partners/solutions/licenses/count?date_from=2022-09-01&date_to=2023-08-31 \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
@@ -3912,7 +3910,7 @@ curl --request POST \
 - `date_from` - **required** - get report from a given date
 - `date_to` - **required** - get report up to a given date
 - `aggregation` - **required** - get report aggregated by a given timespan (one of: `day`, `week`, `month`)
-- `license_status` - get report for a given licenses status (one of: `trial`, `paid`, `expired`)
+- `license_status` - **required** - get report for a given licenses status (one of: `trial`, `paid`, `expired`)
 
 **Note:** Date format: `YYYY-MM-DDTHH:mm:ssZ`
 
@@ -3930,7 +3928,7 @@ curl --request POST \
 
 ```shell
 curl --request GET \
-	--url https://api.livechatinc.com/v2/partners/solutions/reports/license?aggregation=month&date_from=2022-03-25T00:00:00Z&date_to=2022-05-04T00:00:00Z&license_status=paid \
+	--url https://api.livechatinc.com/v2/partners/solutions/reports/license?date_from=2023-03-25T00:00:00Z&date_to=2023-03-26T23:59:59Z&aggregation=month&license_status=trial \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -3989,7 +3987,7 @@ curl --request GET \
 - `filters` - apply filters to narrow down the results (see below)
 
 **Note:**
-- `filters` is an array of objects, where each object has the following fields:
+- `filters` (URL-encoded) is an array of objects, where each object has the following fields:
   - `field` - field name (one of: `license_product`, `license_status`, `license_details`, `license_created_at`, `payment_origin`, `credit_card`)
   - `operator` - operator (one of: `equals`, `contains`, `exists`, `greater_or_equal`, `lesser_or_equal`)
   - `value` - field value
@@ -4009,7 +4007,7 @@ curl --request GET \
 
 ```shell
 curl --request GET \
-	--url https://api.livechatinc.com/v2/partners/solutions/licenses/search/csv?filters=[{"field":"credit_card","value":"no","operator":"exists"},{"field":"payment_origin","value":"partner","operator":"equals"},{"field":"license_details","value":"Client Name","operator":"contains"},{"field":"license_created_at","value":"2023-11-01 00:00:00","operator":"greater_or_equal"}] \
+	--url https://api.livechatinc.com/v2/partners/solutions/licenses/search/csv?%5B%7B%22field%22%3A%22credit_card%22%2C%22value%22%3A%22no%22%2C%22operator%22%3A%22exists%22%7D%2C%7B%22field%22%3A%22payment_origin%22%2C%22value%22%3A%22partner%22%2C%22operator%22%3A%22equals%22%7D%2C%7B%22field%22%3A%22license_details%22%2C%22value%22%3A%22Client%20Name%22%2C%22operator%22%3A%22contains%22%7D%2C%7B%22field%22%3A%22license_created_at%22%2C%22value%22%3A%222023-11-01%2000%3A00%3A00%22%2C%22operator%22%3A%22greater_or_equal%22%7D%5D \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
 
@@ -4275,7 +4273,7 @@ curl --request POST \
 
 ## Get Solution Summary
 
-`POST https://api.livechatinc.com/v2/partners/solutions/summary` - get summary from Solution Program
+`GET https://api.livechatinc.com/v2/partners/solutions/summary` - get summary from Solution Program
 
 #### Headers
 
@@ -4294,7 +4292,7 @@ curl --request POST \
 <CodeSample path={'EXAMPLE REQUEST'}>
 
 ```shell
-curl --request POST \
+curl --request GET \
 	--url https://api.livechatinc.com/v2/partners/solutions/summary \
 	--header 'Authorization: Bearer <YOUR_API_TOKEN>'
 ```
@@ -4389,16 +4387,44 @@ curl --request POST \
 - `short_description` - **required** - the description displayed in the Expert tile (min. 10 characters)
 - `country` - **required** - country code, one of [these](https://api.livechatinc.com/v2/partners/data/countries)
 - `website` - **required** - website URL
-- `categories` - **required** - an array of categories (codes); [available categories](https://api.livechatinc.com/v2/partners/data/categories/expert)
+- `categories` - **required** - an array of categories (codes)<sup>1</sup>
+- `industry_ids` - **required** - industry specializations<sup>2</sup>
 - `projects` - **required** - an array of projects (URLs)
-- `agents` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - number of agents, accepted values: `1-5`, `6-15`, `16-30`, `31-50`, `51+`
-- `languages` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - an array of languages (codes); [available languages](https://api.livechatinc.com/v2/partners/data/languages)
-- `hour_rate` - optional - minimum hourly rate
-- `project_rate` - optional - minimum project rate
-- `facebook` - optional - the URL to the Facebook page
-- `twitter` - optional - the URL to the Twitter page
-- `linkedin` - optional - the URL to the LinkedIn page
-- `googleplus` - optional - the URL to the LinkedIn page
+- `agents` - **required** if one of the categories is `outsourcing-customer-service` - number of agents, accepted values: `1-5`, `6-15`, `16-30`, `31-50`, `51+`
+- `languages` - **required** if one of the categories is `outsourcing-customer-service` - an array of languages (codes); [available languages](https://api.livechatinc.com/v2/partners/data/languages)
+- `hour_rate` - minimum hourly rate
+- `project_rate` - minimum project rate
+- `facebook` - the URL to the Facebook page
+- `twitter` - the URL to the Twitter page
+- `linkedin` - the URL to the LinkedIn page
+
+**1)** Possible values for `categories`:
+
+- `chat-agent-outsourcing`
+-`custom-development`
+- `product-implementation`
+- `chatbot-building`
+- `training`
+
+**2)** Possible values for `industry_ids`:
+
+- `1` - Banks
+- `4` - Financial Services
+- `7` - Government
+- `10` - Healthcare
+- `13` - Education & Universities
+- `16` - Telecommunications
+- `19` - Technology
+- `22` - Media & Entertainment
+- `25` - Travelling
+- `28` - Charities, Foundations & Non-Profits
+- `31` - E-commerce
+- `34` - Medical & Wellness
+- `37` - Hospitality
+- `40` - Real Estate
+- `43` - Automotive
+- `46` - Professional Services
+- `49` - Other
 
 #### Response
 
@@ -4438,29 +4464,37 @@ curl --request POST \
 
 ```json
 {
-  "expert_id": "acme",
+  "expert_id": "expert-example",
+  "partner_id": "BC-SAMPLE123",
   "status": "verified",
   "company": "ACME",
   "phone": "123456789",
   "logo": "https://cdn.example.com/expert-logo.png",
-  "description": "long description goes here",
-  "short_description": "short description (visible in Marketplace tile)",
+  "description": "Long description goes here",
+  "short_description": "Short description (visible in Marketplace tile)",
   "agents": "5+",
-  "hour_rate": "50",
-  "project_rate": "500",
+  "hour_rate": 50,
+  "project_rate": 500,
   "country": "US",
   "website": "https://partners.livechatinc.com",
-  "facebook": "",
   "twitter": "https://twitter/LiveChatProgram",
-  "linkedin": "",
-  "googleplus": "",
   "categories": [
     "api-and-integrations",
-    "chat-customization",
     "chat-strategy-consultancy"
   ],
-  "languages": ["EN", "ES", "PL"],
-  "projects": ["https://example.com"]
+  "languages": [
+    "EN",
+    "ES",
+  ],
+  "projects": [
+    "https://example.com"
+  ],
+  "industry_ids": [
+    19,
+    22,
+    25,
+    28,
+  ]
 }
 ```
 
@@ -4469,7 +4503,6 @@ curl --request POST \
 </Code>
 
 </Section>
-
 
 <Section>
 
@@ -4487,20 +4520,48 @@ curl --request POST \
 
 - `company` - **required** - company name (min. 4 characters)
 - `phone` - **required** - phone number
-- `description` - **required** - the description displayed in profile details (min. 10 characters)
-- `short_description` - **required** - the description displayed in Expert tile (min. 10 characters)
+- `description` - **required** - the description dispalyed in the profile details (min. 10 characters)
+- `short_description` - **required** - the description displayed in the Expert tile (min. 10 characters)
 - `country` - **required** - country code, one of [these](https://api.livechatinc.com/v2/partners/data/countries)
 - `website` - **required** - website URL
-- `categories` - **required** - array of categories (codes); [available categories](https://api.livechatinc.com/v2/partners/data/categories/expert)
-- `projects` - **required** - array of projects (URLs)
-- `agents` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - number of agents, accepted values: `1-5`, `6-15`, `16-30`, `31-50`, `51+`
-- `languages` - **required** if one of the categories is `outsourcing-customer-service` or `lead-generation` - an array of languages (codes); [available languages](https://api.livechatinc.com/v2/partners/data/languages)
-- `hour_rate` - optional - minimum hourly rate
-- `project_rate` - optional - minimum project rate
-- `facebook` - optional - the URL to the Facebook page
-- `twitter` - optional - the URL to the Twitter page
-- `linkedin` - optional - the URL to the LinkedIn page
-- `googleplus` - optional - the URL to the LinkedIn page
+- `categories` - **required** - an array of categories (codes)<sup>1</sup>
+- `industry_ids` - **required** - industry specializations<sup>2</sup>
+- `projects` - **required** - an array of projects (URLs)
+- `agents` - **required** if one of the categories is `outsourcing-customer-service` - number of agents, accepted values: `1-5`, `6-15`, `16-30`, `31-50`, `51+`
+- `languages` - **required** if one of the categories is `outsourcing-customer-service` - an array of languages (codes); [available languages](https://api.livechatinc.com/v2/partners/data/languages)
+- `hour_rate` - minimum hourly rate
+- `project_rate` - minimum project rate
+- `facebook` - the URL to the Facebook page
+- `twitter` - the URL to the Twitter page
+- `linkedin` - the URL to the LinkedIn page
+
+**1)** Possible values for `categories`:
+
+- `chat-agent-outsourcing`
+-`custom-development`
+- `product-implementation`
+- `chatbot-building`
+- `training`
+
+**2)** Possible values for `industry_ids`:
+
+- `1` - Banks
+- `4` - Financial Services
+- `7` - Government
+- `10` - Healthcare
+- `13` - Education & Universities
+- `16` - Telecommunications
+- `19` - Technology
+- `22` - Media & Entertainment
+- `25` - Travelling
+- `28` - Charities, Foundations & Non-Profits
+- `31` - E-commerce
+- `34` - Medical & Wellness
+- `37` - Hospitality
+- `40` - Real Estate
+- `43` - Automotive
+- `46` - Professional Services
+- `49` - Other
 
 #### Response
 
@@ -4512,7 +4573,6 @@ curl --request POST \
 </Text>
 
 </Section>
-
 
 <Section>
 
