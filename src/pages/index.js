@@ -47,11 +47,11 @@ const cardsWrapperCss = css`
   justify-content: center;
 
   > a {
-    margin-bottom: 40px;
+    margin: 20px;
   }
 
   @media (min-width: 480px) {
-    justify-content: space-between;
+    justify-content: center;
   }
 `;
 

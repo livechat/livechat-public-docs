@@ -73,6 +73,12 @@ export const cards = [
     copy: "Build products powered by advanced text operations.",
     image: <TextApiIcon />,
   },
+  {
+    title: "Partner API",
+    link: "/partner-program",
+    copy: "Manage Partner Program data and integrate it into your systems.",
+    image: <PartnerApiIcon />,
+  },
 ];
 
 export const devPaths = [
