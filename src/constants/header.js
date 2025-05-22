@@ -33,8 +33,13 @@ export const apis = [
   },
   {
     title: "Configuration API",
-    description: "Manage resources",
+    description: "Change license configuration",
     link: "/management/configuration-api",
+  },
+  {
+    title: "Partner API",
+    description: "Manage Partner data",
+    link: "/partner-program",
   },
 ];
 
@@ -56,8 +61,13 @@ export const sdks = [
   },
   {
     title: "Customer SDK",
-    description: "Build a custom widget",
+    description: "Create a custom widget",
     link: "/extending-chat-widget/customer-sdk",
+  },
+  {
+    title: "Developer SDK",
+    description: "Build in the Developer Program",
+    link: "/getting-started/developer-sdk",
   },
 ];
 

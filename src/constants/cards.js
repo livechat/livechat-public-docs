@@ -10,6 +10,7 @@ import { DevConsoleToolsIcon } from "assets/icons/cards/DevConsoleTools";
 import { TextApiIcon } from "assets/icons/cards/TextAPI";
 import { BeginnerPathIcon } from "assets/icons/cards/BeginnerPath";
 import { AdvancedPathIcon } from "assets/icons/cards/AdvancedPath";
+import { PartnerApiIcon } from "assets/icons/cards/PartnerAPI";
 
 export const cards = [
   {
@@ -71,6 +72,12 @@ export const cards = [
     link: "/text",
     copy: "Build products powered by advanced text operations.",
     image: <TextApiIcon />,
+  },
+  {
+    title: "Partner API",
+    link: "/partner-program",
+    copy: "Manage Partner Program data and integrate it into your systems.",
+    image: <PartnerApiIcon />,
   },
 ];
 
