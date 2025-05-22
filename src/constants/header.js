@@ -61,12 +61,12 @@ export const sdks = [
   },
   {
     title: "Customer SDK",
-    description: "Build a custom widget",
+    description: "Create a custom widget",
     link: "/extending-chat-widget/customer-sdk",
   },
   {
     title: "Developer SDK",
-    description: "Build apps in Developer Program",
+    description: "Build in the Developer Program",
     link: "/getting-started/developer-sdk",
   },
 ];
