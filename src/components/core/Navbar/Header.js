@@ -2,10 +2,8 @@ import React, { useContext, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Menu from "react-material-icon-svg/dist/Menu";
-import Magnify from "react-material-icon-svg/dist/Magnify";
 import Close from "react-material-icon-svg/dist/Close";
 
 import { PromotionContext } from "contexts";
@@ -15,6 +13,7 @@ import Search from "components/core/Search";
 import Platform from "./Platform";
 import APIsSDKs from "./APIsSDKs";
 import Resources from "./Resources";
+import DeveloperConsole from "./DeveloperConsole";
 import MobileMenu from "./MobileMenu/MobileMenu";
 
 const Wrapper = styled.div`
@@ -136,19 +135,6 @@ const ActionsWrapper = styled.div`
   align-items: center;
 `;
 
-const MagnifyIcon = styled(Magnify)`
-  display: flex;
-  margin-right: 8px;
-  cursor: pointer;
-  ${({ openSearch }) => openSearch && `background-color: #6E6E7C`};
-  border-radius: 50px;
-  padding: 4px;
-
-  @media (min-width: 1024px) {
-    display: none;
-  }
-`;
-
 const MenuIcon = styled(Menu)`
   display: flex;
   margin-right: 16px;
@@ -204,6 +190,7 @@ const Header = () => {
         </MenuListWrapper>
 
         <ActionsWrapper>
+          <DeveloperConsole />
           {isNotHomeDirectory && (
             <DesktopSearchField className="DocSearch-Button-Desktop">
               <Search />

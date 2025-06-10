@@ -10,6 +10,7 @@ import HomeItem from "./HomeItem";
 import MenuItem from "./MenuItem";
 import NestedMenu from "./NestedMenu";
 import { getStableVersion } from "../../../utils";
+import Console from "react-material-icon-svg/dist/Console";
 
 const Wrapper = styled.aside`
   border-right: 1px solid #e2e2e4;
@@ -51,18 +52,56 @@ const MenuWrapper = styled.div`
   overflow: scroll;
   height: calc(100% - 90px);
   @media (min-width: 768px) {
-    height: calc(100% - 60px);
+    height: calc(100% - 80px);
     position: fixed;
 
     display: flex;
     flex-direction: column;
-    height: 100%;
     max-height: 100vh;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     margin-top: 8px;
   }
+`;
+
+const DeveloperConsoleLink = styled.a`
+  display: flex;
+  align-items: center;
+  color: #62626d;
+  text-decoration: none;
+  margin-right: 10px;
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 0px 8px 8px 0px;
+  margin-top: 0;
+
+  &:hover {
+    background-color: #f6f6f7;
+    color: #4284f5;
+    text-decoration: none;
+
+    svg {
+      fill: #4284f5;
+    }
+  }
+
+  @media (min-width: 768px) {
+    margin-top: auto;
+  }
+`;
+
+const LinkArea = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 6px 16px 6px 18px;
+  width: 100%;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
 `;
 
 const openIconStyle = {
@@ -121,6 +160,18 @@ const SideNav = ({
               />
             ))
         )}
+        <DeveloperConsoleLink
+          href={process.env.NEXT_PUBLIC_CONSOLE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <LinkArea>
+            <IconWrapper>
+              <Console fill="#424D57" width="20px" height="20px" />
+            </IconWrapper>
+            Developer Console
+          </LinkArea>
+        </DeveloperConsoleLink>
       </MenuWrapper>
     </Wrapper>
   );
