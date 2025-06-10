@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 /** @jsx jsx */ import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Menu from "react-material-icon-svg/dist/Menu";
 import Magnify from "react-material-icon-svg/dist/Magnify";
@@ -15,6 +14,7 @@ import Search from "components/core/Search";
 import Platform from "./Platform";
 import APIsSDKs from "./APIsSDKs";
 import Resources from "./Resources";
+import DeveloperConsole from "./DeveloperConsole";
 import MobileMenu from "./MobileMenu/MobileMenu";
 
 const Wrapper = styled.div`
@@ -201,6 +201,7 @@ const Header = () => {
           <Platform />
           <APIsSDKs />
           <Resources />
+          <DeveloperConsole />
         </MenuListWrapper>
 
         <ActionsWrapper>

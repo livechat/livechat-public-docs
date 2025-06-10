@@ -22,6 +22,26 @@ const Wrapper = styled.div`
   }
 `;
 
+const DirectLink = styled.a`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  padding: 26px 24px;
+  border-top: 1px solid #6e6e7c;
+  border-bottom: 1px solid #6e6e7c;
+
+  &:hover {
+    background-color: #62626d;
+    color: #ffffff;
+    text-decoration: none;
+  }
+`;
+
 const items = [
   {
     header: "Platform",
@@ -35,7 +55,7 @@ const items = [
     ],
   },
   {
-    header: "Recources",
+    header: "Resources",
     sections: [
       { title: "", items: resources },
       { title: "Connect", items: connects },
@@ -54,6 +74,13 @@ const MobileMenu = () => {
           sections={item.sections}
         />
       ))}
+      <DirectLink
+        href={process.env.NEXT_PUBLIC_CONSOLE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Developer Console
+      </DirectLink>
     </Wrapper>
   );
 };
