@@ -52,12 +52,11 @@ const MenuWrapper = styled.div`
   overflow: scroll;
   height: calc(100% - 90px);
   @media (min-width: 768px) {
-    height: calc(100% - 60px);
+    height: calc(100% - 80px);
     position: fixed;
 
     display: flex;
     flex-direction: column;
-    height: 100%;
     max-height: 100vh;
     position: -webkit-sticky;
     position: sticky;
@@ -75,6 +74,7 @@ const DeveloperConsoleLink = styled.a`
   font-weight: 500;
   font-size: 16px;
   border-radius: 0px 8px 8px 0px;
+  margin-top: 0;
 
   &:hover {
     background-color: #f6f6f7;
@@ -84,6 +84,10 @@ const DeveloperConsoleLink = styled.a`
     svg {
       fill: #4284f5;
     }
+  }
+
+  @media (min-width: 768px) {
+    margin-top: auto;
   }
 `;
 
