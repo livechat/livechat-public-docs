@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Menu from "react-material-icon-svg/dist/Menu";
-import Magnify from "react-material-icon-svg/dist/Magnify";
 import Close from "react-material-icon-svg/dist/Close";
 
 import { PromotionContext } from "contexts";
@@ -136,19 +135,6 @@ const ActionsWrapper = styled.div`
   align-items: center;
 `;
 
-const MagnifyIcon = styled(Magnify)`
-  display: flex;
-  margin-right: 8px;
-  cursor: pointer;
-  ${({ openSearch }) => openSearch && `background-color: #6E6E7C`};
-  border-radius: 50px;
-  padding: 4px;
-
-  @media (min-width: 1024px) {
-    display: none;
-  }
-`;
-
 const MenuIcon = styled(Menu)`
   display: flex;
   margin-right: 16px;
@@ -201,10 +187,10 @@ const Header = () => {
           <Platform />
           <APIsSDKs />
           <Resources />
-          <DeveloperConsole />
         </MenuListWrapper>
 
         <ActionsWrapper>
+          <DeveloperConsole />
           {isNotHomeDirectory && (
             <DesktopSearchField className="DocSearch-Button-Desktop">
               <Search />
