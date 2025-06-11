@@ -169,7 +169,7 @@ const SideNav = ({
             <IconWrapper>
               <Console fill="#424D57" width="20px" height="20px" />
             </IconWrapper>
-            Developer Console
+            Go to Console
           </LinkArea>
         </DeveloperConsoleLink>
       </MenuWrapper>

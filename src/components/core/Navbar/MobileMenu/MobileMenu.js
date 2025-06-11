@@ -79,7 +79,7 @@ const MobileMenu = () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Developer Console
+        Go to Console
       </DirectLink>
     </Wrapper>
   );

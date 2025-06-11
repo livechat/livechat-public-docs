@@ -162,11 +162,9 @@ const Header = () => {
   const { pathname } = useRouter();
   const isNotHomeDirectory = pathname !== "/";
 
-  const [openSearch, setOpenSearch] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
 
   const handleOpenMenu = () => {
-    setOpenSearch(false);
     setOpenMenu(true);
   };
 
