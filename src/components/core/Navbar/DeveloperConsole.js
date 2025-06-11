@@ -17,16 +17,18 @@ const linkCss = css`
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
-  color: #ffffff;
-  border-color: #c9c9cd;
+
+  color: #424d57;
+  border-color: #ffffff;
+  background-color: #ffffff;
   margin-right: 0.5rem;
   height: 36px;
 
   &:hover {
     text-decoration: none;
-    color: #424d57;
-    border-color: #424d57;
-    background-color: #ffffff;
+    color: #ffffff;
+    border-color: #ffffff;
+    background-color: #4a4a55;
   }
 
   @media (min-width: 1024px) {
@@ -42,7 +44,7 @@ const DeveloperConsole = () => {
       rel="noopener noreferrer"
       css={linkCss}
     >
-      Developer Console
+      Go to Console
     </a>
   );
 };
