@@ -4,14 +4,16 @@ Thank you for taking the time to improve the [LiveChat](https://www.livechat.com
 
 ## Find your case
 
-- [I have a problem with the LiveChat App](#i-have-a-problem-with-the-livechat-app)
-- [I'm building an app for the Marketplace and I got stuck](#im-building-an-app-for-the-marketplace-and-i-got-stuck)
-- [I found a bug/typo in your documentation](#i-found-a-bugtypo-in-your-documentation)
-- [I have an improvement suggestion for the docs](#i-have-an-improvement-suggestion-for-the-docs)
+- [Contributing to LiveChat Platform Docs](#contributing-to-livechat-platform-docs)
+  - [Find your case](#find-your-case)
+  - [I have a problem with the LiveChat App](#i-have-a-problem-with-the-livechat-app)
+  - [I'm building an app for the Marketplace and I got stuck](#im-building-an-app-for-the-marketplace-and-i-got-stuck)
+  - [I found a bug/typo in your documentation](#i-found-a-bugtypo-in-your-documentation)
+  - [I have an improvement suggestion for the docs](#i-have-an-improvement-suggestion-for-the-docs)
 
 ## I have a problem with the LiveChat App
 
-If you've run into problems with our LiveChat Application (setting it up, trouble with configuration, not receiving chats), [contact our 24/7 support](https://direct.lc.chat/1520/125), who specialize in solving such cases.
+If you've run into problems with our LiveChat Application (setting it up, trouble with configuration, not receiving chats), [contact our 24/7 support](https://direct.lc.chat/19196658/), who specialize in solving such cases.
 
 Please, don't create an issue in this repository.
 
