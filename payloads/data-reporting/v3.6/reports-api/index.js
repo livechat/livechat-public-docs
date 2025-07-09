@@ -13,3 +13,7 @@ export { default as forms } from "./responses/chats/forms.json";
 export { default as responseTime } from "./responses/chats/responseTime.json";
 export { default as firstResponseTime } from "./responses/chats/firstResponseTime.json";
 export { default as chatUsage } from "./responses/tags/chatUsage.json";
+export { default as uniqueVisitors } from "./responses/customers/uniqueVisitors.json";
+export { default as queuedVisitors } from "./responses/chats/queuedVisitors.json";
+export { default as queuedVisitorsLeft } from "./responses/chats/queuedVisitorsLeft.json";
+export { default as groups } from "./responses/chats/groups.json";
