@@ -107,7 +107,7 @@ curl -X POST \
 | **Chats**       | [`list_chats`](#list-chats) [`list_threads`](#list-threads) [`get_chat`](#get-chat) [`list_archives`](#list-archives) [`start_chat`](#start-chat) [`resume_chat`](#resume-chat) [`deactivate_chat`](#deactivate-chat) [`follow_chat`](#follow-chat) [`unfollow_chat`](#unfollow-chat)                                               |
 | **Chat access** | [`transfer_chat`](#transfer-chat)                                                                                                                                                                                                                                                                                                   |
 | **Chat users**  | [`add_user_to_chat`](#add-user-to-chat) [`remove_user_from_chat`](#remove-user-from-chat)                                                                                                                                                                                                                                           |
-| **Events**      | [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                                                               |
+| **Events**      | [`send_event_preview`](#send-event-preview) [`send_event`](#send-event) [`upload_file`](#upload-file) [`send_rich_message_postback`](#send-rich-message-postback)                                                                                                                                                                   |
 | **Properties**  | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Thread tags** | [`tag_thread`](#tag-thread) [`untag_thread`](#untag-thread)                                                                                                                                                                                                                                                                         |
 | **Customers**   | [`get_customer`](#get-customer) [`create_customer`](#create-customer) [`update_customer`](#update-customer) [`ban_customer`](#ban-customer) [`follow_customer`](#follow-customer) [`unfollow_customer`](#unfollow-customer)                                                                                                         |
@@ -1181,6 +1181,64 @@ https://api.livechatinc.com/v3.6/agent/action/remove_user_from_chat \
 </Section>
 
 ## Events
+
+<Section>
+<Text>
+
+### Send Event Preview
+
+Sends an [Event](/messaging/agent-chat-api/v3.6/data-structures/#events) that isn't saved in the chat.
+When preparing a longer response you can use this method to send a partial message before sending the final one with [Send Event](/messaging/agent-chat-api/v3.6/#send-event).
+Only [Message](/messaging/agent-chat-api/v3.6/data-structures/#message) is supported. Visibility must be set to `all`, or skipped.
+The user must be [added to the chat](/messaging/agent-chat-api/rtm-pushes/#user_added_to_chat) before they can send an event.
+
+#### Specifics
+
+|                        |                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.6/agent/action/send_event_preview`                       |
+| **Required scopes**    | `chats--all:rw` **\*** or `chats--access:rw` **\*\***                                    |
+| **RTM API equivalent** | [`send_event_preview`](/messaging/agent-chat-api/v3.6/rtm-reference/#send-event_preview) |
+| **Webhook**            |                                                                                          |
+
+**\*)** `chats--all:rw` - to send an event to a chat taking place in any group.
+
+**\*\*)** `chats--access:rw` - to send an event to a chat taking place in groups that the requester (related to the token) is a member of. (The agent groups and the chat groups must overlap - at least one group must be in common.)
+
+#### Request
+
+| Parameter | Required | Data type | Notes                                                                                            |
+| --------- | -------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `chat_id` | Yes      | `string`  | Id of the chat you want to send a message to.                                                    |
+| `event`   | Yes      | `object`  | [Event](/messaging/agent-chat-api/data-structures/#events) object. Supports only `message` type. |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+<Code>
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.6/agent/action/send_event_preview \
+-H 'Authorization: Bearer <your_access_token>' \
+-H 'Content-Type: application/json' \
+-d '{
+    "chat_id": "PW94SJTGW6",
+    "event": {
+      "type": "message",
+      "text": "preview of a longer response...",
+      "visibility": "all",
+      "custom_id": "31-0C-1C-07-DB-16"
+    }
+  }'
+```
+
+</CodeSample>
+</Code>
+</Section>
 
 <Section>
 <Text>
