@@ -45,7 +45,7 @@ export const cards = [
   },
   {
     title: "HelpDesk API",
-    link: "/getting-started/helpdesk-apps/helpdesk-api",
+    link: "/helpdesk",
     copy: "Build integration for our ticketing system, HelpDesk.",
     image: <HelpDeskApiIcon />,
   },

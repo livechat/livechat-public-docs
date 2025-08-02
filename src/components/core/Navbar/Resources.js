@@ -11,7 +11,7 @@ import Connect from "./Connect";
 
 const Wrapper = styled.div`
   display: flex;
-  height: 400px;
+  height: 450px;
   > div {
     margin: 8px 0px;
   }
