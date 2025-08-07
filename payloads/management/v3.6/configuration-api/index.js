@@ -31,3 +31,6 @@ export { default as getLicenseID } from "./responses/other/getLicenseID.json"
 export { default as listChannels } from "./responses/other/listChannels.json"
 export { default as checkProductLimitsForPlan } from "./responses/other/checkProductLimitsForPlan.json"
 export { default as getProductSource } from "./responses/other/getProductSource.json"
+
+export { default as listCustomerBans } from "./responses/bans/listCustomerBans.json"
+export { default as unbanCustomer } from "./responses/bans/unbanCustomer.json"
