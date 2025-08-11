@@ -3,43 +3,470 @@ weight: 20
 category: "guides"
 subcategory: "api-guides"
 title: "Customer Chat API guide"
-tagline: "Learn how to build apps using the Customer Chat API in practice."
+tagline: "Learn how to build a chat app using the Customer Chat API in practice."
 desc: "Follow a step-by-step guide to build a functional application sending messages to chat through the Customer Chat API."
 ---
 
 # Introduction
 
-## When to use the Customer Chat API?
+In this guide, we will create a simple web chat application from scratch using HTML, CSS, and Vanilla JavaScript to integrate with the Web [Customer Chat API](https://platform.text.com/docs/messaging/customer-chat-api).
+
+This tutorial will help you understand what each piece of the code does and how it all fits together to enable a customer to chat with a live agent.
+
+## When to use the Customer Chat API
+
+Use the Customer Chat API to build a custom chat experience for customers or integrate LiveChat’s messaging into your own application. Instead of using the standard LiveChat Chat Widget, the Customer Chat API lets you send messages as a customer via API calls.
+
+In short, the Customer Chat API is the right tool if you need to programmatically act on behalf of a customer in a chat (sending messages, retrieving chat history).
+
+By contrast, you would use the [Agent Chat API](https://platform.text.com/docs/messaging/agent-chat-api) if you needed to send messages as an agent or bot. In this guide, we’ll focus on the customer side.
+
+## What this guide covers
+
+* Using LiveChat [Customer Authorization flow](https://platform.text.com/docs/authorization/customer-authorization#cookie-grant) to obtain a customer access token using the simple Cookie grant method (ideal for web apps).
+* Using the Customer Chat Web API (v3.5) to start a chat and send messages as the customer.
+* Setting up the required Developer Console configuration.
+* Writing the complete code for a sample application and instructions for running it locally with Node and npm.
+* Show how the LiveChat agent will receive the messages in the LiveChat App.
 
 ## Prerequisites
 
-1. one
-2. two
+Before you begin, make sure you have the following:
 
-## Prepare an app in Developer Console
+* [LiveChat account](https://www.livechat.com/) with at least one agent user to see incoming chats. You can [start a free trial](https://accounts.livechat.com/signup) if you don’t have an account yet.
+* [Developer Console account](https://platform.text.com/console), where you will create and configure your LiveChat application.
+* [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your machine to set up a simple local web server and manage our project files.
+* A text editor or IDE (for example, [Visual Studio Code](https://code.visualstudio.com/)) for writing code.
 
-Choose 'Server-side app'
+## Prepare an app in the Developer Console
 
-## Create a local repository
+Before coding, let’s configure our app in the [Developer Console](https://platform.text.com/console):
 
-### Install npm
+1. **Create a new app:** In the Developer Console's [Apps section](https://platform.text.com/console/apps/), choose “Create a new app”. When prompted for the app type, select **Server-side app** (since our chat logic will run in a web page but communicate with the API directly, a server-side app type is suitable).
+2. **Add and configure the Authorization block**: Because our authorization uses a token flow, we need to set the **redirect URI** to the address where you’ll run your app. For example, if you plan to serve the app at `http://localhost:8080`, use that as the redirect URI.
+3. **Copy your credentials**: After adding the Authorization block, you’ll be given a **Client ID**. Make note of it — we will plug it into our JavaScript code. The Client ID identifies your app and will be used to obtain an access token for the customer.
 
-## Frontent widget
+For our purposes (Customer Chat API), you typically do not need to configure any custom scopes in the app. The customer’s token we’ll generate will implicitly allow chat actions for that customer on your license.
 
-### Widget styling
+Agent-side scopes like `chats--all:rw` or `customers:own` are not needed here because we are not using an agent token to impersonate customers — we will obtain a direct customer token via the cookie grant flow.
 
-### Widget HTML code
+## Create a local project
+
+Now you can set up your development environment:
+
+1. **Create a project folder**: Make a new directory on your machine for this project (for example, customer-chat-app).
+2. **Add an HTML file**: Inside the folder, create a file named `index.html`. This will contain the structure and styling for the chat widget UI.
+3. **Add a JavaScript file**: In the same folder, create `app.js`. This will contain all the logic for interacting with the Customer Chat API (we’ll go through this file in detail soon).
+4. **Initialize npm**: Open a terminal in the project folder and run the following command:
+
+```bash
+npm init -y
+```
+
+5. **Set up a simple web server**: For the app to work properly (and handle the authentication cookies), you should run it through a local web server rather than opening the HTML file directly. To serve our files on `http://localhost:8080`, we can use a tool like http-server. Install it as a development dependency:
+
+```bash
+npm install --save-dev http-server
+```
+
+This will download the server package. You can add an npm script in your package.json to automatically start the server with `npm start`.
+
+To do this, open package.json and under "scripts" add:
+
+```json
+"scripts": {
+  "start": "http-server -p 8080"
+}
+```
+
+You can also use other static server tools or even the Live Server extension in VSCode — any method to serve the HTML on a local URL is fine.
+
+**The final structure should look like:**
+
+```
+livechat-customer-chat-demo/
+├── index.html
+├── app.js
+└── package.json
+```
+
+## Index file
+
+You will find the `index.html` code in the sample app repository. The index file contains CSS styles, a simple chat widget with operational buttons, and a script tag to load the `app.js` application file.
 
 ## Application logic
 
+The file `app.js` contains all the JavaScript needed to connect our front-end chat interface with the Customer Chat API. We’ll explain each major function in the script, which corresponds to different features of the chat app.
+
+**Overview of the script:** At the top of the file, we set up some configuration and state variables:
+
+```js
+const clientId = "your_client_ID";
+let organizationId = null;
+let customerToken = null;
+let customerId = null;
+let currentChatId = null;
+let currentThreadId = null;
+let isChatActive = false;
+let lastEventIds = new Set();
+let pollingIntervalId = null;
+```
+
+* `clientId`, set to the value you got from the Developer Console (replace the placeholder in the code with your actual ID).
+* We then declare variables like:
+  - `customerToken`, `customerId`, and `organizationId` (to store the authenticated customer’s token, ID, and organization ID),
+  - `currentChatI`d` and currentThreadId (to track the ongoing chat session),
+  - `isChatActive` (a boolean flag),
+  - helpers like `lastEventIds` (a `Set` to keep track of message IDs we’ve already displayed) and `pollingIntervalId` (for managing the polling timer).
+
+Now, let’s go through the core functions one by one:
+
 ### Customer authorization
+
+Before our customer can start chatting, we need to authorize them and get an access token. The **authorizeCustomer()** function handles this:
+
+```js
+async function authorizeCustomer() {
+  const url = "https://accounts.livechat.com/v2/customer/token";
+  const payload = {
+    grant_type: "cookie",
+    client_id: clientId,
+    organization_id: organizationId,
+    response_type: "token",
+    redirect_uri: window.location.origin,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error(`Auth failed: ${response.status}`);
+    const data = await response.json();
+    customerToken = data.access_token;
+    customerId = data.entity_id;
+    organizationId = data.organization_id;
+    console.log("✅ Customer authorized:", customerId);
+    await listChats();
+    if (customerToken) startPolling();
+  } catch (error) {
+    console.error("❌ Authorization error:", error);
+  }
+}
+```
+
+Here’s what this does:
+
+1. It prepares a payload for the authentication request, including our `clientId`, `organizationId`, and specifying `grant_type: "cookie"`. We use the customer authorization API endpoint (`/v2/customer/token`) to check if the user has a valid login session (cookie) and issue an access token for the Customer Chat API. The `redirect_uri` is included as part of the OAuth flow (though in our case, with `grant_type: "cookie"`, no actual redirection happens; it just uses the cookie).
+2. We then make a POST request to the accounts service with `credentials: "include"`, meaning the browser will include authentication cookies for the accounts domain. Note that this requires that you are logged in to LiveChat in your browser. If you are not logged in, this request will fail, so make sure you have an active session by logging into your account in the same browser before running the app.
+3. If the response is successful, we parse the JSON data. It contains an access_token (which we store in `customerToken`), an `entity_id` (the customer’s ID stored in `customerId`), and the `organization_id` required to make requests to the Customer Chat API.
+4. We log a confirmation to the console (“Customer authorized”) with the ID for debugging purposes.
+
+Then we call `listChats()` to see if this customer already has an existing chat open. The `listChats()` function calls the API to get a list of chats for this customer. It looks at the first chat (if any) to determine if the customer has an existing chat.
+
+<Warning>
+
+**Important:** Our APIs differentiate between **chats** and **threads**. A specific customer can have **only one active chat started** on a specific license, and this chat contains **threads**. The chats in LiveChat are continuous — when a chat is created, it can then be deactivated and resumed. Resuming a chat starts **a new thread** inside this chat, and deactivating a chat **closes the currently open thread**.
+
+</Warning>
+
+If an open or pending chat exists, our `listChats` function will set `currentChatId` to that chat’s ID, `currentThreadId` to the last thread in that chat, and `isChatActive` to whether that chat is still active.
+
+This way, we can reattach to an ongoing conversation if the user refreshes the page or comes back later. If no chat is found, it means the customer has no active conversation, and we initialize our state to none (and disable the `End chat` button via `updateCloseButtonState()` accordingly).
+
+Finally, if we did get a `customerToken`, we start the polling mechanism by calling `startPolling()` (we’ll explain polling soon). This means as soon as the user is authorized, our app will begin checking for any incoming messages in case there’s an active chat or if one gets started.
+
+In summary, `authorizeCustomer()` runs automatically when the app loads (we attach it to run on `DOMContentLoaded`). It silently authenticates the user using their login cookie and prepares the app to either resume an existing chat or start a new one.
+
+If authorization fails (for example, if the user is not logged in), an error will be logged. In a production-ready app, you could handle this by prompting the user to log in.
 
 ### Start or resume chat
 
+Once the user is authorized, they can send a message. We have two functions to manage chat sessions: `startChat()` for beginning a brand new chat if the customer has none, and `resumeChat()` for reopening a chat that exists but has ended.
+
+**Starting a new chat:** The `startChat(initialMessage)` function is called when the customer sends a message and `currentChatId` is not set (meaning no chat is in progress yet). It will create a new chat session with the first message:
+
+```js
+async function startChat(initialMessage) {
+  const res = await fetch(
+    `https://api.livechatinc.com/v3.5/customer/action/start_chat?organization_id=${organizationId}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${customerToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat: {
+          thread: {
+            events: [
+              {
+                type: "message",
+                text: initialMessage,
+                recipients: "all",
+              },
+            ],
+          },
+        },
+      }),
+    }
+  );
+
+  const data = await res.json();
+  currentChatId = data.chat_id;
+  currentThreadId = data.thread_id;
+  isChatActive = true;
+  lastEventIds.add(data.event_id); // ✅ prevent polling dupes
+  appendMessageToChat("You", initialMessage);
+  console.log("✅ Chat started:", currentChatId);
+  isChatActive = true;
+  updateCloseButtonState();
+}
+```
+
+What happens here:
+
+* We call the [Start Chat](https://platform.text.com/docs/messaging/customer-chat-api#start-chat) endpoint, including our `organization_id` and authenticate with the `Authorization: Bearer &lt;customerToken>`. In the request body, we specify that we want to start a chat and immediately include an initial event (a message) in a new thread. The API allows sending the first message as part of the chat creation by nesting it under `chat.thread.events`. We set the message type to `message`, provide the text from the user, and `recipients: "all"` (meaning this message should be delivered to everyone in the chat — which in practice means the agent side will see it).
+* The API responds with a new `chat_id` and a `thread_id`, as well as an `event_id` for the message we just sent. We save `currentChatId` and `currentThreadId`, which now identify the active chat session and its current thread. We mark `isChatActive = true` since the chat is now up and running.
+* We add the returned `event_id` to our `lastEventIds` set. This is a little bookkeeping to ensure that when we start polling for messages, we don’t accidentally process the message we just sent as a “new” event (we want to avoid duplicating it in the UI).
+* We then immediately call `appendMessageToChat("You", initialMessage)` to add the customer’s message to the chat UI. This is why when you send a message, you see it appear right away in the chat box (as a “You: …” bubble) without waiting for a server response. We already know what we sent, so we display it.
+* We log a confirmation in the console (“Chat started” with the chat ID) for debugging. Then we call `updateCloseButtonState()`, which will enable the **End chat** button now that a chat is active (making it clickable by setting its opacity to 1 and removing the disabled state). From this point on, the customer can choose to end the chat using that button.
+
+**Resuming an existing chat:** The `resumeChat()` function is used if `currentChatId` exists but `isChatActive` is false (meaning the chat has ended, but we still have its ID). This could happen if, say, the agent ended the chat, but the customer sends another message — instead of starting a completely new chat since one exists, we need to resume it so that the chat continues in context.
+
+```js
+async function resumeChat() {
+  const res = await fetch(
+    `https://api.livechatinc.com/v3.5/customer/action/resume_chat?organization_id=${organizationId}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${customerToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chat: { id: currentChatId } }),
+    }
+  );
+  const data = await res.json();
+  currentThreadId = data.thread_id;
+  isChatActive = true;
+  console.log("🔁 Chat resumed:", currentChatId);
+  isChatActive = true;
+  updateCloseButtonState();
+}
+```
+
+When called, this sends a [Resume Chat](https://platform.text.com/docs/messaging/customer-chat-api#resume-chat) request to the API with the existing `chat_id`. If successful, the API responds with a new `thread_id` (because resuming a chat creates a new thread in that chat for the continuation). We update our `currentThreadId` to this new value, mark the chat as active again, and log a message. We also re-enable the **End chat** button via `updateCloseButtonState()`. Note that `resumeChat()` itself doesn’t send any message. It just reopens the chat. Typically, our code calls `resumeChat()` right before sending a new message if it detects the chat was inactive.
+
+**In summary**, when a user hits “Send”: if there’s no chat yet, we call `startChat` to begin a new conversation with that message. If there was an ended chat, we call `resumeChat` to reopen it, then proceed to send. If the chat is already active, we can send directly. All of this logic is handled in the next function, which we’ll look at now.
+
 ### Send message
+
+The `sendMessage(messageText)` function is invoked whenever the user sends a message (for example, by clicking the **Send** button). This function decides whether to start a new chat, resume an old chat, or simply send the message on an active chat, and then uses the API to actually send the text.
+
+```js
+async function sendMessage(messageText) {
+  if (!customerToken) return;
+
+  if (!currentChatId) {
+    await startChat(messageText);
+    return;
+  }
+
+  if (!isChatActive) {
+    await resumeChat();
+  }
+
+  const res = await fetch(
+    `https://api.livechatinc.com/v3.5/customer/action/send_event?organization_id=${organizationId}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${customerToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: currentChatId,
+        event: {
+          type: "message",
+          text: messageText,
+          recipients: "all",
+        },
+      }),
+    }
+  );
+
+  const data = await res.json();
+  lastEventIds.add(data.event_id); // ✅ track for deduping
+  appendMessageToChat("You", messageText);
+}
+```
+
+Let’s outline the logic in sendMessage:
+
+1. **Ensure authorization:** If `customerToken` is not present (for some reason if the user isn’t authorized), the function simply returns, doing nothing. (In our app, `authorizeCustomer()` should have been called on load, so normally we have a token by the time you can send a message.)
+2. **No chat yet — start one:** If `currentChatId` is false (meaning we have not started a chat session yet), then this is the first message. In that case, we call `startChat(messageText)`. This will handle creating a new chat and sending the message as the first event. After `startChat` completes, we return because the message sending is already taken care of inside that function.
+3. **Chat exists but is not active — resume it:** If we do have a `currentChatId` but our flag `isChatActive` is false, that means the chat was deactivated previously. We call `await resumeChat()` to reopen it. After this, `isChatActive` will be true (assuming resume succeeded). We then proceed to send the message.
+4. **Send the message event:** Now we use the [Send Event](https://platform.text.com/docs/messaging/customer-chat-api#send-event) API endpoint to send a new message in the chat. We make a POST request to `send_event` with the `chat_id` and an event object that includes type: `message`, the text of the message, and `recipients: "all"`. This tells the API to post a message to the chat visible to all participants (the agent will receive it). We include our `Authorization: Bearer &lt;customerToken>` header so the API knows which customer (and which license via `organization_id`) this message is for.
+5. **Process the response:** The API will return an event_id for the new message. We add that ID to `lastEventIds` to mark that we’ve handled this event. We then call `appendMessageToChat("You", messageText)` to immediately display the message in the chat UI as sent by “You”. (Just like in `startChat`, this gives instant feedback to the sender by showing their message in the conversation right away.)
+
+The `sendMessage` function neatly abstracts the decision of starting or resuming chats as needed. From the perspective of our UI code, we don’t need to worry about those details — we just call `sendMessage(text)` and it ensures the message gets delivered one way or another. If it’s the first message, it kicks off a new chat; if it’s a later message, it just sends it. After calling `sendMessage`, the input field is cleared (our event handler does this after awaiting `sendMessage`).
 
 ### Deactivate chat
 
+We also want to let the customer end the chat on their end. For that, we have `deactivateChat()`, which is triggered when the user clicks the **End chat** button. This function will call the API to close the chat thread on behalf of the customer:
+
+```js
+async function deactivateChat() {
+  if (!currentChatId) return;
+
+  try {
+    const res = await fetch(
+      `https://api.livechatinc.com/v3.5/customer/action/deactivate_chat?organization_id=${organizationId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${customerToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: currentChatId }),
+      }
+    );
+    if (res.ok) {
+      isChatActive = false;
+      appendMessageToChat("System", "The chat has been closed.");
+      console.log("🚫 Chat deactivated:", currentChatId);
+      stopPolling();
+      updateCloseButtonState();
+    }
+  } catch (e) {
+    console.error("Deactivate failed:", e);
+  }
+}
+```
+
+Here’s how ending the chat works:
+
+1. We first check if `currentChatId` exists. If the user somehow clicked **End chat** when no chat was even started, we can just return early (nothing to do).
+2. We send a request to the [Deactivate Chat](https://platform.text.com/docs/messaging/customer-chat-api#deactivate-chat) endpoint, including the `currentChatId` in the body. This tells the server that the customer wants to close that chat.
+3. If the response is OK, we update our state: `set isChatActive = false` (the chat is no longer active), and append a system message to the chat box saying *“The chat has been closed.”* (This will appear centered and italic in our UI, due to the `.system` style, to inform the user that the session ended). We also log a message to the console for debugging.
+4. We call `stopPolling()` to stop the background polling for new messages (since the chat is closed, we don’t need to fetch updates anymore).
+5. We call `updateCloseButtonState()` to disable the **End chat** button (graying it out again, since the chat is over). The user cannot end the chat again until a new one starts. If the user types another message after ending the chat, our code will detect `!isChatActive` and will attempt to resume the chat or start a new one as appropriate.
+
+In effect, `deactivateChat()` performs a clean-up: it tells the server we’re done with the conversation, and updates the UI accordingly. Note that the agent on the other end would also see the chat as closed. If needed, the customer could start or resume a chat after this (for example, by sending another message, which would trigger our `resumeChat()` in `sendMessage`).
+
 ### Poll for messages
 
+Now that we can send messages and end chats, there’s one big piece left: receiving messages. Because we’re building a client outside of the standard LiveChat widget, we won’t automatically get new messages from the agent in real-time unless we ask for them. For simplicity in the example, this app uses **polling** — periodically checking the server for new events in the chat.
+
+The polling logic involves a few parts: a function to start the polling loop, one to stop it, and the main function that actually fetches new messages. We’ll focus on the main one, `pollForMessages()`, but first note how it’s used:
+
+* When the app authorizes the customer (in `authorizeCustomer()`), we call `startPolling()` to begin polling. `startPolling()` simply sets an interval to call `pollForMessages()` every 3 seconds. (It also clears any existing interval to avoid duplicates, although in our app we call it only once on load.)
+* `stopPolling()` clears the interval. We call this when the chat is closed, to halt the polling.
+
+Now, let’s examine `pollForMessages()` which runs repeatedly:
+
+```js
+async function pollForMessages() {
+  if (!customerToken || !currentChatId || !currentThreadId) return;
+
+  try {
+    const res = await fetch(
+      `https://api.livechatinc.com/v3.5/customer/action/list_threads?organization_id=${organizationId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${customerToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ chat_id: currentChatId }),
+      }
+    );
+    const data = await res.json();
+    const thread = data.threads?.find((t) => t.id === currentThreadId);
+    if (!thread?.events) return;
+
+    for (const event of thread.events) {
+      if (event.type === "message" && !lastEventIds.has(event.id)) {
+        const sender = event.author_id === customerId ? "You" : "Agent";
+        appendMessageToChat(sender, event.text);
+        lastEventIds.add(event.id);
+      }
+    }
+  } catch (e) {
+    console.error("Polling error:", e);
+  }
+}
+```
+
+This function does the following each time it runs (every few seconds):
+
+1. It first checks if we have a `customerToken`, a `currentChatId`, and a `currentThreadId`. If any of these are missing, it means either the user isn’t authenticated or there’s no active chat, so there’s nothing to poll for — the function returns immediately. This prevents unnecessary API calls when no chat is happening.
+2. If we have the needed info, it sends a request to the [List Threads](https://platform.text.com/docs/messaging/customer-chat-api#list-threads) endpoint, asking for the threads of the current chat (`chat_id: currentChatId`). The API will respond with data including all threads of that chat and their events (messages, etc.). We then find the thread with `id === currentThreadId` — that should be the currently active thread (either the one we started or resumed). If, for some reason, the thread or its events are not found, we return — nothing to process this cycle.
+3. We then iterate over each event in that thread’s events array. For each event, we check two things: Is it a message event (`event.type === "message"`)? And have we not seen this event before (`!lastEventIds.has(event.id)`)? We use the `lastEventIds` set to keep track of events we’ve already processed, so we don’t display duplicates.
+4. For each new message event, we determine who the sender is. The event has an `author_id`. If it matches our `customerId`, that means the message was sent by the customer (you), so we label the sender as "You". Otherwise, the sender must be the agent (or a bot/agent on the other side), so we label it as "Agent".
+5. We then call `appendMessageToChat(sender, event.text)` to display the message in the chat UI. Depending on the sender, the CSS will style the bubble differently. Typically “You” messages are ones we already added when sending, so likely we won’t add duplicate “You” messages because we track their IDs.
+6. We add the `event.id` to `lastEventIds` to mark this event as handled. Next polling cycles will skip it. If any error occurs during the fetch (network issues, etc.), we catch it and just log "Polling error". The polling will continue on the next interval tick.
+
+By continuously calling `pollForMessages`, our app updates the chat in near-real-time. Every 3 seconds it checks for new messages from the agent (or any other events). This is a simple way to get updates without implementing a full real-time WebSocket connection.
+
+The trade-off is a delay in receiving messages and the overhead of periodic requests, but for a basic app or low-volume chat, polling is straightforward and sufficient.
+
+**How messages appear:** The `appendMessageToChat(sender, text)` function (defined in the script as a UI helper) is what actually inserts the message into the HTML. It creates a new `&lt;div>` element, gives it a class of `"chat-message"` plus the sender (lowercased, so “you”, “agent”, or “system”), sets the text content to `Sender: text`, and appends it to the `#chat-box` div. As a result, whenever we call `appendMessageToChat("Agent", "Hello")`, a new `&lt;div class="chat-message agent">Agent: Hello&lt;/div>` is added to the chat box, and our CSS styles it appropriately. The chat box scrolls as needed if messages overflow.
+
+So, through polling and `appendMessageToChat`, any message an agent sends will show up for the customer. The customer’s own messages are immediately shown by our code when sending. This covers both sides of the chat.
+
+### Putting it all together (initializing events)
+
+At the bottom of the `app.js` file, there is a little section that runs when the page is loaded:
+
+```js
+window.addEventListener("DOMContentLoaded", async () => {
+  await authorizeCustomer();
+
+  document.getElementById("send-btn").addEventListener("click", async () => {
+    const input = document.getElementById("message-input");
+    const text = input.value.trim();
+    if (text) {
+      await sendMessage(text);
+      input.value = "";
+    }
+  });
+
+  document.getElementById("close-btn").addEventListener("click", async () => {
+    await deactivateChat();
+  });
+});
+```
+
+What this does is:
+
+Once the DOM is fully loaded, it calls `authorizeCustomer()` right away. This means as soon as the chat page opens, we attempt to log the customer in and set up any existing chat.
+
+It then attaches an event listener to the **Send** button. When the button is clicked, we grab the text from the input field. If it’s not empty (after trimming whitespace), we call `sendMessage(text)`. After sending, we clear the input (`input.value = ""`) so the field is ready for a new message. It also attaches an event listener to the **End chat** button. When clicked, it calls `deactivateChat()` to end the conversation.
+
+Additionally, as mentioned earlier, the HTML has a tiny script that listens for the **Enter** key on the text input and triggers a click on the **Send** button, so pressing **Enter** is equivalent to clicking **Send**.
+
+With these event listeners in place, the app is interactive: the user types and hits **Send**, which triggers our logic to send a message; the user clicks **End chat**, which triggers the logic to close the chat.
+
+At this point, we have a complete overview of the code and how each part functions. Now it’s time to run the app and see it in action!
+
 ## Running the app
+
+Let’s run our chat application and test that everything works as expected:
+
+1. **Start your local server:** If you haven’t already, navigate to your project folder in a terminal and run npm start (or your chosen static server command). This will serve the files — the terminal should show a local URL, for example: `http://localhost:8080`.
+2. **Open the app in your browser:** Visit the local URL from the previous step in a web browser. You should see the styled chat window with an empty chat area and input and buttons at the bottom.
+3. **Log in if needed:** Ensure that you are logged into your/LiveChat account in this same browser. (The app uses cookie-based authorization, so it needs your login session. If you open the developer console in the browser, you should see either a “Customer authorized” log or an authorization error if it failed. If it failed, log into your LiveChat account and refresh the page.)
+4. **Send a message:** Type a greeting (for example, “Hello”) into the text box and press **Enter** or click **Send**. Immediately, you should see your message appear in the chat area. This indicates our `sendMessage` function ran: it started a chat (if none existed) and added your message to the UI. In the browser console, you’ll likely see a log like “`✅ Chat started: <chat_id>`” the first time, and “You” message event ID being tracked.
+5. **See agent’s response:** Now, if there is an agent monitoring this chat (for example, you, as an agent, can open the LiveChat application for your license, or have a colleague act as the agent), they will receive the customer’s chat on their side. When the agent replies, after a short moment (up to 3 seconds, due to polling interval), you should see their message appear in your chat window, aligned to the left and labeled “Agent: …”. This confirms that our polling function successfully fetched the new message and updated the UI. Each new reply from the agent will pop into the chat in this way. If you don’t have a live agent who replies to your chat, you will not see incoming messages.
+6. **End the chat:** Click the **End chat** button. The button should now be active (it was enabled when the chat started). When you click it, the chat will close: the UI will add a system message *“The chat has been closed.”* in the center, and you’ll notice the **End chat** button becomes disabled again. In the console, you’ll see a log “`🚫 Chat deactivated: <chat_id>`”. The polling will stop (no more updates fetched).
+7. **Try resuming:** If you type another message after ending the chat, the script will detect that isChatActive is false but currentChatId still exists, and it will call resumeChat() before sending your message. This effectively reopens the same chat. You’ll see the chat continue (a new thread on the agent side, but that’s invisible to you — it just looks like the conversation continues). This is optional, but it demonstrates that our app can handle multiple threads without a full refresh.
+
+Congratulations! You just built and ran a simple customer chat web application. The app authenticates a user, starts a chat via the Customer Chat API, sends and receives messages, and allows the user to end the chat.
+
+---
+
+From here, you can expand this basic app in many ways. You could add better error handling (displaying errors to the user if something goes wrong) or integrate a login prompt if the cookie auth fails. You might also look into using the real-time (RTM) API for instant updates instead of polling, or integrate rich messages. But as a starting point, you now have a working foundation and a clearer understanding of how the Customer Chat API can be used in practice to power a custom chat interface.
