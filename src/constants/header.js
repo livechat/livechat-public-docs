@@ -157,7 +157,7 @@ export const resources = [
   },
   {
     title: "Guides and tutorials",
-    description: "Explainers and step-by-steps",
+    description: "Step-by-step explainers",
     link: "https://platform.text.com/docs/guides",
   },
   {
