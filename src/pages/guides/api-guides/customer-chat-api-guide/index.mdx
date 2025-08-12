@@ -33,8 +33,8 @@ By contrast, you would use the [Agent Chat API](https://platform.text.com/docs/m
 
 Before you begin, make sure you have the following:
 
-* [LiveChat account](https://www.livechat.com/) with at least one agent user to see incoming chats. You can [start a free trial](https://accounts.livechat.com/signup) if you don’t have an account yet.
-* [Developer Console account](https://platform.text.com/console), where you will create and configure your LiveChat application.
+* [LiveChat account](https://www.livechat.com/) with at least one active agent to see incoming chats. You can [start a free trial](https://accounts.livechat.com/signup) if you don’t have an account yet.
+* [Developer Console account](https://platform.text.com/console), where you will create and configure your application.
 * [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your machine to set up a simple local web server and manage our project files.
 * A text editor or IDE (for example, [Visual Studio Code](https://code.visualstudio.com/)) for writing code.
 
@@ -43,8 +43,9 @@ Before you begin, make sure you have the following:
 Before coding, let’s configure our app in the [Developer Console](https://platform.text.com/console):
 
 1. **Create a new app:** In the Developer Console's [Apps section](https://platform.text.com/console/apps/), choose “Create a new app”. When prompted for the app type, select **Server-side app** (since our chat logic will run in a web page but communicate with the API directly, a server-side app type is suitable).
-2. **Add and configure the Authorization block**: Because our authorization uses a token flow, we need to set the **redirect URI** to the address where you’ll run your app. For example, if you plan to serve the app at `http://localhost:8080`, use that as the redirect URI.
+2. **Add and configure the Authorization block**: Because our authorization uses a token flow, we need to set the **redirect URI** to the address where you’ll run your app. Our npm server configuration (described below) serves the app at `http://localhost:8080`, so use that as the redirect URI.
 3. **Copy your credentials**: After adding the Authorization block, you’ll be given a **Client ID**. Make note of it — we will plug it into our JavaScript code. The Client ID identifies your app and will be used to obtain an access token for the customer.
+4. **Copy your organization ID**: You'll find your organization ID in your [Developer Console account settings](https://platform.text.com/console/settings/account). You'll need it to complete the cookie grant authorization.
 
 For our purposes (Customer Chat API), you typically do not need to configure any custom scopes in the app. The customer’s token we’ll generate will implicitly allow chat actions for that customer on your license.
 
@@ -54,24 +55,16 @@ Agent-side scopes like `chats--all:rw` or `customers:own` are not needed here be
 
 Now you can set up your development environment:
 
-1. **Create a project folder**: Make a new directory on your machine for this project (for example, customer-chat-app).
-2. **Add an HTML file**: Inside the folder, create a file named `index.html`. This will contain the structure and styling for the chat widget UI.
-3. **Add a JavaScript file**: In the same folder, create `app.js`. This will contain all the logic for interacting with the Customer Chat API (we’ll go through this file in detail soon).
-4. **Initialize npm**: Open a terminal in the project folder and run the following command:
+1. **Clone the sample app repository**: Open and clone the sample app repository available on [GitHub](https://github.com/livechat/customer-chat-api-sample-app/).
+2. **Initialize npm**: Open a terminal in the project folder and run the following command:
 
 ```bash
-npm init -y
+npm start
 ```
 
-5. **Set up a simple web server**: For the app to work properly (and handle the authentication cookies), you should run it through a local web server rather than opening the HTML file directly. To serve our files on `http://localhost:8080`, we can use a tool like http-server. Install it as a development dependency:
+For the app to work properly (and handle the authentication cookies), we set up a local web server in the repository (rather than opening the HTML file directly). We use a `http-server` tool to serve our files on `http://localhost:8080`.
 
-```bash
-npm install --save-dev http-server
-```
-
-This will download the server package. You can add an npm script in your package.json to automatically start the server with `npm start`.
-
-To do this, open package.json and under "scripts" add:
+We have already added an npm script in the package.json to automatically start the server with `npm start`:
 
 ```json
 "scripts": {
@@ -80,15 +73,6 @@ To do this, open package.json and under "scripts" add:
 ```
 
 You can also use other static server tools or even the Live Server extension in VSCode — any method to serve the HTML on a local URL is fine.
-
-**The final structure should look like:**
-
-```
-livechat-customer-chat-demo/
-├── index.html
-├── app.js
-└── package.json
-```
 
 ## Index file
 
@@ -102,7 +86,7 @@ The file `app.js` contains all the JavaScript needed to connect our front-end ch
 
 ```js
 const clientId = "your_client_id";
-let organizationId = null;
+const organizationId = "your_organization_id";
 let customerToken = null;
 let customerId = null;
 let currentChatId = null;
@@ -112,9 +96,9 @@ let lastEventIds = new Set();
 let pollingIntervalId = null;
 ```
 
-* `clientId`, set to the value you got from the Developer Console (replace the placeholder in the code with your actual ID).
+* `clientId` and `organizationId`, set to the values you got and saved from the Developer Console (replace the placeholder in the code with your actual IDs).
 * We then declare variables like:
-  - `customerToken`, `customerId`, and `organizationId` (to store the authenticated customer’s token, ID, and organization ID),
+  - `customerToken` and `customerId` (to store the authenticated customer’s token and ID),
   - `currentChatI`d` and currentThreadId (to track the ongoing chat session),
   - `isChatActive` (a boolean flag),
   - helpers like `lastEventIds` (a `Set` to keep track of message IDs we’ve already displayed) and `pollingIntervalId` (for managing the polling timer).
@@ -161,7 +145,7 @@ Here’s what this does:
 
 1. It prepares a payload for the authentication request, including our `clientId`, `organizationId`, and specifying `grant_type: "cookie"`. We use the customer authorization API endpoint (`/v2/customer/token`) to check if the user has a valid login session (cookie) and issue an access token for the Customer Chat API. The `redirect_uri` is included as part of the OAuth flow (though in our case, with `grant_type: "cookie"`, no actual redirection happens; it just uses the cookie).
 2. We then make a POST request to the accounts service with `credentials: "include"`, meaning the browser will include authentication cookies for the accounts domain. Note that this requires that you are logged in to LiveChat in your browser. If you are not logged in, this request will fail, so make sure you have an active session by logging into your account in the same browser before running the app.
-3. If the response is successful, we parse the JSON data. It contains an access_token (which we store in `customerToken`), an `entity_id` (the customer’s ID stored in `customerId`), and the `organization_id` required to make requests to the Customer Chat API.
+3. If the response is successful, we parse the JSON data. It contains an access_token (which we store in `customerToken`), and an `entity_id` (the customer’s ID stored in `customerId`).
 4. We log a confirmation to the console (“Customer authorized”) with the ID for debugging purposes.
 
 Then we call `listChats()` to see if this customer already has an existing chat open. The `listChats()` function calls the API to get a list of chats for this customer. It looks at the first chat (if any) to determine if the customer has an existing chat.
