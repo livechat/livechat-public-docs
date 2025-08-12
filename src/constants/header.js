@@ -14,6 +14,7 @@ import { AuthorizationIcon } from "assets/icons/cards/Authorization";
 import { MonetizationIcon } from "assets/icons/cards/Monetization";
 import { GettingStartedIcon } from "assets/icons/cards/GettingStarted";
 import { TextApiIcon } from "assets/icons/cards/TextAPI";
+import { VideosIcon } from "assets/icons/Videos";
 
 export const apis = [
   {
@@ -134,7 +135,7 @@ export const platform = {
     {
       title: "HelpDesk API",
       description: "Integrate with HelpDesk",
-      link: "/getting-started/helpdesk-apps/helpdesk-api",
+      link: "/helpdesk",
       primaryIcon: <HelpDeskApiIcon fill="#2FC774" />,
       secondaryIcon: <HelpDeskApiIcon fill="#ffffff" background="#4a4a55" />,
     },
@@ -155,15 +156,14 @@ export const resources = [
     link: "https://design.livechat.com/",
   },
   {
+    title: "Guides and tutorials",
+    description: "Step-by-step explainers",
+    link: "https://platform.text.com/docs/guides",
+  },
+  {
     title: "Figma templates",
     description: "Visual assets for the Marketplace",
     link: "https://www.figma.com/community/file/1192489623743762740",
-  },
-  {
-    title: "Video tutorials",
-    description: "Tutorials, courses, webinars",
-    link:
-      "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
   },
   {
     title: "Developer CLI",
@@ -184,6 +184,13 @@ export const connects = [
     link: "https://platform.text.com/resource-center/updates",
     primaryIcon: <UpdatesIcon />,
     secondaryIcon: <UpdatesIcon fill="#ffffff" />,
+  },
+  {
+    title: "Video tutorials",
+    link:
+      "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
+    primaryIcon: <VideosIcon />,
+    secondaryIcon: <VideosIcon fill="#ffffff" />,
   },
   {
     title: "Discord",

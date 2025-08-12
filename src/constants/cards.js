@@ -11,8 +11,15 @@ import { TextApiIcon } from "assets/icons/cards/TextAPI";
 import { BeginnerPathIcon } from "assets/icons/cards/BeginnerPath";
 import { AdvancedPathIcon } from "assets/icons/cards/AdvancedPath";
 import { PartnerApiIcon } from "assets/icons/cards/PartnerAPI";
+import { GuidesIcon } from "assets/icons/cards/Guides";
 
 export const cards = [
+  {
+    title: "Guides and tutorials",
+    link: "/guides",
+    copy: "Step-by-step explainers for using APIs and the Text Platform.",
+    image: <GuidesIcon />,
+  },
   {
     title: "Messaging",
     link: "/messaging",
@@ -26,7 +33,7 @@ export const cards = [
     image: <ManagementIcon />,
   },
   {
-    title: "Data & Reporting",
+    title: "Data and Reporting",
     link: "/data-reporting",
     copy: "Extract data to build custom reports and dashboards.",
     image: <DataReportingIcon />,
@@ -45,7 +52,7 @@ export const cards = [
   },
   {
     title: "HelpDesk API",
-    link: "/getting-started/helpdesk-apps/helpdesk-api",
+    link: "/helpdesk",
     copy: "Build integration for our ticketing system, HelpDesk.",
     image: <HelpDeskApiIcon />,
   },
@@ -63,7 +70,7 @@ export const cards = [
   },
   {
     title: "Developer Console Guides",
-    link: "/getting-started/app-guides",
+    link: "/guides/console-guides",
     copy: "Learn how to configure your app with Developer Console tools.",
     image: <DevConsoleToolsIcon />,
   },
@@ -92,15 +99,15 @@ export const devPaths = [
         name: "Platform Overview",
       },
       {
-        link: "/getting-started/app-guides",
-        name: "App Guides",
+        link: "/guides/console-guides",
+        name: "Console Guides",
       },
       {
-        link: "/getting-started/livechat-apps",
+        link: "/guides/livechat-apps",
         name: "Building LiveChat apps",
       },
       {
-        link: "/getting-started/helpdesk-apps",
+        link: "/guides/helpdesk-apps",
         name: "Building HelpDesk apps",
       },
       {
