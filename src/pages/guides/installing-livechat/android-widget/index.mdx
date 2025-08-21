@@ -8,9 +8,9 @@ tagline: "Embed LiveChat in your Android app."
 desc: "Learn how to embed LiveChat in your Android app. Let your users contact agents directly from the mobile application."
 ---
 
-# Introduction
+# Getting started
 
-Add real-time customer support to your Android application with LiveChat's SDK. This guide covers installation, setup, and advanced features.
+Add real-time customer support to your Android application with LiveChat's native SDK. This guide covers installation, basic setup, and advanced features.
 
 <Warning>
 
@@ -18,16 +18,16 @@ Add real-time customer support to your Android application with LiveChat's SDK. 
 
 </Warning>
 
-# Requirements
+## Requirements
 
 - Android 5.0 (API level 21) or higher
 - Java 8 or higher
 
-# Installation
+Follow these steps to integrate LiveChat into your Android application:
 
-## 1. Add the JitPack repository
+## Add dependency
 
-Add JitPack to your root `build.gradle`:
+Add the JitPack repository to your root `build.gradle`
 
 <Code>
 <CodeSample path={'ADD JITPACK REPOSITORY'}>
@@ -41,9 +41,7 @@ allprojects {
 </CodeSample>
 </Code>
 
-## 2. Add the dependency
-
-Add to your app's `build.gradle`:
+Add dependency to your app's `build.gradle`:
 
 <Code>
 <CodeSample path={'ADD DEPENDENCY'}>
@@ -55,19 +53,15 @@ dependencies {
 </CodeSample>
 </Code>
 
-## 3. Add Internet permission
-
-Add to your `AndroidManifest.xml`:
+Add Internet permission to AndroidManifest.xml:
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-# Usage
+## Initialize
 
-## Initialize the SDK
-
-Initialize in your `Application`'s `onCreate()`:
+Initialize the SDK in the `onCreate()` method of your [`Application`](https://developer.android.com/reference/android/app/Application) instance
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -86,7 +80,7 @@ LiveChat.initialize("<LICENSE>", this);
 
 ## Show the Chat
 
-Show the chat to a customer:
+Show the chat to a customer
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -102,10 +96,12 @@ LiveChat.getInstance().show();
 ```
 </CodeSample>
 </Code>
+That's it! Your customer can already start chatting with you.
 
 # Customer Information
 
-Pre-fill the pre-chat form and provide customer details:
+Pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) and provide customer details to your agents by setting customer information.
+All information is optional. Group ID defaults to 0 if not provided.
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -134,7 +130,7 @@ LiveChat.getInstance().setCustomerInfo(
 </CodeSample>
 </Code>
 
-> **Note:** Call this before `LiveChat.show()`.
+> **Note:** Call this before `LiveChat.getInstance().show()` or recreate a chat view with `LiveChat.getInstance().destroyLiveChatView()` and `LiveChat.getInstance().getLiveChatView()`
 
 # Unread Message Counter
 
@@ -162,29 +158,25 @@ LiveChat.getInstance().setNewMessageListener((chatMessage, isChatShown) -> {
 
 # UI Customization
 
+While chat appearance and language settings are managed through the Agent App, you can customize how errors are displayed to users
+
 ## Localizing Text
 
-Override string resources in your app's `strings.xml`:
-
-```xml
-<string name="failed_to_load_chat">Couldn\'t load chat.</string>
-<string name="cant_share_files">File sharing is not configured for this app</string>
-<string name="reload_chat">Reload</string>
-```
+You can localize and change the text displayed in the error view by overriding string resources in your app's `strings.xml`.
+All strings can be found [here](https://github.com/livechat/chat-window-android/blob/master/ChatSDK/src/main/res/values/strings.xml)
 
 ## Custom Error View
 
-Override `live_chat_error_layout.xml` in your layout resources.
-Your custom view must contain a `View` with `live_chat_error_button` id.
+To completely change the error view, you can also override the default one by including `live_chat_error_layout.xml` in your app's layout resources.
+> **Note:** Your custom view must contain a `View` with `live_chat_error_button` id when using `LiveChat.getInstance().show()`
 
 ## Customizing Activity
 
-The chat activity follows your app's theme.
-Override the activity declaration in your `AndroidManifest.xml` if needed.
+Activity will follow your activity's theme. To change activity configuration you can just override the activity declaration in your app `AndroidManifest.xml`
 
 # Clearing Chat Session
 
-Clear the chat session and cookies:
+Chat window uses WebView's cookies to store the session. To clear the chat session, you can call:
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -203,7 +195,8 @@ LiveChat.getInstance().signOutCustomer();
 
 # Handling Links
 
-Intercept links sent in chat:
+By default, links sent between your Agents and Customers are opened in the default browser.
+If you want to intercept the link and handle it in your app, provide your `UrlHandler`
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -232,7 +225,8 @@ LiveChat.getInstance().setUrlHandler(uri -> {
 
 ## React to Errors
 
-Set an error listener:
+To monitor and handle issues related to loading the chat view, you can set an error listener. This allows you to capture and respond to errors in a centralized way.
+Common use cases include reporting errors to analytics platforms or implementing custom error handling logic.
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -253,7 +247,8 @@ LiveChat.getInstance().setErrorListener((error) -> {});
 
 ## Logger
 
-Set logging level before initializing LiveChat:
+Configure the logging level to help with debugging and troubleshooting. Set the desired level before initializing LiveChat:
+Refer to [Logger](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/utils/Logger.kt) for available log levels.
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -272,7 +267,7 @@ Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 
 ## File Picker Activity Not Found
 
-React to missing file picker activity:
+In case you want to react or track instances where activity for file picking on user device is not found, you can set a listener for this event:
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -293,34 +288,45 @@ LiveChat.getInstance().setFilePickerNotFoundListener(() -> {});
 
 # Advanced Usage
 
+For more control over the SDK integration, consider these advanced options. Note that they require additional implementation steps:
+If you need to use the following usage, please let us know about your use case. We would love to hear from you!
+
 ## LiveChatView Lifecycle Modes
 
-Control the lifecycle of the chat view:
+By default, after `LiveChat.getInstance().show()` the view is inflated and kept in memory. This allows reacting to new messages as described in [Unread message counter](#unread-message-counter).
+If you don't need that feature and want to free up memory once chat is no longer visible, you can use `LiveChatViewLifecycleScope` to control the lifecycle of the view. 
+You should specify the mode when initializing.
 
 <Code>
 <CodeSample path={'Kotlin'}>
 ```kotlin
-LiveChat.initialize("<LICENSE>", this, LiveChatViewLifecycleMode.WHEN_SHOWN)
+LiveChat.initialize("<LICENSE>", this, lifecycleScope = LiveChatViewLifecycleScope.ACTIVITY)
 ```
 </CodeSample>
 </Code>
 <Code>
 <CodeSample path={'Java'}>
 ```java
-LiveChat.getInstance().initialize("<LICENSE>", this, LiveChatViewLifecycleMode.WHEN_SHOWN);
+LiveChat.initialize("<LICENSE>", this, LiveChatViewLifecycleMode.WHEN_SHOWN);
 ```
 </CodeSample>
 </Code>
 
+> **Note:** Using WHEN_SHOWN mode will disable the `NewMessageListener` no longer works when chat is not visible
+
 ## Embedding LiveChatView
 
-Add to your layout XML:
+You can directly embed `LiveChatView` in your layout, instead of showing it in activity (`LiveChat.getInstance().show()`). This allows you to have more control over the chat window and its placement in your app.
+There are additional steps and requirements you need to follow to take full advantage of chat window.
+Generally you can refer to `LiveChatActivity` for the implementation details, but here is a quick overview of the steps you need to take.
 
-```xml
-<com.livechatinc.chatsdk.src.presentation.LiveChatView  />
-```
+### Embed in your layout
 
-Attach to activity or fragment:
+Add `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` your layout XML file
+
+### Provide activity or fragment context
+
+During `onCreate` of your `Activity` or `Fragment` call
 
 <Code>
 <CodeSample path={'Kotlin'}>
@@ -337,7 +343,11 @@ liveChatView.attachTo(this);
 </CodeSample>
 </Code>
 
-Initialize with a listener:
+> **Note:** this is required to properly handle the lifecycle of the view, support file sharing and launch links in default external browser
+
+### React to visibility events
+
+Provide `LiveChatView.InitListener` when initializing the view
 
 <Code>
 <CodeSample path={'Kotlin'}>
