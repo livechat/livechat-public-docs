@@ -8,6 +8,8 @@ tagline: "Embed LiveChat in your Android app."
 desc: "Learn how to embed LiveChat in your Android app. Let your users contact agents directly from the mobile application."
 ---
 
+A Android SDK for integrating LiveChat functionality into your mobile application.
+
 # Getting started
 
 Add real-time customer support to your Android application with LiveChat's native SDK. This guide covers installation, basic setup, and advanced features.
@@ -20,10 +22,9 @@ Add real-time customer support to your Android application with LiveChat's nativ
 
 ## Requirements
 
+SDK is compatible with:
 - Android 5.0 (API level 21) or higher
 - Java 8 or higher
-
-Follow these steps to integrate LiveChat into your Android application:
 
 ## Add dependency
 
@@ -73,19 +74,10 @@ Add Internet permission to AndroidManifest.xml:
 
 Initialize the SDK in the `onCreate()` method of your [`Application`](https://developer.android.com/reference/android/app/Application) instance
 <Code>
-<CodeSample path={'KOTLIN'}>
+<CodeSample path={'INITIALIZE'}>
 
 ```kotlin
 LiveChat.initialize("<LICENSE>", this)
-```
-
-</CodeSample>
-</Code>
-<Code>
-<CodeSample path={'JAVA'}>
-
-```java
-LiveChat.initialize("<LICENSE>", this);
 ```
 
 </CodeSample>
@@ -96,7 +88,7 @@ LiveChat.initialize("<LICENSE>", this);
 Show the chat to a customer
 
 <Code>
-<CodeSample path={'SHOW CHAT - KOTLIN'}>
+<CodeSample path={'SHOW CHAT'}>
 
 ```kotlin
 LiveChat.getInstance().show()
@@ -105,15 +97,6 @@ LiveChat.getInstance().show()
 </CodeSample>
 </Code>
 
-<Code>
-<CodeSample path={'SHOW CHAT - JAVA'}>
-
-```java
-LiveChat.getInstance().show();
-```
-
-</CodeSample>
-</Code>
 That's it! Your customer can already start chatting with you.
 
 # Customer Information
@@ -153,11 +136,13 @@ LiveChat.getInstance().setCustomerInfo(
 </CodeSample>
 </Code>
 
-> **Note:** Call this before `LiveChat.getInstance().show()` or recreate a chat view with `LiveChat.getInstance().destroyLiveChatView()` and `LiveChat.getInstance().getLiveChatView()`
+> **Note:** Call this before `LiveChat.getInstance().show()` or recreate a chat view with `LiveChat.getInstance().destroyLiveChatView()` before showing it again
 
 # Unread Message Counter
 
-React to new messages using a listener:
+Use [`com.livechatinc.chatsdk.src.domain.listeners.NewMessageListener`](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/domain/interfaces/NewMessageListener.kt) to get notified about new messages in the chat
+
+Set it wherever you want to react on new message, like increase badge count
 
 <Code>
 <CodeSample path={'NEW MESSAGES - KOTLIN'}>
@@ -186,12 +171,12 @@ LiveChat.getInstance().setNewMessageListener((chatMessage, isChatShown) -> {
 
 # UI Customization
 
-While chat appearance and language settings are managed through the Agent App, you can customize how errors are displayed to users
+While chat appearance and language settings are managed through the Agent App, you can customize error view when chat cannot be loaded.
 
 ## Localizing Text
 
 You can localize and change the text displayed in the error view by overriding string resources in your app's `strings.xml`.
-All strings can be found [here](https://github.com/livechat/chat-window-android/blob/master/ChatSDK/src/main/res/values/strings.xml)
+All strings can be found [here](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/res/values/strings.xml)
 
 ## Custom Error View
 
@@ -207,7 +192,7 @@ Activity will follow your activity's theme. To change activity configuration you
 Chat window uses WebView's cookies to store the session. To clear the chat session, you can call:
 
 <Code>
-<CodeSample path={'CLEAR SESSION - KOTLIN'}>
+<CodeSample path={'CLEAR CHAT SESSION'}>
 
 ```kotlin
 LiveChat.getInstance().signOutCustomer()
@@ -216,19 +201,9 @@ LiveChat.getInstance().signOutCustomer()
 </CodeSample>
 </Code>
 
-<Code>
-<CodeSample path={'CLEAR SESSION - JAVA'}>
-
-```java
-LiveChat.getInstance().signOutCustomer();
-```
-
-</CodeSample>
-</Code>
-
 # Handling Links
 
-By default, links sent between your Agents and Customers are opened in the default browser.
+By default, links in the chat are opened in the customer's default browser.
 If you want to intercept the link and handle it in your app, provide your `UrlHandler`
 
 <Code>
@@ -311,6 +286,12 @@ Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 </CodeSample>
 </Code>
 
+<Info>
+
+Network calls require at least `INFO`. `DEBUG` and `VERBOSE` provide maximum level of detail
+
+</Info>
+
 ## File Picker Activity Not Found
 
 In case you want to react or track instances where activity for file picking on user device is not found, you can set a listener for this event:
@@ -368,7 +349,7 @@ LiveChat.initialize("<LICENSE>", this, LiveChatViewLifecycleScope.ACTIVITY);
 </CodeSample>
 </Code>
 
-> **Note:** Using WHEN_SHOWN mode will disable the `NewMessageListener` no longer works when chat is not visible
+> **Note:** Using `ACTIVITY` mode will disable the `NewMessageListener` no longer works when chat is not visible.
 
 ## Embedding LiveChatView
 
@@ -378,27 +359,17 @@ Generally you can refer to `LiveChatActivity` for the implementation details, bu
 
 ### Embed in your layout
 
-Add `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` your layout XML file
+Add `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` to your layout XML file
 
 ### Provide activity or fragment context
 
 During `onCreate` of your `Activity` or `Fragment` call
 
 <Code>
-<CodeSample path={'ATTACH CONTEXT - KOTLIN'}>
+<CodeSample path={'ATTACH CONTEXT'}>
 
 ```kotlin
 liveChatView.attachTo(this)
-```
-
-</CodeSample>
-</Code>
-
-<Code>
-<CodeSample path={'ATTACH CONTEXT - JAVA'}>
-
-```java
-liveChatView.attachTo(this);
 ```
 
 </CodeSample>
@@ -411,20 +382,10 @@ liveChatView.attachTo(this);
 Provide `LiveChatView.InitListener` when initializing the view
 
 <Code>
-<CodeSample path={'VIEW INIT CALLBACK - KOTLIN'}>
+<CodeSample path={'VIEW INIT CALLBACK'}>
 
 ```kotlin
 liveChatView.init(initCallbackListener)
-```
-
-</CodeSample>
-</Code>
-
-<Code>
-<CodeSample path={'VIEW INIT CALLBACK - JAVA'}>
-
-```java
-liveChatView.init(initCallbackListener);
 ```
 
 </CodeSample>
