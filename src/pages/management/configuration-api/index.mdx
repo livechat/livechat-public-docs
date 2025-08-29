@@ -37,6 +37,7 @@ All configurations set by this API will have action in system after max 2 minute
 | **Agents**        | [`create_agent`](#create-agent) [`get_agent`](#get-agent) [`list_agents`](#list-agents) [`update_agent`](#update-agent) [`delete_agent`](#delete-agent) [`suspend_agent`](#suspend-agent) [`unsuspend_agent`](#unsuspend-agent) [`request_agent_unsuspension`](#request-agent-unsuspension) [`approve_agent`](#approve-agent)                                                                                                                                                                                               |
 | **Auto access**   | [`add_auto_access`](#add-auto-access) [`list_auto_access`](#list-auto-access) [`delete_auto_access`](#delete-auto-access) [`update_auto_access`](#update-auto-access)                                                                                                                                                                                                                                                                                                                                                       |
 | **Bots**          | [`create_bot_template`](#create-bot-template) [`create_bot`](#create-bot) [`delete_bot_template`](#delete-bot-template) [`delete_bot`](#delete-bot) [`update_bot_template`](#update-bot-template) [`update_bot`](#update-bot) [`list_bot_templates`](#list-bot-templates) [`get_bot`](#get-bot) [`list_bots`](#list-bots) [`issue_bot_token`](#issue-bot-token) [`reset_bot_template_secret`](#reset-bot-template-secret) [`reset_bot_secret`](#reset-bot-secret)                                                           |
+| **Canned Responses** | [`create_canned_response`](#create-canned-response) [`list_canned_responses`](#list-canned-responses) [`update_canned_response`](#update-canned-response) [`delete_canned_response`](#delete-canned-response)                                                                                                                                                                                                                                                                                                         |
 | **Customer bans** | [`list_customer_bans`](#list-customer-bans) [`unban_customer`](#unban-customer)                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Groups**        | [`create_group`](#create-group) [`get_group`](#get-group) [`list_groups`](#list-groups) [`update_group`](#update-group) [`delete_group`](#delete-group)                                                                                                                                                                                                                                                                                                                                                                     |
 | **Properties**    | [`register_properties`](#register-properties) [`unregister_properties`](#unregister-properties) [`publish_properties`](#publish-properties) [`list_properties`](#list-properties) [`update_license_properties`](#update-license-properties) [`delete_license_properties`](#delete-license-properties) [`list_license_properties`](#list-license-properties) [`update_group_properties`](#update-group-properties) [`delete_group_properties`](#delete-group-properties) [`list_groups_properties`](#list-groups-properties) |
@@ -3939,6 +3940,262 @@ curl -X POST \
 ```
 
 </CodeSample>
+
+</Code>
+
+</Section>
+
+## Canned Responses
+
+<Section>
+
+### Create Canned Response
+
+Creates a new canned response with the specified text, tags, and group assignment.
+
+#### Specifics
+
+|                                  |                                                                               |
+| -------------------------------- | ----------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/create_canned_response` |
+| Required scopes                  | `canned_responses_write`                                                          |
+| [Batch support](#batch-requests) | No                                                                            |
+
+#### Request
+
+| Parameter   | Required | Data type        | Notes                                                    |
+| ----------- | -------- | ---------------- | -------------------------------------------------------- |
+| `text`      | Yes      | `string`         | Canned response text content                         |
+| `tags`      | Yes      | `array[string]`  | Array of tags                                         |
+| `group_id`  | Yes      | `number`         | ID of the group the canned response belongs to          |
+| `is_private`| No       | `bool`           | Whether the canned response is private (default: false)  |
+
+#### Response
+
+| Parameter | Data type | Notes                        |
+| --------- | --------- | ---------------------------- |
+| `id`      | `number`  | ID of the created canned response |
+
+<Code>
+
+<CodeSample>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/create_canned_response \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "text": "Thank you for contacting us! How can I help you today?",
+    "tags": ["greeting", "support"],
+    "group_id": 1,
+    "is_private": false
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": 12345
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+### Update Canned Response
+
+Updates an existing canned response. All parameters are optional - only provided parameters will be updated.
+
+#### Specifics
+
+|                                  |                                                                               |
+| -------------------------------- | ----------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/update_canned_response` |
+| Required scopes                  | `canned_responses_write`                                                      |
+| [Batch support](#batch-requests) | No                                                                            |
+
+#### Request
+
+| Parameter   | Required | Data type        | Notes                                                    |
+| ----------- | -------- | ---------------- | -------------------------------------------------------- |
+| `id`        | Yes      | `number`         | ID of the canned response to update                      |
+| `text`      | No       | `string`         | New canned response text (max 2000 characters)          |
+| `tags`      | No       | `array[string]`  | Array of tags (max 20 tags, each max 50 characters)     |
+| `group_id`  | No       | `number`         | New group ID for the canned response                     |
+| `is_private`| No       | `bool`           | Whether the canned response is private                   |
+
+#### Response
+
+Empty response object `{}`.
+
+<Code>
+
+<CodeSample>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/update_canned_response \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "id": 12345,
+    "text": "Thank you for contacting us! How may I assist you today?",
+    "tags": ["greeting", "support", "updated"],
+    "is_private": true
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{}
+```
+
+</CodeResponse>
+
+</Code>
+
+### List Canned Responses
+
+Returns a paginated list of canned responses filtered by group access and privacy settings.
+
+#### Specifics
+
+|                                  |                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/list_canned_responses` |
+| Required scopes                  | `canned_responses_read`                                                       |
+| [Batch support](#batch-requests) | No                                                                           |
+
+#### Request
+
+| Parameter         | Required | Data type        | Notes                                                    |
+| ----------------- | -------- | ---------------- | -------------------------------------------------------- |
+| `group_ids`       | No       | `array[number]`  | Filter by specific group IDs (if not provided, uses user's accessible groups) |
+| `include_private` | No       | `bool`           | Include private canned responses (default: false)       |
+| `limit`           | No       | `number`         | Number of results per page (1-100, default: 100)       |
+| `page_id`         | No       | `string`         | Page ID for pagination                                   |
+
+#### Response
+
+| Parameter            | Data type                | Notes                                    |
+| -------------------- | ------------------------ | ---------------------------------------- |
+| `canned_responses`   | `array[CannedResponse]`  | Array of canned response objects         |
+| `found_canned_responses` | `number`             | Total number of canned responses found   |
+| `next_page_id`       | `string`                 | Page ID for next page (if exists)       |
+
+##### CannedResponse
+
+| Parameter   | Data type        | Notes                               |
+| ----------- | ---------------- | ----------------------------------- |
+| `id`        | `number`         | Canned response ID                  |
+| `text`      | `string`         | Canned response text content        |
+| `tags`      | `array[string]`  | Array of tags                       |
+| `group_id`  | `number`         | Group ID the response belongs to    |
+| `is_private`| `bool`           | Whether the response is private     |
+| `author_id` | `string`         | ID of the user of last change       |
+
+<Code>
+
+<CodeSample>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/list_canned_responses \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "group_ids": [1, 2],
+    "include_private": true,
+    "limit": 10
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "canned_responses": [
+    {
+      "id": 12345,
+      "text": "Thank you for contacting us! How may I assist you today?",
+      "tags": ["greeting", "support", "updated"],
+      "group_id": 1,
+      "is_private": true,
+      "author_id": "agent123"
+    },
+    {
+      "id": 12346,
+      "text": "We'll get back to you within 24 hours.",
+      "tags": ["follow-up"],
+      "group_id": 1,
+      "is_private": false,
+      "author_id": "agent456"
+    }
+  ],
+  "found_canned_responses": 25,
+  "next_page_id": "MTIzNDY="
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+### Delete Canned Response
+
+Deletes an existing canned response.
+
+#### Specifics
+
+|                                  |                                                                               |
+| -------------------------------- | ----------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/delete_canned_response` |
+| Required scopes                  | `canned_responses_write`                                                          |
+| [Batch support](#batch-requests) | No                                                                            |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                              |
+| --------- | -------- | --------- | ---------------------------------- |
+| `id`      | Yes      | `number`  | ID of the canned response to delete |
+
+#### Response
+
+Empty response object `{}`.
+
+<Code>
+
+<CodeSample>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/delete_canned_response \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "id": 12345
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{}
+```
+
+</CodeResponse>
 
 </Code>
 
