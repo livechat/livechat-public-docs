@@ -1,0 +1,258 @@
+---
+weight: 25
+category: "guides"
+subcategory: "api-guides"
+title: "Reports API guide"
+tagline: "Learn how to fetch reports from the Reports API."
+desc: "Step through a practical example of using the Reports API to retrieve analytics data and customize metrics."
+---
+
+## Introduction
+
+The [Reports API](https://platform.text.com/docs/data-reporting) lets you extract analytics and historical data from LiveChat, such as chat statistics, agent performance metrics, and trends. This is useful when creating custom reports, building dashboards, or integrating data with external tools. The API gives you raw access to the data to analyze it your way.
+
+## When to use the Reports API
+
+Use the Reports API in scenarios where you need to programmatically retrieve LiveChat reports data for analysis or integration. For example:
+
+* **Export data for ad-hoc analysis**: You can pull chat metrics (like total chats, first response time, chat ratings) on demand and load them into a spreadsheet or application for deeper analysis.
+* **Automate regular reporting**: You can script automatic data pulls if you need to generate recurring reports (daily, weekly, monthly) or send scheduled updates.
+* **Integrate with BI tools and databases**: The API lets you merge LiveChat data with data from other sources. For instance, you can feed LiveChat stats into Google Sheets, Tableau, or Looker Studio to build unified dashboards.
+
+In short, use the Reports API whenever you need direct, flexible access to LiveChat’s reporting data outside of the standard UI for custom analysis or integration.
+
+## What this guide covers
+
+This guide will walk through:
+
+* Authenticating with the Reports API using a Personal Access Token.
+* Ad-hoc and automated data retrieval into Google Sheets through a Google Apps Script.
+* Connect the API to Business Intelligence tools like Tableau Cloud and Looker Studio.
+
+## Prerequisites
+
+Before you begin, make sure you have the following:
+
+* [LiveChat account](https://www.livechat.com/) with reporting access (Team plan or higher). Ensure you can access the data you want to pull from the API.
+* [Developer Console account](https://platform.text.com/console), where you will create and configure your Personal Access Token.
+* Basic familiarity with JSON and CSV.
+* An account in the service you want to store the pulled data in (Google, Tableau, or Looker).
+
+## Personal Access Token authentication
+
+Before pulling any data, you need to authenticate with the API. The goal is to do this automatically (so a script or tool can run without interactive login). The simple approach we will use in this guide is a Personal Access Token (PAT), which will serve as our API access.
+
+To generate your PAT, in the [Developer Console](https://platform.text.com/console/settings/authorization/personal-access-tokens), navigate to **Settings > Authorization > Personal Access Tokens**. Create a new token with the scopes needed for the Reports API endpoints you want to pull — information about those is in the [documentation](https://platform.text.com/docs/data-reporting/reports-api) for each endpoint. For instance, the [Total Chats](https://platform.text.com/docs/data-reporting/reports-api#total-chats) endpoint requires the `reports_read` scope.
+
+After creating your token, copy the token value, your Account ID, and the Base64 encoded token as well — you won’t be able to view any of these again after closing the page. Save those in a secure location.
+
+Treat your PAT like a password. Do not expose it in client-side code or share it publicly. Avoid hard-coding the token in the code when writing scripts like Google Apps Script. Use secure storage or environment variables where possible, for example, in Google Apps Script, those would be script properties.
+
+### Base64 token encoding
+
+Scripts and external tools often require you to parse the token into a Base64 format, where the Account ID is combined with your Personal Access Token into one value. The result is what you use in the HTTP Authorization header as **Basic** Authentication.
+
+If you encode those to Base64 through an online encoder, encode the string exactly as `<account_id>:<pat>` with no extra characters. The Developer Console already returns this value after creating your token, so you can use it out of the box.
+
+## Ad-hoc data retrieval to Google Sheets
+
+One of the quickest ways to analyze LiveChat data is to pull it into [Google Sheets](https://docs.google.com/spreadsheets/). In a spreadsheet, you can filter, pivot, and visualize the data ad hoc.
+
+Before you start, create an empty Google Sheet to hold your data.
+
+### Apps Script
+
+Google Apps Script allows you to use JavaScript to manipulate your spreadsheet and call external APIs. We can write a custom function to fetch data from the Reports API.
+
+To open the script editor, go to **Extensions > Apps Script** in your created sheet. There, you can write a function to fetch the data.
+
+Before you paste the script, add your Personal Access Token as a script property. To do this, in your open editor, navigate to **Project Settings > Script Properties** and add a property named `base64token` with your encoded token as the value. Save the script properties and return to the editor.
+
+Below is a ready-to-use script that allows you to customize the data range, the Reports API endpoints you call, and column header names.
+
+<CodeSample path={'Reports API Google Apps Script code'}>
+
+```js
+function pullLiveChatReportData() {
+  // Config
+  const SHEET_NAME = 'LiveChat report';
+  const DAYS_BACK  = 30; // how many days back (including today)
+  const METRIC_MAP = {
+    'Date': '__DATE__',
+    'Average response time (s)':'chats/response_time.response_time',
+    'Chatting duration':'chats/duration.agents_chatting_duration',
+    'Chat count':'chats/total_chats.total',
+    'Agent hours':'agents/availability.hours',
+    'Bad rates':'chats/ratings.bad'
+  };
+
+  // Authorization
+  const props = PropertiesService.getScriptProperties();
+  const BASIC_AUTH = props.getProperty('base64token'); // base64 of "accountId:PAT"
+  if (!BASIC_AUTH) throw new Error('Add token to Script properties.');
+  const headers = { 'Authorization': 'Basic ' + BASIC_AUTH, 'Content-Type': 'application/json' };
+
+  // Dates
+  const today = new Date();
+  const from  = new Date(today);
+  from.setDate(from.getDate() - (DAYS_BACK - 1));
+  const fromISO = isoDay(from,  '00:00:00Z');
+  const toISO   = isoDay(today, '23:59:59Z');
+  const allDates = listDates(from, today); // ['YYYY-MM-DD', ...]
+
+  // Build metric requests (works only date-keyed endpoints)
+  const base = 'https://api.livechatinc.com/v3.6/reports/';
+  const metrics = Object.entries(METRIC_MAP)
+    .filter(([_, path]) => path !== '__DATE__')
+    .map(([col, path]) => {
+      const [endpoint, ...pathParts] = path.split('.');
+      return { col, endpoint, pathParts };
+    });
+
+  // Fetch each endpoint
+  const body = JSON.stringify({ distribution: 'day', filters: { from: fromISO, to: toISO } });
+  const byMetric = {}; // col -> { 'YYYY-MM-DD': value }
+  metrics.forEach(m => {
+    try {
+      const resp = UrlFetchApp.fetch(base + m.endpoint, {
+        method: 'post', headers, payload: body, muteHttpExceptions: true
+      });
+      if (resp.getResponseCode() !== 200) return;
+      const json = JSON.parse(resp.getContentText());
+      const recs = (json && json.records) ? json.records : {};
+      byMetric[m.col] = {};
+      Object.keys(recs).forEach(date => {
+        let v = recs[date];
+        for (const k of m.pathParts) { if (v && typeof v === 'object') v = v[k]; else { v = undefined; break; } }
+        if (v !== undefined) byMetric[m.col][date] = v;
+      });
+    } catch (e) {
+      // skip on error; keep going
+    }
+  });
+
+  // Build table
+  const headersRow = Object.keys(METRIC_MAP);
+  const rows = allDates.map(d => headersRow.map(h => {
+    if (METRIC_MAP[h] === '__DATE__') return d;
+    const m = byMetric[h];
+    return (m && m[d] !== undefined) ? m[d] : '';
+  }));
+
+  // Write sheet
+  const ss = SpreadsheetApp.getActive();
+  const sh = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+  sh.clearContents();
+  sh.getRange(1, 1, 1, headersRow.length).setValues([headersRow]);
+  if (rows.length) sh.getRange(2, 1, rows.length, headersRow.length).setValues(rows);
+  sh.setFrozenRows(1);
+  sh.autoResizeColumns(1, headersRow.length);
+
+  // Helpers
+  function isoDay(d, tail) {
+    const yyyy_mm_dd = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    return `${yyyy_mm_dd}T${tail}`;
+  }
+  function listDates(start, end) {
+    const out = [];
+    const cur  = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+    const stop = new Date(Date.UTC(end.getUTCFullYear(),   end.getUTCMonth(),   end.getUTCDate()));
+    while (cur <= stop) {
+      const y = cur.getUTCFullYear(), m = String(cur.getUTCMonth()+1).padStart(2,'0'), d = String(cur.getUTCDate()).padStart(2,'0');
+      out.push(`${y}-${m}-${d}`);
+      cur.setUTCDate(cur.getUTCDate() + 1);
+    }
+    return out;
+  }
+}
+```
+
+</CodeSample>
+
+After adding this script, save it. You can test it by running the `pullLiveChatReportData` function in the Apps Script editor. Then check your Google Sheet — you should see your headers and 30 rows of data.
+
+### Script breakdown
+
+Let’s break down what this script does, step by step:
+
+* First, the script defines some configuration values at the top. It sets the sheet name, the number of days to go back, and a metric mapping object. This mapping links editable column names to their respective API endpoints and JSON paths.
+* Then, it retrieves a Base64-encoded token for Basic Auth from the script properties (`base64token`). The script then prepares an HTTP header with this token for the Authorization. If the token isn’t found, it throws an error.
+* The script then calculates the date range for the past 30 days (including today). It creates a start date (from) 29 days before today and an end date (today). These are formatted as ISO timestamp strings (for example, `YYYY-MM-DDT00:00:00Z` for the start of the day and `YYYY-MM-DDT23:59:59Z` for the end of the day) because the API expects timestamps in that format. It also generates a list of all dates in between using a helper function, so we have every date from the start to the end.
+* For each metric in the `METRIC_MAP` (except the `__DATE__` placeholder), the script determines which API endpoint to call and how to navigate the JSON to get the value. It builds a request body (as JSON) with the date filters. and sets the data distribution by `day` so that the API returns data grouped by day within that range.
+* The script loops through each metric’s endpoint and makes a POST request to the Reports API for that metric. It extracts the specific metric value for each date from the response (following the path defined in `METRIC_MAP`) and stores these values in an object (`byMetric`) keyed by date for each metric name. If a request fails or an error occurs, the script skips that metric without stopping the whole process.
+* After fetching all metrics, the script prepares the data to write into the Google Sheet. It first creates a header row using the keys from `METRIC_MAP` (in our code example, `Date`, `Average response time (s)`, etc.). Then it iterates over each date in the range (the list of dates it generated). For each date, a row of values is created: the date itself and the values for each metric on that date. If a particular metric has no data for a given date, it leaves an empty cell for that.
+* Finally, the script gets the Google Sheet by name (in the example, it’s “LiveChat report”). It clears any existing content in that sheet, then writes the header row to the first row. It then writes all the rows of data (if any) starting from the second row. It also freezes the header row and auto-resizes the columns.
+* The script includes two helper functions at the bottom: `isoDay(d, tail)`, which takes a JavaScript `Date` object `d` and a time string `tail` (like `00:00:00Z`), and returns a date-time string in ISO format (UTC) with that time. It’s used to format the start and end timestamps for the API query (beginning of the first day and end of the last day). `listDates(start, end)` helper generates an array of date strings in `YYYY-MM-DD` format for every day between the start date and end date (inclusive). The script uses this to know all the dates it should expect data for, so it can output a row for each date, even if some metrics have no data on a particular day.
+
+#### Changing endpoints
+
+The script is designed so you can easily adjust which metrics are pulled from the Reports API. This is controlled through the `METRIC_MAP`.
+
+The `METRIC_MAP` is essentially a dictionary that maps:
+
+* Keys (left side): the column headers you want to see in your Google Sheet (like “Chat count" or "Agent hours").
+* Values (right side): instructions on where to fetch the data. Each value has two parts:
+  * **Endpoint name** — tells the script which API endpoint to call. Example: `chats/total_chats` corresponds to the `/reports/chats/total_chats` endpoint.
+  * **Field path** — tells the script which property inside the endpoint’s JSON response to extract. Example: `.total` means “take the value of the `total` field from each daily record.”
+
+Let’s look at the [Total Chats](https://platform.text.com/docs/data-reporting/reports-api#total-chats) endpoint as an example:
+
+```json
+'Chat count': 'chats/total_chats.total'
+```
+
+* `chats/total_chats` - the API endpoint to call (`/reports/chats/total_chats`)
+* `.total` - the field in each daily record to extract
+
+If you want to add an endpoint to the report or modify the pulled property, in the example of Total Chats, the endpoint also returns information about `continuous` chats. To access this data, you would extend the `METRIC_MAP` with:
+
+```json
+'Continuous chat count': 'chats/total_chats.continuous'
+```
+
+This pattern repeats for any date-keyed properties. Identify the endpoint (like `chats/response_time`), inspect its response fields in the docs, and add entries to `METRIC_MAP` with the endpoint name and the field path separated by dots.
+
+#### Changing the data range
+
+To change the data range pulled by the script, simply edit the number in the `DAYS_BACK` value:
+
+```javascript
+const DAYS_BACK  = 30; // how many days back (including today)
+```
+
+### Setting a trigger
+
+You can set an automatic trigger to update the data in your Sheet under specific conditions or on a specific schedule. To do that, go to **Triggers** in the Apps Script editor and create a new trigger for the `pullLiveChatReportData` function.
+
+You can schedule it to run nightly, every X hours, etc. Google Apps Script triggers allow time-based execution; you could also use an on-open trigger to fetch fresh data whenever the sheet is opened.
+
+### Automated no-code options
+
+If you’re not comfortable writing script code, there are no-code solutions to get LiveChat API data into Google Sheets. These typically involve using a connector add-on or an automation service.
+
+One option is Google Sheets API add-ons like API Connector (by Mixed Analytics) or Apipheny (by Apipheny.io), where you can configure API calls via a simple interface in Google Sheets. You can also use services like Zapier to connect LiveChat data to Google Sheets.
+
+## Connecting the Sheet to Looker
+
+You can easily connect the above-created sheet to [Looker Studio](https://lookerstudio.google.com/) to get a visualization of your pulled data. To do that:
+
+1. Open **Looker Studio > Reports** and create a new report.
+2. From the available Google Connectors, choose Google Sheets.
+3. In there, find and select your sheet — in our case, the file is named “API report”. Choose the appropriate worksheet (if you have more than one), and click **Add** to connect it with your report.
+
+That’s it! On the right-hand side navigation, you’ll find a **Data** menu. From there, you’ll be able to see and access information from your sheet and organize it in your Looker report.
+
+## Connecting to Tableau
+
+The same connection method applies to [Tableau](https://dub01.online.tableau.com/) — you can link the created Google Sheet with a Tableau Cloud Workbook:
+
+1. Open Tableau Cloud and navigate to **New > Virtual Connection**.
+2. Select Google Drive from the available connectors and authorize the connection.
+3. Find and select the sheet that holds your data, then click **Connect**.
+4. Publish the connection by clicking the **Publish** button, after which you can assign it to a project.
+
+That’s done. You can now assign this connection to a workbook in Tableau and access your report data.
+
+---
+
+You can extend the setup from here to fit your team’s needs. For example, you might add additional endpoints to your `METRIC_MAP`, adjust the reporting window, or schedule updates more frequently. With this foundation, you can move beyond the default in-app reports and design a reporting workflow that scales with your business.
