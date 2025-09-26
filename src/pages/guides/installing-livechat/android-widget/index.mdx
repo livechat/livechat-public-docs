@@ -8,60 +8,57 @@ tagline: "Embed LiveChat in your Android app."
 desc: "Learn how to embed LiveChat in your Android app. Let your users contact agents directly from the mobile application."
 ---
 
-# Introduction
+An Android SDK for integrating LiveChat functionality into your mobile application.
 
-This documentation shows you how to embed a mobile chat widget in an Android application.
+# Getting started
+
+Add real-time customer support to your Android application with LiveChat's native SDK. This guide covers installation, basic setup, and advanced features.
 
 <Warning>
 
-💡 The document adopted the new nomenclature, **chat widget**, but the library still uses the old name, **chat window**. Watch out when coding.
+💡 The SDK is now Kotlin-based and uses the new package `com.livechatinc.chatsdk`. See migration notes if you are upgrading from v2.x.x.
 
 </Warning>
 
-# Installation
+## Requirements
 
-To get the project into your build, do the following:
+The Android SDK is compatible with:
+- Android 5.0 (API level 21) or higher
+- Java 8 or higher
 
-## 1. Add the JitPack repository
+## Installation
 
-[See the repository at JitPack >](https://jitpack.io/#livechat/chat-window-android)
-
-Add it to your root build.gradle at the end of `repositories`:
+To install the SDK, first add the JitPack repository to your root `build.gradle`:
 
 <Code>
-<CodeSample path={'JITPACK REPO'}>
+<CodeSample path={'ADD JITPACK REPOSITORY'}>
 
-```js
+```kotlin
 allprojects {
-     repositories {
-         ...
-         maven { url 'https://jitpack.io' }
-     }
- }
-```
-
-</CodeSample>
-</Code>
-
-## 2. Add the dependency
-
-To add the dependency, use the following code:
-
-<Code>
-<CodeSample path={'ADD DEPENDENCY'}>
-
-```js
-dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.5.0'
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
+Next, add dependency to your app's `build.gradle`:
 
-Your application will need a permission to use the Internet. Add the following line to your **AndroidManifest.xml**:
+<Code>
+<CodeSample path={'ADD DEPENDENCY'}>
+
+```kotlin
+dependencies {
+    implementation 'com.github.livechat:chat-window-android:3.0.0'
+}
+```
+
+</CodeSample>
+</Code>
+
+Then, add Internet permission to `AndroidManifest.xml`: 
 
 <Code>
 <CodeSample path={'ADD PERMISSION'}>
@@ -73,380 +70,326 @@ Your application will need a permission to use the Internet. Add the following l
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
+## Initialization
 
-# Setup
+You can initialize the SDK in the `onCreate()` method of your [`Application`](https://developer.android.com/reference/android/app/Application) instance:
+<Code>
+<CodeSample path={'INITIALIZE'}>
 
-You can use this library in a couple of ways. To be able to use all features, we recommend you to add the chat widget as a view, either by using a static method which adds the view to your Activity, or as an embedded view in your xml.
+```kotlin
+LiveChat.initialize("<LICENSE>", this)
+```
 
-When **ChatWindowView** is initialized, you will get the events when a new message arrives.
+</CodeSample>
+</Code>
 
-First, let's configure the chat widget.
+## Display the chat window
 
-## Configuration
-
-The configuration is very simple - just use **ChatWindowConfiguration.java** constructor. Note that the licence number is mandatory.
+The function below allows you to display a chat to a customer:
 
 <Code>
-<CodeSample path={'CONFIGURATION'}>
+<CodeSample path={'SHOW CHAT'}>
 
-```js
-configuration = new ChatWindowConfiguration(
-  "your_licence_number",
-    "group_id",         // optional
-    "Visitor name",     // optional
-    "visitor@email.com",// optional
-    customParamsMap     // optional
+```kotlin
+LiveChat.getInstance().show()
+```
+
+</CodeSample>
+</Code>
+
+That's it! Your customers can start chatting with you now.
+
+# Customer information
+
+You can pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) fields with customer information to provide your agents with more details about the customer. All information is optional. 
+
+The group ID defaults to `0` if not provided.
+
+<Code>
+<CodeSample path={'CUSTOMER INFO - KOTLIN'}>
+
+```kotlin
+LiveChat.getInstance().setCustomerInfo(
+    "Joe", // Name
+    "joe@mail.com", // Email
+    "0", // Group ID, defaults to "0"
+    Collections.singletonMap("internalCustomerId", "ABC123") // Custom params
+)
+```
+
+</CodeSample>
+</Code>
+
+<Code>
+<CodeSample path={'CUSTOMER INFO - JAVA'}>
+
+```java
+Map<String, String> customParams = new HashMap<>();
+customParams.put("internalCustomerId", "ABC123");
+LiveChat.getInstance().setCustomerInfo(
+    "Joe", // Name
+    "joe@mail.com", // Email
+    "0", // Group ID
+    customParams // Custom params
 );
 ```
 
 </CodeSample>
 </Code>
 
-You could also use `new ChatWindowConfiguration.Builder()`.
+**Note:** You should call the `setCustomerInfo()` before `LiveChat.getInstance().show()`. To update customer properties when the chat has already loaded, recreate it with `LiveChat.getInstance().destroyLiveChatView()` and `LiveChat.getInstance().getLiveChatView()`.
 
-## Chat Window View
+# Unread message counter
 
-There are two recommended ways to use the **ChatWindow**:
+To get notified about new messages in the chat, use [`com.livechatinc.chatsdk.src.domain.listeners.NewMessageListener`](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/domain/interfaces/NewMessageListener.kt).
 
-- Full screen ChatWindow added to the root of your Activity
-- XML embedded ChatWindow to control the location and size
+Set it wherever you want to react to a new message, for example, to increase the badge count.
 
-### Full Screen Window
+<Code>
+<CodeSample path={'NEW MESSAGES - KOTLIN'}>
 
-All you need to do is to create, attach and initialize the chat widget. For example:
-
-```java
-public void startFullScreenChat() {
-    if (fullScreenChatWindow == null) {
-        fullScreenChatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(getActivity());
-        fullScreenChatWindow.setConfiguration(configuration);
-        fullScreenChatWindow.setEventsListener(this);
-        fullScreenChatWindow.initialize();
+```kotlin
+LiveChat.getInstance().newMessageListener =
+    NewMessageListener { message, isChatShown ->
+        // Handle new message
     }
-    fullScreenChatWindow.showChatWindow();
-}
-```
-
-### XML Embedded View
-
-If you want to control the location and size of the **ChatWindowView**, you may want to add it to your app either by including a view in XML:
-
-<Code>
-<CodeSample path={'INCLUDE IN XML'}>
-
-```xml
-<com.livechatinc.inappchat.ChatWindowViewImpl
-    android:id="@+id/embedded_chat_window"
-    android:layout_width="match_parent"
-    android:layout_height="400dp"/>
 ```
 
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
-
-or by inflating the view directly:
-
 <Code>
-<CodeSample path={'INCLUDE DIRECTLY'}>
+<CodeSample path={'NEW MESSAGES - JAVA'}>
 
 ```java
-ChatWindowViewImpl chatWindowView = new ChatWindowViewImpl(MainActivity.this);
+LiveChat.getInstance().setNewMessageListener((chatMessage, isChatShown) -> {
+    // Handle new message
+});
 ```
 
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
+# UI customization
 
-and then initializing the **ChatWindow** with the full screen window approach:
+While the chat appearance and language are managed through the application settings, you can customize the error view when the chat cannot be loaded.
 
-<Code>
-<CodeSample path={'FULL SCREEN WINDOW APPROACH'}>
+## Error view
 
-```java
-public void startEmmbeddedChat(View view) {
-    if (!emmbeddedChatWindow.isInitialized()) {
-        emmbeddedChatWindow.setConfiguration(configuration);
-        emmbeddedChatWindow.setEventsListener(this);
-        emmbeddedChatWindow.initialize();
-    }
-    emmbeddedChatWindow.showChatWindow();
-}
-```
+You can localize and change the text displayed in the error view by overriding string resources in your app's `strings.xml`. All strings can be found in the [GitHub repository](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/res/values/strings.xml).
 
-</CodeSample>
-</Code>
+You can also entirely override the default error view by including `live_chat_error_layout.xml` in your app's layout resources.
 
-## Navigation
-
-Depending on your use case you may want to hide the **ChatWindow** if a user hits the back button.
-You can use our `onBackPressed()` function which hides the view if it's visible and returns `true`.
-Add the following to your activity/fragment:
-
-<Code>
-<CodeSample path={'NAVIGATION'}>
-
-```java
-@Override
-public boolean onBackPressed() {
-    return fullScreenChatWindow != null && fullScreenChatWindow.onBackPressed();
-}
-```
-
-</CodeSample>
-</Code>
-
-# ChatWindowEventsListener
-
-The `ChatWindowEventsListener` listener allows you to:
-
-- handle a case when a user wants to attach a file in the **ChatWindow**
-- get notified if a new message has arrived in a chat (this comes in handy if you want to show a prompt for a user to read the new message)
-- react to visibility changes (the users can hide the view on their own)
-- handle user-selected links in a custom way
-- react to and handle errors coming from the chat widget
-- allow users to use SnapCall integration
-
-## File sharing
-
-To provide your users with the option to send files, you need to set `ChatWindowEventsListener` on your `ChatWindowView`.
-
-Your listener should override the `onStartFilePickerActivity` method and call `startActivityForResult` with `intent` and `requestCode`.
-
-<Code>
-<CodeSample path={'SEND FILES'}>
-
-```java
-@Override
-public void onStartFilePickerActivity(Intent intent, int requestCode) {
-    startActivityForResult(intent, requestCode);
-}
-```
-
-</CodeSample>
-</Code>
-
-Then, enable the view to handle the activity result, for example, in the following way:
-
-```java
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (fullChatWindow != null) fullChatWindow.onActivityResult(requestCode, resultCode, data);
-    super.onActivityResult(requestCode, resultCode, data);
-}
-```
-
-## Handling URLs
-
-You can disable chat widget's default behavior when a user selects a link by implementing the `handleUri` method from `ChatWindowEventsListener`.
-
-<Code>
-<CodeSample path={'HANDLING URLS'}>
-
-```java
-@Override
-public boolean handleUri(Uri uri) {
-	// Handle uri here...
-	return true; // Return true to disable default behavior.
-}
-```
-
-</CodeSample>
-</Code>
-
-## Error handling
-
-Errors are reported through the `onError` callback. Return `true` if you don't want the ChatWindow to display an error view with a reload button. The ChatWindow handles connection issues and can reconnect automatically.
-
-We aim to report only critical errors. If you notice an important error being ignored or a non-critical error being reported, please inform us.
-
-Refer to `ChatWindowEventsListener.onError` and `ChatWindowErrorType` for more details.
-
-## Clear chat session
-
-After your user signs out of the app, you might want to clear the chat session. You can do that by invoking a static method on `ChatWindowUtils.clearSession()` from anywhere in the app.
-
-In case your `ChatWindowView` is attached during the logout flow, you will also need to reload it by calling `chatWindow.reload()` after the `clearSession` code. See <a href="https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java" target="_blank" rel="noopener noreferrer">FullScreenWindowActivityExample.java</a>.
-
-# Sample application
-
-This sample app will display a chat trigger button. Once clicked, a chat widget with your support team will be opened in the app.
-
-You can refer to our sample `app` in the module. There are examples for three usage cases:
-
-- Full screen chat widget launched inside of an Activity
-- Embedded chat widget launched from a Fragment
-- Starting ChatWindowActivity (with limited capabilities)
-
-Possible use-cases include: adding a chat button to your “Contact us” screen or displaying a chat button all the time within the app. Read more about [providing in-app support](http://www.livechat.com/blog/2013/10/new-approach-to-in-app-support/) in mobile applications.
-
-# Sample usage
-
-There are two ways to open the chat widget – by using an Activity or a Fragment.
+**Note:** Your custom error view must contain a `View` with `live_chat_error_button` id when using `LiveChat.getInstance().show()`.
 
 ## Activity
 
-In order to open a chat widget in a new Activity, you need to declare `ChatWindowActivity` in your manifest. Add the following line to `AndroidManifest.xml`, between `<application></application>` tags:
+By default, activity will follow your activity's theme. To change this configuration, you can override the activity declaration in your app's `AndroidManifest.xml` file.
+
+# Clearing chat session
+
+The chat window uses WebView's cookies to store the session. To clear the chat session, call:
 
 <Code>
-<CodeSample path={'OPEN CHAT WIDGET IN NEW ACTIVITY'}>
+<CodeSample path={'CLEAR CHAT SESSION'}>
 
-```xml
-<activity 
-    android:name="com.livechatinc.inappchat.ChatWindowActivity" 
-    android:configChanges="orientation|screenSize" 
-    android:exported="false" 
-/>
+```kotlin
+LiveChat.getInstance().signOutCustomer()
 ```
 
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
+# Link handling
 
-Finally, add the following code to your application, in the place where you want to open the chat widget (e.g. button listener). You need to provide a **Context** (your Activity or Application object) and your LiveChat license number:
+By default, links in the chat are opened in the customer's default browser. If you want to intercept the link and handle it in your app, provide your `UrlHandler`.
 
 <Code>
-<CodeSample path={'OPEN CHAT WIDGET IN NEW ACTIVITY'}>
+<CodeSample path={'HANDLE LINKS - KOTLIN'}>
 
-```java
-Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
-Bundle config = new ChatWindowConfiguration.Builder()
-.setLicenceNumber("<your_license_number>")
-    .build()
-intent.putExtra(ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG, windowConfig);
-startActivity(intent);
+```kotlin
+LiveChat.getInstance().urlHandler =
+        UrlHandler { url ->
+            // Return true if handled, false to open in browser
+            return@UrlHandler false
+        }
 ```
 
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
-
-It’s also possibile to automatically log in to chat window by providing visitor’s name and email and disabling [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey).
-
-## Fragment
-
-In order to open chat widget in a new Fragment, you need to add the following code to your application, in the place where you want to open the chat widget (e.g. button listener). You also need to provide your LiveChat licence number:
-
 <Code>
-<CodeSample path={'OPEN CHAT WIDGET IN NEW FRAGMENT'}>
+<CodeSample path={'HANDLE LINKS - JAVA'}>
 
 ```java
-getSupportFragmentManager()
-   .beginTransaction()
-   .replace(
-        R.id.frame_layout, 
-        ChatWindowFragment.newInstance(
-            "your_license_number", 
-            "your_group_id", // optional
-            "visitor_name", // optional
-            "visitor_email",// optional     
-        ), 
-        "chat_fragment"
-    )
-   .addToBackStack("chat_fragment")
-   .commit();
+LiveChat.getInstance().setUrlHandler(uri -> {
+    // Return true if handled, false to open in browser
+    return false;
+});
 ```
 
 </CodeSample>
 </Code>
 
-<div class="clear"></div>
+# Troubleshooting
 
-It’s also possible to automatically log in to chat window by providing visitor’s name and email to the Fragment and disabling [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey).
+## Error handling
 
-# Alternative usage
-
-**Note: This option has limited capabilities.**
-
-If you don't need to be notified when user gets new message in a hidden ChatWindow, you might want to use `ChatWindowActivity` or `ChatWindowFragment`.
-
-# Localization
-
-You can change or localize error messages by defining your own string resources with the following ids:
-
-```java
-<string name="failed_to_load_chat">Couldn\'t load chat.</string>
-<string name="cant_share_files">File sharing is not configured for this app</string>
-<string name="reload_chat">Reload</string>
-```
-
-# Migrating to version >= 2.2.0
-
-- ChatWindowView is now interface that can be casted to View
-- `setUpWindow(configuration);` is replaced by `setConfiguration(configuration);`
-- `setUpListener(listener)` is replaced by `setEventsListener(listener)`
-- `ChatWindowView.clearSession()` is moved to `ChatWindowUtils.clearSession(Context)`
-- `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())`
-
-# Migrating to versions >=2.3.x
-
-- You no longer need to specify `android.permission.READ_EXTERNAL_STORAGE` permission in your AndroidManifest.xml
-
-# SnapCall integration
-
-The SnapCall integration requires AUDIO and VIDEO permissions. In order to allow your users to use the SnapCall integration, you need to:
-
-1. Set up your ChatWindowView Event listener, check [ChatWindowEventsListener](#ChatWindowEventsListener).
-2. Add following permissions to you app `AndroidManifest.xml` file
+You can set an error listener to monitor and handle issues related to loading the chat view. This allows you to capture and respond to errors in a centralized way. Common use cases include reporting errors to analytics platforms or implementing custom error-handling logic.
 
 <Code>
-<CodeSample path={'ADD PERMISSIONS'}>
+<CodeSample path={'ERRORS - KOTLIN'}>
 
-```xml
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-```
-
-</CodeSample>
-</Code>
-
-3. Override `void onRequestAudioPermissions(String[] permissions, int requestCode)` to ask the user for permissions, as in the example below:
-
-```java
-@Override
-public void onRequestAudioPermissions(String[] permissions, int requestCode) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        this.requestPermissions(permissions, requestCode);
-    }
+```kotlin
+LiveChat.getInstance().errorListener = ErrorListener { error ->
+    // Handle the error
 }
 ```
 
-4. Override your activity `void onRequestPermissionsResult(int requestCode,`
-   `@NonNull String[] permissions, @NonNull int[] grantResults)` to pass result to `ChatWindowView`
-
-
+</CodeSample>
+</Code>
 <Code>
-<CodeSample path={'OVERRIDE ACTIVITY'}>
+<CodeSample path={'ERRORS - JAVA'}>
 
 ```java
-if (!chatWindow.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+LiveChat.getInstance().setErrorListener((error) -> {});
+```
+
+</CodeSample>
+</Code>
+
+## Logger
+
+You can configure the logging level to help with debugging and troubleshooting. Set the desired level before initializing LiveChat:
+
+<Code>
+<CodeSample path={'LOGGER - KOTLIN'}>
+
+```kotlin
+Logger.setLogLevel(Logger.LogLevel.VERBOSE)
+```
+
+</CodeSample>
+</Code>
+
+<Code>
+<CodeSample path={'LOGGER - JAVA'}>
+
+```java
+Logger.setLogLevel(Logger.LogLevel.VERBOSE);
+```
+
+</CodeSample>
+</Code>
+
+Refer to the [Logger](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/utils/Logger.kt) for all available log levels.
+
+**Note**: Network calls require at least the `INFO` level. `DEBUG` and `VERBOSE` levels are more detailed.
+
+## Missing file picker activity
+
+If you want to react or track instances where the activity for file picking on the user device is not found, you can set a listener for this event:
+
+<Code>
+<CodeSample path={'FILE PICKER NOT FOUND - KOTLIN'}>
+
+```kotlin
+LiveChat.getInstance().filePickerNotFoundListener = FilePickerActivityNotFoundListener {
+    // Handle file picker activity not found
 }
 ```
 
 </CodeSample>
 </Code>
 
-For reference, check `FullScreenWindowActivityExample.java`
-
-# Translation
-
-You can change or translate error messages by defining your own string resources with the following IDs:
-
 <Code>
-<CodeSample path={'TRANSLATION'}>
+<CodeSample path={'FILE PICKER NOT FOUND - JAVA'}>
 
-```xml
-<string name="failed_to_load_chat">Couldn\'t load chat.</string>
-<string name="cant_share_files">File sharing is not configured for this app</string>
+```java
+LiveChat.getInstance().setFilePickerNotFoundListener(() -> {});
 ```
 
 </CodeSample>
 </Code>
+
+# Advanced usage
+
+The following features give you more control over the SDK integration. Note that they require additional implementation steps. If you decide to use any of these, please let us know about your use case — we would love to hear about it!
+
+## LiveChatView lifecycle scope
+
+By default, after the `LiveChat.getInstance().show()` view is initialized, it's kept in the application memory. This allows you to react to new messages, for example, display a [counter for unread messages](#unread-message-counter). To automatically free up memory when the chat is no longer visible, you can use `LiveChatViewLifecycleScope` to control its lifecycle.
+
+You should specify the scope when initializing the SDK:
+
+<Code>
+<CodeSample path={'LIFECYCLE SCOPE - KOTLIN'}>
+
+```kotlin
+LiveChat.initialize("<LICENSE>", this, lifecycleScope = LiveChatViewLifecycleScope.ACTIVITY)
+```
+
+</CodeSample>
+</Code>
+
+<Code>
+<CodeSample path={'LIFECYCLE SCOPE - JAVA'}>
+
+```java
+LiveChat.initialize("<LICENSE>", this, LiveChatViewLifecycleScope.ACTIVITY);
+```
+
+</CodeSample>
+</Code>
+
+**Note:** With the `ACTIVITY` scope, the `NewMessageListener` only works while the chat is visible.
+
+## Embed LiveChatView in your layout
+
+You can embed the `LiveChatView` directly in your layout for more control over the chat window and its placement, instead of using `LiveChat.getInstance().show()`. For full implementation details, refer to the [LiveChatActivity](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/presentation/LiveChatActivity.kt).
+
+Here is a short overview of the steps to embed the `LiveChatView` in your layout:
+
+### 1. Add LiveChatView to your layout
+
+Begin with adding `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` to your layout XML file. 
+
+### 2. Provide activity or fragment context
+
+During `onCreate` of your `Activity` or `Fragment`, call:
+
+<Code>
+<CodeSample path={'ATTACH CONTEXT'}>
+
+```kotlin
+liveChatView.attachTo(this)
+```
+
+</CodeSample>
+</Code>
+
+This is required to properly handle the view's lifecycle, support file sharing, and launch links in the default external browser.
+
+### 3. React to visibility events
+
+Provide `LiveChatView.InitListener` when initializing the view:
+
+<Code>
+<CodeSample path={'VIEW INIT CALLBACK'}>
+
+```kotlin
+liveChatView.init(initCallbackListener)
+```
+
+</CodeSample>
+</Code>
+
+# Migrating from v2.5.0 to 3.0.0
+
+If you're migrating from older SDK versions, here's the breakdown of the most important information you need to take note of:
+
+- The SDK is now Kotlin-based.
+- The API is now streamlined and uses the `LiveChat` singleton.
+- The package changed to `com.livechatinc.chatsdk`.
+
+For the full migration guide, refer to the [README](https://github.com/livechat/chat-window-android) available in the SDK's repository.
