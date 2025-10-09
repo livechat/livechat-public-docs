@@ -34,3 +34,7 @@ export { default as getProductSource } from "./responses/other/getProductSource.
 
 export { default as listCustomerBans } from "./responses/bans/listCustomerBans.json"
 export { default as unbanCustomer } from "./responses/bans/unbanCustomer.json"
+
+export { default as listGreetings } from "./responses/greetings/listGreetings.json"
+export { default as getGreeting } from "./responses/greetings/getGreeting.json"
+export { default as createGreeting } from "./responses/greetings/createGreeting.json"
