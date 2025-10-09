@@ -38,6 +38,7 @@ All configurations set by this API will have action in system after max 2 minute
 | **Auto access**   | [`add_auto_access`](#add-auto-access) [`list_auto_access`](#list-auto-access) [`delete_auto_access`](#delete-auto-access) [`update_auto_access`](#update-auto-access)                                                                                                                                                                                                                                                                                                                                                       |
 | **Bots**          | [`create_bot_template`](#create-bot-template) [`create_bot`](#create-bot) [`delete_bot_template`](#delete-bot-template) [`delete_bot`](#delete-bot) [`update_bot_template`](#update-bot-template) [`update_bot`](#update-bot) [`list_bot_templates`](#list-bot-templates) [`get_bot`](#get-bot) [`list_bots`](#list-bots) [`issue_bot_token`](#issue-bot-token) [`reset_bot_template_secret`](#reset-bot-template-secret) [`reset_bot_secret`](#reset-bot-secret)                                                           |
 | **Customer bans** | [`list_customer_bans`](#list-customer-bans) [`unban_customer`](#unban-customer)                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Greetings**     | [`create_greeting`](#create-greeting), [`update_greeting`](#update-greeting), [`delete_greeting`](#delete-greeting), [`list_greetings`](#list-greetings), [`get_greeting`](#get-greeting)                                                                                                                                                                                                                                                                                                                                   |
 | **Groups**        | [`create_group`](#create-group) [`get_group`](#get-group) [`list_groups`](#list-groups) [`update_group`](#update-group) [`delete_group`](#delete-group)                                                                                                                                                                                                                                                                                                                                                                     |
 | **Properties**    | [`register_properties`](#register-properties) [`unregister_properties`](#unregister-properties) [`publish_properties`](#publish-properties) [`list_properties`](#list-properties) [`update_license_properties`](#update-license-properties) [`delete_license_properties`](#delete-license-properties) [`list_license_properties`](#list-license-properties) [`update_group_properties`](#update-group-properties) [`delete_group_properties`](#delete-group-properties) [`list_groups_properties`](#list-groups-properties) |
 | **Tags**          | [`create_tag`](#create-tag) [`delete_tag`](#delete-tag) [`list_tags`](#list-tags) [`update_tag`](#update-tag)                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -1960,6 +1961,430 @@ curl -X POST \
 
 </Section>
 
+
+# Greetings
+
+Greetings let you manage your campaigns.
+
+## Methods
+
+| HTTP method | The Greetings API endpoint                                          |
+| ----------- | ---------------------------------------------------------------- |
+| `POST`      | `https://api.livechatinc.com/v3.6/configuration/action/<action>` |
+
+| Required header | Value              |
+| --------------- | ------------------ |
+| `Content-Type`  | `application/json` |
+
+<Section>
+
+<Text>
+
+### Create Greeting
+
+Creates a new greeting.
+
+#### Specifics
+
+|                                  |                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.6/configuration/action/create_greeting` |
+| Required scopes                  | `greetings:rw`                                                          |
+| [Batch support](#batch-requests) | No                                                                      |
+
+#### Request
+
+| Parameter                          | Required | Data type                      | Notes                                                                                                         |
+| ---------------------------------- | -------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `type`             | Yes      | `string`                       | Greeting type, one of: `normal` (standard greeting type) or `announcement` (announcement-style greeting)                                                                                                 |
+| `active`                           | Yes      | `bool`                         | Greeting status                                                                                |
+| `active_from`                      | No       | `string`                       | RFC 3339 date-time format; when the greeting becomes active                                                   |
+| `active_until`                     | No       | `string`                       | RFC 3339 date-time format; when the greeting stops being active                                               |
+| `name`                             | Yes      | `string`                       | Greeting name                                                                                                 |
+| `group`                            | Yes      | `int`                          | Group ID the greeting belongs to                                             |
+| `rules`                           | Yes      | `object[]`                     | Array of action rules that define when the greeting should be triggered; accepts up to 10 rules                                       |
+| `rules[].condition` | Yes      | `string`                       | Logical condition for the rule; `and` (match all conditions), or `or` (match one of the conditions)                                                           |
+| `rules[].type`<sup>**1**</sup>     | Yes      | `string`                       | Type of the rule condition                                                                |
+| `rules[].operator`<sup>**2**</sup> | Yes      | `string`                       | Comparison operator for the rule. Not required for `url_funnel`<sup>**1**</sup>, `custom_variable`<sup>**1**</sup>, and `ads_traffic`<sup>**1**</sup> |
+| `rules[].value`                    | No       | `string`                       | Value to compare against, based on the selected `operator`<sup>**2**</sup>; required for most rule types                          |
+| `rules[].urls`                     | No       | `object[]`                     | Array of URLs; required only for the `url_funnel`<sup>**1**</sup> type; accepts up to 10 objects                                        |
+| `rules[].urls[].url`               | No       | `string`                       | URL for the `url_funnel`<sup>**1**</sup> rule; required when `urls` array is used                                                                    |
+| `rules[].urls[].operator`<sup>**2**</sup> | No       | `string`                | Operator for the URL comparison; required when `urls` array is used                                                            |
+| `rules[].session_field`            | No       | `object`                       | Key-value pairs; required for `custom_variable`<sup>**1**</sup> and `ads_traffic`<sup>**1**</sup> types - exactly one element |
+| `properties`<sup>**3**</sup>       | No      | `object`                       | Additional properties for the greeting as key-value pairs                                                     |
+| `rich_message`<sup>**4**</sup>     | No      | `object`                       | Rich message content of the greeting                                                                          |
+
+
+
+
+
+**1)** Parameter requirements for each `rules[].type` value:
+
+| Type value         | Required Parameters | Parameter Details                                                                                          |
+| ------------------ | ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `visit_time_site`  | `value`, `operator` | `value` must be integer 0-900 (seconds spent on the entire website)                                           |
+| `visit_time_page`  | `value`, `operator` | `value` must be integer 0-900 (seconds spent on the current page)                                             |
+| `url_current`      | `value`, `operator` | `value` contains current page URL to match                                                                 |
+| `url_visited`      | `value`, `operator` | `value` contains previously visited URL to match                                                           |
+| `url_funnel`       | `urls`              | `urls` array with 1-10 URL objects, each with `url` and `operator` |
+| `pages_view_number`| `value`, `operator` | `value` contains number of pages viewed to compare                                                         |
+| `url_referrer`     | `value`, `operator` | `value` contains referrer URL to match                                                                     |
+| `geolocation`      | `value`, `operator` | `value` contains geographic location to match                                                              |
+| `visits_number`    | `value`, `operator` | `value` contains number of visits to compare                                                               |
+| `search_keyword`   | `value`, `operator` | `value` contains search keyword to match                                                                   |
+| `custom_variable`  | `session_field`     | `session_field` object with exactly one key-value pair (max 255 characters each) |
+| `ads_traffic`      | `session_field`     | `session_field` with one key from: `microsoft`, `facebook`, `google`, `twitter`, `yahoo` (value max 255 chars) |
+
+**2)** Possible values for the `rules[].operator` and `rules[].urls[].operator` parameters:
+
+- `equals`
+- `doesnt_equal`
+- `lower_than`
+- `lower_or_equal`
+- `greater_than`
+- `greater_or_equal`
+- `contains`
+- `doesnt_contain`
+
+**3)** Possible values for the `properties` object keys:
+
+| Possible value              | Notes                                   |
+| --------------------------- | --------------------------------------- |
+| `addon`                     | Addon-related property                  |
+| `is_exit_intent`            | Exit intent detection flag              |
+| `greeting-message_text`     | Plain text message content              |
+| `greeting-message_json_key` | JSON key for message content            |
+| `greeting-message_phrase_key` | Phrase key for message content        |
+
+**4)** The `rich_message` object structure:
+
+| Parameter                         | Required | Data type | Notes                                                                                                                                                                                                                                            |
+| --------------------------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `template_id`                     | yes      | `string`  | Defines how every rich message will be presented; possible values: `cards`, `sticker`, or `quick_replies`                                                                                                                                               |
+| `elements`                        | no       | `array`   | Can contain up to 10 `element` objects                                                                                                                                                                                                          |
+| `elements[].title`                | yes      | `string`  | Displays formatted text on rich messages                                                                                                                                                                                                                 |
+| `elements[].subtitle`             | yes      | `string`  | Displays formatted text on rich messages                                                                                                                                                                                                                  |
+| `elements[].image`                | yes      | `object`  | Displays images on rich messages. Required param: `url`; Optional params: `name`, `content_type`, `size`, `width`, `height`, `alternative_text`.                                                                                                           |
+| `elements[].image.url`            | yes      | `string`  | Image URL                                                                                                                                                                                                                                        |
+| `elements[].image.alternative_text` | no     | `string`  | Alternative text for the image                                                                                                                                                                                                                   |
+| `elements[].buttons`              | no       | `array`   | Displays up to 13 `button` objects                                                                                                                                                                                         |
+| `elements[].buttons[].text`       | yes      | `string`  |  Button text                                                                                                                                                                                                                      |
+| `elements[].buttons[].type`       | yes      | `string`  | Defines the behavior after a user clicks the button. Should be used together with `elements.buttons.value`. Possible values: `webview`, `message`, `url`, `phone`. [Read more about rich messages.](/extending-chat-widget/rich-messages/#getting-started)              |
+| `elements[].buttons[].value`      | yes      | `string`  | Should be used together with `elements.buttons.type`. You can use this field to give the rich message of a `webview` type (a Moment) a custom title. [Read more about Moments.](/extending-chat-widget/chat-widget-moments/#how-to-start)                         |
+| `elements[].buttons[].postback_id` | yes     | `string`  | A unique (in the whole greeting) ID of the button. It will be used to report the button actions using [`send_greeting_postback`](/messaging/customer-chat-api/v3.6/#send-greeting-postback)                                                      |
+| `elements[].buttons[].role`   | no      | `string`   | Button role, one of: `default`, `primary`, or `danger`                                                                                                                                                                                                                          |
+
+
+
+
+#### Response
+
+| Field | Data type | Notes                            |
+| ----- | --------- | -------------------------------- |
+| `id`  | `int`     | ID of the newly created greeting |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.6/configuration/action/create_greeting \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "type": "normal",
+        "active": true,
+        "active_from": "2024-01-01T00:00:00Z",
+        "active_until": "2024-12-31T23:59:59Z",
+        "name": "Welcome greeting",
+        "group": 0,
+        "rules": [
+          {
+            "condition": "and",
+            "type": "url_current",
+            "operator": "contains",
+            "value": "checkout"
+          },
+          {
+            "condition": "or",
+            "type": "visit_time_site",
+            "operator": "greater_than",
+            "value": "30"
+          }
+        ],
+        "properties": {
+          "addon": "chat_widget",
+          "is_exit_intent": "false"
+        },
+        "rich_message": {
+          "template_id": "text",
+          "elements": [
+            {
+              "title": "Welcome to our website!",
+              "subtitle": "How can we help you today?"
+            }
+          ]
+        }
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.6" json="createGreeting"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Update Greeting
+
+Updates the properties of a greeting.
+
+#### Specifics
+
+|                                  |                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.6/configuration/action/update_greeting` |
+| Required scopes                  | `greetings:rw`                                                          |
+| [Batch support](#batch-requests) | No                                                                      |
+
+#### Request
+
+| Parameter                          | Required | Data type                      | Notes                                                                                                         |
+| ---------------------------------- | -------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `id`                               | Yes      | `int`                          | ID of the greeting to update                                                                                  |
+| `type`                             | No       | `string`                       | Greeting type                                                                                                 |
+| `active`                           | No       | `bool`                         | Greeting status                                                                                |
+| `active_from`                      | No       | `string`                       | RFC 3339 date-time format; when the greeting becomes active                                                   |
+| `active_until`                     | No       | `string`                       | RFC 3339 date-time format; when the greeting stops being active                                               |
+| `name`                             | No       | `string`                       | Greeting name                                                                   |
+| `rules`                            | No       | `object[]`                     | Array of action rules; see [Create Greeting](#create-greeting) for detailed structure and validation |
+| `properties`                       | No       | `object`                       | Additional properties; see [Create Greeting](#create-greeting) for allowed keys     |
+| `rich_message`                     | No       | `object`                       | Rich message content; see [Create Greeting](#create-greeting) for complete structure |
+
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.6/configuration/action/update_greeting \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": 123,
+        "active": false,
+        "name": "Updated welcome greeting",
+        "rules": [
+          {
+            "condition": "and",
+            "type": "url_current",
+            "operator": "contains",
+            "value": "product"
+          }
+        ],
+        "properties": {
+          "addon": "chat_widget",
+          "is_exit_intent": "true"
+        },
+        "rich_message": {
+          "template_id": "text",
+          "elements": [
+            {
+              "title": "Updated greeting message!",
+              "subtitle": "Can we help you find a product?"
+            }
+          ]
+        }
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Greeting
+
+Deletes a greeting.
+
+#### Specifics
+
+|                                  |                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.6/configuration/action/delete_greeting` |
+| Required scopes                  | `greetings:rw`                                                          |
+| [Batch support](#batch-requests) | No                                                                      |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                          |
+| --------- | -------- | --------- | ------------------------------ |
+| `id`      | Yes      | `int`     | ID of the greeting to delete   |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.6/configuration/action/delete_greeting \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": 123
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Greetings
+
+Returns a list of greetings.
+
+#### Specifics
+
+|                                  |                                                                        |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.6/configuration/action/list_greetings` |
+| Required scopes                  | `greetings:ro`                                                         |
+| [Batch support](#batch-requests) | No                                                                     |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                                                                                                                                                                         |
+| ---------- | -------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `groups`   | No       | `array`   | Array of group IDs to filter greetings; defaults to all accesible groups. Cannot be used with `page_id`.                                                                                   |
+| `page_id`  | No       | `string`  | Page ID for pagination. When provided, `groups` and `limit` parameters are ignored as they're encoded in the page ID. Cannot be used with `groups` or `limit`.                           |
+| `limit`    | No       | `int`     | Number of greetings per page; default: 100. Limited to 100. Cannot be used with `page_id`.                                                                                                     |
+
+#### Response
+
+| Field             | Data type | Notes                                                                                                        |
+| ----------------- | --------- | ------------------------------------------------------------------------------------------------------------ |
+| `greetings`       | `array`   | Array of greeting objects  |
+| `found_greetings` | `int`     | The total number of greetings.                                                 |
+| `next_page_id`    | `string`  | Page ID for the next page of results; returned only if more results are available.                     |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.6/configuration/action/list_greetings \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "groups": [0, 1],
+        "limit": 25
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.6" json="listGreetings"/>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get Greeting
+
+Returns the details of a specific greeting.
+
+#### Specifics
+
+|                                  |                                                                       |
+| -------------------------------- | --------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.6/configuration/action/get_greeting` |
+| Required scopes                  | `greetings:ro`                                                        |
+| [Batch support](#batch-requests) | No                                                                    |
+
+#### Request
+
+| Parameter | Required | Data type | Notes                      |
+| --------- | -------- | --------- | -------------------------- |
+| `id`      | Yes      | `int`     | ID of the greeting to get  |
+
+#### Response
+
+
+| Field           | Data type | Notes                                                                      |
+| --------------- | --------- | -------------------------------------------------------------------------- |
+| `id`            | `int`     | Greeting ID                                                               |
+| `type`          | `string`  | Greeting type                               |
+| `active`        | `boolean` | Greeting status                                           |
+| `active_from`   | `string`  | ISO 8601 datetime when the greeting becomes active (if set)              |
+| `active_until`  | `string`  | ISO 8601 datetime when the greeting stops being active (if set)         |
+| `name`          | `string`  | Greeting name                                                             |
+| `group`         | `int`     | ID of the group the greeting is assigned to                                   |
+| `rules`         | `array`   | Array of rule objects, see [Create Greeting](#create-greeting) for details |
+| `properties`    | `object`  | Additional properties, see [Create Greeting](#create-greeting) for details |
+| `rich_message`  | `object`  | Rich message content, see [Create Greeting](#create-greeting) for details  |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.6/configuration/action/get_greeting \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": 123
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse type="configuration" version="v3.6" json="getGreeting"/>
+
+</Code>
+
+</Section>
 
 # Groups
 
