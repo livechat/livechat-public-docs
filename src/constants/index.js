@@ -4,7 +4,7 @@ const VERSIONS_GROUPS = {
     LEGACY_VERSIONS: ["3.5", "3.4"],
     DEV_PREVIEW_VERSION: "3.7",
     DEPRECATED_VERSIONS: [],
-    ALL_VERSIONS: ["3.7", "3.6", "3.5", "3.4", "3.3"],
+    ALL_VERSIONS: ["3.7", "3.6", "3.5", "3.4"],
   },
   "chat-widget": {
     STABLE_VERSION: "4.0",
@@ -18,7 +18,7 @@ const VERSIONS_GROUPS = {
     LEGACY_VERSIONS: ["3.5", "3.4", "2.0"],
     DEV_PREVIEW_VERSION: "3.7",
     DEPRECATED_VERSIONS: [],
-    ALL_VERSIONS: ["3.7", "3.6", "3.5", "3.4", "3.3", "2.0"],
+    ALL_VERSIONS: ["3.7", "3.6", "3.5", "3.4", "2.0"],
   },
   "customer-accounts-api": {
     STABLE_VERSION: "2.0",
