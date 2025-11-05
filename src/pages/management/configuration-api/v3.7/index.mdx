@@ -35,6 +35,7 @@ All configurations set by this API will have action in system after max 2 minute
 |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Agents**           | [`create_agent`](#create-agent) [`get_agent`](#get-agent) [`list_agents`](#list-agents) [`update_agent`](#update-agent) [`delete_agent`](#delete-agent) [`suspend_agent`](#suspend-agent) [`unsuspend_agent`](#unsuspend-agent) [`request_agent_unsuspension`](#request-agent-unsuspension) [`approve_agent`](#approve-agent)                                                                                                                                                                                               |
+| **Allowed domains**  | [`add_allowed_domain`](#add-allowed-domain) [`list_allowed_domains`](#list-allowed-domains) [`delete_allowed_domain`](#delete-allowed-domain)                                                                                                                                                                                                                                                                                                                                                                               |
 | **Auto access**      | [`add_auto_access`](#add-auto-access) [`list_auto_access`](#list-auto-access) [`delete_auto_access`](#delete-auto-access) [`update_auto_access`](#update-auto-access)                                                                                                                                                                                                                                                                                                                                                       |
 | **Bots**             | [`create_bot_template`](#create-bot-template) [`create_bot`](#create-bot) [`delete_bot_template`](#delete-bot-template) [`delete_bot`](#delete-bot) [`update_bot_template`](#update-bot-template) [`update_bot`](#update-bot) [`list_bot_templates`](#list-bot-templates) [`get_bot`](#get-bot) [`list_bots`](#list-bots) [`issue_bot_token`](#issue-bot-token) [`reset_bot_template_secret`](#reset-bot-template-secret) [`reset_bot_secret`](#reset-bot-secret)                                                           |
 | **Customer bans**    | [`list_customer_bans`](#list-customer-bans) [`unban_customer`](#unban-customer)                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -836,6 +837,158 @@ curl -X POST \
 
 </Section>
 
+# Allowed domains
+
+**Allowed domains** is a security feature that enables you to restrict which domains can embed your chat widget. By configuring allowed domains, you can prevent unauthorized websites from using your LiveChat license. Only domains explicitly added to the allowed list will be able to display and use your chat widget.
+
+## Methods
+
+<Section>
+
+<Text>
+
+### Add Allowed Domain
+
+Adds a new domain to the allowed domains list.
+
+#### Specifics
+
+|                                  |                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/add_allowed_domain` |
+| Required scopes                  | `domain_manage`                                                 |
+| [Batch support](#batch-requests) | No                                                                           |
+
+| Parameter | Required | Data type | Notes                                             |
+| --------- | -------- | --------- | ------------------------------------------------- |
+| `domain`  | Yes      | `string`  | Domain name (max 255 characters)         |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/add_allowed_domain \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "domain": "example.com"
+      }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List Allowed Domains
+
+Returns all domains currently allowed to embed your chat widget.
+
+#### Specifics
+
+|                                  |                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/list_allowed_domains` |
+| Required scopes                  | `domain_manage`                                                   |
+| [Batch support](#batch-requests) | No                                                                             |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/list_allowed_domains \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "domains": [
+    "example.com",
+    "subdomain.example.com",
+    "another-domain.com"
+  ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Delete Allowed Domain
+
+Removes a domain from the allowed domains list.
+
+#### Specifics
+
+|                                  |                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/delete_allowed_domain` |
+| Required scopes                  | `domain_manage`                                                    |
+| [Batch support](#batch-requests) | No                                                                              |
+
+| Parameter | Required | Data type | Notes                            |
+| --------- | -------- | --------- | -------------------------------- |
+| `domain`  | Yes      | `string`  | Domain name            |
+
+#### Response
+
+No response payload (`200 OK`).
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/delete_allowed_domain \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+        "domain": "example.com"
+      }'
+```
+
+</CodeSample>
+
+</Code>
+
+</Section>
+
 # Auto access
 
 **Auto access** allows you to assign groups to a thread that will be created when a customer starts a chat. Those groups are
@@ -1272,6 +1425,7 @@ Creates a new bot. To make the bot available for receiving chats or webhooks, us
 | `groups`                                 | No       | `object[]` | Groups the Bot belongs to.                                                                                                                                                                                                                                                                      |
 | `groups[].id`                            | No       | `int`      | Group ID; required only when `group`'s included.                                                                                                                                                                                                                                                |
 | `groups[].priority`<sup>**1**</sup>      | Yes      | `string`   | Bot's priority in a group; required only when `group`'s included.                                                                                                                                                                                                                               |
+| `type`                                   | No       | `string`   | A custom value to categorize or identify the bot. Defaults to `chatbot`.
 | `work_scheduler`                         | No       | `object`   | Work scheduler options to set for the new Bot. See [**Create Agent**](#create-agent) for details.                                                                                                                                                                                               |
 | `work_scheduler.timezone`                | Yes      | `string`   | The time zone in which the Bot's work scheduler should operate.                                                                                                                                                                                                                                 |
 | `owner_client_id`<sup>**2**</sup>        | Yes      | `string`   | Required only when authorizing via [PATs](/authorization/agent-authorization#personal-access-tokens). When you provide this param while authorizing with a Bearer Token, the `client_id` associated with the Bearer Token will be ignored, and provided `owner_client_id` will be used instead. |
@@ -1503,6 +1657,7 @@ Updates an existing bot.
 | `groups[].priority`<sup>**1**</sup>      | Yes      | `string`   | Bot's priority in the group; required only when `groups` is included.                             |
 | `default_group_priority`<sup>**1**</sup> | No       | `string`   | The default routing priority for a group without defined priority.                                |
 | `job_title`                              | No       | `string`   | Bot's job title                                                                                   |
+| `type`                                   | No       | `string`   | A custom value to categorize or identify the bot.                                                                                       |
 | `work_scheduler`                         | No       | `object`   | Work scheduler options to set for the new bot. See [**Create Agent**](#create-agent) for details. |
 | `work_scheduler.timezone`                | Yes      | `string`   | The time zone in which the bot's work scheduler should operate.                                   |
 
@@ -2067,7 +2222,6 @@ Creates a new greeting.
 | `elements[].buttons[].text`         | yes      | `string`  | Button text                                                                                                                                                                                                                                                |
 | `elements[].buttons[].type`         | yes      | `string`  | Defines the behavior after a user clicks the button. Should be used together with `elements.buttons.value`. Possible values: `webview`, `message`, `url`, `phone`. [Read more about rich messages.](/extending-chat-widget/rich-messages/#getting-started) |
 | `elements[].buttons[].value`        | yes      | `string`  | Should be used together with `elements.buttons.type`. You can use this field to give the rich message of a `webview` type (a Moment) a custom title. [Read more about Moments.](/extending-chat-widget/chat-widget-moments/#how-to-start)                  |
-| `elements[].buttons[].postback_id`  | yes      | `string`  | A unique (in the whole greeting) ID of the button. It will be used to report the button actions using [`send_greeting_postback`](/messaging/customer-chat-api/v3.7/#send-greeting-postback)                                                                |
 | `elements[].buttons[].role`         | no       | `string`  | Button role, one of: `default`, `primary`, or `danger`                                                                                                                                                                                                     |
 
 #### Response
@@ -3767,6 +3921,7 @@ For `bot` webhooks, you need to [create a bot](#create-bot), [register webhooks]
 | [`tag_created`](/management/webhooks/v3.7#tag_created)                                         |                                                  `source_type` |
 | [`tag_deleted`](/management/webhooks/v3.7#tag_deleted)                                         |                                                  `source_type` |
 | [`tag_updated`](/management/webhooks/v3.7#tag_updated)                                         |                                                  `source_type` |
+| [`thread_summary_set`](/management/webhooks/v3.7#thread_summary_set)                           |                `chat_presence`, `only_my_chats`, `source_type` |
 
 </Text>
 
@@ -4221,7 +4376,7 @@ Returns a paginated list of canned responses.
 | ----------------- | -------- | --------------- | ----------------------------------------------------------------------------------------- |
 | `group_ids`       | No       | `array[number]` | Filter by specific group IDs (if not provided, defaults to groups the user has access to) |
 | `include_private` | No       | `bool`          | Include private canned responses; default: `false`                                        |
-| `limit`           | No       | `number`        | Number of results per page (1-100, default: 100)                                          |
+| `limit`           | No       | `number`        | Number of results per page (1-100000, default: 100)                                          |
 | `page_id`         | No       | `string`        | Page ID for pagination                                                                    |
 
 #### Response
@@ -4234,14 +4389,16 @@ Returns a paginated list of canned responses.
 
 ##### Response
 
-| Parameter    | Data type       | Notes                                   |
-| ------------ | --------------- | --------------------------------------- |
-| `id`         | `number`        | Canned response ID                      |
-| `text`       | `string`        | Canned response text content            |
-| `tags`       | `array[string]` | Array of tags                           |
-| `group_id`   | `number`        | Group ID the canned response belongs to |
-| `is_private` | `bool`          | Whether the canned response is private  |
-| `author_id`  | `string`        | User ID of the last editor              |
+| Parameter    | Data type       | Notes                                          |
+| ------------ | --------------- | ---------------------------------------------- |
+| `id`         | `number`        | Canned response ID                             |
+| `text`       | `string`        | Canned response text content                   |
+| `tags`       | `array[string]` | Array of tags                                  |
+| `group_id`   | `number`        | Group ID the canned response belongs to        |
+| `is_private` | `bool`          | Whether the canned response is private         |
+| `author_id`  | `string`        | User ID of the last editor                     |
+| `created_at` | `string`        | Specifies when the canned response was created |
+| `updated_at` | `string`        | Specifies when the canned response was updated |
 
 <Code>
 
@@ -4272,7 +4429,9 @@ curl -X POST \
       "tags": ["greeting", "support", "updated"],
       "group_id": 1,
       "is_private": true,
-      "author_id": "agent123"
+      "author_id": "smith@example.com",
+      "created_at": "2025-10-17T08:16:45.000000Z",
+      "updated_at": "2025-10-17T08:16:45.000000Z",
     },
     {
       "id": 12346,
@@ -4280,7 +4439,9 @@ curl -X POST \
       "tags": ["follow-up"],
       "group_id": 1,
       "is_private": false,
-      "author_id": "agent456"
+      "author_id": "smith@example.com",
+      "created_at": "2025-10-10T08:16:45.000000Z",
+      "updated_at": "2025-22-17T07:11:28.288340Z",
     }
   ],
   "found_canned_responses": 25,
