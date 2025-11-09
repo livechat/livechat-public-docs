@@ -6,19 +6,31 @@ import { ChatWidgetIcon } from "assets/icons/cards/ChatWidget";
 import { HelpDeskApiIcon } from "assets/icons/cards/HelpDeskAPI";
 import { AuthorizationIcon } from "assets/icons/cards/Authorization";
 import { MonetizationIcon } from "assets/icons/cards/Monetization";
-import { DevConsoleToolsIcon } from "assets/icons/cards/DevConsoleTools";
-import { TextApiIcon } from "assets/icons/cards/TextAPI";
 import { BeginnerPathIcon } from "assets/icons/cards/BeginnerPath";
 import { AdvancedPathIcon } from "assets/icons/cards/AdvancedPath";
 import { PartnerApiIcon } from "assets/icons/cards/PartnerAPI";
 import { GuidesIcon } from "assets/icons/cards/Guides";
+import { GettingStartedCardIcon } from "assets/icons/cards/GettingStartedCard";
+import { ChangelogIcon } from "assets/icons/cards/Changelog";
 
 export const cards = [
+  {
+    title: "Getting started",
+    link: "/getting-started",
+    copy: "Learn the fundamentals needed to work with Text APIs.",
+    image: <GettingStartedCardIcon />,
+  },
   {
     title: "Guides and tutorials",
     link: "/guides",
     copy: "Step-by-step explainers for using APIs and the Text Platform.",
     image: <GuidesIcon />,
+  },
+  {
+    title: "Authorization",
+    link: "/authorization",
+    copy: "Authenticate and authorize users with OAuth flows. Manage scopes.",
+    image: <AuthorizationIcon />,
   },
   {
     title: "Messaging",
@@ -33,7 +45,7 @@ export const cards = [
     image: <ManagementIcon />,
   },
   {
-    title: "Data and Reporting",
+    title: "Data and reporting",
     link: "/data-reporting",
     copy: "Extract data to build custom reports and dashboards.",
     image: <DataReportingIcon />,
@@ -51,40 +63,28 @@ export const cards = [
     image: <ChatWidgetIcon />,
   },
   {
-    title: "HelpDesk API",
-    link: "/helpdesk",
-    copy: "Build integration for our ticketing system, HelpDesk.",
-    image: <HelpDeskApiIcon />,
-  },
-  {
-    title: "Authorization",
-    link: "/authorization",
-    copy: "Authenticate and authorize users with OAuth flows. Manage scopes.",
-    image: <AuthorizationIcon />,
-  },
-  {
     title: "Monetization",
     link: "/monetization",
     copy: "Seamless payment configuration right within the Platform.",
     image: <MonetizationIcon />,
   },
   {
-    title: "Developer Console Guides",
-    link: "/guides/console-guides",
-    copy: "Learn how to configure your app with Developer Console tools.",
-    image: <DevConsoleToolsIcon />,
-  },
-  {
-    title: "Text APIs",
-    link: "/text",
-    copy: "Build products powered by advanced text operations.",
-    image: <TextApiIcon />,
+    title: "HelpDesk API",
+    link: "/helpdesk",
+    copy: "Build integration for our ticketing system, HelpDesk.",
+    image: <HelpDeskApiIcon />,
   },
   {
     title: "Partner API",
     link: "/partner-program",
     copy: "Manage Partner Program data and integrate it into your systems.",
     image: <PartnerApiIcon />,
+  },
+  {
+    title: "Changelog",
+    link: "/changelog",
+    copy: "Keep track of changes and updates to the available APIs.",
+    image: <ChangelogIcon />,
   },
 ];
 
