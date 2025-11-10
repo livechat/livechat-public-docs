@@ -166,6 +166,7 @@ const Page = ({ frontMatter, children }) => {
       "customer-accounts-api",
       "text-api",
       "chat-api",
+      "customer-data-platform-api",
     ].includes(subcategory) || ["Chat API"].includes(title);
 
   return (
