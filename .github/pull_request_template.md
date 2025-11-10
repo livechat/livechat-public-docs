@@ -1,19 +1,24 @@
-# Deploy preview
+# Release requirements
 
-Scroll down to the checks section for the link to the deploy preview of your branch.
+⚠️ To merge your pull request, all changes must be approved by [@oliwiapolec](https://github.com/oliwiapolec). After your feature is live on production, DM Oliwia on Slack to release the documentation. **Avoid merging the changes yourself.**
 
-# Links
+## PR information
 
-Link your Jira ticket.
+- [Jira ticket]()
 
-- [Jira]()
+### What does this PR do? (optional)
+<!-- Brief description of the changes if extra explanation is needed -->
 
-# Description
+### Type of change
+<!-- Check one -->
+- [ ] Update
+- [ ] New feature
+- [ ] Fix
+
+## Deploy preview
+
+The deploy preview link will appear in the checks section below once the build is complete.
 
 ## Versioning
 
 Pull request titles should comply with the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. This is required to update the project's version.
-
-# Review and release
-
-Apply changes and resolve conflicts. Once the described functionality lands on prod, let us know on #platform-docs-releases that your PR is ready for release. We will **merge** and **publish** the changes.
