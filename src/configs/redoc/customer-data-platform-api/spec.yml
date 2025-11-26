@@ -174,8 +174,8 @@ paths:
     post:
       summary: v1/List customers
       description:
-        "Search and list customers with filtering, sorting, and pagination.
-        Required scope: 'customers:ro'"
+        "Available for Text App only. Search and list customers with filtering,
+        sorting, and pagination. Required scope: 'customers:ro'"
       parameters:
         - "$ref": "#/components/parameters/AuthHeader"
       requestBody:
@@ -280,6 +280,44 @@ paths:
                     example:
                       "validation error: invalid field 'city'. Allowed fields:
                       name, email, phone_number, country, and statistics fields"
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "422":
+          description: Invalid request body
+        "500":
+          description: Internal error
+  "/v1/get_customers_count":
+    post:
+      summary: v1/Get customers count
+      description:
+        "Available for Text App only. Returns a count of customers matching
+        the specified search criteria. The request body follows the same structure
+        as v1/list_customers, but sorting and pagination parameters are ignored. Required
+        scope: 'customers:ro'"
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GetCustomersCountRequest"
+      responses:
+        "200":
+          description: Count of customers matching search criteria
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    format: int64
+                    example: 1523
+        "400":
+          description: Invalid request (validation error)
         "401":
           description: Invalid access token
         "403":
@@ -531,7 +569,16 @@ components:
           type: integer
         orders_count:
           type: integer
-        last_visit_started_at:
+        last_activity_at:
+          type: string
+          format: date-time
+        last_visit_at:
+          type: string
+          format: date-time
+        last_ticket_created_at:
+          type: string
+          format: date-time
+        last_ticket_customer_message_at:
           type: string
           format: date-time
     Chat:
@@ -594,6 +641,9 @@ components:
           type: string
           format: date-time
         last_updated_at:
+          type: string
+          format: date-time
+        last_customer_message_at:
           type: string
           format: date-time
     TicketSilo:
@@ -805,7 +855,7 @@ components:
               - john
           - field: email
             operator: exists
-    ListCustomersRequest:
+    CustomerSearchBase:
       type: object
       properties:
         query:
@@ -821,76 +871,81 @@ components:
           description: Filter groups combined with AND logic at the top level
           items:
             "$ref": "#/components/schemas/FilterGroup"
-        results_per_page:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 50
-          description: |
-            Number of results to return per page.
-            Default: 50, Maximum: 100
-        sort:
-          type: object
-          description: |
-            Sorting configuration (field -> order mapping).
-            Multiple sort fields can be specified.
-            Note: 'created_at' is always appended as the final sort field to ensure stable pagination.
-          additionalProperties:
-            type: string
-            enum:
-              - asc
-              - desc
+    ListCustomersRequest:
+      allOf:
+        - "$ref": "#/components/schemas/CustomerSearchBase"
+        - type: object
+          properties:
+            results_per_page:
+              type: integer
+              minimum: 1
+              maximum: 100
+              default: 50
+              description: |
+                Number of results to return per page.
+                Default: 50, Maximum: 100
+            sort:
+              type: object
+              description: |
+                Sorting configuration (field -> order mapping).
+                Multiple sort fields can be specified.
+                Note: 'created_at' is always appended as the final sort field to ensure stable pagination.
+              additionalProperties:
+                type: string
+                enum:
+                  - asc
+                  - desc
+              example:
+                last_activity: desc
+                name: asc
+            page_id:
+              type: string
+              description: |
+                Page identifier for pagination. Should be a numeric string starting from "1".
+                Use the 'next_page_id' from the previous response to navigate to the next page.
+                Example: "1", "2", "3", etc.
+              example: "1"
           example:
-            last_activity: desc
-            name: asc
-        page_id:
-          type: string
-          description: |
-            Page identifier for pagination. Should be a numeric string starting from "1".
-            Use the 'next_page_id' from the previous response to navigate to the next page.
-            Example: "1", "2", "3", etc.
-          example: "1"
-      example:
-        query: john
-        filters:
-          - operator: AND
-            clauses:
-              - field: name
-                operator: contains
-                values:
-                  - john
-                  - jane
-              - field: email
-                operator: is
-                values:
-                  - user@example.com
-                  - contact@example.com
-              - field: country_code
-                operator: is
-                values:
-                  - US
-                negate: true
-              - field: last_activity
-                operator: range
-                range:
-                  from: "2025-01-01T00:00:00Z"
-                  to: "2025-03-01T00:00:00Z"
-              - field: threads_count
-                operator: range
-                range:
-                  from: 50
-                  to: 100
-          - operator: OR
-            clauses:
-              - field: name
-                operator: exists
-              - field: email
-                operator: exists
-        results_per_page: 50
-        sort:
-          last_activity: desc
-          name: asc
-        page_id: "1"
+            query: john
+            filters:
+              - operator: AND
+                clauses:
+                  - field: name
+                    operator: contains
+                    values:
+                      - john
+                      - jane
+                  - field: email
+                    operator: is
+                    values:
+                      - user@example.com
+                      - contact@example.com
+                  - field: country_code
+                    operator: is
+                    values:
+                      - US
+                    negate: true
+                  - field: last_activity
+                    operator: range
+                    range:
+                      from: "2025-01-01T00:00:00Z"
+                      to: "2025-03-01T00:00:00Z"
+                  - field: threads_count
+                    operator: range
+                    range:
+                      from: 50
+                      to: 100
+              - operator: OR
+                clauses:
+                  - field: name
+                    operator: exists
+                  - field: email
+                    operator: exists
+            results_per_page: 50
+            sort:
+              last_activity: desc
+              name: asc
+            page_id: "1"
     ListCustomersResponse:
       type: object
       required:
@@ -919,3 +974,6 @@ components:
           type: string
           description: Current page identifier
           example: "1"
+    GetCustomersCountRequest:
+      allOf:
+        - "$ref": "#/components/schemas/CustomerSearchBase"
