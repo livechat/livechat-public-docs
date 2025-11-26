@@ -25,6 +25,7 @@ import Rating from "../core/Rating";
 import Footer from "../core/Footer/Footer";
 import {
   Headings,
+  Sections,
   CodeBlocks,
   Scopes,
   Errors,
@@ -50,6 +51,7 @@ const ContentSideNav = dynamic(
 const components = {
   ...CodeBlocks,
   ...Headings,
+  ...Sections,
   Scopes,
   Errors,
   Placeholder,
