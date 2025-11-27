@@ -2991,6 +2991,10 @@ curl --request POST \
 
 # Solution Partner
 
+- [Create Organization](#create-organization)
+- [Search Organizations](#search-organizations)
+- [Get Organization Licenses](#get-organization-licenses)
+- [Get Organization Details](#get-organization-details)
 - [Create License](#create-license)
 - [Get Solution Licenses](#get-solution-licenses)
 - [Get Solution Licenses by Status](#get-solution-licenses-by-status)
@@ -2999,8 +3003,8 @@ curl --request POST \
 - [Get License Details](#get-license-details)
 - [Update License Details](#update-license-details)
 - [Invite License Operators](#invite-license-operators)
-- [Get License's Invoices](#get-license-invoices)
-- [Get License's Invoice PDF](#get-license-invoice-pdf)
+- [Get License's Invoices](#get-licenses-invoices)
+- [Get License's Invoice PDF](#get-licenses-invoice-pdf)
 - [Create Subscription](#create-subscription)
 - [Update Subscription](#update-subscription)
 - [Close Subscription](#close-subscription)
@@ -3018,13 +3022,158 @@ curl --request POST \
 
 <Text>
 
-## Create License
+## Create Organization
 
-`POST https://api.livechatinc.com/v2/partners/solutions/licenses` - create a new license for a client
+`POST https://api.livechatinc.com/v2/partners/solutions/organizations` - create a new organization for a client
 
 #### Headers
 
 - `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Body
+
+- `organization_name` - **required** - name of the client's organization
+- `client_name` - **required** - client's full name
+- `client_email` - **required** - organization owner email address
+- `data_center` - database location: `dal` (USA) or `fra` (EU)
+- `identifier` - a custom organization identifier
+
+#### Response
+
+- `201 - Successful operation` - success
+- `400 - Invalid data` - missing or incorrect parameters
+- `403 - Access forbidden` - access forbidden
+- `409 - Organization with owner on given email already exists` - organization with the given owner email already exists
+
+</Text>
+
+<Text>
+
+## Search Organizations
+
+`GET https://api.livechatinc.com/v2/partners/solutions/organizations/search` - search managed organizations
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Query Parameters
+
+- `page` - page number for pagination
+- `limit` - number of items per page
+- `filters` - URL-encoded JSON array of filter objects. Each filter has the format: `{"field": "", "operator": "", "value": ""}`
+
+**Available filter fields:**
+
+- `organization_id` - filter by organization ID (operators: `equals`, `contains`)
+- `organization_name` - filter by organization name (operators: `equals`, `contains`)
+- `client_name` - filter by client name (operators: `equals`, `contains`)
+- `client_email` - filter by client email (operators: `equals`, `contains`)
+- `identifier` - filter by custom identifier (operators: `equals`, `contains`)
+- `license_id` - filter by license ID (operators: `equals`, `contains`)
+- `products` - filter by product (operators: `one_of`; values: `livechat`, `chatbot`, `helpdesk`)
+- `arr` - filter by annual recurring revenue as decimal string (operators: `greater_or_equal`, `lesser_or_equal`; example value: `"0.1"`)
+
+#### Response
+
+- `200 - Successful operation` - success, see example
+- `403 - Access forbidden` - access forbidden
+
+</Text>
+
+<Code>
+
+<CodeSample path={'EXAMPLE REQUEST'}>
+
+```shell
+curl --request GET \
+--url 'https://api.livechatinc.com/v2/partners/solutions/organizations/search?page=1&limit=15&filters=%5B%7B%22field%22%3A%22organization_id%22%2C%22operator%22%3A%22contains%22%2C%22value%22%3A%22abc%22%7D%5D' \
+--header 'Authorization: Bearer '
+```
+
+</CodeSample>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "total": 120,
+  "limit": 15,
+  "result": [
+    {
+      "organization_id": "string",
+      "arr": 30.5,
+      "licenses": [
+        {
+          "external_license_id": "string",
+          "product": "string"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+<Text>
+
+## Get Organization Licenses
+
+`GET https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>/licenses` - get organization's licenses
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `organization_id` - **required** - organization UUID
+
+#### Response
+
+- `200 - Successful operation` - returns array of license objects
+- `403 - Access forbidden` - access forbidden
+
+</Text>
+
+<Text>
+
+## Get Organization Details
+
+`GET https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>` - get organization details from Account API
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `organization_id` - **required** - organization ID
+
+#### Response
+
+- `200 - Successful operation` - returns organization object
+- `403 - Access forbidden` - access forbidden
+- `404 - Organization owned by partner does not exist` - organization owned by partner does not exist
+
+</Text>
+
+<Text>
+
+## Create License
+
+`POST https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>/licenses` - create a new license inside an organization for a client
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `organization_id` - **required** - the organization ID of this client's organization
 
 #### Query Parameters
 
@@ -3033,10 +3182,11 @@ curl --request POST \
 #### Body
 
 - `client_name` - **required** - client's full name (min. 5 characters)
-- `client_email` - **required** - client's email address
+- `client_email` - **required** - client's email address, must match the organization owner email
 - `payment_origin` - **required** - who would manage subscription: `client` or `partner` (you)
+- `trial_duration` - **required** - the number of days of a trial period (min. 14 - default, max. 30)
+- `coupon_id` - a custom parameter
 - `purchase_order` - a custom parameter
-- `data_center` - database location: `dal` (USA) or `fra` (EU)
 
 #### Response
 
@@ -3044,6 +3194,7 @@ curl --request POST \
 - `400 - Bad Request` - missing or incorrect parameters
 - `401 - Unauthorized` - a missing or incorrect authorization header
 - `403 - Forbidden` - not allowed to use the given `coupon_id`
+- `404 - Not Found` - organization owned by partner does not exist
 - `409 - Conflict` - the given `client_email` already has a license for the specified `product`
 
 </Text>
