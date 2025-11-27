@@ -35,6 +35,7 @@ async function generateRedocHtml(name) {
 async function runAll() {
   await generateRedocHtml("global-accounts-api");
   await generateRedocHtml("customer-accounts-api");
+  await generateRedocHtml("customer-data-platform-api");
 }
 
 runAll();
