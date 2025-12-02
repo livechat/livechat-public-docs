@@ -2,6 +2,7 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 
 import Link from "next/link";
 
@@ -27,16 +28,16 @@ const SmallStyledLink = styled(StyledLink)`
 const SmallLinksSectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5em;
+  margin-bottom: 24px;
 `;
 
 const SmallLinksSectionHeader = styled.div`
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.4px;
   color: #5e6c78;
-  margin-bottom: 0.2em;
+  margin-bottom: 2px;
 `;
 
 const SmallLinksList = styled.div`
@@ -62,6 +63,12 @@ const SectionLink = ({ to, href, children, ...rest }) => {
   }
 
   return <StyledLink>{children}</StyledLink>;
+};
+
+SectionLink.propTypes = {
+  to: PropTypes.string,
+  href: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
 const SmallLinksSection = ({ header, links = [] }) => {
@@ -91,6 +98,17 @@ const SmallLinksSection = ({ header, links = [] }) => {
       <SmallLinksList>{links.map(renderLink)}</SmallLinksList>
     </SmallLinksSectionWrapper>
   );
+};
+
+SmallLinksSection.propTypes = {
+  header: PropTypes.string,
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      to: PropTypes.string,
+      href: PropTypes.string,
+      children: PropTypes.node.isRequired,
+    })
+  ),
 };
 
 export default {
