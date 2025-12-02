@@ -2991,6 +2991,9 @@ curl --request POST \
 
 # Solution Partner
 
+- [Create Organization](#create-organization)
+- [Get Organization Licenses](#get-organization-licenses)
+- [Get Organization Details](#get-organization-details)
 - [Create License](#create-license)
 - [Get Solution Licenses](#get-solution-licenses)
 - [Get Solution Licenses by Status](#get-solution-licenses-by-status)
@@ -2999,8 +3002,8 @@ curl --request POST \
 - [Get License Details](#get-license-details)
 - [Update License Details](#update-license-details)
 - [Invite License Operators](#invite-license-operators)
-- [Get License's Invoices](#get-license-invoices)
-- [Get License's Invoice PDF](#get-license-invoice-pdf)
+- [Get License's Invoices](#get-licenses-invoices)
+- [Get License's Invoice PDF](#get-licenses-invoice-pdf)
 - [Create Subscription](#create-subscription)
 - [Update Subscription](#update-subscription)
 - [Close Subscription](#close-subscription)
@@ -3018,13 +3021,155 @@ curl --request POST \
 
 <Text>
 
-## Create License
+## Create Organization
 
-`POST https://api.livechatinc.com/v2/partners/solutions/licenses` - create a new license for a client
+`POST https://api.livechatinc.com/v2/partners/solutions/organizations` - create a new organization for a client
 
 #### Headers
 
 - `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Body
+
+- `organization_name` - **required** - name of the client's organization
+- `client_name` - **required** - client's full name
+- `client_email` - **required** - organization owner email address
+- `data_center` - database location: `us-south1` (USA) or `eu-west3` (EU)
+- `identifier` - a custom organization identifier
+
+#### Response
+
+- `201 - Successful operation` - success
+- `400 - Invalid data` - missing or incorrect parameters
+- `403 - Access forbidden` - access forbidden
+- `409 - Organization with owner on given email already exists` - organization with the given owner email already exists
+
+</Text>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 201'}>
+
+```json
+{
+  "id": "66c29d75-909b-491b-a0bf-49f79f57e3d5"
+}
+```
+
+</CodeResponse>
+
+<Text>
+
+## Get Organization Licenses
+
+`GET https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>/licenses` - get organization's licenses
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `organization_id` - **required** - organization UUID
+
+#### Response
+
+- `200 - Successful operation` - returns array of license objects
+- `403 - Access forbidden` - access forbidden
+
+</Text>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "total": 1,
+  "limit": 15,
+  "results": [
+    {
+      "organization_id": "66c29d75-909b-491b-a0bf-49f79f57e3d5",
+      "organization_name": "Anna's Organizations",
+      "client_name": "Anna Nowak",
+      "client_email": "anna.nowak@domain.com",
+      "arr": 0,
+      "licenses": [
+        {
+          "external_license_id": "123456789",
+          "product": "livechat"
+        },
+        {
+          "external_license_id": "HD-123456789",
+          "product": "helpdesk"
+        },
+        {
+          "external_license_id": "123abc456def789",
+          "product": "chatbot"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</CodeResponse>
+
+<Text>
+
+## Get Organization Details
+
+`GET https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>` - get organization details
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `organization_id` - **required** - organization ID
+
+#### Response
+
+- `200 - Successful operation` - returns organization object
+- `403 - Access forbidden` - access forbidden
+- `404 - Organization owned by partner does not exist` - organization owned by partner does not exist
+
+</Text>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "organization_id": "66c29d75-909b-491b-a0bf-49f79f57e3d5",
+  "name": "Dunder Mifflin",
+  "data_center": "us-south1",
+  "products": [
+    {
+      "product": "ChatBot"
+    },
+    {
+      "product": "HelpDesk"
+    },
+    {
+      "product": "LiveChat"
+    }
+  ],
+  "created_at": "2025-11-01T08:00:53Z"
+}
+```
+
+</CodeResponse>
+
+<Text>
+
+## Create License
+
+`POST https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>/licenses` - create a new license inside an organization for a client
+
+#### Headers
+
+- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
+
+#### Path Parameters
+
+- `organization_id` - **required** - the organization ID of this client's organization
 
 #### Query Parameters
 
@@ -3033,10 +3178,11 @@ curl --request POST \
 #### Body
 
 - `client_name` - **required** - client's full name (min. 5 characters)
-- `client_email` - **required** - client's email address
+- `client_email` - **required** - client's email address, must match the organization owner email
 - `payment_origin` - **required** - who would manage subscription: `client` or `partner` (you)
+- `trial_duration` - **required** - the number of days of a trial period (min. 14 - default, max. 30)
+- `coupon_id` - a custom parameter
 - `purchase_order` - a custom parameter
-- `data_center` - database location: `dal` (USA) or `fra` (EU)
 
 #### Response
 
@@ -3044,6 +3190,7 @@ curl --request POST \
 - `400 - Bad Request` - missing or incorrect parameters
 - `401 - Unauthorized` - a missing or incorrect authorization header
 - `403 - Forbidden` - not allowed to use the given `coupon_id`
+- `404 - Not Found` - organization owned by partner does not exist
 - `409 - Conflict` - the given `client_email` already has a license for the specified `product`
 
 </Text>
@@ -3072,7 +3219,6 @@ curl --request POST \
 </Code>
 
 </Section>
-
 
 <Section>
 
