@@ -2992,7 +2992,6 @@ curl --request POST \
 # Solution Partner
 
 - [Create Organization](#create-organization)
-- [Search Organizations](#search-organizations)
 - [Get Organization Licenses](#get-organization-licenses)
 - [Get Organization Details](#get-organization-details)
 - [Create License](#create-license)
@@ -3035,7 +3034,7 @@ curl --request POST \
 - `organization_name` - **required** - name of the client's organization
 - `client_name` - **required** - client's full name
 - `client_email` - **required** - organization owner email address
-- `data_center` - database location: `dal` (USA) or `fra` (EU)
+- `data_center` - database location: `us-south1` (USA) or `eu-west3` (EU)
 - `identifier` - a custom organization identifier
 
 #### Response
@@ -3047,76 +3046,15 @@ curl --request POST \
 
 </Text>
 
-<Text>
-
-## Search Organizations
-
-`GET https://api.livechatinc.com/v2/partners/solutions/organizations/search` - search managed organizations
-
-#### Headers
-
-- `Authorization` - **required** - `Bearer <YOUR_API_TOKEN>`
-
-#### Query Parameters
-
-- `page` - page number for pagination
-- `limit` - number of items per page
-- `filters` - URL-encoded JSON array of filter objects. Each filter has the format: `{"field": "", "operator": "", "value": ""}`
-
-**Available filter fields:**
-
-- `organization_id` - filter by organization ID (operators: `equals`, `contains`)
-- `organization_name` - filter by organization name (operators: `equals`, `contains`)
-- `client_name` - filter by client name (operators: `equals`, `contains`)
-- `client_email` - filter by client email (operators: `equals`, `contains`)
-- `identifier` - filter by custom identifier (operators: `equals`, `contains`)
-- `license_id` - filter by license ID (operators: `equals`, `contains`)
-- `products` - filter by product (operators: `one_of`; values: `livechat`, `chatbot`, `helpdesk`)
-- `arr` - filter by annual recurring revenue as decimal string (operators: `greater_or_equal`, `lesser_or_equal`; example value: `"0.1"`)
-
-#### Response
-
-- `200 - Successful operation` - success, see example
-- `403 - Access forbidden` - access forbidden
-
-</Text>
-
-<Code>
-
-<CodeSample path={'EXAMPLE REQUEST'}>
-
-```shell
-curl --request GET \
---url 'https://api.livechatinc.com/v2/partners/solutions/organizations/search?page=1&limit=15&filters=%5B%7B%22field%22%3A%22organization_id%22%2C%22operator%22%3A%22contains%22%2C%22value%22%3A%22abc%22%7D%5D' \
---header 'Authorization: Bearer '
-```
-
-</CodeSample>
-
-<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+<CodeResponse title={'EXAMPLE RESPONSE - 201'}>
 
 ```json
 {
-  "total": 120,
-  "limit": 15,
-  "result": [
-    {
-      "organization_id": "string",
-      "arr": 30.5,
-      "licenses": [
-        {
-          "external_license_id": "string",
-          "product": "string"
-        }
-      ]
-    }
-  ]
+  "id": "66c29d75-909b-491b-a0bf-49f79f57e3d5"
 }
 ```
 
 </CodeResponse>
-
-</Code>
 
 <Text>
 
@@ -3139,11 +3077,45 @@ curl --request GET \
 
 </Text>
 
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "total": 1,
+  "limit": 15,
+  "results": [
+    {
+      "organization_id": "66c29d75-909b-491b-a0bf-49f79f57e3d5",
+      "organization_name": "Anna's Organizations",
+      "client_name": "Anna Nowak",
+      "client_email": "anna.nowak@domain.com",
+      "arr": 0,
+      "licenses": [
+        {
+          "external_license_id": "123456789",
+          "product": "livechat"
+        },
+        {
+          "external_license_id": "HD-123456789",
+          "product": "helpdesk"
+        },
+        {
+          "external_license_id": "123abc456def789",
+          "product": "chatbot"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</CodeResponse>
+
 <Text>
 
 ## Get Organization Details
 
-`GET https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>` - get organization details from Account API
+`GET https://api.livechatinc.com/v2/partners/solutions/organizations/<organization_id>` - get organization details
 
 #### Headers
 
@@ -3160,6 +3132,30 @@ curl --request GET \
 - `404 - Organization owned by partner does not exist` - organization owned by partner does not exist
 
 </Text>
+
+<CodeResponse title={'EXAMPLE RESPONSE - 200'}>
+
+```json
+{
+  "organization_id": "66c29d75-909b-491b-a0bf-49f79f57e3d5",
+  "name": "Dunder Mifflin",
+  "data_center": "us-south1",
+  "products": [
+    {
+      "product": "ChatBot"
+    },
+    {
+      "product": "HelpDesk"
+    },
+    {
+      "product": "LiveChat"
+    }
+  ],
+  "created_at": "2025-11-01T08:00:53Z"
+}
+```
+
+</CodeResponse>
 
 <Text>
 
@@ -3223,7 +3219,6 @@ curl --request GET \
 </Code>
 
 </Section>
-
 
 <Section>
 
