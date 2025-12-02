@@ -59,6 +59,7 @@ You can authorize your calls to the Reports API using one of the following metho
 | **Agents**    | [`availability`](#availability) [`performance`](#performance)                                                                                                                                                                                                                                                                  |
 | **Customers** | [`unique_visitors`](#unique-visitors) [`queued_visitors`](#queued-visitors) [`queued_visitors_left`](#queued-visitors-left)                                                                                                                                                                                                    |
 | **Tags**      | [`chat_usage`](#chat-usage)                                                                                                                                                                                                                                                                                                    |
+| **Stats**     | [`visitor_domains`](#visitor-domains)                                                                                                                                                                                                                                                                                          |
 
 ## Available parameters and filters
 
@@ -111,7 +112,7 @@ Additional parameter for the `queued-visitors-left` method:
 
 If filters are provided, they must contain exactly one time-based filter (`filters.from/to`).
 
-### For the Customer reports
+### For the customer reports
 
 | Parameter      | Required | Data type | Notes                                                                                                                    |
 | -------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -1198,6 +1199,87 @@ https://api.livechatinc.com/v3.7/reports/tags/chat_usage \
 </CodeSample>
 
 <CodeResponse type="reports" version="v3.7" json="chatUsage"/>
+
+</Code>
+</Section>
+
+## Stats
+
+<Section>
+<Text>
+
+### Visitor Domains
+
+Returns up to 100 domains from which visitors access your website, ranked by page view count.
+
+#### Specifics
+
+|                     |                                                                  |
+| ------------------- | ---------------------------------------------------------------- |
+| **Method URL**      | `https://api.livechatinc.com/v3.7/reports/stats/visitor_domains` |
+| **HTTP method**     | POST, GET                                                        |
+| **Required scopes** | `reports_read`                                                   |
+
+#### Request
+
+| Parameter      | Required | Data type | Notes                                                                                                  |
+| -------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------ |
+| `filters`      | No       | `object`  | If none provided, your report will span last seven days.                                               |
+| `filters.from` | No       | `string`  | Filters visits within specified time range. See [format reference](#available-parameters-and-filters). |
+| `filters.to`   | No       | `string`  | Filters visits within specified time range. See [format reference](#available-parameters-and-filters). |
+
+#### Response
+
+| Field              | Notes                                            |
+| ------------------ | ------------------------------------------------ |
+| `name`             | Report name: `visitor-domains-report`.           |
+| `summary`          | Map of domain names with their page view counts. |
+| `summary.<domain>` | Number of page views from the specified domain.  |
+
+
+
+</Text>
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+<Sample>
+
+```shell
+curl -X POST \
+https://api.livechatinc.com/v3.7/reports/stats/visitor_domains \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <your_access_token>' \
+  -d '{
+    "filters": {
+      "from": "2024-10-01T00:00:00-00:00",
+      "to": "2024-10-07T23:59:59-00:00"
+    }
+  }'
+```
+
+</Sample>
+</CodeSample>
+
+<CodeSample path={'RESPONSE'}>
+
+<Sample>
+
+```json
+{
+  "name": "visitor-domains-report",
+  "summary": {
+    "example.com": 1523,
+    "another-site.org": 847,
+    "customer-portal.net": 612,
+    "shop.example.com": 458,
+    "blog.example.com": 234
+  }
+}
+```
+
+</Sample>
+</CodeSample>
 
 </Code>
 </Section>
