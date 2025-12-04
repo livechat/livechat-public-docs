@@ -25,6 +25,7 @@ import Rating from "../core/Rating";
 import Footer from "../core/Footer/Footer";
 import {
   Headings,
+  Sections,
   CodeBlocks,
   Scopes,
   Errors,
@@ -50,6 +51,7 @@ const ContentSideNav = dynamic(
 const components = {
   ...CodeBlocks,
   ...Headings,
+  ...Sections,
   Scopes,
   Errors,
   Placeholder,
@@ -166,6 +168,7 @@ const Page = ({ frontMatter, children }) => {
       "customer-accounts-api",
       "text-api",
       "chat-api",
+      "customer-data-platform-api",
     ].includes(subcategory) || ["Chat API"].includes(title);
 
   return (
