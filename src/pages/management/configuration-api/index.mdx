@@ -201,8 +201,8 @@ Creates a new agent with specified parameters within a license.
 | ------------------------------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`                                  | `string`   | Yes      | The agent ID.                                                                                                                                             |
 | `name`                                | `string`   | Yes      | The agent name.                                                                                                                                           |
-| `role`                                | `string`   | No       | The agent role. Possible values: `viceowner`, `administrator`, `normal` (default).                                                                        |
-| `login_status`                        | `string`   | No       | The agent's default status right after the login. Possible values: `accepting chats`, `not accepting chats` (default).                                    |
+| `role`                                | `string`   | No       | The agent role. Possible values: `viceowner`, `administrator`, `normal`. Default: `normal`.                                                               |
+| `login_status`                        | `string`   | No       | The agent's default status right after the login. Possible values: `accepting chats`, `not accepting chats`. Default: `not accepting chats`.              |
 | `job_title`                           | `string`   | No       | The agent's job title.                                                                                                                                    |
 | `mobile`                              | `string`   | No       | The agent's mobile number.                                                                                                                                |
 | `max_chats_count`                     | `int`      | No       | The agent's maximum number of concurrent chats. Maximum: 20. Default: 6.                                                                                  |
@@ -217,16 +217,16 @@ Creates a new agent with specified parameters within a license.
 | `work_scheduler.schedule`             | `object[]` | Yes      | The list of agent's working hours.                                                                                                                        |
 | `work_scheduler.schedule[].day`       | `string`   | Yes      | The day for which the working hours are set. Possible values: `sunday`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`.               |
 | `work_scheduler.schedule[].enabled`   | `bool`     | Yes      | If set to `true`: the given set of working hours is enabled.                                                                                              |
-| `work_scheduler.schedule[].start`     | `string`   | Yes      | The time when working hours start.                                                                                                                        |
-| `work_scheduler.schedule[].end`       | `string`   | Yes      | The time when working hours end.                                                                                                                          |
+| `work_scheduler.schedule[].start`     | `string`   | Yes      | The time when the working hours start.                                                                                                                    |
+| `work_scheduler.schedule[].end`       | `string`   | Yes      | The time when the working hours end.                                                                                                                      |
 
 **3)** Possible values for the `groups[].priority` parameter:
 
 | Possible value | Notes                                                                                                                                                                                                                                                                               |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **bot** priority option in the LiveChat App.                                                     |
-| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
-| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                            |
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents. Corresponds to the **bot** priority option in the LiveChat App.                                                     |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                            |
 | `supervisor`   | Agents with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                |
 
 **4)** Possible values for the `notifications` array:
@@ -405,8 +405,8 @@ Returns all Agents within a license.
 | Parameter                | Required | Type       | Notes                                                                                                             |
 | ------------------------ | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------- |
 | `filters`                | No       | `object`   | The possible request filters                                                                                      |
-| `filters.group_ids`      | No       | `int[]`    | The IDs of the groups from which you want to list Agents. You'll only get the Agents from the specified group(s). |
-| `filters.suspended`      | No       | `bool`     | If provided: returns only those Agents who have the same `suspended` field value.                                 |
+| `filters.group_ids`      | No       | `int[]`    | The IDs of the groups from which you want to list agents. You'll only get the agents from the specified group(s). |
+| `filters.suspended`      | No       | `bool`     | If provided: returns only those agents who have the same `suspended` field value.                                 |
 | `fields`<sup>**1**</sup> | No       | `string[]` | The additional agent fields to include.                                                                           |
 
 **1)** Possible values for the `fields[]` parameter:
@@ -480,28 +480,28 @@ Updates the properties of an agent specified by `id`.
 
 #### Request
 
-| Parameter                             | Data type  | Required | Notes                                                                                                                  |
-| ------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `id`                                  | `string`   | Yes      | The agent ID.                                                                                                          |
-| `role`                                | `string`   | No       | The agent role. Possible values: `viceowner`, `administrator`, `normal`.                                               |
-| `login_status`                        | `string`   | No       | The agent's default status right after the login. Possible values: `accepting chats`, `not accepting chats` (default). |
-| `job_title`                           | `string`   | No       | The agent's job title.                                                                                                 |
-| `mobile`                              | `string`   | No       | The agent's mobile number.                                                                                             |
-| `max_chats_count`                     | `int`      | No       | The agent's maximum number of concurrent chats. Maximum: 20.                                                           |
-| `groups`                              | `object[]` | No       | The groups an agent belongs to.                                                                                        |
-| `groups[].id`                         | `uint`     | Yes      | The Group ID. Required only when `group`'s included.                                                                   |
-| `groups[].priority` <sup>**1**</sup>  | `string`   | Yes      | The agent's priority in a group. Required only when `group`'s included.                                                |
-| `notifications`<sup>**2**</sup>       | `string[]` | No       | The agent notifications that are turned on.                                                                            |
-| `email_subscriptions`<sup>**3**</sup> | `string[]` | No       | The subscriptions that will be sent to an agent via email.                                                             |
-| `work_scheduler`                      | `object`   | No       | The work scheduler options to set for an agent. See [**Create Agent**](#create-agent) for details.                     |
+| Parameter                             | Data type  | Required | Notes                                                                                                                                        |
+| ------------------------------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                  | `string`   | Yes      | The agent ID.                                                                                                                                |
+| `role`                                | `string`   | No       | The agent role. Possible values: `viceowner`, `administrator`, `normal`.                                                                     |
+| `login_status`                        | `string`   | No       | The agent's default status right after the login. Possible values: `accepting chats`, `not accepting chats`. Default: `not accepting chats`. |
+| `job_title`                           | `string`   | No       | The agent's job title.                                                                                                                       |
+| `mobile`                              | `string`   | No       | The agent's mobile number.                                                                                                                   |
+| `max_chats_count`                     | `int`      | No       | The agent's maximum number of concurrent chats. Maximum: 20.                                                                                 |
+| `groups`                              | `object[]` | No       | The groups an agent belongs to.                                                                                                              |
+| `groups[].id`                         | `uint`     | Yes      | The Group ID. Required only when `group`'s included.                                                                                         |
+| `groups[].priority` <sup>**1**</sup>  | `string`   | Yes      | The agent's priority in a group. Required only when `group`'s included.                                                                      |
+| `notifications`<sup>**2**</sup>       | `string[]` | No       | The agent notifications that are turned on.                                                                                                  |
+| `email_subscriptions`<sup>**3**</sup> | `string[]` | No       | The subscriptions that will be sent to an agent via email.                                                                                   |
+| `work_scheduler`                      | `object`   | No       | The work scheduler options to set for an agent. See [**Create Agent**](#create-agent) for details.                                           |
 
 **1)** Possible values for the `groups[].priority` parameter:
 
 | Possible value | Notes                                                                                                                                                                                                                                                                               |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **bot** priority option in the LiveChat App.                                                     |
-| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
-| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                            |
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents. Corresponds to the **bot** priority option in the LiveChat App.                                                     |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                            |
 | `supervisor`   | Agents with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                |
 
 **2)** Possible values for the `notifications` array:
@@ -1214,9 +1214,9 @@ Bots based on templates will work in the same way as those created by the [Creat
 
 | Value        | Notes                                                                                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
-| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
-| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
+| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
+| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
 | `supervisor` | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
 
 </Text>
@@ -1280,9 +1280,9 @@ Creates a new bot. To make the bot available for receiving chats or webhooks, us
 
 | Value        | Notes                                                                                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
-| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
-| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
+| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
+| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
 | `supervisor` | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
 
 **2)** The number of sent webhooks depends on the number of webhooks registered for an `owner_client_id`, not the number of bots belonging to that `owner_client_id`.
@@ -1442,9 +1442,9 @@ Updates an existing bot template.
 
 | Value        | Notes                                                                                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
-| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
-| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
+| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
+| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
 | `supervisor` | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
 
 #### Response
@@ -1511,9 +1511,9 @@ Updates an existing bot.
 
 | Value        | Notes                                                                                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
-| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
-| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
+| `first`      | The highest chat routing priority. Bots with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents. Corresponds to the **bot** priority option in the LiveChat App.                                                      |
+| `normal`     | The medium chat routing priority. Bots with the `normal` priority get chats before agents with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. Corresponds to the **Primary** priority option in the LiveChat App. |
+| `last`       | The lowest chat routing priority. Bots with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group. Corresponds to the **Secondary** priority option in the LiveChat App.                             |
 | `supervisor` | Bots with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                                                                                                 |
 
 #### Response
@@ -1605,15 +1605,15 @@ Returns the list of bots created within a license. The method behavior differs d
 
 #### Request
 
-| Parameter                | Required | Type       | Notes                                                                                                                             |
-| ------------------------ | -------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `all`                    | No       | `bool`     | If set to `true`: gets all bots within a license. If set to `false` (default)<sup>**1**</sup>: returns only the requester's bots. |
-| `fields`<sup>**2**</sup> | No       | `string[]` | The additional Bot fields to include.                                                                                             |
+| Parameter                | Required | Type       | Notes                                                                                                                                     |
+| ------------------------ | -------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `all`                    | No       | `bool`     | If set to `true`: gets all bots within a license. If set to `false`<sup>**1**</sup>: returns only the requester's bots. Default: `false`. |
+| `fields`<sup>**2**</sup> | No       | `string[]` | The additional Bot fields to include.                                                                                                     |
 
 **1)** Calling List Bots with `all:false`
 
-- If a bot was created via an app, all Agents who make the request via this app will get the bot in the response.
-- If a bot was created directly by an agent ([PAT authorization](/authorization/agent-authorization#personal-access-tokens)), all Agents who authorize with PATs will get the bot in the response.
+- If a bot was created via an app, all agents who make the request via this app will get the bot in the response.
+- If a bot was created directly by an agent ([PAT authorization](/authorization/agent-authorization#personal-access-tokens)), all agents who authorize with PATs will get the bot in the response.
 
 **2)** Possible values for the `fields[]` parameter:
 
@@ -2382,7 +2382,7 @@ curl -X POST \
 
 # Groups
 
-Groups let you organize your work by creating teams with agent and  members. You can use groups to do configuration based on shared settings (language, working hours, department) and to separate chat routing. It's worth mentioning that one agent can belong to multiple groups at the same time. It's possible to configure routing priorities for Agents and Bots specifically per group.
+Groups let you organize your work by creating teams with agent and  members. You can use groups to do configuration based on shared settings (language, working hours, department) and to separate chat routing. It's worth mentioning that one agent can belong to multiple groups at the same time. It's possible to configure routing priorities for agents and Bots specifically per group.
 
 ## Methods
 
@@ -2422,9 +2422,9 @@ Creates a new group.
 
 | Possible value | Notes                                                                                                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.                                                 |
-| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
-| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                              |
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents.                                                 |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group.                              |
 | `supervisor`   | Agents with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                            |
 
 </Text>
@@ -2485,9 +2485,9 @@ Updates an existing group.
 
 | Possible value | Notes                                                                                                                                                                                                           |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular Agents.                                                 |
-| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no Agents with the `first` priority available with free slots in the group. |
-| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no Agents with the `first` or `normal` priority available with free slots in the group.                              |
+| `first`        | The highest chat routing priority. Agents with the `first` priority get chats before others from the same group, e.g. Bots can get chats before regular agents.                                                 |
+| `normal`       | The medium chat routing priority. Agents with the `normal` priority get chats before those with the `last` priority, when there are no agents with the `first` priority available with free slots in the group. |
+| `last`         | The lowest chat routing priority. Agents with the `last` priority get chats when there are no agents with the `first` or `normal` priority available with free slots in the group.                              |
 | `supervisor`   | Agents with the `supervisor` priority will not get any chats assigned automatically.                                                                                                                            |
 
 #### Response
@@ -2596,7 +2596,7 @@ Lists all the existing groups.
 
 | Possible value     | Notes                                                                          |
 | ------------------ | ------------------------------------------------------------------------------ |
-| `agent_priorities` | An object containing Agents belonging to a group, along with their priorities. |
+| `agent_priorities` | An object containing agents belonging to a group, along with their priorities. |
 | `routing_status`   | The routing status of a group.                                                 |
 
 </Text>
@@ -2648,7 +2648,7 @@ Returns details about a group specified by its `id`.
 
 | Possible value     | Notes                                                                          |
 | ------------------ | ------------------------------------------------------------------------------ |
-| `agent_priorities` | An object containing Agents belonging to a group, along with their priorities. |
+| `agent_priorities` | An object containing agents belonging to a group, along with their priorities. |
 | `routing_status`   | The routing status of a group.                                                 |
 
 </Text>
