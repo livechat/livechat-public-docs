@@ -11,7 +11,7 @@ export { default as customer } from "./users/customer.json"
 
 export { default as access } from "./other-structures/access.json"
 export { default as chat } from "./other-structures/chat.json"
-export { default as chatSummary } from "./other-structures/chatSummary.json"
+export { default as chatInfo } from "./other-structures/chatInfo.json"
 export { default as form } from "./other-structures/form.json"
 export { default as formFields } from "./other-structures/formFields.json"
 export { default as filledFormFields } from "./other-structures/filledFormFields.json"
