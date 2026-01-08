@@ -114,7 +114,7 @@ curl -X POST \
 | **Properties**    | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) [`list_license_properties`](#list-license-properties) [`list_group_properties`](#list-group-properties) |
 | **Customers**     | [`update_customer`](#update-customer) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                                                                                                                                                                         |
 | **Status**        | [`list_group_statuses`](#list-group-statuses)                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Other**         | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting) [`request_email_verification`](#request-email-verification) [`send_greeting_button_clicked`](#send-greeting-button-clicked)                                                   |
+| **Other**         | [`check_goals`](#check-goals) [`get_form`](#get-form) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting) [`request_email_verification`](#request-email-verification) [`request_welcome_message`](#request-welcome-message) [`send_greeting_button_clicked`](#send-greeting-button-clicked)                                           |
 
 ## Chats
 
@@ -1927,66 +1927,6 @@ curl -X POST \
 
 <Text>
 
-### Get Predicted Agent
-
-Gets the predicted agent - the one the customer will chat with when the chat starts. To use this method, the customer needs to be logged in, which can be done via the [`login`](/messaging/customer-chat-api/v3.7/rtm-reference/#login) method.
-
-#### Specifics
-
-|                        |                                                                                               |
-| ---------------------- | --------------------------------------------------------------------------------------------- |
-| **Method URL**         | `https://api.livechatinc.com/v3.7/customer/action/get_predicted_agent`                        |
-| **RTM API equivalent** | [`get_predicted_agent`](/messaging/customer-chat-api/v3.7/rtm-reference/#get-predicted-agent) |
-| **Webhook**            | -                                                                                             |
-
-#### Response
-
-| Field   | Data type | Notes                               |
-| ------- | --------- | ----------------------------------- |
-| `queue` | `bool`    | If `true`, the chat will be queued. |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```shell
-curl -X POST \
-  'https://api.livechatinc.com/v3.7/customer/action/get_predicted_agent?organization_id=<organization_id>' \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <customer_access_token>' \
-  -d '{}'
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "agent": {
-    "id": "b5657aff34dd32e198160d54666df9d8",
-    "name": "Agent Smith",
-    "avatar": "https://example.avatar/example.com",
-    "is_bot": false,
-    "job_title": "support hero",
-    "type": "agent"
-  },
-  "queue": false
-}
-```
-
-</CodeResponse>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
 ### Get URL Info
 
 It returns the info on a given URL.
@@ -2197,6 +2137,86 @@ curl -X POST \
 ```
 
 </CodeSample>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Request Welcome Message
+
+Requests a welcome message from the system.
+The response will contain a predicted agent, the one the customer will chat with when the chat starts.
+The welcome message event will be generated asynchrounously and sent via the ([`incoming_welcome_message`](/messaging/customer-chat-api/v3.7/rtm-pushes/#incoming_welcome_message)) push.
+To use this method, the customer needs to be logged in, which can be done via the [`login`](/messaging/customer-chat-api/v3.7/rtm-reference/#login) method.
+
+#### Specifics
+
+|                        |                                                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Method URL**         | `https://api.livechatinc.com/v3.7/customer/action/request_welcome_message`                            |
+| **RTM API equivalent** | [`request_welcome_message`](/messaging/customer-chat-api/v3.7/rtm-reference/#request-welcome-message) |
+| **Webhook**            | -                                                                                                     |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                   |
+| ---------- | -------- | --------- | ----------------------- |
+| `id`       | No       | `string`  | The welcome message ID. |
+| `group_id` | No       | `number`  | The ID of the group.    |
+
+#### Response
+
+| Field                       | Data type | Notes                               |
+| --------------------------- | --------- | ----------------------------------- |
+| `id`                        | `string`  | The welcome message ID.             |
+| `predicted_agent`           | `object`  | The predicted agent info.           |
+| `predicted_agent.id`        | `string`  |                                     |
+| `predicted_agent.name`      | `string`  |                                     |
+| `predicted_agent.avatar`    | `string`  |                                     |
+| `predicted_agent.is_bot`    | `bool`    |                                     |
+| `predicted_agent.bot_type`  | `string`  | Returned only for bots              |
+| `predicted_agent.job_title` | `string`  |                                     |
+| `predicted_agent.type`      | `string`  |                                     |
+| `queue`                     | `bool`    | If `true`, the chat will be queued. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  'https://api.livechatinc.com/v3.7/customer/action/request_welcome_message?organization_id=<organization_id>' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <customer_access_token>' \
+  -d '{}'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "id": "540eb790-17c1-47f9-9e2c-dca5a0960ab5",
+  "predicted_agent": {
+    "id": "b5657aff34dd32e198160d54666df9d8",
+    "name": "Agent Smith",
+    "avatar": "https://example.avatar/example.com",
+    "is_bot": false,
+    "job_title": "support hero",
+    "type": "agent"
+  },
+  "queue": false
+}
+```
+
+</CodeResponse>
 
 </Code>
 

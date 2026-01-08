@@ -105,7 +105,7 @@ When connecting to the Customer Chat RTM API, clients have to send over the requ
 | **Properties** | [`update_chat_properties`](#update-chat-properties) [`delete_chat_properties`](#delete-chat-properties) [`update_thread_properties`](#update-thread-properties) [`delete_thread_properties`](#delete-thread-properties) [`update_event_properties`](#update-event-properties) [`delete_event_properties`](#delete-event-properties) |
 | **Customers**  | [`update_customer`](#update-customer) [`update_customer_page`](#update-customer-page) [`set_customer_session_fields`](#set-customer-session-fields) [`get_customer`](#get-customer)                                                                                                                                                 |
 | **Status**     | [`login`](#login) [`list_group_statuses`](#list-group-statuses)                                                                                                                                                                                                                                                                     |
-| **Other**      | [`get_form`](#get-form) [`get_predicted_agent`](#get-predicted-agent) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting) [`send_greeting_button_clicked`](#send-greeting-button-clicked)                                     |
+| **Other**      | [`get_form`](#get-form) [`get_url_info`](#get-url-info) [`mark_events_as_seen`](#mark-events-as-seen) [`accept_greeting`](#accept-greeting) [`cancel_greeting`](#cancel-greeting) [`request_welcome_message`](#request-welcome-message) [`send_greeting_button_clicked`](#send-greeting-button-clicked)                             |
 
 </Text>
 
@@ -1896,71 +1896,6 @@ Returns an empty ticket form of a <a href="https://www.livechat.com/help/chat-su
 
 <Text>
 
-### Get Predicted Agent
-
-Gets the predicted agent - the one the customer will chat with when the chat starts.
-
-#### Specifics
-
-|                        |                                                                                 |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| **Action**             | `get_predicted_agent`                                                           |
-| **Web API equivalent** | [`get_predicted_agent`](/messaging/customer-chat-api/v3.7/#get-predicted-agent) |
-| **Push message**       | -                                                                               |
-
-#### Response
-
-| Field   | Data type | Notes                                      |
-| ------- | --------- | ------------------------------------------ |
-| `queue` | `bool`    | If set to `true`: the chat will be queued. |
-
-</Text>
-
-<Code>
-
-<CodeSample path={'REQUEST'}>
-
-```json
-{
-  "action": "get_predicted_agent",
-  "payload": {}
-}
-```
-
-</CodeSample>
-
-<CodeResponse>
-
-```json
-{
-  "request_id": "<request_id>", // optional
-  "action": "get_predicted_agent",
-  "type": "response",
-  "success": true,
-  "payload": {
-    "agent": {
-      "id": "b5657aff34dd32e198160d54666df9d8",
-      "name": "Agent Smith",
-      "avatar": "https://example.avatar/example.com",
-      "is_bot": false,
-      "job_title": "support hero",
-      "type": "agent"
-    },
-    "queue": false
-  }
-}
-```
-
-</CodeResponse>
-
-</Code>
-
-</Section>
-
-<Section>
-
-<Text>
-
 ### Get URL Info
 
 It returns the info on a given URL.
@@ -2252,6 +2187,90 @@ Cancels a greeting (an invitation to the chat). For example, Customers could can
     // no response payload
   },
   "success": true
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Request Welcome Message
+
+Requests a welcome message from the system.
+The response will contain a predicted agent, the one the customer will chat with when the chat starts.
+The welcome message event will be generated asynchrounously and sent via the ([`incoming_welcome_message`](/messaging/customer-chat-api/v3.7/rtm-pushes/#incoming_welcome_message)) push.
+
+#### Specifics
+
+|                        |                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Action**             | `request_welcome_message`                                                                            |
+| **Web API equivalent** | [`request_welcome_message`](/messaging/customer-chat-api/v3.7/#request-welcome-message)              |
+| **Push message**       | [`incoming_welcome_message`](/messaging/customer-chat-api/v3.7/rtm-pushes/#incoming_welcome_message) |
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                   |
+| ---------- | -------- | --------- | ----------------------- |
+| `id`       | No       | `string`  | The welcome message ID. |
+| `group_id` | No       | `number`  | The ID of the group.    |
+
+#### Response
+
+| Field                       | Data type | Notes                               |
+| --------------------------- | --------- | ----------------------------------- |
+| `id`                        | `string`  | The welcome message ID.             |
+| `predicted_agent`           | `object`  | The predicted agent info.           |
+| `predicted_agent.id`        | `string`  |                                     |
+| `predicted_agent.name`      | `string`  |                                     |
+| `predicted_agent.avatar`    | `string`  |                                     |
+| `predicted_agent.is_bot`    | `bool`    |                                     |
+| `predicted_agent.bot_type`  | `string`  | Returned only for bots              |
+| `predicted_agent.job_title` | `string`  |                                     |
+| `predicted_agent.type`      | `string`  |                                     |
+| `queue`                     | `bool`    | If `true`, the chat will be queued. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```json
+{
+  "action": "request_welcome_message",
+  "payload": {}
+}
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "request_id": "<request_id>",
+  "action": "request_welcome_message",
+  "type": "response",
+  "success": true,
+  "payload": {
+    "id": "540eb790-17c1-47f9-9e2c-dca5a0960ab5",
+    "predicted_agent": {
+      "id": "b5657aff34dd32e198160d54666df9d8",
+      "name": "Agent Smith",
+      "avatar": "https://example.avatar/example.com",
+      "is_bot": false,
+      "job_title": "support hero",
+      "type": "agent"
+    },
+    "queue": false
+  }
 }
 ```
 
