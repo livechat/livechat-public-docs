@@ -71,6 +71,7 @@ const Resources = () => {
     <Dropdown label="Resources">
       <Wrapper>
         <div>
+          <TitleWrapper>RESOURCES</TitleWrapper>
           {resources.map((resource) => (
             <DropdownItem
               key={`${resource.title}`}
@@ -93,13 +94,6 @@ const Resources = () => {
           ))}
         </div>
       </Wrapper>
-      <ActionLink
-        href={process.env.NEXT_PUBLIC_CONSOLE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Create a developer account <ArrowRight />
-      </ActionLink>
     </Dropdown>
   );
 };

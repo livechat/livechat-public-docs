@@ -13,7 +13,7 @@ Behind Text, Inc. there is a team of [passionate people](https://www.text.com/te
 
 With a suite of five products ([LiveChat](https://www.livechat.com/), [ChatBot](https://www.chatbot.com/), [HelpDesk](https://www.helpdesk.com/), [KnowledgeBase](https://www.knowledgebase.ai/), and [OpenWidget](https://openwidget.com/)) and their powerful APIs, we power customer communication for 37,000 companies in 150 countries.
 
-[The Platform](https://platform.text.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Developer Program](https://platform.text.com/developer-program/) and [Marketplace](https://www.text.com/marketplace/) create an open ecosystem for developers, partners, and customers.
+[The Platform](https://platform.text.com/) is a range of products and services that can be used to build a variety of communication tools for businesses. Our [Technology Program](https://www.text.com/partners/technology/) creates an open ecosystem for developers and partners who want to build custom solutions for Text customers.
 
 ## Node version
 
@@ -52,7 +52,6 @@ All contribution's welcome! [Read how to do it.](./CONTRIBUTING.md)
 
 ## Get in touch
 
-- [Create a free developer account](https://platform.text.com/console/) in our Developer Program.
 - [Join our Discord for Developers](https://discord.gg/rFbJkYQFwp)
 - Send us an email at developers@text.com
 - Follow us on [X](https://x.com/TextPlatform)
