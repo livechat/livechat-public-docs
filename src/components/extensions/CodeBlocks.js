@@ -184,6 +184,8 @@ export const CodeResponse = ({
 
   if (version && type && json) {
     jsonPayload = payloads[version][type][json];
+  } else if (type && json) {
+    jsonPayload = payloads[type][json];
   }
 
   return (
