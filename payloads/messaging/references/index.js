@@ -2,3 +2,4 @@ export { default as storeOrderWasCreatedV1 } from "./system-events/store_order_w
 export { default as storeOrderWasCreatedV2 } from "./system-events/store_order_was_created_v2.json"
 export { default as storeProductAddedToCartV1 } from "./system-events/store_product_added_to_cart_v1.json"
 export { default as storeProductRemovedFromCartV1 } from "./system-events/store_product_removed_from_cart_v1.json"
+export { default as systemEventBody } from "./system-events/full_body.json"
