@@ -118,6 +118,36 @@ const SCOPES = [
     product: "LiveChat",
   },
   {
+    id: "canned_responses--groups:ro",
+    description: "Read permission for canned responses (in my groups)",
+    role: "normal",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "canned_responses--groups:rw",
+    description: "Read/write permission for canned responses (in my groups)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "canned_responses--all:ro",
+    description:
+      "Read permission for all canned responses (all in license, including all private ones)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
+    id: "canned_responses--all:rw",
+    description:
+      "Read/write permission for all canned responses (all in license, any group)",
+    role: "administrator",
+    role_type: "secondary",
+    product: "LiveChat",
+  },
+  {
     id: "groups--my:rw",
     description: "Write/read permission for groups I'm a member of",
     role: "administrator",
