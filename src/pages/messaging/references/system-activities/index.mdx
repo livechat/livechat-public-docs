@@ -2,20 +2,179 @@
 weight: 90
 category: "messaging"
 subcategory: "references"
-title: "System messages"
-tagline: "This document is a reference of the system messages generated in the LiveChat ecosystem."
-desc: "Learn about system messages generated in the LiveChat ecosystem. They are native system events displayed to users in various situations."
+title: "System activities"
+tagline: "This document is a reference of the system activities generated in the Text ecosystem."
+desc: "Learn about system activities generated in the Text ecosystem. They are native system events displayed to users in various situations."
 ---
 
 # Introduction
 
-System messages are native system events displayed to users in various situations. This document is a reference of the system messages generated in the LiveChat ecosystem. Apart from those listed in this document, there are also the ones sent by integrations. By default, applications can define their own system messages.
+The Text ecosystem generates two types of native system activities sent to users as [events](/messaging/agent-chat-api/data-structures/#events):
+- [System events](#system-events) containing complex data structures (in a serialized JSON string).
+- [System messages](#system-messages) containing simple text.
+
+[System events](#system-events) are an extension and a future replacement for [system messages](#system-messages).
+
+# System events
+
+The payload of the system event is a serialized JSON string stored in the `details` property, and its format depends on the `source`, `subtype`, and `version`.
+The sources send the newest available version, but existing chat documents may contain older versions. Later version numbers indicate more recent versions.
+
+[Read more](/messaging/agent-chat-api/data-structures/#system) about the system event type.
+
+<Code>
+    <CodeResponse title={'Sample system event body'} type={'messaging-references'} json={'systemEventBody'}/>
+</Code>
+
+The list of system event subtypes grouped by source:
+
+| Source        | Subtypes                                                                                                                                                                                  |
+|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`cdp`](#cdp) | [`store_order_was_created`](#store_order_was_created) [`store_product_added_to_cart`](#store_product_added_to_cart) [`store_product_removed_from_cart`](#store_product_removed_from_cart) |
+
+## cdp
+
+CDP stands for [Customer Data Platform](/management/customer-data-platform-api). It collects customers' data and emits events related to their interactions with the Text ecosystem.
+
+### store_order_was_created
+
+Generated when a customer creates an order in an organization's store.
+
+#### Version 1
+
+| Parameter                     | Required | Data type | Notes                                                          |
+|-------------------------------|----------|-----------|----------------------------------------------------------------|
+| `store`                       | Yes      | `object`  |                                                                |
+| `store.id`                    | Yes      | `string`  | The store ID provided by the platform                          |
+| `store.platform`              | Yes      | `string`  | The platform the store is hosted on                            |
+| `store.uuid`                  | Yes      | `string`  | The store's unique identifier in Text system                   |
+| `store.url`                   | No       | `string`  | The store's URL                                                |
+| `store.name`                  | No       | `string`  | The store's name                                               |
+| `order`                       | Yes      | `object`  |                                                                |
+| `order.id`                    | Yes      | `string`  | The order ID provided by the platform                          |
+| `order.order_number`          | Yes      | `string`  | Visual representation of the order ID provided by the platform |
+| `order.currency`              | Yes      | `string`  | The currency code in ISO 4217 format                           |
+| `order.total_price`           | Yes      | `number`  | The total price of the order                                   |
+| `order.sales_channel`         | No       | `object`  |                                                                |
+| `order.sales_channel.id`      | Yes      | `string`  | The unique identifier of the sales channel                     |
+| `order.sales_channel.name`    | Yes      | `string`  | Human-readable sales channel name                              |
+| `order.discounts`             | No       | `array`   |                                                                |
+| `order.discounts.code`        | Yes      | `string`  | The discount code                                              |
+| `order.line_items`            | Yes      | `array`   |                                                                |
+| `order.line_items.quantity`   | Yes      | `number`  | The quantity of the line item                                  |
+| `order.line_items.price`      | Yes      | `number`  | The price of the line item                                     |
+| `order.line_items.title`      | No       | `string`  | The title of the line item                                     |
+| `order.line_items.sku`        | No       | `string`  | The SKU of the line item                                       |
+| `order.line_items.variant_id` | No       | `string`  | The variant ID of the line item                                |
+
+<Code>
+    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeOrderWasCreatedV1'}/>
+</Code>
+
+#### Version 2
+
+- The `title` property in order's line items became mandatory.
+- A mandatory `product_id` property in order's line items was added.
+
+| Parameter                     | Required | Data type | Notes                                                          |
+|-------------------------------|----------|-----------|----------------------------------------------------------------|
+| `store`                       | Yes      | `object`  |                                                                |
+| `store.id`                    | Yes      | `string`  | The store ID provided by the platform                          |
+| `store.platform`              | Yes      | `string`  | The platform the store is hosted on                            |
+| `store.uuid`                  | Yes      | `string`  | The store's unique identifier in Text system                   |
+| `store.url`                   | No       | `string`  | The store's URL                                                |
+| `store.name`                  | No       | `string`  | The store's name                                               |
+| `order`                       | Yes      | `object`  |                                                                |
+| `order.id`                    | Yes      | `string`  | The order ID provided by the platform                          |
+| `order.order_number`          | Yes      | `string`  | Visual representation of the order ID provided by the platform |
+| `order.currency`              | Yes      | `string`  | The currency code in ISO 4217 format                           |
+| `order.total_price`           | Yes      | `number`  | The total price of the order                                   |
+| `order.sales_channel`         | No       | `object`  |                                                                |
+| `order.sales_channel.id`      | Yes      | `string`  | The unique identifier of the sales channel                     |
+| `order.sales_channel.name`    | Yes      | `string`  | Human-readable sales channel name                              |
+| `order.discounts`             | No       | `array`   |                                                                |
+| `order.discounts.code`        | Yes      | `string`  | The discount code                                              |
+| `order.line_items`            | Yes      | `array`   |                                                                |
+| `order.line_items.quantity`   | Yes      | `number`  | The quantity of the line item                                  |
+| `order.line_items.price`      | Yes      | `number`  | The price of the line item                                     |
+| `order.line_items.title`      | Yes      | `string`  | The title of the line item                                     |
+| `order.line_items.product_id` | Yes      | `string`  | The variant ID of the line item                                |
+| `order.line_items.sku`        | No       | `string`  | The SKU of the line item                                       |
+| `order.line_items.variant_id` | No       | `string`  | The variant ID of the line item                                |
+
+<Code>
+    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeOrderWasCreatedV2'}/>
+</Code>
+
+### store_product_added_to_cart
+
+Generated when a customer adds one or more products to their cart in an organization's store.
+
+#### Version 1
+
+| Parameter                       | Required | Data type | Notes                                            |
+|---------------------------------|----------|-----------|--------------------------------------------------|
+| `store`                         | Yes      | `object`  |                                                  |
+| `store.id`                      | Yes      | `string`  | The store ID provided by the platform            |
+| `store.platform`                | Yes      | `string`  | The platform the store is hosted on              |
+| `store.uuid`                    | Yes      | `string`  | The store's unique identifier in Text system     |
+| `store.url`                     | No       | `string`  | The store's URL                                  |
+| `store.name`                    | No       | `string`  | The store's name                                 |
+| `cart_lines`                    | Yes      | `array`   |                                                  |
+| `cart_lines.total_price`        | Yes      | `string`  | Total price for item accounting for its quantity |
+| `cart_lines.currency`           | Yes      | `string`  | The currency code in ISO 4217 format             |
+| `cart_lines.quantity`           | Yes      | `string`  | The quantity of the item                         |
+| `cart_lines.product`            | Yes      | `object`  |                                                  |
+| `cart_lines.product.id`         | Yes      | `string`  | The ID of the product                            |
+| `cart_lines.product.title`      | No       | `string`  | The title of the item                            |
+| `cart_lines.product.sku`        | No       | `string`  | The SKU of the item                              |
+| `cart_lines.product.variant_id` | No       | `string`  | The variant ID of the item                       |
+
+<Code>
+    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeProductAddedToCartV1'}/>
+</Code>
+
+### store_product_removed_from_cart
+
+Generated when a customer removes one or more products from their cart in an organization's store.
+
+#### Version 1
+
+| Parameter                       | Required | Data type | Notes                                            |
+|---------------------------------|----------|-----------|--------------------------------------------------|
+| `store`                         | Yes      | `object`  |                                                  |
+| `store.id`                      | Yes      | `string`  | The store ID provided by the platform            |
+| `store.platform`                | Yes      | `string`  | The platform the store is hosted on              |
+| `store.uuid`                    | Yes      | `string`  | The store's unique identifier in Text system     |
+| `store.url`                     | No       | `string`  | The store's URL                                  |
+| `store.name`                    | No       | `string`  | The store's name                                 |
+| `cart_lines`                    | Yes      | `array`   |                                                  |
+| `cart_lines.total_price`        | Yes      | `string`  | Total price for item accounting for its quantity |
+| `cart_lines.currency`           | Yes      | `string`  | The currency code in ISO 4217 format             |
+| `cart_lines.quantity`           | Yes      | `string`  | The quantity of the item                         |
+| `cart_lines.product`            | Yes      | `object`  |                                                  |
+| `cart_lines.product.id`         | Yes      | `string`  | The ID of the product                            |
+| `cart_lines.product.title`      | No       | `string`  | The title of the item                            |
+| `cart_lines.product.sku`        | No       | `string`  | The SKU of the item                              |
+| `cart_lines.product.variant_id` | No       | `string`  | The variant ID of the item                       |
+
+<Code>
+    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeProductRemovedFromCartV1'}/>
+</Code>
+
+# System messages
+
+This section lists the system message types generated in the Text ecosystem. In addition to system messages generated by Text, applications can define their own system messages.
+
+The content of the system message event is a string stored in the `text` property, and its format depends on the `system_message_type`. The variables used to generate the `text` are specified in the `text_vars` property.
 
 [Read more](/messaging/agent-chat-api/data-structures/#system-message) about the system message event type.
 
-# Reference
+<Code>
+    <CodeResponse title={'Sample system message event body'} type={'messaging-references'} json={'systemMessageBody'}/>
+</Code>
 
-The list of system messages sorted out alphabetically:
+The list of system message types, sorted alphabetically:
 
 <Section>
 

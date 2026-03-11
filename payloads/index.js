@@ -23,6 +23,7 @@ import * as v3_7_payloads_agent from "./messaging/v3.7/agent-chat-api/index";
 import * as v3_7_payloads_customer from "./messaging/v3.7/customer-chat-api/index";
 import * as v3_7_payloads_configuration from "./management/v3.7/configuration-api/index";
 import * as v3_7_payloads_reports from "./data-reporting/v3.7/reports-api/index";
+import * as payloads_messaging_references from "./messaging/references/index";
 
 const v3_1 = {
   agent: { ...v3_1_payloads_agent },
@@ -78,6 +79,7 @@ const payloads = {
   "v3.5": v3_5,
   "v3.6": v3_6,
   "v3.7": v3_7,
+  "messaging-references": { ...payloads_messaging_references },
 };
 
 export default payloads;
