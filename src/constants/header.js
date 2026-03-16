@@ -83,7 +83,7 @@ export const platform = {
 		},
 		{
 			title: "Authorization",
-			description: "Accounts SDK; scope references",
+			description: "Access tokens and permissions",
 			link: "/authorization",
 			primaryIcon: <AuthorizationIcon fill="#6BC5A8" />,
 			secondaryIcon: <AuthorizationIcon fill="#ffffff" background="#4a4a55" />,
