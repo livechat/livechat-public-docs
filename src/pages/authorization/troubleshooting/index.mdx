@@ -1,36 +1,164 @@
 ---
 weight: 60
 category: "authorization"
-subcategory: "faq"
-title: "Authorization FAQ"
-tagline: "Authorization-related frequently asked questions"
+subcategory: "troubleshooting"
+title: "Troubleshooting"
+tagline: "Authorization-related frequently asked questions and troubleshooting."
 desc: "Common problems and frequently asked questions about LiveChat authorization."
 ---
 
-## Getting started
+## Authorization errors
 
-#### What's the easiest way to authorize calls to the LiveChat API?
+All authorization errors redirect to the error page `https://accounts.livechat.com/ooops`, while authentication errors redirect to the login page `https://accounts.livechat.com/`.
+
+Errors codes are returned in the query strings, in form of the `oauth_exception` parameter (for authorization errors) or `identity_exception` param (for authentication errors).
+Additional `exception_details` may be passed with detailed information.
+
+### `invalid_request`
+
+The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed. Possible reasons:
+
+- wrong HTTP method
+- invalid HTTP body encoding
+
+### `unauthorized_client`
+
+The client is not authorized to request a token using this method. Possible reasons:
+
+- missing client ID
+- client ID not found
+- refresh token not found
+- invalid client secret
+- invalid redirect URI
+
+### `access_denied`
+
+The resource owner or authorization server denied the request. Possible reasons:
+
+- the requested scopes include a scope that wasn't originally granted by the resource owner
+
+Not helpful? See [`access_denied`](/authorization/authorizing-api-calls#access_denied-1) in **Authentication** errors.
+
+### `unsupported_response_type`
+
+The authorization server does not support obtaining a token using this method. Possible reasons:
+
+- response type is not `code` or `token`
+
+### `invalid_scope`
+
+The requested scope is invalid, insufficient, unknown or malformed. Possible reasons:
+
+- scope not found
+- scope name not found
+- an app requires the `administrator` scopes, but instead, an `agent` user was logged in
+
+### `server_error`
+
+The authorization server encountered an unexpected condition that prevented it from fulfilling the request. Possible reasons:
+
+- server down
+- server storage down
+
+Not helpful? See [`server_error`](/authorization/authorizing-api-calls#server_error-1) in **Authentication** errors.
+
+### `temporarily_unavailable`
+
+The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server. Currently not used.
+
+### `unsupported_grant_type`
+
+The authorization grant type is not supported by the authorization server.
+
+- using disabled authorization grant type, for example client credentials grant; <a href="https://tools.ietf.org/html/rfc6749#section-4.4" target="_blank" rel="noopener noreferrer">read more...</a>
+
+### `invalid_grant`
+
+The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client. Possible reasons:
+
+- refresh token expired
+- access token expired
+
+### `invalid_client`
+
+Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method). Possible reasons:
+
+- using refresh token with wrong client id
+
+### `missing_grant`
+
+The client is missing granted rights. Possible reasons:
+
+- grants were rejected
+- grants were never given
+- client changed required grants
+
+### Exception details
+
+`client_id_not_found` - wrong client ID, client id does not exists
+
+`redirect_uri_not_set` - client misconfiguration, the client has not set a redirect URI
+
+`invalid_redirect_uri` - redirect URI is not one of the client's allowed redirects
+
+`too_many_redirects` - the server has detected a redirect loop; the client shouldn't redirect too many times
+
+## Authentication errors
+
+#### `invalid_request`
+
+The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.
+
+Not helpful? See [`invalid_request`](/authorization/authorizing-api-calls#invalid_request) in **Authorization** errors.
+
+#### `unauthorized`
+
+The request is valid, but identity data is wrong or identity does not exists. If identity id is known, it's added to querystring as `entity_id`.
+
+#### `server_error`
+
+The server encountered an unexpected condition that prevented it from determining identity.
+
+Not helpful? See [`server_error`](/authorization/authorizing-api-calls#server_error) in **Authorization** errors.
+
+#### `access_denied`
+
+The identity is known, but access is denied because of business reasons. For example, identity can be banned or have the wrong account version, etc.
+
+Not helpful? See [`access_denied`](/authorization/authorizing-api-calls#access_denied) in **Authorization** errors.
+
+#### `identity_lost`
+
+The identity was removed due logout, password reset, remote logout, etc.
+
+#### `credentials_login_disabled`
+
+Identity has disabled credentials login strategy. Identity should be verified with other stategies like Google Oauth or SAML.
+
+## Frequently asked questions
+
+### What's the easiest way to authorize calls to the LiveChat API?
 
 For fast & easy authorization, we recommend [**Personal Access Tokens (PATs)**](/authorization/agent-authorization#personal-access-tokens). They're a way to go if you want to authorize private apps or speed up the development process.
 
-#### Can I use the same access token to make calls to all APIs?
+### Can I use the same access token to make calls to all APIs?
 
 No. Making calls to the Customer Chat API requires you to use a different token than for all other APIs. Read about [**agent authorization flows**](/authorization/agent-authorization/)
 and [**customer authorization flows**](/authorization/customer-authorization/).
 
-## Personal Access Tokens
+### Personal Access Tokens
 
 #### How can I get a Personal Access Token?
 
 Log in to <a href="https://platform.text.com/console/" target="_blank">**Developer Console**</a> with your LiveChat login and password. Go to **Tools > Personal Access Tokens** and click **Create new token +**, or use an existing token if you have one.
 
-#### Authorizing requests with a Personal Access Token doesn't work.
+#### Authorizing requests with a Personal Access Token doesn't work
 
 1. Remember, PATs use the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme/" target="_blank">**Basic authentication scheme**</a>. Make sure you're not using something else, for example **Bearer**.
 2. Ensure you're not using a PAT to authorize a call to the Customer Chat API. If that's what you want to achieve, see [**How can I make calls to the Customer Chat API?**](#how-can-i-make-calls-to-the-customer-chat-api)
 3. Check if your PAT is valid, complete, and has all necessary scopes. You can use our <a href="https://platform.text.com/console/tools/token-debugger/" target="_blank">**Token Debugger**</a>.
 
-## Customer authorization
+### Customer authorization
 
 #### How can I make calls to the Customer Chat API?
 
@@ -41,7 +169,7 @@ You need to create a customer. Then, you'll use the access token of this custome
 You don't have to create a new customer. You can request a new access token for the customer of a specific `entity_id`. `entity_id` is returned in the response when creating a customer.
 To get a new access token for your customer, send the following request:
 
-```
+```shell
 curl 'https://accounts.livechat.com/customer/' \
 -H 'Content-Type: application/json' \
 -H 'Authorization: Bearer <ACCESS_TOKEN>' \
@@ -56,7 +184,7 @@ curl 'https://accounts.livechat.com/customer/' \
 
 It's the same request as the one to [**create a new customer**](/authorization/customer-authorization#case-new-customer). The only difference it that it has an additional parameter, `entity_id`.
 
-## HelpDesk authorization
+### HelpDesk authorization
 
 #### How does HelpDesk authorization look?
 
@@ -65,9 +193,9 @@ The authentication and authorization system for HelpDesk API is shared with Live
 - [Agent Authorization](/authorization/agent-authorization)
 - [Sign in with LiveChat flow](/authorization/sign-in-with-livechat)
 
-## Errors
+### Errors
 
-#### I get the "Invalid access token" error.
+#### I get the "Invalid access token" error
 
 1. Perhaps, you're trying to authorize your call to the **Customer Chat API** with an access token valid for the **Agent Chat API** & **Configuration API**, or the other way round.
 
@@ -79,17 +207,17 @@ The authentication and authorization system for HelpDesk API is shared with Live
 4. If you still can't solve the problem, try acquiring a new token. You can follow along [**our guide**](/authorization/authorization-in-practice/), which explains how to make a call to the **Agent Chat API** and presents the token acquisition in detail.
 5. To check if your token is valid, complete, and [has all necessary scopes](/authorization/scopes/), you can use our <a href="https://platform.text.com/console/tools/token-debugger/" target="_blank" rel="noopener noreferrer">**Token Debugger**</a>. You can't use this tool to check an access token of a customer.
 
-#### I get the "Invalid message" error.
+#### I get the "Invalid message" error
 
 1. Make sure the body of your request is in the **JSON** format.
 2. Make sure you've got all the commas, quotation marks, and brackets correct.
 3. Compare the payload of your request with the corresponding sample request in the documentation.
 
-#### I get the "The client is not authorized to request a token using this method" error.
+#### I get the "The client is not authorized to request a token using this method" error
 
 You may get this error when trying to exchange an expired `code` for `token` in the OAuth flow. It's because `code` is only valid for a few minutes after the creation. What's more, it can be exchanged for an access or refresh token **only once**.
 
-#### I get the "The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed." error.
+#### I get the "The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed." error
 
 1. Make sure the `response_type` value matches the client type of your application. It should be `code` for server-side apps and `token` for web apps.
 2. Ensure the `client_id` param matches the Client ID of your app. You can find it in the <Placeholder id="DEVELOPER_CONSOLE_URL" />.
