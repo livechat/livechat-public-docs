@@ -17,197 +17,196 @@ import { TextApiIcon } from "assets/icons/cards/TextAPI";
 import { VideosIcon } from "assets/icons/Videos";
 
 export const apis = [
-  {
-    title: "Agent Chat API",
-    description: "Chat as an agent",
-    link: "/messaging/agent-chat-api",
-  },
-  {
-    title: "Customer Chat API",
-    description: "Chat as as a customer",
-    link: "/messaging/customer-chat-api",
-  },
-  {
-    title: "Chat Widget JS API",
-    description: "Interact with the Chat Widget",
-    link: "/extending-chat-widget/javascript-api",
-  },
-  {
-    title: "Configuration API",
-    description: "Change license configuration",
-    link: "/management/configuration-api",
-  },
-  {
-    title: "Partner API",
-    description: "Manage Partner data",
-    link: "/partner-program",
-  },
+	{
+		title: "Agent Chat API",
+		description: "Chat as an agent",
+		link: "/messaging/agent-chat-api",
+	},
+	{
+		title: "Customer Chat API",
+		description: "Chat as as a customer",
+		link: "/messaging/customer-chat-api",
+	},
+	{
+		title: "Chat Widget JS API",
+		description: "Interact with the Chat Widget",
+		link: "/extending-chat-widget/javascript-api",
+	},
+	{
+		title: "Configuration API",
+		description: "Change license configuration",
+		link: "/management/configuration-api",
+	},
+	{
+		title: "Partner API",
+		description: "Manage Partner data",
+		link: "/partner-program",
+	},
 ];
 
 export const sdks = [
-  {
-    title: "Accounts SDK",
-    description: "Implement authorization",
-    link: "/authorization/sign-in-with-livechat",
-  },
-  {
-    title: "Agent App SDK",
-    description: "Extend the LiveChat App",
-    link: "/extending-agent-app/products-sdk/agent-app-sdk",
-  },
-  {
-    title: "HelpDesk SDKs",
-    description: "Extend HelpDesk",
-    link: "/extending-agent-app/products-sdk/helpdesk-sdk",
-  },
-  {
-    title: "Customer SDK",
-    description: "Create a custom widget",
-    link: "/extending-chat-widget/customer-sdk",
-  },
-  {
-    title: "Developer SDK",
-    description: "Build in the Developer Program",
-    link: "/getting-started/developer-sdk",
-  },
+	{
+		title: "Accounts SDK",
+		description: "Implement authorization",
+		link: "/authorization/oauth-authorization#sign-in-with-livechat",
+	},
+	{
+		title: "Agent App SDK",
+		description: "Extend the LiveChat App",
+		link: "/extending-agent-app/products-sdk/agent-app-sdk",
+	},
+	{
+		title: "HelpDesk SDKs",
+		description: "Extend HelpDesk",
+		link: "/extending-agent-app/products-sdk/helpdesk-sdk",
+	},
+	{
+		title: "Customer SDK",
+		description: "Create a custom widget",
+		link: "/extending-chat-widget/customer-sdk",
+	},
+	{
+		title: "Developer SDK",
+		description: "Build in the Developer Program",
+		link: "/getting-started/developer-sdk",
+	},
 ];
 
 export const platform = {
-  leftColumn: [
-    {
-      title: "Getting started",
-      description: "Kick off your journey with Platform",
-      link: "/getting-started",
-      primaryIcon: <GettingStartedIcon />,
-      secondaryIcon: <GettingStartedIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Authorization",
-      description: "Accounts SDK; scope references",
-      link: "/authorization",
-      primaryIcon: <AuthorizationIcon fill="#6BC5A8" />,
-      secondaryIcon: <AuthorizationIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Messaging",
-      description: "Web and RTM APIs for chatting",
-      link: "/messaging",
-      primaryIcon: <MessagingIcon fill="#7A2CF5" />,
-      secondaryIcon: <MessagingIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Management",
-      description: "Webhooks, properties, and more",
-      link: "/management",
-      primaryIcon: <ManagementIcon fill="#2469F6" />,
-      secondaryIcon: <ManagementIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Data & reporting",
-      description: "Leverage the Reports API",
-      link: "/data-reporting",
-      primaryIcon: <DataReportingIcon fill="#55B4E0" />,
-      secondaryIcon: <DataReportingIcon fill="#ffffff" background="#4a4a55" />,
-    },
-  ],
-  rightColumn: [
-    {
-      title: "Monetization",
-      description: "Monetization tools",
-      link: "/monetization",
-      primaryIcon: <MonetizationIcon fill="#9061CC" />,
-      secondaryIcon: <MonetizationIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Agent App",
-      description: "Extend the LiveChat App",
-      link: "/extending-agent-app",
-      primaryIcon: <AgentAppSdkIcon fill="#FE5000" />,
-      secondaryIcon: <AgentAppSdkIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Chat Widget",
-      description: "Extend the Chat Widget",
-      link: "/extending-chat-widget",
-      primaryIcon: <ChatWidgetIcon fill="#EAB23E" />,
-      secondaryIcon: <ChatWidgetIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "HelpDesk API",
-      description: "Integrate with HelpDesk",
-      link: "/helpdesk",
-      primaryIcon: <HelpDeskApiIcon fill="#2FC774" />,
-      secondaryIcon: <HelpDeskApiIcon fill="#ffffff" background="#4a4a55" />,
-    },
-    {
-      title: "Text API",
-      description: "Advanced text operations",
-      link: "/text",
-      primaryIcon: <TextApiIcon fill="#29292E" />,
-      secondaryIcon: <TextApiIcon fill="#ffffff" background="#4a4a55" />,
-    },
-  ],
+	leftColumn: [
+		{
+			title: "Getting started",
+			description: "Kick off your journey with Platform",
+			link: "/getting-started",
+			primaryIcon: <GettingStartedIcon />,
+			secondaryIcon: <GettingStartedIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Authorization",
+			description: "Accounts SDK; scope references",
+			link: "/authorization",
+			primaryIcon: <AuthorizationIcon fill="#6BC5A8" />,
+			secondaryIcon: <AuthorizationIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Messaging",
+			description: "Web and RTM APIs for chatting",
+			link: "/messaging",
+			primaryIcon: <MessagingIcon fill="#7A2CF5" />,
+			secondaryIcon: <MessagingIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Management",
+			description: "Webhooks, properties, and more",
+			link: "/management",
+			primaryIcon: <ManagementIcon fill="#2469F6" />,
+			secondaryIcon: <ManagementIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Data & reporting",
+			description: "Leverage the Reports API",
+			link: "/data-reporting",
+			primaryIcon: <DataReportingIcon fill="#55B4E0" />,
+			secondaryIcon: <DataReportingIcon fill="#ffffff" background="#4a4a55" />,
+		},
+	],
+	rightColumn: [
+		{
+			title: "Monetization",
+			description: "Monetization tools",
+			link: "/monetization",
+			primaryIcon: <MonetizationIcon fill="#9061CC" />,
+			secondaryIcon: <MonetizationIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Agent App",
+			description: "Extend the LiveChat App",
+			link: "/extending-agent-app",
+			primaryIcon: <AgentAppSdkIcon fill="#FE5000" />,
+			secondaryIcon: <AgentAppSdkIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Chat Widget",
+			description: "Extend the Chat Widget",
+			link: "/extending-chat-widget",
+			primaryIcon: <ChatWidgetIcon fill="#EAB23E" />,
+			secondaryIcon: <ChatWidgetIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "HelpDesk API",
+			description: "Integrate with HelpDesk",
+			link: "/helpdesk",
+			primaryIcon: <HelpDeskApiIcon fill="#2FC774" />,
+			secondaryIcon: <HelpDeskApiIcon fill="#ffffff" background="#4a4a55" />,
+		},
+		{
+			title: "Text API",
+			description: "Advanced text operations",
+			link: "/text",
+			primaryIcon: <TextApiIcon fill="#29292E" />,
+			secondaryIcon: <TextApiIcon fill="#ffffff" background="#4a4a55" />,
+		},
+	],
 };
 
 export const resources = [
-  {
-    title: "Design System",
-    description: "Ready-to-use components",
-    link: "https://design.livechat.com/",
-  },
-  {
-    title: "Guides and tutorials",
-    description: "Step-by-step explainers",
-    link: "https://platform.text.com/docs/guides",
-  },
-  {
-    title: "Figma templates",
-    description: "Visual assets for the Marketplace",
-    link: "https://www.figma.com/community/file/1192489623743762740",
-  },
-  {
-    title: "Developer CLI",
-    description: "Build apps from the command line",
-    link: "https://www.npmjs.com/package/@livechat/developer-cli",
-  },
+	{
+		title: "Design System",
+		description: "Ready-to-use components",
+		link: "https://design.livechat.com/",
+	},
+	{
+		title: "Guides and tutorials",
+		description: "Step-by-step explainers",
+		link: "https://platform.text.com/docs/guides",
+	},
+	{
+		title: "Figma templates",
+		description: "Visual assets for the Marketplace",
+		link: "https://www.figma.com/community/file/1192489623743762740",
+	},
+	{
+		title: "Developer CLI",
+		description: "Build apps from the command line",
+		link: "https://www.npmjs.com/package/@livechat/developer-cli",
+	},
 ];
 
 export const connects = [
-  {
-    title: "Developer Console",
-    link: process.env.NEXT_PUBLIC_CONSOLE_URL,
-    primaryIcon: <UnfoldMoreVertical />,
-    secondaryIcon: <UnfoldMoreVertical fill="#ffffff" />,
-  },
-  {
-    title: "Resource Center",
-    link: "https://platform.text.com/resource-center/updates",
-    primaryIcon: <UpdatesIcon />,
-    secondaryIcon: <UpdatesIcon fill="#ffffff" />,
-  },
-  {
-    title: "Video tutorials",
-    link:
-      "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
-    primaryIcon: <VideosIcon />,
-    secondaryIcon: <VideosIcon fill="#ffffff" />,
-  },
-  {
-    title: "Discord",
-    link: process.env.NEXT_PUBLIC_DISCORD_FOOTER_URL,
-    primaryIcon: <Discord fill="#000000" />,
-    secondaryIcon: <Discord fill="#ffffff" />,
-  },
-  {
-    title: "Docs on GitHub",
-    link: process.env.NEXT_PUBLIC_GITHUB_LIVECHAT,
-    primaryIcon: <Github />,
-    secondaryIcon: <Github fill="#ffffff" />,
-  },
-  {
-    title: "Platform X",
-    link: process.env.NEXT_PUBLIC_X_LIVECHAT,
-    primaryIcon: <XIcon />,
-    secondaryIcon: <XIcon fill="#ffffff" />,
-  },
+	{
+		title: "Developer Console",
+		link: process.env.NEXT_PUBLIC_CONSOLE_URL,
+		primaryIcon: <UnfoldMoreVertical />,
+		secondaryIcon: <UnfoldMoreVertical fill="#ffffff" />,
+	},
+	{
+		title: "Resource Center",
+		link: "https://platform.text.com/resource-center/updates",
+		primaryIcon: <UpdatesIcon />,
+		secondaryIcon: <UpdatesIcon fill="#ffffff" />,
+	},
+	{
+		title: "Video tutorials",
+		link: "https://www.youtube.com/watch?v=NVBthQxCZqY&list=PL7llGGeQNj4z8Up8tmq8JKThsVoq1XL-u&ab_channel=LiveChatInsider",
+		primaryIcon: <VideosIcon />,
+		secondaryIcon: <VideosIcon fill="#ffffff" />,
+	},
+	{
+		title: "Discord",
+		link: process.env.NEXT_PUBLIC_DISCORD_FOOTER_URL,
+		primaryIcon: <Discord fill="#000000" />,
+		secondaryIcon: <Discord fill="#ffffff" />,
+	},
+	{
+		title: "Docs on GitHub",
+		link: process.env.NEXT_PUBLIC_GITHUB_LIVECHAT,
+		primaryIcon: <Github />,
+		secondaryIcon: <Github fill="#ffffff" />,
+	},
+	{
+		title: "Platform X",
+		link: process.env.NEXT_PUBLIC_X_LIVECHAT,
+		primaryIcon: <XIcon />,
+		secondaryIcon: <XIcon fill="#ffffff" />,
+	},
 ];
