@@ -2,5 +2,6 @@ export { default as storeOrderWasCreatedV1 } from "./system-activities/storeOrde
 export { default as storeOrderWasCreatedV2 } from "./system-activities/storeOrderWasCreatedV2.json"
 export { default as storeProductAddedToCartV1 } from "./system-activities/storeProductAddedToCartV1.json"
 export { default as storeProductRemovedFromCartV1 } from "./system-activities/storeProductRemovedFromCartV1.json"
+export { default as summaryV1 } from "./system-activities/summaryV1.json"
 export { default as systemEventBody } from "./system-activities/systemEventBody.json"
 export { default as systemMessageBody } from "./system-activities/systemMessageBody.json"
