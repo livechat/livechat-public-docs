@@ -720,6 +720,7 @@ const EXCLUDED_SEARCH_RESULTS = [
   "/messaging/apple-messages-for-business",
   "/management/configuration-api/v2.0",
   "/management/limits",
+  "/extending-agent-app/product-cards/"
 ];
 
 // Some search results are unclear. Sometimes there's missing information
