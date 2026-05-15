@@ -33,6 +33,7 @@ export { default as checkProductLimitsForPlan } from "./responses/other/checkPro
 export { default as getProductSource } from "./responses/other/getProductSource.json"
 
 export { default as listCustomerBans } from "./responses/bans/listCustomerBans.json"
+export { default as banCustomer } from "./responses/bans/banCustomer.json"
 export { default as unbanCustomer } from "./responses/bans/unbanCustomer.json"
 
 export { default as listGreetings } from "./responses/greetings/listGreetings.json"
