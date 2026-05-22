@@ -6,7 +6,7 @@ title: "Customer SDK"
 tagline: "Build your own Chat Widget."
 desc: "If our default widget is not enough, feel free to build your own. Customer JS SDK is your way to go."
 versionGroup: "chat-widget"
-apiVersion: "5.0"
+apiVersion: "4.0"
 ---
 
 # Introduction
@@ -77,7 +77,7 @@ Or use the node-style `require` call:
 
 ### Using a script tag - UMD module hosted on unpkg's CDN
 
-`<script src="https://unpkg.com/@livechat/customer-sdk@5.0.0"></script>`
+`<script src="https://unpkg.com/@livechat/customer-sdk@3.1.2"></script>`
 
 If you just want to look around and play with the SDK, check out our
 [sample chat widget implementation](https://codesandbox.io/s/rm3prxw88n).
@@ -92,22 +92,21 @@ You will need to provide your organizationId and clientId when creating a Custom
 
 Other optional configuration parameters are also available:
 
-| parameters           | type               | default | description                                                                                                                                                                                                                                                         |
-| -------------------- | ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| organizationId       | string             |         | Your Organization ID, you receive this value when creating a new LiveChat account.                                                                                                                                                                                  |
-| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat Developer Console.                                                                                                                                                        |
-| autoConnect          | boolean            | true    | Optional; decides whether the SDK should reconnect on its own.                                                                                                                                                                                                        |
-| groupId              | number             | 0       | Optional; the id of the group you wish to connect to.                                                                                                                                                                                                               |
-| uniqueGroups         | boolean            | false   | Optional; by default, the customer's identity is the same for all groups. If you want to create a separate customer identity for each group, set this parameter to `true`. When set to `true`, passing a `groupId` is required.                                     |
-| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                                                                                                                     |
-| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                                                                                                          |
-| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](#updateCustomer) should be prefered for sending customer data.                                                                                       |
+| parameters           | type               | default | description                                                                                                                                                                                                                                                   |
+| -------------------- | ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| organizationId       | string             |         | Your Organization ID, you receive this value when creating a new LiveChat account.                                                                                                                                                                            |
+| clientId             | string             |         | Your client id, you receive this value when you register your application in the LiveChat Developer Console.                                                                                                                                                  |
+| autoConnect          | boolean            | true    | Optional; decides whether the SDK should reconnect on its own.                                                                                                                                                                                                |
+| groupId              | number             |         | Optional; the id of the group you wish to connect to.                                                                                                                                                                                                         |
+| uniqueGroups         | boolean            | false   | Optional; by default, the customer identity is the same for all groups. If you want to create a separate customer identity for each group, set this parameter to `true`. When set to `true`, passing a `groupId` is required.                                 |
+| region               | 'dal' \| 'fra'     | 'dal'   | Optional; the server region your license is at.                                                                                                                                                                                                               |
+| redirectUri          | string             |         | Optional; should only be used inside ReactNative, this is the URI which your webview is redirected to after authorization.                                                                                                                                    |
+| customerDataProvider | () => CustomerData |         | Optional; should only be used if you need to send customer data during login. In general, [`updateCustomer()`](#updateCustomer) should be prefered for sending customer data.                                                                                 |
 | identityProvider     | () => CustomerAuth |         | Optional; allows for providing own instance of the CustomerAuth object which contains the customer access token handlers. See [Custom Identity Provider](https://platform.text.com/docs/extending-chat-widget/custom-identity-provider) for more information. |
-| page                 | object             |         | Optional; customer page information.                                                                                                                                                                                                                                |
-| page.url             | string             |         | Optional; customer page url.                                                                                                                                                                                                                                        |
-| page.title           | string             |         | Optional; customer page title.                                                                                                                                                                                                                                      |
-| referrer             | string             |         | Optional; page referrer                                                                                                                                                                                                                                             |
-| tabId                | string             |         | Optional; an identifier for the browser tab. When provided, it is sent as `tab_id` in the login payload. Useful for distinguishing multiple tabs from the same customer.                                                                                            |
+| page                 | object             |         | Optional; customer page information.                                                                                                                                                                                                                          |
+| page.url             | string             |         | Optional; customer page url.                                                                                                                                                                                                                                  |
+| page.title           | string             |         | Optional; customer page title.                                                                                                                                                                                                                                |
+| referrer             | string             |         | Optional; page referrer.                                                                                                                                                                                                                                      |
 
 CustomerData:
 
@@ -696,6 +695,44 @@ Returned value:
 | form.id     | string   |                                             |
 | form.fields | object[] |                                             |
 
+## getPredictedAgent
+
+```js
+customerSDK
+  .getPredictedAgent({
+    groupId: 0,
+  })
+  .then(agent => {
+    console.log(agent)
+  })
+  .catch(error => {
+    console.log(error)
+  })
+```
+
+Parameters:
+
+| parameters | type   | description |
+| ---------- | ------ | ----------- |
+| groupId    | number | Optional    |
+
+Returned value:
+
+| properties     | type    | description                                                   |
+| -------------- | ------- | ------------------------------------------------------------- |
+| agent          | object  |                                                               |
+| agent.id       | string  |                                                               |
+| agent.name     | string  |                                                               |
+| agent.jobTitle | string  |                                                               |
+| agent.type     | 'agent' |                                                               |
+| agent.isBot    | boolean |                                                               |
+| queue          | boolean | True when the current group has reached concurrent chat limit |
+
+### Errors
+
+- `GROUP_OFFLINE` - the requested group is offline, and it was not possible to return a predicted agent for it.
+- `GROUP_UNAVAILABLE` - thrown when manual routing is enabled for the group and a predicted agent is requested for it. If you call `startChat` or `resumeChat` accordingly, you'll end up in the queue.
+
 ## getUrlInfo
 
 It returns the info on a given URL.
@@ -947,49 +984,6 @@ Returned value:
 
 - `MISSING_CHAT_THREAD` - the targeted chat cannot be rated because it has no threads.
 
-## requestWelcomeMessage
-
-Requests a welcome message for the current customer. The welcome message is returned via the [`incoming_welcome_message`](#incoming_welcome_message) event.
-
-```js
-customerSDK
-  .requestWelcomeMessage({
-    id: 'previous-welcome-message-id',
-  })
-  .then(response => {
-    console.log(response)
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters | type   | description                                           |
-| ---------- | ------ | ----------------------------------------------------- |
-| id         | string | Optional; ID of a previously received welcome message |
-
-Returned value:
-
-| properties              | type    | description                                                   |
-| ----------------------- | ------- | ------------------------------------------------------------- |
-| id                      | string  | Welcome message ID                                            |
-| predictedAgent          | object  | Predicted agent object                                        |
-| predictedAgent.id       | string  | Predicted agent ID                                            |
-| predictedAgent.avatar   | string  | Predicted agent avatar URL                                    |
-| predictedAgent.name     | string  | Predicted agent name                                          |
-| predictedAgent.jobTitle | string  | Predicted agent job title                                     |
-| predictedAgent.type     | string  | Predicted agent type                                          |
-| predictedAgent.botType  | string  | Predicted agent bot type: 'chatbot' or 'ai_agent'             |
-| predictedAgent.isBot    | boolean | Predicted agent is bot flag                                   |
-| queue                   | boolean | True when the current group has reached concurrent chat limit |
-
-### Errors
-
-- `GROUP_OFFLINE` - the requested group is offline, and it was not possible to return a predicted agent for it.
-- `GROUP_UNAVAILABLE` - thrown when manual routing is enabled for the group and a predicted agent is requested for it. If you call `startChat` or `resumeChat` accordingly, you'll end up in the queue.
-
 ## resumeChat
 
 Resumes an archived chat.
@@ -1014,21 +1008,20 @@ customerSDK
 
 Parameters:
 
-| parameters                  | type    | description                                                                                                       |
-| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| data.active                 | boolean | Optional; defaults to `true` but can be used to create threads that are immediately inactive                      |
-| data.continuous             | boolean | Optional                                                                                                          |
-| data.welcomeMessageId       | string  | Optional; ID of a previously received welcome message                                                             |
-| data.chat.id                | string  |                                                                                                                   |
-| data.chat.access            | Access  | Optional                                                                                                          |
-| data.chat.properties        | object  | Optional; [default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
-| data.chat.thread.events     | Event[] | Optional; you can pass initial events which will immediately become part of the created thread.                   |
-| data.chat.thread.properties | object  | Optional; [default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
+| parameters                  | type    | description                                                                                                 |
+| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| data.active                 | boolean | Optional; defaults to `true` but can be used to create threads that are immediately inactive                |
+| data.continuous             | boolean | Optional                                                                                                    |
+| data.chat.id                | string  |                                                                                                             |
+| data.chat.access            | Access  | Optional                                                                                                    |
+| data.chat.properties        | object  | Optional, [Default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
+| data.chat.thread.events     | Event[] | Optional; you can pass initial events which will immediately become part of the created thread.             |
+| data.chat.thread.properties | object  | Optional, [Default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
 
 ### Errors
 
 - `CHAT_ALREADY_ACTIVE` - the chat is already active and you can't activate it again.
-- `GROUPS_OFFLINE` - a group in the targeted chat is offline. It can happen when asynchronous communication is disabled.
+- `GROUPS_OFFLINE` - a group in the targeted chat is offline. It can happen for licenses without continuous chats enabled.
 
 ## sendEvent
 
@@ -1055,12 +1048,12 @@ customerSDK
 
 Parameters:
 
-| parameters         | type    | description         |
-| ------------------ | ------- | ------------------- |
-| chatId             | string  | Destination chat ID |
-| event              |         |                     |
-| event.type         | string  | Type of the event   |
-| attachToLastThread | boolean | Optional            |
+| parameters         | type    | description                                                                                                                                                        |
+| ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| chatId             | string  | Destination chat ID                                                                                                                                                |
+| event              |         |                                                                                                                                                                    |
+| event.type         | string  | Type of the event; accepts only **message, file, filled_form, system_message,** and **custom** [event types](/messaging/customer-chat-api/data-structures#events). |
+| attachToLastThread | boolean | Optional                                                                                                                                                           |
 
 ## sendRichMessagePostback
 
@@ -1095,31 +1088,6 @@ Parameters:
 | postback         |         |         |                    |
 | postback.id      | string  |         | Postback button ID |
 | postback.toggled | boolean | true    | Postback toggled   |
-
-## sendGreetingButtonClicked
-
-Sends information to the server about a customer's interaction with a greeting button. This is used for tracking button clicks in greetings that have a `buttonId` property.
-
-```js
-customerSDK
-  .sendGreetingButtonClicked({
-    greetingUniqueId: 'Q10X0W041P',
-    buttonId: '20ff0b3f-fbed-49f4-b13f-788c9ec66f03',
-  })
-  .then(() => {
-    console.log('success')
-  })
-  .catch(error => {
-    console.log(error)
-  })
-```
-
-Parameters:
-
-| parameters       | type   | description                                               |
-| ---------------- | ------ | --------------------------------------------------------- |
-| greetingUniqueId | string | Unique ID of the greeting received in `incoming_greeting` |
-| buttonId         | string | ID of the clicked button                                  |
 
 ## setCustomerSessionFields
 
@@ -1183,20 +1151,19 @@ customerSDK
 
 Parameters:
 
-| parameters             | type    | description                                                                                                       |
-| ---------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| active                 | boolean | Optional; defaults to `true` but can be used to create threads that are immediately inactive                      |
-| continuous             | boolean | Optional                                                                                                          |
-| welcomeMessageId       | string  | Optional; ID of a previously received welcome message                                                             |
-| chat.access            | access  | Optional                                                                                                          |
-| chat.properties        | object  | Optional; [default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
-| chat.thread.events     | event[] | Optional; initial events that will immediately become a part of the created thread.                               |
-| chat.thread.properties | object  | Optional; [default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
+| parameters             | type    | description                                                                                                 |
+| ---------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| active                 | boolean | Optional, defaults to `true` but can be used to create threads that are immediately inactive                |
+| continuous             | boolean | Optional, starts the chat as continuous (online group is not required); default: false.                     |
+| chat.access            | access  | Optional; chat access to set, default: all agents.                                                          |
+| chat.properties        | object  | Optional, [default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
+| chat.thread.events     | event[] | Optional; initial events that will immediately become a part of the created thread.                         |
+| chat.thread.properties | object  | Optional, [default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
 
 ### Errors
 
 - `CHAT_LIMIT_REACHED` - the maximum limit of chats per customer has been reached, and it's not possible to start a new one. You should activate one of the existing chats. The limit is 1.
-- `GROUPS_OFFLINE` - a group in the targeted chat is offline. It can happen when asynchronous communication is disabled.
+- `GROUPS_OFFLINE` - a group in the target chat is offline. It can happen for licenses, which don't allow Customers to chat during their unavailability.
 
 ## updateChatProperties
 
@@ -1218,9 +1185,9 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                                                                             |
-| ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| id         | string | ID of the chat whose properties you want to update.                                                     |
+| parameters | type   | description                                                                                       |
+| ---------- | ------ | ------------------------------------------------------------------------------------------------- |
+| id         | string | ID of the chat whose properties you want to update.                                               |
 | properties | object | [Default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
 
 ## updateCustomer
@@ -1299,11 +1266,11 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                                                                             |
-| ---------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to update.                                                     |
-| threadId   | string | ID of the thread whose properties you want to update.                                                   |
-| eventId    | string | ID of the event whose properties you want to update.                                                    |
+| parameters | type   | description                                                                                       |
+| ---------- | ------ | ------------------------------------------------------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to update.                                               |
+| threadId   | string | ID of the thread whose properties you want to update.                                             |
+| eventId    | string | ID of the event whose properties you want to update.                                              |
 | properties | object | [Default properties docs](https://platform.text.com/docs/messaging/references/default-properties) |
 
 ## updateThreadProperties
@@ -1330,10 +1297,10 @@ customerSDK
 
 Parameters:
 
-| parameters | type   | description                                                                                              |
-| ---------- | ------ | -------------------------------------------------------------------------------------------------------- |
-| chatId     | string | ID of the chat whose properties you want to update.                                                      |
-| threadId   | string | ID of the thread whose properties you want to update.                                                    |
+| parameters | type   | description                                                                                        |
+| ---------- | ------ | -------------------------------------------------------------------------------------------------- |
+| chatId     | string | ID of the chat whose properties you want to update.                                                |
+| threadId   | string | ID of the thread whose properties you want to update.                                              |
 | properties | object | [Default properties docs](https://platform.text.com/docs/messaging/references/default-properties). |
 
 ## uploadFile
@@ -1571,27 +1538,24 @@ Payload:
 | -------- | ------ |
 | id       | string |
 
-## Customer identity changed
+## Customer page updated
 
-Indicates that the customer identity has changed, typically due to browser privacy features blocking authentication cookies. The SDK handles this by clearing sensitive session data and switching to the new identity.
+The customer moved to another page, for example by following a link on your website.
 
 ```js
-customerSDK.on('identity_changed', ({ previousId, newId }) => {
-  console.log('Customer identity changed', {
-    from: previousId,
-    to: newId,
-  })
-  // Clear any application-specific cached data
-  // tied to the previous customer identity
+customerSDK.on('customer_page_updated', payload => {
+  const { url, title, openedAt } = payload
+  console.log('customer_page_updated', { url, title, openedAt })
 })
 ```
 
 Payload:
 
-| properties | type   | description              |
-| ---------- | ------ | ------------------------ |
-| previousId | string | The previous customer ID |
-| newId      | string | The new customer ID      |
+| properties | type   |                                                      |
+| ---------- | ------ | ---------------------------------------------------- |
+| url        | string | URL of the customer current website                  |
+| title      | string | Title of the customer current website                |
+| openedAt   | string | Date of the last update in RFC 3339 date-time format |
 
 ## Customer updated
 
@@ -1891,86 +1855,6 @@ Payload:
 | typingIndicator.authorId | string  | User ID     |
 | typingIndicator.isTyping | boolean |             |
 
-## Incoming thinking indicator
-
-Indicates that an AI agent is currently thinking or processing a request.
-The push payload contains information about the thinking state, including an optional custom title and description.
-
-```js
-customerSDK.on('incoming_thinking_indicator', payload => {
-  console.log(`Agent ${payload.authorId} is thinking in chat ${payload.chatId}`)
-
-  if (payload.title) {
-    console.log(`Thinking title: ${payload.title}`)
-  }
-
-  if (payload.description) {
-    console.log(`Thinking description: ${payload.description}`)
-  }
-
-  if (payload.customId) {
-    console.log(`Custom ID: ${payload.customId}`)
-  }
-})
-```
-
-Payload:
-
-| properties  | type   | description                                                 |
-| ----------- | ------ | ----------------------------------------------------------- |
-| chatId      | string | Chat ID                                                     |
-| threadId    | string | Thread ID                                                   |
-| authorId    | string | The ID of the agent that is thinking          |
-| sentAt      | string | ISO timestamp when the thinking indicator was sent          |
-| customId    | string | Optional; custom identifier for dismissing this indicator.   |
-| title       | string | Optional; custom thinking title (defaults to "Thinking...") |
-| description | string | Optional; additional description text.                       |
-
-## Incoming welcome message
-
-Indicates a welcome message received in response to [`requestWelcomeMessage`](#requestwelcomemessage).
-If you want to include the welcome message in the chat, you can use the `welcome_message_id` parameter in the [`resumeChat`](#resumechat) or [`startChat`](#startchat) method.
-
-```js
-customerSDK.on('incoming_welcome_message', payload => {
-  const { id, event } = payload
-  console.log('incoming_welcome_message', { id, event })
-})
-```
-
-Payload:
-
-| properties | type   | description                   |
-| ---------- | ------ | ----------------------------- |
-| id         | string | Welcome message ID            |
-| event      | object | Message or rich message event |
-
-## Incoming event preview
-
-Indicates an event preview before it's sent to the chat. Only text events are supported for preview.
-
-```js
-customerSDK.on('incoming_event_preview', payload => {
-  console.log(
-    `Event preview in chat ${payload.chatId}, thread ${payload.threadId}`,
-  )
-
-  if (payload.event && payload.event.type === 'message') {
-    console.log(`Preview text: ${payload.event.text}`)
-  }
-})
-```
-
-Payload:
-
-| properties | type   | description                                   |
-| ---------- | ------ | --------------------------------------------- |
-| chatId     | string | Chat ID                                       |
-| threadId   | string | Thread ID                                     |
-| event      | object | Event object (only text events are supported) |
-| event.type | string | Event type                                    |
-| event.text | string | Event text content (for message type events)  |
-
 ## Queue position updated
 
 Indicates that the queue position has been updated.
@@ -2088,18 +1972,17 @@ Indicates that a user was removed from a chat.
 
 ```js
 customerSDK.on('user_removed_from_chat', payload => {
-  const { chatId, userId, reason } = payload
-  console.log('user_removed_from_chat', { chatId, userId, reason })
+  const { chatId, userId } = payload
+  console.log('user_removed_from_chat', { chatId, userId })
 })
 ```
 
 Payload:
 
-| properties | type   | description                                                                                                                                            |
-| ---------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| chatId     | string | Chat ID                                                                                                                                                |
-| userId     | string | User ID                                                                                                                                                |
-| reason     | string | Reason why user was removed, one of: 'disconnected', 'signed_out', 'remotely_signed_out', 'deleted', 'chat_deactivated', 'manual', 'inactive', 'other' |
+| properties | type   | description |
+| ---------- | ------ | ----------- |
+| chatId     | string | Chat ID     |
+| userId     | string | User ID     |
 
 # Disconnection reasons
 
@@ -2139,12 +2022,9 @@ This internally destroys the current instance of Customer SDK, so it won't be po
 
 ## Identity mismatch
 
-The Customer SDK handles identity changes by:
+The identity of the customer has changed between reconnects. This might happen if cookies can't be persisted in the browser.
 
-- Automatically switching to the new customer identity
-- Clearing sensitive session data (chats, cached user data) for security
-- Maintaining the SDK functionality without crashes
-- Emitting an `identity_changed` event so you can respond to identity updates.
+This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
 
 ## Inactivity timeout
 
@@ -2156,11 +2036,11 @@ Internal error. Customer SDK reconnects on its own.
 
 ## License expired
 
-The subscription associated with the specified organization ID has expired. Ensure there are no unpaid invoices for this subscription.
+The license with the specified ID has expired. You should make sure that there are no unpaid invoices for it.
 
 ## License not found
 
-The provided organization ID doesn't exist. Check the options passed to the Customer SDK and ensure the parameters are correct.
+The license with the specified ID doesn't exist. You should check the options passed in to Customer SDK and make sure that the license parameter is correct.
 
 This internally destroys the current instance of Customer SDK, so it won't be possible to reuse it.
 
@@ -2267,30 +2147,6 @@ customerSDK.on('disconnected', ({ reason }) => {
 ```
 
 # Changelog
-
-## [v5.0.0] - 2026-05-12
-
-### Added
-
-- New `reason` field to `user_removed_from_chat` event, indicating why the user was removed.
-- New `sendGreetingButtonClicked` method for tracking greeting button clicks.
-- New `requestWelcomeMessage` method for requesting welcome messages.
-- Support for `incoming_thinking_indicator` push event.
-- Support for `incoming_event_preview` push event.
-- Support for `incoming_welcome_message` push event.
-- Support for `identity_changed` event.
-- Support for `ecommerce` template in rich messages.
-- Optional `formType` field on parsed `form` and `filled_form` events, representing the custom form type assigned by the server.
-- Support for optional `tabId` configuration parameter, sent as `tab_id` in the login payload.
-
-### Changed
-
-- Switched to the Customer Chat API v3.6.
-
-### Removed
-
-- Support for `customer_page_updated` push.
-- Support for `get_predicted_agent` request.
 
 ## [v4.0.2] - 2023-11-02
 
@@ -2428,7 +2284,7 @@ Switched to using Customer API 3.5:
 ### Added
 
 - `customer` data available in the `connected` callback
-- `statistics` property available on the `Customer` object returned from the `getCustomer` method
+- `statistics` property available on the customer object returned from the `getCustomer` method
 
 ## [v2.0.0-beta.1] - 2020-03-13
 
@@ -2464,7 +2320,7 @@ Switched to using Customer API 3.5:
 
 - `new_event` event has been renamed to `incoming_event`.
 
-- `customer_updated` doesn't provide the whole `Customer` object anymore.
+- `customer_updated` doesn't provide the whole customer object anymore.
   You will only receive the data that has actually been changed.
 
 - Chat summary & incoming chat objects used to contain an array of user IDs.
