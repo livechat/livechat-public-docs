@@ -10,6 +10,7 @@ desc: "Learn about system activities generated in the Text ecosystem. They are n
 # Introduction
 
 The Text ecosystem generates two types of native system activities sent to users as [events](/messaging/agent-chat-api/data-structures/#events):
+
 - [System events](#system-events) containing complex data structures (in a serialized JSON string).
 - [System messages](#system-messages) containing simple text.
 
@@ -23,15 +24,126 @@ The sources send the newest available version, but existing chat documents may c
 [Read more](/messaging/agent-chat-api/data-structures/#system) about the system event type.
 
 <Code>
-    <CodeResponse title={'Sample system event body'} type={'messaging-references'} json={'systemEventBody'}/>
+  <CodeResponse
+    title={"Sample system event body"}
+    type={"messaging-references"}
+    json={"systemEventBody"}
+  />
 </Code>
 
 The list of system event subtypes grouped by source:
 
-| Source                    | Subtypes                                                                                                                                                                                  |
-|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`cdp`](#cdp)             | [`store_order_was_created`](#store_order_was_created) [`store_product_added_to_cart`](#store_product_added_to_cart) [`store_product_removed_from_cart`](#store_product_removed_from_cart) |
-| [`messaging`](#messaging) | [`summary`](#summary)                                                                                                                                                                     |
+| Source                    | Subtypes                                                                                                                                                                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`ai_agents`](#ai_agents) | [`custom_skill_awaiting_feedback`](#custom_skill_awaiting_feedback) [`custom_skill_completed`](#custom_skill_completed) [`custom_skill_failed`](#custom_skill_failed) [`custom_skill_rejected`](#custom_skill_rejected) [`custom_skill_started`](#custom_skill_started) |
+| [`cdp`](#cdp)             | [`store_order_was_created`](#store_order_was_created) [`store_product_added_to_cart`](#store_product_added_to_cart) [`store_product_removed_from_cart`](#store_product_removed_from_cart)                                                   |
+| [`messaging`](#messaging) | [`summary`](#summary)                                                                                                                                                                                                                       |
+
+## ai_agents
+
+AI Agents source includes system events related to AI Agent activities, such as custom skill execution. Custom skill system events are visible to agents.
+
+### custom_skill_awaiting_feedback
+
+Sent when a custom skill is awaiting human feedback to continue execution.
+
+#### Version 2
+
+| Parameter   | Required | Data type | Notes                                 |
+| ----------- | -------- | --------- | ------------------------------------- |
+| `agentId`   | Yes      | `string`  | The ID of the AI Agent.               |
+| `skillId`   | Yes      | `string`  | The ID of the executed custom skill.  |
+| `skillName` | Yes      | `string`  | The name of the executed custom skill. |
+
+<Code>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"customSkillAwaitingFeedbackV2"}
+  />
+</Code>
+
+### custom_skill_completed
+
+Sent when a custom skill has completed its execution successfully.
+
+#### Version 2
+
+| Parameter   | Required | Data type | Notes                                 |
+| ----------- | -------- | --------- | ------------------------------------- |
+| `agentId`   | Yes      | `string`  | The ID of the AI Agent.               |
+| `skillId`   | Yes      | `string`  | The ID of the executed custom skill.  |
+| `skillName` | Yes      | `string`  | The name of the executed custom skill. |
+
+<Code>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"customSkillCompletedV2"}
+  />
+</Code>
+
+### custom_skill_failed
+
+Sent when a custom skill execution has failed.
+
+#### Version 2
+
+| Parameter   | Required | Data type | Notes                                 |
+| ----------- | -------- | --------- | ------------------------------------- |
+| `agentId`   | Yes      | `string`  | The ID of the AI Agent.               |
+| `skillId`   | Yes      | `string`  | The ID of the executed custom skill.  |
+| `skillName` | Yes      | `string`  | The name of the executed custom skill. |
+| `error`     | Yes      | `string`  | The error that occurred during execution. |
+| `reason`    | Yes      | `string`  | The reason why the execution failed.  |
+
+<Code>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"customSkillFailedV2"}
+  />
+</Code>
+
+### custom_skill_rejected
+
+Sent when a custom skill execution has been rejected.
+
+#### Version 2
+
+| Parameter   | Required | Data type | Notes                                 |
+| ----------- | -------- | --------- | ------------------------------------- |
+| `agentId`   | Yes      | `string`  | The ID of the AI Agent.               |
+| `skillId`   | Yes      | `string`  | The ID of the executed custom skill.  |
+| `skillName` | Yes      | `string`  | The name of the executed custom skill. |
+
+<Code>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"customSkillRejectedV2"}
+  />
+</Code>
+
+### custom_skill_started
+
+Sent when a custom skill execution has begun.
+
+#### Version 2
+
+| Parameter   | Required | Data type | Notes                                 |
+| ----------- | -------- | --------- | ------------------------------------- |
+| `agentId`   | Yes      | `string`  | The ID of the AI Agent.               |
+| `skillId`   | Yes      | `string`  | The ID of the executed custom skill.  |
+| `skillName` | Yes      | `string`  | The name of the executed custom skill. |
+
+<Code>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"customSkillStartedV2"}
+  />
+</Code>
 
 ## cdp
 
@@ -44,7 +156,7 @@ Generated when a customer creates an order in an organization's store.
 #### Version 1
 
 | Parameter                     | Required | Data type | Notes                                                          |
-|-------------------------------|----------|-----------|----------------------------------------------------------------|
+| ----------------------------- | -------- | --------- | -------------------------------------------------------------- |
 | `store`                       | Yes      | `object`  |                                                                |
 | `store.id`                    | Yes      | `string`  | The store ID provided by the platform                          |
 | `store.platform`              | Yes      | `string`  | The platform the store is hosted on                            |
@@ -69,7 +181,11 @@ Generated when a customer creates an order in an organization's store.
 | `order.line_items.variant_id` | No       | `string`  | The variant ID of the line item                                |
 
 <Code>
-    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeOrderWasCreatedV1'}/>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"storeOrderWasCreatedV1"}
+  />
 </Code>
 
 #### Version 2
@@ -78,7 +194,7 @@ Generated when a customer creates an order in an organization's store.
 - A mandatory `product_id` property in order's line items was added.
 
 | Parameter                     | Required | Data type | Notes                                                          |
-|-------------------------------|----------|-----------|----------------------------------------------------------------|
+| ----------------------------- | -------- | --------- | -------------------------------------------------------------- |
 | `store`                       | Yes      | `object`  |                                                                |
 | `store.id`                    | Yes      | `string`  | The store ID provided by the platform                          |
 | `store.platform`              | Yes      | `string`  | The platform the store is hosted on                            |
@@ -104,7 +220,11 @@ Generated when a customer creates an order in an organization's store.
 | `order.line_items.variant_id` | No       | `string`  | The variant ID of the line item                                |
 
 <Code>
-    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeOrderWasCreatedV2'}/>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"storeOrderWasCreatedV2"}
+  />
 </Code>
 
 ### store_product_added_to_cart
@@ -114,7 +234,7 @@ Generated when a customer adds one or more products to their cart in an organiza
 #### Version 1
 
 | Parameter                       | Required | Data type | Notes                                            |
-|---------------------------------|----------|-----------|--------------------------------------------------|
+| ------------------------------- | -------- | --------- | ------------------------------------------------ |
 | `store`                         | Yes      | `object`  |                                                  |
 | `store.id`                      | Yes      | `string`  | The store ID provided by the platform            |
 | `store.platform`                | Yes      | `string`  | The platform the store is hosted on              |
@@ -132,7 +252,11 @@ Generated when a customer adds one or more products to their cart in an organiza
 | `cart_lines.product.variant_id` | No       | `string`  | The variant ID of the item                       |
 
 <Code>
-    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeProductAddedToCartV1'}/>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"storeProductAddedToCartV1"}
+  />
 </Code>
 
 ### store_product_removed_from_cart
@@ -142,7 +266,7 @@ Generated when a customer removes one or more products from their cart in an org
 #### Version 1
 
 | Parameter                       | Required | Data type | Notes                                            |
-|---------------------------------|----------|-----------|--------------------------------------------------|
+| ------------------------------- | -------- | --------- | ------------------------------------------------ |
 | `store`                         | Yes      | `object`  |                                                  |
 | `store.id`                      | Yes      | `string`  | The store ID provided by the platform            |
 | `store.platform`                | Yes      | `string`  | The platform the store is hosted on              |
@@ -160,7 +284,11 @@ Generated when a customer removes one or more products from their cart in an org
 | `cart_lines.product.variant_id` | No       | `string`  | The variant ID of the item                       |
 
 <Code>
-    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'storeProductRemovedFromCartV1'}/>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"storeProductRemovedFromCartV1"}
+  />
 </Code>
 
 ## messaging
@@ -172,15 +300,20 @@ Messaging source includes system events related to messaging activities, such as
 Sent when [requesting a thread summary](/messaging/agent-chat-api#request-thread-summary) in active threads.
 
 #### Version 1
+
 | Parameter        | Required | Data type | Notes                                                                         |
-|------------------|----------|-----------|-------------------------------------------------------------------------------|
+| ---------------- | -------- | --------- | ----------------------------------------------------------------------------- |
 | `summary`        | Yes      | `object`  |                                                                               |
 | `summary.text`   | Yes      | `string`  | The generated text summary of the thread                                      |
 | `summary.status` | Yes      | `string`  | The status of the summary generation process. Possible values: `ok`, `error`. |
 | `requested_by`   | Yes      | `string`  | The ID of the user who requested the thread summary                           |
 
 <Code>
-    <CodeResponse title={'Sample system event payload'} type={'messaging-references'} json={'summaryV1'}/>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"summaryV1"}
+  />
 </Code>
 
 # System messages
@@ -192,7 +325,11 @@ The content of the system message event is a string stored in the `text` propert
 [Read more](/messaging/agent-chat-api/data-structures/#system-message) about the system message event type.
 
 <Code>
-    <CodeResponse title={'Sample system message event body'} type={'messaging-references'} json={'systemMessageBody'}/>
+  <CodeResponse
+    title={"Sample system message event body"}
+    type={"messaging-references"}
+    json={"systemMessageBody"}
+  />
 </Code>
 
 The list of system message types, sorted alphabetically:
@@ -240,30 +377,6 @@ The list of system message types, sorted alphabetically:
 | Content                                         | Generated when                                          |
 | ----------------------------------------------- | ------------------------------------------------------- |
 | _%initiator% transferred the chat to %targets%_ | Chat was transferred via the **Transfer Chat** request. |
-
-## custom_skill_started
-
-| Content                                    | Generated when                                                   |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| _Custom skill %name% started_              | Custom skill execution has begun. |
-
-## custom_skill_awaiting_feedback
-
-| Content                                    | Generated when                                                   |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| _Custom skill %name% is awaiting human feedback_              | Custom skill execution is awaiting user input. |
-
-## custom_skill_completed
-
-| Content                                    | Generated when                                                   |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| _Custom skill %name% completed successfully_              | Custom skill execution has completed successfully. |
-
-## custom_skill_started
-
-| Content                                    | Generated when                                                   |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| _Custom skill %name% has failed_              | Custom skill execution has failed. |
 
 ## customer_added
 
