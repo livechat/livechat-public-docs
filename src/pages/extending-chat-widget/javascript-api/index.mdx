@@ -213,6 +213,222 @@ LiveChatWidget.call("trigger_sales_tracker", {
 *required – `trackerId` can be obtained after creating a sales tracker in LiveChat application
 
 
+# Ecommerce
+
+Available ecommerce methods:
+
+- [Track sales event](#track-sales-event)
+
+## Track sales event
+
+Sends an ecommerce event. Cart and order events appear in the agent's Inbox in real time. Order events also feed the **All Sales** and **AI Agent Sales** reports. Data syncs once a day, so orders appear in the reports the following day.
+
+#### Example
+
+```js
+LiveChatWidget.call("track_sales_event", {
+  name: "store_order_was_created",
+  data: {
+    order: {
+      id: "1042",
+      order_number: "#1042",
+      currency: "USD",
+      total_price: 149.99,
+      line_items: [
+        {
+          product_id: "123456789",
+          title: "Merino Wool Crew Neck",
+          quantity: 1,
+          price: 149.99,
+        },
+      ],
+    },
+  },
+});
+```
+
+#### Payload
+
+| param    | type     | description                                                              |
+| -------- | -------- | ------------------------------------------------------------------------ |
+| name*    | `string` | event name — one of the supported events listed below                    |
+| data*    | `object` | event payload                             |
+
+*required
+
+### `store_order_was_created`
+
+Use on your order confirmation page after a purchase is completed.
+
+#### Example
+
+```js
+LiveChatWidget.call("track_sales_event", {
+  name: "store_order_was_created",
+  data: {
+    order: {
+      id: "1042",
+      order_number: "#1042",
+      currency: "USD",
+      total_price: 149.99,
+      subtotal_price: 129.99,
+      shipping_price: 15.00,
+      tax_price: 5.00,
+      status_page_url: "https://shop.example.com/orders/1042",
+      sales_channel: {
+        id: "online-store",
+        name: "Online Store",
+      },
+      discounts: [
+        { code: "SUMMER10" },
+      ],
+      line_items: [
+        {
+          product_id: "123456789",
+          title: "Merino Wool Crew Neck",
+          quantity: 1,
+          price: 89.99,
+          sku: "MWC-BLK-M",
+          variant_id: "5674839201",
+          variant_title: "Black / Medium",
+          thumbnail_url: "https://shop.example.com/img/merino-crew-black.jpg",
+        },
+        {
+          product_id: "987654321",
+          title: "Organic Cotton T-Shirt",
+          quantity: 2,
+          price: 20.00,
+          sku: "OCT-WHT-L",
+          variant_id: "1029384756",
+          variant_title: "White / Large",
+          thumbnail_url: "https://shop.example.com/img/cotton-tee-white.jpg",
+        },
+      ],
+    },
+  },
+});
+```
+
+#### Data
+
+| param                              | type     | description                                                       |
+| ---------------------------------- | -------- | ----------------------------------------------------------------- |
+| `order.id`*                        | `string` | your platform's order ID                                          |
+| `order.order_number`*              | `string` | human-readable order number shown to agents                       |
+| `order.currency`*                  | `string` | ISO 4217 3-letter code (e.g. `"USD"`, `"EUR"`, `"GBP"`)           |
+| `order.total_price`*               | `number` | final amount charged (post-discount, post-tax, post-shipping)     |
+| `order.subtotal_price`             | `number` | total before shipping and tax                                     |
+| `order.shipping_price`             | `number` | shipping cost                                                     |
+| `order.tax_price`                  | `number` | total tax                                                         |
+| `order.status_page_url`            | `string` | customer-facing order status URL                                  |
+| `order.sales_channel.id`           | `string` | sales channel identifier (e.g. `"online-store"`, `"instagram"`)   |
+| `order.sales_channel.name`         | `string` | sales channel display name                                        |
+| `order.discounts[].code`           | `string` | promo code applied                                                |
+| `order.line_items[]`*              | `array`  | at least one entry required                                       |
+| `order.line_items[].product_id`*   | `string` | your platform's product ID                                        |
+| `order.line_items[].title`*        | `string` | product name shown to the agent                                   |
+| `order.line_items[].quantity`*     | `number` | must be ≥ 1                                                       |
+| `order.line_items[].price`*        | `number` | unit price (not the line total)                                   |
+| `order.line_items[].sku`           | `string` | stock-keeping unit                                                |
+| `order.line_items[].variant_id`    | `string` | variant identifier from your platform                             |
+| `order.line_items[].variant_title` | `string` | human-readable variant description (e.g. `"Black / Medium"`)      |
+| `order.line_items[].thumbnail_url` | `string` | product image URL — placeholder is used when omitted              |
+
+*required
+
+### `store_product_added_to_cart`
+
+Use when a customer adds an item to the cart.
+
+#### Example
+
+```js
+LiveChatWidget.call("track_sales_event", {
+  name: "store_product_added_to_cart",
+  data: {
+    cart_lines: [
+      {
+        total_price: 89.99,
+        currency: "USD",
+        quantity: 1,
+        product: {
+          id: "123456789",
+          title: "Merino Wool Crew Neck",
+          price: 89.99,
+          sku: "MWC-BLK-M",
+          variant_id: "5674839201",
+          thumbnail_url: "https://shop.example.com/img/merino-crew-black.jpg",
+        },
+      },
+    ],
+  },
+});
+```
+
+#### Data
+
+| param                                | type     | description                                                       |
+| ------------------------------------ | -------- | ----------------------------------------------------------------- |
+| `cart_lines[]`*                      | `array`  | at least one entry required                                       |
+| `cart_lines[].total_price`*          | `number` | line total (quantity × unit price)                                |
+| `cart_lines[].currency`*             | `string` | ISO 4217 3-letter code                                            |
+| `cart_lines[].quantity`*             | `number` | must be ≥ 1                                                       |
+| `cart_lines[].product.id`*           | `string` | your platform's product ID                                        |
+| `cart_lines[].product.title`*        | `string` | product name shown to the agent                                   |
+| `cart_lines[].product.price`         | `number` | unit price                                                        |
+| `cart_lines[].product.sku`           | `string` | stock-keeping unit                                                |
+| `cart_lines[].product.variant_id`    | `string` | variant identifier                                                |
+| `cart_lines[].product.thumbnail_url` | `string` | product image URL                                                 |
+
+*required
+
+### `store_product_removed_from_cart`
+
+Use when a customer removes an item from the cart.
+
+#### Example
+
+```js
+LiveChatWidget.call("track_sales_event", {
+  name: "store_product_removed_from_cart",
+  data: {
+    cart_lines: [
+      {
+        total_price: 89.99,
+        currency: "USD",
+        quantity: 1,
+        product: {
+          id: "123456789",
+          title: "Merino Wool Crew Neck",
+          price: 89.99,
+          sku: "MWC-BLK-M",
+          variant_id: "5674839201",
+          thumbnail_url: "https://shop.example.com/img/merino-crew-black.jpg",
+        },
+      },
+    ],
+  },
+});
+```
+
+#### Data
+
+| param                                | type     | description                                                       |
+| ------------------------------------ | -------- | ----------------------------------------------------------------- |
+| `cart_lines[]`*                      | `array`  | at least one entry required                                       |
+| `cart_lines[].total_price`*          | `number` | line total (quantity × unit price)                                |
+| `cart_lines[].currency`*             | `string` | ISO 4217 3-letter code                                            |
+| `cart_lines[].quantity`*             | `number` | must be ≥ 1                                                       |
+| `cart_lines[].product.id`*           | `string` | your platform's product ID                                        |
+| `cart_lines[].product.title`*        | `string` | product name shown to the agent                                   |
+| `cart_lines[].product.price`         | `number` | unit price                                                        |
+| `cart_lines[].product.sku`           | `string` | stock-keeping unit                                                |
+| `cart_lines[].product.variant_id`    | `string` | variant identifier                                                |
+| `cart_lines[].product.thumbnail_url` | `string` | product image URL                                                 |
+
+*required
+
+
 # Getters
 
 You can use getters to fetch the data from the Chat Widget.
@@ -337,6 +553,7 @@ It sets the customer's email address.
 ```js
 LiveChatWidget.call("set_customer_email", "john@example.com");
 ```
+
 
 # Callbacks
 
