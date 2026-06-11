@@ -13,6 +13,8 @@ export { default as myProfile } from "./users/myProfile.json";
 export { default as customer } from "./users/customer.json";
 
 export { default as access } from "./other-structures/access.json";
+export { default as cart } from "./other-structures/cart.json";
+export { default as cartItem } from "./other-structures/cartItem.json";
 export { default as chat } from "./other-structures/chat.json";
 export { default as chatInfo } from "./other-structures/chatInfo.json";
 export { default as formFields } from "./other-structures/formFields.json";

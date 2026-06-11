@@ -17,3 +17,4 @@ export { default as uniqueVisitors } from "./responses/customers/uniqueVisitors.
 export { default as queuedVisitors } from "./responses/chats/queuedVisitors.json";
 export { default as queuedVisitorsLeft } from "./responses/chats/queuedVisitorsLeft.json";
 export { default as groups } from "./responses/chats/groups.json";
+export { default as abandonedCarts } from "./responses/sales/abandonedCarts.json";
