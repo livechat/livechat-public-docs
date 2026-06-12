@@ -690,21 +690,50 @@ It is called for both incoming and outgoing events.
 
 #### Payload
 
-| param                           | type                                        | description               |
-| ------------------------------- | ------------------------------------------- | ------------------------- |
-| timestamp                       | `number`                                    | Event's send timestamp    |
-| type                            | `'message'` \| `'rich_message'` \| `'file'` | Event's type              |
-| author.id                       | `string`                                    | Event's author id         |
-| author.type                     | `'customer'` \| `'agent'`                   | Event's author type       |
-| **If new event is a greeting:** |                                             |                           |
-| greeting.id                     | `number`                                    | Greeting's template id    |
-| greeting.uniqueId               | `string`                                    | Greeting's event uniqueId |
+| param                           | type                                                                   | description                                        |
+| ------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
+| timestamp                       | `number`                                                               | Event's send timestamp                             |
+| type                            | `'message'` \| `'emoji'` \| `'rich_message'` \| `'file'` \| `'custom'` | Event's type                                       |
+| author.id                       | `string`                                                               | Event's author id                                  |
+| author.type                     | `'customer'` \| `'agent'`                                              | Event's author type                                |
+| author.name                     | `string` (optional)                                                    | Event's author name                                |
+| author.avatar                   | `string` (optional)                                                    | Event's author avatar URL                          |
+| **If new event is a custom:**   |                                                                        |                                                    |
+| customId                        | `string` (optional)                                                    | Custom event id                                    |
+| content                         | `object` (optional)                                                    | Custom event content                               |
+| **If new event is a greeting:** |                                                                        |                                                    |
+| greeting.id                     | `number`                                                               | Greeting's campaign id                             |
+| greeting.uniqueId               | `string`                                                               | Greeting's event uniqueId                          |
+| greeting.title                  | `string` (optional)                                                    | Greeting's title text                              |
+| greeting.subtitle               | `string` (optional)                                                    | Greeting's subtitle text                           |
+| greeting.image                  | `object` (optional)                                                    | Greeting's image                                   |
+| greeting.image.url              | `string`                                                               | Image URL                                          |
+| greeting.image.name             | `string` (optional)                                                    | Image file name                                    |
+| greeting.image.alternativeText  | `string` (optional)                                                    | Image alt text                                     |
+| greeting.buttons                | `array` (optional)                                                     | Greeting's buttons                                 |
+| greeting.buttons[].type         | `string` (optional)                                                    | Button type (e.g. `'message'`, `'url'`)            |
+| greeting.buttons[].text         | `string`                                                               | Button label                                       |
+| greeting.buttons[].postbackId   | `string`                                                               | Button postback id                                 |
+| greeting.buttons[].value        | `string` (optional)                                                    | Button value                                       |
+| greeting.buttons[].role         | `string` (optional)                                                    | Button role (`'default'`, `'primary'`, `'danger'`) |
+| greeting.subtype                | `string` (optional)                                                    | Greeting's subtype                                 |
+| greeting.addon                  | `string` (optional)                                                    | Greeting's addon identifier                        |
+| greeting.isExitIntent           | `boolean` (optional)                                                   | Whether greeting is exit-intent                    |
 
 ```js
 function onNewEvent(event) {
+  var authorId = event.author.id;
+  var authorType = event.author.type; // 'agent' or 'customer'
+  var authorName = event.author.name; // optional
+  var authorAvatar = event.author.avatar; // optional
+
   switch (event.type) {
     case "message":
       // handle new message event
+      break;
+
+    case "emoji":
+      // handle new emoji event
       break;
 
     case "rich_message":
@@ -715,15 +744,24 @@ function onNewEvent(event) {
       // handle new file event
       break;
 
+    case "custom":
+      // handle new custom event
+      // event.customId, event.content
+      break;
+
     default:
       break;
   }
 
   if (event.greeting) {
-    // new event is a greeting
-    // greeting properties are available
-    var id = greeting.id;
-    var uniqueId = greeting.uniqueId;
+    var id = event.greeting.id;
+    var uniqueId = event.greeting.uniqueId;
+    var title = event.greeting.title;
+    var subtitle = event.greeting.subtitle;
+    var image = event.greeting.image;
+    var buttons = event.greeting.buttons;
+    var subtype = event.greeting.subtype;
+    var isExitIntent = event.greeting.isExitIntent;
   }
 }
 
