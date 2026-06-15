@@ -17,6 +17,7 @@ export { default as cart } from "./other-structures/cart.json";
 export { default as cartItem } from "./other-structures/cartItem.json";
 export { default as chat } from "./other-structures/chat.json";
 export { default as chatInfo } from "./other-structures/chatInfo.json";
+export { default as customerProperty } from "./other-structures/customerProperty.json";
 export { default as formFields } from "./other-structures/formFields.json";
 export { default as filledFormFields } from "./other-structures/filledFormFields.json";
 export { default as properties } from "./other-structures/properties.json";
