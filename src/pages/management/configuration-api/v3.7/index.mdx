@@ -61,6 +61,7 @@ All configurations set by this API will have action in system after max 2 minute
 | **Tags**             | [`create_tag`](#create-tag) [`delete_tag`](#delete-tag) [`list_tags`](#list-tags) [`update_tag`](#update-tag)                                                                                                                                                                                                                                                                                                                                                                                                   |
 | **Webhooks**         | [`register_webhook`](#register-webhook) [`list_webhooks`](#list-webhooks) [`unregister_webhook`](#unregister-webhook) [`list_webhook_names`](#list-webhook-names) [`enable_license_webhook`](#enable-license-webhooks) [`disable_license_webhook`](#disable-license-webhooks) [`get_license_webhooks_state`](#get-license-webhooks-state)                                                                                                                                                                       |
 | **Canned responses** | [`create_canned_response`](#create-canned-response) [`list_canned_responses`](#list-canned-responses) [`update_canned_response`](#update-canned-response) [`delete_canned_response`](#delete-canned-response)                                                                                                                                                                                                                                                                                                   |
+| **Forms**            | [`get_form`](#get-form) [`update_form`](#update-form) [`delete_form`](#delete-form)                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Translations**     | [`list_translations`](#list-translations) [`update_translations`](#update-translations)                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | **Other**            | [`list_channels`](#list-channels) [`check_product_limits_for_plan`](#check-product-limits-for-plan) [`reactivate_email`](#reactivate-email) [`update_company_details`](#update-company-details)                                                                                                                                                                                                                                                                                                                 |
 
@@ -4573,6 +4574,294 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "id": 12345
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+# Forms
+
+<Section>
+
+Forms let you read and manage forms configured for a group.
+
+<Warning>
+
+Currently only the survey forms are supported, so the `type` parameter accepts `prechat` and `postchat`. More form types will be added in the future, and they will require their own scopes.
+
+</Warning>
+
+The required scope depends on the form `type` passed in the payload. For the survey forms (`prechat` and `postchat`) the methods require the `surveys_read` / `surveys_manage` scopes.
+
+#### Form
+
+| Parameter | Data type      | Notes                                          |
+| --------- | -------------- | ---------------------------------------------- |
+| `id`      | `string`       | The form ID.                                   |
+| `type`    | `string`       | The form type. One of: `prechat`, `postchat`.  |
+| `enabled` | `bool`         | `true` when the form is enabled.               |
+| `fields`  | `array[Field]` | An array of the form fields, in display order. |
+
+##### Field
+
+| Parameter              | Data type       | Notes                                                                                        |
+| ---------------------- | --------------- | -------------------------------------------------------------------------------------------- |
+| `id`                   | `string`        | The field ID. Assigned by the server; ignored when updating.                                 |
+| `type`                 | `string`        | The field type. The allowed values depend on the form `type` (see below).                    |
+| `label`                | `string`        | The field label. Required. Must not contain tab characters.                                  |
+| `required`             | `bool`          | `true` when the field is required.                                                           |
+| `answers`              | `array[Answer]` | The available answers. Required for `radio`, `select`, `checkbox` and `group` fields.        |
+| `comment_label`        | `string`        | The comment label. Required for `rating` fields.                                             |
+| `confirmation_text`    | `string`        | The confirmation text. Required for `email_with_confirmation` fields.                        |
+| `confirmation_checked` | `bool`          | Whether the confirmation is checked by default. Applies to `email_with_confirmation` fields. |
+
+###### Answer
+
+| Parameter           | Data type | Notes                                                                                                                                                       |
+| ------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`             | `string`  | The answer label. Required. Must not contain tab characters.                                                                                                |
+| `checked`           | `bool`    | Whether the answer is checked by default. Required for `radio`, `select` and `checkbox` fields. For `radio` and `select` at most one answer may be checked. |
+| `destination_group` | `number`  | The group the customer is routed to when the answer is selected. Required for `group` field answers.                                                        |
+
+Allowed field types per form type:
+
+| Form type  | Allowed field types                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| `prechat`  | `name`, `email`, `email_with_confirmation`, `question`, `radio`, `select`, `checkbox`, `group`, `information` |
+| `postchat` | `header`, `question`, `radio`, `select`, `checkbox`, `textarea`, `rating`                                     |
+
+A form can contain up to 20 fields, and each `radio`, `select`, `checkbox` or `group` field up to 350 answers. Only one `group` field and one `email_with_confirmation` field are allowed per form.
+
+### Get Form
+
+Returns a single form together with its fields.
+
+#### Specifics
+
+|                                  |                                                                  |
+| -------------------------------- | ---------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/get_form` |
+| Required scopes                  | `surveys_read`<sup>**1**</sup>                                   |
+| [Batch support](#batch-requests) | No                                                               |
+
+**1)** The scope depends on the form `type`. The survey forms (`prechat`, `postchat`) require `surveys_read`.
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                                |
+| ---------- | -------- | --------- | ---------------------------------------------------- |
+| `type`     | Yes      | `string`  | The form type. One of: `prechat`, `postchat`.        |
+| `group_id` | No       | `number`  | The ID of the group the form belongs to. Default: 0. |
+
+#### Response
+
+| Parameter | Data type | Notes               |
+| --------- | --------- | ------------------- |
+| `form`    | `Form`    | The requested form. |
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/get_form \
+  -H 'Authorization: Basic <your_personal_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "prechat",
+    "group_id": 0
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "form": {
+    "id": "1",
+    "type": "prechat",
+    "enabled": true,
+    "fields": [
+      {
+        "id": "153925275950librarydetails",
+        "type": "name",
+        "label": "Name",
+        "required": true
+      },
+      {
+        "id": "153925275950libraryemail",
+        "type": "email",
+        "label": "E-mail",
+        "required": true
+      },
+      {
+        "id": "153925275950librarytopics",
+        "type": "checkbox",
+        "label": "Pick topics",
+        "required": false,
+        "answers": [
+          { "label": "Billing", "checked": true },
+          { "label": "Support", "checked": false }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+### Update Form
+
+Creates or updates a form. The whole form is replaced with the provided configuration, so include all the fields that should remain. Returns the updated form.
+
+#### Specifics
+
+|                                  |                                                                     |
+| -------------------------------- | ------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/update_form` |
+| Required scopes                  | `surveys_manage`<sup>**1**</sup>                                    |
+| [Batch support](#batch-requests) | No                                                                  |
+
+**1)** The scope depends on the form `type`. The survey forms (`prechat`, `postchat`) require `surveys_manage`.
+
+#### Request
+
+| Parameter  | Required | Data type      | Notes                                                                               |
+| ---------- | -------- | -------------- | ----------------------------------------------------------------------------------- |
+| `type`     | Yes      | `string`       | The form type. One of: `prechat`, `postchat`.                                       |
+| `group_id` | No       | `number`       | The ID of the group the form belongs to. Default: 0.                                |
+| `enabled`  | No       | `bool`         | If set to `true`: the form will be enabled. If set to `false`: it will be disabled. |
+| `fields`   | No       | `array[Field]` | The form fields. When omitted, the existing fields are left unchanged.              |
+
+#### Response
+
+| Parameter | Data type | Notes             |
+| --------- | --------- | ----------------- |
+| `form`    | `Form`    | The updated form. |
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/update_form \
+  -H 'Authorization: Basic <your_personal_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "prechat",
+    "group_id": 0,
+    "enabled": true,
+    "fields": [
+      {
+        "type": "question",
+        "label": "What is your name?",
+        "required": true
+      },
+      {
+        "type": "checkbox",
+        "label": "Pick topics",
+        "required": false,
+        "answers": [
+          { "label": "Billing", "checked": true },
+          { "label": "Support", "checked": false }
+        ]
+      }
+    ]
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "form": {
+    "id": "1",
+    "type": "prechat",
+    "enabled": true,
+    "fields": [
+      {
+        "id": "153925275950libraryquestion",
+        "type": "question",
+        "label": "What is your name?",
+        "required": true
+      },
+      {
+        "id": "153925275950librarytopics",
+        "type": "checkbox",
+        "label": "Pick topics",
+        "required": false,
+        "answers": [
+          { "label": "Billing", "checked": true },
+          { "label": "Support", "checked": false }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+### Delete Form
+
+Deletes (deactivates) an existing form.
+
+#### Specifics
+
+|                                  |                                                                     |
+| -------------------------------- | ------------------------------------------------------------------- |
+| Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/delete_form` |
+| Required scopes                  | `surveys_manage`<sup>**1**</sup>                                    |
+| [Batch support](#batch-requests) | No                                                                  |
+
+**1)** The scope depends on the form `type`. The survey forms (`prechat`, `postchat`) require `surveys_manage`.
+
+#### Request
+
+| Parameter  | Required | Data type | Notes                                                |
+| ---------- | -------- | --------- | ---------------------------------------------------- |
+| `type`     | Yes      | `string`  | The form type. One of: `prechat`, `postchat`.        |
+| `group_id` | No       | `number`  | The ID of the group the form belongs to. Default: 0. |
+
+#### Response
+
+Empty response object `{}`.
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/delete_form \
+  -H 'Authorization: Basic <your_personal_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "prechat",
+    "group_id": 0
   }'
 ```
 
