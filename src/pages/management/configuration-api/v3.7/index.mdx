@@ -4595,24 +4595,32 @@ curl -X POST \
 
 <Section>
 
-Forms let you read and manage forms configured for a group.
+Forms let you read and manage forms configured for a group. Two families of forms are supported:
+
+- **Survey forms** – the pre-chat and post-chat surveys (`prechat`, `postchat`).
+- **Custom forms** – the other chat-widget forms (`offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`).
+
+The required scope depends on the form family, which is determined by the `type` passed in the payload:
+
+| Form family  | `type` values                                                     | Required scopes                   |
+| ------------ | ----------------------------------------------------------------- | --------------------------------- |
+| Survey forms | `prechat`, `postchat`                                             | `surveys_read` / `surveys_manage` |
+| Custom forms | `offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm` | `forms_manage`                    |
 
 <Warning>
 
-Currently only the survey forms are supported, so the `type` parameter accepts `prechat` and `postchat`. More form types will be added in the future, and they will require their own scopes.
+For custom forms, the `forms_manage` scope is required for both reading (`get_form`) and writing (`update_form`, `delete_form`) — there is no separate read scope.
 
 </Warning>
 
-The required scope depends on the form `type` passed in the payload. For the survey forms (`prechat` and `postchat`) the methods require the `surveys_read` / `surveys_manage` scopes.
-
 #### Form
 
-| Parameter | Data type      | Notes                                          |
-| --------- | -------------- | ---------------------------------------------- |
-| `id`      | `string`       | The form ID.                                   |
-| `type`    | `string`       | The form type. One of: `prechat`, `postchat`.  |
-| `enabled` | `bool`         | `true` when the form is enabled.               |
-| `fields`  | `array[Field]` | An array of the form fields, in display order. |
+| Parameter | Data type      | Notes                                                                          |
+| --------- | -------------- | ------------------------------------------------------------------------------ |
+| `id`      | `string`       | The form ID.                                                                   |
+| `type`    | `string`       | The form type. One of: `prechat`, `postchat`, `offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`. |
+| `enabled` | `bool`         | `true` when the form is enabled. Applies to survey forms only; custom forms don't use it. |
+| `fields`  | `array[Field]` | An array of the form fields, in display order.                                 |
 
 ##### Field
 
@@ -4623,26 +4631,33 @@ The required scope depends on the form `type` passed in the payload. For the sur
 | `label`                | `string`        | The field label. Required. Must not contain tab characters.                                  |
 | `required`             | `bool`          | `true` when the field is required.                                                           |
 | `answers`              | `array[Answer]` | The available answers. Required for `radio`, `select`, `checkbox` and `group` fields.        |
-| `comment_label`        | `string`        | The comment label. Required for `rating` fields.                                             |
-| `confirmation_text`    | `string`        | The confirmation text. Required for `email_with_confirmation` fields.                        |
-| `confirmation_checked` | `bool`          | Whether the confirmation is checked by default. Applies to `email_with_confirmation` fields. |
+| `comment_label`        | `string`        | The comment label. Required for `rating` fields. Survey forms only.                          |
+| `confirmation_text`    | `string`        | The confirmation text. Required for `email_with_confirmation` fields. Survey forms only.     |
+| `confirmation_checked` | `bool`          | Whether the confirmation is checked by default. Applies to `email_with_confirmation` fields. Survey forms only. |
 
 ###### Answer
 
 | Parameter           | Data type | Notes                                                                                                                                                       |
 | ------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `label`             | `string`  | The answer label. Required. Must not contain tab characters.                                                                                                |
-| `checked`           | `bool`    | Whether the answer is checked by default. Required for `radio`, `select` and `checkbox` fields. For `radio` and `select` at most one answer may be checked. |
-| `destination_group` | `number`  | The group the customer is routed to when the answer is selected. Required for `group` field answers.                                                        |
+| `checked`           | `bool`    | Whether the answer is checked by default. Survey forms only: required for `radio`, `select` and `checkbox` fields; for `radio` and `select` at most one answer may be checked. |
+| `destination_group` | `number`  | The group the customer is routed to when the answer is selected. Required for `group` field answers. Survey forms only.                                     |
+
+For custom forms, answers use only the `label` field; `checked` and `destination_group` are ignored.
 
 Allowed field types per form type:
 
-| Form type  | Allowed field types                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------- |
-| `prechat`  | `name`, `email`, `email_with_confirmation`, `question`, `radio`, `select`, `checkbox`, `group`, `information` |
-| `postchat` | `header`, `question`, `radio`, `select`, `checkbox`, `textarea`, `rating`                                     |
+| Form type          | Allowed field types                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `prechat`          | `header`, `name`, `email`, `email_with_confirmation`, `question`, `radio`, `select`, `checkbox`, `group` |
+| `postchat`         | `header`, `question`, `radio`, `select`, `checkbox`, `textarea`, `rating`                       |
+| `offline`          | `header`, `name`, `question`, `email`, `radio`, `select`, `checkbox`, `textarea`, `subject`     |
+| `ask_for_email`    | `header`, `name`, `question`, `email`, `radio`, `select`, `checkbox`, `textarea`, `subject`     |
+| `ask_for_email_mm` | `header`, `name`, `question`, `email`, `radio`, `select`, `checkbox`, `textarea`, `subject`     |
+| `queued`           | `header`                                                                                        |
+| `email`            | `email`                                                                                         |
 
-A form can contain up to 20 fields, and each `radio`, `select`, `checkbox` or `group` field up to 350 answers. Only one `group` field and one `email_with_confirmation` field are allowed per form.
+A form can contain up to 20 fields, and each `radio`, `select`, `checkbox` or `group` field up to 350 answers. Only one `group` field and one `email_with_confirmation` field are allowed per form (survey forms). The `ask_for_email` form must contain an `email` field.
 
 ### Get Form
 
@@ -4653,16 +4668,16 @@ Returns a single form together with its fields.
 |                                  |                                                                  |
 | -------------------------------- | ---------------------------------------------------------------- |
 | Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/get_form` |
-| Required scopes                  | `surveys_read`<sup>**1**</sup>                                   |
+| Required scopes                  | `surveys_read`<sup>**1**</sup> `forms_manage`<sup>**1**</sup>    |
 | [Batch support](#batch-requests) | No                                                               |
 
-**1)** The scope depends on the form `type`. The survey forms (`prechat`, `postchat`) require `surveys_read`.
+**1)** The scope depends on the form `type`. Survey forms (`prechat`, `postchat`) require `surveys_read`; custom forms (`offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`) require `forms_manage`.
 
 #### Request
 
 | Parameter  | Required | Data type | Notes                                                |
 | ---------- | -------- | --------- | ---------------------------------------------------- |
-| `type`     | Yes      | `string`  | The form type. One of: `prechat`, `postchat`.        |
+| `type`     | Yes      | `string`  | The form type. One of: `prechat`, `postchat`, `offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`. |
 | `group_id` | No       | `number`  | The ID of the group the form belongs to. Default: 0. |
 
 #### Response
@@ -4737,19 +4752,19 @@ Creates or updates a form. The whole form is replaced with the provided configur
 |                                  |                                                                     |
 | -------------------------------- | ------------------------------------------------------------------- |
 | Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/update_form` |
-| Required scopes                  | `surveys_manage`<sup>**1**</sup>                                    |
+| Required scopes                  | `surveys_manage`<sup>**1**</sup> `forms_manage`<sup>**1**</sup>     |
 | [Batch support](#batch-requests) | No                                                                  |
 
-**1)** The scope depends on the form `type`. The survey forms (`prechat`, `postchat`) require `surveys_manage`.
+**1)** The scope depends on the form `type`. Survey forms (`prechat`, `postchat`) require `surveys_manage`; custom forms (`offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`) require `forms_manage`.
 
 #### Request
 
 | Parameter  | Required | Data type      | Notes                                                                               |
 | ---------- | -------- | -------------- | ----------------------------------------------------------------------------------- |
-| `type`     | Yes      | `string`       | The form type. One of: `prechat`, `postchat`.                                       |
+| `type`     | Yes      | `string`       | The form type. One of: `prechat`, `postchat`, `offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`. |
 | `group_id` | No       | `number`       | The ID of the group the form belongs to. Default: 0.                                |
-| `enabled`  | No       | `bool`         | If set to `true`: the form will be enabled. If set to `false`: it will be disabled. |
-| `fields`   | No       | `array[Field]` | The form fields. When omitted, the existing fields are left unchanged.              |
+| `enabled`  | No       | `bool`         | If set to `true`: the form will be enabled. If set to `false`: it will be disabled. Survey forms only; ignored for custom forms. |
+| `fields`   | See notes | `array[Field]` | The form fields. For survey forms it's optional — when omitted, the existing fields are left unchanged. For custom forms it's required and must contain at least one entry. |
 
 #### Response
 
@@ -4825,25 +4840,105 @@ curl -X POST \
 
 </Code>
 
+The example below updates a custom form (`ask_for_email`). Custom forms require the `forms_manage` scope, `fields` must contain at least one entry, and answers use only the `label` field.
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.livechatinc.com/v3.7/configuration/action/update_form \
+  -H 'Authorization: Basic <your_personal_access_token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "ask_for_email",
+    "group_id": 0,
+    "fields": [
+      {
+        "type": "header",
+        "label": "Leave us your e-mail",
+        "required": false
+      },
+      {
+        "type": "email",
+        "label": "E-mail",
+        "required": true
+      },
+      {
+        "type": "checkbox",
+        "label": "Pick topics",
+        "required": false,
+        "answers": [
+          { "label": "Billing" },
+          { "label": "Support" }
+        ]
+      }
+    ]
+  }'
+```
+
+</CodeSample>
+
+<CodeResponse>
+
+```json
+{
+  "form": {
+    "id": "0",
+    "type": "ask_for_email",
+    "enabled": false,
+    "fields": [
+      {
+        "id": "153925275950libraryheader",
+        "type": "header",
+        "label": "Leave us your e-mail",
+        "required": false
+      },
+      {
+        "id": "153925275950libraryemail",
+        "type": "email",
+        "label": "E-mail",
+        "required": true
+      },
+      {
+        "id": "153925275950librarytopics",
+        "type": "checkbox",
+        "label": "Pick topics",
+        "required": false,
+        "answers": [
+          { "label": "Billing" },
+          { "label": "Support" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
 ### Delete Form
 
-Deletes (deactivates) an existing form.
+Deletes an existing form. For survey forms (`prechat`, `postchat`) the form is deactivated; for custom forms the form configuration is removed.
 
 #### Specifics
 
 |                                  |                                                                     |
 | -------------------------------- | ------------------------------------------------------------------- |
 | Method URL                       | `https://api.livechatinc.com/v3.7/configuration/action/delete_form` |
-| Required scopes                  | `surveys_manage`<sup>**1**</sup>                                    |
+| Required scopes                  | `surveys_manage`<sup>**1**</sup> `forms_manage`<sup>**1**</sup>     |
 | [Batch support](#batch-requests) | No                                                                  |
 
-**1)** The scope depends on the form `type`. The survey forms (`prechat`, `postchat`) require `surveys_manage`.
+**1)** The scope depends on the form `type`. Survey forms (`prechat`, `postchat`) require `surveys_manage`; custom forms (`offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`) require `forms_manage`.
 
 #### Request
 
 | Parameter  | Required | Data type | Notes                                                |
 | ---------- | -------- | --------- | ---------------------------------------------------- |
-| `type`     | Yes      | `string`  | The form type. One of: `prechat`, `postchat`.        |
+| `type`     | Yes      | `string`  | The form type. One of: `prechat`, `postchat`, `offline`, `queued`, `email`, `ask_for_email`, `ask_for_email_mm`. |
 | `group_id` | No       | `number`  | The ID of the group the form belongs to. Default: 0. |
 
 #### Response
