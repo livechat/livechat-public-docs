@@ -438,6 +438,7 @@ It is not possible to send a System event in API version 3.7.
 | `carts`                          | optional  | An array of customer's shopping carts. See [Cart](#cart) for the object structure.                                                                        |
 | `address`                        | optional  | An object of the customer's address data.                                                                                                                 |
 | `customer_properties`            | optional  | An object where the keys are the IDs of the [customer properties](#customer-property) and the values are their data.                                      |
+| `segment_memberships`            | optional  | An array of the customer's segment memberships. See [Segment Membership](#segment-membership) for the object structure.                                   |
 
 ### Cart
 
@@ -479,6 +480,28 @@ The customer property's type is set on creation by the agent.
 | `last_updated_at`               | required  | `string`  | RFC 3339 datetime string.                                                                  |
 | `last_updated_agent_account_id` | optional  | `string`  | Account ID of the agent that last set this value.                                          |
 | `last_updated_agent_client_id`  | optional  | `string`  | Client ID of the application that last set this value.                                     |
+
+### Segment Membership
+
+Segment memberships describe which segments the customer belongs to. The `segment_memberships` field is omitted when there's no record of any segment membership state for the customer.
+
+<CodeResponse version="v3.7" type="agent" title={'Sample Segment Membership data structure'} json="segmentMembership"/>
+
+| Field                        | Req./Opt. | Data type  | Notes                                                                                                                                                                                                                                                               |
+| ---------------------------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `segment_id`                 | required  | `number`   | The ID of the segment definition this membership refers to. The built-in default segment has the ID `0`.                                                                                                                                                            |
+| `is_member`                  | required  | `bool`     | Whether the customer currently satisfies the segment's conditions.                                                                                                                                                                                                  |
+| `membership_last_updated_at` | optional  | `string`   | RFC 3339 datetime string; the time when `is_member` last changed. Returned only if the customer was a member of the segment at least once.                                                                                                                          |
+| `membership_attribution`     | optional  | `[]string` | Account IDs of the agents credited with the customer joining the segment. Returned only when an agent's change added the customer to the segment.                                                                                                                   |
+| `conditions_provenance`      | optional  | `object`   | An object where the keys are the names of the conditions the customer satisfies (for example, `email_set`) and the values are [Condition Provenance](#condition-provenance) objects. Conditions are reported even when the customer isn't a member of the segment.  |
+
+### Condition Provenance
+
+| Field              | Req./Opt. | Data type | Notes                                                                                                                                                    |
+| ------------------ | --------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `last_updated_at`  | required  | `string`  | RFC 3339 datetime string; the time when the condition was last satisfied.                                                                                |
+| `agent_account_id` | optional  | `string`  | Account ID of the agent whose change satisfied the condition. Returned only when the change is attributable to an agent.                                 |
+| `agent_client_id`  | optional  | `string`  | Client ID of the application that issued the token of the agent who satisfied the condition. Returned only when the change is attributable to an agent.  |
 
 # Other common structures
 
