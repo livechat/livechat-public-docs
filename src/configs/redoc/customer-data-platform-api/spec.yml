@@ -366,12 +366,13 @@ paths:
                   name: lifetime_value
                   type: number
                   description: Lifetime spend in USD
-              link_property:
-                summary: Link property
+              timestamp_property:
+                summary: Timestamp property with a format
                 value:
-                  name: crm_profile
-                  type: link
-                  description: URL to CRM profile
+                  name: signed_up_at
+                  type: timestamp
+                  type_configuration:
+                    format: date-time
       responses:
         "200":
           description: The created customer property.
@@ -379,6 +380,25 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/CustomerProperty"
+              examples:
+                number_property:
+                  summary: Numeric property (no type_configuration)
+                  value:
+                    id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    name: lifetime_value
+                    type: number
+                    type_configuration: {}
+                    description: Lifetime spend in USD
+                    has_value: false
+                timestamp_property:
+                  summary: Timestamp property with a format
+                  value:
+                    id: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+                    name: signed_up_at
+                    type: timestamp
+                    type_configuration:
+                      format: date-time
+                    has_value: false
         "401":
           description: Invalid access token
         "403":
@@ -410,16 +430,18 @@ paths:
             schema:
               "$ref": "#/components/schemas/UpdateCustomerPropertyRequest"
             examples:
-              rename:
-                summary: Rename a property
+              renamed:
+                summary: Rename a numeric property
                 value:
                   id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
                   name: ltv_usd
-              update_description:
-                summary: Update description only
-                value:
-                  id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
                   description: Lifetime value (USD)
+              timestamp_property:
+                summary: Update a timestamp property's format
+                value:
+                  id: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+                  type_configuration:
+                    format: date
       responses:
         "200":
           description: The updated customer property.
@@ -427,6 +449,25 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/CustomerProperty"
+              examples:
+                renamed:
+                  summary: Renamed numeric property
+                  value:
+                    id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    name: ltv_usd
+                    type: number
+                    type_configuration: {}
+                    description: Lifetime value (USD)
+                    has_value: true
+                timestamp_property:
+                  summary: Timestamp property after updating its format
+                  value:
+                    id: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+                    name: signed_up_at
+                    type: timestamp
+                    type_configuration:
+                      format: date
+                    has_value: false
         "401":
           description: Invalid access token
         "403":
@@ -442,6 +483,38 @@ paths:
             Invalid request body (including attempts to set `type` or any
             other unknown field), or the resulting schema exceeds the upstream size
             limit.
+        "500":
+          description: Internal error
+  "/v1/delete_customer_property_definition":
+    post:
+      summary: v1/Delete customer property definition
+      description:
+        "Deletes a customer property definition. It will no longer be returned
+        by any definition-listing response. Required scope: `customers:rw`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteCustomerPropertyRequest"
+            examples:
+              delete:
+                summary: Remove a property
+                value:
+                  id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+      responses:
+        "200":
+          description: The property was deleted.
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "404":
+          description: Customer property not found
+        "422":
+          description: Invalid request body
         "500":
           description: Internal error
   "/v1/get_customer_properties_definitions":
@@ -466,12 +539,111 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/ListCustomerPropertiesResponse"
+              example:
+                last_updated_at: "2026-01-15T09:30:00Z"
+                last_updated_by: 3ac8f2b1-1f6c-4a2b-8d0e-9b6f1f6c8a2b
+                properties:
+                  - id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    name: lifetime_value
+                    type: number
+                    type_configuration: {}
+                    description: Lifetime spend in USD
+                    has_value: true
+                  - id: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+                    name: signed_up_at
+                    type: timestamp
+                    type_configuration:
+                      format: date-time
+                    has_value: false
         "401":
           description: Invalid access token
         "403":
           description: Insufficient scopes
         "422":
           description: Invalid request body
+        "500":
+          description: Internal error
+  "/v1/set_customer_properties_values":
+    post:
+      summary: v1/Set customer properties values
+      description:
+        "Sets one or more customer properties' values for the specified
+        customer. Each property is validated against its definition (type and type
+        configuration). Setting a property value to `null` clears it. Unknown fields
+        in the request body are rejected. Required scope: `customers:rw`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/SetCustomerPropertiesValuesRequest"
+            examples:
+              set_multiple_properties:
+                summary: Set multiple properties values
+                value:
+                  customer_id: cf89fa3a-5ee9-4bdb-84ec-38824b2e2786
+                  properties:
+                    9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11: 42
+                    a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d: hello
+              clear_property:
+                summary: Clear the property value
+                value:
+                  customer_id: cf89fa3a-5ee9-4bdb-84ec-38824b2e2786
+                  properties:
+                    9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11:
+      responses:
+        "200":
+          description: Properties have been set successfully. Empty response body.
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "422":
+          description:
+            Invalid request body (e.g. missing or empty `customer_id`,
+            empty `properties` map, exceeding the properties limit, unknown property
+            ID, or a value that does not match the property type).
+        "500":
+          description: Internal error
+  "/v1/has_sales_events":
+    post:
+      summary: v1/Has sales events
+      description:
+        "Returns whether the organization has recorded any sales activity,
+        optionally scoped to a single store. Required scope: `customers:ro`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                store_uuid:
+                  type: string
+                  format: uuid
+                  description:
+                    Optional store UUID. When provided the check is scoped
+                    to that store; when omitted it covers the whole organization.
+      responses:
+        "200":
+          description: Whether the organization (or store) has any sales events.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  has_sales_events:
+                    type: boolean
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "422":
+          description: Invalid request body (e.g. malformed `store_uuid`).
         "500":
           description: Internal error
 components:
@@ -521,6 +693,13 @@ components:
           "$ref": "#/components/schemas/Chat"
         invitation:
           "$ref": "#/components/schemas/Invitation"
+        customer_properties:
+          type: object
+          additionalProperties:
+            "$ref": "#/components/schemas/CustomerPropertyValue"
+          description:
+            A map of customer property definition IDs to their current
+            values. Omitted when the customer has no property values set.
         tickets:
           type: object
           additionalProperties:
@@ -535,6 +714,13 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/Cart"
+        segment_memberships:
+          type: array
+          items:
+            "$ref": "#/components/schemas/SegmentMembership"
+          description:
+            The customer's per-segment membership state. Contains one entry
+            for each segment that has been evaluated for the customer.
     Monitoring:
       type: object
       required:
@@ -935,6 +1121,8 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/OrderLineItem"
+        source:
+          type: string
     Cart:
       type: object
       required:
@@ -1016,6 +1204,102 @@ components:
           type: string
         product_id:
           type: string
+    SegmentMembership:
+      type: object
+      required:
+        - segment_id
+        - is_member
+      properties:
+        segment_id:
+          type: integer
+          format: int64
+          description:
+            ID of the segment definition this membership refers to. For
+            the default segment, the ID is 0.
+          example: 0
+        is_member:
+          type: boolean
+          description: Whether the customer currently satisfies the segment's conditions.
+          example: true
+        membership_last_updated_at:
+          type: string
+          format: date-time
+          description:
+            Timestamp of the last time `is_member` changed (the customer
+            was added to or removed from the segment).
+          example: "2026-07-13T13:11:21.187676Z"
+        membership_attribution:
+          type: array
+          items:
+            type: string
+          description:
+            Account IDs of the agents credited with the customer joining
+            the segment. Populated only when an agent-driven update added the customer;
+            empty for additions caused by customers setting their own data.
+          example:
+            - bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+        conditions_provenance:
+          type: object
+          additionalProperties:
+            "$ref": "#/components/schemas/ConditionProvenance"
+          description:
+            Per-condition provenance, keyed by condition name (e.g. `email_set`,
+            `phone_number_set`). An entry is present for each condition the customer
+            currently satisfies.
+          example:
+            email_set:
+              last_updated_at: "2026-07-15T09:31:45.075731Z"
+              agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+              agent_client_id: 71d32c598862b01b9e2298281339dbc2
+    ConditionProvenance:
+      type: object
+      required:
+        - last_updated_at
+      properties:
+        last_updated_at:
+          type: string
+          format: date-time
+          description: Timestamp of when this condition was last satisfied.
+          example: "2026-07-13T13:11:21.187676Z"
+        agent_account_id:
+          type: string
+          description:
+            Account ID of the agent whose change satisfied this condition.
+            Omitted when the change was not attributable to an agent.
+          example: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+        agent_client_id:
+          type: string
+          description:
+            Client ID of the application which issued the token for agent
+            who satisfied this condition. Omitted when the change was not attributable
+            to an agent.
+          example: 71d32c598862b01b9e2298281339dbc2
+    CustomerPropertyValue:
+      type: object
+      required:
+        - value
+        - last_updated_at
+      properties:
+        value:
+          description:
+            The property value. Its type depends on the property definition
+            (boolean, string, number, timestamp string, or link string). Null when
+            the property has been cleared.
+          nullable: true
+        last_updated_at:
+          type: string
+          format: date-time
+          description: Timestamp of the last update to this property value.
+        last_updated_agent_account_id:
+          type: string
+          description:
+            Account ID of the agent that last set this value. Omitted when
+            the value was not set by an agent.
+        last_updated_agent_client_id:
+          type: string
+          description:
+            Client ID of the application that last set this value. Omitted
+            when the value was not set by an agent.
     CustomerPropertyType:
       type: string
       enum:
@@ -1028,8 +1312,11 @@ components:
     CustomerPropertyTypeConfiguration:
       type: object
       description:
-        Per-type configuration. The `format` field is only applicable to
-        properties of type `timestamp`; it must be empty for all other types.
+        Per-type configuration. `format` is exclusive to properties of
+        type `timestamp` (sending a non-empty `format` for other types is rejected
+        with `422`). `allowed_values`, when present, constrains the property to a
+        predefined domain.
+      example: {}
       properties:
         format:
           type: string
@@ -1040,14 +1327,73 @@ components:
           description:
             Optional rendering format for timestamp property values. Aligns
             with JSON Schema format keywords. When empty, raw stored timestamp values
-            are returned.
+            are returned. Present only for `timestamp` properties.
+        allowed_values:
+          type: array
+          maxItems: 30
+          items:
+            description:
+              A single accepted value, typed to match the property `type`
+              (boolean, string, number, or a timestamp/link string). Stored as provided;
+              a value being set is matched against this set exactly.
+          description:
+            Optional domain of accepted values. When present, setting a
+            value outside this set is rejected with `422`; `null` (clearing the value)
+            is always allowed. The property remains single-valued — this is a set
+            of allowed values, not a multi-value type. On create the full set is provided
+            wholesale; exact duplicates and empty/`null` entries are rejected, and
+            at most 30 entries are allowed. Changing the domain does not backfill
+            or alter existing customer values, which are still returned even if they
+            no longer match.
+    CustomerPropertyTypeConfigurationUpdate:
+      type: object
+      description:
+        "`format` and `allowed_values` are updated independently: omitting
+        a field leaves its current value unchanged; providing it (including an empty
+        array for `allowed_values` or an empty string for `format`) replaces or clears
+        it."
+      example: {}
+      properties:
+        format:
+          type: string
+          enum:
+            - date-time
+            - date
+            - time
+          description:
+            New rendering format for timestamp property values, replacing
+            the current one. Send an empty string to clear a previously configured
+            format. Only allowed for `timestamp` properties.
+        allowed_values:
+          type: array
+          maxItems: 30
+          items:
+            description:
+              A single accepted value, typed to match the property `type`
+              (boolean, string, number, or a timestamp/link string).
+          description:
+            Replaces the current domain of accepted values wholesale. Send
+            an empty array to clear the domain. Exact duplicates and empty/`null`
+            entries are rejected, and at most 30 entries are allowed.
     CustomerProperty:
       type: object
+      description:
+        A customer property definition. `type_configuration` carries a
+        `format` only when `type` is `timestamp`, and may carry `allowed_values` for
+        any type; it is an empty object (`{}`) when neither applies.
       required:
         - id
         - name
         - type
         - type_configuration
+        - has_value
+      example:
+        id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+        name: lifetime_value
+        type: number
+        type_configuration: {}
+        description: Lifetime spend in USD
+        has_value: true
       properties:
         id:
           type: string
@@ -1064,6 +1410,9 @@ components:
         description:
           type: string
           maxLength: 512
+        has_value:
+          type: boolean
+          description: Whether at least one customer has a value set for this property.
     CreateCustomerPropertyRequest:
       type: object
       required:
@@ -1099,14 +1448,26 @@ components:
           type: string
           maxLength: 512
         type_configuration:
-          "$ref": "#/components/schemas/CustomerPropertyTypeConfiguration"
+          "$ref": "#/components/schemas/CustomerPropertyTypeConfigurationUpdate"
       description:
         At least one of `name`, `description`, `type_configuration` must
         be provided. The `type` field is intentionally absent — type is immutable,
         and any unknown field (including `type`) causes the request to be rejected
-        with a validation error. `type_configuration.format` is only allowed for properties
-        of type `timestamp`; set it to an empty string to clear a previously configured
-        format.
+        with a validation error. Within `type_configuration`, `format` and `allowed_values`
+        are updated independently — omit one to leave it unchanged while replacing
+        the other; see `CustomerPropertyTypeConfigurationUpdate`. `type_configuration.format`
+        is only allowed for properties of type `timestamp`; set it to an empty string
+        to clear a previously configured format.
+    DeleteCustomerPropertyRequest:
+      type: object
+      required:
+        - id
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identifier of the property to delete.
     ListCustomerPropertiesResponse:
       type: object
       required:
@@ -1128,6 +1489,29 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/CustomerProperty"
+    SetCustomerPropertiesValuesRequest:
+      type: object
+      required:
+        - customer_id
+        - properties
+      additionalProperties: false
+      properties:
+        customer_id:
+          type: string
+          description:
+            The customer whose property values should be set. Must not
+            be empty.
+        properties:
+          type: object
+          additionalProperties:
+            description:
+              "Property value keyed by property definition ID. The value
+              type must match the property's defined type: boolean for `bool`, string
+              (max 2048 chars) for `string`, number for `number`, RFC 3339 / date
+              / time string for `timestamp` (depending on type configuration format),
+              or a valid HTTP(S) URL string (max 2048 chars) for `link`. Use `null`
+              to clear a property value."
+          description: A map of property definition IDs to their values.
     Clause:
       type: object
       required:
@@ -1163,7 +1547,18 @@ components:
             - address_country
             - address_state
             - address_postal_code
-          description: Field name to filter on (required for all operators)
+            - customer_property
+          description: |
+            Field name to filter on (required for all operators).
+            Use `customer_property` to filter on a custom customer property; in that
+            case `property_id` is required.
+        property_id:
+          type: string
+          description: |
+            ID of the customer property definition to filter on.
+            Required when `field` is `customer_property`; ignored for built-in fields.
+            An unknown `property_id` is rejected with a validation error.
+          example: db34b1fe-22ce-4d41-bd0b-e15567f4c81b
         operator:
           type: string
           enum:
@@ -1179,6 +1574,13 @@ components:
             - `is`: Exact match for single or multiple values (all fields)
             - `range`: Range filter for dates, numbers, or cart values (statistics fields, cart fields)
             - `starts_with`: Prefix match (phone_number, address_postal_code)
+
+            For `customer_property` filters, the allowed operators depend on the property's type:
+            - `string`: `contains`, `is`, `exists`
+            - `link`: `contains`, `is`, `exists`
+            - `number`: `range`, `is`, `exists`
+            - `timestamp`: `range`, `exists`
+            - `bool`: `is`, `exists`
         values:
           type: array
           items:
@@ -1221,8 +1623,8 @@ components:
           description:
             "Range values for 'range' operator. For date fields (last_activity,
             last_visit_started, cart_last_updated_at): use RFC3339 format date-time
-            strings.For numeric fields (visits_count, threads_count, etc.): use
-            integers.For cart value fields (cart_total_usd): use numbers."
+            strings. For numeric fields (visits_count, threads_count, etc.): use
+            integers. For cart value fields (cart_total_usd): use numbers."
           example:
             from: "2025-01-01T00:00:00Z"
             to: "2025-03-01T00:00:00Z"
@@ -1353,6 +1755,17 @@ components:
                     range:
                       from: "2025-01-01T00:00:00Z"
                       to: "2025-03-01T00:00:00Z"
+                  - field: customer_property
+                    property_id: db34b1fe-22ce-4d41-bd0b-e15567f4c81b
+                    operator: is
+                    values:
+                      - gold
+                  - field: customer_property
+                    property_id: fa84b317-5b2b-4823-9b51-b7e2868d07b6
+                    operator: range
+                    range:
+                      from: 40
+                      to: 50
               - operator: OR
                 clauses:
                   - field: name
