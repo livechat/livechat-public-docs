@@ -1,0 +1,461 @@
+---
+weight: 26
+category: "management"
+subcategory: "product-directory-api"
+title: "Product Directory"
+tagline: "Upload and manage your product catalog for AI-powered search."
+desc: "Learn how to use the Product Directory API to upload your product catalog and track the indexing progress."
+---
+
+# Introduction
+
+The Product Directory API lets you upload your product catalog so it can be used by your AI agent.
+
+## Base URL
+
+```
+https://api.text.com/product-directory/
+```
+
+## Authentication
+
+All endpoints require a Personal Access Token in the `Authorization` header.
+
+To obtain a token go to <a href="https://www.text.com/app/settings/integrations/api-access/personal-access-tokens" target="_blank">Personal Access Tokens</a>:
+
+1. Click **Create token**.
+2. Enter a name for the token.
+3. As a token scope, select `accounts--my:ro`.
+4. Save the `account_id`, `token`, and base64-encoded token.
+
+Basic authentication requires a username and password. When using a Personal Access Token:
+
+- Username is your Account ID
+- Password is your Personal Access Token
+
+Or use the base64-encoded token:
+
+```
+-H 'Authorization: Basic <base64_encoded_token>'
+```
+
+# Methods
+
+## Available methods
+
+|                    |                                                        |
+| ------------------ | ------------------------------------------------------ |
+| **Catalogs**       | [`Upload a product catalog`](#upload-a-product-catalog) [`Check import status`](#check-import-status) [`List catalogs`](#list-catalogs) [`Get catalog details`](#get-catalog-details) |
+
+<Section>
+
+<Text>
+
+### Upload a product catalog
+
+Uploads a JSON file containing your product catalog. The request is `multipart/form-data` with the file attached under the `file` field; the filename must end in `.json`. The file is processed asynchronously — you'll receive a `job_id` to track progress.
+
+#### Specifics
+
+|             |                                    |
+| ----------- | ---------------------------------- |
+| Method URL  | `https://api.text.com/product-directory/v1/catalogs/imports`   |
+| HTTP method | `POST`                             |
+| Content type | `multipart/form-data`             |
+
+#### Request
+
+| Parameter | Data type | Required | Notes                                                     |
+| --------- | --------- | -------- | ---------------------------------------------------------- |
+| `file`    | `file`    | Yes      | A JSON file containing the product catalog. The filename must end in `.json`. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl -X POST \
+  https://api.text.com/product-directory/v1/catalogs/imports \
+  -H 'Authorization: Basic your-personal-access-token' \
+  -F 'file=@products.json'
+```
+
+</CodeSample>
+
+<CodeResponse title={'Response — 202 Accepted'}>
+
+```json
+{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+#### File format
+
+The uploaded file must be a JSON array of product objects:
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'products.json'}>
+
+```json
+[
+  {
+    "id": "product-001",
+    "title": "Product title",
+    "description": "Product description",
+    "url": "https://example.com/product-001",
+    "currency": "USD",
+    "categories": ["electronics", "audio"],
+    "tags": ["bestseller"],
+    "images": [
+      { "url": "https://example.com/image_1.jpg", "alt_text": "Front view" },
+      { "url": "https://example.com/image_2.jpg" }
+    ],
+    "attributes": [
+      { "key": "color", "value": "blue" },
+      { "key": "brand", "value": "Acme" },
+      { "key": "material", "value": "aluminum" }
+    ],
+    "variants": [
+      {
+        "id": "product-001-blue-l",
+        "title": "Blue / L",
+        "sku": "ACME-BL-L",
+        "options": { "color": "blue", "size": "L" },
+        "available": true,
+        "price": 49.99
+      }
+    ]
+  }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+**Product fields**
+
+| Field         | Type             | Required | Description                                                                                                                                              |
+| ------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`          | `string`         | Yes      | Unique product identifier.                                                                                                                              |
+| `title`       | `string`         | Yes      | Product name.                                                                                                                                            |
+| `description` | `string`         | Yes      | Product description.                                                                                                                                     |
+| `url`         | `string`         | Yes      | Product URL.                                                                                                                                             |
+| `currency`    | `string`         | Yes      | Currency code applied to all variant prices (e.g. `USD`).                                                                                                |
+| `categories`  | `string[]`       | Yes      | At least one category.                                                                                                                                   |
+| `tags`        | `string[]`       | No       | Free-form tags.                                                                                                                                          |
+| `images`      | `object[]`       | Yes      | At least one image; each has `url` (required) and `alt_text` (optional).                                                                                 |
+| `attributes`  | `object[]`       | Yes      | At least one `{ "key": string, "value": string \| number }` pair. The more meaningful attributes, the better the search results for the AI agent will be. |
+| `variants`    | `object[]`       | Yes      | At least one variant. Each has `id` (required), `title` (optional), `sku` (optional), `options` (optional key-value map, e.g. `{"color": "blue"}`), `available` (required `bool`), `price` (required `number`, ≥ 0). |
+
+To update your products, simply send a file with the updated product data. That's all.
+
+#### Validation
+
+A `202` response does **not** mean your products passed validation — invalid products are skipped and counted in `failed_count` on the job status (see [Check import status](#check-import-status)), not rejected at upload time.
+
+#### Error responses
+
+All errors share this body shape:
+
+</Text>
+
+<Code>
+
+<CodeResponse title={'Error response'}>
+
+```json
+{
+  "error": {
+    "type": "validation",
+    "message": "invalid_file"
+  }
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+| Status | `type`            | `message`             | Description                                                    |
+| ------ | ----------------- | --------------------- | ---------------------------------------------------------------- |
+| `401`  | `authentication`   | e.g. `No Authorization header` | Missing or invalid token.                              |
+| `422`  | `validation`       | `invalid_file`         | File isn't valid JSON, or isn't a non-empty JSON array.          |
+| `422`  | `validation`       | `unsupported_format`  | Uploaded filename doesn't end in `.json`.                        |
+| `413`  | `entity_too_large` | `max_file_size_exceeded` | File exceeds the 50MB request size limit.                     |
+
+</Text>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Check import status
+
+Use the `job_id` returned from the upload to poll the processing status.
+
+#### Specifics
+
+|             |                                              |
+| ----------- | -------------------------------------------- |
+| Method URL  | `https://api.text.com/product-directory/v1/catalogs/imports/<job_id>`    |
+| HTTP method | `GET`                                        |
+
+#### Request
+
+| Parameter | Data type | Required | Notes                          |
+| --------- | --------- | -------- | ------------------------------- |
+| `job_id`  | `string`  | Yes      | The import job ID, as a URL path parameter. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl https://api.text.com/product-directory/v1/catalogs/imports/<job_id> \
+  -H 'Authorization: Basic your-personal-access-token'
+```
+
+</CodeSample>
+
+<CodeResponse title={'Response'}>
+
+```json
+{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "processing",
+  "total": 5000,
+  "indexed_count": 2400,
+  "failed_count": 3,
+  "skipped_count": 2,
+  "progress": 2403,
+  "started_at": "2024-03-01T12:00:05Z",
+  "completed_at": null
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+**Response fields**
+
+| Field            | Type                          | Description                                                          |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------- |
+| `job_id`         | `string`                      | Import job identifier.                                                |
+| `status`         | `string`                      | One of the status values below.                                      |
+| `total`          | `number`                      | Total products in the uploaded file.                                  |
+| `indexed_count`  | `number`                      | Products successfully indexed so far.                                |
+| `failed_count`   | `number`                      | Products that failed validation or indexing.                          |
+| `skipped_count`  | `number`                      | Products unchanged since the last import (not reprocessed).           |
+| `progress`       | `number`                      | `indexed_count + failed_count` — products processed so far, out of `total`. |
+| `started_at`     | `string` (RFC3339) or `null`  | When processing started.                                              |
+| `completed_at`   | `string` (RFC3339) or `null`  | When processing finished.                                             |
+
+**Status values**
+
+| Status       | Description                                          |
+| ------------ | ----------------------------------------------------- |
+| `pending`    | Job has been queued and is waiting for a worker.       |
+| `processing` | Worker is actively processing the file.               |
+| `done`       | Import completed.                                      |
+| `failed`     | Import failed.                                         |
+
+#### Error responses
+
+| Status | `type`           | `message`                                        | Description                                |
+| ------ | ---------------- | ------------------------------------------------- | -------------------------------------------- |
+| `401`  | `authentication`  | e.g. `No Authorization header`                    | Missing or invalid token.                    |
+| `422`  | `validation`      | —                                                  | `job_id` is not a valid UUID.                |
+| `404`  | `not_found`       | `import job with ID <job_id> not found`           | Job does not exist for this organization.    |
+
+</Text>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### List catalogs
+
+Returns all catalogs belonging to your organization.
+
+#### Specifics
+
+|             |                                            |
+| ----------- | -------------------------------------------- |
+| Method URL  | `https://api.text.com/product-directory/v1/catalogs` |
+| HTTP method | `GET`                                        |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl https://api.text.com/product-directory/v1/catalogs \
+  -H 'Authorization: Basic your-personal-access-token'
+```
+
+</CodeSample>
+
+<CodeResponse title={'Response — 200 OK'}>
+
+```json
+[
+  { "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6" },
+  { "id": "8f14e45f-ceea-4cbb-91ee-6c0c1f5fabf3" }
+]
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+Returns an empty array `[]` if your organization has no catalogs yet.
+
+**Response fields**
+
+| Field | Type            | Description                                                     |
+| ----- | ---------------- | ---------------------------------------------------------------- |
+| `id`  | `string` (UUID)  | Catalog identifier — use this as `catalog_id` in other endpoints. |
+
+#### Error responses
+
+| Status | `type`           | `message`                       | Description                |
+| ------ | ---------------- | -------------------------------- | ---------------------------- |
+| `401`  | `authentication`  | e.g. `No Authorization header`   | Missing or invalid token.    |
+
+</Text>
+
+</Section>
+
+<Section>
+
+<Text>
+
+### Get catalog details
+
+Returns the indexing status and current product count for a single catalog.
+
+#### Specifics
+
+|             |                                                       |
+| ----------- | ------------------------------------------------------ |
+| Method URL  | `https://api.text.com/product-directory/v1/catalogs/<catalog_id>` |
+| HTTP method | `GET`                                                   |
+
+#### Request
+
+| Parameter    | Data type | Required | Notes                                |
+| ------------ | --------- | -------- | -------------------------------------- |
+| `catalog_id` | `string`  | Yes      | The catalog ID, as a URL path parameter. |
+
+</Text>
+
+<Code>
+
+<CodeSample path={'REQUEST'}>
+
+```shell
+curl https://api.text.com/product-directory/v1/catalogs/<catalog_id> \
+  -H 'Authorization: Basic your-personal-access-token'
+```
+
+</CodeSample>
+
+<CodeResponse title={'Response — 200 OK'}>
+
+```json
+{
+  "status": "ready",
+  "product_count": 12
+}
+```
+
+</CodeResponse>
+
+</Code>
+
+</Section>
+
+<Section>
+
+<Text>
+
+**Response fields**
+
+| Field           | Type     | Description                                            |
+| --------------- | -------- | -------------------------------------------------------- |
+| `status`        | `string` | One of the status values below.                          |
+| `product_count` | `number` | Number of products currently indexed in this catalog.    |
+
+**Status values**
+
+| Status     | Description                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| `created`  | Catalog exists but no file has been uploaded to it yet.                                                |
+| `indexing` | An import is pending or currently being processed.                                                     |
+| `ready`    | The first import has finished (successfully or not). Status stays `ready` after this — later uploads don't change it. |
+
+#### Error responses
+
+| Status | `type`           | `message`                                | Description                                  |
+| ------ | ---------------- | ------------------------------------------ | ----------------------------------------------- |
+| `401`  | `authentication`  | e.g. `No Authorization header`             | Missing or invalid token.                       |
+| `422`  | `validation`      | —                                           | `catalog_id` is not a valid UUID.               |
+| `404`  | `not_found`       | `catalog with ID <catalog_id> not found`   | Catalog does not exist for this organization.   |
+
+</Text>
+
+</Section>
+
+# Contact us
+
+If you found a bug or a typo, you can let us know directly on GitHub. In case of any questions or feedback, don't hesitate to contact us at <a href="mailto:developers@text.com">developers@text.com</a>. We'll be happy to hear from you!
