@@ -21,4 +21,5 @@ export { default as customerProperty } from "./other-structures/customerProperty
 export { default as formFields } from "./other-structures/formFields.json";
 export { default as filledFormFields } from "./other-structures/filledFormFields.json";
 export { default as properties } from "./other-structures/properties.json";
+export { default as segmentMembership } from "./other-structures/segmentMembership.json";
 export { default as thread } from "./other-structures/thread.json";

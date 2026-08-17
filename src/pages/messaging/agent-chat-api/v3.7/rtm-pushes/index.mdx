@@ -35,7 +35,7 @@ Here's what you need to know about **pushes**:
 | **Events**        | [`incoming_event`](#incoming_event) [`event_deleted`](#event_deleted) [`event_updated`](#event_updated) [`incoming_rich_message_postback`](#incoming_rich_message_postback)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | **Properties**    | [`chat_properties_updated`](#chat_properties_updated) [`chat_properties_deleted`](#chat_properties_deleted) [`thread_properties_updated`](#thread_properties_updated) [`thread_properties_deleted`](#thread_properties_deleted) [`event_properties_updated`](#event_properties_updated) [`event_properties_deleted`](#event_properties_deleted)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | **Thread tags**   | [`thread_tagged`](#thread_tagged) [`thread_untagged`](#thread_untagged)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Customers**     | [`incoming_customers`](#incoming_customers) [`incoming_customer`](#incoming_customer) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_properties_values_updated`](#customer_properties_values_updated) [`customer_statistics_updated`](#customer_statistics_updated) [`customer_banned`](#customer_banned) [`customer_transferred`](#customer_transferred) [`customer_left`](#customer_left) [`subscribed_customers_totals_updated`](#subscribed_customers_totals_updated) [`ticket_created`](#ticket_created)  [`ticket_deleted`](#ticket_deleted)                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Customers**     | [`incoming_customers`](#incoming_customers) [`incoming_customer`](#incoming_customer) [`customer_updated`](#customer_updated) [`customer_page_updated`](#customer_page_updated) [`customer_properties_values_updated`](#customer_properties_values_updated) [`segment_memberships_updated`](#segment_memberships_updated) [`customer_statistics_updated`](#customer_statistics_updated) [`customer_banned`](#customer_banned) [`customer_transferred`](#customer_transferred) [`customer_left`](#customer_left) [`subscribed_customers_totals_updated`](#subscribed_customers_totals_updated) [`ticket_created`](#ticket_created)  [`ticket_deleted`](#ticket_deleted)                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Status**        | [`routing_status_set`](#routing_status_set) [`agent_disconnected`](#agent_disconnected)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **Configuration** | [`agent_created`](#agent_created) [`agent_approved`](#agent_approved) [`agent_updated`](#agent_updated) [`agent_suspended`](#agent_suspended) [`agent_unsuspended`](#agent_unsuspended) [`agent_deleted`](#agent_deleted) [`auto_accesses_updated`](#auto_accesses_updated) [`bot_created`](#bot_created) [`bot_updated`](#bot_updated) [`bot_deleted`](#bot_deleted) [`canned_response_created`](#canned_response_created) [`canned_response_updated`](#canned_response_updated) [`canned_response_deleted`](#canned_response_deleted) [`group_created`](#group_created) [`group_updated`](#group_updated) [`group_deleted`](#group_deleted) [`tag_created`](#tag_created) [`tag_deleted`](#tag_deleted) [`tag_updated`](#tag_updated) [`groups_status_updated`](#groups_status_updated) [`license_properties_updated`](#license_properties_updated) [`group_properties_updated`](#group_properties_updated) [`customer_property_definition_created`](#customer_property_definition_created) [`customer_property_definition_updated`](#customer_property_definition_updated) [`customer_property_definition_deleted`](#customer_property_definition_deleted) |
 | **Other**         | [`events_marked_as_seen`](#events_marked_as_seen) [`incoming_sneak_peek`](#incoming_sneak_peek) [`incoming_thinking_indicator`](#incoming_thinking_indicator) [`incoming_typing_indicator`](#incoming_typing_indicator) [`incoming_multicast`](#incoming_multicast) [`chat_unfollowed`](#chat_unfollowed) [`queue_positions_updated`](#queue_positions_updated) [`thread_summary_set`](#thread_summary_set) [`incoming_error`](#incoming_error)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -718,6 +718,65 @@ Indicates that the values of customer properties were updated.
 ```
 
 </CodeResponse>
+
+### `segment_memberships_updated`
+
+Indicates that the customer joined or left at least one segment. Sent only when the `is_member` field of a [segment membership](/messaging/agent-chat-api/v3.7/data-structures#segment-membership) changes. All changes evaluated at the same time are grouped into one push.
+
+<CodeResponse title={'Sample push payload: the customer joined a segment'}>
+
+```json
+{
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "segment_memberships": [
+    {
+      "segment_id": 0,
+      "is_member": true,
+      "membership_last_updated_at": "2026-07-13T13:11:21.187676Z",
+      "membership_attribution": [
+        "464d206a-ba7d-4ce1-98d6-d03f8f14970e"
+      ],
+      "conditions_provenance": {
+        "email_set": {
+          "last_updated_at": "2026-07-13T13:11:21.187676Z",
+          "agent_account_id": "464d206a-ba7d-4ce1-98d6-d03f8f14970e",
+          "agent_client_id": "71d32c598862b01b9e2298281339dbc2"
+        }
+      }
+    }
+  ],
+  "segments_added": [0]
+}
+```
+
+</CodeResponse>
+
+<CodeResponse title={'Sample push payload: the customer left a segment'}>
+
+```json
+{
+  "customer_id": "b7eff798-f8df-4364-8059-649c35c9ed0c",
+  "segment_memberships": [
+    {
+      "segment_id": 0,
+      "is_member": false,
+      "membership_last_updated_at": "2026-07-13T13:11:53.970263Z"
+    }
+  ],
+  "segments_removed": [0]
+}
+```
+
+</CodeResponse>
+
+#### Push payload
+
+| Field                 | Notes                                                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `customer_id`         | The ID of the customer.                                                                                                                                          |
+| `segment_memberships` | The new state of all the customer's [segment memberships](/messaging/agent-chat-api/v3.7/data-structures#segment-membership), not only the ones that changed.    |
+| `segments_added`      | The IDs of the segments the customer has just joined. Returned only if the customer joined any segment.                                                          |
+| `segments_removed`    | The IDs of the segments the customer has just left. Returned only if the customer left any segment.                                                              |
 
 ### `customer_statistics_updated`
 
