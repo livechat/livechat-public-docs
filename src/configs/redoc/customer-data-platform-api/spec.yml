@@ -226,6 +226,7 @@ paths:
                   results_per_page: 50
                   sort:
                     last_activity: desc
+                    9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11: asc
               filter_groups_example:
                 summary: Multiple filter groups with OR logic
                 value:
@@ -268,6 +269,76 @@ paths:
                             from: "2025-01-01T00:00:00Z"
                             to: "2025-03-01T00:00:00Z"
                   results_per_page: 50
+              segment_membership:
+                summary: Customers in segment 5
+                value:
+                  filters:
+                    - operator: AND
+                      clauses:
+                        - field: segment_id
+                          operator: is
+                          values:
+                            - 5
+              any_segment_membership:
+                summary: Customers in segment 5 or 7
+                value:
+                  filters:
+                    - operator: AND
+                      clauses:
+                        - field: segment_id
+                          operator: is
+                          values:
+                            - 5
+                            - 7
+              all_segment_memberships:
+                summary: Customers in both segment 5 and segment 7
+                value:
+                  filters:
+                    - operator: AND
+                      clauses:
+                        - field: segment_id
+                          operator: is
+                          values:
+                            - 5
+                        - field: segment_id
+                          operator: is
+                          values:
+                            - 7
+              neither_segment_membership:
+                summary: Customers in neither segment 5 nor segment 7
+                value:
+                  filters:
+                    - operator: AND
+                      clauses:
+                        - field: segment_id
+                          operator: is
+                          values:
+                            - 5
+                            - 7
+                          negate: true
+              segment_membership_entered_at:
+                summary: Customers who joined segment 5 on or after 1 August 2026
+                value:
+                  filters:
+                    - operator: AND
+                      clauses:
+                        - field: segment_id
+                          operator: is
+                          values:
+                            - 5
+                          entered_at:
+                            from: "2026-08-01T00:00:00Z"
+              any_segment_membership_entered_at:
+                summary: Customers who joined any segment within a date range
+                value:
+                  filters:
+                    - operator: AND
+                      clauses:
+                        - field: segment_id
+                          operator: is
+                          entered_at:
+                            from: "2026-07-30T00:00:00Z"
+                            to: "2026-08-06T00:00:00Z"
       responses:
         "200":
           description: A list of customers matching search criteria.
@@ -417,10 +488,11 @@ paths:
       summary: v1/Update customer property definition
       description:
         "Updates the editable fields of an existing customer property.
-        Only `name`, `description` and `type_configuration` can be changed; the `type`
-        is immutable. Requests that include `type` (or any other unknown field) are
-        rejected with a validation error. At least one of `name`, `description`, `type_configuration`
-        must be provided. Required scope: `customers:rw`."
+        Only `name`, `description` and `type_configuration.allowed_values` can be
+        changed; `type` and `type_configuration.format` are immutable. Requests that
+        include immutable or unknown fields are rejected with a validation error.
+        At least one of `name`, `description`, `type_configuration` must be provided.
+        Required scope: `customers:rw`."
       parameters:
         - "$ref": "#/components/parameters/AuthHeader"
       requestBody:
@@ -437,11 +509,12 @@ paths:
                   name: ltv_usd
                   description: Lifetime value (USD)
               timestamp_property:
-                summary: Update a timestamp property's format
+                summary: Update a timestamp property's allowed values
                 value:
                   id: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
                   type_configuration:
-                    format: date
+                    allowed_values:
+                      - "2026-01-01T00:00:00Z"
       responses:
         "200":
           description: The updated customer property.
@@ -460,13 +533,15 @@ paths:
                     description: Lifetime value (USD)
                     has_value: true
                 timestamp_property:
-                  summary: Timestamp property after updating its format
+                  summary: Timestamp property after updating its allowed values
                   value:
                     id: a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
                     name: signed_up_at
                     type: timestamp
                     type_configuration:
-                      format: date
+                      format: date-time
+                      allowed_values:
+                        - "2026-01-01T00:00:00Z"
                     has_value: false
         "401":
           description: Invalid access token
@@ -480,9 +555,9 @@ paths:
             name.
         "422":
           description:
-            Invalid request body (including attempts to set `type` or any
-            other unknown field), or the resulting schema exceeds the upstream size
-            limit.
+            Invalid request body (including attempts to set immutable `type`
+            or `type_configuration.format` fields), or the resulting schema exceeds
+            the upstream size limit.
         "500":
           description: Internal error
   "/v1/delete_customer_property_definition":
@@ -595,7 +670,12 @@ paths:
                     9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11:
       responses:
         "200":
-          description: Properties have been set successfully. Empty response body.
+          description: Properties have been set successfully.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/EmptyResponse"
+              example: {}
         "401":
           description: Invalid access token
         "403":
@@ -605,6 +685,56 @@ paths:
             Invalid request body (e.g. missing or empty `customer_id`,
             empty `properties` map, exceeding the properties limit, unknown property
             ID, or a value that does not match the property type).
+        "500":
+          description: Internal error
+  "/v1/update_customer":
+    post:
+      summary: v1/Update customer
+      description: |
+        Updates native CDP fields for the specified customer.
+
+        | Field | Supported values |
+        |---|---|
+        | `relationship_level` | `vip` to assign the level, `null` to remove it |
+
+        Required scope: `customers:rw`.
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateCustomerRequest"
+            examples:
+              assign_vip:
+                summary: Assign VIP
+                value:
+                  customer_id: cf89fa3a-5ee9-4bdb-84ec-38824b2e2786
+                  relationship_level: vip
+              remove_relationship_level:
+                summary: Remove the relationship level
+                value:
+                  customer_id: cf89fa3a-5ee9-4bdb-84ec-38824b2e2786
+                  relationship_level:
+      responses:
+        "200":
+          description: Customer has been updated successfully.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/EmptyResponse"
+              example: {}
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "404":
+          description: Customer not found
+        "422":
+          description:
+            Invalid request body, missing `customer_id` or `relationship_level`,
+            or unsupported relationship level.
         "500":
           description: Internal error
   "/v1/has_sales_events":
@@ -646,6 +776,338 @@ paths:
           description: Invalid request body (e.g. malformed `store_uuid`).
         "500":
           description: Internal error
+  "/v1/get_segment_definitions":
+    post:
+      summary: v1/Get segment definitions
+      description:
+        "Returns every active segment definition for the caller's organization,
+        including the two built-in definitions — lead (`0`) and qualified lead (`1`)
+        — even before they have been edited. Definitions are ordered by `segment_id`.
+        Required scope: `customers:ro`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: List of segment definitions in the organization.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/GetSegmentDefinitionsResponse"
+              example:
+                segment_definitions:
+                  - segment_id: 0
+                    segment_type: lead
+                    definition:
+                      type: or
+                      nodes:
+                        - type: email_set
+                        - type: phone_number_set
+                    last_updated_at:
+                    agent_account_id:
+                    agent_client_id:
+                  - segment_id: 1
+                    segment_type: qualified_lead
+                    definition:
+                      type: and
+                      nodes:
+                        - type: or
+                          nodes:
+                            - type: email_set
+                            - type: phone_number_set
+                        - type: name_set
+                    last_updated_at:
+                    agent_account_id:
+                    agent_client_id:
+                  - segment_id: 2
+                    segment_type: custom
+                    definition:
+                      type: and
+                      nodes:
+                        - type: name_set
+                        - type: customer_property_set
+                          customer_property_id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    referenced_customer_properties_definitions_ids:
+                      - 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    last_updated_at: "2026-08-08T10:15:00Z"
+                    agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+                    agent_client_id: 71d32c598862b01b9e2298281339dbc2
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "422":
+          description: Invalid request body
+        "500":
+          description: Internal error
+  "/v1/create_segment_definition":
+    post:
+      summary: v1/Create segment definition
+      description:
+        "Creates a new custom segment definition (`segment_type` `custom`)
+        for the caller's organization. The ID is allocated by the store, not the
+        caller, and is always `2` or higher because `0` and `1` belong to the built-in
+        definitions. At most 10 definitions, including the two always-present built-ins,
+        can be active per organization at once — so at most 8 custom definitions.
+        Required scope: `customers:rw`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateSegmentDefinitionRequest"
+            examples:
+              name_and_property:
+                summary: Named customers with a set customer property
+                value:
+                  definition:
+                    type: and
+                    nodes:
+                      - type: name_set
+                      - type: customer_property_set
+                        customer_property_id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+              recently_active_lead:
+                summary: Leads active within the last 30 days
+                value:
+                  definition:
+                    type: and
+                    nodes:
+                      - type: last_active_days_ago
+                        days: 30
+                      - type: or
+                        nodes:
+                          - type: email_set
+                          - type: phone_number_set
+      responses:
+        "200":
+          description: The created segment definition.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SegmentDefinition"
+              examples:
+                name_and_property:
+                  summary: Named customers with a set customer property
+                  value:
+                    segment_id: 2
+                    segment_type: custom
+                    definition:
+                      type: and
+                      nodes:
+                        - type: name_set
+                        - type: customer_property_set
+                          customer_property_id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    referenced_customer_properties_definitions_ids:
+                      - 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    last_updated_at: "2026-08-08T10:15:00Z"
+                    agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+                    agent_client_id: 71d32c598862b01b9e2298281339dbc2
+                recently_active_lead:
+                  summary:
+                    Leads active within the last 30 days (no referenced customer
+                    properties)
+                  value:
+                    segment_id: 3
+                    segment_type: custom
+                    definition:
+                      type: and
+                      nodes:
+                        - type: last_active_days_ago
+                          days: 30
+                        - type: or
+                          nodes:
+                            - type: email_set
+                            - type: phone_number_set
+                    last_updated_at: "2026-08-08T10:16:00Z"
+                    agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+                    agent_client_id: 71d32c598862b01b9e2298281339dbc2
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "422":
+          description:
+            Invalid request body (including a supplied `segment_id` or
+            `segment_type`, an oversized or malformed tree, or a `customer_property_set`
+            node referencing a property that does not exist or is archived), or the
+            organization's active-definition limit (10, of which 2 are the built-ins)
+            has been reached.
+        "500":
+          description: Internal error
+  "/v1/update_segment_definition":
+    post:
+      summary: v1/Update segment definition
+      description:
+        "Replaces the entire tree of an existing segment definition; partial
+        tree updates are not supported. `segment_id` must be provided explicitly —
+        an explicit `0` or `1` updates, and on its first update materializes, the
+        corresponding built-in definition. Required scope: `customers:rw`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateSegmentDefinitionRequest"
+            examples:
+              update_builtin_lead:
+                summary:
+                  Materialize the built-in lead definition with an activity
+                  window
+                value:
+                  segment_id: 0
+                  definition:
+                    type: and
+                    nodes:
+                      - type: last_active_days_ago
+                        days: 14
+                      - type: or
+                        nodes:
+                          - type: email_set
+                          - type: phone_number_set
+              update_builtin_qualified_lead:
+                summary:
+                  Materialize the built-in qualified lead definition with a
+                  stricter tree
+                value:
+                  segment_id: 1
+                  definition:
+                    type: and
+                    nodes:
+                      - type: or
+                        nodes:
+                          - type: email_set
+                          - type: phone_number_set
+                      - type: name_set
+                      - type: customer_property_set
+                        customer_property_id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+              update_custom_definition:
+                summary: Replace a custom definition's tree
+                value:
+                  segment_id: 2
+                  definition:
+                    type: name_set
+      responses:
+        "200":
+          description: The updated segment definition.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SegmentDefinition"
+              examples:
+                update_builtin_lead:
+                  summary: The materialized built-in lead definition
+                  value:
+                    segment_id: 0
+                    segment_type: lead
+                    definition:
+                      type: and
+                      nodes:
+                        - type: last_active_days_ago
+                          days: 14
+                        - type: or
+                          nodes:
+                            - type: email_set
+                            - type: phone_number_set
+                    last_updated_at: "2026-08-08T10:20:00Z"
+                    agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+                    agent_client_id: 71d32c598862b01b9e2298281339dbc2
+                update_builtin_qualified_lead:
+                  summary: The materialized built-in qualified lead definition
+                  value:
+                    segment_id: 1
+                    segment_type: qualified_lead
+                    definition:
+                      type: and
+                      nodes:
+                        - type: or
+                          nodes:
+                            - type: email_set
+                            - type: phone_number_set
+                        - type: name_set
+                        - type: customer_property_set
+                          customer_property_id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    referenced_customer_properties_definitions_ids:
+                      - 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+                    last_updated_at: "2026-08-08T10:25:00Z"
+                    agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+                    agent_client_id: 71d32c598862b01b9e2298281339dbc2
+                update_custom_definition:
+                  summary: The custom definition with its replaced tree
+                  value:
+                    segment_id: 2
+                    segment_type: custom
+                    definition:
+                      type: name_set
+                    last_updated_at: "2026-08-08T10:30:00Z"
+                    agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+                    agent_client_id: 71d32c598862b01b9e2298281339dbc2
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "404":
+          description:
+            Segment definition not found (an unknown or already-deleted
+            custom ID; a built-in ID is materialized instead).
+        "422":
+          description:
+            Invalid request body (including a missing `segment_id`, a supplied
+            `segment_type`, an oversized or malformed tree, or a `customer_property_set`
+            node referencing a property that does not exist or is archived).
+        "500":
+          description: Internal error
+  "/v1/delete_segment_definition":
+    post:
+      summary: v1/Delete segment definition
+      description:
+        "Soft-deletes a custom segment definition. Its ID is never reused
+        and existing customer memberships for it are preserved. The built-in definitions
+        (`0` and `1`) cannot be deleted. Required scope: `customers:rw`."
+      parameters:
+        - "$ref": "#/components/parameters/AuthHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/DeleteSegmentDefinitionRequest"
+            examples:
+              delete:
+                summary: Delete a custom definition
+                value:
+                  segment_id: 2
+      responses:
+        "200":
+          description: The definition was deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+              example: {}
+        "401":
+          description: Invalid access token
+        "403":
+          description: Insufficient scopes
+        "404":
+          description:
+            Segment definition not found (unknown or already-deleted custom
+            ID).
+        "422":
+          description:
+            Invalid request body, or `segment_id` is a built-in (`0` or
+            `1`).
+        "500":
+          description: Internal error
 components:
   parameters:
     AuthHeader:
@@ -658,6 +1120,10 @@ components:
         A valid access token, either an OAuth2 Token (Bearer) or a Personal
         Access Token (Basic).
   schemas:
+    EmptyResponse:
+      type: object
+      description: An empty JSON object. The call carries no data back.
+      additionalProperties: false
     Customer:
       type: object
       required:
@@ -721,6 +1187,12 @@ components:
           description:
             The customer's per-segment membership state. Contains one entry
             for each segment that has been evaluated for the customer.
+        relationship_level:
+          type: string
+          enum:
+            - vip
+          nullable: true
+          description: Relationship level. Omitted when no relationship level is assigned.
     Monitoring:
       type: object
       required:
@@ -1035,6 +1507,18 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/OmnichannelWhatsApp"
+        instagram:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OmnichannelInstagram"
+        telegram:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OmnichannelTelegram"
+        sms:
+          type: array
+          items:
+            "$ref": "#/components/schemas/OmnichannelSms"
     OmnichannelFBMessenger:
       type: object
       required:
@@ -1076,6 +1560,57 @@ components:
           type: string
         name:
           type: string
+        phone_number:
+          type: string
+    OmnichannelInstagram:
+      type: object
+      required:
+        - ig_user_id
+      properties:
+        ig_user_id:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        profile_pic:
+          type: string
+          format: url
+        follower_count:
+          type: integer
+          format: int64
+        is_verified_user:
+          type: boolean
+        is_user_follow_business:
+          type: boolean
+        is_business_follow_user:
+          type: boolean
+    OmnichannelTelegram:
+      type: object
+      required:
+        - telegram_user_id
+      properties:
+        telegram_user_id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        username:
+          type: string
+        language_code:
+          type: string
+        display_name:
+          type: string
+        is_premium:
+          type: boolean
+          nullable: true
+    OmnichannelSms:
+      type: object
+      required:
+        - phone_number
+      properties:
         phone_number:
           type: string
     Order:
@@ -1214,8 +1749,8 @@ components:
           type: integer
           format: int64
           description:
-            ID of the segment definition this membership refers to. For
-            the default segment, the ID is 0.
+            ID of the segment definition this membership refers to. The
+            built-in segments have the IDs 0 (lead) and 1 (qualified lead).
           example: 0
         is_member:
           type: boolean
@@ -1327,7 +1862,8 @@ components:
           description:
             Optional rendering format for timestamp property values. Aligns
             with JSON Schema format keywords. When empty, raw stored timestamp values
-            are returned. Present only for `timestamp` properties.
+            are returned. Present only for `timestamp` properties and immutable after
+            creation.
         allowed_values:
           type: array
           maxItems: 30
@@ -1347,23 +1883,12 @@ components:
             no longer match.
     CustomerPropertyTypeConfigurationUpdate:
       type: object
+      additionalProperties: false
       description:
-        "`format` and `allowed_values` are updated independently: omitting
-        a field leaves its current value unchanged; providing it (including an empty
-        array for `allowed_values` or an empty string for `format`) replaces or clears
-        it."
+        Updates the property's allowed-value domain. Timestamp `format`
+        is immutable after property creation.
       example: {}
       properties:
-        format:
-          type: string
-          enum:
-            - date-time
-            - date
-            - time
-          description:
-            New rendering format for timestamp property values, replacing
-            the current one. Send an empty string to clear a previously configured
-            format. Only allowed for `timestamp` properties.
         allowed_values:
           type: array
           maxItems: 30
@@ -1453,11 +1978,8 @@ components:
         At least one of `name`, `description`, `type_configuration` must
         be provided. The `type` field is intentionally absent — type is immutable,
         and any unknown field (including `type`) causes the request to be rejected
-        with a validation error. Within `type_configuration`, `format` and `allowed_values`
-        are updated independently — omit one to leave it unchanged while replacing
-        the other; see `CustomerPropertyTypeConfigurationUpdate`. `type_configuration.format`
-        is only allowed for properties of type `timestamp`; set it to an empty string
-        to clear a previously configured format.
+        with a validation error. Within `type_configuration`, only `allowed_values`
+        can be updated; timestamp `format` is immutable after property creation.
     DeleteCustomerPropertyRequest:
       type: object
       required:
@@ -1512,6 +2034,305 @@ components:
               or a valid HTTP(S) URL string (max 2048 chars) for `link`. Use `null`
               to clear a property value."
           description: A map of property definition IDs to their values.
+    UpdateCustomerRequest:
+      type: object
+      required:
+        - customer_id
+        - relationship_level
+      additionalProperties: false
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+          description: The customer to update.
+        relationship_level:
+          type: string
+          enum:
+            - vip
+          nullable: true
+          description: Assign `vip` or use `null` to remove the relationship level.
+    SegmentDefinitionNode:
+      description:
+        "A node in a segment definition tree: one of two operators (`and`,
+        `or`) or one of five conditions (`name_set`, `email_set`, `phone_number_set`,
+        `customer_property_set`, `last_active_days_ago`). Every node type rejects
+        unknown fields, including fields that are valid on a different node type."
+      oneOf:
+        - "$ref": "#/components/schemas/AndSegmentNode"
+        - "$ref": "#/components/schemas/OrSegmentNode"
+        - "$ref": "#/components/schemas/NameSetSegmentNode"
+        - "$ref": "#/components/schemas/EmailSetSegmentNode"
+        - "$ref": "#/components/schemas/PhoneNumberSetSegmentNode"
+        - "$ref": "#/components/schemas/CustomerPropertySetSegmentNode"
+        - "$ref": "#/components/schemas/LastActiveDaysAgoSegmentNode"
+      discriminator:
+        propertyName: type
+        mapping:
+          and: "#/components/schemas/AndSegmentNode"
+          or: "#/components/schemas/OrSegmentNode"
+          name_set: "#/components/schemas/NameSetSegmentNode"
+          email_set: "#/components/schemas/EmailSetSegmentNode"
+          phone_number_set: "#/components/schemas/PhoneNumberSetSegmentNode"
+          customer_property_set: "#/components/schemas/CustomerPropertySetSegmentNode"
+          last_active_days_ago: "#/components/schemas/LastActiveDaysAgoSegmentNode"
+    AndSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - nodes
+      description: True when every child node evaluates to true.
+      properties:
+        type:
+          type: string
+          enum:
+            - and
+        nodes:
+          type: array
+          minItems: 1
+          items:
+            "$ref": "#/components/schemas/SegmentDefinitionNode"
+          description:
+            Child nodes. An `and` node with no children is a validation
+            error.
+    OrSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - nodes
+      description: True when at least one child node evaluates to true.
+      properties:
+        type:
+          type: string
+          enum:
+            - or
+        nodes:
+          type: array
+          minItems: 1
+          items:
+            "$ref": "#/components/schemas/SegmentDefinitionNode"
+          description:
+            Child nodes. An `or` node with no children is a validation
+            error.
+    NameSetSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+      description:
+        True when the customer has a non-empty name that is not a default,
+        system-generated name.
+      properties:
+        type:
+          type: string
+          enum:
+            - name_set
+    EmailSetSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+      description: True when the customer has a non-empty email address.
+      properties:
+        type:
+          type: string
+          enum:
+            - email_set
+    PhoneNumberSetSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+      description: True when the customer has a non-empty phone number.
+      properties:
+        type:
+          type: string
+          enum:
+            - phone_number_set
+    CustomerPropertySetSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - customer_property_id
+      description:
+        True when the referenced customer property currently has a non-null
+        value for the customer; an empty but non-null value counts as set.
+      properties:
+        type:
+          type: string
+          enum:
+            - customer_property_set
+        customer_property_id:
+          type: string
+          format: uuid
+          description:
+            ID of the referenced customer property definition. Validated
+            as a UUID and checked against the organization's active property schema
+            when the containing segment definition is created or updated; a stored
+            definition does not become invalid retroactively if the referenced property
+            is later archived or deleted.
+    LastActiveDaysAgoSegmentNode:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - days
+      description:
+        True when the customer's last activity was at most `days` days
+        ago.
+      properties:
+        type:
+          type: string
+          enum:
+            - last_active_days_ago
+        days:
+          type: integer
+          minimum: 1
+          maximum: 365
+          description:
+            Number of days, inclusive, since the customer's last recorded
+            activity.
+    SegmentDefinition:
+      type: object
+      description:
+        A segment definition record, as returned by `get_segment_definitions`
+        and by the create/update mutations.
+      required:
+        - segment_id
+        - segment_type
+        - definition
+        - last_updated_at
+        - agent_account_id
+        - agent_client_id
+      example:
+        segment_id: 2
+        segment_type: custom
+        definition:
+          type: and
+          nodes:
+            - type: name_set
+            - type: customer_property_set
+              customer_property_id: 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+        referenced_customer_properties_definitions_ids:
+          - 9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11
+        last_updated_at: "2026-08-08T10:15:00Z"
+        agent_account_id: bc35115a-6f12-40b4-bbb0-8187b0f68c8e
+        agent_client_id: 71d32c598862b01b9e2298281339dbc2
+      properties:
+        segment_id:
+          type: integer
+          format: int64
+          description:
+            Definition ID, unique within the organization. `0` (lead) and
+            `1` (qualified lead) are the built-in definitions, present for every organization
+            even before they have been edited; definitions created through the API
+            get IDs from `2` upwards.
+          example: 2
+        segment_type:
+          type: string
+          enum:
+            - lead
+            - qualified_lead
+            - custom
+          description:
+            "`lead` for built-in definition `0`, `qualified_lead` for built-in
+            definition `1`, and `custom` for every definition created through `create_segment_definition`.
+            Server-assigned; cannot be set or changed through the API."
+        definition:
+          "$ref": "#/components/schemas/SegmentDefinitionNode"
+        referenced_customer_properties_definitions_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description:
+            "`customer_property_id` values referenced anywhere in `definition`,
+            deduplicated, in definition order. Derived from the tree on every read,
+            so it cannot drift from it. Omitted when the tree has no `customer_property_set`
+            node. Includes IDs whose customer-property definition has since been archived
+            or deleted, so an agent can find and repair the dangling reference."
+        last_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description:
+            Request-handling time of the most recent create or update of
+            this definition. Not a commit-order or concurrency token. Null for a built-in
+            definition (`0`, `1`) before its first update.
+        agent_account_id:
+          type: string
+          nullable: true
+          description:
+            Account ID of the agent that last created or updated this definition.
+            Null for a built-in definition (`0`, `1`) before its first update.
+        agent_client_id:
+          type: string
+          nullable: true
+          description:
+            Client ID of the application that last created or updated this
+            definition. Null for a built-in definition (`0`, `1`) before its first
+            update.
+    GetSegmentDefinitionsResponse:
+      type: object
+      required:
+        - segment_definitions
+      properties:
+        segment_definitions:
+          type: array
+          items:
+            "$ref": "#/components/schemas/SegmentDefinition"
+          description:
+            Every active definition for the organization, including the
+            built-in definitions `0` and `1`, ordered by `segment_id`.
+    CreateSegmentDefinitionRequest:
+      type: object
+      required:
+        - definition
+      additionalProperties: false
+      description:
+        Does not accept `segment_id` or `segment_type`; the ID is allocated
+        by the store from `2` upwards and the type is always `custom`. Supplying either
+        field, including a built-in `segment_id` of `0` or `1`, is a validation error.
+      properties:
+        definition:
+          "$ref": "#/components/schemas/SegmentDefinitionNode"
+    UpdateSegmentDefinitionRequest:
+      type: object
+      required:
+        - segment_id
+        - definition
+      additionalProperties: false
+      description:
+        Replaces the entire tree of an existing segment definition; partial
+        tree updates are not supported. `segment_type` is server-assigned and cannot
+        be supplied.
+      properties:
+        segment_id:
+          type: integer
+          format: int64
+          example: 0
+          description:
+            ID of the definition to replace. Must be provided explicitly
+            — omitting it is a validation error. `0` and `1` are accepted and materialize
+            the built-in lead and qualified lead definitions on their first update.
+        definition:
+          "$ref": "#/components/schemas/SegmentDefinitionNode"
+    DeleteSegmentDefinitionRequest:
+      type: object
+      required:
+        - segment_id
+      additionalProperties: false
+      properties:
+        segment_id:
+          type: integer
+          format: int64
+          example: 2
+          description:
+            ID of the definition to delete. The built-in definitions `0`
+            (lead) and `1` (qualified lead) cannot be deleted and are rejected with
+            a validation error.
     Clause:
       type: object
       required:
@@ -1526,6 +2347,8 @@ components:
             - phone_number_country_code
             - country
             - country_code
+            - relationship_level
+            - segment_id
             - last_activity
             - last_visit_started
             - visits_count
@@ -1552,6 +2375,15 @@ components:
             Field name to filter on (required for all operators).
             Use `customer_property` to filter on a custom customer property; in that
             case `property_id` is required.
+            Use `relationship_level` with operator `is` and value `vip` to filter
+            customers with the VIP relationship level.
+
+            Use `segment_id` with operator `is` to filter current segment memberships.
+            Each clause accepts `values` (segment IDs, OR-ed), `entered_at` (when the
+            customer joined), or both. `entered_at` applies to the same membership as
+            `values`; without `values`, it matches membership in any segment. Unknown
+            segment IDs are rejected with a validation error. Segment IDs are
+            license-specific; request examples use illustrative IDs `5` and `7`.
         property_id:
           type: string
           description: |
@@ -1559,6 +2391,26 @@ components:
             Required when `field` is `customer_property`; ignored for built-in fields.
             An unknown `property_id` is rejected with a validation error.
           example: db34b1fe-22ce-4d41-bd0b-e15567f4c81b
+        entered_at:
+          type: object
+          description: |
+            Narrows a `segment_id` clause to when the customer joined. Ignored for other
+            fields. It applies to the same membership as `values`.
+            Without `values` it matches a join into any segment. A clause must carry
+            `values`, `entered_at`, or both.
+          properties:
+            from:
+              type: string
+              format: date-time
+              description: |
+                Start of the join window, inclusive. Absolute RFC3339 only; relative
+                expressions such as `now-7d` are rejected.
+              example: "2026-08-01T00:00:00Z"
+            to:
+              type: string
+              format: date-time
+              description: End of the join window, inclusive.
+              example: "2026-08-06T00:00:00Z"
         operator:
           type: string
           enum:
@@ -1606,6 +2458,7 @@ components:
               description: |
                 Start of range (inclusive, gte).
                 For date fields (last_activity, last_visit_started, cart_last_updated_at): use RFC3339 date-time strings (e.g., '2025-01-01T00:00:00Z').
+                For timestamp customer properties: use an RFC3339 date-time string regardless of the property's configured format.
                 For numeric fields (visits_count, threads_count, etc.): use integers.
                 For cart value fields (cart_total_usd): use numbers (e.g., 50.00).
             to:
@@ -1618,13 +2471,18 @@ components:
               description: |
                 End of range (inclusive, lte).
                 For date fields (last_activity, last_visit_started, cart_last_updated_at): use RFC3339 date-time strings (e.g., '2025-03-01T00:00:00Z').
+                For timestamp customer properties: use an RFC3339 date-time string regardless of the property's configured format.
                 For numeric fields (visits_count, threads_count, etc.): use integers.
                 For cart value fields (cart_total_usd): use numbers (e.g., 200.00).
-          description:
-            "Range values for 'range' operator. For date fields (last_activity,
-            last_visit_started, cart_last_updated_at): use RFC3339 format date-time
-            strings. For numeric fields (visits_count, threads_count, etc.): use
-            integers. For cart value fields (cart_total_usd): use numbers."
+          description: |
+            Range values for the `range` operator.
+            For date fields (last_activity, last_visit_started, cart_last_updated_at), use RFC3339 date-time strings.
+            For timestamp customer properties, always use RFC3339 date-time strings. The configured property format controls normalization:
+            - `date-time`: compare the represented instant.
+            - `date`: compare the RFC3339 value's local calendar date.
+            - `time`: compare the RFC3339 value's local wall-clock time.
+            For numeric fields (visits_count, threads_count, etc.), use integers.
+            For cart value fields (cart_total_usd), use numbers.
           example:
             from: "2025-01-01T00:00:00Z"
             to: "2025-03-01T00:00:00Z"
@@ -1692,14 +2550,14 @@ components:
               maximum: 100
               default: 50
               description:
-                "The number of results to return per page. Default: 50.
+                "The number of results to return per page. \nDefault: 50.
                 Maximum: 100."
             sort:
               type: object
-              description:
-                "The sorting configuration (field -> order mapping). Multiple
-                sort fields can be specified. Note: `created_at` is always appended
-                as the final sort field to ensure stable pagination."
+              description: |
+                The sorting configuration (field -> order mapping).
+                Each key is either a sortable field name or a customer property ID, and the key order sets the sort priority.
+                Note: `created_at` is always appended as the final sort field to ensure stable pagination.
               additionalProperties:
                 type: string
                 enum:
@@ -1707,7 +2565,7 @@ components:
                   - desc
               example:
                 last_activity: desc
-                name: asc
+                9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11: asc
             page_id:
               type: string
               description: |
@@ -1755,6 +2613,12 @@ components:
                     range:
                       from: "2025-01-01T00:00:00Z"
                       to: "2025-03-01T00:00:00Z"
+                  - field: segment_id
+                    operator: is
+                    values:
+                      - 0
+                    entered_at:
+                      from: "2025-01-01T00:00:00Z"
                   - field: customer_property
                     property_id: db34b1fe-22ce-4d41-bd0b-e15567f4c81b
                     operator: is
@@ -1775,7 +2639,7 @@ components:
             results_per_page: 50
             sort:
               last_activity: desc
-              name: asc
+              9b1c9e0a-3a4b-4f0e-9b6f-1f6c8a2b0d11: asc
             page_id: "1"
     ListCustomersResponse:
       type: object
