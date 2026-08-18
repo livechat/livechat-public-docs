@@ -2,7 +2,7 @@
 weight: 26
 category: "management"
 subcategory: "product-directory-api"
-title: "Product Directory"
+title: "Product Directory API"
 tagline: "Upload and manage your product catalog for AI-powered search."
 desc: "Learn how to use the Product Directory API to upload your product catalog and track the indexing progress."
 ---
@@ -11,33 +11,11 @@ desc: "Learn how to use the Product Directory API to upload your product catalog
 
 The Product Directory API lets you upload your product catalog so it can be used by your AI agent.
 
-## Base URL
-
-```
-https://api.text.com/product-directory/
-```
-
 ## Authentication
 
-All endpoints require a Personal Access Token in the `Authorization` header.
+The recommended way to authenticate requests is with Personal Access Tokens (PATs).
 
-To obtain a token go to <a href="https://www.text.com/app/settings/integrations/api-access/personal-access-tokens" target="_blank">Personal Access Tokens</a>:
-
-1. Click **Create token**.
-2. Enter a name for the token.
-3. As a token scope, select `accounts--my:ro`.
-4. Save the `account_id`, `token`, and base64-encoded token.
-
-Basic authentication requires a username and password. When using a Personal Access Token:
-
-- Username is your Account ID
-- Password is your Personal Access Token
-
-Or use the base64-encoded token:
-
-```
--H 'Authorization: Basic <base64_encoded_token>'
-```
+Learn how to create and use tokens in the [Personal access tokens](/authorization/personal-access-tokens) guide.
 
 # Methods
 
@@ -47,6 +25,10 @@ Or use the base64-encoded token:
 | ------------------ | ------------------------------------------------------ |
 | **Catalogs**       | [`Upload a product catalog`](#upload-a-product-catalog) [`Check import status`](#check-import-status) [`List catalogs`](#list-catalogs) [`Get catalog details`](#get-catalog-details) |
 
+# Catalog
+
+## Methods
+
 <Section>
 
 <Text>
@@ -54,6 +36,8 @@ Or use the base64-encoded token:
 ### Upload a product catalog
 
 Uploads a JSON file containing your product catalog. The request is `multipart/form-data` with the file attached under the `file` field; the filename must end in `.json`. The file is processed asynchronously — you'll receive a `job_id` to track progress.
+
+To update your products, send a file with the updated product data. New uploads overwrite the current product catalog.
 
 #### Specifics
 
@@ -78,7 +62,7 @@ Uploads a JSON file containing your product catalog. The request is `multipart/f
 ```shell
 curl -X POST \
   https://api.text.com/product-directory/v1/catalogs/imports \
-  -H 'Authorization: Basic <base64_encoded_token>' \
+  -H 'Authorization: Basic <your_personal_access_token>' \
   -F 'file=@products.json'
 ```
 
@@ -95,6 +79,8 @@ curl -X POST \
 </CodeResponse>
 
 </Code>
+
+A `202` response doesn't mean your products passed validation. Invalid products are skipped and counted in `failed_count` on the job status (see [Check import status](#check-import-status)) — not rejected at upload time.
 
 </Section>
 
@@ -155,7 +141,7 @@ The uploaded file must be a JSON array of product objects:
 
 <Text>
 
-**Product fields**
+#### Product fields
 
 | Field         | Type             | Required | Description                                                                                                                                              |
 | ------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -166,15 +152,9 @@ The uploaded file must be a JSON array of product objects:
 | `currency`    | `string`         | Yes      | Currency code applied to all variant prices (e.g. `USD`).                                                                                                |
 | `categories`  | `string[]`       | Yes      | At least one category.                                                                                                                                   |
 | `tags`        | `string[]`       | No       | Free-form tags.                                                                                                                                          |
-| `images`      | `object[]`       | Yes      | At least one image; each has `url` (required) and `alt_text` (optional).                                                                                 |
+| `images`      | `object[]`       | Yes      | At least one image. Required fields: `url`. Optional fields: `alt_text`.                                                                                 |
 | `attributes`  | `object[]`       | Yes      | At least one `{ "key": string, "value": string \| number }` pair. The more meaningful attributes, the better the search results for the AI agent will be. |
-| `variants`    | `object[]`       | Yes      | At least one variant. Each has `id` (required), `title` (optional), `sku` (optional), `options` (optional key-value map, e.g. `{"color": "blue"}`), `available` (required `bool`), `price` (required `number`, ≥ 0). |
-
-To update your products, simply send a file with the updated product data. That's all.
-
-#### Validation
-
-A `202` response does **not** mean your products passed validation — invalid products are skipped and counted in `failed_count` on the job status (see [Check import status](#check-import-status)), not rejected at upload time.
+| `variants`    | `object[]`       | Yes      | At least one variant. Required fields: `id`, `available` (`bool`),  and `price` (`number` ≥ 0). Optional fields: `title`, `sku`, and `options` (a key-value map, for example, `{"color": "blue"}`).|
 
 #### Error responses
 
@@ -222,7 +202,7 @@ All errors share this body shape:
 
 ### Check import status
 
-Use the `job_id` returned from the upload to poll the processing status.
+Use the `job_id` returned from the upload to poll the processing status of a catalog.
 
 #### Specifics
 
@@ -237,6 +217,20 @@ Use the `job_id` returned from the upload to poll the processing status.
 | --------- | --------- | -------- | ------------------------------- |
 | `job_id`  | `string`  | Yes      | The import job ID, as a URL path parameter. |
 
+#### Response
+
+| Field            | Type                          | Description                                                          |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------- |
+| `job_id`         | `string`                      | Import job identifier.                                                |
+| `status`         | `string`                      | Current job status. Possible values: `pending` — job has been queued and is waiting for a worker, `processing` — worker is actively processing the file, `done` — import completed, `failed` — import failed.                                    |
+| `total`          | `number`                      | The number of total products in the uploaded file.                                  |
+| `indexed_count`  | `number`                      | The number of products successfully indexed so far.                                |
+| `failed_count`   | `number`                      | The number of products that failed validation or indexing.                          |
+| `skipped_count`  | `number`                      | The number of products unchanged since the last import (not reprocessed).           |
+| `progress`       | `number`                      | The number of products processed so far out of `total` — `indexed_count + failed_count`. |
+| `started_at`     | `string` (RFC3339) or `null`  | When processing started.                                              |
+| `completed_at`   | `string` (RFC3339) or `null`  | When processing finished.                                             |
+
 </Text>
 
 <Code>
@@ -245,7 +239,7 @@ Use the `job_id` returned from the upload to poll the processing status.
 
 ```shell
 curl https://api.text.com/product-directory/v1/catalogs/imports/<job_id> \
-  -H 'Authorization: Basic <base64_encoded_token>'
+  -H 'Authorization: Basic <your_personal_access_token>'
 ```
 
 </CodeSample>
@@ -276,29 +270,6 @@ curl https://api.text.com/product-directory/v1/catalogs/imports/<job_id> \
 
 <Text>
 
-**Response fields**
-
-| Field            | Type                          | Description                                                          |
-| ---------------- | ----------------------------- | ---------------------------------------------------------------------- |
-| `job_id`         | `string`                      | Import job identifier.                                                |
-| `status`         | `string`                      | One of the status values below.                                      |
-| `total`          | `number`                      | Total products in the uploaded file.                                  |
-| `indexed_count`  | `number`                      | Products successfully indexed so far.                                |
-| `failed_count`   | `number`                      | Products that failed validation or indexing.                          |
-| `skipped_count`  | `number`                      | Products unchanged since the last import (not reprocessed).           |
-| `progress`       | `number`                      | `indexed_count + failed_count` — products processed so far, out of `total`. |
-| `started_at`     | `string` (RFC3339) or `null`  | When processing started.                                              |
-| `completed_at`   | `string` (RFC3339) or `null`  | When processing finished.                                             |
-
-**Status values**
-
-| Status       | Description                                          |
-| ------------ | ----------------------------------------------------- |
-| `pending`    | Job has been queued and is waiting for a worker.       |
-| `processing` | Worker is actively processing the file.               |
-| `done`       | Import completed.                                      |
-| `failed`     | Import failed.                                         |
-
 #### Error responses
 
 | Status | `type`           | `message`                                        | Description                                |
@@ -317,7 +288,7 @@ curl https://api.text.com/product-directory/v1/catalogs/imports/<job_id> \
 
 ### List catalogs
 
-Returns all catalogs belonging to your organization.
+Returns all product catalogs in your organization.
 
 #### Specifics
 
@@ -334,7 +305,7 @@ Returns all catalogs belonging to your organization.
 
 ```shell
 curl https://api.text.com/product-directory/v1/catalogs \
-  -H 'Authorization: Basic <base64_encoded_token>'
+  -H 'Authorization: Basic <your_personal_access_token>'
 ```
 
 </CodeSample>
@@ -358,9 +329,9 @@ curl https://api.text.com/product-directory/v1/catalogs \
 
 <Text>
 
-Returns an empty array `[]` if your organization has no catalogs yet.
+#### Response
 
-**Response fields**
+Returns an empty array `[]` if your organization has no catalogs yet.
 
 | Field | Type            | Description                                                     |
 | ----- | ---------------- | ---------------------------------------------------------------- |
@@ -405,7 +376,7 @@ Returns the status of the catalog's first import and its current product count. 
 
 ```shell
 curl https://api.text.com/product-directory/v1/catalogs/<catalog_id> \
-  -H 'Authorization: Basic <base64_encoded_token>'
+  -H 'Authorization: Basic <your_personal_access_token>'
 ```
 
 </CodeSample>
@@ -429,20 +400,12 @@ curl https://api.text.com/product-directory/v1/catalogs/<catalog_id> \
 
 <Text>
 
-**Response fields**
+#### Response
 
 | Field           | Type     | Description                                            |
 | --------------- | -------- | -------------------------------------------------------- |
-| `status`        | `string` | One of the status values below.                          |
-| `product_count` | `number` | Number of products currently indexed in this catalog.    |
-
-**Status values**
-
-| Status     | Description                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------------ |
-| `created`  | Catalog exists but no file has been uploaded to it yet.                                                |
-| `indexing` | An import is pending or currently being processed.                                                     |
-| `ready`    | The first import has finished (successfully or not). Status stays `ready` after this — later uploads don't change it. |
+| `status`        | `string` | Current catalog status. Possible values: `created` — the catalog exists, but no file has been uploaded to it yet, `indexing` — an import is pending or currently being processed, `ready` — the first import has finished (successfully or not); status stays `ready` after this — later uploads don't change it.                          |
+| `product_count` | `number` | The number of products currently indexed in this catalog.    |
 
 #### Error responses
 
