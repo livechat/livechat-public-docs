@@ -439,6 +439,7 @@ It is not possible to send a System event in API version 3.7.
 | `address`                        | optional  | An object of the customer's address data.                                                                                                                 |
 | `customer_properties`            | optional  | An object where the keys are the IDs of the [customer properties](#customer-property) and the values are their data.                                      |
 | `relationship_level`             | optional  | The customer's relationship level. The only supported value is `vip`. Returned only if set.                                                               |
+| `segment_memberships`            | optional  | An array of the customer's [segment memberships](#segment-membership).                                                                                    |
 
 ### Cart
 
@@ -480,6 +481,30 @@ The customer property's type is set on creation by the agent.
 | `last_updated_at`               | required  | `string`  | RFC 3339 datetime string.                                                                  |
 | `last_updated_agent_account_id` | optional  | `string`  | Account ID of the agent that last set this value.                                          |
 | `last_updated_agent_client_id`  | optional  | `string`  | Client ID of the application that last set this value.                                     |
+
+### Segment Membership
+
+Segment memberships describe which segments the customer belongs to. A segment is a named rule that classifies customers based on their data. Each segment is defined by conditions. Text evaluates every customer against each active segment definition automatically whenever the customer's data changes.
+
+Every organization has two built-in segments, lead (ID `0`) and qualified lead (ID `1`). You can also [create custom segment definitions](/management/customer-data-platform-api#/paths/~1v1~1create_segment_definition/post).
+
+<CodeResponse version="v3.7" type="agent" title={'Sample Segment Membership data structure'} json="segmentMembership"/>
+
+| Field                        | Req./Opt. | Data type  | Notes                                                                                                                                                                                                                                                                                                |
+| ---------------------------- | --------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `segment_id`                 | required  | `number`   | The ID of the segment definition.                                                                                                                                                                                                                                                                    |
+| `is_member`                  | required  | `bool`     | Whether the customer currently meets all conditions of the segment.                                                                                                                                                                                                                                  |
+| `membership_last_updated_at` | optional  | `string`   | RFC 3339 datetime string; the time when `is_member` last changed. Returned only if the customer was a member of the segment at least once.                                                                                                                                                           |
+| `membership_attribution`     | optional  | `[]string` | Account IDs of the agents credited with the customer joining the segment. Returned only when an agent's change added the customer to the segment.                                                                                                                                                    |
+| `conditions_provenance`      | optional  | `object`   | An object where the keys are the names of the conditions the customer meets (for example, `email_set`) and the values are [Condition Provenance](#condition-provenance) objects. If the customer meets a segment condition, it will be returned even if the customer isn't a member of that segment. |
+
+### Condition Provenance
+
+| Field              | Req./Opt. | Data type | Notes                                                                                                                                                    |
+| ------------------ | --------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `last_updated_at`  | required  | `string`  | RFC 3339 datetime string; the time when the condition was last met.                                                                                      |
+| `agent_account_id` | optional  | `string`  | The account ID of the agent whose change made the customer meet the condition. Returned only when attributable to an agent.                              |
+| `agent_client_id`  | optional  | `string`  | The client ID of the application that issued the agent token. Returned only when attributable to an agent.                                               |
 
 # Other common structures
 
