@@ -218,6 +218,7 @@ LiveChatWidget.call("trigger_sales_tracker", {
 Available ecommerce methods:
 
 - [Track sales event](#track-sales-event)
+- [Set customer cart](#set-customer-cart)
 
 ## Track sales event
 
@@ -425,6 +426,75 @@ LiveChatWidget.call("track_sales_event", {
 | `cart_lines[].product.sku`           | `string` | stock-keeping unit                                                |
 | `cart_lines[].product.variant_id`    | `string` | variant identifier                                                |
 | `cart_lines[].product.thumbnail_url` | `string` | product image URL                                                 |
+
+*required
+
+## Set customer cart
+
+Sends the customer's current cart to the Chat Widget so agents can see it live in the Inbox. Call it again whenever the cart changes. There's no separate action to clear the cart — call it again with an empty `items` array.
+
+#### Example
+
+```js
+LiveChatWidget.call("set_customer_cart", {
+  currency: "USD",
+  subtotal: 169.98,
+  total: 149.99,
+  items: [
+    {
+      id: "123456789",
+      title: "Merino Wool Crew Neck",
+      qty: 1,
+      value: 149.99,
+      variantId: "5674839201",
+      variantTitle: "Black / Medium",
+      sku: "MWC-BLK-M",
+      thumbnailUrl: "https://shop.example.com/img/merino-crew-black.jpg",
+      productPreviewUrl: "https://shop.example.com/products/merino-wool-crew-neck",
+      discounts: [{ amount: "20.00", title: "SUMMER10" }],
+    },
+  ],
+});
+```
+
+To clear the cart:
+
+```js
+LiveChatWidget.call("set_customer_cart", {
+  currency: "USD",
+  subtotal: 0,
+  total: 0,
+  items: [],
+});
+```
+
+#### Payload
+
+| param     | type       | description                                                                          |
+| --------- | ---------- | ------------------------------------------------------------------------------------ |
+| platform  | `"custom"` | fixed to `"custom"` for custom-store integrations — leave it unset or pass `"custom"` |
+| currency* | `string`   | ISO 4217 3-letter code — applied to every item; a per-item currency is ignored        |
+| subtotal* | `number`   | cart total before discounts                                                          |
+| total*    | `number`   | cart total after discounts                                                            |
+| items*    | `array`    | the cart's line items — pass an empty array to clear the cart                        |
+
+*required
+
+#### Items
+
+| param                         | type     | description                                                                  |
+| ----------------------------- | -------- | ----------------------------------------------------------------------------- |
+| `items[].id`*                 | `string` | your platform's item ID                                                      |
+| `items[].title`*              | `string` | product name shown to the agent                                              |
+| `items[].qty`*                | `number` | quantity — must be an integer greater than 0                                |
+| `items[].value`*              | `number` | line total after discounts (unit price × qty − discounts), not a unit price |
+| `items[].variantId`           | `string` | variant identifier from your platform                                       |
+| `items[].variantTitle`        | `string` | human-readable variant description — hidden when empty or `"Default Title"` |
+| `items[].sku`                 | `string` | stock-keeping unit                                                           |
+| `items[].thumbnailUrl`        | `string` | product image URL — a placeholder icon is used when omitted                 |
+| `items[].productPreviewUrl`   | `string` | link to the product page — the "View in store" button is hidden when omitted |
+| `items[].discounts[].amount`  | `string` | line-level discount amount                                                  |
+| `items[].discounts[].title`   | `string` | discount label, e.g. promo code                                              |
 
 *required
 
