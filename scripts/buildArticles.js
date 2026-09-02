@@ -23,6 +23,7 @@ getDirectories(articlesDirectory, (err, res) => {
       const apiVersion = data.apiVersion;
       const category = data.category;
       const weight = data.weight;
+      const nestedHeadings = data.nestedHeadings === true;
       const headings = [];
 
       const regex = /^[\#]+ (.*)/gm;
@@ -77,7 +78,10 @@ getDirectories(articlesDirectory, (err, res) => {
 
       if (matches) {
         let occurrences = [];
-        const prefixes = ["# ", "## ", "### "];
+        const prefixes = nestedHeadings
+          ? ["# ", "## ", "### ", "#### "]
+          : ["# ", "## ", "### "];
+        const ignoredNestedHeadings = ["Specifics", "Request", "Response"];
 
         matches.forEach((match) => {
           let currentPrefix;
@@ -88,6 +92,16 @@ getDirectories(articlesDirectory, (err, res) => {
               return match.startsWith(prefix);
             })
           ) {
+            const headingTitle = match.replace(currentPrefix, "").trim();
+
+            if (
+              nestedHeadings &&
+              currentPrefix === "#### " &&
+              ignoredNestedHeadings.includes(headingTitle)
+            ) {
+              return;
+            }
+
             let slug = transformSlug(match, currentPrefix);
 
             [slug, occurrences] = checkOccurrences(slug, occurrences);
