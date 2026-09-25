@@ -38,6 +38,7 @@ The list of system event subtypes grouped by source:
 | [`ai_agents`](#ai_agents) | [`custom_skill_awaiting_feedback`](#custom_skill_awaiting_feedback) [`custom_skill_completed`](#custom_skill_completed) [`custom_skill_failed`](#custom_skill_failed) [`custom_skill_rejected`](#custom_skill_rejected) [`custom_skill_started`](#custom_skill_started) |
 | [`cdp`](#cdp)             | [`store_order_was_created`](#store_order_was_created) [`store_product_added_to_cart`](#store_product_added_to_cart) [`store_product_removed_from_cart`](#store_product_removed_from_cart)                                                   |
 | [`messaging`](#messaging) | [`summary`](#summary)                                                                                                                                                                                                                       |
+| [`ticketing`](#ticketing) | [`ticket_created`](#ticket_created)                                                                                                                                                                                                         |
 
 ## ai_agents
 
@@ -313,6 +314,35 @@ Sent when [requesting a thread summary](/messaging/agent-chat-api#request-thread
     title={"Sample system event payload"}
     type={"messaging-references"}
     json={"summaryV1"}
+  />
+</Code>
+
+## ticketing
+
+Ticketing source includes system events related to tickets created from chats. These events are visible to agents.
+
+### ticket_created
+
+Generated when a ticket is created for a chat thread. The event has a `custom_id` in the format `ticket_created:<ticket_id>`.
+
+If the thread is inactive, the event cannot be added. Instead, the thread's `ticketing` properties are updated with `last_ticket_id` and `last_ticket_created_at` (the ticket creation time in ISO 8601 format). In this case, no `ticket_created` event is generated.
+
+#### Version 1
+
+| Parameter         | Required | Data type | Notes                                          |
+| ----------------- | -------- | --------- | ---------------------------------------------- |
+| `ticket_id`       | Yes      | `string`  | The ID of the created ticket.                  |
+| `created_at`      | Yes      | `string`  | The ticket creation time in ISO 8601 format.   |
+| `created_by_type` | No       | `string`  | The type of the ticket creator, when provided. |
+| `ticket_subject`  | No       | `string`  | The subject of the ticket, when provided.      |
+
+The current ticket creation flow does not provide `created_by_type` or `ticket_subject`.
+
+<Code>
+  <CodeResponse
+    title={"Sample system event payload"}
+    type={"messaging-references"}
+    json={"ticketCreatedV1"}
   />
 </Code>
 
