@@ -1,0 +1,41 @@
+name: Review Started
+
+on:
+  pull_request_target:
+    types: [labeled]
+
+permissions: {}
+
+concurrency:
+  group: review-started-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  comment:
+    if: github.event.label.name == 'review-started'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post a review-started comment, once per PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEWER: ${{ github.event.sender.login }}
+        run: |
+          set -euo pipefail
+
+          marker='<!-- review-started -->'
+
+          # Fail loudly if the lookup itself breaks, so a transient API error
+          # cannot be mistaken for "no comment yet" and post a duplicate.
+          existing="$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[].body')"
+
+          if printf '%s' "$existing" | grep -qF "$marker"; then
+            echo "PR #$PR_NUMBER already has a review-started comment. Nothing to do."
+            exit 0
+          fi
+
+          printf '%s\n@%s has started reviewing this PR.\n' "$marker" "$REVIEWER" \
+            | gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file -
