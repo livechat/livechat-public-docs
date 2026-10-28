@@ -437,21 +437,22 @@ Sends the customer's current cart to the Chat Widget so agents can see it live i
 
 ```js
 LiveChatWidget.call("set_customer_cart", {
+  version: "2",
   currency: "USD",
-  subtotal: 169.99,
-  total: 149.99,
+  subtotal: 16999,
+  total: 14999,
   items: [
     {
       id: "123456789",
       title: "Merino Wool Crew Neck",
       qty: 1,
-      value: 149.99,
+      value: 14999,
       variantId: "5674839201",
       variantTitle: "Black / Medium",
       sku: "MWC-BLK-M",
       thumbnailUrl: "https://shop.example.com/img/merino-crew-black.jpg",
       productPreviewUrl: "https://shop.example.com/products/merino-wool-crew-neck",
-      discounts: [{ amount: "20.00", title: "SUMMER10" }],
+      discounts: [{ amount: 2000, title: "SUMMER10" }],
     },
   ],
 });
@@ -461,6 +462,7 @@ To clear the cart:
 
 ```js
 LiveChatWidget.call("set_customer_cart", {
+  version: "2",
   currency: "USD",
   subtotal: 0,
   total: 0,
@@ -468,15 +470,17 @@ LiveChatWidget.call("set_customer_cart", {
 });
 ```
 
+All money values are integers in the minor units of the cart currency. For example, send `14999` for 149.99 USD. The `currency` field sets the number of decimal places. Don't send floats or strings.
+
 #### Payload
 
-| param     | type       | description                                                                          |
-| --------- | ---------- | ------------------------------------------------------------------------------------ |
-| platform  | `"custom"` | fixed to `"custom"` for custom-store integrations |
-| currency* | `string`   | ISO 4217 3-letter code — applied to every item; a per-item currency is ignored        |
-| subtotal* | `number`   | cart total before discounts                                                          |
-| total*    | `number`   | cart total after discounts                                                            |
-| items*    | `array`    | the items in the customer's cart line                        |
+| param     | type      | description                                                                    |
+| --------- | --------- | ------------------------------------------------------------------------------ |
+| version*  | `string`  | version of the cart contract — must be `"2"`                                   |
+| currency* | `string`  | ISO 4217 3-letter code                                                         |
+| subtotal  | `number`  | cart total before discounts                                                  |
+| total*    | `number`  | cart total after discounts                                                   |
+| items*    | `array`   | the items in the customer's cart                                               |
 
 *required
 
@@ -487,13 +491,13 @@ LiveChatWidget.call("set_customer_cart", {
 | `items[].id`*                 | `string` | your platform's item ID                                                      |
 | `items[].title`*              | `string` | product name displayed to the agent                                              |
 | `items[].qty`*                | `number` | product quantity — must be an integer greater than 0                                |
-| `items[].value`*              | `number` | cart line total after discounts (unit price × qty − discounts), not a unit price |
+| `items[].value`*              | `number` | line total after discounts (unit price × qty − discounts). Not a unit price |
 | `items[].variantId`           | `string` | variant identifier from your platform                                       |
 | `items[].variantTitle`        | `string` | human-readable variant description — hidden when empty or when the value is `"Default Title"` |
 | `items[].sku`                 | `string` | stock-keeping unit                                                           |
 | `items[].thumbnailUrl`        | `string` | product image URL — if omitted, a placeholder icon is used                 |
 | `items[].productPreviewUrl`   | `string` | link to the product page — if omitted, the "View in store" button will be hidden |
-| `items[].discounts[].amount`  | `string` | cart line-level discount amount                                                  |
+| `items[].discounts[].amount`  | `number` | line-level discount amount                                                    |
 | `items[].discounts[].title`   | `string` | discount label, e.g. promo code                                              |
 
 *required
