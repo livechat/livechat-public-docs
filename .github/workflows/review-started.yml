@@ -1,5 +1,8 @@
 name: Review Started
 
+# `pull_request_target` (needed so fork PRs can be commented on) runs with a
+# write token while the PR head is attacker-controlled. This is safe only
+# because the job never checks out or runs any PR content -- keep it that way.
 on:
   pull_request_target:
     types: [labeled]
@@ -28,11 +31,10 @@ jobs:
 
           marker='<!-- review-started -->'
 
-          # Fail loudly if the lookup itself breaks, so a transient API error
-          # cannot be mistaken for "no comment yet" and post a duplicate.
+          # A failed lookup must not be mistaken for "no comment yet".
           existing="$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[].body')"
 
-          if printf '%s' "$existing" | grep -qF "$marker"; then
+          if [[ "$existing" == *"$marker"* ]]; then
             echo "PR #$PR_NUMBER already has a review-started comment. Nothing to do."
             exit 0
           fi
