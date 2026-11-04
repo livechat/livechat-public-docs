@@ -1,0 +1,43 @@
+name: Review Started
+
+# `pull_request_target` (needed so fork PRs can be commented on) runs with a
+# write token while the PR head is attacker-controlled. This is safe only
+# because the job never checks out or runs any PR content -- keep it that way.
+on:
+  pull_request_target:
+    types: [labeled]
+
+permissions: {}
+
+concurrency:
+  group: review-started-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  comment:
+    if: github.event.label.name == 'review-started'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post a review-started comment, once per PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEWER: ${{ github.event.sender.login }}
+        run: |
+          set -euo pipefail
+
+          marker='<!-- review-started -->'
+
+          # A failed lookup must not be mistaken for "no comment yet".
+          existing="$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[].body')"
+
+          if [[ "$existing" == *"$marker"* ]]; then
+            echo "PR #$PR_NUMBER already has a review-started comment. Nothing to do."
+            exit 0
+          fi
+
+          printf '%s\n@%s has started reviewing this PR.\n' "$marker" "$REVIEWER" \
+            | gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file -

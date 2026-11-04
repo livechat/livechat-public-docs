@@ -23,3 +23,5 @@ export { default as filledFormFields } from "./other-structures/filledFormFields
 export { default as properties } from "./other-structures/properties.json";
 export { default as segmentMembership } from "./other-structures/segmentMembership.json";
 export { default as thread } from "./other-structures/thread.json";
+export { default as threadSummary } from "./other-structures/threadSummary.json";
+export { default as threadSummaryLegacy } from "./other-structures/threadSummaryLegacy.json";

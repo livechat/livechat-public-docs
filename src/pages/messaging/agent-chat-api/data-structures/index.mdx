@@ -521,6 +521,7 @@ Apart from [Events](#events) and [Users](#users), there are also other common da
 - [Filled form fields](#filled-form-fields)
 - [Properties](#properties)
 - [Threads](#threads)
+- [Thread summaries](#thread-summaries)
 - [Deleted event](#deleted-event)
 
 ## Access
@@ -587,21 +588,49 @@ Properties are **key-value storages**. They can be set within a chat, a thread, 
 
 <CodeResponse version="v3.6" type="agent" title={'Sample Thread data structure'} json="thread"/>
 
-| Field                           | Req./Opt. | Note                                                                                                                               |
-| ------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `access`                        | optional  |                                                                                                                                    |
-| `active`                        | required  | Possible values: `true` (thread is still active) or `false`(thread no longer active)                                               |
-| `events`                        | optional  | Doesn't exists if `restricted_access` is present.                                                                                  |
-| `properties`                    | optional  |                                                                                                                                    |
-| `restricted_access`             | optional  | Contains the reason for access restriction.                                                                                        |
-| `queue`                         | optional  | Present only if the chat is in the queue. The wait time for an available agent is approximated in seconds.                         |
-| `previous_thread_id`            | optional  | Present only if there is a preceding thread.                                                                                       |
-| `next_thread_id`                | optional  | Present only if there is a following thread.                                                                                       |
-| `previous_accessible_thread_id` | optional  | Present only if there is a preceding thread accessible for the requester. Field present only in [`list_archives`](#list-archives). |
-| `next_accessible_thread_id`     | optional  | Present only if there is a following thread accessible for the requester. Field present only in [`list_archives`](#list-archives). |
-| `created_at`                    | required  | Date & time format with a resolution of microseconds, `UTC string`. Generated server-side.                                         |
-| `tags`                          | optional  | An array of tags. Returned only if a thread was tagged.                                                                            |
-| `customer_visit`                | optional  | Contains details about customer visit (IP, User agent and geolocation).                                                            |
+| Field                           | Req./Opt. | Note                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `access`                        | optional  |                                                                                                                                                                                                                                                                                                                                                  |
+| `active`                        | required  | Possible values: `true` (thread is still active) or `false` (thread is no longer active).                                                                                                                                                                                                                                                         |
+| `events`                        | optional  | Doesn't exist if `restricted_access` is present.                                                                                                                                                                                                                                                                                                 |
+| `summary`                       | optional  | Present only for inactive threads when the [`auto_summary_enabled`](/messaging/references/default-properties/#auto_summary_enabled) chat property is enabled or when the summary was requested through [`request_thread_summary`](/messaging/agent-chat-api/#request-thread-summary). See [Thread summaries](#thread-summaries) for the object shape. |
+| `properties`                    | optional  |                                                                                                                                                                                                                                                                                                                                                  |
+| `restricted_access`             | optional  | Contains the reason for access restriction.                                                                                                                                                                                                                                                                                                      |
+| `queue`                         | optional  | Present only if the chat is in the queue. The wait time for an available agent is approximated in seconds.                                                                                                                                                                                                                                       |
+| `previous_thread_id`            | optional  | Present only if there is a preceding thread.                                                                                                                                                                                                                                                                                                     |
+| `next_thread_id`                | optional  | Present only if there is a following thread.                                                                                                                                                                                                                                                                                                     |
+| `previous_accessible_thread_id` | optional  | Present only if there is a preceding thread accessible for the requester. Field present only in [`list_archives`](#list-archives).                                                                                                                                                                                                               |
+| `next_accessible_thread_id`     | optional  | Present only if there is a following thread accessible for the requester. Field present only in [`list_archives`](#list-archives).                                                                                                                                                                                                               |
+| `created_at`                    | required  | Date and time in UTC with microsecond precision. Generated server-side.                                                                                                                                                                                                                                                                          |
+| `tags`                          | optional  | An array of tags. Returned only if a thread was tagged.                                                                                                                                                                                                                                                                                          |
+| `customer_visit`                | optional  | Contains details about the customer visit, including the IP address, user agent, and geolocation.                                                                                                                                                                                                                                                 |
+
+## Thread summaries
+
+Text generates thread summaries with `"version": 1`. A stored summary without `version` uses the legacy format.
+
+### Version 1
+
+| Field                     | Req./Opt. | Note                                                                  |
+| ------------------------- | :-------: | --------------------------------------------------------------------- |
+| `status`                  | required  | Possible values: `ok`, `error`.                                       |
+| `version`                 | required  | `1`                                                                   |
+| `content`                 | required  | The structured summary content.                                       |
+| `content.title`           | required  | A short title describing the thread.                                  |
+| `content.summary_bullets` | required  | An array of key points summarizing the thread.                         |
+| `updated_at`              | required  | Date and time in UTC with microsecond precision.                       |
+
+<CodeResponse version="v3.6" type="agent" title={'Sample thread summary data structure'} json="threadSummary"/>
+
+### Version 0 (legacy)
+
+| Field        | Req./Opt. | Note                                                               |
+| ------------ | :-------: | ------------------------------------------------------------------ |
+| `status`     | required  | Possible values: `ok`, `error`.                                    |
+| `text`       | required  | The summary with bullet points included in a single string.        |
+| `updated_at` | required  | Date and time in UTC with microsecond precision.                    |
+
+<CodeResponse version="v3.6" type="agent" title={'Sample legacy thread summary data structure'} json="threadSummaryLegacy"/>
 
 ## Deleted event
 
